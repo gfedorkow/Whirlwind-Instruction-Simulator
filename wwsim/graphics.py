@@ -221,7 +221,9 @@ class GraphWin(tk.Canvas):
         self.items = []
         self.mouseX = None
         self.mouseY = None
-        self.bind("<Button-1>", self._onClick)
+        self.mouseButton = 0   # added by Guy, Mar 2021
+        self.bind("<Button-1>", self._onClick1)
+        self.bind("<Button-3>", self._onClick3)
         self.bind_all("<Key>", self._onKey)
         self.height = int(height)
         self.width = int(width)
@@ -318,7 +320,7 @@ class GraphWin(tk.Canvas):
         x,y = self.toWorld(self.mouseX, self.mouseY)
         self.mouseX = None
         self.mouseY = None
-        return Point(x,y)
+        return (Point(x,y), self.mouseButton)
 
     def checkMouse(self):
         """Return last mouse click or None if mouse has
@@ -330,9 +332,9 @@ class GraphWin(tk.Canvas):
             x,y = self.toWorld(self.mouseX, self.mouseY)
             self.mouseX = None
             self.mouseY = None
-            return Point(x,y)
+            return (Point(x,y), self.mouseButton)
         else:
-            return None
+            return None, 0
 
     def getKey(self):
         """Wait for user to press a key and return it as a string."""
@@ -380,9 +382,17 @@ class GraphWin(tk.Canvas):
     def setMouseHandler(self, func):
         self._mouseCallback = func
         
-    def _onClick(self, e):
+    def _onClick1(self, e):
         self.mouseX = e.x
         self.mouseY = e.y
+        self.mouseButton = 1
+        if self._mouseCallback:
+            self._mouseCallback(Point(e.x, e.y))
+
+    def _onClick3(self, e):
+        self.mouseX = e.x
+        self.mouseY = e.y
+        self.mouseButton = 3
         if self._mouseCallback:
             self._mouseCallback(Point(e.x, e.y))
 
@@ -397,8 +407,22 @@ class GraphWin(tk.Canvas):
             item.undraw()
             item.draw(self)
         self.update()
-        
-                      
+
+    # ************  GUY EXPERIMENT BEGIN ***********
+    # Did work. i.e., the python to TK interface seems to work
+    # Didn't work, i.e., 'place' seems to place the canvas within the window
+    #  while I want to place the window on the screen.
+
+    def placec(self, x, y):
+        # relx = 1.0, rely = 1.0, anchor = "SE"
+        cnf = {"relx":0.5, "rely":0.5, "anchor":"se"}
+        kw = {}
+        self.tk.call(
+            ('place', 'configure', self._w)
+              + self._options(cnf, kw))
+    # ************  GUY EXPERIMENT END ***********
+
+
 class Transform:
 
     """Internal class for 2-D coordinate transformations"""

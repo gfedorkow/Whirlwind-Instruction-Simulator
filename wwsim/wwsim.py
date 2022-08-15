@@ -1,27 +1,45 @@
-#!/usr/bin/python3
 
-# simulate the Whirlwind instruction set
+# Copyright 2022 Guy C. Fedorkow
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+# associated documentation files (the "Software"), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge, publish, distribute,
+# sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#   The above copyright notice and this permission notice shall be included in all copies or
+# substantial portions of the Software.
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+# BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+# Simulate the Whirlwind instruction set, based on Whirlwind Instruction Set Manual 2M-0277
 # g fedorkow, Dec 30, 2017
 
-# todo
-# Jan 28, 2019 - watch for confusion of CoreMem and coremem throughout the code...
 
-# Changes
-# Jul 18, 2019
-# I added a hack to print a warning but return zero and keep running if uninitialized memory is read
-# moved the cpu.print statement out of each instruction and into the calling loop.  Can't remember why I
-#   didn't write it that way the first time
-#
 # updated to Python 3 April 2020
 
-import re
+
 import sys
+import os
+# sys.path.append('K:\\guy\\History-of-Computing\\Whirlwind\\Py\\Common')
 import argparse
 import wwinfra
 import ww_io_sim
+import ww_flow_graph
+import radar as radar_class
 import time
+import re
+import museum_mode_params as mm
 
-from typing import List
+# There can be a source file that contains subroutines that might be called by exec statements specific
+#   to the particular project under simulation.  If the file exists in the current working dir, import it.
+if os.path.exists("project_exec.py"):
+    sys.path.append('.')
+    from project_exec import *
+    print("imported project_exec.py")
+
+from typing import List, Dict, Tuple, Sequence, Union, Any
 
 TTYoutput = []
 Debug = False
@@ -29,22 +47,24 @@ Debug = False
 
 # move these into the "constants" class
 # use these vars to control how much Helpful Stuff emerges from the sim
-TracePC = False    # print a line for each instruction
-TraceALU = False   # print a line for add, multiply, negate, etc
-TraceBranch = True  # print a line for each branch
-TraceQuiet = False
+# TracePC = False    # print a line for each instruction
+# TraceALU = False   # print a line for add, multiply, negate, etc
+# TraceBranch = True  # print a line for each branch
+# TraceQuiet = False
 
 
 # print sim state at a breakpoint
 def breakp_dump_sim_state(cpu):
-    print("breakpoint @PC=%s  Xi=%s, Yi=s, Vy=s" % (cpu.wwaddr_to_str(cpu.PC),
-                                                    cpu.wwint_to_str(CoreMem.rd[0o201])))
+
+    if cpu.PC == 0o121 : # (cpu._AC != 0 and cpu._AC != 0o177777) and :
+        print("breakpoint @PC=%s  AC=0o%o, loop_cnt=0o%o" % (cpu.wwaddr_to_str(cpu.PC), cpu._AC,
+                                                    CoreMem.rd(0o144)))
 
 
 # start tracing at a breakpoint
 def breakp_start_trace(cpu):
     print("breakpoint @PC=%s" % (cpu.wwaddr_to_str(cpu.PC)))
-    cpu.cb.TracePC = True
+    cpu.cb.TracePC = -1  # turn on trace 'forever'
 
 
 def breakp():
@@ -58,45 +78,65 @@ Breakpoints = {
 }
 
 
+# convert a Whirlwind int into a signed decimal number string; positive is easy, but
+#   negative numbers need conversion.
+# This routine would normally be called by a .exec directive, so I've used an overly-short name...
+def deci(ww_num: int) -> str:
+    neg = False
+    if ww_num & 0o100000:
+        ww_num ^= 0o177777  # invert all the bits, including the sign
+        neg = True
+    ret = "0d%02d" % ww_num
+    if neg:
+        ret = '-' + ret
+    return ret
 
 
 class CpuClass:
-    def __init__(self, cb):
-        global CoreMem
+    def __init__(self, cb, core_mem):
+        global CoreMem  # get rid of this global -- change to the cm in this class
+
+        self.isa_1950 = False   # set this to use the early 1950's instruction set, rather than the 1958 version
+
         # I don't know what initializes the CPU registers, but it's easier to code if I assume they're zero!
         self._BReg = 0
         self._AC = 0    # Accumulator
         self._AReg = 0    # Address Register, used for subroutine return address
         self._SAM = 0   # Two-bit carry-out register; it's only legal values appear to be 1, 0, -1
                         # SAM is set by many instructions, but used only by ca cs and cm
-        self.PC = None  # Program Counter
+        self.PC = 0o40  # Program Counter; default start address
         self.IODevice = None  # Device last selected by SI instruction
         self.IODeviceClass = None
         self.MemGroupA = 0  # I think Reset sets logical Group A to point to Physical Bank 0
         self.MemGroupB = 1  # I *think* Reset sets logical Group B to point to Physical Bank 1
 
         self.cb = cb
+        self.cm = core_mem
 
         # we need to keep track of the scope object since it needs background processing
         self.scope = ww_io_sim.DisplayScopeClass(cb)
+        self.drum = ww_io_sim.DrumClass(cb)
 
         self.IODeviceList = [
             self.scope,
             wwinfra.FlexoClass(cb),
             ww_io_sim.tty_class(cb),
-            ww_io_sim.DrumClass(cb),
+            self.drum,
             ww_io_sim.CoreClearIoClass(cb),
+            ww_io_sim.FFResetIoClass(cb),
             ww_io_sim.PhotoElectricTapeReaderClass(cb),
-            ww_io_sim.InterventionAndActivateClass(cb),
+            ww_io_sim.InterventionAndActivateClass(cb, self),
             ww_io_sim.IndicatorLightRegistersClass(cb),
             ww_io_sim.InOutCheckRegistersClass(cb),
+            ww_io_sim.CameraClass(cb),
         ]
 
         self.cpu_switches = None
+
         # Aug 27, 2018 - started to add r/w designator to each op to see if it should trap on an uninitialized var
         #  And the microsecond count to estimate performance
         #  And changed from [] mutable list to () immutable set
-        self.op_decode = [
+        self.op_decode_1958 = [
             #  function    op-name  description       r/w, usec
             (self.si_inst, "SI", "Select Input",      '',  30),
             (self.unused1_inst, "unused", "unused",   '',  0),
@@ -127,7 +167,7 @@ class CpuClass:
             [self.dv_inst, "DV", "Divide"],                # 032
             [self.sl_inst, "SL", "Shift Left Hold/Roundoff"],
             [self.sr_inst, "SR", "Shift Right Hold/Roundoff"],  # 034
-            [self.sf_inst, "SF", "Scale Factor 035o"],
+            [self.sf_inst, "SF", "Scale Factor"],          # 035o
             [self.cy_inst, "CL", "Cycle Left"],   # 036
             [self.md_inst, "MD", "Multiply Digits no Roundoff (AND)"],  # 037
         ]
@@ -138,40 +178,182 @@ class CpuClass:
             "CL": [["clc", "clh"], ["cycle left and clear", "cycle left and hold"]]
         }
 
+        self.op_decode_1950 = [
+            #  function    op-name  description       r/w, usec
+            (self.ri_inst, "RI", "Select Input",      '',  30),
+            (self.rs_inst, "RS", "Remote Unit Stop",   '',  0),
+            (self.rf_inst, "RF", "Run Forward",       '', 8000),
+            (self.rb_inst, "RB", "Run Backward",      '',  15),
+            (self.rd_inst, "RD", "Read", 'r', 8000),  # 04
+            (self.rc_inst, "RC", "Record",            '',  22),    # 05
+            (self.qh_inst, "QH", "Display Horizontal",        'r', 22),    # 06
+            [self.qd_inst, "QD", "Display Point"],  # 07
+            [self.ts_inst, "TS", "Transfer to Storage"],  # 010,
+            [self.td_inst, "TD", "Transfer Digits"],      # 011
+            [self.ta_inst, "TA", "Transfer Address"],
+            [self.ck_inst, "CK", "Check"],
+            [self.qf_inst, "QF", "Display Point F-Scope"],  # 014 guy made up the 0o14 op-code; I don't know what code they assigned
+            [self.ex_inst, "EX", "Exchange"],              # 015
+            [self.cp_inst, "CP", "Conditional program"],   # 016
+            [self.sp_inst, "SP", "Subprogram"],            # 017
+            [self.ca_inst, "CA", "Clear and add"],         # 020
+            [self.cs_inst, "CS", "Clear and subtract"],    # 021
+            [self.ad_inst, "AD", "Add to AC"],             # 022
+            [self.su_inst, "SU", "Subtract"],              # 23o, 19d
+            [self.cm_inst, "CM", "Clear and add Magnitude"],  # 24o, 20d
+            [self.sa_inst, "SA", "Special Add"],
+            [self.ao_inst, "AO", "Add One"],               # 26o, 22d
+            [self.unused1_inst, "UN27", "Unused 0o27"],  # 027o
+            [self.mr_inst, "MR", "Multiply & Round"],      # 030
+            [self.mh_inst, "MH", "Multiply & Hold"],       # 031
+            [self.dv_inst, "DV", "Divide"],                # 032
+            [self.sl_inst, "SL", "Shift Left Roundoff"],
+            [self.sr_inst, "SR", "Shift Right Roundoff"],  # 034
+            [self.sf_inst, "SF", "Scale Factor"],          # 035o
+            [self.unused1_inst, "UN36", "Unused 0o36"],   # 036
+            [self.unused1_inst, "UN37", "Unused 0o37"],  # 037
+        ]
+
+
+        # putting this stuff here seems pretty darn hacky
+        self.SymTab = {}
+        self.ExecTab = {}   # this table is for holding Python Exec statements interleaved with the WW code.
+        self.CommentTab = [None] * 2048
+
+        self.decif = deci   # I am baffled at how to pass this function name into my py_exec routine
+
+
+    def set_isa(self, isa_name):
+        if isa_name == "1950":
+            self.op_decode = self.op_decode_1950
+            self.isa_1950 = True
+        elif isa_name == "1958":
+            self.op_decode = self.op_decode_1958
+        else:
+            self.cb.log.warn("Error setting isa; must be 1950 or 1958, not %s" % isa_name)
+            exit(1)
+
     # convert an integer to a string, including negative number notation
-    def wwint_to_str(self, num):
+    def wwint_to_str(self, num: Union[None, int]) -> str:
         if num is None:
             return " None "
         if num & self.cb.WWBIT0:
-            neg = "(" + "-%04oo" % (~num & self.cb.WWBIT1_15) + ")"
+            sign = '-'
+            pos = ~num & self.cb.WWBIT1_15
         else:
-            neg = ""
-        return ("%06oo" % num) + neg
+            sign = ''
+            pos = num
+
+        paren = ''
+        if self.cb.decimal_addresses:
+            paren = "(%s0d%d)" % (sign, pos)
+        else:  # octal number; print inverse in parens
+            if sign == '-':
+                paren = "(-0o%04o)" % pos
+        return ("0o%06o" % num) + paren
+
 
     # convert an address to a string, adding a label from the symbol table if there is one
-    def wwaddr_to_str(self, num):
+    # "Label_Only" causes the routine to check the symbol table, and if there's a label, it returns
+    #  it without adding the number.  If there's no label in the symTab, you get the number
+    # [Jan 30, 2021] The routine also now returns octal by default, but will add the decimal
+    # equivalent if the global flag is set.  Format is (for eg) "0o0100.64"
+    # [Jan 28, 2022] Add an indicator of which bank is in use if it's not the default configuration.
+    def wwaddr_to_str(self, num, label_only_flag=False):
+        bank_str = ''  # by default, we don't give a bank number
+        high_bank = (num & self.cb.WWBIT5)
+        if high_bank and CoreMem.MemGroupB != 1:
+            bank_str = "[%d]" % CoreMem.MemGroupB
+        if not high_bank and CoreMem.MemGroupA != 0:
+            bank_str = "[%d]" % CoreMem.MemGroupA
+
+        decimal = ''
+        if self.cb.decimal_addresses:
+            decimal = ".%03d" % num
         if num in self.SymTab:
-            label = "(" + self.SymTab[num] + ")"
+            label = "(" + self.SymTab[num][0] + ")"
+            label_only = self.SymTab[num][0]
         else:
             label = ""
-        return ("0o%06o" % num) + label
+            label_only = "0o%o%s" % (num, decimal)
+        if label_only_flag:
+            return label_only
+        else:
+            return ("%s0o%04o%s" % (bank_str, num, decimal)) + label
 
-    def print_cpu_state(self, pc, short_opcode, op_description, address):
-        s1 = " pc:%s:  %s %s" % (self.wwaddr_to_str(pc), short_opcode, self.wwaddr_to_str(address))
-        s2 = "   AC=%s, AR=%s, BR=%s, SAM=%02oo" % \
-            (self.wwint_to_str(self._AC), self.wwint_to_str(self._AReg), self.wwint_to_str(self._BReg), self._SAM)
-        s3 = "   nextPC=%s, Core@%s=%s" % \
-             (self.wwaddr_to_str(self.PC), self.wwaddr_to_str(address),
-              self.wwint_to_str(CoreMem.rd(address, fix_none=False)))
-        if self.cb.TracePC:
-            print(s1, s2, s3, " ; ", op_description)
+    # print a number in octal and decimal, then pad with spaces up to a specified column number.
+    # The point is allow long fields that exceed column boundaries once in a while, but get the
+    # remaining fields back in sync if they're shorter than max
+    def space_to_cursor(self, base_str, new_field, start_cursor, width):
+        new_str = base_str + new_field
+        current_cursor = len(new_str)
+        while current_cursor < (start_cursor + width):
+            new_str += ' '
+            current_cursor += 1
+        return new_str, start_cursor + width
+
+    def print_cpu_state(self, pc, short_opcode, description, address):
+        if self.cb.TracePC != 0:
+            s1, cur = self.space_to_cursor("", (" pc:%s:" % self.wwaddr_to_str(pc)), 0, 20)
+            s2, cur = self.space_to_cursor(s1, (" %s %s" % (short_opcode, self.wwaddr_to_str(address))), cur, 25)
+            s3, cur = self.space_to_cursor(s2, (" AC=%s," % (self.wwint_to_str(self._AC))), cur, 23)
+            s4, cur = self.space_to_cursor(s3, (" BR=0o%o," % (self._BReg)), cur, 11)
+            s5, cur = self.space_to_cursor(s4, (" Core@%s=%s" %
+                                                (self.wwaddr_to_str(address),
+                                                 self.wwint_to_str(CoreMem.rd(address, fix_none=False)))), cur, 20)
+            if self.cb.LongTraceFormat:
+                slt = " AR=%s, BR=%s, SAM=%02oo  nextPC=%s" % \
+                (self.wwint_to_str(self._AReg), self.wwint_to_str(self._BReg), self._SAM, self.wwaddr_to_str(self.PC))
+            else:
+                slt = ''
+            print(s5, slt, " ; ", description)
+        if self.cb.TracePC > 0:  # if the Trace count is above zero, decrement until zero.  If negative, don't mess...
+            self.cb.TracePC -= 1
+        if self.cb.tracelog:
+            self.cb.tracelog.append(ww_flow_graph.TraceLogClass(pc, self.wwaddr_to_str(pc, label_only_flag=True),
+                                                                short_opcode, address, self._AC, description))
+
+
+    # I added a directive to allow a python statement to be added following execution of particular
+    # instructions in the WW program, e.g., a print statement to see what's going on.
+    # This def includes a special lookup to accept numbers or labels from the WW source file
+    def py_exec(self, pc, cmd):
+        global CoreMem
+        # Resolve-Label: special lookup for python statements embedded in ww source
+        # The lookup takes a string, converts either decimal or octal, or looks for it in the symtab
+        def rl(label):
+            address = 0
+            if label[0].isdigit():
+                self.cb.log.warn("Py_exec: Resolve Label can't resolve a number: got %s" % (label))
+
+            else:
+                address = -1
+                for addr in self.SymTab:
+                    if label == self.SymTab[addr][0]:
+                        address = addr
+                        break
+                if address == -1:
+                    self.cb.log.warn("Python Exec: unknown label %s" % label)
+                    address = 0
+            return address
+
+
+        cm = self.cm
+        cb = self.cb
+        cpu = self
+        for line in cmd.split('\\n '):
+            try:
+                exec(line)
+            except :
+                self.cb.log.warn("Exec of '%s' failed at pc=0o%03o" % (line, pc))
+
 
     def run_cycle(self):
         global CoreMem
         global Breakpoints
         instruction = CoreMem.rd(self.PC, fix_none=False)
         if instruction is None:
-            print("\nrun_cycle: Instruction is 'None' at %05oo" % self.PC)
+            print("\nrun_cycle: Instruction is 'None' at %s" % self.wwint_to_str(self.PC))
             return self.cb.READ_BEFORE_WRITE_ALARM
         opcode = (instruction >> 11) & 0o37
         address = instruction & self.cb.WW_ADDR_MASK
@@ -181,11 +363,18 @@ class CpuClass:
         current_pc = self.PC
         self.PC += 1  # default is just the next instruction -- if it's a branch, we'll reset the PC later
         oplist = self.op_decode[opcode]
-        ret = (oplist[0](current_pc, address, oplist[1], oplist[2]))
-        self.print_cpu_state(current_pc, oplist[1], oplist[2], address)
+        ret = (oplist[0](current_pc, address, oplist[1], oplist[2]))   # this actually runs the instruction...
+
+        if self.CommentTab[current_pc] is not None and len(self.CommentTab[current_pc]) > 0:
+            description = self.CommentTab[current_pc]
+        else:
+            description = oplist[2]
+        self.print_cpu_state(current_pc, oplist[1], description, address)
+        if current_pc in self.ExecTab:
+            self.py_exec(current_pc, self.ExecTab[current_pc])
 
         if current_pc in Breakpoints:
-            Breakpoints[current_pc](cpu)
+            Breakpoints[current_pc](self)
         return ret
 
     # generic WW add, used by all instructions involving add or subtract
@@ -265,23 +454,36 @@ class CpuClass:
         py_product = py_a * py_b
         py_sign = sign_a * sign_b
 
-        # convert to ones-complement
+        # The positive 30-bit result is taken apart into two 16-bit registers.  Reg_A is the most-significant
+        # part with the sign bit, Reg_B is the least significant, with WW Bit 15 unused and zero (I think)
+        reg_a = ((py_product >> 15) & self.cb.WWBIT1_15)
+        reg_b = (py_product << 1 & self.cb.WWBIT0_15)
+
+        # convert Register A to to ones-complement
+        # Note that Register B always remains Positive
         if py_sign < 0:
-            product = py_product ^ self.cb.pyBIT29_0  # convert to ones-complement
-            ww_sign = self.cb.WWBIT0
+            reg_a = reg_a ^ self.cb.WWBIT0_15  # convert to ones-complement; turn on the sign bit too
             sign_str = '-'
         else:
-            product = py_product
-            ww_sign = 0
             sign_str = '+'
 
-        # The 30-bit result is taken apart into two 16-bit registers.  Reg_A is the most-significant
-        # part with the sign bit, Reg_B is the least significant, with WW Bit 15 unused and zero (I think)
-        reg_b = (product << 1 & self.cb.WWBIT0_15)
-        reg_a = ((product >> 15) & self.cb.WWBIT0_15) | ww_sign
+        #        # convert to ones-complement
+        #        if py_sign < 0:
+        #            product = py_product ^ self.cb.pyBIT29_0  # convert to ones-complement
+        #            ww_sign = self.cb.WWBIT0
+        #            sign_str = '-'
+        #        else:
+        #            product = py_product
+        #            ww_sign = 0
+        #            sign_str = '+'
+        #
+        #        # The 30-bit result is taken apart into two 16-bit registers.  Reg_A is the most-significant
+        #        # part with the sign bit, Reg_B is the least significant, with WW Bit 15 unused and zero (I think)
+        #        reg_b = (product << 1 & self.cb.WWBIT0_15)
+        #        reg_a = ((product >> 15) & self.cb.WWBIT0_15) | ww_sign
 
         if self.cb.TraceALU:
-            print("ww_multiply: tc_a=%o, tc_b=%o, tc_product=%s%o" % (py_a, py_b, sign_str, product))
+            print("ww_multiply: tc_a=%o, tc_b=%o, tc_product=%s%o" % (py_a, py_b, sign_str, py_product))
             print("ww_multiply: a=%s, b=%s, reg_a=%s, reg_b=%s" %
                   (self.wwint_to_str(a), self.wwint_to_str(b), self.wwint_to_str(reg_a), self.wwint_to_str(reg_b)))
 
@@ -296,7 +498,7 @@ class CpuClass:
         """
         if (n is None) | (d is None):
             print("Divide: 'None' Operand, n=", n, " d=", d)
-            return 0, 0, READ_BEFORE_WRITE_ALARM
+            return 0, 0, self.cb.READ_BEFORE_WRITE_ALARM
 
         # if sign bits are different, the result will be negative
         result_negative = (n & self.cb.WWBIT0) ^ (d & self.cb.WWBIT0)
@@ -309,7 +511,10 @@ class CpuClass:
             return 0, 0, self.cb.DIVIDE_ALARM
 
         py_n = n * self.cb.WW_MODULO
-        py_q = py_n // d
+        if d > 0:
+            py_q = py_n // d
+        else:
+            py_q = 0   # Note special case of numerator and denominator both zero returns signed zero
 
         br = py_q & self.cb.WWBIT0_15
         ac = 0
@@ -335,9 +540,9 @@ class CpuClass:
 
         # SI 010(o) seems to clear the Flip Flop Register Set
         # not sure yet how to tell where they are all the time...
-        if address == 0o10:
-            print("Clear FF Registers (currently unimplemented)")
-            return self.cb.UNKNOWN_IO_DEVICE_ALARM
+#        if address == 0o10:
+#            print("Clear FF Registers (currently unimplemented)")
+#            return self.cb.UNKNOWN_IO_DEVICE_ALARM
 
         self.IODeviceClass = None    # forget whatever the last device was
         # scan the table of devices to see if any device matches; if so, run the si initialization for the device
@@ -354,7 +559,7 @@ class CpuClass:
         if self.IODeviceClass is None:
             print("SI: unknown IO address 0o%o" % address)
             return self.cb.UNKNOWN_IO_DEVICE_ALARM
-        ret = self.IODeviceClass.si(address, self._AC)
+        ret = self.IODeviceClass.si(address, self._AC, CoreMem)
         return ret
 
     # caution!  the RC instruction increments the PC by one for a normal operation,
@@ -368,7 +573,7 @@ class CpuClass:
     # will remain unexercised.
     def rc_inst(self, _pc, address, _opcode, _op_description):
         if self.IODeviceClass is None:
-            print("unknown I/O device %oo" % self.IODevice)
+            self.cb.log.warn("RC to unknown I/O device %s" % self.wwint_to_str(self.IODevice))
             return self.cb.UNKNOWN_IO_DEVICE_ALARM
 
         alarm, symbol = self.IODeviceClass.rc(CoreMem.rd(address), self._AC)
@@ -381,13 +586,17 @@ class CpuClass:
     # I/O Read instruction - fetch the contents of IOR into the accumulator
     # The function of this instruction depends entirely on the previous SI.  Read the book. (2M-0277)
     def rd_inst(self, _pc, address, _opcode, _op_description):
+        if self.IODeviceClass is None:
+            self.cb.log.warn("RD to unknown I/O device %s" % self.wwint_to_str(self.IODevice))
+            return self.cb.UNKNOWN_IO_DEVICE_ALARM
+
         (ret, acc) = self.IODeviceClass.rd(CoreMem.rd(address), self._AC)
         self._AC = acc
         return ret
 
     def bi_inst(self, _pc, address, _opcode, _op_description):
         if self.IODeviceClass is None:
-            print("unknown I/O device %oo" % self.IODevice)
+            self.cb.log.warn("BI to unknown I/O device %s" % self.wwint_to_str(self.IODevice))
             return self.cb.UNKNOWN_IO_DEVICE_ALARM
 
         ret = self.IODeviceClass.bi(address, self._AC, CoreMem)
@@ -397,7 +606,7 @@ class CpuClass:
 
     def bo_inst(self, _pc, address, _opcode, _op_description):
         if self.IODeviceClass is None:
-            print("unknown I/O device %oo" % self.IODevice)
+            self.cb.log.warn("BO to unknown I/O device %s" % self.wwint_to_str(self.IODevice))
             return self.cb.UNKNOWN_IO_DEVICE_ALARM
 
         ret = self.IODeviceClass.bo(address, self._AC, CoreMem)
@@ -508,7 +717,7 @@ class CpuClass:
                 # instruction and do the one following.
                 self.PC += 1
                 if not self.cb.TraceQuiet:
-                    print("Check Special Instruction going to addr=0o%o" % self.PC)
+                    print("Check Special Instruction going to addr=%s" % self.wwint_to_str(self.PC))
         return ret
 
     # ca x clear and add #16  10000 48 microsec ca
@@ -636,7 +845,7 @@ class CpuClass:
         alarm = self.cb.NO_ALARM
         if (address == 0) & (self._AC != 0):
             print("EX instruction @0o%o: the instruction book implies @0 should be zero, but it's 0o%o" %
-                  (pc - 1, self._AC))
+                  (self.PC - 1, self._AC))
         return alarm
 
     # dm x  Difference of Magnitudes  #027o   #23d  22 microsec
@@ -666,8 +875,6 @@ class CpuClass:
         self._AC = wwsum
         self._AReg = self.ww_negate(x)  # we just made 'x' Negative above, this makes it positive
         self._SAM = 0
-
-#        self.print_cpu_state(pc, opcode, op_description, address)
         return alarm
 
     # cm x    clear and add magnitude #20d   #024o  10100   48 microsec
@@ -735,6 +942,7 @@ class CpuClass:
             self._AReg = self.ww_negate(operand)
         self._BReg = b
         self._SAM = 0
+        # breakp_dump_sim_state(self)
         return alarm
 
     # dv X divide o11010   71 microsec
@@ -798,7 +1006,6 @@ class CpuClass:
 
         if self.cb.TraceALU:
             print("sd_inst  AC=%oo, Core=%oo" % (self._AC, CoreMem.rd(address)))
-#        self.print_cpu_state(pc, opcode, op_description, address)
         return self.cb.NO_ALARM
 
     # srr n    shift right and roundoff #28 #34o   41 microsec
@@ -879,7 +1086,7 @@ class CpuClass:
     def sr_inst(self, _pc, address, _opcode, _op_description):
         operand = address & 0o37  # the rule book says Mod 32
         hold = False
-        if self.cb.WWBIT6 & address:
+        if self.cb.WWBIT6 & address and not self.isa_1950:  # the original instruction set only did 'round', not 'hold':
             hold = True
         (a, b, alarm) = self.ww_shift(a=self._AC, b=self._BReg, n=operand, shift_dir=self.cb.SHIFT_RIGHT, hold=hold)
 
@@ -887,7 +1094,6 @@ class CpuClass:
         self._BReg = b
         self._SAM = 0
 
-#        self.print_cpu_state(pc, opcode, op_description, address)
         return alarm
 
     # slr n shift left and roundoff  033-0   15+.8n microsec
@@ -920,7 +1126,7 @@ class CpuClass:
     def sl_inst(self, _pc, address, _opcode, _op_description):
         operand = address & 0o37  # the rule book says Mod 32
         hold = False
-        if self.cb.WWBIT6 & address:
+        if self.cb.WWBIT6 & address and not self.isa_1950:  # the original instruction set only did 'round', not 'hold'
             hold = True
         (a, b, alarm) = self.ww_shift(a=self._AC, b=self._BReg, n=operand, shift_dir=self.cb.SHIFT_LEFT, hold=hold)
 
@@ -952,7 +1158,7 @@ class CpuClass:
     # Cycle Left and Clear moves bits from B into A, and clears B
     # Cycle Left and Hold rotates bits; bits that fall off the top of A rotate around to B
     def cy_inst(self, _pc, address, _opcode, _op_description):
-        n = address & 0o37  # the rule book says Mod 32
+        n = address & 0o37  # the rule book says the shift amount is Mod 32
         hold = False
         if self.cb.WWBIT6 & address:
             hold = True
@@ -980,10 +1186,67 @@ class CpuClass:
         self._BReg = reg_b
         return self.cb.NO_ALARM
 
+    # sf x scale factor 11101     30-78 microsec
+    # Multiply the contents of AC and BR by 2 often enough to make the positive
+    # magnitude of the product equal to or greater than 1/2. Leave the final
+    # product in AC and BR. Store the number of multiplications in AR and in
+    # last 11 digit places of register x, the first 5 digits being undisturbed
+    # in register x. If all the digits in BR are zero and AC contains +0, the
+    # instruction sf x leaves AC and BR undisturbed and stores the number 33 [decimal]
+    # times 2**-15 in AR and in the last 11 digit positions of register x. Negative
+    # numbers are complemented in AC before and after the multiplication
+    # (by shifting), hence, ones appear in the digit places made vacant by the
+    # shift. SAM is cleared. The time varies according to the number of 0's
+    # between the binary point and first 1 in magnitude of binary fraction represented
+    # by the number in AC and BR. The minimum time of 30 microseconds
+    # occurs when |AC + BR| >= 1/2, the maximum time of 78 microseconds occurs
+    # when |AC + BR| == O.
+    def sf_inst(self, pc, address, opcode, _op_description):
+        self.cb.log.info("Scale Factor Instruction near PC=%o, opcode=%s" % (pc, opcode))
+
+        a = self._AC
+        b = self._BReg
+        alarm = self.cb.NO_ALARM
+
+        negative = (a & self.cb.WWBIT0)  # sign bit == 1 means Negative
+        if negative:  # sign bit == 1 means Negative, so we turn it positive
+            a = self.ww_negate(a)
+
+        n = 0
+        for n in range(0,32):
+            if a & self.cb.WWBIT1:   # test to see if a is greater-or-equal-to half
+                break
+            (a, b, alarm) = self.ww_shift(a=a, b=b, n=1, shift_dir=self.cb.SHIFT_LEFT, hold=True)
+
+        if negative:
+            a = self.ww_negate(a)
+            # leave the B Register "positive"
+
+        mask = self.cb.WW_ADDR_MASK
+        # I can't[couldn't!] believe sf could do useful work on uninitialized storage
+        # Turns out fb131-97-56 does exactly this; I assume it's because the instruction
+        # leaves its shift-count result in AR as well as memory.  So if you can use the
+        # result in AR, you still need to put the memory copy somewhere
+        m = CoreMem.rd(address, fix_none=False)
+        if m is None:
+            m = 0
+            self.cb.log.warn("SF uses uninitialized memory location @0o%o" % address)
+        CoreMem.wr(address, m & (self.cb.WWBIT0_15 & ~mask) | (mask & n))
+        if self.cb.TraceALU:
+            print("sf_inst  AC=0o%o, n=0o%o, oldCore=0o%o, newCore=0o%o" % (a, n, m, CoreMem.rd(address)))
+
+        self._AC = a
+        self._BReg = b
+        self._AReg = n
+        self._SAM = 0
+        return alarm
+
+
+    # ########### Change Fields Bank Switch Instruction
     # [From M-0277]
     # 1.1.3 (3) Primary Storage
     # Primary storage consists of 6144 registers of magnetic core memory (MCM) with
-    # an access time of 7 mcroseconds, and 32 registers of test storage. There are three
+    # an access time of 7 microseconds, and 32 registers of test storage. There are three
     # shower-stalls a magnetic core memory, two of which contain 17 planes of 1024 cores
     # each. The third and latest shower-stall contains 17 planes of 4096 cores each.
     # The 17 planes represent the 16 binary digits of WWI register and the one digit used
@@ -1043,122 +1306,268 @@ class CpuClass:
         ret1 = self.cb.NO_ALARM
 
         if (pqr & self.cb.WWBIT7) & (pqr & self.cb.WWBIT6):
-            print("cf_inst reads PC and MemGroup both into AC??")
+            self.cb.log.warn("cf_inst reads PC and MemGroup both into AC??")
             ret1 = self.cb.UNIMPLEMENTED_ALARM
 
+        if (pqr & self.cb.WWBIT5) :  # I don't know if this bit is significant, but I suspect it is :-)
+            self.cb.log.warn("cf_inst uses undefined bit WWBIT5")
+
+        old_b = CoreMem.MemGroupB
+        old_a = CoreMem.MemGroupA
         if pqr & self.cb.WWBIT9:
-            old = CoreMem.MemGroupB
             CoreMem.MemGroupB = pqr & 0o07
-            print("CF @%o: Change MemGroup B from %o to %o" % (pc, old, CoreMem.MemGroupB))
+            self.cb.log.info("CF @%o: Change MemGroup B from %o to %o" % (pc, old_b, CoreMem.MemGroupB))
 
         if pqr & self.cb.WWBIT8:
-            old = CoreMem.MemGroupA
             CoreMem.MemGroupA = (pqr >> 3) & 0o07
-            print("CF @%o: Change MemGroup A from %o to %o" % (pc, old, CoreMem.MemGroupA))
+            self.cb.log.info("CF @%o: Change MemGroup A from %o to %o" % (pc, old_a, CoreMem.MemGroupA))
+
+        # Jan 2021 - Added a check to ensure that A and B are not pointing to the same mem banks.
+        # And quote the paragraph in 2M-0277 that says "Thou Shalt Not", without saying what happens
+        if CoreMem.MemGroupA == CoreMem.MemGroupB:
+            self.cb.log.warn("cf_inst set MemGroupA and MemgGroupB both to %d" % CoreMem.MemGroupB)
+            # restore the old memory configuration so the execution trace mechanism can still work
+            self.cb.log.warn("cf_inst restoring MemGroupA to %d, B to %d" % (old_a, old_b))
+            CoreMem.MemGroupB = old_b
+            CoreMem.MemGroupA = old_a
+            # ret1 = self.cb.UNIMPLEMENTED_ALARM
+
+        if CoreMem.MemGroupA > 5 or CoreMem.MemGroupB > 5:
+            self.cb.log.warn("cf_inst set MemGroupA or MemgGroupB to unspec'd bank: B=%d, A=%d" %
+                             (CoreMem.MemGroupB, CoreMem.MemGroupA))
+            ret1 = self.cb.UNIMPLEMENTED_ALARM
 
         if pqr & self.cb.WWBIT7:  # this seems to swap PC+1 and AC;   I think PC is already incremented at this point...
             tmp = self.PC
-            self.PC = self._AC  # implicit branch on bank change
-            self._AC = tmp
+            self.PC = self._AC & 0o3777  # implicit branch on bank change
             self._AReg = tmp
-            print("CF @%o: Branch on bank change to %o" % (pc, self.PC))
+            self.cb.log.info("CF @%o: Branch on bank change to %o" % (pc, self.PC))
 
         if pqr & self.cb.WWBIT6:  # read back bank selects to AC
             readout = CoreMem.MemGroupB | (CoreMem.MemGroupA << 3)
             self._AC = readout
-            print("CF @%o: Read Back Group Registers A|B = %02o" % (pc, self._AC))
+            self.cb.log.info("CF @%o: Read Back Group Registers A|B = %02o" % (pc, self._AC))
         return ret1
 
-    # There's only one completely unused op-code; that one ends up here
+    # There's only one completely unused op-code in 1958; that one ends up here
     def unused1_inst(self, _pc, _address, _opcode, _op_description):
         return self.cb.UNIMPLEMENTED_ALARM
 
-    def ab_inst(self, pc, _address, opcode, _op_description):
-        print("unimplemented Add B Register instruction near PC=%o, opcode=%s" % (pc, opcode))
+    def ab_inst(self, _pc, address, _opcode, _op_description):
+        operand = CoreMem.rd(address, fix_none=False)  # how could ao could do useful work on uninitialized storage
+        if operand is None:
+            return self.cb.READ_BEFORE_WRITE_ALARM
+        (wwsum, self._SAM, alarm) = self.ww_add(self._BReg, operand, 0)
+
+        self._AC = wwsum
+        # this seems to be one of the two cases (ab, ao) where the answer is written back to core?
+        CoreMem.wr(address, wwsum)
+        self._AReg = operand
+        self._SAM = 0
+
+        return alarm
+
+
+    # ########################## 1950 Instruction Set ##################
+    # A few instruction codes triggered different operations in the first ISA in 1950
+    # I/O Read instruction - fetch the contents of IOR into the accumulator
+    # The function of this instruction depends entirely on the previous SI.  Read the book. (2M-0277)
+    def ri_inst(self, _pc, address, opcode, _op_description):
+        self.cb.log.warn("unimplemented opcode %s" % opcode)
         return self.cb.UNIMPLEMENTED_ALARM
 
-    def sf_inst(self, pc, _address, opcode, _op_description):
-        print("unimplemented Scale Factor Instruction near PC=%o, opcode=%s" % (pc, opcode))
+    def rs_inst(self, _pc, address, opcode, _op_description):
+        self.cb.log.warn("unimplemented opcode %s" % opcode)
         return self.cb.UNIMPLEMENTED_ALARM
 
+    def rf_inst(self, _pc, address, opcode, _op_description):
+        self.cb.log.warn("unimplemented opcode %s" % opcode)
+        return self.cb.UNIMPLEMENTED_ALARM
 
-# #Print Core Image
-def dump_core(coremem):
-    print("\n*** Core Dump ***")
-    columns = 8
-    addr = 0
-    while addr < len(coremem):
-        a = 0
-        non_null = 0
-        row = ""
-        while (a < columns) & (addr+a < len(CoreMem)):
-            if coremem[addr+a] is not None:
-                row += "%06o " % coremem[addr+a]
-                non_null += 1
-            else:
-                row += "  --   "
-            a += 1
-        if non_null:
-            print("%04o: %s" % (addr, row))
-        addr += columns
+    def rb_inst(self, _pc, address, opcode, _op_description):
+        self.cb.log.warn("unimplemented opcode %s" % opcode)
+        return self.cb.UNIMPLEMENTED_ALARM
+
+    def qh_inst(self, _pc, address, _opcode, _op_description):
+        self.cm.wr(address, self._AC)
+        ret = self.scope.qh(address, self._AC)
+        return ret
+
+    # qd displays a point on the primary display scope
+    def qd_inst(self, _pc, address, _opcode, _op_description):
+        self.cm.wr(address, self._AC)
+        ret = self.scope.qd_qf(address, self._AC)
+        return ret
+
+    # qd displays a point on the secondary "F" display scope
+    # I think 'F' stands for Filtered, i.e., it's the track-and-scan guess of where the target should be
+    def qf_inst(self, _pc, address, opcode, _op_description):
+        self.cm.wr(address, self._AC)
+        ret = self.scope.qd_qf(address, self._AC, color = (1.0, 1.0, 0))  # non-green color for QF Scope
+        return ret
 
 
+
+# At the end of the simulation, we may want to dump out the state of core memory
+def write_core_dump(cb, core_dump_file_name, cm):
+    core_all_banks = []
+    for bank in range(0, cm.NBANKS):
+        core_all_banks += cm._coremem[bank]
+    corelist = [core_all_banks]
+
+    offset = 0
+    byte_stream = False
+    jump_to = None
+    string_list = ''
+    ww_tapeid = 'dump'
+    ww_filename = 'dump'
+    wwinfra.write_core(cb, corelist, offset, byte_stream, ww_filename, ww_tapeid,
+               jump_to, core_dump_file_name, string_list)
+
+
+def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
+    for args in dbwgt_list:
+        # first arg is a label or address, second optional arg is a number to use for each increment step
+        cpu = cb.cpu
+        dbwgt = cb.dbwgt
+        label = ''
+        address = 0
+        increment = 1
+        if args[0][0].isdigit():
+            address = int(args[0], 8)
+            if address in cpu.SymTab:
+                label = cpu.SymTab[address][0]
+        else:
+            label = args[0]
+            address = -1
+            for addr in cpu.SymTab:
+                if label == cpu.SymTab[addr][0]:
+                    address = addr
+                    break
+            if address == -1:
+                cb.log.warn("Debug Widget: unknown label %s" % label)
+        if len(args) == 2:   # if there's a second arg, it would be the amount of increment in octal
+            try:
+                increment = int(args[1], 8)
+            except ValueError:
+                print("can't parse Debug Widget increment arg %s in %s" % (args[1], args[0]))
+        if address >= 0:
+            dbwgt.add_widget(address, label, increment)
 
 #
 # ############# Main #############
+
+def poll_sim_io(cpu, cb):
+    if cpu.scope.crt is not None:
+        exit_alarm = cpu.scope.crt.ww_scope_update(CoreMem, cb)
+        if exit_alarm != cb.NO_ALARM:
+            return exit_alarm
+
+        wgt = cb.dbwgt
+        # check the keyboard in the CRT window for a key press
+        key = cpu.scope.crt.win.checkKey()
+        if key != '':
+            print("key: %s, 0x%x" % (key, ord(key[0])))
+        if key == "Up":
+            wgt.select_next_widget(direction_up = True)
+        if key == "Down":
+            wgt.select_next_widget(direction_up = False)
+        if key == "Right":
+            wgt.increment_addr_location(direction_up = True)
+        if key == "Left":
+            wgt.increment_addr_location(direction_up = False)
+
+    return cb.NO_ALARM
+
+
 def main():
-    global CoreMem   # should have put this in the CPU Class...
+    global CoreMem, CommentTab   # should have put this in the CPU Class...
     parser = argparse.ArgumentParser(description='Run a Whirlwind Simulation.')
     parser.add_argument("corefile", help="file name of simulation core file")
     parser.add_argument("-t", "--TracePC", help="Trace PC for each instruction", action="store_true")
     parser.add_argument("-a", "--TraceALU", help="Trace ALU for each instruction", action="store_true")
+    parser.add_argument("-f", "--FlowGraph", help="Collect data to make a flow graph", action="store_true")
     parser.add_argument("-j", "--JumpTo", type=str, help="Sim Start Address in octal")
     parser.add_argument("-q", "--Quiet", help="Suppress run-time message", action="store_true")
-    parser.add_argument("-c", "--CycleLimit", help="Specify how long the sim may run", type=int)
+    parser.add_argument("-D", "--DecimalAddresses", help="Display trace information in decimal (default is octal)",
+                        action="store_true")
+    parser.add_argument("-c", "--CycleLimit", help="Specify how many instructions to run (zero->'forever')", type=int)
+    parser.add_argument("--CycleDelayTime", help="Specify how many msec delay to insert after each instruction", type=int)
+    parser.add_argument("-r", "--Radar", help="Incorporate Radar Data Source", action="store_true")
+    parser.add_argument("--NoToggleSwitchWarning", help="Suppress warning if WW code writes a read-only toggle switch",
+                        action="store_true")
+    parser.add_argument("--LongTraceFormat", help="print all the cpu registers in TracePC",
+                        action="store_true")
+    parser.add_argument("--TraceCoreLocation", help="Trace references to Core Memory Location <n> octal", type=str)
     parser.add_argument("--PETRAfile", type=str,
-                        help="File name for photoelectric papertape reader A input file")
+                        help="File name for photoelectric paper tape reader A input file")
     parser.add_argument("--PETRBfile", type=str,
-                        help="File name for photoelectric papertape reader B input file")
+                        help="File name for photoelectric paper tape reader B input file")
     parser.add_argument("--NoAlarmStop", help="Don't stop on alarms", action="store_true")
     parser.add_argument("-n", "--NoCloseOnStop", help="Don't close the display on halt", action="store_true")
     parser.add_argument("--NoZeroOneTSR",
                         help="Don't automatically return 0 and 1 for locations 0 and 1", action="store_true")
+    parser.add_argument("--SynchronousVideo",
+                        help="Display pixels immediately; Disable video caching buffer ", action="store_true")
     parser.add_argument("--CrtFadeDelay",
                         help="Configure Phosphor fade delay (default=0)", type=int)
+    parser.add_argument("--DumpCoreToFile",
+                        help="Dump the contents of core into the named file at end of run", type=str)
+    parser.add_argument("--RestoreCoreFromFile",
+                        help="Restore contents of memory from a core dump file", type=str)
+    parser.add_argument("--DrumStateFile",
+                        help="File to store Persistent state for WW Drum", type=str)
+    parser.add_argument("--MuseumMode",
+                        help="Cycle through states endlessly for museum display", action="store_true")
 
     args = parser.parse_args()
 
     # instantiate the class full of constants
     cb = wwinfra.ConstWWbitClass()
-    cpu = CpuClass(cb)
-    cpu.cpu_switches = wwinfra.WWSwitchClass()
     CoreMem = wwinfra.CorememClass(cb)
+    cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
+    cb.cpu = cpu
+    cpu.cpu_switches = wwinfra.WWSwitchClass()
     cb.log = wwinfra.LogClass(sys.argv[0], quiet=args.Quiet)
+    cb.dbwgt = wwinfra.ScreenDebugWidgetClass(CoreMem)
 
-    # flexo = wwinfra.flexo_class()
-    # tty = tty_class()
 
     cycle_limit = 400000  # default limit for number of sim cycles to run
-    crt_fade_delay = 500
+    # crt_fade_delay = 500
 
-    print("corefile: %s" % args.corefile)
     if args.TracePC:
-        cb.TracePC = True
+        cb.TracePC = -1
+    cb.LongTraceFormat = args.LongTraceFormat
     if args.TraceALU:
         cb.TraceALU = True
+    if args.TraceCoreLocation:
+        cb.TraceCoreLocation = int(args.TraceCoreLocation, 8)
+    if args.FlowGraph:
+#        cb.FlowGraph = True
+        cb.tracelog = ww_flow_graph.init_log_from_sim()
+    cb.decimal_addresses = args.DecimalAddresses  # if set, trace output is expressed in Decimal to suit 1950's chic
+    cb.no_toggle_switch_warn = args.NoToggleSwitchWarning
+
+    CycleDelayTime = 0
+    if args.CycleDelayTime:
+        CycleDelayTime = int(args.CycleDelayTime)
+
     if args.Quiet:
         cb.TraceQuiet = True
         print("TraceQuiet turned on")
     if args.NoZeroOneTSR:
         cb.NoZeroOneTSR = True
     else:
-        print("Automatically return 0 and 1 from locations 0 and 1")
-    if args.CycleLimit:
+        cb.log.info("Automatically return 0 and 1 from locations 0 and 1")
+    if args.CycleLimit is not None:
         cycle_limit = args.CycleLimit
         print("CycleLimit set to %d" % cycle_limit)
     if args.CrtFadeDelay:
         cb.crt_fade_delay_param = args.CrtFadeDelay
         print("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
+    core_dump_file_name = None
+    if args.DumpCoreToFile:
+        core_dump_file_name = args.DumpCoreToFile
 
     # WW programs may read paper tape.  If the simulator is invoked specifically with a
     # name for the file containing paper tape bytes, use it.  If not, try taking the name
@@ -1172,9 +1581,41 @@ def main():
     else:
         cb.PETRBfilename = re.sub("\\..core$", "", args.corefile) + ".petrB"
 
-    (cpu.SymTab, JumpTo, WWfile, WWtapeID) = CoreMem.read_core(args.corefile, cpu.cpu_switches, cb)
+    if args.RestoreCoreFromFile:
+        (a, b, c, d, dbwgt) = CoreMem.read_core(args.RestoreCoreFromFile, cpu, cb)
+    if args.DrumStateFile:
+        cpu.drum.restore_drum_state(args.DrumStateFile)
+
+    if args.MuseumMode:
+        cb.museum_mode = mm.MuseumModeClass()
+        ns = cb.museum_mode.next_state(cb, cpu, start=True)
+        cycle_limit = ns.cycle_limit
+        CycleDelayTime = ns.instruction_cycle_delay
+        cb.crt_fade_delay_param = ns.crt_fade_delay
+
+    (cpu.SymTab, JumpTo, WWfile, WWtapeID, dbwgt_list) = \
+        CoreMem.read_core(args.corefile, cpu, cb)
+    cb.CoreFileName = args.corefile
+    cpu.set_isa(CoreMem.metadata["isa"])
+    if cpu.isa_1950 == False and args.Radar:
+        cb.log.fatal("Radar device can only be used with 1950 ISA")
+    if len(dbwgt_list):
+        parse_and_save_screen_debug_widgets(cb, dbwgt_list)
+
+    if args.Radar:
+                                        # heading is given as degrees from North, counting up clockwise
+                                        # name   start x/y   heading  mph  auto-click-time Target-or-Interceptor
+        target_list = [radar_class.AircraftClass('A', 30.0, -36.0, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
+                       radar_class.AircraftClass('B', 100.0, -10.0, 270.0, 250.0, 7, 'I')]  # was 6 revolutions
+        radar = radar_class.RadarClass(target_list, cb, cpu)
+        # register a callback for anything that accesses Register 0o27 (that's the Light Gun)
+        CoreMem.add_tsr_callback(cb, 0o27, radar.mouse_check_callback)
+        cb.radar = radar   # put a link to the radar class in cb so we can use it to decide what kind of axis to draw
+    else:
+        radar = None
 
     print("Switch CheckAlarmSpecial=%o" % cpu.cpu_switches.read_switch("CheckAlarmSpecial"))
+    CoreMem.reset_ff(cpu)   # Reset any Flip Flop Registers specified in the Core file
     # set the CPU start address
     if JumpTo is None:
         cpu.PC = 0o40
@@ -1184,23 +1625,77 @@ def main():
         cpu.PC = int(args.JumpTo, 8)
     print("start at 0o%o" % cpu.PC)
 
+    start_time = time.time()
+    #  Here Commences The Main Loop
     # simulate each cycle one by one
-    i = 0   # I don't see why I need to zero this, but if I don't, PyCharm objects to the cycle limit test below
-    for i in range(1, cycle_limit):
+    sim_cycle = 0
+    while True:
+        # ################### The Simulation Starts Here ###################
         alarm = cpu.run_cycle()
-        if cpu.scope.crt is not None:
-            if i % 500 == 0:
-                cpu.scope.crt.ww_scope_update()
+        # ################### The Rest is Just Overhead  ###################
+        if (sim_cycle % 500 == 0) or args.SynchronousVideo or CycleDelayTime:
+            exit_alarm = poll_sim_io(cpu, cb)
+            if exit_alarm != cb.NO_ALARM:
+                alarm = exit_alarm
+
+        if CycleDelayTime:
+            time.sleep(CycleDelayTime/1000)  # Sleep() takes time in fractional seconds
+
+        if args.Radar and (sim_cycle % 30 == 0):
+            # the radar should return something every 20 msec, about every thousand instructions.
+            # This is **like totally forever**, and I'm not taking it any more!
+            # So I'll snoop the radar mailbox.  When the code picks up a new value, it sets the mailbox
+            # to -1.  So I'll check *much* more often, but not put something into the mailbox until
+            # the last code has been consumed.
+            last_code = CoreMem.rd(0o34)
+            if last_code == 0o177777:
+                (rcode, reading_name) = radar.get_next_radar()
+                CoreMem.wr(0o34, rcode)
+                if rcode != 0 and (rcode & 0o40000 == 0):
+                    print("%s: radar-code=0o%o" % (reading_name, rcode))
+                # if cpu.scope.crt is not None:
+                #     (exit_alarm, gun_reading) = cpu.scope.rd(None, None)
+                #     if exit_alarm != cb.NO_ALARM:
+                #         alarm = exit_alarm
+                #     if gun_reading != 0:
+                #         CoreMem.wr(0o27, gun_reading)
+                if radar.exit_alarm != cb.NO_ALARM:
+                    alarm = radar.exit_alarm
+
+
         if alarm != cb.NO_ALARM:
-            print("Alarm %d - %s at PC=0o%o" % (alarm, cb.AlarmMessage[alarm], cpu.PC - 1))
+            print("Alarm '%s' (%d) at PC=0o%o (0d%d)" % (cb.AlarmMessage[alarm], alarm, cpu.PC - 1, cpu.PC - 1))
             # the normal case is to stop on an alarm; if the command line flag says not to, we'll try to keep going
             if not args.NoAlarmStop:
                 break
+        sim_cycle += 1
+        if cycle_limit and sim_cycle == cycle_limit:
+            if not cb.museum_mode:  # this is the normal case, not configured for Museum Mode forever-cycles
+                cb.log.warn("Cycle Count Exceeded")
+                break
+            else:  # else continue the simulation with the next set of parameters
+                ns = cb.museum_mode.next_state(cb, cpu)
+                sim_cycle = 0
+                cycle_limit = ns.cycle_limit
+                CycleDelayTime = ns.instruction_cycle_delay
+                cb.crt_fade_delay_param = ns.crt_fade_delay
 
-    if i == (cycle_limit - 1):
-        print("\nCycle Count Exceeded")
+    # Here Ends The Main Loop
 
-    print("Total cycles = %d, last PC=0o%o" % (i, cpu.PC))
+    end_time = time.time()
+    wall_clock_time = end_time - start_time  # time in units of floating point seconds
+    if wall_clock_time > 2.0 and sim_cycle > 10:  # don't do the timing calculation if the run was really short
+        print("Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec" %
+                (sim_cycle, cpu.PC, wall_clock_time, 1000000.0 * float(wall_clock_time) / float(sim_cycle)))
+        if args.Radar:
+            print("    elapsed radar time = %4.1f minutes (%4.1f revolutions)" %
+                  (radar.elapsed_time / 60.0, radar.antenna_revolutions))
+    if cb.tracelog:
+        title = "%s\\nWWfile: %s" % (cb.CoreFileName, CoreMem.metadata['filename_from_core'])
+        ww_flow_graph.finish_flow_graph_from_sim(cb, CoreMem, cpu, title, "flow.gv")
+
+    if core_dump_file_name is not None:
+        write_core_dump(cb, core_dump_file_name, CoreMem)
 
     for d in cpu.IODeviceList:
         if d.name == "Flexowriter":
@@ -1220,8 +1715,13 @@ def main():
         if d.name == "DisplayScope":
             if d.crt is not None:
                 if args.NoCloseOnStop:
-                    time.sleep(60)  # leave a minute to see what was on the display in case of a trap
+                    d.crt.get_mouse_blocking()  # wait to see what was on the display in case of a trap
                 d.crt.close_display()
 
+        if d.name == "Drum":  # d points to a DrumClass object
+            if args.DrumStateFile:
+                d.save_drum_state(args.DrumStateFile)
 
-main()
+
+if __name__ == "__main__":
+    main()

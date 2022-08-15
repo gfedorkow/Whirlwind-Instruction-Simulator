@@ -1,11 +1,26 @@
 # Whirlwind I/O Device Simulation
 # This file contains classes to simulate various Whirlwind I/O devices
-# Function is mostly based on Manual 2M-0277
+# Function is mostly based on Whirlwind Manual 2M-0277
 # Guy Fedorkow, July 2018
 
+# Copyright 2020 Guy C. Fedorkow
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+# associated documentation files (the "Software"), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge, publish, distribute,
+# sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#   The above copyright notice and this permission notice shall be included in all copies or
+# substantial portions of the Software.
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+# BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
 import wwinfra
-import sys
 import re
+
 
 # this class is a template for new I/O devices
 #  Add a new device to this file, plus put its name in IODeviceList in wwsim.py,
@@ -15,7 +30,7 @@ class DummyIoClass:
         self.cb = cb
 
         self.DUMMY_BASE_ADDRESS = 0o10000  # starting address of Drum device(s)
-        self.DUMMY_ADDR_MASK = ~(0o001)  # mask out the sub-addresses
+        self.DUMMY_ADDR_MASK = ~0o001  # mask out the sub-addresses
         self.name = "Dummy"
 
     # each device needs to identify its own unit number.
@@ -25,8 +40,33 @@ class DummyIoClass:
         else:
             return None
 
-    def si(self, device, acc):
+    def si(self, device, acc, _cm):
         print("SI: configured device ; decode more params")
+        return self.cb.NO_ALARM
+
+    def rc(self, unused, acc):  # "record", i.e. output instruction to device
+        print("unimplemented %s Record" % self.name)
+        return self.cb.UNIMPLEMENTED_ALARM, 0
+
+
+
+class CameraClass:
+    def __init__(self, cb):
+        self.cb = cb
+
+        self.CAMERA_INDEX_BASE_ADDRESS = 0o04  # starting address of Drum device(s)
+        self.CAMERA_INDEX_ADDR_MASK = ~0o001  # mask out the sub-addresses
+        self.name = "Camera Index Control"
+
+    # each device needs to identify its own unit number.
+    def is_this_for_me(self, io_address):
+        if (io_address & self.CAMERA_INDEX_ADDR_MASK) == self.CAMERA_INDEX_BASE_ADDRESS:
+            return self
+        else:
+            return None
+
+    def si(self, device, acc, _cm):
+        print("SI: Index Camera to next frame")
         return self.cb.NO_ALARM
 
     def rc(self, unused, acc):  # "record", i.e. output instruction to device
@@ -44,7 +84,7 @@ class DummyIoClass:
 # to run for from 30 to 45 seconds. If PETR is reselected within this time, the
 # reader is at full speed in 2 or 3 milliseconds. PETR is a free-running unit;
 # that is, once selected, it continues to run until deselected by an si instruction.
-## 3.3.5 si Addresses for the Photoelectric Reader
+# # 3.3.5 si Addresses for the Photoelectric Reader
 #                      PETR
 # read line-by-line:
 #    si 210 (o)           A
@@ -80,14 +120,14 @@ class PhotoElectricTapeReaderClass:
         else:
             return None
 
-    def si(self, device, acc):  # the device's mode of operation comes hidden in the Device field
-        if (device & 0o1):
+    def si(self, device, acc, _cm):  # the device's mode of operation comes hidden in the Device field
+        if device & 0o1:
             self.PETR_device = 'B'
             filename = self.cb.PETRBfilename
         else:
             self.PETR_device = 'A'
             filename = self.cb.PETRAfilename
-        if (device & 0o2):
+        if device & 0o2:
             self.PETR_mode = 'Word'
         else:
             self.PETR_mode = 'Char'
@@ -121,7 +161,7 @@ class PhotoElectricTapeReaderClass:
             print("RD: PhotoElectricTapeReader %s read character 0o%o " % (self.PETR_device, ret))
             return self.cb.NO_ALARM, ret
         print("unimplemented rd: PhotoElectric Read from file %s, mode %s" % (self.PETR_device, self.PETR_mode))
-        return (self.cb.UNIMPLEMENTED_ALARM, 0)
+        return self.cb.UNIMPLEMENTED_ALARM, 0
 
     def bi(self, address, acc, cm):  # "block transfer in"
         """ {2) Reading Word-by-Word by Block-Transfer Instruction
@@ -142,7 +182,6 @@ class PhotoElectricTapeReaderClass:
 #            cm.wr(m, w)  # write zero
 #        return self.cb.NO_ALARM
 
-
     # Once a WW program has started, it may go back to read the remaining characters on the paper tape.
     # This routine inhales the rest of the tape from a file, storing it in an array to be doled out
     # later to individual RD instructions.
@@ -159,8 +198,8 @@ class PhotoElectricTapeReaderClass:
 
         tape_image = []
 
-        for l in filedesc:
-            line = l.rstrip(' \t\n\r')  # strip trailing blanks and newline
+        for ln in filedesc:
+            line = ln.rstrip(' \t\n\r')  # strip trailing blanks and newline
             LineNumber += 1
             if len(line) == 0:  # skip blank lines
                 continue
@@ -214,7 +253,7 @@ class CoreClearIoClass:
         else:
             return None
 
-    def si(self, device, acc):  # the drum's mode of operation comes hidden in the Device field
+    def si(self, device, acc, _cm):
         print("SI: 'Clear Memory' device initialized ")
         return self.cb.NO_ALARM
 
@@ -238,6 +277,39 @@ class CoreClearIoClass:
             return self.cb.QUIT_ALARM
         for m in range(address, (address + acc)):
             cm.wr(m, 0)  # write zero
+        return self.cb.NO_ALARM
+
+
+class FFResetIoClass:
+    def __init__(self, cb):
+        self.cb = cb
+        self.name = "FlipFlopRegisterReset"
+        self.cm = None
+
+    # each device needs to identify its own unit number.
+    def is_this_for_me(self, io_address):
+        if (io_address & self.cb.FFCLEAR_ADDR_MASK) == self.cb.FFCLEAR_BASE_ADDRESS:
+            return self
+        else:
+            return None
+
+    def si(self, device, acc, cm):
+        self.cb.log.info("SI: Select Flip-Flop Storage Reset ")
+        self.cm = cm
+        self.cm.reset_ff(self.cb.cpu)  # it seems that just 'selecting' the FF Register Reset makes it happen
+        return self.cb.NO_ALARM
+
+    def rc(self, unused, acc):  # "record"   Not sure this case can ever happen
+        self.cb.log.info("RC: Activate Flip-Flop Storage Reset ")
+        self.cm.reset_ff(self.cb.cpu)
+        return self.cb.NO_ALARM, 0
+
+    def rd(self, code, acc):  # "read"
+        print("unimplemented rd: FF Reset")
+        return 0
+
+    def bi(self, address, acc, cm):  # "block transfer in"
+        print("unimplemented rd: FF Reset")
         return self.cb.NO_ALARM
 
 
@@ -288,7 +360,7 @@ class tty_class:
         else:
             return None
 
-    def si(self, _device, _acc):   # the tty device needs no further initialization
+    def si(self, _device, _acc, _cm):   # the tty device needs no further initialization
         return self.cb.NO_ALARM
 
     def rc(self, _unused, acc):  # "record", i.e. output instruction to tty
@@ -311,11 +383,13 @@ class DrumClass:
         self.wrap_address = None
         self.record_mode = None
         self.buffer_drum_field = 'A'  # alternate between A and B
+        self.dirty = False   # keep a bit to say if the contents of the drum might have been changed
+        self.metadata = {}
 
         # drum capacity
         self.DRUM_NUM_GROUPS = 12         # 12 tracks
         self.DRUM_NUM_WORDS = 2048        # words per track
-        self._drum_content = [[0] * self.DRUM_NUM_WORDS for _i in range(self.DRUM_NUM_GROUPS)]
+        self._drum_content = [[None] * self.DRUM_NUM_WORDS for _i in range(self.DRUM_NUM_GROUPS)]
 
         # drum address decode
         self.DRUM_SI_WORD_ADDRESS = 0o001
@@ -336,22 +410,22 @@ class DrumClass:
             return None
 
     # 2M-0277, pg 25/26
-    # The drun address to be selected is determined by the si instruction and
+    # The drum address to be selected is determined by the si instruction and
     # by any necessary portions of the contents of AC at the time the si is executed.
-    # The si instruction may call for a new goup number, a new initial storage
-    # address, neither, or both. When a new goup number is needed, it is taken
-    # from digits l - 4 of AC. When a new 1nitial storage address is needed, it is
-    # taken from digts 5 - 15 of AC. Either the group selectd on the drum can remain
-    # selected until an si instruction specifically calls for a change of goup
+    # The si instruction may call for a new group number, a new initial storage
+    # address, neither, or both. When a new group number is needed, it is taken
+    # from digits l - 4 of AC. When a new initial storage address is needed, it is
+    # taken from digits 5 - 15 of AC. Either the group selected on the drum can remain
+    # selected until an si instruction specifically calls for a change of group
     # or, by adding 1000 to the original auxiliary drum si, a block transfer is permitted
-    # to run off the end of one drum goup to the beginning of the next drum
-    # group. The next storage address selected wlll be one greater than the atorge
+    # to run off the end of one drum group to the beginning of the next drum
+    # group. The next storage address selected will be one greater than the storage
     # address most recently referred to, unless an si instruction specifically calls
     # for a new initial storage address
     #
-    # we must note that the doc seems ambiguous about how to tell if it's Buffer or Aux drum
+    # guy adds: we must note that the doc seems ambiguous about how to tell if it's Buffer or Aux drum
     # # sheesh; Now I don't see what's ambiguous, as of June 6, 2019 !!!  RATS!!!
-    def si(self, device, acc):  # the drum's mode of operation is in the Device field, with address in the acc
+    def si(self, device, acc, _cm):  # the drum's mode of operation is in the Device field, with address in the acc
         if device == self.cb.DRUM_SWITCH_FIELD_ADDRESS:
             old_field = self.buffer_drum_field
             if old_field == 'A':
@@ -359,7 +433,7 @@ class DrumClass:
             else:
                 new_field = 'A'
             self.buffer_drum_field = new_field
-            print('SI: switch Buffer Drum Field %s to %s' % (old_field, new_field))
+            self.cb.log.fatal("haven't implemented SI: switch Buffer Drum Field %s to %s" % (old_field, new_field))
             return self.cb.NO_ALARM
 
         # the 'normal' drum addressing comes in here...
@@ -380,19 +454,35 @@ class DrumClass:
 #            self.drum_unit = 1
 #        else:
 #            print "Ambiguous Drum Unit Number: acc = 0o%o, Device = 0o%o" % (acc, device)
-        print("SI: configured %s drum; Group (track)=0o%o, WordAddress=0o%oo" %
+        print("SI: configured %s drum; Group (track)=0o%o, DrumWordAddress=0o%o" %
               (self.drum_name, self.group_address, self.word_address))
         return self.cb.NO_ALARM
 
     def rc(self, _unused, acc):  # "record", i.e. output instruction to drum
-        print("RC: write-to-%s-drum; Field=%s, Word=0o%o, Group (track)=0o%o, WordAddress=0o%o" %
+        cb = self.cb
+        cb.log.info("RC: write-to-%s-drum; Field=%s, Word=0o%o, Group (track)=0o%o, DrumWordAddress=0o%o" %
               (self.drum_name, self.buffer_drum_field, acc, self.group_address, self.word_address))
         self._drum_content[self.group_address][self.word_address] = acc
+        self.dirty = True
         self.word_address += 1
         if self.word_address > self.DRUM_NUM_WORDS:
-            print("Haven't implemented Drum Address Wrap")
+            cb.log.fatal("Haven't implemented Drum Address Wrap")
+            return cb.UNIMPLEMENTED_ALARM, 0
+        return cb.NO_ALARM, 0
+
+    def rd(self, _unused, acc):  # read one byte from the drum
+        cb = self.cb
+        cb.log.info("RD: read-from-%s-drum; Field=%s, Word=0o%o, Group (track)=0o%o, DrumWordAddress=0o%o" %
+              (self.drum_name, self.buffer_drum_field, acc, self.group_address, self.word_address))
+        val = self._drum_content[self.group_address][self.word_address]
+        self.word_address += 1
+        if self.word_address > self.DRUM_NUM_WORDS:
+            cb.log.fatal("Haven't implemented Drum Address Wrap")
             return self.cb.UNIMPLEMENTED_ALARM, 0
-        return self.cb.NO_ALARM, 0
+        if val is None:
+            cb.log.warn("Read None from Drum Group (track)=0o%o, DrumWordAddress=0o%o" %
+                        (self.group_address, self.word_address))
+        return cb.NO_ALARM, val
 
     def bi(self, address, acc, cm):  # "block transfer in"
         """ perform a block transfer input instruction
@@ -400,39 +490,75 @@ class DrumClass:
             acc: contents of accumulator (the word count)
             cm: core memory instance
         """
-        print("block transfer Read from %s Drum: Field=%s, start address=0o%o, length=0o%o" %
-              (self.drum_name, self.buffer_drum_field, address, acc))
-        if address + acc > self.cb.WW_ADDR_MASK:
-            print("block-transfer-in Drum address out of range")
+        # The Book does not say that the word-count is masked to 11 bits, but it sure looks like it
+        # should be.
+        cb = self.cb
+        bi_len = acc & self.cb.WW_ADDR_MASK
+        cb.log.info("BI: block transfer Read from %s Drum: Field=%s, DrumGroup=0o%o, DrumAddr=0o%o, start at CoreAddr=0o%o, length=0o%o" %
+              (self.drum_name, self.buffer_drum_field, self.group_address, self.word_address, address, bi_len))
+        if address + bi_len > self.cb.WW_ADDR_MASK:
+            cb.log.warn("block-transfer-in Drum address out of range")
             return self.cb.QUIT_ALARM
-        for m in range(address, (address + acc)):
+        for m in range(address, (address + bi_len)):
             wrd = self._drum_content[self.group_address][self.word_address]  # read the word from drum
             self.word_address += 1
             if self.word_address > self.DRUM_NUM_WORDS:
-                print("Haven't implemented Drum Address Wrap")
+                cb.log.warn("Haven't implemented Drum Address Wrap")
                 return self.cb.UNIMPLEMENTED_ALARM, 0
             cm.wr(m, wrd)  # write the word to mem
         return self.cb.NO_ALARM
 
     def bo(self, address, acc, cm):  # "block transfer out"
-        """ perform a block transfer output instruction
+        """ perform a block transfer output instruction to write stuff to drum
             address: starting address for block
             acc: contents of accumulator (the word count)
             cm: core memory instance
         """
-        print("block transfer Write to %s Drum: Field=%s, start address=0o%o, length=0o%o" %
-              (self.drum_name, self.buffer_drum_field, address, acc))
-        if address + acc > self.cb.WW_ADDR_MASK:
-            print("block-transfer-out Drum address out of range")
+        cb = self.cb
+        bo_len = acc & self.cb.WW_ADDR_MASK
+        print("BO: block transfer Write to %s Drum: Field=%s, DrumGroup=0o%o, DrumAddr=0o%o, start at CoreAddr=0o%o, length=0o%o" %
+              (self.drum_name, self.buffer_drum_field, self.group_address, self.word_address, address, bo_len))
+        if address + bo_len > self.cb.WW_ADDR_MASK:
+            cb.log.warn("block-transfer-out Drum address out of range")
             return self.cb.QUIT_ALARM
-        for m in range(address, (address + acc)):
+        for m in range(address, (address + bo_len)):
             wrd = cm.rd(m)  # read the word from mem
             self._drum_content[self.group_address][self.word_address] = wrd  # write the word to drum
+            self.dirty = True   # we changed the state of the drum; needs to be saved on exit
             self.word_address += 1
             if self.word_address > self.DRUM_NUM_WORDS:
                 print("Haven't implemented Drum Address Wrap")
                 return self.cb.UNIMPLEMENTED_ALARM, 0
         return self.cb.NO_ALARM
+
+    def save_drum_state(self, drum_state_file_name):
+        cb = self.cb
+        if self.dirty is False:
+            cb.log.info("Drum State unchanged; state not saved")
+            return
+
+        cb.log.info("Saving Drum State in file %s" % drum_state_file_name)
+        drumlist = self._drum_content
+        offset = 0
+        byte_stream = False
+        jump_to = None
+        string_list = ''
+        ww_tapeid = 'drum'
+        ww_filename = 'drum'
+        wwinfra.write_core(cb, drumlist, offset, byte_stream, ww_filename, ww_tapeid,
+                   jump_to, drum_state_file_name, string_list)
+
+    def restore_drum_state(self, drum_state_file_name):
+        cb = self.cb
+        cb.log.info("Restoring Drum State from file %s" % drum_state_file_name)
+        return wwinfra.read_core(self, drum_state_file_name, None, cb)
+
+    # the wr method is used only to allow the drum state to be restored using the
+    # generic memory "core" reader
+    def wr(self, drum_address, value, track=0, force=False):
+        cb = self.cb
+        # cb.log.info("write a word=0o%o into the drum store, track=0o%o, drum_addr=0o%o" % (value, track, drum_address))
+        self._drum_content[track][drum_address] = value
 
 
 # The Oscilloscope Display contains a character generator that can draw arbitrary seven segment
@@ -526,7 +652,7 @@ class DisplayScopeClass:
         self.name = "DisplayScope"
         self.scope_select = None  # identifies which of the zillion oscilloscopes to brighten for the next op
         self.scope_mode = None    # Points, Vectors or Characters
-        self.scope_expand = False
+        self.scope_expand = 1.0   # by default, characters are not "expanded" (See 2M-0277 pg 63)
         self.scope_vertical = None   # scope coords are stored here as Pythonic numbers from -1023 to +1023
         self.scope_horizontal = None
 
@@ -552,8 +678,10 @@ class DisplayScopeClass:
             extra_deflection_bits = ac & 0o37
             ret = ac >> 5
 
-        if extra_deflection_bits != 0:
-            print("Warning:  bits lost in scope deflection; AC=0o%o" % ac)
+        # I checked "underflow" in the graphics value, but I don't think WW programmers cared.  It underflows
+        #  All The Time...
+        # if extra_deflection_bits != 0:
+        #     print("Warning:  bits lost in scope deflection; AC=0o%o" % ac)
         return ret
 
     # ...vector starting at the point whose coordinates have just been
@@ -568,7 +696,7 @@ class DisplayScopeClass:
         ww_yd = (ww_delta >> 2) & 0o77
         if ww_yd & 0o40:  # the short coordinate form is used in vector generation, and is a six bit signed number
             ww_yd = -(ww_yd ^ 0o37)  # so we flip the sign if negative...
-        return(ww_xd, ww_yd)
+        return ww_xd, ww_yd
 
     # each device needs to identify its own unit number.
     def is_this_for_me(self, io_address):
@@ -580,13 +708,19 @@ class DisplayScopeClass:
         else:
             return None
 
-    def si(self, io_address, acc):
+    def si(self, io_address, acc, _cm):
         if self.crt is None:  # first time there's a CRT SI instruction, we'll init the display modules
             self.crt = wwinfra.XwinCrt(self.cb)
+            self.cb.dbwgt.add_scope(self.crt.win)  # tell the debug widget that there's a display available
 
         if (io_address & self.cb.DISPLAY_EXPAND_ADDR_MASK) == self.cb.DISPLAY_EXPAND_BASE_ADDRESS:
-            self.scope_expand = ((io_address & ~self.cb.DISPLAY_EXPAND_ADDR_MASK) == 0)  # o14=Expand, o15=Unexpand
-            print("DisplayScope SI: Display Expand set to %o" % self.scope_expand)
+            # See 2M-0277 Page 63; not clear exactly how this Expand thing works!
+            expand_op = io_address & self.cb.DISPLAY_EXPAND_ADDR_MASK  # o14=Expand, o15=UnExpand
+            print("DisplayScope SI: Display Expand Operand set to 0o%o; Expand=0o14, UnExpand=0o15" % expand_op)
+            if expand_op == 0o14:
+                self.scope_expand = 2.0
+            else:
+                self.scope_expand = 1.0
             return self.cb.NO_ALARM
 
         if (io_address & self.cb.DISPLAY_POINTS_ADDR_MASK) == self.cb.DISPLAY_POINTS_BASE_ADDRESS:
@@ -616,11 +750,11 @@ class DisplayScopeClass:
         self.scope_horizontal = self.convert_scope_coord(acc)
         if self.scope_mode == self.DISPLAY_MODE_CHARACTERS:
             # add each new character to a Pending list; draw them when the program asks for light gun input
-            bits = operand >> 8
+            mask = (operand >> 8) & 0o177  # it's a seven-bit quantity to turn on character segments
             if not self.cb.TraceQuiet:
                 print("DisplayScope RC: record to scope, mode=Character, x=0o%o, y=0o%o, char-code=0o%o" %
-                      (self.scope_horizontal, self.scope_vertical, bits))
-            self.crt.ww_draw_char(self.scope_horizontal, self.scope_vertical, bits)
+                      (self.scope_horizontal, self.scope_vertical, mask))
+            self.crt.ww_draw_char(self.scope_horizontal, self.scope_vertical, mask, self.scope_expand)
 
         elif self.scope_mode == self.DISPLAY_MODE_POINTS:
             if not self.cb.TraceQuiet:
@@ -648,27 +782,72 @@ class DisplayScopeClass:
         # self.crt.ww_dim_previous_point()
         self.crt.ww_draw_point(self.scope_horizontal, self.scope_vertical, light_gun=True)
         # self.crt.ww_scope_update()  # flush pending display commands
-        alarm, pt = self.crt.ww_check_light_gun()
+        alarm, pt, button = self.crt.ww_check_light_gun(self.cb)
 
         if alarm == self.cb.QUIT_ALARM:
             return alarm, 0
 
         if pt is not None:
             self.crt.last_mouse = pt
+            self.crt.last_button = button
 
         # check to see if the most recent mouse click was near the last dot to be drawn on the screen; if so,
         # count it as a hit, otherwise its a miss.  One it hits, "forget" the last mouse click
         val = 0
         if self.crt.last_mouse is not None and (
-                abs(self.crt.last_pen_point[0] - self.crt.last_mouse.getX()) < self.crt.WIN_MOUSE_BOX) & \
-                (abs(self.crt.last_pen_point[1] - self.crt.last_mouse.getY()) < self.crt.WIN_MOUSE_BOX):
-            print("**Hit**")
+                abs(self.crt.last_pen_point.x0 - self.crt.last_mouse.getX()) < self.crt.WIN_MOUSE_BOX) & \
+                (abs(self.crt.last_pen_point.y0 - self.crt.last_mouse.getY()) < self.crt.WIN_MOUSE_BOX):
+            print("**Hit at x=0d%d, y=0d%d**" %(self.crt.last_pen_point.x0, self.crt.last_pen_point.y0))
+            if self.crt.last_button == 3:   # I'm returning 0o1000000 for Button Three on the mouse
+                val = 0o100000              #  ... added specifically for radar tracking
+            else:
+                val = 0o177777           # or  0o177777 for Button One (or anything else that we shouldn't get!)
             self.crt.ww_highlight_point()
             self.crt.last_mouse = None
-            val = 0o177777
+            self.crt.last_button = 0
             return self.cb.NO_ALARM, val
 
-        return (self.cb.NO_ALARM, val)
+        return self.cb.NO_ALARM, val
+
+    # ################ 1950 QH/QD/QF Scope control #####################
+    def init_qhqd_scope(self):
+        self.crt = wwinfra.XwinCrt(self.cb)
+        self.cb.dbwgt.add_scope(self.crt.win)  # tell the debug widget that there's a display available
+
+        self.scope_mode = self.DISPLAY_MODE_POINTS
+        self.scope_select = 0o77
+
+        return 0
+
+
+    # qh x h-axis-set  6 00110
+    # Transfer contents of AC to register x; set the horizontal position of the display scope beam to
+    # correspond to the numerical value of the contents of AC.
+    # Guy says: I think QH has to be called before QD, but I can't find the rule book!  (probably M-1083)
+    def qh(self, address, acc):
+        if self.crt is None:  # first time there's a CRT instruction, we'll init the display modules
+            self.init_qhqd_scope()
+
+        self.scope_horizontal = self.convert_scope_coord(acc)
+
+        if self.cb.TraceQuiet is False:
+            print("DisplayScope QH: configured display mode %s, scope 0o%o, horizontal=0o%o" %
+                  (self.ModeNames[self.scope_mode], self.scope_select, self.scope_horizontal))
+        return self.cb.NO_ALARM
+
+    # qd x display  7  00111
+    # Transfer contents of AC to register x; set the vertical position of the display scope beam to
+    # correspond to the numerical value of the contents of AC; intensify the beam to display a spot on
+    # the face of the display scope.
+    # guy says: I'm assuming that QF is like QD except that it shows on a different scope
+    #  (note M-1083 Interim Display Equipment and Temporary Operation qf: F - Scope Display)
+    def qd_qf(self, _operand, acc, color=(0.0, 1.0, 0.0)):  # default to green
+        self.scope_vertical = self.convert_scope_coord(acc)
+        if not self.cb.TraceQuiet:
+            print("DisplayScope QD/QF: record to scope, mode=Point, x=0o%o, y=0o%o" %
+                  (self.scope_horizontal, self.scope_vertical))
+        self.crt.ww_draw_point(self.scope_horizontal, self.scope_vertical, color=color, light_gun=True)
+        return self.cb.NO_ALARM
 
 
 # this device emulates the Activate and Intervention registers
@@ -677,12 +856,16 @@ class DisplayScopeClass:
 # Both were intended to be spread around among the consoles for various operator-intervention tasks.
 # See 2M-0277 pg 68
 class InterventionAndActivateClass:
-    def __init__(self, cb):
+    def __init__(self, cb, cpu_class):
         self.cb = cb
 
         self.name = "Intervention-and-Activate"
         self.acvtivate_reg = None
         self.intervention_reg = None
+        self.cpu_class = cpu_class
+        self.intervention_reg_name = {0o36: "LeftInterventionReg",
+                                      0o37: "RightInterventionReg",
+                                      }
 
     # each device needs to identify its own unit number.
     def is_this_for_me(self, io_address):
@@ -691,7 +874,7 @@ class InterventionAndActivateClass:
         else:
             return None
 
-    def si(self, device, _acc):
+    def si(self, device, _acc, _cm):
         self.acvtivate_reg = None
         self.intervention_reg = None
 
@@ -700,9 +883,10 @@ class InterventionAndActivateClass:
             self.acvtivate_reg = device
             print("SI: configured Activate device %o" % self.acvtivate_reg)
             return self.cb.NO_ALARM
-        if device >= 2:  # i.e., if the device is #2 to #32d, it's an Activate register
+        else:  # i.e., if the device is #2 to #32d, it's an Activate register
             self.intervention_reg = device
-            print("SI: configured Intervention device %o" % self.intervention_reg)
+            print("SI: configured Intervention device 0o%o  %s" %
+                  (self.intervention_reg, self.intervention_reg_name[device]))
             return self.cb.NO_ALARM
 
     def rc(self, _operand, _acc):  # "record", i.e. output instruction to device
@@ -712,8 +896,13 @@ class InterventionAndActivateClass:
     # Read from the switches should return something
     # This stub simply returns zero for all Activate and Intervention registers
     def rd(self, operand, acc):  # "read", i.e. input instruction from device
-        print("unimplemented %s Read; return Zero" % self.name)
-        return self.cb.NO_ALARM, 0
+        reg = self.intervention_reg
+        ret = 0
+        if reg in self.intervention_reg_name:
+            ret = self.cpu_class.cpu_switches.read_switch(self.intervention_reg_name[reg])
+        else:
+            print("unimplemented Intervention Register %s Read; return Zero" % self.name)
+        return self.cb.NO_ALARM, ret
 
 
 class IndicatorLightRegistersClass:
@@ -729,14 +918,14 @@ class IndicatorLightRegistersClass:
         else:
             return None
 
-    def si(self, device, acc):
+    def si(self, device, acc, _cm):
         device = device & ~self.cb.INDICATOR_LIGHT_ADDR_MASK
         self.indicator_reg = device
         print("SI: configured Indicator device %o" % self.indicatator_reg)
         return self.cb.NO_ALARM
 
     def rc(self, operand, acc):  # "record", i.e. output instruction to device
-        print("unimplemented %s Record" % self.name)
+        print("unimplemented %s Record to Indicator Lights" % self.name)
         return self.cb.UNIMPLEMENTED_ALARM, 0
 
     # Read from the switches should return something
@@ -759,7 +948,7 @@ class InOutCheckRegistersClass:
         else:
             return None
 
-    def si(self, device, acc):
+    def si(self, device, acc, _cm):
         device = device & ~self.cb.IN_OUT_CHECK_ADDR_MASK
         self.in_out_check_reg = device
         print("SI: configured In-Out Check device %o" % self.in_out_check_reg)
@@ -774,4 +963,3 @@ class InOutCheckRegistersClass:
     def rd(self, operand, acc):  # "read", i.e. input instruction from device
         print("unimplemented %s Read; return Zero" % self.name)
         return self.cb.NO_ALARM, 0
-
