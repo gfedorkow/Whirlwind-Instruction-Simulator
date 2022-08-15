@@ -1,0 +1,237 @@
+                        ;  Bounce paper tape
+                        ;  Annotated by guy
+                        ;  Jul 22, 2020
+
+                        .ww_file 102663328_fb131-0-2690_new_decoders_3of4.7ch/102663328_fb131-0-2690_new_decoders_3of4_gs001_.tcore  ;  
+                        .ww_tapeid (None)    ;  
+
+
+                        .org 0         ;  
+@0000:000000     r0000: .word 0         ;  @@ReadBy a0072 
+@0001:000001     r0001: .word 1         ;  
+@0002:000000     i0002: .word 0         ;  @@WrittenBy a0214 a0221 ReadBy a0214 
+                        .org 32        ;  
+@0032:000000     i0032: .word 0         ;  @@JumpedToBy a0217 
+
+
+
+                        .org 00040     ;  
+@0040:100172     i0040: ca   r0172     ; #114630 @@JumpedToBy a0163 a0215 
+@0041:040212            ts   xpos      ; transfer to storage 
+
+                        ;  This series of blocks draws the x-axis
+                        ;  It appears that the program draws a dot every second pixel on the screen, i.e., they convert the pixel x address to
+                        ;  an iteration count by SRR 1, i.e., divide by two.  So some constants are in screen pixels, some in interator counts.
+
+@0042:100212  x_axis_point: ca   xpos      ; xpos is current x position @@JumpedToBy a0061 
+@0043:110174            ad   ball_x_velocity  ; add;  ball_x_velocity is initialized to 0o200 -- two pixels after dropping least-significant six bits 
+@0044:040223     i0044: ts   dot_xpos  ; store the sum to dot_xpos @@JumpedToBy a0055 
+@0045:040212            ts   xpos      ; store the same sum to xpos 
+@0046:160001     r0046: srr  00001     ; shift right; on the first time through, this results in one pixel unit in AC @@ReadBy i0157 
+@0047:074050     w0047: sp   before_the_hole  ; this jump switches between before_the_hole and past_the_hole @@WrittenBy a0053 a0162 
+
+                        ;  This path is taken drawing the x-axis prior to the hole in the floor, but not after
+@0050:114203  before_the_hole: su   left_hole_edge  ; this is the location of left edge of the hole in the floor, at 017400 @@JumpedToBy w0047 r0207 
+@0051:070056            cp   i0056     ; branch if negative, i.e., x-axis up to the hole in the floor 
+
+                        ;  this block probably computes the gap in the x-axis
+@0052:100210  make_x_gap: ca   r0210     ; fetch a jump instruction to past_the_hole 
+@0053:040047            ts   w0047     ; store jump to past_the_hole 
+@0054:100204            ca   r0204     ; picking up the location of the right edge of the hole  #041000 
+@0055:074044            sp   i0044     ; sub-program 
+
+@0056:100200     i0056: ca   w0200     ; initialized to 0o137777 @@JumpedToBy a0051 a0063 
+@0057:074240            sp   xaxis_dot  ; print a dot, x position in dot_xpos, y position in AC.  Routine returns y position in AC to i0060 
+
+@0060:040200     i0060: ts   w0200     ; this should put the same number back in w0200 @@JumpedToBy a0245 
+@0061:074042            sp   x_axis_point  ; go on to draw the next x-axis point 
+
+                        ;  This path is taken drawing the x-axis after the hole in the floor, but not prior
+@0062:114175  past_the_hole: su   r0175     ; read a constant #034632 @@JumpedToBy r0210 
+@0063:070056            cp   i0056     ; conditional program 
+                        ; ;  End of X-Axis Routines
+
+
+                        ;  this is the entry point for the blocks that actually draw the path of the ball
+                        ;  Location 'start_ball_path' is called once per screen refresh
+@0064:100172  start_ball_path: ca   r0172     ; clear and add 
+                        ; load x and y position in preparation for calling the dot-drawing routine
+@0065:040223     r0065: ts   dot_xpos  ; transfer to storage 
+@0066:040164            ts   w0164     ; transfer to storage 
+@0067:100173            ca   init_ball_ypos  ; load initial y position 
+                        ; not sure why this call is here -- it only paints one dot at the start of each refresh cycle; returns to i0071, with ypos in the AC
+@0070:074260            sp   paint_initial_ball_dot  ; "subroutine call" to one of the four dot-printer routines ; 
+
+@0071:040165     i0071: ts   w0165     ; store the ypos @@JumpedToBy a0265 
+@0072:100000            ca   r0000     ; clear the accumulator 
+@0073:040166            ts   ball_y_velocity  ; zero out ball_y_velocity 
+
+                        ; here begins the main loop for computing the bounce path
+@0074:100177     i0074: ca   r0177     ; I think we're loading a constant 0o157777 = -020000 @@JumpedToBy a0133 a0145 a0156 
+@0075:110202  delay_loop: ad   r0202     ; add @@JumpedToBy a0076 
+@0076:070075            cp   delay_loop  ; conditional program 
+
+@0077:100164            ca   w0164     ; clear and add 
+@0100:110174            ad   ball_x_velocity  ; add 
+@0101:040223            ts   dot_xpos  ; transfer to storage 
+@0102:040164            ts   w0164     ; transfer to storage 
+@0103:100166            ca   ball_y_velocity  ; clear and add 
+@0104:114170            su   r0170     ; subtract 
+@0105:040166            ts   ball_y_velocity  ; transfer to storage 
+@0106:114176            su   r0176     ; subtract 
+@0107:140171            mr   r0171     ; multiply and roundoff 
+@0110:110165            ad   w0165     ; add 
+@0111:040165            ts   w0165     ; transfer to storage 
+@0112:160001     w0112: srr  00001     ; shift right and roundoff @@WrittenBy a0132 a0160 
+@0113:114177            su   r0177     ; subtract  0o157777 = -020000; same number as the delay loop(!?) 
+@0114:070117            cp   test_for_hole  ; conditional program 
+
+@0115:100165            ca   w0165     ; clear and add 
+@0116:074140            sp   i0140     ; branch 
+
+@0117:100164  test_for_hole: ca   w0164     ; clear and add @@JumpedToBy a0114 
+@0120:160001            srr  00001     ; shift right and roundoff 
+
+@0121:114203            su   left_hole_edge  ; This is a comparison with the left edge of the hole in the floor 
+@0122:070134            cp   normal_bounce  ; branch to continue normal bounce 
+
+@0123:114205  test_for_right_edge: su   hole_width  ; subtract the width of the hole, #01000 
+@0124:070126            cp   fall_through_hole  ; this might be the branch that says we hit the hole in the floor 
+
+@0125:074134            sp   normal_bounce  ; otherwise, we'll do the regular bounce 
+
+                        ;  branch here if we hit the hole in the floor
+@0126:100165  fall_through_hole: ca   w0165     ; clear and add @@JumpedToBy a0124 
+@0127:074300            sp   i0300     ; "subroutine call" returning to @0130 
+@0130:040165     i0130: ts   w0165     ; transfer to storage @@JumpedToBy a0305 
+@0131:100211            ca   r0211     ; clear and add 
+@0132:040112            ts   w0112     ; transfer to storage 
+@0133:074074            sp   i0074     ; sub-program 
+
+                        ;  branch here to continue the regular bounce
+@0134:104166  normal_bounce: cs   ball_y_velocity  ; negate the velocity @@JumpedToBy a0122 a0125 
+@0135:140167            mr   c_of_restit  ; multiply and roundoff 
+@0136:040166            ts   ball_y_velocity  ; transfer to storage 
+@0137:100200            ca   w0200     ; clear and add 
+@0140:074320     i0140: sp   paint_ball_dot  ; sub-program @@JumpedToBy a0116 
+
+@0141:040165     i0141: ts   w0165     ; transfer to storage @@JumpedToBy a0325 
+@0142:100164            ca   w0164     ; clear and add 
+@0143:160001            srr  00001     ; shift right and roundoff 
+@0144:114175            su   r0175     ; subtract 
+@0145:070074            cp   i0074     ; conditional program 
+
+                        ; this small strip appears to reduce the x velocity of the ball with each screen refresh
+@0146:100174  adjust_x_velocity: ca   ball_x_velocity  ; fetch x velocity 
+@0147:114206            su   r0206     ; subtract the constant One from ball_x_velocity 
+@0150:040174            ts   ball_x_velocity  ; transfer to storage 
+@0151:074161            sp   i0161     ; get ready to branch to start the x-axis all over at 040 
+
+@0152:074340     i0152: sp   i0340     ; sub-program @@JumpedToBy r0211 
+
+@0153:040165     i0153: ts   w0165     ; transfer to storage @@JumpedToBy a0345 
+@0154:120165            cm   w0165     ; clear and add magnitude 
+@0155:110201            ad   r0201     ; add 
+@0156:070074            cp   i0074     ; conditional program 
+
+@0157:100046     i0157: ca   r0046     ; clear and add @@JumpedToBy a0222 
+@0160:040112            ts   w0112     ; transfer to storage 
+@0161:100207     i0161: ca   r0207     ; clear and add @@JumpedToBy a0151 
+@0162:040047            ts   w0047     ; transfer to storage 
+@0163:074040            sp   i0040     ; Loop to Start 
+
+
+
+@0164:000000     w0164: .word 0         ;  @@WrittenBy a0066 a0102 ReadBy a0077 test_for_hole a0142 
+@0165:000000     w0165: .word 0         ;  @@WrittenBy i0071 a0111 i0130 i0141 i0153 ReadBy a0110 a0115 fall_through_hole a0154 
+@0166:000000  ball_y_velocity: .word 0         ;  @@WrittenBy a0073 a0105 a0136 ReadBy a0103 normal_bounce 
+
+@0167:066315  c_of_restit: .word 066315    ; The Coefficient of Restitution @@ReadBy a0135 
+@0170:000510     r0170: .word 510       ;  @@ReadBy a0104 
+@0171:005075     r0171: .word 005075    ;  @@ReadBy a0107 
+@0172:114630     r0172: .word 114630    ; initial x-axis point @@ReadBy i0040 start_ball_path 
+@0173:063147  init_ball_ypos: .word 063147    ;  @@ReadBy a0067 
+@0174:000200  ball_x_velocity: .word 200       ;  @@WrittenBy a0150 ReadBy a0043 a0100 adjust_x_velocity 
+@0175:034632     r0175: .word 034632    ; might be the right limit of the x-axis @@ReadBy past_the_hole a0144 
+@0176:177533     r0176: .word 177533    ; -000244 @@ReadBy a0106 
+@0177:157777     r0177: .word 157777    ; Delay counter initial value -020000 @@ReadBy i0074 a0113 
+@0200:137777     w0200: .word 137777    ;  @@WrittenBy i0060 ReadBy i0056 a0137 
+@0201:106313     r0201: cs   2313      ; clear and subtract @@ReadBy a0155 
+@0202:000100     r0202: .word 100       ;  @@ReadBy delay_loop 
+@0203:017400  left_hole_edge: .word 017400    ; This is the location of the left edge of hole in the floor @@ReadBy before_the_hole a0121 
+@0204:041000     r0204: ts   1000      ; transfer to storage @@ReadBy a0054 
+@0205:001000  hole_width: .word 1000      ; this is the width of the hole in the floor @@ReadBy test_for_right_edge 
+@0206:000001     r0206: .word 1         ;  @@ReadBy a0147 
+
+                        ;  the following two words are not executed; they're constants that are copied over a branch instruction elsewhere in the code after a test
+@0207:074050     r0207: sp   before_the_hole  ; sub-program @@ReadBy i0161 
+@0210:074062     r0210: sp   past_the_hole  ; sub-program @@ReadBy make_x_gap 
+
+
+@0211:074152     r0211: sp   i0152     ; sub-program @@ReadBy a0131 
+
+@0212:000000      xpos: .word 0         ;  @@WrittenBy a0041 a0045 ReadBy x_axis_point 
+
+@0213:177766     r0213: md   3766      ; logical AND @@ReadBy a0220 
+@0214:130002            ao   i0002     ; add one 
+@0215:070040            cp   i0040     ; conditional program; Loop to Start 
+
+@0216:000001            .word 1         ;  
+@0217:074032            sp   i0032     ; Return to Monitor 
+
+
+@0220:100213            ca   r0213     ; clear and add 
+@0221:040002            ts   i0002     ; transfer to storage 
+@0222:074157            sp   i0157     ; sub-program 
+
+
+                        ;  two locations used to store the position of the next dot to print
+@0223:000000  dot_xpos: .word 0         ;  @@WrittenBy i0044 r0065 a0101 ReadBy a0242 a0262 a0302 a0322 a0342 
+@0224:000000  dot_ypos: .word 0         ;  @@WrittenBy xaxis_dot paint_initial_ball_dot i0300 paint_ball_dot i0340 ReadBy a0244 a0264 a0304 a0324 a0344 
+
+                        .org 00240     ;  
+                        ; I don't understand why they didn't use subroutine linkage for all four of these routines
+                        ; print a dot, x position in dot_xpos, y position in AC.  Routine returns y position in AC
+                        ; The var ypos is a local variable, i.e., not used to pass params.
+@0240:040224  xaxis_dot: ts   dot_ypos  ; transfer to storage @@JumpedToBy a0057 
+@0241:000600            si   600       ; select I/O: Device Display Points ; Set vertical axis to value in AC 
+@0242:100223            ca   dot_xpos  ; clear and add 
+@0243:024000            rc   0         ; print a dot at the x-location given in AC 
+@0244:100224            ca   dot_ypos  ; clear and add 
+@0245:074060            sp   i0060     ; sub-program 
+
+                        .org 00260     ;  
+@0260:040224  paint_initial_ball_dot: ts   dot_ypos  ; transfer to storage @@JumpedToBy a0070 
+@0261:000600            si   600       ; select I/O: Device Display Points base=500, mask=7 
+@0262:100223            ca   dot_xpos  ; clear and add 
+@0263:024000            rc   0         ; record 
+@0264:100224            ca   dot_ypos  ; clear and add 
+@0265:074071            sp   i0071     ; sub-program 
+
+                        .org 00300     ;  
+@0300:040224     i0300: ts   dot_ypos  ; transfer to storage @@JumpedToBy a0127 
+@0301:000600            si   600       ; select I/O: Device Display Points base=500, mask=7 
+@0302:100223            ca   dot_xpos  ; clear and add 
+@0303:024000            rc   0         ; record 
+@0304:100224            ca   dot_ypos  ; clear and add 
+@0305:074130            sp   i0130     ; sub-program 
+
+                        .org 00320     ;  
+@0320:040224  paint_ball_dot: ts   dot_ypos  ; transfer to storage @@JumpedToBy i0140 
+@0321:000600            si   600       ; select I/O: Device Display Points base=500, mask=7 
+@0322:100223            ca   dot_xpos  ; clear and add 
+@0323:024000            rc   0         ; record 
+@0324:100224            ca   dot_ypos  ; clear and add 
+@0325:074141            sp   i0141     ; sub-program 
+
+                        .org 00340     ;  
+@0340:040224     i0340: ts   dot_ypos  ; transfer to storage @@JumpedToBy i0152 
+@0341:000600            si   600       ; select I/O: Device Display Points base=500, mask=7 
+@0342:100223            ca   dot_xpos  ; clear and add 
+@0343:024000            rc   0         ; record 
+@0344:100224            ca   dot_ypos  ; clear and add 
+@0345:074153            sp   i0153     ; sub-program 
+
+                        .org 01235     ;  
+@1235:175617            md   1617      ; multiply digits no roundoff (AND) 
+                        .jumpto 0157      ;  
