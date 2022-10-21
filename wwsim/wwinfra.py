@@ -22,6 +22,8 @@
 import re
 import hashlib
 import sys
+from screeninfo import get_monitors
+
 from typing import List, Dict, Tuple, Sequence, Union, Any
 
 
@@ -86,7 +88,7 @@ class LogClass:
 
     def fatal(self, message):
         print("Fatal: %s" % message)
-        exit(1)
+        sys.exit(1)
 
 
 # simple routine to print an octal number that might be 'None'
@@ -157,8 +159,16 @@ class ConstWWbitClass:
                              self.DIVIDE_ALARM: "Divide Error Alarm",
                              }
 
+        self.COLOR_BR = "\033[93m"  # Yellow color code for Branch Instructions
+        self.COLOR_IO = "\033[92m"  # Green color code for I/O Instructions
+        self.COLOR_CF = "\033[96m"  # Cyan color code for CF Instruction
+        self.COLOR_default = "\033[0m"  # Reset to default color
+
         # use these vars to control how much Helpful Stuff emerges from the sim
+        self.color_trace = True
         self.museum_mode = None  # command line switch to enable a repeating demo mode.
+        self.slow_execution_demo_mode = False # When True, this flag makes the graphics a bit more visible
+        (self.screen_x, self.screen_y, self.gfx_scale_factor) = self.get_display_size()
         self.TracePC = 0        # print a line for each instruction if this number is non-zero; decrement it if pos.
         self.LongTraceFormat = True  # prints more CPU registers for each trace line
         self.TraceALU = False   # print a line for add, multiply, negate, etc
@@ -291,6 +301,35 @@ class ConstWWbitClass:
             ((self.IN_OUT_CHECK_BASE_ADDRESS, self.IN_OUT_CHECK_ADDR_MASK), "In-Out Check Registers"),
             ((self.CAMERA_INDEX_BASE_ADDRESS, ~0), "Camera Index"),
         ]
+
+    # read the size of the display itself from Windows
+    def get_display_size(self):
+        # default to the dimensions for my surface pro built-in screen
+        # The OS reports a kinda useless number when there's an external monitor plugged in
+        self.screen_x = 1372
+        self.screen_y = 893
+
+        screens = get_monitors()
+        # if that raises an error, put this first
+        # from os import environ
+        # environ['DISPLAY'] = ':0.0'
+        for s in screens:
+            print(s)
+            if s.is_primary:
+                self.screen_x = s.width
+                self.screen_y = s.height
+
+        # there must be a cleaner way of finding what scale-factor the OS is using
+        # As a heuristic, if it's bigger than 1280x800, it's probably hi-res, probably 200%
+        self.gfx_scale_factor = 1.0
+        if self.screen_x > 1400:
+            self.gfx_scale_factor = 2.0
+
+        # (screen_x, screen_y) = win.master.maxsize()
+        print("screen size: %d by %d, scale=%d" % (self.screen_x, self.screen_y, self.gfx_scale_factor))
+
+        return(self.screen_x, self.screen_y, self.gfx_scale_factor)
+
 
     def int_str(self, n):   # convert an int address to a string in either Octal or Decimal notation
         if self.decimal_addresses:
@@ -1195,8 +1234,8 @@ class FlexoClass:
 # The following class prints debug text on the CRT to display and adjust memory values
 # while the program runs
 class ScreenDebugWidgetClass:
-    def __init__(self, coremem):
-        self.point_size = 20
+    def __init__(self, cb, coremem):
+        self.point_size = 10 * int(cb.gfx_scale_factor)
         self.xpos = 15 * self.point_size   # default Centers the text; I wish it were Left
         self.ypos = self.point_size
         self.y_delta = self.point_size + 5
@@ -1215,9 +1254,15 @@ class ScreenDebugWidgetClass:
         self.gfx = __import__("graphics")
         self.cm = coremem
         self.win = None
+        self.gfx_scale_factor = cb.gfx_scale_factor
 
     def add_scope(self, win):
         self.win = win
+        self.point_size = 10 # * int(self.gfx_scale_factor)
+        self.xpos = 15 * self.point_size * int(self.gfx_scale_factor)  # default Centers the text; I wish it were Left
+        self.ypos = self.point_size * int(self.gfx_scale_factor)
+        self.y_delta = (self.point_size + 5) * int(self.gfx_scale_factor)
+
 
     def add_widget(self, addr, label, increment):
         self.mem_addrs.append(addr)
@@ -1241,12 +1286,13 @@ class ScreenDebugWidgetClass:
         cm = self.cm
         for wgt in range(len(self.mem_addrs) - 1, -1, -1):  # wgt = widget
             if len(self.labels) > 0:
-                lbl = '(' + self.labels[wgt] + ')'
+                lbl = self.labels[wgt]
             else:
-                lbl = ''
-            m = self.gfx.Text(self.gfx.Point(self.xpos, self.ypos + y), "w%d: core@0o%04o%s = 0o%04o" %
-                     (wgt, self.mem_addrs[wgt], lbl, cm.rd(self.mem_addrs[wgt])))
+                lbl = "core@0o%04o" % self.mem_addrs[wgt]
+            m = self.gfx.Text(self.gfx.Point(self.xpos, self.ypos + y), "w%d: %s = 0o%06o" %
+                     (wgt, lbl, cm.rd(self.mem_addrs[wgt])))
             m.config['justify'] = 'left'   # this doesn't seem to work...
+            # m.config['align'] = 'e'   # this Really doesn't work...
             m.setSize(self.point_size)
             if wgt == self.input_selector:
                 m.setTextColor("pink")
@@ -1265,9 +1311,12 @@ class ScreenDebugWidgetClass:
             y += self.y_delta
 
         if self.screen_title:
-            m = self.gfx.Text(self.gfx.Point(self.xpos + 20 * self.point_size, self.ypos + 10), self.screen_title)
+            m = self.gfx.Text(self.gfx.Point(self.xpos + (20 * self.point_size * int(self.gfx_scale_factor)), self.ypos + 10), self.screen_title)
             m.config['justify'] = 'right'
-            m.setSize(36) # 2 * self.point_size)
+            s = 2 * self.point_size
+            if s > 36:
+                s = 36
+            m.setSize(s)  #36 is the max
             m.setTextColor("light salmon")
             m.draw(self.win)
             self.txt_objs.append(m)
@@ -1326,7 +1375,11 @@ class XwinCrt:
 
         self.gfx = __import__("graphics")
 
-        self.WIN_MAX_COORD = 1300.0  # 1024.0 + 512.0  # size of window to request from the laptop window  manager
+#        self.get_display_size(cb)
+#        if cb.museum_mode:
+#            cb.museum_mode.museum_gfx_get_display_size(cb)
+
+        self.WIN_MAX_COORD = 600.0 * cb.gfx_scale_factor # 1024.0 + 512.0  # size of window to request from the laptop window  manager
 
         self.WIN_MOUSE_BOX = self.WIN_MAX_COORD / 50.0
 
@@ -1372,6 +1425,8 @@ class XwinCrt:
         # on the simulated crt -- if not, we'll poll it separately when painting the display
         self.polling_mouse = False
         self.draw_red_x_and_axis(cb)
+
+
 
     def draw_red_x_and_axis(self, cb):
         # I've put a mouse zone in the top right corner to Exit the program, i.e., to synthesize a Whirlwind
@@ -1590,9 +1645,9 @@ class XwinCrt:
                         # prominent, so I made it larger.
                         # Once we added "Slow Motion" mode, the active Green spot became too hard to see too, so
                         # I'm making that larger too.  Once the spot fades, it returns to the small size.
-                        spot_size = 3  # default circle diameter
+                        spot_size = 2 * cb.gfx_scale_factor  # default circle diameter
                         if red != 0 or blue != 0 or green > 254:  # hack alert ; if the color is not All Green, expand the size
-                            spot_size = 6
+                            spot_size *= 2
                         c = self.gfx.Circle(self.gfx.Point(x0, y0), spot_size)  # was 5 # the last arg is the circle dimension
                         c.setFill(color)
                         c.draw(self.win)

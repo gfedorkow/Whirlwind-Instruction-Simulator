@@ -2,10 +2,10 @@
  *** Core Image ***
 %File: ../../Paper-Tapes/all-tapes-from-AlK-Aug2018/2018_01/102766747_fbblackjack_215204_long.7ch
 %TapeID: fb2l5204
-%JumpTo 0040
+%JumpTo 0o40
 %Switch: CheckAlarmSpecial 0o1
 @C0000: 0000000 0000001  None    None    None    None    None    None   
-@C0010:  None   0000000  None    None    None    None    None   0000473 
+@C0010:  None   0000000  None    None    None    None    None   0033401 
 @C0020:  None    None    None    None    None   0000021  None    None   
 @C0040: 0000014 0102005 0003625 0105730 0025770 0112004 0025771 0112004 
 @C0050: 0025771 0112004 0025772 0112004 0025773 0100000 0025774 0112004 
@@ -46,11 +46,11 @@
 @C0500: 0070466 0024000 0030561 0040000 0130563 0134564 0134000 0070511 
 @C0510: 0074466 0100011 0000707 0074565 0174557 0114556 0070520 0074513 
 @C0520: 0110556 0110554 0044524 0044530 0100000 0070513 0024000 0030561 
-@C0530: 0040000 0130563 0134556 0134000 0070536 0074513 0100000 0000703 
+@C0530: 0040000 0130563 0114556 0040000 0070513 0040000 0100000 0000703 
 @C0540: 0100554 0044543 0100564 0010000 0100011 0000703 0100554 0110564 
 @C0550: 0044552 0100562 0010000 0074000 0000000 0040000 0000063 0000077 
 @C0560: 0077777 0100000 0000024 0000000 0000040 0050573 0100574 0144017 
-@C0570: 0156017 0134025 0040574 0074000 0031416 0105571 0070603 0101725 
+@C0570: 0155017 0134025 0040574 0074000 0031416 0105571 0070603 0101725 
 @C0600: 0003625 0105733 0025760 0130575 0130601 0056067 0074610 0074575 
 @C0610: 0130577 0102111 0044601 0130602 0056072 0074617 0074575 0102104 
 @C0620: 0044605 0102105 0044614 0105737 0041737 0070575 0102057 0044575 
@@ -77,7 +77,7 @@
 @C1070: 0104001 0042031 0075162 0105745 0071115 0102037 0112053 0116106 
 @C1100: 0071115 0116110 0071104 0075115 0102037 0112053 0042037 0132073 
 @C1110: 0112054 0045112 0100000 0042035 0075060 0104001 0075220 0075047 
-@C1120: 0102076 0146053 0156017 0112077 0056042 0075162 0110001 0056042 
+@C1120: 0102076 0146053 0155017 0112077 0056042 0075162 0110001 0056042 
 @C1130: 0075134 0132077 0056053 0075140 0132077 0056053 0075144 0075147 
 @C1140: 0132076 0100001 0042077 0075147 0132076 0100000 0042077 0102076 
 @C1150: 0112054 0045152 0100000 0042040 0102077 0112054 0045157 0100000 
@@ -126,13 +126,13 @@
 @C1700: 0000006 0000007 0000010 0000011 0000012 0000012 0000012 0000012 
 @C1710: 0000001 0000002 0000003 0000004 0000005 0000006 0000007 0000010 
 @C1720: 0000011 0000012 0000012 0000012 0000012 0050000 0044000 0040000 
-@C1730: 0034000 0030000 0024000 0020000 0014000 0010000 0000000 0000001 
+@C1730: 0034000 0030000 0024000 0020000 0014000 0010000 0004000 0000001 
 @C1740: 0105631 0001626 0001752 0105571 0105565 0000000 0000000 0000000 
 @C1750: 0001725 0001732 0101735 0101734 0002000 0001753 0073400 0010400 
 @C1760: 0065400 0035400 0016400 0037000 0077000 0011400 0077400 0037400 
 @C1770: 0063000 0057400 0073400 0037000 0047400 0062000 0016400 0067000 
-@C2000: 0072400 0042000 0052400 0012344 0002000 0074000 0070000 0064000 
-@C2010: 0060000 0044000 0156037 0014000 0020000 0024000 0172037 0127777 
+@C2000: 0072400 0042000 0052400 0012344 0004000 0074000 0070000 0064000 
+@C2010: 0060000 0044000 0157777 0014000 0020000 0024000 0173777 0127777 
 @C2020: 0001000 0001000 0010000 0000000 0000000 0000000 0000064 0000077 
 @C2030: 0000000 0000000 0000000 0000000 0000000 0000000 0000000 0000000 
 @C2040: 0000000 0000000 0000000 0000000 0000000 0000000 0000000 0000040 
@@ -141,127 +141,198 @@
 @C2070: 0000000 0000000 0025765 0000000 0000000 0105736 0000000 0000000 
 @C2100: 0025760 0000000 0000000 0002072 0002075 0002113 0000020 0000025 
 @C2110: 0000005 0001733 0002067 0025770 0001731 0000002  None    None   
-@S2100: r2100
-@S2103: r2103
-@S1115: i1115
-@S2105: r2105
-@S2106: r2106
-@S2107: r2107
-@S1627: clrblk101
-@S1746: w1746
-@S1541: clrblk13
-@S0457: w0457
-@S1745: w1745
-@S2004: r2004
-@S2046: w2046
-@S2067: r2067
-@S0617: i0617
-@S2065: r2065
-@S2064: r2064
-@S2104: r2104
-@S1552: clrblk24
-@S1517: i1517
-@S1511: i1511
-@S0733: i0733
-@S1513: i1513
-@S1553: clrblk25
-@S0466: i0466
-@S1464: i1464
-@S1526: clrblk00
-@S1527: clrblk01
-@S1534: clrblk06
-@S1460: i1460
-@S1214: i1214
-@S1533: clrblk05
-@S2044: w2044
+@S0000: zero
+@S0001: one
+@S0040: i0040
+@S0144: i0144
+@S0203: i0203
+@S0211: i0211
+@S0257: i0257
+@S0271: w0271
+@S0272: i0272
+@S0321: i0321
 @S0342: i0342
-@S0530: w0530
-@S0737: w0737
-@S0730: w0730
-@S1112: w1112
-@S1743: r1743
-@S2043: w2043
-@S1606: clrblk60
-@S2101: w2101
-@S1175: w1175
-@S1633: clrblk105
-@S2041: w2041
-@S0552: w0552
-@S1104: i1104
-@S1550: clrblk22
-@S1551: clrblk23
+@S0355: i0355
+@S0363: i0363
+@S0366: i0366
+@S0400: w0400
+@S0403: w0403
+@S0404: i0404
+@S0422: w0422
+@S0425: i0425
+@S0435: w0435
+@S0437: i0437
+@S0440: i0440
 @S0444: w0444
-@S0614: w0614
-@S1227: i1227
-@S0513: i0513
-@S1632: clrblk104
+@S0455: i0455
+@S0457: w0457
+@S0466: i0466
+@S0473: i0473
+@S0477: w0477
+@S0503: w0503
 @S0511: i0511
-@S1630: clrblk102
-@S1631: clrblk103
-@S1626: clrblk100
-@S1220: i1220
-@S0564: r0564
-@S1411: w1411
+@S0513: i0513
+@S0520: i0520
+@S0524: w0524
+@S0530: w0530
+@S0536: i0536
+@S0543: w0543
+@S0552: w0552
+@S0553: w0553
+@S0554: w0554
+@S0555: w0555
+@S0556: r0556
+@S0557: r0557
 @S0560: r0560
 @S0561: r0561
 @S0562: r0562
-@S1022: i1022
-@S2063: r2063
-@S1503: i1503
-@S2042: w2042
-@S1543: clrblk15
-@S1477: i1477
-@S1474: i1474
-@S1544: clrblk16
-@S0211: i0211
-@S1536: clrblk10
-@S0455: i0455
-@S1471: i1471
-@S2031: w2031
-@S1453: w1453
-@S2033: w2033
-@S2032: w2032
-@S2035: w2035
-@S2034: w2034
-@S2037: w2037
-@S1542: clrblk14
-@S0355: i0355
-@S1532: clrblk04
-@S0503: w0503
-@S1545: clrblk17
-@S2066: r2066
-@S1167: w1167
-@S0271: w0271
-@S1537: clrblk11
-@S1134: i1134
-@S2102: w2102
 @S0563: w0563
-@S1733: r1733
-@S0000: zero
-@S0440: i0440
-@S1520: i1520
-@S2057: r2057
-@S1036: i1036
-@S1540: clrblk12
-@S2005: r2005
-@S1033: i1033
-@S1030: i1030
-@S0520: i0520
-@S0040: i0040
-@S0656: i0656
+@S0564: r0564
+@S0565: get_rand
+@S0573: w0573
+@S0574: rand_state
+@S0575: i0575
+@S0577: w0577
+@S0601: w0601
+@S0602: w0602
+@S0603: i0603
+@S0605: w0605
+@S0610: i0610
+@S0614: w0614
+@S0617: i0617
+@S0640: i0640
+@S0644: w0644
 @S0650: i0650
-@S1274: w1274
-@S2030: w2030
-@S1442: i1442
-@S1535: clrblk07
-@S2110: r2110
-@S0203: i0203
+@S0656: i0656
 @S0712: i0712
-@S2000: w2000
-@S2023: w2023
-@S2024: w2024
-@S2025: w2025
-@S0321: i0321
+@S0720: i0720
+@S0722: w0722
+@S0724: w0724
+@S0725: w0725
+@S0726: i0726
+@S0730: w0730
+@S0733: i0733
+@S0737: w0737
+@S0742: i0742
+@S1001: i1001
+@S1005: i1005
+@S1017: i1017
+@S1022: i1022
+@S1030: i1030
+@S1033: i1033
+@S1036: i1036
+@S1042: i1042
+@S1047: i1047
+@S1060: i1060
+@S1067: i1067
+@S1073: i1073
+@S1104: i1104
+@S1112: w1112
+@S1115: i1115
+@S1120: i1120
+@S1134: i1134
+@S1140: i1140
+@S1144: i1144
+@S1147: i1147
+@S1152: w1152
+@S1157: w1157
+@S1162: i1162
+@S1167: w1167
+@S1172: i1172
+@S1175: w1175
+@S1204: i1204
+@S1214: i1214
+@S1220: i1220
+@S1227: i1227
+@S1234: w1234
+@S1241: i1241
+@S1243: w1243
+@S1245: i1245
+@S1251: w1251
+@S1260: i1260
+@S1267: i1267
+@S1274: w1274
+@S1301: i1301
+@S1303: w1303
+@S1305: i1305
+@S1311: i1311
+@S1316: i1316
+@S1400: w1400
+@S1406: i1406
+@S1410: i1410
+@S1411: w1411
+@S1413: i1413
+@S1414: i1414
+@S1416: r1416
+@S1422: w1422
+@S1424: i1424
+@S1430: i1430
+@S1435: w1435
+@S1442: i1442
+@S1450: i1450
+@S1453: w1453
+@S1455: i1455
+@S1460: i1460
+@S1464: i1464
+@S1467: w1467
+@S1471: i1471
+@S1474: i1474
+@S1477: i1477
+@S1503: i1503
+@S1511: i1511
+@S1513: i1513
+@S1517: i1517
+@S1520: i1520
+@S1522: w1522
+@S1526: clrblk00
+@S1527: clrblk01
+@S1530: clrblk02
+@S1531: clrblk03
+@S1532: clrblk04
+@S1533: clrblk05
+@S1534: clrblk06
+@S1535: clrblk07
+@S1536: clrblk10
+@S1537: clrblk11
+@S1540: clrblk12
+@S1541: clrblk13
+@S1542: clrblk14
+@S1543: clrblk15
+@S1544: clrblk16
+@S1545: clrblk17
+@S1546: clrblk20
+@S1547: clrblk21
+@S1550: clrblk22
+@S1551: clrblk23
+@S1552: clrblk24
+@S1553: clrblk25
+@S1554: clrblk26
+@S1555: clrblk27
+@S1556: clrblk30
+@S1557: clrblk31
+@S1560: clrblk32
+@S1561: clrblk33
+@S1562: clrblk34
+@S1563: clrblk35
+@S1564: clrblk36
+@S1565: clrblk37
+@S1566: clrblk40
+@S1567: clrblk41
+@S1570: clrblk42
+@S1571: clrblk43
+@S1572: clrblk44
+@S1573: clrblk45
+@S1574: clrblk46
+@S1575: clrblk47
+@S1576: clrblk50
+@S1577: clrblk51
+@S1600: clrblk52
+@S1601: clrblk53
+@S1602: clrblk54
+@S1603: clrblk55
+@S1604: clrblk56
+@S1605: clrblk57
+@S1606: clrblk60
 @S1607: clrblk61
 @S1610: clrblk62
 @S1611: clrblk63
@@ -269,183 +340,1105 @@
 @S1613: clrblk65
 @S1614: clrblk66
 @S1615: clrblk67
-@S1152: w1152
-@S1157: w1157
-@S1120: i1120
-@S0577: w0577
-@S0574: w0574
-@S2036: w2036
 @S1616: clrblk70
-@S0573: w0573
-@S1400: w1400
-@S1455: i1455
-@S1450: i1450
-@S0437: i0437
-@S2012: r2012
-@S1555: clrblk27
-@S1001: i1001
-@S2016: r2016
-@S2017: r2017
-@S1005: i1005
-@S1416: r1416
-@S1245: i1245
-@S1742: r1742
-@S1741: r1741
-@S1740: r1740
-@S1241: i1241
-@S0640: i0640
-@S1744: r1744
-@S1243: w1243
-@S0477: w0477
-@S0605: w0605
-@S0601: w0601
-@S0602: w0602
-@S1531: clrblk03
-@S1621: clrblk73
-@S1620: clrblk72
 @S1617: clrblk71
-@S1467: w1467
-@S1625: clrblk77
-@S1624: clrblk76
-@S1623: clrblk75
+@S1620: clrblk72
+@S1621: clrblk73
 @S1622: clrblk74
-@S2027: r2027
-@S2026: r2026
-@S1017: i1017
-@S2021: r2021
-@S2020: r2020
-@S0543: w0543
-@S2074: w2074
-@S2077: w2077
-@S2076: w2076
-@S2071: w2071
-@S2070: w2070
-@S2073: w2073
-@S0001: one
-@S1316: i1316
-@S2013: r2013
-@S1424: i1424
-@S1311: i1311
-@S0425: i0425
-@S2010: r2010
+@S1623: clrblk75
+@S1624: clrblk76
+@S1625: clrblk77
+@S1626: clrblk100
+@S1627: clrblk101
+@S1630: clrblk102
+@S1631: clrblk103
+@S1632: clrblk104
+@S1633: clrblk105
+@S1634: clrblk106
+@S1635: w1635
+@S1636: w1636
+@S1637: w1637
+@S1725: r1725
+@S1730: r1730
+@S1731: r1731
+@S1732: r1732
+@S1733: r1733
 @S1734: r1734
-@S1754: r1754
-@S1251: w1251
-@S1756: r1756
+@S1735: r1735
+@S1736: r1736
+@S1737: w1737
+@S1740: r1740
+@S1741: r1741
+@S1742: r1742
+@S1743: r1743
+@S1744: r1744
+@S1745: w1745
+@S1746: w1746
+@S1747: w1747
 @S1750: r1750
 @S1751: r1751
 @S1752: r1752
-@S0536: i0536
-@S1574: clrblk46
-@S1575: clrblk47
-@S1572: clrblk44
-@S1573: clrblk45
-@S1570: clrblk42
-@S0144: i0144
-@S1566: clrblk40
-@S1567: clrblk41
-@S1060: i1060
-@S1737: w1737
-@S0403: w0403
-@S0400: w0400
-@S1422: w1422
-@S1747: w1747
-@S2061: w2061
-@S1301: i1301
-@S1430: i1430
-@S0742: i0742
-@S0257: i0257
-@S1147: i1147
-@S1144: i1144
-@S1140: i1140
-@S1303: w1303
-@S1260: i1260
-@S1267: i1267
-@S1725: r1725
+@S1754: r1754
 @S1755: r1755
-@S1571: clrblk43
-@S1577: clrblk51
-@S1576: clrblk50
-@S1601: clrblk53
-@S1600: clrblk52
-@S1603: clrblk55
-@S1602: clrblk54
-@S1605: clrblk57
-@S1604: clrblk56
-@S1637: w1637
-@S1073: i1073
-@S2007: r2007
-@S0435: w0435
-@S0722: w0722
-@S0725: w0725
-@S0724: w0724
-@S0557: r0557
-@S0556: r0556
-@S1406: i1406
-@S1172: i1172
-@S0404: i0404
-@S1067: i1067
-@S1564: clrblk36
-@S1732: r1732
-@S0610: i0610
-@S1730: r1730
-@S1731: r1731
-@S1736: r1736
-@S2040: w2040
-@S0565: i0565
-@S1735: r1735
-@S0554: w0554
-@S0555: w0555
-@S1554: clrblk26
-@S0366: i0366
-@S1546: clrblk20
-@S1547: clrblk21
-@S0363: i0363
-@S0553: w0553
-@S2111: r2111
-@S1636: w1636
-@S1234: w1234
+@S1756: r1756
+@S2000: w2000
+@S2004: r2004
+@S2005: r2005
 @S2006: r2006
-@S2060: r2060
-@S1560: clrblk32
+@S2007: r2007
+@S2010: r2010
+@S2012: r2012
+@S2013: r2013
 @S2014: r2014
-@S2115: r2115
-@S2114: r2114
-@S2112: r2112
-@S1162: i1162
-@S1530: clrblk02
-@S1047: i1047
-@S2062: w2062
-@S1635: w1635
-@S1522: w1522
-@S1042: i1042
-@S0422: w0422
-@S2056: r2056
-@S0575: i0575
-@S2054: r2054
+@S2015: r2015
+@S2016: r2016
+@S2017: r2017
+@S2020: r2020
+@S2021: r2021
+@S2023: w2023
+@S2024: w2024
+@S2025: w2025
+@S2026: r2026
+@S2027: r2027
+@S2030: w2030
+@S2031: w2031
+@S2032: w2032
+@S2033: w2033
+@S2034: w2034
+@S2035: w2035
+@S2036: w2036
+@S2037: w2037
+@S2040: w2040
+@S2041: w2041
+@S2042: w2042
+@S2043: w2043
+@S2044: w2044
+@S2045: w2045
+@S2046: w2046
+@S2050: r2050
 @S2052: r2052
 @S2053: r2053
-@S2050: r2050
-@S1410: i1410
+@S2054: r2054
+@S2056: r2056
+@S2057: r2057
+@S2060: r2060
+@S2061: w2061
+@S2062: w2062
+@S2063: r2063
+@S2064: r2064
+@S2065: r2065
+@S2066: r2066
+@S2067: r2067
+@S2070: w2070
+@S2071: w2071
 @S2072: r2072
-@S1413: i1413
-@S1414: i1414
-@S0272: i0272
-@S2015: r2015
-@S1634: clrblk106
-@S0726: i0726
-@S0720: i0720
-@S0603: i0603
-@S2045: w2045
-@S1204: i1204
-@S0473: i0473
-@S1565: clrblk37
-@S1435: w1435
-@S1563: clrblk35
-@S1562: clrblk34
-@S1561: clrblk33
-@S0524: w0524
-@S1557: clrblk31
-@S1556: clrblk30
-@S0644: w0644
-@S1305: i1305
+@S2073: w2073
+@S2074: w2074
+@S2076: w2076
+@S2077: w2077
+@S2100: r2100
+@S2101: w2101
+@S2102: w2102
+@S2103: r2103
+@S2104: r2104
+@S2105: r2105
+@S2106: r2106
+@S2107: r2107
+@S2110: r2110
+@S2111: r2111
+@S2112: r2112
+@S2114: r2114
+@S2115: r2115
+@N0017: We started with 040006, but ken ended up with 040054, I went to 473 when we changed Multiply, then again to 33401
+@N0040: select input
+@N0041: clear and add
+@N0042: select input
+@N0043: clear and subtract
+@N0044: record
+@N0045: add
+@N0046: record
+@N0047: add
+@N0050: record
+@N0051: add
+@N0052: record
+@N0053: add
+@N0054: record
+@N0055: clear and add
+@N0056: record
+@N0057: add
+@N0060: record
+@N0061: add
+@N0062: record
+@N0063: add
+@N0064: record
+@N0065: add
+@N0066: record
+@N0067: add
+@N0070: record
+@N0071: add
+@N0072: record
+@N0073: add
+@N0074: record
+@N0075: clear and add
+@N0076: select input
+@N0077: clear and add
+@N0100: record
+@N0101: read
+@N0102: conditional program
+@N0103: clear and add
+@N0104: subtract
+@N0105: conditional program
+@N0106: clear and add
+@N0107: select input
+@N0110: clear and subtract
+@N0111: record
+@N0112: add
+@N0113: record
+@N0114: add
+@N0115: record
+@N0116: add
+@N0117: record
+@N0120: add
+@N0121: record
+@N0122: clear and add
+@N0123: select input
+@N0124: clear and add
+@N0125: record
+@N0126: read
+@N0127: conditional program
+@N0130: clear and add
+@N0131: select input
+@N0132: clear and add
+@N0133: record
+@N0134: add
+@N0135: record
+@N0136: add
+@N0137: record
+@N0140: clear and add
+@N0141: conditional program
+@N0142: clear and add
+@N0143: conditional program
+@N0144: clear and add
+@N0145: select input
+@N0146: clear and add
+@N0147: record
+@N0150: add
+@N0151: record
+@N0152: add
+@N0153: record
+@N0154: add
+@N0155: record
+@N0156: add
+@N0157: record
+@N0160: add
+@N0161: record
+@N0162: clear and add
+@N0163: select input
+@N0164: clear and add
+@N0165: record
+@N0166: add
+@N0167: record
+@N0170: clear and add
+@N0171: record
+@N0172: add
+@N0173: record
+@N0174: clear and add
+@N0175: select input
+@N0176: clear and add
+@N0177: record
+@N0200: read
+@N0201: conditional program
+@N0202: sub-program
+@N0203: clear and add
+@N0204: select input
+@N0205: clear and subtract
+@N0206: record
+@N0207: read
+@N0210: conditional program
+@N0211: clear and subtract
+@N0212: select input
+@N0213: clear and subtract
+@N0214: record
+@N0215: add
+@N0216: record
+@N0217: clear and add
+@N0220: record
+@N0221: add
+@N0222: record
+@N0223: add
+@N0224: record
+@N0225: add
+@N0226: transfer to storage
+@N0227: record
+@N0230: clear and subtract
+@N0231: add
+@N0232: select input
+@N0233: clear and add
+@N0234: record
+@N0235: clear and subtract
+@N0236: select input
+@N0237: clear and add
+@N0240: add
+@N0241: record
+@N0242: clear and subtract
+@N0243: select input
+@N0244: clear and add
+@N0245: record
+@N0246: read
+@N0247: conditional program
+@N0250: clear and subtract
+@N0251: select input
+@N0252: clear and add
+@N0253: record
+@N0254: add
+@N0255: record
+@N0256: sub-program
+@N0257: transfer address
+@N0260: clear and add
+@N0261: transfer to storage
+@N0262: transfer to storage
+@N0263: transfer to storage
+@N0264: clear and add
+@N0265: transfer to storage
+@N0266: transfer to storage
+@N0267: sub-program
+@N0270: select input
+@N0271: sub-program
+@N0272: clear and add
+@N0273: transfer to storage
+@N0274: transfer to storage
+@N0275: transfer to storage
+@N0276: transfer to storage
+@N0277: transfer to storage
+@N0300: transfer to storage
+@N0301: transfer to storage
+@N0302: transfer to storage
+@N0303: transfer to storage
+@N0304: transfer to storage
+@N0305: clear and add
+@N0306: transfer to storage
+@N0307: transfer to storage
+@N0310: transfer to storage
+@N0311: transfer to storage
+@N0312: select input
+@N0313: clear and add
+@N0314: block transfer in
+@N0315: clear and add
+@N0316: transfer to storage
+@N0317: transfer to storage
+@N0320: sub-program
+@N0321: clear and add
+@N0322: select input
+@N0323: clear and add
+@N0324: record
+@N0325: add
+@N0326: record
+@N0327: add
+@N0330: record
+@N0331: add
+@N0332: transfer to storage
+@N0333: record
+@N0334: clear and add
+@N0335: add
+@N0336: select input
+@N0337: clear and add
+@N0340: record
+@N0341: sub-program
+@N0342: clear and add
+@N0343: select input
+@N0344: clear and add
+@N0345: record
+@N0346: add
+@N0347: record
+@N0350: add
+@N0351: record
+@N0352: add
+@N0353: record
+@N0354: sub-program
+@N0355: clear and add
+@N0356: sub-program
+@N0357: add one
+@N0360: check
+@N0361: sub-program
+@N0362: sub-program
+@N0363: clear and subtract
+@N0364: sub-program
+@N0365: sub-program
+@N0366: transfer address
+@N0367: clear and add
+@N0370: transfer to storage
+@N0371: transfer to storage
+@N0372: transfer to storage
+@N0373: transfer to storage
+@N0374: clear and add
+@N0375: transfer to storage
+@N0376: transfer to storage
+@N0377: transfer to storage
+@N0400: transfer to storage
+@N0401: transfer to storage
+@N0402: transfer to storage
+@N0403: sub-program
+@N0404: transfer address
+@N0405: clear and add
+@N0406: check
+@N0407: sub-program
+@N0410: subtract
+@N0411: transfer to storage
+@N0412: clear and add
+@N0413: subtract
+@N0414: transfer to storage
+@N0415: clear and add
+@N0416: subtract
+@N0417: transfer to storage
+@N0420: add
+@N0421: transfer digits
+@N0422: clear and add
+@N0423: transfer to storage
+@N0424: sub-program
+@N0425: add
+@N0426: transfer to storage
+@N0427: clear and add
+@N0430: add
+@N0431: transfer to storage
+@N0432: add one
+@N0433: add
+@N0434: transfer digits
+@N0435: clear and add
+@N0436: transfer to storage
+@N0437: sub-program
+@N0440: transfer address
+@N0441: clear and add
+@N0442: select input
+@N0443: transfer to storage
+@N0444: clear and add
+@N0445: transfer to storage
+@N0446: add one
+@N0447: transfer digits
+@N0450: clear and add
+@N0451: transfer digits
+@N0452: transfer digits
+@N0453: add
+@N0454: transfer digits
+@N0455: ; fetch the word
+@N0456: logical AND ; [guy] probably a constant .word 077777, i.e., clear the sign bit
+@N0457: ; put the result back in the same place
+@N0460: add one ; increment the fetch address
+@N0461: add one ; increment the store address
+@N0462: difference of magnitudes ; compare to the loop end
+@N0463: difference of magnitudes ; set the conditional bit
+@N0464: conditional program      ; branch if there are more locations to go
+@N0465: sub-program
+@N0466: [guy]this is a call to subroutine at 0565, to scramble the state variable at 0574
+@N0467: return to here, then AND with constant 077
+@N0470: subtract constant 0o63
+@N0471: conditional program ; [guy] this conditional branch must escape the loop
+@N0472: sub-program   ; if not, back to the start of the loop at 0466
+@N0473: add ;[guy] we get here if the ACC has a random number 0..51
+@N0474: add
+@N0475: transfer digits
+@N0476: transfer digits
+@N0477: clear and add
+@N0500: conditional program
+@N0501: record
+@N0502: sum digits - XOR
+@N0503: transfer to storage
+@N0504: add one
+@N0505: difference of magnitudes
+@N0506: difference of magnitudes
+@N0507: conditional program
+@N0510: sub-program
+@N0511: clear and add
+@N0512: select input
+@N0513: sub-program
+@N0514: multiply digits no roundoff (AND)
+@N0515: subtract
+@N0516: conditional program
+@N0517: sub-program
+@N0520: add
+@N0521: add
+@N0522: transfer digits
+@N0523: transfer digits
+@N0524: clear and add
+@N0525: conditional program
+@N0526: record
+@N0527: sum digits - XOR
+@N0530: transfer to storage
+@N0531: add one
+@N0532: subtract
+@N0533: no-op
+@N0534: conditional program
+@N0535: no-op
+@N0536: clear and add
+@N0537: select input
+@N0540: clear and add
+@N0541: transfer digits
+@N0542: clear and add
+@N0543: block transfer in
+@N0544: clear and add
+@N0545: select input
+@N0546: clear and add
+@N0547: add
+@N0550: transfer digits
+@N0551: clear and add
+@N0552: block transfer in
+@N0553: Return from Subroutine
+@N0554: select input
+@N0555: transfer to storage
+@N0561: clear and add
+@N0562: select input
+@N0563: select input
+@N0564: select input
+@N0565: transfer address
+@N0566: fetch @574 - the last rand result
+@N0567: multiply by constant from TSR@017
+@N0570: shift left and hold by 0d15 bits
+@N0571: difference of magnitudes with constant 0o21 from TSR@025
+@N0572: store the new rand result back to the state variable
+@N0573: from Subroutine
+@N0574: [guy] state variable for RNG; suspicious PI-ish initial value, no?
+@N0575: clear and subtract
+@N0576: conditional program
+@N0577: clear and add
+@N0600: select input
+@N0601: clear and subtract
+@N0602: record
+@N0603: add one
+@N0604: add one
+@N0605: check
+@N0606: sub-program
+@N0607: sub-program
+@N0610: add one
+@N0611: clear and add
+@N0612: transfer digits
+@N0613: add one
+@N0614: check
+@N0615: sub-program
+@N0616: sub-program
+@N0617: clear and add
+@N0620: transfer digits
+@N0621: clear and add
+@N0622: transfer digits
+@N0623: clear and subtract
+@N0624: transfer to storage
+@N0625: conditional program
+@N0626: clear and add
+@N0627: transfer digits
+@N0630: clear and add
+@N0631: transfer digits
+@N0632: clear and add
+@N0633: transfer to storage
+@N0634: clear and add
+@N0635: transfer digits
+@N0636: clear and add
+@N0637: transfer digits
+@N0640: clear and subtract
+@N0641: conditional program
+@N0642: clear and add
+@N0643: select input
+@N0644: clear and subtract
+@N0645: record
+@N0646: add
+@N0647: record
+@N0650: add one
+@N0651: check
+@N0652: sub-program
+@N0653: add one
+@N0654: add one
+@N0655: sub-program
+@N0656: clear and add
+@N0657: transfer digits
+@N0660: clear and add
+@N0661: transfer digits
+@N0662: clear and subtract
+@N0663: conditional program
+@N0664: clear and add
+@N0665: select input
+@N0666: clear and subtract
+@N0667: record
+@N0670: transfer to storage
+@N0671: clear and subtract
+@N0672: conditional program
+@N0673: clear and add
+@N0674: add
+@N0675: record
+@N0676: transfer to storage
+@N0677: clear and subtract
+@N0700: conditional program
+@N0701: clear and add
+@N0702: add
+@N0703: transfer to storage
+@N0704: record
+@N0705: clear and subtract
+@N0706: conditional program
+@N0707: clear and add
+@N0710: add
+@N0711: record
+@N0712: clear and add
+@N0713: select input
+@N0714: clear and add
+@N0715: record
+@N0716: read
+@N0717: conditional program
+@N0720: clear and subtract
+@N0721: conditional program
+@N0722: clear and add
+@N0723: select input
+@N0724: clear and add
+@N0725: record
+@N0726: add one
+@N0727: add one
+@N0730: check
+@N0731: sub-program
+@N0732: sub-program
+@N0733: add one
+@N0734: clear and add
+@N0735: transfer digits
+@N0736: add one
+@N0737: check
+@N0740: sub-program
+@N0741: sub-program
+@N0742: clear and add
+@N0743: transfer digits
+@N0744: clear and add
+@N0745: transfer digits
+@N0746: clear and subtract
+@N0747: transfer to storage
+@N0750: conditional program
+@N0751: clear and add
+@N0752: transfer digits
+@N0753: clear and add
+@N0754: transfer digits
+@N0755: clear and add
+@N0756: transfer to storage
+@N0757: clear and add
+@N0760: transfer digits
+@N0761: clear and add
+@N0762: transfer digits
+@N0763: clear and subtract
+@N0764: conditional program
+@N0765: clear and add
+@N0766: select input
+@N0767: clear and add
+@N0770: record
+@N0771: add
+@N0772: record
+@N0773: clear and subtract
+@N0774: conditional program
+@N0775: clear and add
+@N0776: record
+@N0777: add
+@N1000: record
+@N1001: clear and add
+@N1002: select input
+@N1003: clear and add
+@N1004: transfer to storage
+@N1005: clear and subtract
+@N1006: conditional program
+@N1007: clear and add
+@N1010: add
+@N1011: transfer to storage
+@N1012: record
+@N1013: add one
+@N1014: check
+@N1015: sub-program
+@N1016: sub-program
+@N1017: clear and add
+@N1020: transfer to storage
+@N1021: sub-program
+@N1022: clear and subtract
+@N1023: sub-program
+@N1024: clear and add
+@N1025: check
+@N1026: sub-program
+@N1027: sub-program
+@N1030: clear and add
+@N1031: check
+@N1032: sub-program
+@N1033: clear and add
+@N1034: subtract
+@N1035: conditional program
+@N1036: clear and subtract
+@N1037: transfer to storage
+@N1040: add one
+@N1041: sub-program
+@N1042: add one
+@N1043: add one
+@N1044: clear and subtract
+@N1045: transfer to storage
+@N1046: sub-program
+@N1047: clear and add
+@N1050: subtract
+@N1051: conditional program
+@N1052: subtract
+@N1053: conditional program
+@N1054: clear and subtract
+@N1055: transfer to storage
+@N1056: add one
+@N1057: sub-program
+@N1060: clear and add
+@N1061: subtract
+@N1062: conditional program
+@N1063: add one
+@N1064: clear and subtract
+@N1065: transfer to storage
+@N1066: sub-program
+@N1067: add one
+@N1070: clear and subtract
+@N1071: transfer to storage
+@N1072: sub-program
+@N1073: clear and subtract
+@N1074: conditional program
+@N1075: clear and add
+@N1076: add
+@N1077: subtract
+@N1100: conditional program
+@N1101: subtract
+@N1102: conditional program
+@N1103: sub-program
+@N1104: clear and add
+@N1105: add
+@N1106: transfer to storage
+@N1107: add one
+@N1110: add
+@N1111: transfer digits
+@N1112: clear and add
+@N1113: transfer to storage
+@N1114: sub-program
+@N1115: clear and subtract
+@N1116: sub-program
+@N1117: sub-program
+@N1120: clear and add
+@N1121: multiply and hold
+@N1122: shift left and hold
+@N1123: add
+@N1124: check
+@N1125: sub-program
+@N1126: add
+@N1127: check
+@N1130: sub-program
+@N1131: add one
+@N1132: check
+@N1133: sub-program
+@N1134: add one
+@N1135: check
+@N1136: sub-program
+@N1137: sub-program
+@N1140: add one
+@N1141: clear and add
+@N1142: transfer to storage
+@N1143: sub-program
+@N1144: add one
+@N1145: clear and add
+@N1146: transfer to storage
+@N1147: clear and add
+@N1150: add
+@N1151: transfer digits
+@N1152: clear and add
+@N1153: transfer to storage
+@N1154: clear and add
+@N1155: add
+@N1156: transfer digits
+@N1157: clear and add
+@N1160: transfer to storage
+@N1161: sub-program
+@N1162: add one
+@N1163: check
+@N1164: sub-program
+@N1165: add
+@N1166: transfer digits
+@N1167: clear and add
+@N1170: transfer to storage
+@N1171: sub-program
+@N1172: add one
+@N1173: add
+@N1174: transfer digits
+@N1175: clear and add
+@N1176: transfer to storage
+@N1177: clear and add
+@N1200: transfer to storage
+@N1201: clear and add
+@N1202: transfer to storage
+@N1203: sub-program
+@N1204: clear and add
+@N1205: subtract
+@N1206: conditional program
+@N1207: subtract
+@N1210: conditional program
+@N1211: add one
+@N1212: add one
+@N1213: sub-program
+@N1214: clear and add
+@N1215: check
+@N1216: sub-program
+@N1217: sub-program
+@N1220: transfer address
+@N1221: transfer to storage
+@N1222: add one
+@N1223: add one
+@N1224: check
+@N1225: sub-program
+@N1226: sub-program
+@N1227: clear and add
+@N1230: transfer to storage
+@N1231: add one
+@N1232: add
+@N1233: transfer digits
+@N1234: clear and add
+@N1235: transfer to storage
+@N1236: clear and add
+@N1237: transfer to storage
+@N1240: sub-program
+@N1241: add
+@N1242: transfer digits
+@N1243: clear and add
+@N1244: transfer to storage
+@N1245: clear and add
+@N1246: subtract
+@N1247: add
+@N1250: transfer digits
+@N1251: clear and add
+@N1252: multiply digits no roundoff (AND)
+@N1253: transfer to storage
+@N1254: transfer to storage
+@N1255: clear and add
+@N1256: conditional program
+@N1257: sub-program
+@N1260: clear and add
+@N1261: conditional program
+@N1262: add one
+@N1263: add one
+@N1264: check
+@N1265: sub-program
+@N1266: sub-program
+@N1267: clear and add
+@N1270: transfer to storage
+@N1271: add one
+@N1272: add
+@N1273: transfer digits
+@N1274: clear and add
+@N1275: transfer to storage
+@N1276: clear and add
+@N1277: transfer to storage
+@N1300: sub-program
+@N1301: add
+@N1302: transfer digits
+@N1303: clear and add
+@N1304: transfer to storage
+@N1305: clear and add
+@N1306: subtract
+@N1307: transfer to storage
+@N1310: sub-program
+@N1311: clear and add
+@N1312: subtract
+@N1313: conditional program
+@N1314: transfer to storage
+@N1315: clear and add
+@N1316: transfer to storage
+@N1317: clear and add
+@N1320: subtract
+@N1321: conditional program
+@N1322: transfer to storage
+@N1323: clear and add
+@N1324: add
+@N1325: transfer to storage
+@N1326: clear and add
+@N1327: subtract
+@N1330: conditional program
+@N1331: transfer to storage
+@N1332: clear and add
+@N1333: add
+@N1334: transfer to storage
+@N1335: clear and add
+@N1336: subtract
+@N1337: conditional program
+@N1340: transfer to storage
+@N1341: clear and add
+@N1342: add
+@N1343: transfer to storage
+@N1344: clear and add
+@N1345: subtract
+@N1346: conditional program
+@N1347: transfer to storage
+@N1350: clear and add
+@N1351: add
+@N1352: transfer to storage
+@N1353: clear and add
+@N1354: subtract
+@N1355: conditional program
+@N1356: transfer to storage
+@N1357: clear and add
+@N1360: add
+@N1361: transfer to storage
+@N1362: clear and add
+@N1363: subtract
+@N1364: conditional program
+@N1365: transfer to storage
+@N1366: clear and add
+@N1367: add
+@N1370: transfer to storage
+@N1371: clear and add
+@N1372: subtract
+@N1373: conditional program
+@N1374: transfer to storage
+@N1375: clear and add
+@N1376: add
+@N1377: transfer to storage
+@N1400: clear and add
+@N1401: subtract
+@N1402: conditional program
+@N1403: clear and add
+@N1404: add
+@N1405: transfer to storage
+@N1406: clear and add
+@N1407: sub-program
+@N1410: clear and subtract
+@N1411: transfer to storage
+@N1412: sub-program
+@N1413: conditional program
+@N1414: add one
+@N1415: add one
+@N1416: check
+@N1417: sub-program
+@N1420: add
+@N1421: transfer digits
+@N1422: clear and add
+@N1423: transfer to storage
+@N1424: clear and add
+@N1425: subtract
+@N1426: transfer to storage
+@N1427: sub-program
+@N1430: clear and add
+@N1431: transfer to storage
+@N1432: add one
+@N1433: add
+@N1434: transfer digits
+@N1435: clear and add
+@N1436: transfer to storage
+@N1437: clear and add
+@N1440: transfer to storage
+@N1441: sub-program
+@N1442: clear and add
+@N1443: subtract
+@N1444: conditional program
+@N1445: transfer to storage
+@N1446: clear and add
+@N1447: sub-program
+@N1450: clear and add
+@N1451: conditional program
+@N1452: clear and subtract
+@N1453: transfer to storage
+@N1454: sub-program
+@N1455: add one
+@N1456: add one
+@N1457: sub-program
+@N1460: clear and add
+@N1461: transfer digits
+@N1462: transfer digits
+@N1463: sub-program
+@N1464: clear and add
+@N1465: conditional program
+@N1466: clear and subtract
+@N1467: transfer to storage
+@N1470: sub-program
+@N1471: add one
+@N1472: add one
+@N1473: sub-program
+@N1474: clear and add
+@N1475: transfer digits
+@N1476: transfer digits
+@N1477: clear and add
+@N1500: subtract
+@N1501: conditional program
+@N1502: sub-program
+@N1503: clear and subtract
+@N1504: conditional program
+@N1505: clear and add
+@N1506: check
+@N1507: sub-program
+@N1510: sub-program
+@N1511: clear and add
+@N1512: transfer to storage
+@N1513: clear and subtract
+@N1514: conditional program
+@N1515: clear and subtract
+@N1516: transfer to storage
+@N1517: sub-program
+@N1520: transfer digits
+@N1521: transfer digits
+@N1522: clear and subtract
+@N1523: conditional program
+@N1524: add one
+@N1525: sub-program
+@N1635: select input
+@N1636: select input
+@N1637: select input
+@N1640: select input
+@N1641: select input
+@N1642: select input
+@N1643: select input
+@N1644: select input
+@N1645: select input
+@N1646: select input
+@N1647: select input
+@N1650: select input
+@N1651: select input
+@N1652: select input
+@N1653: select input
+@N1654: select input
+@N1655: select input
+@N1656: select input
+@N1657: select input
+@N1660: select input
+@N1661: select input
+@N1662: select input
+@N1663: select input
+@N1664: select input
+@N1665: select input
+@N1666: select input
+@N1667: select input
+@N1670: select input
+@N1671: select input
+@N1672: select input
+@N1673: select input
+@N1674: select input
+@N1675: select input
+@N1676: select input
+@N1677: select input
+@N1700: select input
+@N1701: select input
+@N1702: select input
+@N1703: select input
+@N1704: select input
+@N1705: select input
+@N1706: select input
+@N1707: select input
+@N1710: select input
+@N1711: select input
+@N1712: select input
+@N1713: select input
+@N1714: select input
+@N1715: select input
+@N1716: select input
+@N1717: select input
+@N1720: select input
+@N1721: select input
+@N1722: select input
+@N1723: select input
+@N1724: select input
+@N1725: transfer address
+@N1726: transfer digits
+@N1727: transfer to storage
+@N1730: cf
+@N1731: sum digits - XOR
+@N1732: record
+@N1733: block transfer out
+@N1734: read
+@N1735: block transfer in
+@N1740: clear and subtract
+@N1741: select input
+@N1742: select input
+@N1743: clear and subtract
+@N1744: clear and subtract
+@N1745: select input
+@N1746: select input
+@N1747: select input
+@N1750: select input
+@N1751: select input
+@N1752: clear and add
+@N1753: clear and add
+@N1754: select input
+@N1755: select input
+@N1756: conditional program
+@N1757: block transfer in
+@N1760: exchange
+@N1761: cf pc-swap read-back
+@N1762: read
+@N1763: cf read-back
+@N1764: sub-program
+@N1765: block transfer in
+@N1766: sub-program
+@N1767: cf pc-swap read-back
+@N1770: add B-Reg
+@N1771: check
+@N1772: conditional program
+@N1773: cf read-back
+@N1774: transfer digits
+@N1775: add B-Reg
+@N1776: read
+@N1777: exchange
+@N2000: conditional program
+@N2001: transfer to storage
+@N2002: transfer address
+@N2003: block transfer in
+@N2004: <unused>
+@N2005: sub-program
+@N2006: conditional program
+@N2007: exchange
+@N2010: add B-Reg
+@N2011: transfer digits
+@N2013: read
+@N2014: block transfer out
+@N2015: record
+@N2017: special add
+@N2020: select input
+@N2021: select input
+@N2022: block transfer in
+@N2023: select input
+@N2024: select input
+@N2025: select input
+@N2026: select input
+@N2027: select input
+@N2030: select input
+@N2031: select input
+@N2032: select input
+@N2033: select input
+@N2034: select input
+@N2035: select input
+@N2036: select input
+@N2037: select input
+@N2040: select input
+@N2041: select input
+@N2042: select input
+@N2043: select input
+@N2044: select input
+@N2045: select input
+@N2046: select input
+@N2047: select input
+@N2050: select input
+@N2051: sub-program
+@N2052: select input
+@N2053: select input
+@N2054: select input
+@N2055: clear and add
+@N2056: select input
+@N2057: select input
+@N2060: select input
+@N2061: select input
+@N2062: select input
+@N2063: select input
+@N2064: select input
+@N2065: select input
+@N2066: select input
+@N2067: clear and subtract
+@N2070: select input
+@N2071: select input
+@N2072: record
+@N2073: select input
+@N2074: select input
+@N2075: clear and subtract
+@N2076: select input
+@N2077: select input
+@N2100: record
+@N2101: select input
+@N2102: select input
+@N2103: select input
+@N2104: select input
+@N2105: select input
+@N2106: select input
+@N2107: select input
+@N2110: select input
+@N2111: select input
+@N2112: select input
+@N2113: record
+@N2114: select input
+@N2115: select input

@@ -22,6 +22,7 @@
 
 import sys
 import os
+import psutil
 # sys.path.append('K:\\guy\\History-of-Computing\\Whirlwind\\Py\\Common')
 import argparse
 import wwinfra
@@ -29,6 +30,7 @@ import ww_io_sim
 import ww_flow_graph
 import radar as radar_class
 import time
+from datetime import datetime
 import re
 import museum_mode_params as mm
 
@@ -76,6 +78,29 @@ Breakpoints = {
     #    0032: breakp_dump_sim_state,
     #    0117: breakp_start_trace,
 }
+
+#  Python 3.10.4 (tags/v3.10.4:9d38120, Mar 23 2022, 23:13:41) [MSC v.1929 64 bit (AMD64)] on win32
+#  Type "help", "copyright", "credits" or "license" for more information.
+#  >>> from datetime import datetime
+#  >>> t = datetime.now
+#  >>> t = datetime.today()
+#  >>> print(t)
+#  2022-09-10 22:06:57.195959
+#  >>> tt = t.timetuple()
+#  >>> for it in tt:
+#  ...   print(it)
+#  >>> print(tt)
+#  time.struct_time(tm_year=2022, tm_mon=9, tm_mday=10, tm_hour=22, tm_min=6, tm_sec=57, tm_wday=5, tm_yday=253,
+#  tm_isdst=-1)
+#  >>> print(tt.tm_year)
+#  2022
+#  >>>
+# In 'midnight-restart mode, I want the sim to stop when the day changes at midnight
+def get_the_date():
+    dt = datetime.today()
+    tt = dt.timetuple()
+    # return tt.tm_min//2
+    return tt.tm_mday
 
 
 # convert a Whirlwind int into a signed decimal number string; positive is easy, but
@@ -138,38 +163,38 @@ class CpuClass:
         #  And changed from [] mutable list to () immutable set
         self.op_decode_1958 = [
             #  function    op-name  description       r/w, usec
-            (self.si_inst, "SI", "Select Input",      '',  30),
+            (self.si_inst, "SI", "Select Input",      '',  30, cb.COLOR_IO),
             (self.unused1_inst, "unused", "unused",   '',  0),
-            (self.bi_inst, "BI", "Block Transfer In", 'w', 8000),
-            (self.rd_inst, "RD", "Read",              '',  15),
-            (self.bo_inst, "BO", "Block Transfer Out", 'r', 8000),  # 04
-            (self.rc_inst, "RC", "Record",            '',  22),    # 05
+            (self.bi_inst, "BI", "Block Transfer In", 'w', 8000, cb.COLOR_IO),
+            (self.rd_inst, "RD", "Read",              '',  15, cb.COLOR_IO),
+            (self.bo_inst, "BO", "Block Transfer Out", 'r', 8000, cb.COLOR_IO),  # 04
+            (self.rc_inst, "RC", "Record",            '',  22, cb.COLOR_IO),    # 05
             (self.sd_inst, "SD", "Sum Digits",        'r', 22),    # 06
-            [self.cf_inst, "CF", "Change Fields"],  # 07
-            [self.ts_inst, "TS", "Transfer to Storage"],  # 010,
-            [self.td_inst, "TD", "Transfer Digits"],      # 011
-            [self.ta_inst, "TA", "Transfer Address"],
-            [self.ck_inst, "CK", "Check"],
-            [self.ab_inst, "AB", "Add B Reg"],             # 014
-            [self.ex_inst, "EX", "Exchange"],              # 015
-            [self.cp_inst, "CP", "Conditional program"],   # 016
-            [self.sp_inst, "SP", "Subprogram"],            # 017
-            [self.ca_inst, "CA", "Clear and add"],         # 020
-            [self.cs_inst, "CS", "Clear and subtract"],    # 021
-            [self.ad_inst, "AD", "Add to AC"],             # 022
-            [self.su_inst, "SU", "Subtract"],              # 23o, 19d
-            [self.cm_inst, "CM", "Clear and add Magnitude"],  # 24o, 20d
-            [self.sa_inst, "SA", "Special Add"],
-            [self.ao_inst, "AO", "Add One"],               # 26o, 22d
-            [self.dm_inst, "DM", "Difference of Magnitudes"],  # 027o
-            [self.mr_inst, "MR", "Multiply & Round"],      # 030
-            [self.mh_inst, "MH", "Multiply & Hold"],       # 031
-            [self.dv_inst, "DV", "Divide"],                # 032
-            [self.sl_inst, "SL", "Shift Left Hold/Roundoff"],
-            [self.sr_inst, "SR", "Shift Right Hold/Roundoff"],  # 034
-            [self.sf_inst, "SF", "Scale Factor"],          # 035o
-            [self.cy_inst, "CL", "Cycle Left"],   # 036
-            [self.md_inst, "MD", "Multiply Digits no Roundoff (AND)"],  # 037
+            (self.cf_inst, "CF", "Change Fields",      '', 15, cb.COLOR_CF), # 07
+            (self.ts_inst, "TS", "Transfer to Storage"),  # 010,
+            (self.td_inst, "TD", "Transfer Digits"),      # 011
+            (self.ta_inst, "TA", "Transfer Address"),
+            (self.ck_inst, "CK", "Check"),
+            (self.ab_inst, "AB", "Add B Reg"),             # 014
+            (self.ex_inst, "EX", "Exchange"),              # 015
+            (self.cp_inst, "CP", "Conditional program", '', 14, cb.COLOR_BR),   # 016
+            (self.sp_inst, "SP", "Subprogram",          '', 15, cb.COLOR_BR),            # 017
+            (self.ca_inst, "CA", "Clear and add"),         # 020
+            (self.cs_inst, "CS", "Clear and subtract"),    # 021
+            (self.ad_inst, "AD", "Add to AC"),             # 022
+            (self.su_inst, "SU", "Subtract"),              # 23o, 19d
+            (self.cm_inst, "CM", "Clear and add Magnitude"),  # 24o, 20d
+            (self.sa_inst, "SA", "Special Add"),
+            (self.ao_inst, "AO", "Add One"),               # 26o, 22d
+            (self.dm_inst, "DM", "Difference of Magnitudes"),  # 027o
+            (self.mr_inst, "MR", "Multiply & Round"),      # 030
+            (self.mh_inst, "MH", "Multiply & Hold"),       # 031
+            (self.dv_inst, "DV", "Divide"),                # 032
+            (self.sl_inst, "SL", "Shift Left Hold/Roundoff"),
+            (self.sr_inst, "SR", "Shift Right Hold/Roundoff"),  # 034
+            (self.sf_inst, "SF", "Scale Factor"),          # 035o
+            (self.cy_inst, "CL", "Cycle Left"),   # 036
+            (self.md_inst, "MD", "Multiply Digits (AND)"),  # 037
         ]
 
         self.ext_op_code = {
@@ -231,7 +256,7 @@ class CpuClass:
             self.op_decode = self.op_decode_1958
         else:
             self.cb.log.warn("Error setting isa; must be 1950 or 1958, not %s" % isa_name)
-            exit(1)
+            sys.exit(1)
 
     # convert an integer to a string, including negative number notation
     def wwint_to_str(self, num: Union[None, int]) -> str:
@@ -292,7 +317,21 @@ class CpuClass:
             current_cursor += 1
         return new_str, start_cursor + width
 
-    def print_cpu_state(self, pc, short_opcode, description, address):
+
+    # I added a knob to optionally use ANSI coloring to indicate classes of instruction in the
+    # sim trace.
+    # color choice is driven from the op-code table (and currently only works for 1958 ISA)
+    # Oct 7, 2022
+    # https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
+    def color_trace(self, op_code, string):
+        ret = string
+        if len(self.op_decode[op_code]) >= 6 and self.cb.color_trace:
+            color = self.op_decode[op_code][5]
+            ret = color + string + self.cb.COLOR_default
+        return ret
+
+
+    def print_cpu_state(self, pc, op_code, short_opcode, description, address):
         if self.cb.TracePC != 0:
             s1, cur = self.space_to_cursor("", (" pc:%s:" % self.wwaddr_to_str(pc)), 0, 20)
             s2, cur = self.space_to_cursor(s1, (" %s %s" % (short_opcode, self.wwaddr_to_str(address))), cur, 25)
@@ -306,7 +345,7 @@ class CpuClass:
                 (self.wwint_to_str(self._AReg), self.wwint_to_str(self._BReg), self._SAM, self.wwaddr_to_str(self.PC))
             else:
                 slt = ''
-            print(s5, slt, " ; ", description)
+            print(self.color_trace(op_code, s5 + slt), " ; ", description)
         if self.cb.TracePC > 0:  # if the Trace count is above zero, decrement until zero.  If negative, don't mess...
             self.cb.TracePC -= 1
         if self.cb.tracelog:
@@ -369,7 +408,7 @@ class CpuClass:
             description = self.CommentTab[current_pc]
         else:
             description = oplist[2]
-        self.print_cpu_state(current_pc, oplist[1], description, address)
+        self.print_cpu_state(current_pc, opcode, oplist[1], description, address)
         if current_pc in self.ExecTab:
             self.py_exec(current_pc, self.ExecTab[current_pc])
 
@@ -654,7 +693,7 @@ class CpuClass:
     def ww_branch(self, pc, address, _opcode, _op_description):
         if address >= self.cb.CORE_SIZE:
             print("branch: looks like a bad branch pointer to %oo at pc=%oo" % address, pc)
-            exit()
+            sys.exit()
         if not self.cb.TraceQuiet:
             if address < self.PC:
                 bdir = "backwards"
@@ -1458,6 +1497,7 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
 # ############# Main #############
 
 def poll_sim_io(cpu, cb):
+    ret = cb.NO_ALARM
     if cpu.scope.crt is not None:
         exit_alarm = cpu.scope.crt.ww_scope_update(CoreMem, cb)
         if exit_alarm != cb.NO_ALARM:
@@ -1468,59 +1508,22 @@ def poll_sim_io(cpu, cb):
         key = cpu.scope.crt.win.checkKey()
         if key != '':
             print("key: %s, 0x%x" % (key, ord(key[0])))
-        if key == "Up":
+        if key == 'q' or key == 'Q':
+            ret = cb.QUIT_ALARM
+        if wgt and key == "Up":
             wgt.select_next_widget(direction_up = True)
-        if key == "Down":
+        if wgt and key == "Down":
             wgt.select_next_widget(direction_up = False)
-        if key == "Right":
+        if wgt and key == "Right":
             wgt.increment_addr_location(direction_up = True)
-        if key == "Left":
+        if wgt and key == "Left":
             wgt.increment_addr_location(direction_up = False)
+    return ret
 
-    return cb.NO_ALARM
 
 
-def main():
+def main_run_sim(args):
     global CoreMem, CommentTab   # should have put this in the CPU Class...
-    parser = argparse.ArgumentParser(description='Run a Whirlwind Simulation.')
-    parser.add_argument("corefile", help="file name of simulation core file")
-    parser.add_argument("-t", "--TracePC", help="Trace PC for each instruction", action="store_true")
-    parser.add_argument("-a", "--TraceALU", help="Trace ALU for each instruction", action="store_true")
-    parser.add_argument("-f", "--FlowGraph", help="Collect data to make a flow graph", action="store_true")
-    parser.add_argument("-j", "--JumpTo", type=str, help="Sim Start Address in octal")
-    parser.add_argument("-q", "--Quiet", help="Suppress run-time message", action="store_true")
-    parser.add_argument("-D", "--DecimalAddresses", help="Display trace information in decimal (default is octal)",
-                        action="store_true")
-    parser.add_argument("-c", "--CycleLimit", help="Specify how many instructions to run (zero->'forever')", type=int)
-    parser.add_argument("--CycleDelayTime", help="Specify how many msec delay to insert after each instruction", type=int)
-    parser.add_argument("-r", "--Radar", help="Incorporate Radar Data Source", action="store_true")
-    parser.add_argument("--NoToggleSwitchWarning", help="Suppress warning if WW code writes a read-only toggle switch",
-                        action="store_true")
-    parser.add_argument("--LongTraceFormat", help="print all the cpu registers in TracePC",
-                        action="store_true")
-    parser.add_argument("--TraceCoreLocation", help="Trace references to Core Memory Location <n> octal", type=str)
-    parser.add_argument("--PETRAfile", type=str,
-                        help="File name for photoelectric paper tape reader A input file")
-    parser.add_argument("--PETRBfile", type=str,
-                        help="File name for photoelectric paper tape reader B input file")
-    parser.add_argument("--NoAlarmStop", help="Don't stop on alarms", action="store_true")
-    parser.add_argument("-n", "--NoCloseOnStop", help="Don't close the display on halt", action="store_true")
-    parser.add_argument("--NoZeroOneTSR",
-                        help="Don't automatically return 0 and 1 for locations 0 and 1", action="store_true")
-    parser.add_argument("--SynchronousVideo",
-                        help="Display pixels immediately; Disable video caching buffer ", action="store_true")
-    parser.add_argument("--CrtFadeDelay",
-                        help="Configure Phosphor fade delay (default=0)", type=int)
-    parser.add_argument("--DumpCoreToFile",
-                        help="Dump the contents of core into the named file at end of run", type=str)
-    parser.add_argument("--RestoreCoreFromFile",
-                        help="Restore contents of memory from a core dump file", type=str)
-    parser.add_argument("--DrumStateFile",
-                        help="File to store Persistent state for WW Drum", type=str)
-    parser.add_argument("--MuseumMode",
-                        help="Cycle through states endlessly for museum display", action="store_true")
-
-    args = parser.parse_args()
 
     # instantiate the class full of constants
     cb = wwinfra.ConstWWbitClass()
@@ -1529,11 +1532,11 @@ def main():
     cb.cpu = cpu
     cpu.cpu_switches = wwinfra.WWSwitchClass()
     cb.log = wwinfra.LogClass(sys.argv[0], quiet=args.Quiet)
-    cb.dbwgt = wwinfra.ScreenDebugWidgetClass(CoreMem)
-
+    cb.dbwgt = wwinfra.ScreenDebugWidgetClass(cb, CoreMem)
 
     cycle_limit = 400000  # default limit for number of sim cycles to run
     # crt_fade_delay = 500
+    stop_sim = False
 
     if args.TracePC:
         cb.TracePC = -1
@@ -1614,6 +1617,11 @@ def main():
     else:
         radar = None
 
+    # I added colored text to the trace log using ANSI escape sequences.  This works by default with
+    # Cygwin xterm, but for DOS Command Shell there's a special command to enable ANSI parsing.
+    # The command doesn't seem to exist in xterm, but running it doesn't break anything (yet).
+    os.system("color")
+
     print("Switch CheckAlarmSpecial=%o" % cpu.cpu_switches.read_switch("CheckAlarmSpecial"))
     CoreMem.reset_ff(cpu)   # Reset any Flip Flop Registers specified in the Core file
     # set the CPU start address
@@ -1626,9 +1634,11 @@ def main():
     print("start at 0o%o" % cpu.PC)
 
     start_time = time.time()
+    last_day = get_the_date()
     #  Here Commences The Main Loop
     # simulate each cycle one by one
     sim_cycle = 0
+    alarm = cb.NO_ALARM
     while True:
         # ################### The Simulation Starts Here ###################
         alarm = cpu.run_cycle()
@@ -1669,6 +1679,8 @@ def main():
             if not args.NoAlarmStop:
                 break
         sim_cycle += 1
+        if sim_cycle % 400000 == 0 or alarm == cb.QUIT_ALARM:
+            print("cycle %2.1fM; mem=%dMB" % (sim_cycle / (1000000.0), psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
         if cycle_limit and sim_cycle == cycle_limit:
             if not cb.museum_mode:  # this is the normal case, not configured for Museum Mode forever-cycles
                 cb.log.warn("Cycle Count Exceeded")
@@ -1679,6 +1691,13 @@ def main():
                 cycle_limit = ns.cycle_limit
                 CycleDelayTime = ns.instruction_cycle_delay
                 cb.crt_fade_delay_param = ns.crt_fade_delay
+
+        if args.MidnightRestart and (sim_cycle % 1024):
+            now_day = get_the_date()
+            if last_day != now_day:
+                print("Midnight Detected; Time to Restart!  New Day = %d" % now_day)
+                alarm = cb.NO_ALARM
+                break
 
     # Here Ends The Main Loop
 
@@ -1721,6 +1740,57 @@ def main():
         if d.name == "Drum":  # d points to a DrumClass object
             if args.DrumStateFile:
                 d.save_drum_state(args.DrumStateFile)
+
+    return alarm != cb.NO_ALARM   # if there are any alarms, tell the caller we really want to stop!
+
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Run a Whirlwind Simulation.')
+    parser.add_argument("corefile", help="file name of simulation core file")
+    parser.add_argument("-t", "--TracePC", help="Trace PC for each instruction", action="store_true")
+    parser.add_argument("-a", "--TraceALU", help="Trace ALU for each instruction", action="store_true")
+    parser.add_argument("-f", "--FlowGraph", help="Collect data to make a flow graph", action="store_true")
+    parser.add_argument("-j", "--JumpTo", type=str, help="Sim Start Address in octal")
+    parser.add_argument("-q", "--Quiet", help="Suppress run-time message", action="store_true")
+    parser.add_argument("-D", "--DecimalAddresses", help="Display trace information in decimal (default is octal)",
+                        action="store_true")
+    parser.add_argument("-c", "--CycleLimit", help="Specify how many instructions to run (zero->'forever')", type=int)
+    parser.add_argument("--CycleDelayTime", help="Specify how many msec delay to insert after each instruction", type=int)
+    parser.add_argument("-r", "--Radar", help="Incorporate Radar Data Source", action="store_true")
+    parser.add_argument("--NoToggleSwitchWarning", help="Suppress warning if WW code writes a read-only toggle switch",
+                        action="store_true")
+    parser.add_argument("--LongTraceFormat", help="print all the cpu registers in TracePC",
+                        action="store_true")
+    parser.add_argument("--TraceCoreLocation", help="Trace references to Core Memory Location <n> octal", type=str)
+    parser.add_argument("--PETRAfile", type=str,
+                        help="File name for photoelectric paper tape reader A input file")
+    parser.add_argument("--PETRBfile", type=str,
+                        help="File name for photoelectric paper tape reader B input file")
+    parser.add_argument("--NoAlarmStop", help="Don't stop on alarms", action="store_true")
+    parser.add_argument("-n", "--NoCloseOnStop", help="Don't close the display on halt", action="store_true")
+    parser.add_argument("--NoZeroOneTSR",
+                        help="Don't automatically return 0 and 1 for locations 0 and 1", action="store_true")
+    parser.add_argument("--SynchronousVideo",
+                        help="Display pixels immediately; Disable video caching buffer ", action="store_true")
+    parser.add_argument("--CrtFadeDelay",
+                        help="Configure Phosphor fade delay (default=0)", type=int)
+    parser.add_argument("--DumpCoreToFile",
+                        help="Dump the contents of core into the named file at end of run", type=str)
+    parser.add_argument("--RestoreCoreFromFile",
+                        help="Restore contents of memory from a core dump file", type=str)
+    parser.add_argument("--DrumStateFile",
+                        help="File to store Persistent state for WW Drum", type=str)
+    parser.add_argument("--MuseumMode",
+                        help="Cycle through states endlessly for museum display", action="store_true")
+    parser.add_argument("--MidnightRestart",
+                        help="Restart simulation daily at midnight", action="store_true")
+
+    args = parser.parse_args()
+
+    stop_sim = main_run_sim(args)
+    print("de-alloc mem=%dMB" % (psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
+    sys.exit(stop_sim)
 
 
 if __name__ == "__main__":

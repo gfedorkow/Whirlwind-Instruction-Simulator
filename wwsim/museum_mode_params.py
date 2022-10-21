@@ -44,6 +44,10 @@ class MuseumModeClass:
             RunModeClass(name="Slow", cycle_delay=300, cycle_limit=30, crt_fade_delay=200,
                          pop_up_tag="Slow Motion", core_file=None)
         ]
+        # size of the primary display
+        #self.screen_x = None
+        #self.screen_y = None
+
         self.gfx = None
         self.win = None
         self.xpos = 300
@@ -66,25 +70,14 @@ class MuseumModeClass:
             cb.dbwgt.screen_title = ns.pop_up_tag
         return ns
 
+
+#    # read the size of the display itself from Windows
+#   moved to wwinfra, Aug 25, 2022
+
+    # cause Windows to size and place the CRT graphics window in the top right quarter of the
+    # display.
     def museum_gfx_window_size(self, cb, win):
-        # default to the dimensions for my surface pro built-in screen
-        # The OS reports a kinda useless number when there's an external monitor plugged in
-        screen_x = 1372
-        screen_y = 893
-
-        screens = get_monitors()
-        # if that raises an error, put this first
-        # from os import environ
-        # environ['DISPLAY'] = ':0.0'
-        for s in screens:
-            print(s)
-            if s.is_primary:
-                screen_x = s.width
-                screen_y = s.height
-
-        # (screen_x, screen_y) = win.master.maxsize()
-        print("screen size: %d by %d" % (screen_x, screen_y))
-        geo_arg = "%dx%d+%d+%d" % (screen_x/2, screen_y/2, screen_x/2, 0)
+        geo_arg = "%dx%d+%d+%d" % (cb.screen_x/2, cb.screen_y/2, cb.screen_x/2, 0)
         win.master.geometry(geo_arg)
 
 
