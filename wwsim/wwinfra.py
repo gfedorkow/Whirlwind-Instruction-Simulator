@@ -100,7 +100,7 @@ def octal_or_none(number):
 
 
 class ConstWWbitClass:
-    def __init__(self):
+    def __init__(self, get_screen_size = True):
         # Caution -- Whirlwind puts bit 0 to the left (Big Endian, no?)
         self.WWBIT0 = 0o100000
         self.WWBIT1 = 0o040000
@@ -168,7 +168,8 @@ class ConstWWbitClass:
         self.color_trace = True
         self.museum_mode = None  # command line switch to enable a repeating demo mode.
         self.slow_execution_demo_mode = False # When True, this flag makes the graphics a bit more visible
-        (self.screen_x, self.screen_y, self.gfx_scale_factor) = self.get_display_size()
+        if get_screen_size:
+            (self.screen_x, self.screen_y, self.gfx_scale_factor) = self.get_display_size()
         self.TracePC = 0        # print a line for each instruction if this number is non-zero; decrement it if pos.
         self.LongTraceFormat = True  # prints more CPU registers for each trace line
         self.TraceALU = False   # print a line for add, multiply, negate, etc
@@ -1106,7 +1107,12 @@ class FlexoClass:
         self.flexo_ascii_lcase_dict = self.make_ascii_dict(upper_case=False)
         self.flexo_ascii_ucase_dict = self.make_ascii_dict(upper_case=True)
 
-    def code_to_letter(self, code: int, show_unprintable=False, make_filename_safe=False) -> str:
+    # This routine takes a flexo character and converts it to an ascii character or string
+    # Show_unprintable instructs this routine to make various invisible characters like tabs, newlines and nulls
+    # visible as \t, \n etc
+    # ascii_only returns null strings for Rubout (aka Nullify) and color-change flexo codes so that FC programs
+    # can be edited with a standard text editor
+    def code_to_letter(self, code: int, show_unprintable=False, make_filename_safe=False, ascii_only=False) -> str:
         ret = ''
         if code == self.FLEXO_NULLIFY:
             self.null_count += 1
@@ -1115,7 +1121,7 @@ class FlexoClass:
             self._uppercase = True
         elif code == self.FLEXO_LOWER:
             self._uppercase = False
-        elif code == self.FLEXO_COLOR and show_unprintable is False:
+        elif code == self.FLEXO_COLOR and (show_unprintable == False) and (ascii_only == False):
             self._color = not self._color
             if self._color:
                 return "\033[1;31m"
@@ -1126,6 +1132,10 @@ class FlexoClass:
                 ret = self.flexocode_ucase[code]
             else:
                 ret = self.flexocode_lcase[code]
+
+        if ascii_only:
+            if code == self.FLEXO_NULLIFY or code == self.FLEXO_COLOR:
+                ret = ''
 
         if make_filename_safe is True:
             if ret == '\n':

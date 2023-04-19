@@ -106,12 +106,16 @@ def get_the_date():
 # convert a Whirlwind int into a signed decimal number string; positive is easy, but
 #   negative numbers need conversion.
 # This routine would normally be called by a .exec directive, so I've used an overly-short name...
-def deci(ww_num: int) -> str:
+# By default, I'm prefixing a "0d" to indicate decimal, but that's not suitable for
+def deci(ww_num: int, decimal_0d=True) -> str:
     neg = False
+    leader = ''
+    if decimal_0d:
+        leader = '0d'
     if ww_num & 0o100000:
         ww_num ^= 0o177777  # invert all the bits, including the sign
         neg = True
-    ret = "0d%02d" % ww_num
+    ret = "%s%02d" % (leader, ww_num)
     if neg:
         ret = '-' + ret
     return ret
@@ -383,8 +387,11 @@ class CpuClass:
         for line in cmd.split('\\n '):
             try:
                 exec(line)
-            except :
-                self.cb.log.warn("Exec of '%s' failed at pc=0o%03o" % (line, pc))
+            except Exception as ex:
+                # https://stackoverflow.com/questions/9823936/python-how-do-i-know-what-type-of-exception-occurred
+                template = "An exception of type {0} occurred. Arguments:\n   {1!r}"
+                message = template.format(type(ex).__name__, ex.args)
+                self.cb.log.warn("Exec of '%s' failed at pc=0o%03o\n  %s" % (line, pc, message))
 
 
     def run_cycle(self):
@@ -1608,8 +1615,11 @@ def main_run_sim(args):
     if args.Radar:
                                         # heading is given as degrees from North, counting up clockwise
                                         # name   start x/y   heading  mph  auto-click-time Target-or-Interceptor
-        target_list = [radar_class.AircraftClass('A', 30.0, -36.0, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
-                       radar_class.AircraftClass('B', 100.0, -10.0, 270.0, 250.0, 7, 'I')]  # was 6 revolutions
+        #target_list = [radar_class.AircraftClass('A', 30.0, -36.0, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
+        #               radar_class.AircraftClass('B', 100.0, 0.0, 270.0, 250.0, 7, 'I')]  # was 6 revolutions
+
+        target_list = [radar_class.AircraftClass('A', 30.0, -26+21.37, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
+                       radar_class.AircraftClass('B', 70.0, 0.0, 270.0, 250.0, 7, 'I')]  # was 6 revolutions
         radar = radar_class.RadarClass(target_list, cb, cpu)
         # register a callback for anything that accesses Register 0o27 (that's the Light Gun)
         CoreMem.add_tsr_callback(cb, 0o27, radar.mouse_check_callback)

@@ -885,8 +885,12 @@ class InterventionAndActivateClass:
             return self.cb.NO_ALARM
         else:  # i.e., if the device is #2 to #32d, it's an Activate register
             self.intervention_reg = device
+            if device in self.intervention_reg_name:
+                name = self.intervention_reg_name[device]
+            else:
+                name = "Switch-%d" % device
             print("SI: configured Intervention device 0o%o  %s" %
-                  (self.intervention_reg, self.intervention_reg_name[device]))
+                  (self.intervention_reg, name))
             return self.cb.NO_ALARM
 
     def rc(self, _operand, _acc):  # "record", i.e. output instruction to device

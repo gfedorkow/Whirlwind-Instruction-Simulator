@@ -131,10 +131,10 @@ class RadarClass:
 
 
     # this routine returns the radial coords of all the current aircraft at the given time increment
-    def where_are_they_now(self, current_time):  # time in seconds
+    def where_are_they_now(self, current_time, radial = True):  # time in seconds
         ret = []
         for tgt in self.targets:
-            rng, angle = tgt.get_current_position(current_time)
+            rng, angle = tgt.get_current_position(current_time, radial=radial)
             if rng < 128:
                 ret.append((tgt.name, rng, angle))
         return ret

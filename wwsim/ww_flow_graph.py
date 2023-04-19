@@ -28,6 +28,12 @@ def breakp():
     return
 
 
+# defines for how much stuff to put in each block in the flow graph.
+FLOW_BLOCK_TERSE = 1         # just the identifiers
+FLOW_BLOCK_START_FINISH = 0  # include first and last instruction for each block
+FLOW_BLOCK_ALL_CODE = 2      # include all the instructions and comments in each block
+
+
 # not used
 # from https://stackoverflow.com/questions/45926230/how-to-calculate-1st-and-3rd-quartiles
 def quartile(data):
@@ -41,7 +47,8 @@ def quartile(data):
 
 
 class TraceLogClass:
-    def __init__(self, pc: int, label: str, opcode: str, operand: int, acc: int, comment: str, log_beginning=False, log_end=False):
+    def __init__(self, pc: int, label: str, opcode: str, operand: int, acc: int, comment: str,
+                 log_beginning=False, log_end=False):
         self.pc = pc
         self.label = label     # this would be whatever label the assembler put in the .acore file
         self.opcode = opcode
@@ -60,11 +67,11 @@ def init_log_from_sim():
     tracelog.append(TraceLogClass(0, '', '', 0, 0, '', log_beginning=True))
     return tracelog
 
-def finish_flow_graph_from_sim(cb, cm, cpu, title, output_filename, short=True):
+
+def finish_flow_graph_from_sim(cb, cm, cpu, title, output_filename, block_info_len=FLOW_BLOCK_ALL_CODE):
     tracelog = cb.tracelog
     tracelog.append(TraceLogClass(0, '', '', 0, 0, '', log_end=True))
-    run_flow_analysis(cb, tracelog, cm, cpu, title, output_filename, short)
-
+    run_flow_analysis(cb, tracelog, cm, cpu, title, output_filename, block_info_len)
 
 
 class CoreMemoryMetaData:
@@ -104,17 +111,13 @@ class CoreMemoryMetaData:
             if self.rd(pc).comment == '':
                 self.rd(pc).label = comment
 
-            if self.rd(pc).use_count == None:   # this can't happen any more; I experimented with None as initial use_count
+            if self.rd(pc).use_count is None:   # this can't happen any more; I experimented with None as initial use_count
                 print("Use Count should never be None")
                 exit(-1)
 
 
-
-
 class CoreNodeClass:
     def __init__(self, pc: int, label: str, opcode: str, operand: int, comment: str):
-        if opcode == '':
-            breakp()
 
         self.pc = pc
         self.opcode = opcode
@@ -132,6 +135,7 @@ class CoreNodeClass:
         self.branch_not_taken = False
         self.first_word = False
         self.last_word = False
+        self.block_id = None
 
 
 def add_branch_addr_to_core(core, pc, value, cm, cpu, branches_to=False, branched_to_by=False):
@@ -163,7 +167,7 @@ class BlockClass:  # this class holds a summarized block of code, with links to 
         self.id = 'b%d' % seq
         self.label = 'b%d:%s' % (seq, label)
         self.start_addr = start_addr
-        self.end_addr = 0    #  fill this in later with the last instruction in the block
+        self.end_addr = 0    # fill this in later with the last instruction in the block
         self.start_comment = comment
         self.end_comment = ''
         self.end_instruction = ''
@@ -176,6 +180,10 @@ class BlockClass:  # this class holds a summarized block of code, with links to 
         self.last_block = False
         self.contains_io = False
         self.contains_cf = False
+        self.subroutine_return_address = None   # if this looks like a subroutine, point to the block with the return
+        self.subroutine_return_block_id = None   # if this looks like a subroutine, point to the block with the return
+        self.external_references_block_id = []
+
 
     def add_instruction_notation(self, cpu, pc, opcode, operand):
         label = cpu.wwaddr_to_str(pc, label_only_flag=True)
@@ -187,18 +195,25 @@ class BlockClass:  # this class holds a summarized block of code, with links to 
 #        else:
 #            return "@%03o:%s %05o" % (pc, opcode, operand)
 
+
 BlockSeq = 1   # blocks need unique names, so for now we use a sequence number
 
-
-def make_block(cb, pc, label, comment, opcode, operand, first_block=False, last_block=False):
+# core_node points to the metadata for one core entry
+def make_block(cb, pc, core_node, last_block=False):
     global BlockSeq
 
-    if pc == 0o155:
-        breakp()
+    label = core_node.label
+    comment = core_node.comment
+    opcode = core_node.opcode
+    operand = core_node.operand
+    first_block = core_node.first_word
 
     block = BlockClass(cb, BlockSeq, pc, label, comment, opcode, operand)
     block.first_block = first_block
     block.last_block = last_block
+    if opcode == 'TA':
+        block.subroutine_return_address = operand
+        core_node.subroutine_return = True
 
     BlockSeq += 1
     return block
@@ -301,7 +316,7 @@ def trace_to_core(tracelog, core_meta_data, cm, cpu):
     for i in range(1, len(tracelog)-1):
         pc = tracelog[i].pc
         core_meta_data.make_core_node(pc, tracelog[i].label, tracelog[i].opcode,
-                       tracelog[i].operand, tracelog[i].comment)
+                                      tracelog[i].operand, tracelog[i].comment)
         if i == 1:   # special case -- the first instruction is obviously the start of a block
             core_meta_data.rd(pc).first_word = True
         if i == len(tracelog) - 2:   # special case for end of the trace
@@ -330,8 +345,6 @@ def trace_to_core(tracelog, core_meta_data, cm, cpu):
             add_branch_addr_to_core(core_meta_data, next_pc, pc, cm, cpu, branched_to_by=True)
 
 
-
-
 # Chase down all the Branches Not Taken.  Instructions which could be executed but are
 # not are indicated with a use-count of zero.
 # A branch-not-taken could go to an instruction that we've already tracked; if so, there's
@@ -353,11 +366,14 @@ def static_trace(core_meta_data, start_pc, prev_pc, cm, cpu):
     operand = 0
     while pc < cb.CORE_SIZE:
         instruction = cm.rd(pc)
+        if instruction is None:
+            cb.log.warn("static trace leads to None?")
         opcode = cpu.op_decode[(instruction >> 11) & 0o37][1]
         operand = instruction & cpu.cb.WW_ADDR_MASK
 
         label = cpu.wwaddr_to_str(pc, label_only_flag=True)
-        comment = "no comment"
+        comment = "n/c"   # 'no comment', i.e. there might be one in the source, but the instruction didn't
+                          # execute, so it's not in the trace log.  oops.
         core_meta_data.make_core_node(pc, label, opcode, operand, comment)
         if pc == start_pc:
             core_meta_data.rd(pc).branched_to_by[prev_pc] = 0
@@ -365,7 +381,7 @@ def static_trace(core_meta_data, start_pc, prev_pc, cm, cpu):
         # test for the end of a block; could be a branch, or it could be a halt instruction
         if opcode == "CP" or opcode == "SP" or instruction == 0 or instruction == 0o1:
             break
-        if opcode == "CF":  ## it's hard to trace any further after a CF
+        if opcode == "CF":  # it's hard to trace any further after a CF!
             break
         pc += 1
     if trace:
@@ -422,7 +438,7 @@ def define_blocks(cb, core_meta_data, cm, cpu):
 
     # keep track of 'branches not taken' by static analysis
     # i.e., a CP instruction can take the branch or not.  If the trace case only hits one
-    # direction, we won't see the other direction at all on the graph.
+    # direction, we won't see the other direction at all on the graph, so we'll add it by static tracing
     for pc in range(0, CORESIZE):
         if core_meta_data.rd(pc) is not None:
             if core_meta_data.rd(pc).opcode == 'CP' : # or core_meta_data[pc].last_word:  # this case could apply to CK too, I think, but I haven't seen one...
@@ -459,9 +475,6 @@ def define_blocks(cb, core_meta_data, cm, cpu):
 
     last_word = False
     for pc in range(0, CORESIZE):
-        if (pc == 0o167):
-            breakp()
-
         if core_meta_data.rd(pc) is not None:
             branched_to_by: int = len(core_meta_data.rd(pc).branched_to_by)
             branches_to: int = len(core_meta_data.rd(pc).branches_to)
@@ -479,14 +492,15 @@ def define_blocks(cb, core_meta_data, cm, cpu):
                     print("oops, starting a new block when we're already in one; pc = 0o%05o" % pc)
                     errors += 1
                 else:
-                    current_block = make_block(cb, pc, core_meta_data.rd(pc).label, core_meta_data.rd(pc).comment,
-                                               core_meta_data.rd(pc).opcode, core_meta_data.rd(pc).operand,
-                                               first_block=core_meta_data.rd(pc).first_word)
+                    current_block = make_block(cb, pc, core_meta_data.rd(pc))
 
             if current_block:
-                current_block.instruction_trace += "%05o: %s 0o%05o ;%s\n" % \
-                                                   (pc, core_meta_data.rd(pc).opcode, core_meta_data.rd(pc).operand,
+                current_block.instruction_trace += "@%-10s: %s %-10s ;%s\n" % \
+                                                   (cpu.wwaddr_to_str(pc), core_meta_data.rd(pc).opcode,
+                                                    cpu.wwaddr_to_str(core_meta_data.rd(pc).operand),
                                                     core_meta_data.rd(pc).comment)
+                # update the core memory address to remember which block it's in
+                core_meta_data.rd(pc).block_id = current_block.id
             # we end a block if it branches to something.  There's a special case -- if it's the end of a
             # trace and the block hasn't already been marked as having an end, then we flush out that last
             # bit here.
@@ -513,6 +527,7 @@ def define_blocks(cb, core_meta_data, cm, cpu):
 
     # identify the first and last blocks
     # Dec 31, 2021 And mark any block that has an I/O instruction
+    # Feb 17, 2023 And convert subroutine return addresses to block numbers
     for b in blocklist:
         first = ''
         last = ''
@@ -522,7 +537,50 @@ def define_blocks(cb, core_meta_data, cm, cpu):
             last = '_End'
         b.label = b.label + first + last
         b.contains_io, b.contains_cf = block_contains_io_cf(cb, core_meta_data, b.start_addr, b.end_addr)
+        # This section converts subroutine return addresses into block names
+        # This is not good, but the designated return instruction is not traced, it may not be in
+        # any block, in which case we shall simply say so (for now)
+        if b.subroutine_return_address:
+            if core_meta_data.rd(b.subroutine_return_address) is not None:
+                b.subroutine_return_block_id = core_meta_data.rd(b.subroutine_return_address).block_id
+            else:
+                b.subroutine_return_block_id = "none"
     return blocklist
+
+
+def dump_block_list(blocklist, block_index, core):
+    cpu = core.cb.cpu    # this is embarrassing...
+    print('\n ** Dump block list')
+    for b in blocklist:
+        first = ''
+        last = ''
+        io = ''
+        cf = ''
+        subr = ''  # if this block is the (likely) entry point for a surbroutine, we announce its exit point
+        if b.first_block:
+            first = ' First Block'
+        if b.last_block:
+            last = ' Last Block'
+        if b.contains_io:
+            io = ' I/O'
+        if b.contains_cf:
+            cf = ' CF'
+        if b.subroutine_return_block_id:
+            subr = " subr-entry, return in %s" % b.subroutine_return_block_id
+        print('\n*Block %s start_addr:%o, end %o:%s; %s %s %s%s%s' %
+              (b.id, b.start_addr, b.end_addr, b.start_comment, first, last, io, cf, subr))
+        addr = b.start_addr
+        while (addr < core.cb.CORE_SIZE) and (core.rd(addr) is not None):
+            print('     @%-10s: %s %-10s ; %s' %
+                  (cpu.wwaddr_to_str(addr), core.rd(addr).opcode, cpu.wwaddr_to_str(core.rd(addr).operand),
+                   core.rd(addr).comment))
+            if len(core.rd(addr).branches_to) != 0:
+                break
+            addr += 1
+        print("instruction trace:\n%s" % b.instruction_trace)
+        for link in b.branches_to:
+            print("  %s -> %s;" % (b.id, block_index[link]))
+    print('')
 
 
 # so what I want at the end is a list of blocks and arrows between them
@@ -552,14 +610,43 @@ def define_blocks(cb, core_meta_data, cm, cpu):
 #  b2 -> b3 [label="x0"; style=dashed color="Blue"];
 #  b3 -> b4 [label="x1";  color="Red"];
 
+def format_one_block(b, block_info_len):
+    block_len = b.end_addr - b.start_addr + 1
+    if block_info_len != FLOW_BLOCK_ALL_CODE:
+        short = (block_info_len == FLOW_BLOCK_TERSE)
+        if not short:
+            start_comment = " ;" + b.start_comment
+            end_comment = " ;" + b.end_comment
+        else:
+            start_comment = ''
+            end_comment = ''
+        block_start_label = "%s%s\\n" % (b.start_instruction, start_comment)
+        if block_len > 1:
+            block_end_label = "%s%s\\n" % (b.end_instruction, end_comment)
+        else:
+            block_end_label = ''
+    else:
+        block_start_label = b.instruction_trace
+        block_end_label = ''
+    style = ''
+    if b.first_block or b.last_block or b.contains_io:  # highlight first and last blocks
+        style = ';color="Green"'
+    if b.contains_cf:  # CF fields have special (bad) meaning in flow-graphs, so that supersedes I/O designation
+        style = ';color="Red"'
+    graph_label = '  %s [label="%s(%dw)\\n%s%s"%s;shape=box3d]\n' % \
+                  (b.id, b.label, block_len, block_start_label, block_end_label, style)
+    return(graph_label)
+
+
+
 # The flag 'short' controls whether source code comments should be included
 # in the flow graph bubbles
-def output_block_list(cb, blocklist, core, title, output_file, short):
+def output_block_list(cb, blocklist, core, title, output_file, block_info_len):
     if output_file is None:
         fout = sys.stdout
     else:
         fout = open(output_file, 'wt')
-        print("flow-graph output to file %s" % (output_file))
+        print("flow-graph output to file %s" % output_file)
     # fout.write("\n; *** %s ***\n" % filetype)
 
     block_index = {}  # dictionary of block_id names indexed by start address
@@ -567,33 +654,7 @@ def output_block_list(cb, blocklist, core, title, output_file, short):
         block_index[b.start_addr] = b.id
 
     if Debug:
-        print('\n ** Dump block list')
-        for b in blocklist:
-            first = ''
-            last = ''
-            io = ''
-            cf = ''
-            if b.first_block:
-                first = ' First Block'
-            if b.last_block:
-                last = ' Last Block'
-            if b.contains_io:
-                io = ' I/O'
-            if b.contains_cf:
-                cf = ' CF'
-            print('\n*Block %s start_addr:%o, end %o:%s; %s %s %s%s' %
-                  (b.id, b.start_addr, b.end_addr, b.start_comment, first, last, io, cf))
-            addr = b.start_addr
-            while (addr < core.len()) and (core.rd(addr) is not None):
-                print('     @0o%05o: %s 0o%05o ; %s' %
-                      (addr, core.rd(addr).opcode, core.rd(addr).operand, core.rd(addr).comment))
-                if len(core.rd(addr).branches_to) != 0:
-                    break
-                addr += 1
-            for link in b.branches_to:
-                print("  %s -> %s;" % (b.id, block_index[link]))
-        print('')
-
+        dump_block_list(blocklist, block_index, core)
     # run through the counts to figure out what color to use for edges.  Hot ones get red, not gets black
     edge_color_thresholds = scale_colors(blocklist)
 
@@ -607,25 +668,7 @@ def output_block_list(cb, blocklist, core, title, output_file, short):
     fout.write('  size="15, 15";\n')   # ultimately this sets the pixel size for a png output file
     fout.write(' t0 [label="%s"; shape=folder];\n' % title_box)
     for b in blocklist:
-        block_len = b.end_addr - b.start_addr + 1
-        if not short:
-            start_comment = " ;" + b.start_comment
-            end_comment = " ;" + b.end_comment
-        else:
-            start_comment = ''
-            end_comment = ''
-        block_start_label = "%s%s\\n" % (b.start_instruction, start_comment)
-        if block_len > 1:
-            block_end_label = "%s%s\\n" % (b.end_instruction, end_comment)
-        else:
-            block_end_label = ''
-        style = ''
-        if b.first_block or b.last_block or b.contains_io:  # highlight first and last blocks
-            style = ';color="Green"'
-        if b.contains_cf:  # CF fields have special (bad) meaning in flow-graphs, so that supersedes I/O designation
-            style = ';color="Red"'
-        graph_label = '  %s [label="%s(%dw)\\n%s%s"%s;shape=box3d]\n' % \
-                      (b.id, b.label, block_len, block_start_label, block_end_label, style)
+        graph_label = format_one_block(b, block_info_len)
         fout.write(graph_label)
     fout.write('')
 
@@ -635,15 +678,17 @@ def output_block_list(cb, blocklist, core, title, output_file, short):
             edge_count += 1  # this is just a statistic to print at the end
             edge_branch_count = b.branches_to[link]
             if link != 0:  # the end state is not easy to manage...  it looks like a branch to zero, but
-                           # from an instruction that's not a branch
+                    # from an instruction that's not a branch
                 if edge_branch_count == 0:
                     style = "style=dashed"
                 else:
                     style = ''
-                fout.write('  %s -> %s [label="x%d"; %s color="%s"];\n' % (b.id, block_index[link],
-                                                             edge_branch_count, style,
-                                                             pick_edge_color(edge_color_thresholds,
-                                                                             edge_branch_count)))
+                fout.write('  %s -> %s [label="x%d"; %s color="%s"];\n' %
+                           (b.id, block_index[link], edge_branch_count, style,
+                            pick_edge_color(edge_color_thresholds, edge_branch_count)))
+                if b.subroutine_return_block_id:
+                    fout.write('  %s -> %s [label="rts"; style="dashed" color="Orange"];\n' %
+                               (b.id, b.subroutine_return_block_id))
     fout.write('  }\n')
 
     core_locations = 0
@@ -655,7 +700,7 @@ def output_block_list(cb, blocklist, core, title, output_file, short):
           (len(blocklist), edge_count, core_locations))
 
 
-def run_flow_analysis(cb, tracelog, cm, cpu, title, output_file, short):
+def run_flow_analysis(cb, tracelog, cm, cpu, title, output_file, block_info_len):
     # uh-oh.  The flow analysis keeps an image of core memory with pointers, links, etc for
     # each instruction executed (but not the ones that aren't).  But for static analysis, we also need
     # to know what's in the underlying core memory to see what it would have executed had it got there.
@@ -664,7 +709,7 @@ def run_flow_analysis(cb, tracelog, cm, cpu, title, output_file, short):
     core_meta_data = CoreMemoryMetaData(cb)
     trace_to_core(tracelog, core_meta_data, cm, cpu)  # summarize the trace log into a core image
     blocklist = define_blocks(cb, core_meta_data, cm, cpu)
-    output_block_list(cb, blocklist, core_meta_data, title, output_file, short)
+    output_block_list(cb, blocklist, core_meta_data, title, output_file, block_info_len)
 
 
 def main():
