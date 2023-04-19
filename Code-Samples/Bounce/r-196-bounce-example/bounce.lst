@@ -11,7 +11,7 @@
                         .dbwgt Yi 	0o100  ;  
 
                         .jumpto main      ;  
-                        .org 1         ;  
+                        .ORG 1         ;  
 @0001:100207      main: ca   XI        ; Initialize X axis @@JumpedToBy a0044 
 @0002:040201            ts   Xi        ;  
 @0003:100210            ca   YI        ; initialize Y axis 
@@ -62,7 +62,7 @@
 @0043:070007            cp   loop      ; @5   ; branch to next iteration 
 @0044:074001            sp   main      ; @1   ; start all over to refresh the display 
 
-                        .org 0o201     ;  
+                        .ORG 0o201     ;  
 @0201:000000        Xi: .word 0         ; current i'th value of x @@WrittenBy a0002 a0011 ReadBy loop a0014 a0037 a0041 
 @0202:000000        Yi: .word 0         ; current i'th value of y @@WrittenBy a0004 a0026 a0035 ReadBy a0016 a0034 
 @0203:000000        Vy: .word 0         ; current i'th value of velocity of y @@WrittenBy a0006 a0024 a0032 ReadBy a0020 bounce nobounce 

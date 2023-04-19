@@ -63,16 +63,16 @@ continue:   mr dt   ; multiply velocity by time increment
        sp main ; @1   ; start all over to refresh the display 
        
        .ORG 0o201
-Xi:    .WORD 0          ; current i'th value of x
-Yi:    .WORD 0          ; current i'th value of y
-Vy:    .WORD 0          ; current i'th value of velocity of y
-R:     .WORD 1.07777   ; "coefficient of Restitution", i.e., energy loss during the bounce.  This number should be negative to reverse the ball's direction
-Gdt:   .WORD 0.01000   ; constant graviational constant times delta t
-dt:    .WORD 0.40000   ; constant time step (delta t)
-XI:    .WORD 1.17777 ; (-0.600)         ; constant starting position for X
-YI:    .WORD 0.60000   ; constant starting position for Y
-VYi:   .WORD 0.00000   ; constant starting velocity for Y
-Vxdt:  .WORD 0.00600         ; constant X velocity times delta t
-Xul:   .WORD 0.60000       ; constant X upper limit (i.e., the right-hand end of the simulation)
-Yha:   .WORD 0         ; constant Y value of horizontal axis
+Xi:    .word 0          ; current i'th value of x
+Yi:    .word 0          ; current i'th value of y
+Vy:    .word 0          ; current i'th value of velocity of y
+R:     .word 1.07777   ; "coefficient of Restitution", i.e., energy loss during the bounce.  This number should be negative to reverse the ball's direction
+Gdt:   .word 0.01000   ; constant graviational constant times delta t
+dt:    .word 0.40000   ; constant time step (delta t)
+XI:    .word 1.17777 ; (-0.600)         ; constant starting position for X
+YI:    .word 0.60000   ; constant starting position for Y
+VYi:   .word 0.00000   ; constant starting velocity for Y
+Vxdt:  .word 0.00600         ; constant X velocity times delta t
+Xul:   .word 0.60000       ; constant X upper limit (i.e., the right-hand end of the simulation)
+Yha:   .word 0         ; constant Y value of horizontal axis
 
