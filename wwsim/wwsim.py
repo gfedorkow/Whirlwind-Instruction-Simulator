@@ -1733,6 +1733,7 @@ def main_run_sim(args):
                 print("\nFlexowriter Said:")
                 for c in s:
                     sys.stdout.write(c)
+                sys.stdout.write("\n")
 
         if d.name == "Teletype":
             s = d.get_saved_output()
