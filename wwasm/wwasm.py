@@ -455,11 +455,18 @@ def dot_word_op(src_line, _binary_opcode, _operand_mask):
 
     ret = 0
     # op-code contains the type of .word directive
-    # check that the operand is a number
-    #     if i.operand[0].isalpha():
-    # if src_line.operand.isdigit() == False:
-    #    print(("Warning: Line %d .word operand must be numeric; got %s" % (src_line.linenumber, src_line.operand)))
-    #    ret = 1
+
+    # a flex[hl] directive can have a single quoted letter as an argument; otherwise treat the operand as a
+    # regular number or label
+    if re.match("\.flexh|\.flexl", src_line.operator) and re.match("\"|\'.\"|\'", src_line.operand):
+            # The argument should be a valid flexo character
+            fc = wwinfra.FlexoClass(None)
+            flexo_char = fc.ascii_to_flexo(src_line.operand[1])
+            if re.match("\.flexh", src_line.operator):
+                flexo_char <<= 10  # if it's "high", shift the six-bit code to WW bits 0..5
+            # convert the result back into a string and replace the incoming Operand with the new one
+            src_line.operand = "0o%o" % flexo_char
+
     src_line.instruction_address = NextCoreAddress
     src_line.relative_address_base = CurrentRelativeBase
     src_line.operand_mask = WORD_MASK
@@ -567,7 +574,7 @@ def parse_ww(srcline):
         if len(srcline.label):
             SymTab[srcline.label] = srcline  # store the label in the symtab
             CurrentRelativeBase = NextCoreAddress
-            print("Line %d: Label %s: Implicit Set of Relative Base to 0o%o" %
+            if Debug: print("Line %d: Label %s: Implicit Set of Relative Base to 0o%o" %
                   (srcline.linenumber, srcline.label, CurrentRelativeBase))
         return 0
 
@@ -603,7 +610,7 @@ def parse_ww(srcline):
             SymTab[srcline.label] = srcline
             if srcline.instruction_address is not None:
                 CurrentRelativeBase = srcline.instruction_address
-                print("Line %d: Label %s: Setting Relative Base to 0o%o" %
+                if Debug: print("Line %d: Label %s: Setting Relative Base to 0o%o" %
                         (srcline.linenumber, srcline.label, CurrentRelativeBase))
 
     if len(srcline.operand) == 0:
@@ -809,8 +816,6 @@ def eval_addr_expr(expr: str, line_number):
 # Here we evaluate the arithmetic
 # This routine could run into "programmed parameters", kinda like ifdefs, and will evaluate these
 def label_lookup_and_eval(label_with_expr: str, srcline):
-    if label_with_expr == '-.9000':
-        breakp('-.9000')
 
     # if there's an expression, split it into tokens
     expr_terms_limit = 10  # this is to catch iteration bugs
@@ -837,8 +842,6 @@ def label_lookup_and_eval(label_with_expr: str, srcline):
     new_tokens = []
     for token in tokens:
         tag = token  # remember the name, so we can remove it from the list
-        if token == '+.0':
-            breakp('+.0')
         first_sign = ''   # default is assumed positive
         second_sign = '+'
         if token[0] == '+' or token[0] == '-':
@@ -872,7 +875,7 @@ def label_lookup_and_eval(label_with_expr: str, srcline):
     # op = '+'
     sign = ''
     for token in tokens:
-        val = 0
+        val = None
         if token[0] == '-' or token[0] == '+':
             # op = token[0]
             sign = token[0]
@@ -890,10 +893,8 @@ def label_lookup_and_eval(label_with_expr: str, srcline):
                                 relative_base = srcline.relative_address_base)
         else:
             cb.log.warn("unknown symbol %s in label_lookup_and_eval with %s" % (token, label_with_expr))
-        # if op == '-':
-        #     result -= val
-        # else:
-        result += val
+        if val is not None:
+            result += val
 
     # print("line %d: label_lookup_and_eval(%s) resolves to %d (0o%o)" %
     #      (srcline.linenumber, label_with_expr, result, result))
