@@ -1172,19 +1172,24 @@ class FlexoClass:
             ascii_dict[ascii] = flex
         return ascii_dict
 
-    def ascii_to_flexo(self, ascii_str):
+    # this routine converts an ASCII leter into a Flexocode
+    # The routine should be extended to accept and return a string, probably
+    # by returning an array of flexocodes, not just one for one.
+    # Aside from being a convenient way to define a string in a program
+    # binary, this would allow upper and lower case to work!
+    def ascii_to_flexo(self, ascii_letter):
         upper_case = False
-        ret = ''
-        flexo_code = '?#'
-        for a in ascii_str:
-            if a in self.flexo_ascii_lcase_dict:
-                flexo_code = self.flexo_ascii_lcase_dict[a]
-            elif a in self.flexo_ascii_ucase_dict:
-                flexo_code = self.flexo_ascii_ucase_dict[a]
-                upper_case = True
-            else:
-                self.cb.log.warn("no flexo translation for '%s'", a)
-##            if upper_case and self._uppercase
+        flexo_code = None
+        a = ascii_letter
+        if a in self.flexo_ascii_lcase_dict:
+            flexo_code = self.flexo_ascii_lcase_dict[a]
+        elif a in self.flexo_ascii_ucase_dict:
+            flexo_code = self.flexo_ascii_ucase_dict[a]
+            upper_case = True
+        else:
+            self.cb.log.warn("no flexo translation for '%s'", a)
+        return flexo_code
+
 
     def is_this_for_me(self, io_address):
         if (io_address & self.FLEXO_ADDR_MASK) == self.FLEXO_BASE_ADDRESS:
