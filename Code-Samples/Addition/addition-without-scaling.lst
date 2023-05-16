@@ -1,0 +1,19 @@
+                        ;  addition demo
+                        ;  Jeremiah DeGreeff May 2023
+                        ;  copied from http://bitsavers.informatik.uni-stuttgart.de/pdf/mit/whirlwind/R-series/R-196_Programming_for_Whirlwind_I_Jun51.pdf
+                        ;  page 23
+
+                        .jumpto main      ;  
+                        .ORG 0o040     ;  
+@0040:100200      main: ca   a         ; a -> AC 
+@0041:110201            ad   b         ; a + b -> AC 
+@0042:110202            ad   c         ; a + b + c -> AC 
+@0043:040203            ts   res       ; a + b + c -> res 
+                        .exec print(f"### result: {py_int(cm.rd(rl('res')))} ###")  ;  
+@0044:000000            si   0         ; halt 
+
+                        .ORG 0o200     ;  
+@0200:000004         a: .word 0.00004   ;  @@ReadBy main 
+@0201:000003         b: .word 0.00003   ;  @@ReadBy a0041 
+@0202:000001         c: .word 0.00001   ;  @@ReadBy a0042 
+@0203:000000       res: .word 0         ;  @@WrittenBy a0043 

@@ -1,0 +1,61 @@
+                        ;  selection sort demo
+                        ;  Jeremiah DeGreeff May 2023
+                        ;  based on ideas from http://bitsavers.informatik.uni-stuttgart.de/pdf/mit/whirlwind/R-series/R-196_Programming_for_Whirlwind_I_Jun51.pdf
+                        ;  pages 33-43
+
+                        .jumpto main      ;  
+                        .ORG 0o040     ;  
+@0040:104200      main: cs   reset     ; load initial value for outer loop counter 
+@0041:040201            ts   count1    ; reset outer loop counter 
+@0042:100201      loop: ca   count1    ; load initial value for inner loop counter @@JumpedToBy a0100 
+@0043:040202            ts   count2    ; reset inner counter 
+@0044:100206     load1: ca   data      ; load x1 @@WrittenBy a0074 ReadBy a0074 
+@0045:040203            ts   max       ; x1 is max for now 
+@0046:100204            ca   x1        ; load address of x1 
+@0047:044073            td   swap2     ; copy address of x1 into instruction 
+@0050:040205            ts   x2        ; store address of x1 as address of x2 
+@0051:130205            ao   x2        ; store address of x1 + 1 as address of x2 
+@0052:044054            td   if        ; copy address of x2 into instruction 
+@0053:044057            td   then      ; copy address of x2 into instruction 
+@0054:100000        if: ca   0         ; load value of x2 @@JumpedToBy a0067 WrittenBy a0052 endif ReadBy endif 
+@0055:114203            su   max       ; compare x2 to max 
+@0056:070063            cp   endif     ; jump if smaller than max 
+@0057:100000      then: ca   0         ; load value of x2 @@WrittenBy a0053 a0064 ReadBy a0064 
+@0060:040203            ts   max       ; x2 is the new max 
+@0061:100205            ca   x2        ; load address of max 
+@0062:044071            td   swap1     ; copy address of max into instruction 
+@0063:130054     endif: ao   if        ; increment x2 address @@JumpedToBy a0056 
+@0064:130057            ao   then      ; increment x2 address 
+@0065:130205            ao   x2        ; increment x2 address 
+@0066:130202            ao   count2    ; increment inner loop counter 
+@0067:070054            cp   if        ; continue inner loop if counter hasn't expired 
+                        .exec print(f"### max: {py_int(cm.rd(rl('max')))} ###")  ;  
+@0070:100206     load2: ca   data      ; load value to swap @@WrittenBy a0075 ReadBy a0075 
+@0071:040000     swap1: ts   0         ; write value to address of max @@WrittenBy a0062 
+@0072:100203            ca   max       ; load value to swap 
+@0073:040000     swap2: ts   0         ; write value to address of x1 @@WrittenBy a0047 
+                        .exec for i in range(0, 10): print(f"### data[{i}] = {py_int(cm.rd(rl('data') + i))} ###")  ;  
+@0074:130044            ao   load1     ; increment x1 address 
+@0075:130070            ao   load2     ; increment x1 address 
+@0076:130204            ao   x1        ; increment x1 address 
+@0077:130201            ao   count1    ; increment outer loop counter 
+@0100:070042            cp   loop      ; continue outer loop if counter hasn't expired 
+@0101:000000            si   0         ; halt 
+
+                        .ORG 0o200     ;  
+@0200:000010     reset: .word 0.00010   ; (n - 2) * 2^-15 to perform n - 1 comparisons @@ReadBy main 
+@0201:000000    count1: .word 0.00000   ; outer loop counter @@WrittenBy a0041 a0077 ReadBy loop a0077 
+@0202:000000    count2: .word 0.00000   ; inner loop counter @@WrittenBy a0043 a0066 ReadBy a0066 
+@0203:000000       max: .word 0.00000   ; maximum value seen in this inner loop @@WrittenBy a0045 a0060 ReadBy a0055 a0072 
+@0204:000206        x1: .word data      ; address of x1 @@WrittenBy a0076 ReadBy a0046 a0076 
+@0205:000000        x2: .word 0.00000   ; address of x2 @@WrittenBy a0050 a0051 a0065 ReadBy a0051 a0061 a0065 
+@0206:000004      data: .word 0.00004   ;  @@ReadBy load1 load2 
+@0207:000003            .word 0.00003   ;  
+@0210:000011            .word 0.00011   ;  
+@0211:000030            .word 0.00030   ;  
+@0212:000023            .word 0.00023   ;  
+@0213:000007            .word 0.00007   ;  
+@0214:000004            .word 0.00004   ;  
+@0215:000000            .word 0.00000   ;  
+@0216:000011            .word 0.00011   ;  
+@0217:000025            .word 0.00025   ;  
