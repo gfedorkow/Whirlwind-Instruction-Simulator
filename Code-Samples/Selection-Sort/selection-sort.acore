@@ -1,0 +1,70 @@
+
+; *** Core Image ***
+%File: ../Code-Samples/Selection-Sort/selection-sort.ww
+%TapeID: None
+%JumpTo 0o40
+@C0040: 0104200 0040201 0100201 0040202 0100206 0040203 0100204 0044073 
+@C0050: 0040205 0130205 0044054 0044057 0100000 0114203 0070063 0100000 
+@C0060: 0040203 0100205 0044071 0130054 0130057 0130205 0130202 0070054 
+@C0070: 0100206 0040000 0100203 0040000 0130044 0130070 0130204 0130201 
+@C0100: 0070042 0000000  None    None    None    None    None    None   
+@C0200: 0000010 0000000 0000000 0000000 0000206 0000000 0000004 0000003 
+@C0210: 0000011 0000030 0000023 0000007 0000004 0000000 0000011 0000025 
+@S0040: main
+@S0042: loop
+@S0044: load1
+@S0054: if
+@S0057: then
+@S0063: endif
+@S0070: load2
+@S0071: swap1
+@S0073: swap2
+@S0200: reset
+@S0201: count1
+@S0202: count2
+@S0203: max
+@S0204: x1
+@S0205: x2
+@S0206: data
+@E0070: print(f"### max: {py_int(cm.rd(rl('max')))} ###")
+@E0074: for i in range(0, 10): print(f"### data[{i}] = {py_int(cm.rd(rl('data') + i))} ###")
+@N0040: load initial value for outer loop counter
+@N0041: reset outer loop counter
+@N0042: load initial value for inner loop counter
+@N0043: reset inner counter
+@N0044: load x1
+@N0045: x1 is max for now
+@N0046: load address of x1
+@N0047: copy address of x1 into instruction
+@N0050: store address of x1 as address of x2
+@N0051: store address of x1 + 1 as address of x2
+@N0052: copy address of x2 into instruction
+@N0053: copy address of x2 into instruction
+@N0054: load value of x2
+@N0055: compare x2 to max
+@N0056: jump if smaller than max
+@N0057: load value of x2
+@N0060: x2 is the new max
+@N0061: load address of max
+@N0062: copy address of max into instruction
+@N0063: increment x2 address
+@N0064: increment x2 address
+@N0065: increment x2 address
+@N0066: increment inner loop counter
+@N0067: continue inner loop if counter hasn't expired
+@N0070: load value to swap
+@N0071: write value to address of max
+@N0072: load value to swap
+@N0073: write value to address of x1
+@N0074: increment x1 address
+@N0075: increment x1 address
+@N0076: increment x1 address
+@N0077: increment outer loop counter
+@N0100: continue outer loop if counter hasn't expired
+@N0101: halt
+@N0200: (n - 2) * 2^-15 to perform n - 1 comparisons
+@N0201: outer loop counter
+@N0202: inner loop counter
+@N0203: maximum value seen in this inner loop
+@N0204: address of x1
+@N0205: address of x2
