@@ -24,6 +24,8 @@ if os.path.exists("project_exec.py"):
     sys.path.append('.')
     from project_exec import *
 
+def breakp(reason=""):
+    print("Breakpoint %s" % reason)
 
 # My WW Radar works in degrees, with angle=zero being North
 # increasing angle is counter-clockwise
@@ -97,11 +99,15 @@ class RadarClass:
         self.azimuth_steps = 256
         self.rng_list = []   # list of radar reflections at the current azimuth
         self.current_azimuth = 0
+        self.last_azimuth = -1
+        self.slots_into_rotation = 0  # count how many transmission slots we are into the antenna rotation
 
         self.targets = target_list
         self.elapsed_time = 0
         self.antenna_revolutions = 0
-        self.azimuth_next = True
+        self.azimuth_next = True   # We (roughly) alternate sending Range and Azimuth
+
+        self.mouse_clicked_once_for_autostart = False
 
         # This program is the only one that uses the older Light Gun interface linked in through
         # one of the Flip Flop registers.  To avoid messing with the rest of the sim for this
@@ -110,13 +116,13 @@ class RadarClass:
         self.light_gun_ff_reg = 0   # zero in the light-gun flip flop is "no reading"
         self.cpu = cpu       # keep this around to check the mouse
         self.cb = cb
+        self.crt = None      # pick up the CRT handle when the radar axis is drawn in draw_axis
         self.exit_alarm = False   # this is a flag back to the main sim loop to exit in case of a Red X
 
         self.radar_time_increment = 1.0/50.0  # 20 msec per word from the remote radar station
         time_per_reading = 0.02    # a number is transmitted over the phone link every 20 msec
         self.time_per_revolution = 15  # seconds
-        readings_per_rotation = int(self.time_per_revolution / self.radar_time_increment)  #  that's a long way of saying "750"
-        azimuths_per_rotation = readings_per_rotation / 2
+        self.readings_per_rotation = int(self.time_per_revolution / self.radar_time_increment)  #  that's a long way of saying "750"
         self.last_aircraft_name_sent = None
 
         project_register_radar(self)
@@ -143,24 +149,43 @@ class RadarClass:
     # this action controls timing of the simulation; a word from the radar unit would be sent
     # every 20 msec, providing a time base.
     def get_next_radar(self):
-        if self.azimuth_next:
+
+        self.current_azimuth = int(round((self.slots_into_rotation / self.readings_per_rotation * 256)))
+        if self.slots_into_rotation == 0:
+            new_rotation = True
+        else:
+            new_rotation = False
+        # There are 750 slots in a rotation, but only 256 different azimuth values.
+        # Send a new azimuth each time we've gone about three 20 msec slots and we're on to the next value
+        if self.azimuth_next and (self.current_azimuth != self.last_azimuth):
             craft_list = self.where_are_they_now(self.elapsed_time)
             self.rng_list = []
             for craft in craft_list:
-                azi = int(round(craft[2] * 256.0 / 360.0))
+                # heading is given as degrees from North, counting up clockwise
+                # craft = [name   start x/y   heading  mph  auto-click-time Target-or-Interceptor]
+                azi = int(round(craft[2] * 256.0 / 360.0))   # Heading
                 if azi == self.current_azimuth:
                     self.rng_list.append((craft[0], craft[1]))  # append nametag and range to list
+            # Holy Cow -- Israel's code only works if he gets some 'noise' range readings...  the code doesn't
+            # notice that it's out of the scan sector until it gets a non-zero range return from an untracked
+            # plane, or from clutter.  So here's a fake reading from due-north...
+            # And it appears that it doesn't work unless the clutter is clearly outside the zone of both the tracked
+            # aircrafts!
             if self.current_azimuth == 0 and len(self.rng_list) == 0:
-                self.rng_list.append(("north_marker", 0.0))
+                self.rng_list.append(("North_marker", 100.0))
+            if self.current_azimuth == 128 and len(self.rng_list) == 0:
+                self.rng_list.append(("South_marker", 100.0))   # note Azimuth is measured in 1/256ths of a revolution
             azi_code = (self.current_azimuth | 0o400) << 6   # convert to phone line coding
-            ret = (azi_code, "radar azimuth %d" % (self.current_azimuth))
-            self.azimuth_next = False
-            self.current_azimuth += 1
-            if self.current_azimuth == self.azimuth_steps:
-                self.current_azimuth = 0
-                self.antenna_revolutions += 1
+            ret = (azi_code, "Radar Return: azimuth %d" % (self.current_azimuth), new_rotation)
+            self.azimuth_next = False  # given the automatic 256 of 750 azimuth slots, this flag is probably not needed...
+            self.last_azimuth = self.current_azimuth
+            if self.current_azimuth % 4 == 0:
+                self.draw_radar_scan(self.current_azimuth)
 
-        else:  # else it's Range Next.  There might be one range at this azi, or possibly two at the same azi
+        # if we didn't create an Azimuth slot, then it has to be a range slot
+        # Most azimuth readings will have a null range, since most antenna angles don't see a target, and even
+        # those that do, we only send the target once.
+        else:  # There might be one range at this azi, or possibly more at the same azi
             if len(self.rng_list) > 0:
                 (tgt_name, tgt_rng) = self.rng_list[0]
                 del self.rng_list[0]
@@ -181,9 +206,13 @@ class RadarClass:
                 angle_degrees -= 360
             (x, y) = pol2cart(tgt_rng, angle_degrees)
             ret = (rng_code, "Radar Return: %s rng=%d azi=%d (%d degrees) (x,y)=(%3.1f, %3.1f) miles at t=%3.2f seconds" %
-                   (tgt_name, tgt_rng, self.current_azimuth, angle_degrees, x, y, self.elapsed_time))
+                   (tgt_name, tgt_rng, self.current_azimuth, angle_degrees, x, y, self.elapsed_time), new_rotation)
             self.last_aircraft_name_sent = tgt_name
             self.mouse_autoclick(tgt_name)  # check to see if we should AutoClick on this antenna revolution
+
+            # total debug hack; why is tracking failing after t=764??
+            # if (self.elapsed_time > 750 and self.elapsed_time < 800):
+            #     self.cb.TracePC = 250
 
             # yeah, ok, if the two targets are at the same spot, we'll send two identical Range readings
             # This couldn't actually happen (there's only one echo) but I don't think the WW program will care.
@@ -192,6 +221,10 @@ class RadarClass:
                 self.azimuth_next = True
 
         self.elapsed_time += self.radar_time_increment
+        self.slots_into_rotation += 1
+        if self.slots_into_rotation >= self.readings_per_rotation:
+            self.slots_into_rotation = 0
+            self.antenna_revolutions += 1
         return ret
 
 
@@ -216,14 +249,17 @@ class RadarClass:
     # This allows tests to run repeatedly and with no manual intervention.  (which got old
     # after the first 1,000 times...)
     def mouse_autoclick(self, tgt_name):
-
         # This Pause was inserted Apr 21, 2021 to allow me to make a video demo
-        #  When it hits this pause, the screen is displayed, so I can "share" it
+        #  When it hits this pause, the screen is displayed, so I can "share" it with
         # zoom and record the rest of the session
-        if self.antenna_revolutions == 1 and self.current_azimuth == 1:
+        # This 'feature' can only work with the xwin display, so I bypass the check if we're
+        # using the analog display mode.
+        if self.mouse_clicked_once_for_autostart == False and self.cpu.scope.crt and \
+                self.cpu.scope.crt.win and self.antenna_revolutions == 1 and self.current_azimuth == 10:
             print("wait for mouse")
             self.cpu.scope.crt.win.getMouse()
             print("let's go!")
+            self.mouse_clicked_once_for_autostart = True
 
         for tgt in self.targets:
             if self.antenna_revolutions > 0 and \
@@ -240,6 +276,7 @@ class RadarClass:
 
 
     def draw_axis(self, crt):
+        self.crt = crt  # keep this around to draw debug markings on the 'radar' screen
         axis_color = crt.gfx.color_rgb(80, 0, 80)
         xaxis = crt.gfx.Line(crt.gfx.Point(0, crt.WIN_MAX_COORD / 2),
                               crt.gfx.Point(crt.WIN_MAX_COORD, crt.WIN_MAX_COORD / 2))
@@ -262,6 +299,25 @@ class RadarClass:
             radial_axis[i].setOutline(axis_color)
             radial_axis[i].setWidth(1)
             radial_axis[i].draw(crt.win)
+
+
+    # This routine shows debug information around the (circular) edge of the radar screen, e.g., where the
+    # antenna is pointing, who's in the Scan zone, etc
+    def draw_radar_scan(self, azimuth):
+        if self.crt is None:
+            return
+
+        # show the antenna angle
+        (x, y) = pol2cart((self.crt.WIN_MAX_COORD - 10)/2 , (azimuth/256.0) * 365.0)  # radius in miles, angle in degrees
+        ww_x = self.crt.WIN_MAX_COORD/2 + x
+        ww_y = self.crt.WIN_MAX_COORD/2 - y  # remember that the Y Axis is upside down
+#        self.crt.ww_draw_point(ww_x, ww_y, color=(0.0, 1.0, 0.0), light_gun=False)
+        color = self.crt.gfx.color_rgb(255, 255, 255)
+        c = self.crt.gfx.Circle(self.crt.gfx.Point(ww_x, ww_y), 5)  # was 5 # the last arg is the circle dimension
+        c.setFill(color)
+        c.draw(self.crt.win)
+        self.crt.gfx.update()
+        # breakp("")
 
 
 def main():

@@ -69,8 +69,8 @@ def breakp_start_trace(cpu):
     cpu.cb.TracePC = -1  # turn on trace 'forever'
 
 
-def breakp():
-    print("** Breakpoint **")
+def breakp(msg=""):
+    print("** Breakpoint %s**" % msg)
 
 
 Breakpoints = {
@@ -408,6 +408,12 @@ class CpuClass:
                   (self.PC, opcode, address))
         current_pc = self.PC
         self.PC += 1  # default is just the next instruction -- if it's a branch, we'll reset the PC later
+
+        # the .exec is associated with the "next" statement following it in the source code
+        # So we should exec it 'before' the next instruction executes
+        if current_pc in self.ExecTab:
+            self.py_exec(current_pc, self.ExecTab[current_pc])
+
         oplist = self.op_decode[opcode]
         ret = (oplist[0](current_pc, address, oplist[1], oplist[2]))   # this actually runs the instruction...
 
@@ -416,8 +422,6 @@ class CpuClass:
         else:
             description = oplist[2]
         self.print_cpu_state(current_pc, opcode, oplist[1], description, address)
-        if current_pc in self.ExecTab:
-            self.py_exec(current_pc, self.ExecTab[current_pc])
 
         if current_pc in Breakpoints:
             Breakpoints[current_pc](self)
@@ -1512,7 +1516,10 @@ def poll_sim_io(cpu, cb):
 
         wgt = cb.dbwgt
         # check the keyboard in the CRT window for a key press
-        key = cpu.scope.crt.win.checkKey()
+        # But only if the laptop display is in use!  i.e., don't bother with this if the analog display is active
+        key = ''
+        if cpu.scope.crt.win:
+            key = cpu.scope.crt.win.checkKey()
         if key != '':
             print("key: %s, 0x%x" % (key, ord(key[0])))
         if key == 'q' or key == 'Q':
@@ -1533,13 +1540,13 @@ def main_run_sim(args):
     global CoreMem, CommentTab   # should have put this in the CPU Class...
 
     # instantiate the class full of constants
-    cb = wwinfra.ConstWWbitClass()
+    cb = wwinfra.ConstWWbitClass(get_screen_size = not args.AnalogScope)  # this test probably shouldn't be here
     CoreMem = wwinfra.CorememClass(cb)
     cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
     cb.cpu = cpu
     cpu.cpu_switches = wwinfra.WWSwitchClass()
     cb.log = wwinfra.LogClass(sys.argv[0], quiet=args.Quiet)
-    cb.dbwgt = wwinfra.ScreenDebugWidgetClass(cb, CoreMem)
+    cb.dbwgt = wwinfra.ScreenDebugWidgetClass(cb, CoreMem, args.AnalogScope)
 
     cycle_limit = 400000  # default limit for number of sim cycles to run
     # crt_fade_delay = 500
@@ -1612,18 +1619,23 @@ def main_run_sim(args):
     if len(dbwgt_list):
         parse_and_save_screen_debug_widgets(cb, dbwgt_list)
 
+    # This command line arg switches graphical output to an analog oscilloscope display
+    if args.AnalogScope:
+        cb.analog_display = True
+
     if args.Radar:
                                         # heading is given as degrees from North, counting up clockwise
                                         # name   start x/y   heading  mph  auto-click-time Target-or-Interceptor
         #target_list = [radar_class.AircraftClass('A', 30.0, -36.0, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
         #               radar_class.AircraftClass('B', 100.0, 0.0, 270.0, 250.0, 7, 'I')]  # was 6 revolutions
 
-        target_list = [radar_class.AircraftClass('A', 30.0, -26+21.37, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
-                       radar_class.AircraftClass('B', 70.0, 0.0, 270.0, 250.0, 7, 'I')]  # was 6 revolutions
+        target_list = [radar_class.AircraftClass('T', 30.0, -26+21.37, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
+                       radar_class.AircraftClass('I', 70.0,  0.0, 270.0, 250.0, 7, 'I'), # was 6 revolutions
+                      ]
         radar = radar_class.RadarClass(target_list, cb, cpu)
         # register a callback for anything that accesses Register 0o27 (that's the Light Gun)
         CoreMem.add_tsr_callback(cb, 0o27, radar.mouse_check_callback)
-        cb.radar = radar   # put a link to the radar class in cb so we can use it to decide what kind of axis to draw
+        cb.radar = radar   # put a link to the radar class in cb, so we can use it to decide what kind of axis to draw
     else:
         radar = None
 
@@ -1649,67 +1661,70 @@ def main_run_sim(args):
     # simulate each cycle one by one
     sim_cycle = 0
     alarm = cb.NO_ALARM
-    while True:
-        # ################### The Simulation Starts Here ###################
-        alarm = cpu.run_cycle()
-        # ################### The Rest is Just Overhead  ###################
-        if (sim_cycle % 500 == 0) or args.SynchronousVideo or CycleDelayTime:
-            exit_alarm = poll_sim_io(cpu, cb)
-            if exit_alarm != cb.NO_ALARM:
-                alarm = exit_alarm
+    # the main sim loop is enclosed in a try/except so we can clean up from a keyboard interrupt
+    # Mostly this doesn't matter...  but the analog GPIO and SPI libraries need to be closed
+    # to avoid an error message on subsequent calls
+    try:
+        while True:
+            # ################### The Simulation Starts Here ###################
+            alarm = cpu.run_cycle()
+            # ################### The Rest is Just Overhead  ###################
+            if (sim_cycle % 500 == 0) or args.SynchronousVideo or CycleDelayTime:
+                exit_alarm = poll_sim_io(cpu, cb)
+                if exit_alarm != cb.NO_ALARM:
+                    alarm = exit_alarm
 
-        if CycleDelayTime:
-            time.sleep(CycleDelayTime/1000)  # Sleep() takes time in fractional seconds
+            if CycleDelayTime:
+                time.sleep(CycleDelayTime/1000)  # Sleep() takes time in fractional seconds
 
-        if args.Radar and (sim_cycle % 30 == 0):
-            # the radar should return something every 20 msec, about every thousand instructions.
-            # This is **like totally forever**, and I'm not taking it any more!
-            # So I'll snoop the radar mailbox.  When the code picks up a new value, it sets the mailbox
-            # to -1.  So I'll check *much* more often, but not put something into the mailbox until
-            # the last code has been consumed.
-            last_code = CoreMem.rd(0o34)
-            if last_code == 0o177777:
-                (rcode, reading_name) = radar.get_next_radar()
-                CoreMem.wr(0o34, rcode)
-                if rcode != 0 and (rcode & 0o40000 == 0):
-                    print("%s: radar-code=0o%o" % (reading_name, rcode))
-                # if cpu.scope.crt is not None:
-                #     (exit_alarm, gun_reading) = cpu.scope.rd(None, None)
-                #     if exit_alarm != cb.NO_ALARM:
-                #         alarm = exit_alarm
-                #     if gun_reading != 0:
-                #         CoreMem.wr(0o27, gun_reading)
-                if radar.exit_alarm != cb.NO_ALARM:
-                    alarm = radar.exit_alarm
+            if args.Radar and (sim_cycle % 30 == 0):
+                # the radar should return something every 20 msec, about every thousand instructions.
+                # This is **like totally forever**, and I'm not taking it any more!
+                # So I'll snoop the radar mailbox.  When the code picks up a new value, it sets the mailbox
+                # to -1.  So I'll check *much* more often, but not put something into the mailbox until
+                # the last code has been consumed.
+                last_code = CoreMem.rd(0o34)
+                if last_code == 0o177777:
+                    (rcode, reading_name, new_rotation) = radar.get_next_radar()
+                    CoreMem.wr(0o34, rcode)
+                    if new_rotation:
+                        print("\n")
+                    if rcode != 0 and (rcode & 0o40000 == 0):
+                        print("%s: radar-code=0o%o" % (reading_name, rcode))
+                    if radar.exit_alarm != cb.NO_ALARM:
+                        alarm = radar.exit_alarm
 
 
-        if alarm != cb.NO_ALARM:
-            print("Alarm '%s' (%d) at PC=0o%o (0d%d)" % (cb.AlarmMessage[alarm], alarm, cpu.PC - 1, cpu.PC - 1))
-            # the normal case is to stop on an alarm; if the command line flag says not to, we'll try to keep going
-            if not args.NoAlarmStop:
-                break
-        sim_cycle += 1
-        if sim_cycle % 400000 == 0 or alarm == cb.QUIT_ALARM:
-            print("cycle %2.1fM; mem=%dMB" % (sim_cycle / (1000000.0), psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
-        if cycle_limit and sim_cycle == cycle_limit:
-            if not cb.museum_mode:  # this is the normal case, not configured for Museum Mode forever-cycles
-                cb.log.warn("Cycle Count Exceeded")
-                break
-            else:  # else continue the simulation with the next set of parameters
-                ns = cb.museum_mode.next_state(cb, cpu)
-                sim_cycle = 0
-                cycle_limit = ns.cycle_limit
-                CycleDelayTime = ns.instruction_cycle_delay
-                cb.crt_fade_delay_param = ns.crt_fade_delay
+            if alarm != cb.NO_ALARM:
+                print("Alarm '%s' (%d) at PC=0o%o (0d%d)" % (cb.AlarmMessage[alarm], alarm, cpu.PC - 1, cpu.PC - 1))
+                # the normal case is to stop on an alarm; if the command line flag says not to, we'll try to keep going
+                # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
+                if not args.NoAlarmStop or alarm == cb.QUIT_ALARM:
+                    break
+            sim_cycle += 1
+            if sim_cycle % 400000 == 0 or alarm == cb.QUIT_ALARM:
+                print("cycle %2.1fM; mem=%dMB" % (sim_cycle / (1000000.0), psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
+            if cycle_limit and sim_cycle == cycle_limit:
+                if not cb.museum_mode:  # this is the normal case, not configured for Museum Mode forever-cycles
+                    cb.log.warn("Cycle Count Exceeded")
+                    break
+                else:  # else continue the simulation with the next set of parameters
+                    ns = cb.museum_mode.next_state(cb, cpu)
+                    sim_cycle = 0
+                    cycle_limit = ns.cycle_limit
+                    CycleDelayTime = ns.instruction_cycle_delay
+                    cb.crt_fade_delay_param = ns.crt_fade_delay
 
-        if args.MidnightRestart and (sim_cycle % 1024):
-            now_day = get_the_date()
-            if last_day != now_day:
-                print("Midnight Detected; Time to Restart!  New Day = %d" % now_day)
-                alarm = cb.NO_ALARM
-                break
+            if args.MidnightRestart and (sim_cycle % 1024):
+                now_day = get_the_date()
+                if last_day != now_day:
+                    print("Midnight Detected; Time to Restart!  New Day = %d" % now_day)
+                    alarm = cb.NO_ALARM
+                    break
 
-    # Here Ends The Main Loop
+        # Here Ends The Main Loop
+    except KeyboardInterrupt:
+        print("Keyboard Interrupt: Cleanup and exit")
 
     end_time = time.time()
     wall_clock_time = end_time - start_time  # time in units of floating point seconds
@@ -1769,6 +1784,7 @@ def main():
     parser.add_argument("-c", "--CycleLimit", help="Specify how many instructions to run (zero->'forever')", type=int)
     parser.add_argument("--CycleDelayTime", help="Specify how many msec delay to insert after each instruction", type=int)
     parser.add_argument("-r", "--Radar", help="Incorporate Radar Data Source", action="store_true")
+    parser.add_argument("--AnalogScope", help="Display graphical output on an analog CRT", action="store_true")
     parser.add_argument("--NoToggleSwitchWarning", help="Suppress warning if WW code writes a read-only toggle switch",
                         action="store_true")
     parser.add_argument("--LongTraceFormat", help="print all the cpu registers in TracePC",

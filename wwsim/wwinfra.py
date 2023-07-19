@@ -22,6 +22,8 @@
 import re
 import hashlib
 import sys
+import analog_scope
+import os
 from screeninfo import get_monitors
 
 from typing import List, Dict, Tuple, Sequence, Union, Any
@@ -100,7 +102,7 @@ def octal_or_none(number):
 
 
 class ConstWWbitClass:
-    def __init__(self, get_screen_size = True):
+    def __init__(self, get_screen_size = False):
         # Caution -- Whirlwind puts bit 0 to the left (Big Endian, no?)
         self.WWBIT0 = 0o100000
         self.WWBIT1 = 0o040000
@@ -159,7 +161,7 @@ class ConstWWbitClass:
                              self.DIVIDE_ALARM: "Divide Error Alarm",
                              }
 
-        self.COLOR_BR = "\033[93m"  # Yellow color code for Branch Instructions
+        self.COLOR_BR = "\033[93m"  # Yellow color code for Branch Instructions in console trace if color_trace is True
         self.COLOR_IO = "\033[92m"  # Green color code for I/O Instructions
         self.COLOR_CF = "\033[96m"  # Cyan color code for CF Instruction
         self.COLOR_default = "\033[0m"  # Reset to default color
@@ -186,6 +188,9 @@ class ConstWWbitClass:
         self.log = None
         self.cpu = None
         self.dbwgt = None
+        self.host_os = os.getenv("OS")
+        self.analog_display = False   # set this flag to display on an analog oscilloscope instead of an x-window
+        self.ana_scope = None   # this is a handle to the methods for operating the analog scope
         self.crt_fade_delay_param = 0
         self.radar = None   # set this if we're doing a radar-style display
         self.no_toggle_switch_warn = False  # Apologies for the double-negative, but the warning should normally
@@ -1247,10 +1252,17 @@ class FlexoClass:
 
 
 # The following class prints debug text on the CRT to display and adjust memory values
-# while the program runs
+# while the program runs.
+# This mechanism is mostly-disabled now when using the analog oscilloscope display; although
+# it might turn out to be useful in the future, so I'm not turning it completely off...
 class ScreenDebugWidgetClass:
-    def __init__(self, cb, coremem):
-        self.point_size = 10 * int(cb.gfx_scale_factor)
+    def __init__(self, cb, coremem, analog_scope):
+        if not analog_scope:
+            self.point_size = 10 * int(cb.gfx_scale_factor)
+            self.gfx_scale_factor = cb.gfx_scale_factor
+        else:
+            self.point_size = 10
+            self.gfx_scale_factor = 1
         self.xpos = 15 * self.point_size   # default Centers the text; I wish it were Left
         self.ypos = self.point_size
         self.y_delta = self.point_size + 5
@@ -1266,11 +1278,13 @@ class ScreenDebugWidgetClass:
         # more overhead
         self.txt_objs = []    # the gfx text object created for this widget
         self.input_selector = None  # current offset for which widget is incremented/decremented
-        self.gfx = __import__("graphics")
+        if not analog_scope:
+            self.gfx = __import__("graphics")
         self.cm = coremem
         self.win = None
-        self.gfx_scale_factor = cb.gfx_scale_factor
 
+    # the emulated CRT display scope is added only if there's an SI instruction that threatens to actually
+    # use the display.  At which point, scale_factors should already have been set.
     def add_scope(self, win):
         self.win = win
         self.point_size = 10 # * int(self.gfx_scale_factor)
@@ -1369,6 +1383,19 @@ class ScreenDebugWidgetClass:
         cm.wr(self.mem_addrs[wgt], wr)
 
 
+# This routine should probably go somewhere else...  it's a general-purpose number
+# converter, but I need it in call the analog scope modules.
+# Convert a ones-complement Whirlwind integer into a twos-comp Python number
+def wwint2py(ww_num):
+    if ww_num & 0o100000:
+        ww_num ^= 0o177777  # invert all the bits, including the sign
+        sign = -1
+    else:
+        sign = 1
+    ret = ww_num * sign
+    return ret
+
+
 class XwinCrtObject:
     def __init__(self, x0, y0, x1, y1, graphical_type, char_mask, expand = 1.0):
         self.x0 = x0
@@ -1387,40 +1414,49 @@ class XwinCrtObject:
 class XwinCrt:
     def __init__(self, cb):
         self.cb = cb
+        self.win = None
 
-        self.gfx = __import__("graphics")
+        if cb.analog_display:
+            if cb.ana_scope is None:  # first time there's a CRT SI instruction, we'll init the display modules
+                cb.ana_scope = analog_scope.AnaScope(cb.host_os)
+            self.WW_CHAR_HSTROKE = 40  # should be 20.0 in 'expand'
+            self.WW_CHAR_VSTROKE = 60  # should be 15.00
 
-#        self.get_display_size(cb)
-#        if cb.museum_mode:
-#            cb.museum_mode.museum_gfx_get_display_size(cb)
+        else:  # display on the laptop CRT using xwindows
+            self.gfx = __import__("graphics")
 
-        self.WIN_MAX_COORD = 600.0 * cb.gfx_scale_factor # 1024.0 + 512.0  # size of window to request from the laptop window  manager
+    #        self.get_display_size(cb)
+    #        if cb.museum_mode:
+    #            cb.museum_mode.museum_gfx_get_display_size(cb)
 
-        self.WIN_MOUSE_BOX = self.WIN_MAX_COORD / 50.0
+            self.WIN_MAX_COORD = 600.0 * cb.gfx_scale_factor # 1024.0 + 512.0  # size of window to request from the laptop window  manager
 
-        win_name = "Whirlwind CoreFile: %s" % cb.CoreFileName
-        self.win = self.gfx.GraphWin(win_name, self.WIN_MAX_COORD, self.WIN_MAX_COORD, autoflush=False)
-        #  self.win.placec(1, 1) # failed experiment!
+            self.WIN_MOUSE_BOX = self.WIN_MAX_COORD / 50.0
 
-        self.win.setBackground("Gray10")
-        if cb.museum_mode:
-            cb.museum_mode.museum_gfx_window_size(cb, self.win)
+            win_name = "Whirlwind CoreFile: %s" % cb.CoreFileName
+            self.win = self.gfx.GraphWin(win_name, self.WIN_MAX_COORD, self.WIN_MAX_COORD, autoflush=False)
+            #  self.win.placec(1, 1) # failed experiment!
 
-        # coordinate definitions for Whirlwind CRT display
-        self.WW_MAX_COORD = 1024.0
-        self.WW_MIN_COORD = -self.WW_MAX_COORD
-        # changed Feb 18, 2022 to make the "expand" feature (2M-0277, pg 63) work (I think)
-        # normal size would be "expand = 1", large size, expand = 2
-        # Expand Mode is used in blackjack, not used in the Everett tape (I think)
-        # so the base value of the stroke lengths here is divided by two so it comes out right when doubled in bjack
-        self.WW_CHAR_HSTROKE = int(25.6 / 2.0 * (self.WIN_MAX_COORD / (self.WW_MAX_COORD * 2.0)))  # should be 20.0 in 'expand'
-        self.WW_CHAR_VSTROKE = int(19.2 / 2.0 * (self.WIN_MAX_COORD / (self.WW_MAX_COORD * 2.0)))  # should be 15.00
+            self.win.setBackground("Gray10")
+            if cb.museum_mode:
+                cb.museum_mode.museum_gfx_window_size(cb, self.win)
 
-        self.BRIGHT = 20
-        self.DARK = 0
-        self.screen_brightness = {}  # a list of graphical elements, with corresponding brightness
-        self.fade_delay_param = cb.crt_fade_delay_param
-        self._fade_delay = self.fade_delay_param
+            # coordinate definitions for Whirlwind CRT display
+            self.WW_MAX_COORD = 1024.0
+            self.WW_MIN_COORD = -self.WW_MAX_COORD
+
+            self.BRIGHT = 20
+            self.DARK = 0
+            self.screen_brightness = {}  # a list of graphical elements, with corresponding brightness
+            self.fade_delay_param = cb.crt_fade_delay_param
+            self._fade_delay = self.fade_delay_param
+
+            # changed Feb 18, 2022 to make the "expand" feature (2M-0277, pg 63) work (I think)
+            # normal size would be "expand = 1", large size, expand = 2
+            # Expand Mode is used in blackjack, not used in the Everett tape (I think)
+            # so the base value of the stroke lengths here is divided by two, so it comes out right when doubled in bjack
+            self.WW_CHAR_HSTROKE = int(25.6 / 2.0 * (self.WIN_MAX_COORD / (self.WW_MAX_COORD * 2.0)))  # should be 20.0 in 'expand'
+            self.WW_CHAR_VSTROKE = int(19.2 / 2.0 * (self.WIN_MAX_COORD / (self.WW_MAX_COORD * 2.0)))  # should be 15.00
 
         # The Whirlwind CRT character generator uses a seven-segment format with a bit in a seven-bit
         # word to indicate each segment.  This list defines the sequence in which the bits are
@@ -1439,7 +1475,9 @@ class XwinCrt:
         # If so, the regular reads to the light gun will watch for hits to the Red-X exit box
         # on the simulated crt -- if not, we'll poll it separately when painting the display
         self.polling_mouse = False
-        self.draw_red_x_and_axis(cb)
+
+        if not cb.analog_display:
+            self.draw_red_x_and_axis(cb)
 
 
 
@@ -1506,10 +1544,14 @@ class XwinCrt:
         return int(xwin_x), int(xwin_y)
 
     def ww_draw_char(self, ww_x, ww_y, mask, expand):
-        x0, y0 = self.ww_to_xwin_coords(ww_x, ww_y)
-        obj = XwinCrtObject(x0, y0, 0, 0, 'C', mask, expand = expand)
-        # obj = (x0, y0, 0, 0, 'C', mask)
-        self.screen_brightness[obj] = self.BRIGHT
+        if self.cb.ana_scope:
+            self.cb.ana_scope.drawChar(ww_x, ww_y, mask, expand, self)
+        else:
+            x0, y0 = self.ww_to_xwin_coords(ww_x, ww_y)
+            obj = XwinCrtObject(x0, y0, 0, 0, 'C', mask, expand = expand)
+            # obj = (x0, y0, 0, 0, 'C', mask)
+            self.screen_brightness[obj] = self.BRIGHT
+
 
     # Display Scope Vector Generator
     # From 2m-0277
@@ -1530,25 +1572,32 @@ class XwinCrt:
     # other than in-out instructions may precede each rc. Each
     # vector to be displayed is programmed in a similar manner.
     def ww_draw_line(self, ww_x0, ww_y0, ww_xd, ww_yd):
+        if self.cb.ana_scope:
+            self.cb.ana_scope.drawVector(ww_x0, ww_y0, ww_xd, ww_yd)
+        else:
+            x0, y0 = self.ww_to_xwin_coords(ww_x0, ww_y0)
+            x1, y1 = self.ww_to_xwin_coords(ww_x0 + ww_xd, ww_y0 + ww_yd)
 
-        x0, y0 = self.ww_to_xwin_coords(ww_x0, ww_y0)
-        x1, y1 = self.ww_to_xwin_coords(ww_x0 + ww_xd, ww_y0 + ww_yd)
-
-        # obj = (x0, y0, x1, y1, 'L', 0)
-        obj = XwinCrtObject(x0, y0, x1, y1, 'L', 0)
-        self.screen_brightness[obj] = self.BRIGHT
+            # obj = (x0, y0, x1, y1, 'L', 0)
+            obj = XwinCrtObject(x0, y0, x1, y1, 'L', 0)
+            self.screen_brightness[obj] = self.BRIGHT
 
 
     def ww_draw_point(self, ww_x, ww_y, color=(0.0, 1.0, 0.0), light_gun=False): # default color is green
-        x0, y0 = self.ww_to_xwin_coords(ww_x, ww_y)
-        # obj = (x0, y0, 0, 0, 'D', 0)
-        obj = XwinCrtObject(x0, y0, 0, 0, 'D', 0)
-        obj.red = color[0]
-        obj.green = color[1]
-        obj.blue = color[2]
-        self.screen_brightness[obj] = self.BRIGHT
-        if light_gun:
-            self.last_pen_point = obj  # remember the point so it can be undrawn later
+        if self.cb.ana_scope:
+            self.cb.ana_scope.drawPoint(ww_x, ww_y)
+            if light_gun:
+                self.last_pen_point = True  # remember the point was seen; not sure this really matters...
+        else:
+            x0, y0 = self.ww_to_xwin_coords(ww_x, ww_y)
+            # obj = (x0, y0, 0, 0, 'D', 0)
+            obj = XwinCrtObject(x0, y0, 0, 0, 'D', 0)
+            obj.red = color[0]
+            obj.green = color[1]
+            obj.blue = color[2]
+            self.screen_brightness[obj] = self.BRIGHT
+            if light_gun:
+                self.last_pen_point = obj  # remember the point so it can be undrawn later
 
     def ww_highlight_point(self):
         if self.last_pen_point is not None:
@@ -1559,22 +1608,40 @@ class XwinCrt:
             c.draw(self.win)
             self.last_pen_point = None
 
+
+    # check the light gun for a hit
+    # Note that management of the Mouse 'light gun' is quite different from the optical gun on an analog scope.
+    # With the mouse, this routine has to check the position of the mouse to see if it's inside the bounding box
+    # for the last point drawn.  To highlight the point for some (non-authentic) visual feedback, we return the
+    # coordinates of the hit as well.
+    # With the Analog scope, it simply reports whether the last point caused a flash or not.  And there's no
+    # handy mechanism to offer any visual feedback.
+    # Both functions return a None for 'no hit', but the mouse version returns a co-ord object, and the optical
+    # gun simply returns a "true'.  It's up to the caller to know which response is for what...
     def ww_check_light_gun(self, cb):
         self.polling_mouse = True
-        pt, button = self.win.checkMouse()
-        if pt is None:
-            return self.cb.NO_ALARM, None, 0
-        if self.last_pen_point is None:
-            cb.log.warn("Light Gun checked, but no dot displayed")
-            return self.cb.QUIT_ALARM, None, 0
+        if self.cb.ana_scope:
+            pt = None
+            button = 0
+            if self.cb.ana_scope.checkGun() == True:
+                pt = True       # if it were the CRT, we'd have to return an actual point, but here, it's just "hit"
+            self.last_pen_point = None  # we don't need this var, but I don't want to break the xwin version
 
-        if (self.WIN_MAX_COORD - pt.getX() < self.WIN_MOUSE_BOX) and \
-                (pt.getY() < self.WIN_MOUSE_BOX) and (button == 1):
-            cb.log.info("**Quit**")
-            return self.cb.QUIT_ALARM, None, 0
+        else:
+            pt, button = self.win.checkMouse()
+            if pt is None:
+                return self.cb.NO_ALARM, None, 0
+            if self.last_pen_point is None:
+                cb.log.warn("Light Gun checked, but no dot displayed")
+                return self.cb.QUIT_ALARM, None, 0
 
-        cb.log.info(("dot (%d, %d);  mouse (%d, %d)" % (self.last_pen_point.x0, self.last_pen_point.y0,
-                                                  pt.getX(), pt.getY())))
+            if (self.WIN_MAX_COORD - pt.getX() < self.WIN_MOUSE_BOX) and \
+                    (pt.getY() < self.WIN_MOUSE_BOX) and (button == 1):
+                cb.log.info("**Quit**")
+                return self.cb.QUIT_ALARM, None, 0
+
+            cb.log.info(("dot (%d, %d);  mouse (%d, %d)" % (self.last_pen_point.x0, self.last_pen_point.y0,
+                                                      pt.getX(), pt.getY())))
         return self.cb.NO_ALARM, pt, button
 
     def _render_char(self, x, y, mask, color, expand):
@@ -1613,6 +1680,9 @@ class XwinCrt:
     # Then go on to refresh the screen
 
     def ww_scope_update(self, cm, cb):
+        if self.win is None:   # all this stuff only works on a laptop display, not a CRT display
+            return self.cb.NO_ALARM
+
         dbwgt = cb.dbwgt
         if self.polling_mouse is False:
             pt, button = self.win.checkMouse()

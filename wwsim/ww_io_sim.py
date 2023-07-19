@@ -709,9 +709,13 @@ class DisplayScopeClass:
             return None
 
     def si(self, io_address, acc, _cm):
+        # If this is the first reference to the CRT Display,
+        # open one of the two possible graphical displays, either the XWin laptop display, or the hardware
+        # interface to an analog scope display using Rainer Glaschik's RasPi I/O module
         if self.crt is None:  # first time there's a CRT SI instruction, we'll init the display modules
             self.crt = wwinfra.XwinCrt(self.cb)
-            self.cb.dbwgt.add_scope(self.crt.win)  # tell the debug widget that there's a display available
+            if not self.cb.analog_display:  # can't show Widgets on an analog scope
+                self.cb.dbwgt.add_scope(self.crt.win)  # tell the debug widget that there's a display available
 
         if (io_address & self.cb.DISPLAY_EXPAND_ADDR_MASK) == self.cb.DISPLAY_EXPAND_BASE_ADDRESS:
             # See 2M-0277 Page 63; not clear exactly how this Expand thing works!
@@ -787,25 +791,30 @@ class DisplayScopeClass:
         if alarm == self.cb.QUIT_ALARM:
             return alarm, 0
 
-        if pt is not None:
-            self.crt.last_mouse = pt
-            self.crt.last_button = button
+        val = 0  # default return value is "nothing happening here"
+        if self.cb.ana_scope:
+            if pt is not None:   # don't care what it is, just not None
+                val = 0o177777  # or  0o177777 for a light gun hit
 
-        # check to see if the most recent mouse click was near the last dot to be drawn on the screen; if so,
-        # count it as a hit, otherwise its a miss.  One it hits, "forget" the last mouse click
-        val = 0
-        if self.crt.last_mouse is not None and (
-                abs(self.crt.last_pen_point.x0 - self.crt.last_mouse.getX()) < self.crt.WIN_MOUSE_BOX) & \
-                (abs(self.crt.last_pen_point.y0 - self.crt.last_mouse.getY()) < self.crt.WIN_MOUSE_BOX):
-            print("**Hit at x=0d%d, y=0d%d**" %(self.crt.last_pen_point.x0, self.crt.last_pen_point.y0))
-            if self.crt.last_button == 3:   # I'm returning 0o1000000 for Button Three on the mouse
-                val = 0o100000              #  ... added specifically for radar tracking
-            else:
-                val = 0o177777           # or  0o177777 for Button One (or anything else that we shouldn't get!)
-            self.crt.ww_highlight_point()
-            self.crt.last_mouse = None
-            self.crt.last_button = 0
-            return self.cb.NO_ALARM, val
+        else:
+            if pt is not None:
+                self.crt.last_mouse = pt
+                self.crt.last_button = button
+
+            # check to see if the most recent mouse click was near the last dot to be drawn on the screen; if so,
+            # count it as a hit, otherwise its a miss.  One it hits, "forget" the last mouse click
+            if self.crt.last_mouse is not None and (
+                    abs(self.crt.last_pen_point.x0 - self.crt.last_mouse.getX()) < self.crt.WIN_MOUSE_BOX) & \
+                    (abs(self.crt.last_pen_point.y0 - self.crt.last_mouse.getY()) < self.crt.WIN_MOUSE_BOX):
+                print("**Hit at x=0d%d, y=0d%d**" %(self.crt.last_pen_point.x0, self.crt.last_pen_point.y0))
+                if self.crt.last_button == 3:   # I'm returning 0o1000000 for Button Three on the mouse
+                    val = 0o100000              #  ... added specifically for radar tracking
+                else:
+                    val = 0o177777           # or  0o177777 for Button One (or anything else that we shouldn't get!)
+                self.crt.ww_highlight_point()
+                self.crt.last_mouse = None
+                self.crt.last_button = 0
+                return self.cb.NO_ALARM, val
 
         return self.cb.NO_ALARM, val
 
