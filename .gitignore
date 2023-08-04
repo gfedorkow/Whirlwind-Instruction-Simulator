@@ -1,2 +1,25 @@
+# Compiled python modules.
 *.pyc
+__pycache__
+
+# Setuptools distribution folder.
+/dist/
+
+# Python egg metadata, regenerated from source files by setuptools.
+/*.egg-info
+
+# PyCharm Virtual Environment
+venv/
+
+# guy's ad-hoc backups
+*.bak
+Backup/
+
+
+# Pycharm control files
 .idea/
+
+# ignore the build artifacts for PyInstall
+Py/Sim/build/
+Py/Sim/dist/
+
