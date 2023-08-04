@@ -720,7 +720,8 @@ class DisplayScopeClass:
         if (io_address & self.cb.DISPLAY_EXPAND_ADDR_MASK) == self.cb.DISPLAY_EXPAND_BASE_ADDRESS:
             # See 2M-0277 Page 63; not clear exactly how this Expand thing works!
             expand_op = io_address & self.cb.DISPLAY_EXPAND_ADDR_MASK  # o14=Expand, o15=UnExpand
-            print("DisplayScope SI: Display Expand Operand set to 0o%o; Expand=0o14, UnExpand=0o15" % expand_op)
+            if self.cb.TraceQuiet is False:
+                print("DisplayScope SI: Display Expand Operand set to 0o%o; Expand=0o14, UnExpand=0o15" % expand_op)
             if expand_op == 0o14:
                 self.scope_expand = 2.0
             else:
@@ -732,7 +733,7 @@ class DisplayScopeClass:
         elif (io_address & self.cb.DISPLAY_VECTORS_ADDR_MASK) == self.cb.DISPLAY_VECTORS_BASE_ADDRESS:
             self.scope_mode = self.DISPLAY_MODE_VECTORS
         elif (io_address & self.cb.DISPLAY_CHARACTERS_ADDR_MASK) == self.cb.DISPLAY_CHARACTERS_BASE_ADDRESS:
-            if io_address & 0o01000:
+            if io_address & 0o01000 and self.cb.TraceQuiet is False:
                 print("DisplayScope SI: set scope selection to 0o%o; ignoring ioaddr bit 001000..." % io_address)
             self.scope_mode = self.DISPLAY_MODE_CHARACTERS
 
@@ -770,7 +771,8 @@ class DisplayScopeClass:
             # lines are like points, but with an additional delta in the RC instruction
             ww_xd, ww_yd = self.convert_delta_scope_coord(operand)
 
-            print("DisplayScope RC: record to scope, mode=Vector, x=0o%o, y=0o%o, xd=0o%o, yd=0o%o" %
+            if self.cb.TraceQuiet is False:
+                print("DisplayScope RC: record to scope, mode=Vector, x=0o%o, y=0o%o, xd=0o%o, yd=0o%o" %
                   (self.scope_horizontal, self.scope_vertical, ww_xd, ww_yd))
             self.crt.ww_draw_line(self.scope_horizontal, self.scope_vertical, ww_xd, ww_yd)
 

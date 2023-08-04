@@ -1548,7 +1548,7 @@ def main_run_sim(args):
     cb.log = wwinfra.LogClass(sys.argv[0], quiet=args.Quiet)
     cb.dbwgt = wwinfra.ScreenDebugWidgetClass(cb, CoreMem, args.AnalogScope)
 
-    cycle_limit = 400000  # default limit for number of sim cycles to run
+    cycle_limit = 0  # default limit for number of sim cycles to run; 'zero' means 'forever'
     # crt_fade_delay = 500
     stop_sim = False
 
@@ -1729,7 +1729,7 @@ def main_run_sim(args):
     end_time = time.time()
     wall_clock_time = end_time - start_time  # time in units of floating point seconds
     if wall_clock_time > 2.0 and sim_cycle > 10:  # don't do the timing calculation if the run was really short
-        print("Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec" %
+        sys.stderr.write("Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec" %
                 (sim_cycle, cpu.PC, wall_clock_time, 1000000.0 * float(wall_clock_time) / float(sim_cycle)))
         if args.Radar:
             print("    elapsed radar time = %4.1f minutes (%4.1f revolutions)" %

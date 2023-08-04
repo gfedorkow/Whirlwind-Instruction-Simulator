@@ -26,7 +26,7 @@
 # Part of this code was drawn from Rainer's python-based test program for the interface card.
 # g fedorkow, July 7, 2023
 
-DebugAnaScope = False
+DebugAnaScope = True
 
 import time
 import math
@@ -44,7 +44,7 @@ class AnaScope:
     def __init__(self, host_os):
         #
         #
-        version = "g1.0b"
+        version = "g1.0a"
         if DebugAnaScope: print("Analog Scope Interface Version %s" % version)
         if host_os == "Windows_NT":
             self.PCDebug = True
@@ -57,15 +57,12 @@ class AnaScope:
         self.pin_enZ1 = 23  # not yet used
         self.pin_enZ2 = 18  # not yet used
         self.pin_isKey = 27
-        self.pin_isGun1 = 25
-        self.pin_isGun2 = 24
-        self.pin_isGun1on = 4
-        self.pin_isGun2on = 7
-
+        self.pin_isGun1 = 24
+        self.pin_isGun2 = 25
         # SPI pins are defined by SPI interface
 
-        self.move_delay = 35.0E-6
-        self.draw_delay = 55.0E-6
+        self.move_delay = 30.0E-6
+        self.draw_delay = 60.0E-6
 
         # initialize RasPi hardware
         if not self.PCDebug:
@@ -75,22 +72,11 @@ class AnaScope:
             gpio.setup(self.pin_isKey, gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.setup(self.pin_isGun1, gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.setup(self.pin_isGun2, gpio.IN, pull_up_down=gpio.PUD_UP)
-            gpio.setup(self.pin_isGun1on, gpio.IN, pull_up_down=gpio.PUD_UP)
-            gpio.setup(self.pin_isGun2on, gpio.IN, pull_up_down=gpio.PUD_UP)
+
             self.spi = spidev.SpiDev()
             self.spi.open(0, 0)
             # spi.max_speed_hz = 4000000
 
-    def __del__(self):
-        if not self.PCDebug:
-            gpio.cleanup()
-            self.spi.close()
-
-    # time.sleep has 70us overheadn on Raspi B+ with python 3.7, use quicker method
-    def _delay(self, duration):
-        stop = time.perf_counter_ns() + int(duration * 1e9)
-        while time.perf_counter_ns() < stop:
-            pass
 
     # private routine to send numbers to the D/A converter
     def _setDA(self, n, val):
@@ -118,40 +104,32 @@ class AnaScope:
         else:
             pass  # print("SPI write=[0x%02x, 0x%02x]" % (outv[0], outv[1]))
 
-    def _movePoint(self, posx, posy):
-        # move to destination
-        self._setDA(0, posx)
-        self._setDA(1, posy)
-        if not self.PCDebug:
-            gpio.output(self.pin_doMove, 1)
-            # time.sleep(self.move_delay)  # don't use the built-in sleep...
-            self._delay(self.move_delay)   #  ... use the local one instead
-            gpio.output(self.pin_doMove, 0)
-
-    def _drawSegment(self, speedx, speedy):
-        # set speed and intensity
-        self._setDA(0, speedx)
-        self._setDA(1, speedy)
-        if not self.PCDebug:
-            gpio.output(self.pin_doDraw, 1)
-            # time.sleep(self.draw_delay)  # don't use the built-in sleep...
-            self._delay(self.draw_delay)   #  ... use the local one instead
-            gpio.output(self.pin_doDraw, 0)
-
     def _drawSmallVector(self, posx, posy, speedx, speedy):
         """ Basic operation: Draw a vector with given speed
             As the endpoint is not directly given,
             but as a speed, the length is limited
             so that the endpoint can be predicted precise enough.
-            The draw mechanism draws for 50us
+            The draw mechanism draws for 50µs;
             with maximum speed, it draws 1/8 of the screen width.
             To draw a point, use zero speeds
         """
         if DebugAnaScope: print("    drawSmallVector: posx=%d, posy=%d, speedx=%d, speedy=%d" % \
                                 (posx, posy, speedx, speedy))
-        self._movePoint(posx, posy)
-        self._drawSegment(speedx, speedy)
-        self.wasPoint = True
+        # move to destination
+        self._setDA(0, posx)
+        self._setDA(1, posy)
+        if not self.PCDebug:
+            gpio.output(self.pin_doMove, 1)
+            time.sleep(self.move_delay)
+            gpio.output(self.pin_doMove, 0)
+
+        # set speed
+        self._setDA(0, speedx)
+        self._setDA(1, speedy)
+        if not self.PCDebug:
+            gpio.output(self.pin_doDraw, 1)
+            time.sleep(self.draw_delay)
+            gpio.output(self.pin_doDraw, 0)
 
 
     def drawPoint(self, posx, posy):
@@ -205,8 +183,6 @@ class AnaScope:
             y0 += dy
             # next segment
             segs -= 1
-        self.wasPoint = False
-
 
     """
       Draw a circle with center at (x,y) and radius r. 
@@ -233,7 +209,6 @@ class AnaScope:
     def drawChar(self, x, y, mask, expand, Xwin_crt):
         last_x = x
         last_y = y
-        toMove = True
         for i in range(0, 7):
             if Xwin_crt.WW_CHAR_SEQ[i] == "down":
                 y = last_y - Xwin_crt.WW_CHAR_VSTROKE * expand
@@ -247,79 +222,17 @@ class AnaScope:
                 print(("OMG its a bug! WW_CHAR_SEQ[%d]=%s " % (i, Xwin_crt.WW_CHAR_SEQ[i])))
 
             if mask & 1 << (6 - i):
-                if toMove:
-                    self._movePoint(last_x, last_y)
-                    toMove = False
-                # self._drawSmallVector(last_x, last_y, 4*(x - last_x), 4*(y - last_y))
-                self._drawSegment(4 * (x - last_x), 4 * (y - last_y))
-            else:
-                toMove = True
+                self._drawSmallVector(last_x, last_y, (x - last_x), (y - last_y))
             last_x = x
             last_y = y
 
-    """
-        The light gun has a trigger switch for one-shot operation:
-        Only the first pulse after display of a point is valid;
-        more are to be disabled while the trigger switch is still on.
-
-        As no pulses are transmitted before the switch is on,
-        the first such pulse (after display of a point) sets a flag
-        to disable more (of this light gun).
-
-        This flag is reset once the switch is off more than 50msec (debouncing)
-    """
-
-    def getLightGuns(self):
-        """
-            returns 0 if no light gun detected, or set the (two) lower bits
-
-        """
-
-        # light gun signals are evaluated only if there was a point drawing
-        if not self.wasPoint:
-            return 0
-
-        mask = 0
-        # check if this is the first light gun pulse
-        if not self.wasGunPulse1 and gpio.input(self.pin_isGun1) == 0:
-            mask = 1
-            self.wasGunPulse1 = True
-        if not self.wasGunPulse2 and gpio.input(self.pin_isGun2) == 0:
-            mask = mask | 2
-            self.wasGunPulse2 = True
-
-        if mask != 0:
-            return mask
-
-        # print("lg:", gpio.input(self.pin_isGun1on), gpio.input(self.pin_isGun2on))
-        # debounce switch 1
-        if gpio.input(self.pin_isGun1on) == 0:
-            # while switch is on, restart timer
-            self.gunTime1 = time.time()
-        else:
-            # switch must be off some time (debounce)
-            delta = time.time() - self.gunTime1
-            if delta > self.debounceGunTime:
-                self.wasGunPulse1 = False
-
-        # debounce switch 2
-        if gpio.input(self.pin_isGun2on) == 0:
-            # while switch is on, restart timer
-            self.gunTime2 = time.time()
-        else:
-            # switch must be off some time (debounce)
-            delta = time.time() - self.gunTime2
-            if delta > self.debounceGunTime:
-                self.wasGunPulse2 = False
-
-        return 0
 
     def checkGun(self):
         if self.PCDebug:
             return(False)
 
         ret = False
-        if self.getLightGuns():
+        if gpio.input(self.pin_isGun1) == 0:
             ret = True
         return ret
 
@@ -404,8 +317,8 @@ def show_bounce(ana_scope, mode):
 class XwinCrt:
     def __init__(self):
         self.win = None
-        self.WW_CHAR_HSTROKE = 8  # should be 20.0 in 'expand'
-        self.WW_CHAR_VSTROKE = 9  # should be 15.00
+        self.WW_CHAR_HSTROKE = 40  # should be 20.0 in 'expand'
+        self.WW_CHAR_VSTROKE = 60  # should be 15.00
         # The Whirlwind CRT character generator uses a seven-segment format with a bit in a seven-bit
         # word to indicate each segment.  This list defines the sequence in which the bits are
         # converted into line segments
@@ -413,17 +326,17 @@ class XwinCrt:
 
 def charset_show(ana_scope, xwin_crt):
     mask = 0x7f   #turn on all the segments
-    expand = 4
+    expand = 1
     x = -100
     y = 0
-    # print("m=0x%x" % mask)
+    print("m=0x%x" % mask)
     ana_scope.drawChar(x, y, mask, expand, xwin_crt)
 
-    mask = 0x11   #turn on all the segments
-    expand = 4
+    mask = 0x77   #turn on all the segments
+    expand = 2
     x = 200
     y = 0
-    # print("m=0x%x" % mask)
+    print("m=0x%x" % mask)
     ana_scope.drawChar(x, y, mask, expand, xwin_crt)
 
     pass
