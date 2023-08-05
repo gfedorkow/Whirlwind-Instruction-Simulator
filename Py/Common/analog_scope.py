@@ -67,6 +67,14 @@ class AnaScope:
         self.move_delay = 35.0E-6
         self.draw_delay = 55.0E-6
 
+        # for light gun
+        self.wasPoint = False
+        self.wasGunPulse1 = True  # if a pulse was delivered
+        self.gunTime1 = 0.0
+        self.wasGunPulse2 = True  # if a pulse was delivered
+        self.gunTime2 = 0.0
+        self.debounceGunTime = 0.05
+
         # initialize RasPi hardware
         if not self.PCDebug:
             gpio.setmode(gpio.BCM)
