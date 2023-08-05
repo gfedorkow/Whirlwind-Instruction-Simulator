@@ -1,0 +1,174 @@
+; FC131-204-2 demo tape; the basic triangle wave
+; See DCL-090 for operating instructions!
+
+     .ww_file 102766758_fc131-204-10_watson.7ch
+	 ; with      .ww_tapeid fc TAPE 131-204-10 WATSON
+     ;			 .ww_file 102766758_fc131-204-2_9-1-55.7ch
+
+        .switch LeftInterventionReg 0.00100  ; number of points; i/o address 0o336, 0d222 ; was 0o0400
+        .switch RightInterventionReg 0.40000  ; i/o address 0o337
+        .switch FlipFlopPreset02 0.00010  ;  FF#2 Scope Amplitude Adjustment
+        .switch FlipFlopPreset03 0.70000  ;  FF#3 Elasticity Factor
+		.switch: FlipFlopPreset05 0o40000
+		.switch: FlipFlopPreset06 0o40000
+
+    .org 32
+  c1: si 4  	; Red
+      si 222  	
+      rd 0  	
+      ts t1  	
+      su s6  	
+      ts t2  	
+      ca t1  	
+      sf 0  	
+      ta d1  	
+      ts s2  	
+      ao d1  	
+      ao d1  	
+      ca s1  	
+      dv s2  	
+  d1: slr 0  	; Red
+      ts s3  	
+  a1: ca 1  	; Red
+      ts t2+1  	
+      si 8  	
+      ca s4  	
+      ts s5  	
+ a11: ca t3  	; Red
+      ad t2+1  	
+      td a9  	
+      td a3  	
+      td a4  	
+      td a7  	
+      td a8  	
+      ad 1  	
+      td a5  	
+      su 1  	
+      ad t1  	
+      td a6  	
+      td a10  	
+      su 1  	
+      td a2  	
+  a2: ca 0  	; Red
+  a3: su 0  	; Red
+  a4: su 0  	; Red
+  a5: ad 0  	; Red
+      mh 3  	
+  a6: su 0  	; Red
+  a7: ad 0  	; Red
+  a8: ad 0  	; Red
+      ts t6  	
+      mh 2  	
+      slr 12  	
+      si 384  	
+      ca t6  	
+  a9: ex 0  	; Red
+ a10: ts 0  	; Red
+      ca s5  	
+      rc 0  	
+      ad s3  	
+      ts s5  	
+      ao t2+1  	
+      su t2  	
+      cp a11  	
+      sp b1  	
+  t1: .word +0  	; Red
+  t2: .word +0  	; Red
+t2+1: .word +0  	; Red
+  t3: .word r1  	; Red
+  t6: .word +0  	; Red
+  s1: .word 0.37760  	; Red
+  s2: .word +0  	; Red
+  s3: .word +0  	; Red
+  s4: .word 1.00037  	; Red
+  s5: .word +0  	; Red
+  s6: .word +2  	; Red
+  b1: ca t3  	; Red
+      ad t2+1  	
+      td b3  	
+      td b7  	
+      su 1  	
+      td b2  	
+      td b6  	
+      ad t1  	
+      td b4  	
+      ad 1  	
+      td b5  	
+      td b8  	
+      ca 5  	
+      dm 0  	
+      cp a1  	
+      ca 7  	
+      dm 0  	
+      cp b2  	
+      ca 5  	
+      ad 1  	
+      ex 5  	
+      dv 5  	
+      slh 15  	
+  b6: mr 0  	; Red
+  b7: ex 0  	; Red
+  b8: ts 0  	; Red
+      sp a1  	
+  b2: ca 0  	; Red
+  b3: ts 0  	; Red
+  b4: ca 0  	; Red
+  b5: ts 0  	; Red
+      sp a1  	
+    .org 1000
+  r1: .word +0  	; Red
+;;       .jumpto c1
+
+
+; this section is the "setup" for a particular initial condition
+
+     .ww_tapeid fc TAPE 131-204-10 WATSON
+     .ww_file 102766758_fc131-204-2_9-1-55.7ch
+    .org 220
+  0r: si 222  	
+      rd 0  	
+      ts 260  	
+      ca 263  	
+      ts 252  	
+      ad 260  	
+      ts 253  	
+      su 1  	
+      su 1  	
+      ts 264  	
+      ca 260  	
+      sf 238  	
+      ts 261  	
+      si 223  	
+      rd 0  	
+      srr 1  	
+      dv 261  	
+      slh 1  	
+      slh 0  	
+      ex 260  	
+      mh 260  	
+      slh 15  	
+      ts 261  	
+      ca 260  	
+      slh 1  	
+      ts 260  	
+      cs 261  	
+      ts 262  	
+      ca 262  	
+      ad 260  	
+      ts 262  	
+      dm 261  	
+      ts 401  	
+      ts 457  	
+      ao 253  	
+      ao 252  	
+      su 264  	
+      cp 248  	
+;      si 0  	;this would normally be a Halt to allow the "operating" tape to be loaded
+      sp 33  	; I duuno why they're skipping the instruction to index the camera...
+      .word +0  	
+      .word +0  	
+      .word +0  	
+      ts 1001  	
+      ts 1000  	
+     .jumpto 220
+     .ww_tapeid fc TAPE 131-204-2 WATSON

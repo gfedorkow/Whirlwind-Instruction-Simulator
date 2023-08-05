@@ -1,0 +1,187 @@
+; FC131-204-6 demo tape merged with the Operating tape; the second-harmonic triangle wave
+; See DCL-090 for operating instructions!
+; g fedorkow, Jan 14, 2021
+
+	 ; with      .ww_tapeid fc TAPE 131-204-10 WATSON
+
+        .switch LeftInterventionReg 0.00100  ; number of points; i/o address 0o336, 0d222 ; was 0o0400
+        .switch RightInterventionReg 0.40000  ; i/o address 0o337
+        .switch FlipFlopPreset02 0.00010  ;  FF#2 Scope Amplitude Adjustment
+        .switch FlipFlopPreset03 0.70000  ;  FF#3 Elasticity Factor
+		.switch FlipFlopPreset05 0o40000
+		.switch FlipFlopPreset06 0o40000
+
+
+     .ww_file 102766758_fc131-204-6_watson.7ch
+    .org 220
+  f1: si 222  	; Red
+      rd 0  	
+      ts e2  	
+      srr 1  	
+      ts e3  	
+      srr 1  	
+      ts e4  	
+      cs e4  	
+      ts e5  	
+      ca e6  	
+      ts f2  	
+      ad e2  	
+      ts f3  	
+      ca e2  	
+      sf f4  	
+      ts e2  	
+      ca e1  	
+      ts f6a  	; was "2f6", which must mean "label f6 plus 2"
+      si 223  	
+      rd 0  	
+      srr 1  	
+      dv e2  	
+      slh 3  	
+  f4: slh 0  	; Red
+      ts e2  	
+      ca 0  	
+      ts e7  	
+      ao e5  	
+  f6: ao e5  	; Red
+      cp f10  	
+ f6a: sp f5  	
+  f5: sp f7  	; Red
+      sp f8  	
+;       si 0  	; commented out the Halt; go straight to the operating tape
+      sp 33  	
+  f7: cs e3  	; Red
+      ts e5  	
+      sp f9  	
+  f8: cs e4  	; Red
+      ts e5  	
+  f9: ao f6a  	; Red; ; was "2f6", which must mean "label f6 plus 2"
+      cs e2  	
+      ts e2  	
+      ao e5  	
+ f10: ca e7  	; Red
+      ad e2  	
+  f2: ts 0  	; Red
+  f3: ts 0  	; Red
+      ts e7  	
+      ao f2  	
+      ao f3  	
+      sp f6  	
+  e1: sp f5  	; Red
+  e2: .word +0  	; Red
+  e3: .word +0  	; Red
+  e4: .word +0  	; Red
+  e5: .word +0  	; Red
+  e6: ts 1001  	; Red
+  e7: .word +0  	; Red
+     .jumpto 220
+     .ww_tapeid fc TAPE 131-204-6 WATSON
+
+
+     .ww_file 102766758_fc131-204-10_watson.7ch
+
+    .org 32
+  c1: si 4  	; Red
+      si 222  	
+      rd 0  	
+      ts t1  	
+      su s6  	
+      ts t2  	
+      ca t1  	
+      sf 0  	
+      ta d1  	
+      ts s2  	
+      ao d1  	
+      ao d1  	
+      ca s1  	
+      dv s2  	
+  d1: slr 0  	; Red
+      ts s3  	
+  a1: ca 1  	; Red
+      ts t2+1  	
+      si 8  	
+      ca s4  	
+      ts s5  	
+ a11: ca t3  	; Red
+      ad t2+1  	
+      td a9  	
+      td a3  	
+      td a4  	
+      td a7  	
+      td a8  	
+      ad 1  	
+      td a5  	
+      su 1  	
+      ad t1  	
+      td a6  	
+      td a10  	
+      su 1  	
+      td a2  	
+  a2: ca 0  	; Red
+  a3: su 0  	; Red
+  a4: su 0  	; Red
+  a5: ad 0  	; Red
+      mh 3  	
+  a6: su 0  	; Red
+  a7: ad 0  	; Red
+  a8: ad 0  	; Red
+      ts t6  	
+      mh 2  	
+      slr 12  	
+      si 384  	
+      ca t6  	
+  a9: ex 0  	; Red
+ a10: ts 0  	; Red
+      ca s5  	
+      rc 0  	
+      ad s3  	
+      ts s5  	
+      ao t2+1  	
+      su t2  	
+      cp a11  	
+      sp b1  	
+  t1: .word +0  	; Red
+  t2: .word +0  	; Red
+t2+1: .word +0  	; Red
+  t3: .word r1  	; Red
+  t6: .word +0  	; Red
+  s1: .word 0.37760  	; Red
+  s2: .word +0  	; Red
+  s3: .word +0  	; Red
+  s4: .word 1.00037  	; Red
+  s5: .word +0  	; Red
+  s6: .word +2  	; Red
+  b1: ca t3  	; Red
+      ad t2+1  	
+      td b3  	
+      td b7  	
+      su 1  	
+      td b2  	
+      td b6  	
+      ad t1  	
+      td b4  	
+      ad 1  	
+      td b5  	
+      td b8  	
+      ca 5  	
+      dm 0  	
+      cp a1  	
+      ca 7  	
+      dm 0  	
+      cp b2  	
+      ca 5  	
+      ad 1  	
+      ex 5  	
+      dv 5  	
+      slh 15  	
+  b6: mr 0  	; Red
+  b7: ex 0  	; Red
+  b8: ts 0  	; Red
+      sp a1  	
+  b2: ca 0  	; Red
+  b3: ts 0  	; Red
+  b4: ca 0  	; Red
+  b5: ts 0  	; Red
+      sp a1  	
+    .org 1000
+  r1: .word +0  	; Red
+;;       .jumpto c1
