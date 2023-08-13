@@ -1419,8 +1419,8 @@ class XwinCrt:
         if cb.analog_display:
             if cb.ana_scope is None:  # first time there's a CRT SI instruction, we'll init the display modules
                 cb.ana_scope = analog_scope.AnaScope(cb.host_os)
-            self.WW_CHAR_HSTROKE = 40  # should be 20.0 in 'expand'
-            self.WW_CHAR_VSTROKE = 60  # should be 15.00
+            self.WW_CHAR_HSTROKE = 8  # should be 7    (2M-0277 p.61)
+            self.WW_CHAR_VSTROKE = 9  # should be 8.5
 
         else:  # display on the laptop CRT using xwindows
             self.gfx = __import__("graphics")

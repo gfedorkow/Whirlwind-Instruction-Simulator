@@ -23,3 +23,5 @@ Backup/
 Py/Sim/build/
 Py/Sim/dist/
 
+# ignore random ephemeral files 
+Py/Common/history
