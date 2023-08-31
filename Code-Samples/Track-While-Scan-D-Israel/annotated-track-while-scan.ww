@@ -1,0 +1,408 @@
+                        ;   Text_to_WW_src.py   Namespace(Debug=False, inputfile='Track-While-Scan.ww.txt')
+                        ;  David Israel's 1950 Track-and-Scan from M-1343
+						; Annotated by guy, Feb 11, 2021
+						
+                            .isa 1950      ;  
+
+							.dbwgt FF_angle
+							.dbwgt Veloc_I    
+
+                            .jumpto 285       ;  
+                        ; presets as listed on pg 50 of M-1343
+                            .ORG 0         ;  
+@0000.000:000000            .word 0         ;  @@WrittenBy a0300 ReadBy a0042 a0152 a0203 a0300 a0325 
+@0001.001:020000   num_qtr: .word 0o020000  ; value is '1/4'  (not the usual 0o000001) @@ReadBy a0047 a0073 a0273 
+
+
+							; This is kinda confusing, but I want to assign labels to Flip Flop Registers, so I'm allocating words
+							; in core at the corresponding addresses, then overwiting the values with switch settings.
+							; Some day, I could(!) add address labels to the .switch directive, I suppose
+							; The FFRegAssign statement tells the simulator that it's ok to write these locations; other TSR locations are read-only
+							; Switch Numbers are in Octal
+                             .switch FFRegAssign  0o10, 27, 34, 35,36  ;  
+							 .ORG 0o10
+				   FF_angle: .word 0
+							 .ORG 0o27
+				   Lt_GunFF: .word 0   ; addr 0o27
+							 .ORG 0o34
+				   Radar_in: .word 0   ; addr 0o34
+				   Tau_inv:  .word 0   ; addr 0o35; "One over Tau"
+				   Veloc_I:  .word 0   ; addr 0o36; V-sub-I -- Interceptor velocity
+                             .switch FlipFlopPreset10 0.00000  ; FF#3 at decimal 08; Angle Display 
+                             .switch FlipFlopPreset27 0.00000  ; FF#0 at decimal 23; Light Gun 
+                             .switch FlipFlopPreset34 1.77777  ; FF#4 at decimal 28; Radar Data Input - all ones is "no data" 
+                             .switch FlipFlopPreset35 0.00000  ; FF#1 at decimal 29; 1/tau 
+                             .switch FlipFlopPreset36 0.00372  ; FF#2 at decimal 30; Interceptor velocity VI ; 250 mph
+                             .ORG 31        ;  
+@0037.031:037777  num37777:  .word 0o037777  ; constant;   1/2 - 2**-15 @@ReadBy a0045 a0076 a0100 
+
+                        
+
+                        ;  automatically-converted source code
+                        ;  **Orders 192-195 should be disregarded
+                        ;  189 cp 704 = +.8965 decimal = 0o071300
+						;  and indeed, it seems that the branch in location 189 is used as a constant of value +.8965 decimal
+						; Note Well: the branch goes to 0o1300, but in 1950, that would be aliased to 0o300.  Holy cow.
+						
+                             .ORG 0o40      ; 32 decimal 
+@0040.032:130372  inc_time: ao  time0     ;  @@JumpedToBy a0067 a0227 a0250 a0327 ReadBy a0165 
+@0041.033:130404            ao  time1     ;  @@ReadBy a0170 
+
+@0042.034:104000    wait:   cs   0         ;  @@JumpedToBy a0044 a0174 
+@0043.035:064034            qe  Radar_in   ; read radar data  
+@0044.036:070042            cp   wait      ;  Branch if Negative, i.e., no new data 
+@0045.037:114037            su num37777    ;  Subtract the constant 0o037777, i.e. just less than 1/2, i.e., test most-significant bit after sign
+@0046.038:070100            cp  rng_in     ;  Branch if Range; fall through if Azimuth
+
+							; the azimuth reading comes here in the range 1-128 shifted left
+							; AC=001 for zero azimuth
+@0047.039:114001  azi_in:   su  num_qtr      ;  Process a radar Azimuth reading
+@0050.040:154001            sl   1        ;  
+							; the following block is alleged to compute sine and cosine of azimuth
+							; looks like we go through the loop twice
+							; outputs are probably @273 and @240
+							; The input is the Azimuth code, with the sign bit on
+@0051.041:040420  azi_sin:  ts   272       ; stash the azi reading in @272   @@JumpedToBy a0077 
+@0052.042:120420            cm   272       ; clear & add magnitude; this effectively inverts the reading, so a North azi turns to about 0o37776
+@0053.043:040421            ts   273       ;  
+@0054.044:140275            mr  num71300   ;  a constant; this is the constant that (was) also an instruction @189
+@0055.045:114275            su  num71300   ;  
+@0056.046:144421            mh   273       ;  
+@0057.047:154002            sl   2         ;  
+@0060.048:110427            ad  num07557   ;  
+@0061.049:140421            mr   273       ;  
+@0062.050:110416            ad   270       ;  
+@0063.051:144420            mh   272       ;  
+@0064.052:040421            ts   273       ;  
+@0065.053:104361            cs which_tgt   ;  switch sign of @241; read and negate
+@0066.054:040361            ts which_tgt   ;    ...  then write back; probably 0o163777 or 0o014000
+@0067.055:070040            cp  inc_time   ;  exit here if all done in this loop
+
+@0070.056:100421            ca   273       ;  
+@0071.057:040360            ts   240       ;  
+@0072.058:100420            ca   272       ;  
+@0073.059:114001            su  num_qtr      ;  
+@0074.060:070076            cp   62        ;  
+@0075.061:110152            ad   106       ;  
+@0076.062:110037            ad  num37777      ;  @@JumpedToBy a0074 
+@0077.063:074051            sp  azi_sin    ;  
+
+@0100.064:110037   rng_in:  ad  num37777      ; process a radar Range reading; turn the rng back into a positive number @@JumpedToBy a0046 
+@0101.065:070220            cp zero_rng     ; hmm, -0o37777 + 0o37777 must be -0, so branch if negative, i.e., zero 
+
+							; if we get a non-zero range, display the point and check for a light-gun hit
+@0102.066:040420  non_z_rng: ts   272       ;  positive number of miles (times two?); store in a temp
+@0103.067:144360            mh   240       ;  [this number is probably cosine of the azimuth]
+@0104.068:154005            sl   5         ;  compute the x position for display
+@0105.069:030422            qh   274       ;  ... and store it at 274
+@0106.070:104420            cs   272       ;  Retrieve the number of miles
+@0107.071:144421            mh   273       ;  [this number is probably sine of the azimuth]
+@0110.072:154005            sl   5         ;  
+@0111.073:034420            qd   272       ;  display the Y value, and save it at 272
+;							.exec print("range conversion: x=%s, y=%s" % (deci(cm.rd(274)), deci(cm.rd(272))))
+@0112.074:100027            ca  Lt_GunFF      ; Read Light Gun to see if there's anything spotted, i.e., any negative value 
+@0113.075:070177            cp  lg_hit     ;  branch if light-gun hit
+
+@0114.076:130372            ao  time0     ;  no light-gun hit; increment Time0  @@JumpedToBy a0200 
+							.exec print("@076 Starting search for Aircraft %s; Angular Time0=%s,  Angular Time1=%s" % (which_plane(cm), deci(cm.rd(rl("time0"))), deci(cm.rd(rl("time1")))))
+
+							;.exec cb.TracePC = 20
+@0115.077:070155            cp  swap_air   ;  [this branch usually falls through, 'cause we start with Time set slightly positive]
+
+							.exec print("    @078 Time to Search for Aircraft %s; Time0=%s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
+@0116.078:114370            su   num_200    ;  appears to subtract a constant 0d200; AC ends with (Time0 - 0d200)
+@0117.079:070330            cp not_covered   ;  fall through "if search sector has been covered"; branch if not covered
+
+										   ; recall that one scan of the antenna is 750 time units, so subtracting 200 then 550 puts the center of the 
+										   ; search window right on top of where the target was last seen
+@0120.080:114366            su   num_550   ;  "...so reset the time counter" by subtracting another 0d550
+@0121.081:040372            ts  time0     ;     ... and storing it back
+							.exec print("    @081 Reset Time0 counter for Aircraft %s to Time0=%s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
+@0122.082:100401            ca  srch_i0     ;  test to see "if the aircraft was found during this scan of the antenna"
+@0123.083:114402            su  srch_r0     ;  
+							.exec print("     @083 Test if aircraft %s found during this scan; srch_i0=0d%d, srch_r0=0d%d" % (which_plane(cm), cm.rd(rl("srch_i0")), cm.rd(rl("srch_r0"))))
+@0124.084:070216            cp   142       ;  
+
+@0125.085:100373            ca  x_smoo0     ;  "Display Tracked Aircraft on F-Scope"
+							.exec print("     @085 Found - Display Tracked Aircraft %s on F-Scope; Time0=%s, x_smoo0=%d, y_smoo0=%d" % (which_plane(cm), deci(cm.rd(rl("time0"))), cm.rd(rl("x_smoo0")), cm.rd(rl("y_smoo0"))))
+@0126.086:030000            qh   000       ;  @@ReadBy a0353 a0356 
+@0127.087:100374            ca  y_smoo0     ;  
+@0130.088:060374            qf  y_smoo0     ;  
+@0131.089:100364            ca  num_18d     ;  Load constant 18 decimal / 0o22 octal to set up small search area
+@0132.090:040401            ts  srch_i0     ;  @@JumpedToBy a0217 
+@0133.091:040402            ts  srch_r0     ;  @@ReadBy a0163 
+
+							; "@92 smooth velocities and predict positions"
+@0134.092:100377            ca  x_diff0     ; calculate for x 
+@0135.093:140417            mr  num25251   ;  constant - decimal 0.333; scale distance error
+@0136.094:110376            ad  x_velo0     ;  add correction to old velocity to create new velocity
+@0137.095:040376            ts  x_velo0     ;  store the result
+@0140.096:124377            sa  x_diff0     ; add new velocity to the distance error 
+@0141.097:124373            sa  x_smoo0     ; add to the previous the position
+@0142.098:040373            ts  x_smoo0     ;  store as the new position
+
+@0143.099:100400            ca  y_diff0     ; calculate for y 
+@0144.100:140417            mr  num25251    ;  
+@0145.101:110375            ad  y_velo0     ;  
+@0146.102:040375            ts  y_velo0     ;  
+@0147.103:124400            sa  y_diff0     ;  
+@0150.104:124374            sa  y_smoo0     ;  
+@0151.105:040374            ts  y_smoo0     ;  
+@0152.106:100000            ca   0         ;  @@JumpedToBy a0215 ReadBy a0075 a0176 a0306 
+                            .exec print("  @106 cleared x_diff0 and y_diff0 for Aircraft %s at time0 = %s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
+@0153.107:040377            ts  x_diff0     ; clear x_diff0 
+@0154.108:040400            ts  y_diff0     ; clear y_diff0   @@JumpedToBy a0357 
+							
+							; swap vector of state variables for target and interceptor
+@0155.109:100372  swap_air: ca  time0     ; swap target and interceptor  @@JumpedToBy a0115 a0164 a0345 WrittenBy a0160 a0166 ReadBy a0160 
+@0156.110:064404       sw0: qe  time1     ;  @@WrittenBy a0161 a0171 ReadBy a0161 
+@0157.111:040372       sw1: ts  time0     ;  @@WrittenBy a0162 a0167 ReadBy a0162 
+@0160.112:130155            ao  swap_air       ;  
+@0161.113:130156            ao  sw0        ; increment the addresses for swap 
+@0162.114:130157            ao  sw1        ;  
+@0163.115:114133            su   91        ; subtract a handy constant to determine loop end: #0o040402  "ts srch_r0" 
+@0164.116:070155            cp  swap_air   ; fall through if we're finished swapping 
+
+							; put the swap_air loop back together for the next call
+@0165.117:100040            ca   32        ; Fetch address of Time1 (Load #0o130404   "ao  time1")
+                            .exec print("  @117 finished swap_air; Aircraft %s" % which_plane(cm))
+@0166.118:044155            td  swap_air   ; reset the addresses of instructions  
+@0167.119:044157            td   111       ;  
+@0170.120:100041            ca   33        ; Load #0o130404   "ao  time1" 
+@0171.121:044156            td   110       ; 
+ 
+@0172.122:104361            cs which_tgt   ; switch sign of @241; read the negative 
+@0173.123:040361            ts which_tgt   ;  ...  and store it back; probably 0o163777 or 0o014000
+							; the following exec prints the state once after the regular two cycles for Target and Intercept
+              ; Note that we do both Target and Intercept check on each radar return, so in a normal cycle, that would be
+              ; four times per rotation of the antenna.
+              ; This routine should print (about) two times per rotation.
+							.exec if cm.rd(rl("which_tgt")) > 32*1024: dump_tracking_state(cm, deci, rl, long=True)
+@0174.124:070042            cp   wait      ;
+
+@0175.125:064027            qe  Lt_GunFF   ; 
+							; the following statements must decide whether we're tagging the target or the interceptor
+@0176.126:140152            mr   106       ;  constant #100000; I think this makes the slightly-smaller inverse... 
+                                           ;    ...i.e. reverse the sign of the number and subtract two
+@0177.127:114361    lg_hit: su which_tgt   ;  subtract one of two constants depending on which aircraft we're following @@JumpedToBy a0113 
+@0200.128:070114            cp   76        ;  
+
+@0201.129:104371  initiate: cs  num_650b   ;  constant 650; this sets the beginning of the search area to 100 units before dead-center
+							.exec print("@129 Initiate Aircraft %s; set time to %s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
+							.exec record_initiation(cm, cb)
+@0202.130:040372            ts  time0      ;  reset time to wait for the next turn of the radar
+@0203.131:104000            cs   0         ;  
+@0204.132:030375            qh  y_velo0    ;  
+@0205.133:034376            qd  x_velo0    ;  
+@0206.134:100422            ca   274       ;  display x-pos?
+@0207.135:040373            ts  x_smoo0    ;  
+@0210.136:100420            ca   272       ;  
+@0211.137:040374            ts  y_smoo0    ;  
+@0212.138:100363            ca  large_srch ;  set up large search area
+@0213.139:040401            ts  srch_i0    ;  
+@0214.140:040402            ts  srch_r0    ;  
+@0215.141:074152            sp   106       ;  
+
+@0216.142:100363            ca  large_srch ;  constant 32d for "large" search area;  @@JumpedToBy a0124 
+							.exec print("     @142 Not Found - Aircraft %s; Time0=%s, x_smoo0=%d, y_smoo0=%d" % (which_plane(cm), deci(cm.rd(rl("time0"))), cm.rd(rl("x_smoo0")), cm.rd(rl("y_smoo0"))))
+@0217.143:074132            sp   90        ;  
+
+							; A zero range reading is the trigger to compute new headings
+							; This is the start of a complex block of code that starts with the current tracking parameters
+							; and computes the heading to direct the interceptor to the target
+@0220.144:104405  zero_rng: cs  x_smoo1     ;  @@JumpedToBy a0101 
+							; .exec if cm.rd(251) != 0 and cm.rd(261) != 0: cb.TracePC = 70
+@0221.145:110373            ad  x_smoo0     ;  
+@0222.146:040431            ts   dx         ;  store Target_x - Interceptor_x
+@0223.147:104406            cs  y_smoo1     ;  
+@0224.148:110374            ad  y_smoo0     ;  
+@0225.149:040432            ts   dy         ;  store Target_y - Interceptor_y
+@0226.150:130035            ao  Tau_inv     ;  
+							; M-1343 says this step is to determine if the human operator wants to compute heading
+							; I'm guessing that means that the operator can set the sign bit on this FF Reg if they want 
+							; to skip heading calculation.
+@0227.151:070040            cp   32         ;  branch back to Wait if not computing the heading
+
+@0230.152:144432            mh   dy         ;  Tau_inv in the accumulator; multiply by delta Y
+											; note that Dx and Dy are expressed in units of 0.0 to 1.0 across the screen, but Tau_inv is a small int
+ 							;.exec dump_tracking_state(cm, deci)
+@0231.153:154007            sl   7         ;  For Tau_inv == 1, this is (dy / 2**8), i.e., distance in units of miles
+@0232.154:110375            ad  y_velo0     ;  add Target y velocity, units of miles per hour
+@0233.155:154005            sl   5         ;  multiply by 32
+@0234.156:040423            ts   275       ;  
+@0235.157:140423            mr   275       ;  compute (dy/tau + yvelo0)**2 / 32;  i.e. if (dy/tau + yvelo0) = 0o170, we store 0o702 in @283
+@0236.158:040433            ts   283       ;  
+
+@0237.159:100035            ca  Tau_inv     ;  
+@0240.160:144431            mh   dx         ;  
+@0241.161:154007            sl   7         ;  
+@0242.162:110376            ad  x_velo0     ;  
+@0243.163:154005            sl   5         ;  
+@0244.164:040426            ts   278       ;  
+@0245.165:140426            mr   278       ;  compute (dx/tau + xvelo0)**2 / 32
+ 							;.exec dump_tracking_state(cm, deci, rl)
+
+							; these couple instructions compute the sum of the squared x & y components minus the interceptor velocity
+@0246.166:114430            su  vel_I_sq  ;  @280
+@0247.167:110433            ad   283       ;  Here's the spot where I always (got) the overflow!
+							;  If the result is negative, i.e. interceptor velocity is greater, cycle back and try again later with a 
+							; larger Tau_inv, i.e., a shorter time to intercept
+@0250.168:070040            cp   32        ; back to Wait
+
+							; ARCTAN Segment
+							; This segment is alleged to approximate arctan of the heading for getting the interceptor to intercept the target
+@0251.169:120423            cm   275       ;  last seen, for Tau_inv==1, this had 'dy' in miles + Target_y velocity in mph
+ 							; .exec dump_tracking_state(cm, deci, rl)
+@0252.170:140434            mr  num11463   ;   constant +.1500 decimal
+@0253.171:140426            mr   278       ;  last seen, (dx/tau + xvelo0) * 32
+@0254.172:064433            qe   283       ;  Last seen was (dy/tau + yvelo0)**2 / 32, in @158 (decimal!)
+@0255.173:160002            sr   2         ;  (dy/tau + yvelo0)**2 / 8
+@0256.174:040431            ts   dx         ;  
+@0257.175:120426            cm   278       ;  last seen, (dx/tau + xvelo0) * 32
+@0260.176:140426            mr   278       ;  
+@0261.177:160002            sr   2         ;  
+@0262.178:110433            ad   283       ;  
+@0263.179:064433            qe   283       ;  
+@0264.180:110433            ad   283       ;  
+@0265.181:040426            ts   278       ;  
+@0266.182:120426            cm   278       ;  
+@0267.183:110431            ad   dx         ;  retrieve (dy/tau + yvelo0)**2 / 8
+@0270.184:064433            qe   283       ;  
+@0271.185:150433            dv   283       ;  
+@0272.186:154015            sl   13        ;  
+@0273.187:114001            su  num_qtr      ;  
+@0274.188:064423            qe   275       ;  
+							; The following line is just an ordinary instruction, but it used to be also read as a constant 0o71300 by @a0054, @a0055
+							; That depended on mem address aliasing, which is, umm, sooo 1952.  So I moved the constant and fixed this instruction
+							; .exec print("pc=0274.188: angle @275=0o%o, 0d%s" % (cm.rd(275), deci((cm.rd(275)))))
+;;;;;; @0275.189:071300  not71300: cp  no275reset  ; holy cow; was 0d704=0o1300, which would alias to octal 300       ;  @@ReadBy a0054 a0055 
+							; I had a typo here: at first it looked like @190 was reseting @275 to a constant.  But it looks like
+							; its actual purpose is to take an absolute value, to make the answer always negative.
+;;;;;;;;;;;  I just don't see why this test is here...  
+@0275.189:071300  not71300: cp  no275reset  ;
+@0276.190:104424            cs   275   ;  I initially mis-read this instruction as CS 276
+@0277.191:040423            ts   275       ;  
+
+							; The only comment in the source is referenced to addr 192: "Orders 192-196 should be d1sregarded"
+							; What the heck does that mean.
+							; it is true that those four instructions appear to only put the estimated time to intercept into FF Reg lights.
+@0300.192:130000  no275reset: ao   000       ; Was AO 0, i.e., add one to Switch Register Zero; put 1 in the accumulator 
+@0301.193:150035            dv  Tau_inv     ;  
+@0302.194:154006            sl   6         ;  This probably sort-of converts hours to minutes, i.e., hours * 64
+@0303.195:040036            ts  Veloc_I     ;  
+
+							;  BINARY-TO-BCD
+							; this segment is likely to convert the binary angle to heading in BCD.
+							; Units of angles are probably "revolutions", i.e., zero to one is 0 to 360 degrees
+@0304.196:104362            cs  num_22525  ;  
+							; .exec check_heading(cm, deci, rl)
+@0305.197:110423            ad   275       ;  
+@0306.198:124152            sa   106       ;  
+@0307.199:144424            mh  num_pt9    ;  
+							; there was clearly a typo in the following SR.  It said SR 302.  Clearly that's *silly* but I don't 
+							; know what it should be...  Some experimenting shows that '2' works pretty well...
+@0310.200:160456            sr   2         ;  WAS SR 302; 
+@0311.201:040010            ts  FF_angle     ;  
+@0312.202:154004            sl   4         ;  
+@0313.203:144425            mh  num00012   ;  
+@0314.204:040426            ts   278       ;  
+@0315.205:154017            sl   15        ;  
+@0316.206:144425            mh  num00012   ;  
+@0317.207:040035            ts  Tau_inv    ;  
+@0320.208:100426            ca   278       ;  
+@0321.209:154005            sl   5         ;  
+@0322.210:110035            ad  Tau_inv    ;  
+@0323.211:154001            sl   1         ;  
+@0324.212:044010            td  FF_angle   ;  
+							.exec print_ff_heading(cm, deci, rl, cb)
+@0325.213:100000            ca   0         ;  
+@0326.214:040035            ts  Tau_inv    ;  
+@0327.215:074040            sp   32        ;  finished with heading calculation; back to Wait
+
+
+                            ; on entry to this block, AC contains (Time0 - 0d200)
+@0330.216:104422 not_covered: cs   274     ; Branch here if we're "in" a search sector and have a candidate radar response @@JumpedToBy a0117 
+							.exec print("  @216 Radar response is in search zone for Aircraft %s; Time0=%s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
+@0331.217:124373            sa  x_smoo0     ;  
+@0332.218:040415            ts   269       ;  
+@0333.219:140415            mr   269       ;  
+@0334.220:040365            ts   245       ;  
+@0335.221:104420            cs   272       ;  
+@0336.222:124374            sa  y_smoo0     ;  
+@0337.223:040403            ts   259       ;  
+@0340.224:140403            mr   259       ;  
+@0341.225:124365            sa   245       ;  
+@0342.226:040365            ts   245       ;  
+@0343.227:100402            ca  srch_r0     ;  
+                .exec print("  @228 Test if new data corresponds more closely: srch_r0=%s - @245=%s" % (deci(cm.rd(rl("srch_r0"))), deci(cm.rd(245))))
+@0344.228:114365            su   245       ;  
+@0345.229:070155            cp  swap_air   ;  Take this branch "if the latest piece of data does not correspond more closely..."
+  
+@0346.230:100367            ca  num_100    ;  In this case, we have a better reading for the aircraft; so we "reset" the time counter
+@0347.231:040372            ts  time0      ;  
+@0350.232:100365            ca   245       ;  
+@0351.233:040402            ts  srch_r0     ;  
+@0352.234:104415            cs   269       ;  
+@0353.235:140126            mr   86        ;  an instruction used as a constant; @0126.086:030000   qh   000 
+@0354.236:040377            ts  x_diff0     ;  
+							.exec print("    @233 Yes, it corresponds - Reset angular time counter for aircraft %s to %s, x_diff to %s" % (which_plane(cm), deci(cm.rd(rl("time0"))), deci(cm.rd(rl("x_diff0")))))
+@0355.237:104403            cs   259       ;  
+@0356.238:140126            mr   86        ;  
+@0357.239:074154            sp   108       ;  note that @108 is a "ts y_diff0", i.e., they saved a word by jumping into the middle of the "clear diffs" sequence
+@0360.240:000000            .word 0         ;  @@WrittenBy a0071 ReadBy a0103 
+@0361.241:163777 which_tgt: .word 0o163777  ;  -0.1875 = -3/16 @@WrittenBy a0066 a0173 ReadBy a0065 a0172 a0177 
+@0362.242:022525 num_22525: .word 0o22525   ;  0.2917 decimal = 7/24  @@ReadBy a0304 
+@0363.243:000040 large_srch: .word 32        ;  @@ReadBy a0212 a0216 
+@0364.244:000022 num_18d:   .word 18        ;  @@ReadBy a0131 
+@0365.245:000000            .word 0         ;  @@WrittenBy a0334 a0342 ReadBy a0341 a0344 a0350 
+@0366.246:001212   num_550: .word 550       ; ** possible OCR mistake; the scan said 650, but I'm sure it's 550 **  @@ReadBy a0120 
+@0367.247:000144   num_100: .word 100       ;  @@ReadBy a0346 
+@0370.248:000310   num_200: .word 200       ;  @@ReadBy a0116 
+@0371.249:001212  num_650b: .word 650       ;  @@ReadBy a0201 
+
+@0372.250:000000     time0: .word 0         ; Time Counter @@WrittenBy a0040 a0114 a0121 a0157 a0202 a0347 ReadBy a0040 a0114 a0155 
+@0373.251:000000   x_smoo0: .word 0         ; X Smoothed Position @@WrittenBy a0142 a0207 ReadBy a0125 a0141 a0221 a0331 
+@0374.252:000000   y_smoo0: .word 0         ;  @@WrittenBy a0151 a0211 ReadBy a0127 a0150 a0224 a0336 
+@0375.253:000000   y_velo0: .word 0         ;  @@WrittenBy a0146 ReadBy a0145 a0232 
+@0376.254:000000   x_velo0: .word 0         ;  @@WrittenBy a0137 ReadBy a0136 a0242 
+@0377.255:000000   x_diff0: .word 0         ; Difference between observed and predicted position  @@WrittenBy a0153 a0354 ReadBy a0134 a0140 
+@0400.256:000000   y_diff0: .word 0         ; Difference between observed and predicted position  @@WrittenBy a0154 ReadBy a0143 a0147 
+@0401.257:000000   srch_i0: .word 0         ; Search Area Size, Initial @@WrittenBy a0132 a0213 ReadBy a0122 
+@0402.258:000000   srch_r0: .word 0         ; Search Area Size, Running @@WrittenBy a0133 a0214 a0351 ReadBy a0123 a0343 
+@0403.259:000000            .word 0         ;  @@WrittenBy a0337 ReadBy a0340 a0355 
+
+@0404.260:000000     time1: .word 0         ;  @@WrittenBy a0041 a0156 ReadBy a0041 a0156 
+@0405.261:000000   x_smoo1: .word 0         ;  @@ReadBy a0220 
+@0406.262:000000   y_smoo1: .word 0         ;  @@ReadBy a0223 
+@0407.263:000000   y_velo1: .word 0         ;  
+@0410.264:000000   x_velo1: .word 0         ;  
+@0411.265:000000   x_diff1: .word 0         ;  
+@0412.266:000000   y_diff1: .word 0         ;  
+@0413.267:000000   srch_i1: .word 0         ;  
+@0414.268:000000   srch_r1: .word 0         ;  
+@0415.269:000000            .word 0         ;  @@WrittenBy a0332 ReadBy a0333 a0352 
+
+@0416.270:030646            .word +.3879    ;  @@ReadBy a0062 
+@0417.271:025251  num25251: .word +.3333    ;  constant - decimal 0.333  @@ReadBy a0135 a0144 
+@0420.272:000000            .word 0         ;  @@WrittenBy a0051 a0102 ReadBy a0052 a0063 a0072 a0106 a0210 a0335 
+@0421.273:000000            .word 0         ;  @@WrittenBy a0053 a0064 ReadBy a0056 a0061 a0070 a0107 
+@0422.274:000000            .word 0         ;  @@ReadBy a0206 a0330 
+@0423.275:000000            .word 0         ;  @@WrittenBy a0234 a0274 a0277 ReadBy a0235 a0251 a0274 a0305 
+@0424.276:106314  num_pt9:  .word -.9000    ;  @@ReadBy a0276 a0307 
+@0425.277:000012  num00012: .word 10        ;  @@ReadBy a0313 a0316 
+@0426.278:000000            .word 0         ;  @@WrittenBy a0244 a0265 a0314 ReadBy a0245 a0253 a0257 a0260 a0266 a0320 
+@0427.279:007557  num07557: .word +.1206    ;  @@ReadBy a0060 
+@0430.280:000000  vel_I_sq: .word 0         ; Interceptor Velocity Squared  @@WrittenBy a0437 ReadBy a0246 
+@0431.281:000000       dx:  .word 0         ;  @@WrittenBy a0222 a0256 ReadBy a0240 a0267 
+@0432.282:000000       dy:  .word 0         ;  @@WrittenBy a0225 ReadBy a0230 
+@0433.283:000000            .word 0         ;  @@WrittenBy a0236 a0254 a0263 a0270 ReadBy a0247 a0254 a0262 a0263 a0264 a0270 a0271 
+@0434.284:011463  num11463: .word +.1500    ;  @@ReadBy a0252 
+
+@0435.285:100036 start:     ca  Veloc_I     ;  
+@0436.286:140036            mh  Veloc_I     ;  square of expected interceptor velocity
+							sl 10            ; shift left 15 to get it into AC, then right 5 to divide by 32; interceptor velocity squared divided by 32
+@0437.287:040430            ts  vel_I_sq    ;  
+							sp 0o40   ; added by guy
+							
+				num71300:   .word 0o71300
+				vIsqd32:    .word 0o06710   ; initial velocity squared divided by 32.
