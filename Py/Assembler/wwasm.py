@@ -110,18 +110,20 @@ def lex_line(line, line_number):
         print(line_number, "Line=", line)
 
     # Special Case for .exec directive
-    # I'm adding a directive to the assembler to pass a string to the simulator that should be interpreted
-    # and executed as a python statement
+    # I'm adding directives to the assembler to:
+    #    - pass a string to the simulator that should be interpreted and executed as a python statement
+    #    - execute a specialized formatted print statement to dump the state of named variables
+    #           (i.e., for "printf debugging"
     # e.g.    .exec print("time=%d" % cm.rd(0o05))
     # The statement can't have a label, and must not start in column zero.  But other than that, we'll bypass
     # the rest of the parser checks, as the python statement could have "anything"
-    # The .exec directive will follow a 'real' instruction; the assumption is that it is executed after
+    # The .exec directive will follow a 'real' WW instruction; the assumption is that it is executed after
     # the preceding instruction, before the next 'real' instruction.
-    exec_match = "^[ \t][ \t]*(.exec)"
-    if re.search(exec_match, line):
+    exec_match = "^[ \t][ \t]*(.exec|.print)"
+    if m := re.search(exec_match, line):
         exec_stmt = re.sub(exec_match, '', line)
         exec_stmt = exec_stmt.lstrip().rstrip()
-        op = '.exec'
+        op = m.group(0).lstrip().rstrip()   #  was '.exec'
         operand = exec_stmt
         # as above, .lower() removed
         return LexedLine(line_number, label, op, operand, comment, directive)
@@ -201,7 +203,7 @@ def ww_int(nstr, line_number, relative_base=None):
     return ww_int_csii(nstr, line_number, relative_base)
 
 
-# This was guy's first try at WW Number Conversion, replaced in Oct 2020 with
+# This was guy's first try at WW Number Conversion, replaced in Oct 2020 with ww_int_csii
 #   In Whirlwind-speak, constants were viewed as fractional, i.e. 0 <= n < 1.0
 # and expressed as o.ooooo  - a sign bit followed by 5 octal digits
 # This routing accepts either ordinary octal ints, or WW fractional format.
@@ -522,7 +524,10 @@ def dot_change_isa_op(src_line, _binary_opcode, _operand_mask):
 def dot_python_exec_op(src_line, _binary_opcode, _operand_mask):
     global ExecTab, NextCoreAddress
 
-    exec = src_line.operand
+    # transform a .exec or .print command slightly to make it more readable in the .acore file
+    exec_cmd = re.sub("^\.", "", src_line.operator) + ':'
+    exec_arg = src_line.operand
+    exec = exec_cmd + ' ' + exec_arg
     addr = NextCoreAddress
     if addr in ExecTab:
         ExecTab[addr] = ExecTab[addr] + ' \\n ' + exec
@@ -581,6 +586,7 @@ def parse_ww(srcline):
     ret = 0
     addr_inc = 0
     # continue from here with normal instruction processing
+    # Op Codes and Directives are case-independent
     op = srcline.operator
     if op in op_code:
         op_list = op_code[op]
@@ -724,9 +730,9 @@ op_code_1950 = {   # # function, op-code, mask
 op_code = op_code_1958  # default instruction set
 
 meta_op_code = {
-    ".ORG": [dot_org_op, 0, 0, OPERAND_NONE],
-    ".DAORG": [dot_daorg_op, 0, 0, OPERAND_NONE],
-    ".BASE": [dot_relative_base_op, 0, 0, OPERAND_NONE],
+    ".org": [dot_org_op, 0, 0, OPERAND_NONE],
+    ".daorg": [dot_daorg_op, 0, 0, OPERAND_NONE],  # Disk Address Origen
+    ".base": [dot_relative_base_op, 0, 0, OPERAND_NONE],
     ".word": [dot_word_op, DOT_WORD_OP, 0, OPERAND_NONE],
     ".flexl": [dot_word_op, DOT_FLEXL_OP, 0, OPERAND_NONE],
     ".flexh": [dot_word_op, DOT_FLEXH_OP, 0, OPERAND_NONE],
@@ -737,9 +743,10 @@ meta_op_code = {
     ".ww_tapeid": [dot_ww_tapeid_op, 0, 0, OPERAND_NONE],
     ".isa": [dot_change_isa_op, 0, 0, OPERAND_NONE],  # directive to switch to the older 1950 instruction set
     ".exec": [dot_python_exec_op, 0, 0, OPERAND_NONE],
-    ".PP":   [dot_program_param_op, 0, 0, OPERAND_NONE],
+    ".print": [dot_python_exec_op, 0, 0, OPERAND_NONE],
+    ".pp":   [dot_program_param_op, 0, 0, OPERAND_NONE],
     "pp": [insert_program_param_op, 0, 0, OPERAND_NONE],
-    "DITTO": [ditto_op, 0, 0, OPERAND_NONE],
+    "ditto": [ditto_op, 0, 0, OPERAND_NONE],
 }
 
 # this little routine updated the op code table to be used for analyze instructions.  (So far) there are only
@@ -1007,7 +1014,7 @@ class LexedLine:
     def __init__(self, _linenumber, _label, _operator, _operand, _comment, _directive):
         self.linenumber = _linenumber
         self.label = _label
-        self.operator = _operator
+        self.operator = _operator.lower()
         self.operand = _operand
         self.comment = _comment
         self.binary_opcode = None

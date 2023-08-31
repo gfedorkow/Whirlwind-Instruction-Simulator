@@ -106,7 +106,7 @@ def get_the_date():
 # convert a Whirlwind int into a signed decimal number string; positive is easy, but
 #   negative numbers need conversion.
 # This routine would normally be called by a .exec directive, so I've used an overly-short name...
-# By default, I'm prefixing a "0d" to indicate decimal, but that's not suitable for
+# By default, I'm prefixing a "0d" to indicate decimal, but that's not suitable for [oops, the phone rang]
 def deci(ww_num: int, decimal_0d=True) -> str:
     neg = False
     leader = ''
@@ -262,7 +262,7 @@ class CpuClass:
             self.cb.log.warn("Error setting isa; must be 1950 or 1958, not %s" % isa_name)
             sys.exit(1)
 
-    # convert an integer to a string, including negative number notation
+    # convert a ones-complement integer to a string, including negative number notation
     def wwint_to_str(self, num: Union[None, int]) -> str:
         if num is None:
             return " None "
@@ -357,41 +357,124 @@ class CpuClass:
                                                                 short_opcode, address, self._AC, description))
 
 
+    # Resolve-Label: special lookup for python statements embedded in ww source
+    # The lookup takes a string, converts either decimal or octal, or looks for it in the symtab.
+    # Modified Aug 31, 2023 to convert numbers as well as strings...
+    #    if the arg is a number, just treat it as a number and convert string to int
+    def rl(self, label):
+        address = 0
+        if label[0].isdigit():
+            if re.match("0o", label):
+                address = int(label[2:], 8)
+            else:
+                address = int(label)
+
+        else:
+            address = -1
+            for addr in self.SymTab:
+                if label == self.SymTab[addr][0]:
+                    address = addr
+                    break
+            if address == -1:
+                self.cb.log.warn("Python Exec: unknown label %s" % label)
+                address = 0
+        return address
+
+
     # I added a directive to allow a python statement to be added following execution of particular
     # instructions in the WW program, e.g., a print statement to see what's going on.
     # This def includes a special lookup to accept numbers or labels from the WW source file
     def py_exec(self, pc, cmd):
         global CoreMem
-        # Resolve-Label: special lookup for python statements embedded in ww source
-        # The lookup takes a string, converts either decimal or octal, or looks for it in the symtab
+
         def rl(label):
-            address = 0
-            if label[0].isdigit():
-                self.cb.log.warn("Py_exec: Resolve Label can't resolve a number: got %s" % (label))
-
-            else:
-                address = -1
-                for addr in self.SymTab:
-                    if label == self.SymTab[addr][0]:
-                        address = addr
-                        break
-                if address == -1:
-                    self.cb.log.warn("Python Exec: unknown label %s" % label)
-                    address = 0
-            return address
-
+            return self.rl(label)
 
         cm = self.cm
         cb = self.cb
         cpu = self
         for line in cmd.split('\\n '):
-            try:
-                exec(line)
-            except Exception as ex:
-                # https://stackoverflow.com/questions/9823936/python-how-do-i-know-what-type-of-exception-occurred
-                template = "An exception of type {0} occurred. Arguments:\n   {1!r}"
-                message = template.format(type(ex).__name__, ex.args)
-                self.cb.log.warn("Exec of '%s' failed at pc=0o%03o\n  %s" % (line, pc, message))
+            exec_op = None
+            if m:= re.match("(\w+): ", line):
+                exec_op = m.group(1)
+                line = re.sub("^\w+: +", '', line)
+            if exec_op is None:
+                exec_op = "exec"
+                self.cb.log.warn("deprecated @E format: '%s'" % line)
+            if exec_op == "exec":
+                try:
+                    exec(line)
+                except Exception as ex:
+                    # https://stackoverflow.com/questions/9823936/python-how-do-i-know-what-type-of-exception-occurred
+                    template = "An exception of type {0} occurred. Arguments:\n   {1!r}"
+                    message = template.format(type(ex).__name__, ex.args)
+                    self.cb.log.warn("Exec of '%s' failed at pc=0o%03o\n  %s" % (line, pc, message))
+            elif exec_op == "print":
+                self.wwprint(line)
+            else:
+                self.cb.log.warn("Unrecognized exec_op in %s: %s", exec_op, line)
+
+    # This routine is called from a ".print" pseudo-op in the source code.
+    # Its purpose is to give the simplest-possible way to do printf-debug, by
+    # allowing an assembler directive to print out whatever machine state variables
+    # might be of interest.
+    # The command looks sort of like a printf, with %xx ops embedded in a control
+    # string, followed by a series of names of memory addresses as arguments
+
+    # Bug Alert - the format and arg strings can be quoted, but I'm not handling
+    # the quotes properly; the Split() below will split on commas _inside_ the strings
+    # as well as commas between args.
+    # Bug Alert - I don't think I'm handling an unrecognized variable name properly; it
+    # should at least print as <none> or something...
+    # Bug Alert - the format commands to print the Accumulator ain't implemented!
+    def wwprint(self, format_and_args):
+        quoted_args = format_and_args.split(',')
+        args = []
+        for a in quoted_args:
+            a = a.lstrip().rstrip()
+            a = re.sub('^["|\']', '', a)
+            a = re.sub('["|\']$', '', a)
+            args.append(a)
+
+        format_str = args.pop(0)
+        output_str = ''
+        fmt = format_str
+        while len(fmt):
+            if fmt[0] != '%':  # if it doesn't start with %, it's literal text
+                m = re.match("[^%]*", fmt)
+                txt = m.group(0)
+                fmt = re.sub(txt, '', fmt)
+                output_str += txt
+            else:  # otherwise, it must be a format command
+                # The first batch of fmt commands don't take an arg
+                if m := re.match('%%', fmt):
+                    output_str += '%'
+                elif m := re.match("%ao", fmt):
+                    output_str += "<acc val octal>"
+                elif m := re.match("%ad", fmt):
+                    output_str += "<acc val dec>"
+                else:  # But the rest of them do need an arg
+                    if len(args) == 0:
+                        print("wwprint: missing arg for '%s'", format_str)
+                        return None
+                    if m := re.match("%d|%o", fmt):
+                        addr = self.rl(args.pop(0))
+                        if m.group(0) == "%o":
+                            output_str += "0o"
+                        output_str += m.group(0) % self.cm.rd(addr)
+#                    elif m := re.match("%o", fmt):
+#                        addr = self.rl(args.pop(0))
+#                        output_str += "%o" % self.cm.rd(addr)
+                    else:
+                        print("wwprint: unknown fmt cmd: %s" % fmt)
+                        return None
+
+                txt = m.group(0)  # strip whatever we matched from the start of the format string
+                fmt = re.sub(txt, '', fmt, count = 1)   #  but just the first instance! (not all of them!)
+        if len(args):
+            print("wwprint: too many args for '%s'" % format_str)
+            return None
+        print(output_str)
 
 
     def run_cycle(self):
