@@ -94,8 +94,12 @@ class AircraftClass:
 
 
 
+# Initialize the radar system.
+# The flag autoclick_enable comes from the command line and indicates if the radar sim should use pre-programmed
+# mouse clicks to indicate Target and Interceptor, oor if we should wait for the Real User to Click the Buttons.
+#  Autoclick allows perfectly-repeatable simulation runs as a (substantial) aid to debug.
 class RadarClass:
-    def __init__(self, target_list, cb, cpu):
+    def __init__(self, target_list, cb, cpu, autoclick_enable):
         self.azimuth_steps = 256
         self.rng_list = []   # list of radar reflections at the current azimuth
         self.current_azimuth = 0
@@ -107,6 +111,7 @@ class RadarClass:
         self.antenna_revolutions = 0
         self.azimuth_next = True   # We (roughly) alternate sending Range and Azimuth
 
+        self.autoclick_enable = autoclick_enable
         self.mouse_clicked_once_for_autostart = False
 
         # This program is the only one that uses the older Light Gun interface linked in through
@@ -254,6 +259,8 @@ class RadarClass:
         # zoom and record the rest of the session
         # This 'feature' can only work with the xwin display, so I bypass the check if we're
         # using the analog display mode.
+        if self.autoclick_enable == False:
+            return   # don't even try
         if self.mouse_clicked_once_for_autostart == False and self.cpu.scope.crt and \
                 self.cpu.scope.crt.win and self.antenna_revolutions == 1 and self.current_azimuth == 10:
             print("wait for mouse")

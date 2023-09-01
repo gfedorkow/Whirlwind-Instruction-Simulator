@@ -282,6 +282,16 @@ class CpuClass:
         return ("0o%06o" % num) + paren
 
 
+    # convert a ones-complement int to twos-comp py int
+    # Positive is a no-op, negative needs attention.
+    # Fix up the number, but also return a negative-sign or null char
+    def wwint_to_py(self, num: int):
+        if num & self.cb.WWBIT0:   # if negative
+            return -(num ^ 0o177777), '-'
+        else:
+            return num, ''
+
+
     # convert an address to a string, adding a label from the symbol table if there is one
     # "Label_Only" causes the routine to check the symbol table, and if there's a label, it returns
     #  it without adding the number.  If there's no label in the symTab, you get the number
@@ -443,28 +453,38 @@ class CpuClass:
             if fmt[0] != '%':  # if it doesn't start with %, it's literal text
                 m = re.match("[^%]*", fmt)
                 txt = m.group(0)
-                fmt = re.sub(txt, '', fmt)
+                fmt = fmt[len(txt):]  # drop the characters we've already matched
                 output_str += txt
             else:  # otherwise, it must be a format command
+                sign = ''
                 # The first batch of fmt commands don't take an arg
                 if m := re.match('%%', fmt):
                     output_str += '%'
-                elif m := re.match("%ao", fmt):
-                    output_str += "<acc val octal>"
-                elif m := re.match("%ad", fmt):
-                    output_str += "<acc val dec>"
+                elif m := re.match("%ao|%ad|%bo|%bd", fmt):
+                    register = None
+                    if fmt[1] == 'a':
+                        register = self._AC
+                    elif fmt[1] == 'b':
+                        register = self._BReg
+                    else:
+                        self.cb.log.warn("Unrecognized register name '%s'", fmt[1]);
+                    number_format = "%%%s" % fmt[2]
+                    if fmt[2] == 'd':
+                        register, sign = self.wwint_to_py(register)
+                    output_str += sign + number_format % register
+
                 else:  # But the rest of them do need an arg
                     if len(args) == 0:
                         print("wwprint: missing arg for '%s'", format_str)
                         return None
                     if m := re.match("%d|%o", fmt):
                         addr = self.rl(args.pop(0))
+                        register = self.cm.rd(addr)
                         if m.group(0) == "%o":
                             output_str += "0o"
-                        output_str += m.group(0) % self.cm.rd(addr)
-#                    elif m := re.match("%o", fmt):
-#                        addr = self.rl(args.pop(0))
-#                        output_str += "%o" % self.cm.rd(addr)
+                        if m.group(0) == "%d":
+                            register, sign = self.wwint_to_py(register)
+                        output_str += sign + (m.group(0) % register)
                     else:
                         print("wwprint: unknown fmt cmd: %s" % fmt)
                         return None
@@ -1643,7 +1663,6 @@ def main_run_sim(args):
     if args.TraceCoreLocation:
         cb.TraceCoreLocation = int(args.TraceCoreLocation, 8)
     if args.FlowGraph:
-#        cb.FlowGraph = True
         cb.tracelog = ww_flow_graph.init_log_from_sim()
     cb.decimal_addresses = args.DecimalAddresses  # if set, trace output is expressed in Decimal to suit 1950's chic
     cb.no_toggle_switch_warn = args.NoToggleSwitchWarning
@@ -1715,7 +1734,7 @@ def main_run_sim(args):
         target_list = [radar_class.AircraftClass('T', 30.0, -26+21.37, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
                        radar_class.AircraftClass('I', 70.0,  0.0, 270.0, 250.0, 7, 'I'), # was 6 revolutions
                       ]
-        radar = radar_class.RadarClass(target_list, cb, cpu)
+        radar = radar_class.RadarClass(target_list, cb, cpu, args.AutoClick)
         # register a callback for anything that accesses Register 0o27 (that's the Light Gun)
         CoreMem.add_tsr_callback(cb, 0o27, radar.mouse_check_callback)
         cb.radar = radar   # put a link to the radar class in cb, so we can use it to decide what kind of axis to draw
@@ -1867,6 +1886,7 @@ def main():
     parser.add_argument("-c", "--CycleLimit", help="Specify how many instructions to run (zero->'forever')", type=int)
     parser.add_argument("--CycleDelayTime", help="Specify how many msec delay to insert after each instruction", type=int)
     parser.add_argument("-r", "--Radar", help="Incorporate Radar Data Source", action="store_true")
+    parser.add_argument("--AutoClick", help="Execute pre-programmed mouse clicks during simulation", action="store_true")
     parser.add_argument("--AnalogScope", help="Display graphical output on an analog CRT", action="store_true")
     parser.add_argument("--NoToggleSwitchWarning", help="Suppress warning if WW code writes a read-only toggle switch",
                         action="store_true")

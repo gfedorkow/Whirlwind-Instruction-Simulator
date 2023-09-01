@@ -280,7 +280,6 @@ class AnaScope:
     def getLightGuns(self):
         """
             returns 0 if no light gun detected, or set the (two) lower bits
-
         """
 
         # light gun signals are evaluated only if there was a point drawing
