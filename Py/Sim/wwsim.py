@@ -405,7 +405,9 @@ class CpuClass:
         cpu = self
         for line in cmd.split('\\n '):
             exec_op = None
-            if m:= re.match("(\w+): ", line):
+            # the next two lines were combined with a Walrus Operator :-
+            m = re.match("(\w+): ", line)
+            if m:
                 exec_op = m.group(1)
                 line = re.sub("^\w+: +", '', line)
             if exec_op is None:
@@ -458,36 +460,41 @@ class CpuClass:
             else:  # otherwise, it must be a format command
                 sign = ''
                 # The first batch of fmt commands don't take an arg
-                if m := re.match('%%', fmt):
+                m = re.match('%%', fmt)
+                if m:
                     output_str += '%'
-                elif m := re.match("%ao|%ad|%bo|%bd", fmt):
-                    register = None
-                    if fmt[1] == 'a':
-                        register = self._AC
-                    elif fmt[1] == 'b':
-                        register = self._BReg
-                    else:
-                        self.cb.log.warn("Unrecognized register name '%s'", fmt[1]);
-                    number_format = "%%%s" % fmt[2]
-                    if fmt[2] == 'd':
-                        register, sign = self.wwint_to_py(register)
-                    output_str += sign + number_format % register
-
-                else:  # But the rest of them do need an arg
-                    if len(args) == 0:
-                        print("wwprint: missing arg for '%s'", format_str)
-                        return None
-                    if m := re.match("%d|%o", fmt):
-                        addr = self.rl(args.pop(0))
-                        register = self.cm.rd(addr)
-                        if m.group(0) == "%o":
-                            output_str += "0o"
-                        if m.group(0) == "%d":
+                else:
+                    # this used to be 'elif m:= re.match', but I changed it to eliminate the walrus
+                    m = re.match("%ao|%ad|%bo|%bd", fmt)
+                    if m:
+                        register = None
+                        if fmt[1] == 'a':
+                            register = self._AC
+                        elif fmt[1] == 'b':
+                            register = self._BReg
+                        else:
+                            self.cb.log.warn("Unrecognized register name '%s'", fmt[1]);
+                        number_format = "%%%s" % fmt[2]
+                        if fmt[2] == 'd':
                             register, sign = self.wwint_to_py(register)
-                        output_str += sign + (m.group(0) % register)
-                    else:
-                        print("wwprint: unknown fmt cmd: %s" % fmt)
-                        return None
+                        output_str += sign + number_format % register
+
+                    else:  # But the rest of them do need an arg
+                        if len(args) == 0:
+                            print("wwprint: missing arg for '%s'", format_str)
+                            return None
+                        m = re.match("%d|%o", fmt)
+                        if m:
+                            addr = self.rl(args.pop(0))
+                            register = self.cm.rd(addr)
+                            if m.group(0) == "%o":
+                                output_str += "0o"
+                            if m.group(0) == "%d":
+                                register, sign = self.wwint_to_py(register)
+                            output_str += sign + (m.group(0) % register)
+                        else:
+                            print("wwprint: unknown fmt cmd: %s" % fmt)
+                            return None
 
                 txt = m.group(0)  # strip whatever we matched from the start of the format string
                 fmt = re.sub(txt, '', fmt, count = 1)   #  but just the first instance! (not all of them!)
