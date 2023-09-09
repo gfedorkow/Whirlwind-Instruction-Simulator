@@ -27,6 +27,7 @@
 # g fedorkow, July 7, 2023
 
 DebugAnaScope = False
+DebugGun = True
 
 import time
 import math
@@ -57,10 +58,10 @@ class AnaScope:
         self.pin_enZ1 = 23  # not yet used
         self.pin_enZ2 = 18  # not yet used
         self.pin_isKey = 27
-        self.pin_isGun1 = 25
-        self.pin_isGun2 = 24
-        self.pin_isGun1on = 4
-        self.pin_isGun2on = 7
+        self.pin_isGun1 = 24
+        self.pin_isGun2 = 25
+        self.pin_isGun1on = 7
+        self.pin_isGun2on = 4
 
         # SPI pins are defined by SPI interface
 
@@ -226,6 +227,7 @@ class AnaScope:
         points = int(30.0 * r)
         # use a minimum of points
         points = max(8, points)
+        print("points: %d" % points)
 
         x1 = x0
         y1 = y0 + r
@@ -287,13 +289,17 @@ class AnaScope:
             return 0
 
         mask = 0
+        
         # check if this is the first light gun pulse
         if not self.wasGunPulse1 and gpio.input(self.pin_isGun1) == 0:
             mask = 1
             self.wasGunPulse1 = True
+            if DebugGun: print("first pulse, Gun 1: isGun1=%d, PushButton=%d" %
+                    (gpio.input(self.pin_isGun1on), gpio.input(self.pin_isKey)))
         if not self.wasGunPulse2 and gpio.input(self.pin_isGun2) == 0:
             mask = mask | 2
             self.wasGunPulse2 = True
+            if DebugGun: print("first pulse, Gun 2")
 
         if mask != 0:
             return mask
@@ -330,14 +336,22 @@ class AnaScope:
             ret = True
         return ret
 
+    # Return the state of the push button beside the light gun
+    # Used in Air Defense to select Target or Interceptor
+    # The pin is active low, return True if it's pushed
+    def getGunPushButton(self):
+        return (gpio.input(self.pin_isKey) == 0)
+
+
 
 """ 
     OXO / noughts and crosses /  tic-tac-toe
     Random computer play
+    Sep 2023 -- I broken this routine when changing to WW coordinates
 """
 oxo_state = []
 for i in range(1, 10): oxo_state.append(0)
-
+oxo_state[4] = 2
 
 def oxo_show(ana_scope):
     rc = -1
@@ -350,11 +364,14 @@ def oxo_show(ana_scope):
         if state == 0:  # free
             # need a point for the light gun
             ana_scope.drawPoint(x, y)
-            if ana_scope.checkGun() == True:
+            if ana_scope.getLightGuns() == 1:  # check for Light Gun #1
+                print("oxo light gun")
+                oxo_state[k] = (oxo_state[k] + 1) % 3 
                 return k
-        if state == 1:
-            ana_scope.drawCircle(x, y, oxo_rad)
         if state == 2:
+            print("circle(%d %d %d)" % (x, y, oxo_rad))
+            ana_scope.drawCircle(x, y, oxo_rad)
+        if state == 1:
             ana_scope.drawVector(x, y, oxo_rad, oxo_rad)
             ana_scope.drawVector(x, y, -oxo_rad, oxo_rad)
             ana_scope.drawVector(x, y, oxo_rad, -oxo_rad)
@@ -443,9 +460,9 @@ def main():
     xwin_crt = XwinCrt()
 
     while True:
-        charset_show(ana_scope, xwin_crt)
-        # oxo_show(ana_scope)
-        # show_bounce(ana_scope, 2)
+        # charset_show(ana_scope, xwin_crt)
+        oxo_show(ana_scope)
+        # show_bounce(ana_scope, 1)
 
 
 if __name__ == "__main__":

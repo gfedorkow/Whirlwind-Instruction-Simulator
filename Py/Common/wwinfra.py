@@ -1623,8 +1623,12 @@ class XwinCrt:
         if self.cb.ana_scope:
             pt = None
             button = 0
-            if self.cb.ana_scope.checkGun() == True:
+            if self.cb.ana_scope.checkGun() == 1:  # check only for LighGun1
+                button = 1      # default is to return "mouse button one"
+                if self.cb.ana_scope.getGunPushButton():
+                    button = 2
                 pt = True       # if it were the CRT, we'd have to return an actual point, but here, it's just "hit"
+                print("Light Gun Hit: button=%d" % button)
             self.last_pen_point = None  # we don't need this var, but I don't want to break the xwin version
 
         else:
