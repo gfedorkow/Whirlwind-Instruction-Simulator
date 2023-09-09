@@ -1556,14 +1556,14 @@ class CpuClass:
     # qd displays a point on the primary display scope
     def qd_inst(self, _pc, address, _opcode, _op_description):
         self.cm.wr(address, self._AC)
-        ret = self.scope.qd_qf(address, self._AC)
+        ret = self.scope.qd_qf(address, self._AC, scope=self.cb.SCOPE_MAIN)
         return ret
 
     # qd displays a point on the secondary "F" display scope
     # I think 'F' stands for Filtered, i.e., it's the track-and-scan guess of where the target should be
     def qf_inst(self, _pc, address, opcode, _op_description):
         self.cm.wr(address, self._AC)
-        ret = self.scope.qd_qf(address, self._AC, color = (1.0, 1.0, 0))  # non-green color for QF Scope
+        ret = self.scope.qd_qf(address, self._AC, scope=self.cb.SCOPE_AUX)  # non-green color for QF Scope
         return ret
 
 

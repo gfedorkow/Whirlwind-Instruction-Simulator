@@ -31,7 +31,6 @@ DebugGun = True
 
 import time
 import math
-import random
 import os
 try:
     import RPi.GPIO as gpio
@@ -42,8 +41,7 @@ except ImportError:
 
 # Analog Scope Interface Class
 class AnaScope:
-    def __init__(self, host_os):
-        #
+    def __init__(self, host_os, cb):
         #
         version = "g1.0b"
         if DebugAnaScope: print("Analog Scope Interface Version %s" % version)
@@ -51,6 +49,7 @@ class AnaScope:
             self.PCDebug = True
         else:
             self.PCDebug = False  # RasPi seems to return "none" for this environment variable
+        self.cb = cb  # this class is full of all kinds of helpful infra
         self.screen_max = 1024
         # pin definitions in BCM numbering
         self.pin_doMove = 17
@@ -81,6 +80,8 @@ class AnaScope:
             gpio.setmode(gpio.BCM)
             gpio.setup(self.pin_doMove, gpio.OUT)
             gpio.setup(self.pin_doDraw, gpio.OUT)
+            gpio.setup(self.pin_enZ1,   gpio.OUT)
+            gpio.setup(self.pin_enZ2,   gpio.OUT)
             gpio.setup(self.pin_isKey, gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.setup(self.pin_isGun1, gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.setup(self.pin_isGun2, gpio.IN, pull_up_down=gpio.PUD_UP)
@@ -95,7 +96,7 @@ class AnaScope:
             gpio.cleanup()
             self.spi.close()
 
-    # time.sleep has 70us overheadn on Raspi B+ with python 3.7, use quicker method
+    # time.sleep has 70us overhead on Raspi B+ with python 3.7, use quicker method
     def _delay(self, duration):
         stop = time.perf_counter_ns() + int(duration * 1e9)
         while time.perf_counter_ns() < stop:
@@ -137,17 +138,25 @@ class AnaScope:
             self._delay(self.move_delay)   #  ... use the local one instead
             gpio.output(self.pin_doMove, 0)
 
-    def _drawSegment(self, speedx, speedy):
+    def _drawSegment(self, speedx, speedy, scope):
         # set speed and intensity
         self._setDA(0, speedx)
         self._setDA(1, speedy)
+        if scope == self.cb.SCOPE_MAIN:
+            gpio.output(self.pin_enZ1, 1)
+            gpio.output(self.pin_enZ2, 0)
+        elif scope == self.cb.SCOPE_AUX:
+            gpio.output(self.pin_enZ1, 0)
+            gpio.output(self.pin_enZ2, 1)
+        else:
+            self.cb.log.fatal("DrawSegment: Scope #%d is unrecognized" % scope)
         if not self.PCDebug:
             gpio.output(self.pin_doDraw, 1)
             # time.sleep(self.draw_delay)  # don't use the built-in sleep...
             self._delay(self.draw_delay)   #  ... use the local one instead
             gpio.output(self.pin_doDraw, 0)
 
-    def _drawSmallVector(self, posx, posy, speedx, speedy):
+    def _drawSmallVector(self, posx, posy, speedx, speedy, scope):
         """ Basic operation: Draw a vector with given speed
             As the endpoint is not directly given,
             but as a speed, the length is limited
@@ -159,22 +168,27 @@ class AnaScope:
         if DebugAnaScope: print("    drawSmallVector: posx=%d, posy=%d, speedx=%d, speedy=%d" % \
                                 (posx, posy, speedx, speedy))
         self._movePoint(posx, posy)
-        self._drawSegment(speedx, speedy)
+        self._drawSegment(speedx, speedy, scope)
         self.wasPoint = True
 
 
-    def drawPoint(self, posx, posy):
+    def drawPoint(self, posx, posy, scope):
         """ draw a point as a vector of length 0
         """
+        if scope is None:
+            scope = self.cb.SCOPE_MAIN
         if DebugAnaScope: print("drawPoint: posx=%d, posy=%d" % (posx, posy))
-        self._drawSmallVector(posx, posy, 0, 0)
+        self._drawSmallVector(posx, posy, 0, 0, scope)
 
 
-    def drawVector(self, x0, y0, dx, dy):
+    def drawVector(self, x0, y0, dx, dy, scope=None):
         """ General vector drawing
             if length exceeds the (short) maximum,
             a chain of vectors is used.
         """
+        if scope is None:
+            scope = self.cb.SCOPE_MAIN
+
         if DebugAnaScope: print("drawVector: x0=%d, y0=%d, dx=%d, dy=%d" % (x0, y0, dx, dy))
         # maximum move for a short vector at full speed
         xmaxdist = 0.23 * self.screen_max  # 0.25 nominal; adjust hardware
@@ -208,7 +222,7 @@ class AnaScope:
         # loop
         # print(segs, x0, y0, sx, sy)
         while segs > 0:
-            self._drawSmallVector(x0, y0, int(sx * self.screen_max), int(sy * self.screen_max))
+            self._drawSmallVector(x0, y0, int(sx * self.screen_max), int(sy * self.screen_max), scope)
             # advance starting point by speed
             x0 += dx
             y0 += dy
@@ -221,7 +235,7 @@ class AnaScope:
       Draw a circle with center at (x,y) and radius r. 
       TODO: properly truncate at border
     """
-    def drawCircle(self, x0, y0, r):
+    def drawCircle(self, x0, y0, r, scope):
         if DebugAnaScope: print("drawCircle: x0=%d, y0=%d, r=%d" % (x0, y0, r))
         # number of vectors: 30 for radius 1.0
         points = int(30.0 * r)
@@ -235,12 +249,12 @@ class AnaScope:
             t = math.radians(j * 360 / points)
             dx = r * math.sin(t)
             dy = y0 + r * math.cos(t)
-            self.drawVector(x1, y1, dx, dy)
+            self.drawVector(x1, y1, dx, dy, scope)
             x1 += dx
             y1 += dy
 
 
-    def drawChar(self, x, y, mask, expand, Xwin_crt):
+    def drawChar(self, x, y, mask, expand, Xwin_crt, scope):
         last_x = x
         last_y = y
         toMove = True
@@ -261,7 +275,7 @@ class AnaScope:
                     self._movePoint(last_x, last_y)
                     toMove = False
                 # self._drawSmallVector(last_x, last_y, 4*(x - last_x), 4*(y - last_y))
-                self._drawSegment(4 * (x - last_x), 4 * (y - last_y))
+                self._drawSegment(4 * (x - last_x), 4 * (y - last_y), scope)
             else:
                 toMove = True
             last_x = x
@@ -456,7 +470,7 @@ def charset_show(ana_scope, xwin_crt):
 def main():
     host_os = os.getenv("OS")
 
-    ana_scope = AnaScope(host_os)
+    ana_scope = AnaScope(host_os, None)
     xwin_crt = XwinCrt()
 
     while True:

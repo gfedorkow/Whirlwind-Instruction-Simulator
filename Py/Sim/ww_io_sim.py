@@ -852,12 +852,13 @@ class DisplayScopeClass:
     # the face of the display scope.
     # guy says: I'm assuming that QF is like QD except that it shows on a different scope
     #  (note M-1083 Interim Display Equipment and Temporary Operation qf: F - Scope Display)
-    def qd_qf(self, _operand, acc, color=(0.0, 1.0, 0.0)):  # default to green
+    def qd_qf(self, _operand, acc, scope):
+        color=(0.0, 1.0, 0.0)  # default to green
         self.scope_vertical = self.convert_scope_coord(acc)
         if not self.cb.TraceQuiet:
             print("DisplayScope QD/QF: record to scope, mode=Point, x=0o%o, y=0o%o" %
                   (self.scope_horizontal, self.scope_vertical))
-        self.crt.ww_draw_point(self.scope_horizontal, self.scope_vertical, color=color, light_gun=True)
+        self.crt.ww_draw_point(self.scope_horizontal, self.scope_vertical, color=color, scope=scope, light_gun=True)
         return self.cb.NO_ALARM
 
 

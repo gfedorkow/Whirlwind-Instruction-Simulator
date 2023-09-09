@@ -102,7 +102,7 @@ def octal_or_none(number):
 
 
 class ConstWWbitClass:
-    def __init__(self, get_screen_size = False):
+    def __init__(self, get_screen_size=False):
         # Caution -- Whirlwind puts bit 0 to the left (Big Endian, no?)
         self.WWBIT0 = 0o100000
         self.WWBIT1 = 0o040000
@@ -166,10 +166,14 @@ class ConstWWbitClass:
         self.COLOR_CF = "\033[96m"  # Cyan color code for CF Instruction
         self.COLOR_default = "\033[0m"  # Reset to default color
 
+        # some programs use two separate scopes; these constants identify which one to use
+        self.SCOPE_MAIN = 1
+        self.SCOPE_AUX  = 2  # aka "F Scope"
+
         # use these vars to control how much Helpful Stuff emerges from the sim
         self.color_trace = True
         self.museum_mode = None  # command line switch to enable a repeating demo mode.
-        self.slow_execution_demo_mode = False # When True, this flag makes the graphics a bit more visible
+        self.slow_execution_demo_mode = False  # When True, this flag makes the graphics a bit more visible
         if get_screen_size:
             (self.screen_x, self.screen_y, self.gfx_scale_factor) = self.get_display_size()
         self.TracePC = 0        # print a line for each instruction if this number is non-zero; decrement it if pos.
@@ -336,13 +340,11 @@ class ConstWWbitClass:
 
         return(self.screen_x, self.screen_y, self.gfx_scale_factor)
 
-
     def int_str(self, n):   # convert an int address to a string in either Octal or Decimal notation
         if self.decimal_addresses:
             return "%03d" % n
         else:
             return "0o%04o" % n
-
 
     def Decode_IO(self, io_address):
         devname = "unknown i/o device"
@@ -370,7 +372,7 @@ class WWSwitchClass:
             #  "FlipFlopPreset0": [0, 0xffff],  # Flip Flop Register preset switches in Test Control
             #  "FlipFlopPreset1": [0, 0xffff],  # Flip Flop Register preset switches in Test Control
         }
-        for s in range(2,32):
+        for s in range(2, 32):
             name = "FlipFlopPreset%02o" % s
             self.SwitchNameDict[name] = [None, 0xffff]
 
@@ -1418,7 +1420,7 @@ class XwinCrt:
 
         if cb.analog_display:
             if cb.ana_scope is None:  # first time there's a CRT SI instruction, we'll init the display modules
-                cb.ana_scope = analog_scope.AnaScope(cb.host_os)
+                cb.ana_scope = analog_scope.AnaScope(cb.host_os, cb)
             self.WW_CHAR_HSTROKE = 8  # should be 7    (2M-0277 p.61)
             self.WW_CHAR_VSTROKE = 9  # should be 8.5
 
@@ -1583,9 +1585,11 @@ class XwinCrt:
             self.screen_brightness[obj] = self.BRIGHT
 
 
-    def ww_draw_point(self, ww_x, ww_y, color=(0.0, 1.0, 0.0), light_gun=False): # default color is green
+    def ww_draw_point(self, ww_x, ww_y, color=(0.0, 1.0, 0.0), scope=None, light_gun=False):  # default color is green
+        if scope is None:
+            scope = self.cb.SCOPE_MAIN
         if self.cb.ana_scope:
-            self.cb.ana_scope.drawPoint(ww_x, ww_y)
+            self.cb.ana_scope.drawPoint(ww_x, ww_y, scope)
             if light_gun:
                 self.last_pen_point = True  # remember the point was seen; not sure this really matters...
         else:
