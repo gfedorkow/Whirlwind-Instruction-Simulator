@@ -111,8 +111,8 @@ class AnaScope:
         # It's a 12-bit D/A converter, so we wire in the range of 0-4095
         if val >= 1024:
             val = 1023
-        if val <= -1024:
-            val = 1023 + 1
+        if val <= -1023:
+            val = -1023
 
         x = int(val * 2)
         ival = 2048 - int(x)  # convert range to 0-4095
