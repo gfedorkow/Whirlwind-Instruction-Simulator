@@ -785,9 +785,12 @@ class DisplayScopeClass:
     # See 2M-0277 pg 72 for grubby details
     def rd(self, _code, _acc):
 
-        # self.crt.ww_dim_previous_point()
-        self.crt.ww_draw_point(self.scope_horizontal, self.scope_vertical, light_gun=True)
-        # self.crt.ww_scope_update()  # flush pending display commands
+        # Sep 10, 2023 -- for some reason I drew a point on the screen when reading the light gun...
+        # I think that's harmless with the Mouse, as it simply draws another point at the same spot
+        # But it _really_ doesn't work for the optical light gun, where a spurious read could invalidate
+        # a legitimate light gun hit from a 'real' point.
+        
+        # self.crt.ww_draw_point(self.scope_horizontal, self.scope_vertical, light_gun=True)
         alarm, pt, button = self.crt.ww_check_light_gun(self.cb)
 
         if alarm == self.cb.QUIT_ALARM:
@@ -795,8 +798,17 @@ class DisplayScopeClass:
 
         val = 0  # default return value is "nothing happening here"
         if self.cb.ana_scope:
-            if pt is not None:   # don't care what it is, just not None
-                val = 0o177777  # or  0o177777 for a light gun hit
+            # note that the light gun is subtly different from the mouse...  the Mouse is all about
+            # _where_ the hit happened, while the light gun is about _when_, i.e., what point was
+            # just drawn most recently
+            if pt is not None:   # don't care where it is, just not None
+                print("**Light Gun Hit, button=%d" % button)
+                self.crt.last_mouse = pt
+                self.crt.last_button = button
+                if self.crt.last_button == 3:   # I'm returning 0o1000000 for Button Three on the mouse
+                    val = 0o100000              #  ... added specifically for radar tracking
+                else:
+                    val = 0o177777           # or  0o177777 for Button One (or anything else that we shouldn't get!)
 
         else:
             if pt is not None:
@@ -804,7 +816,7 @@ class DisplayScopeClass:
                 self.crt.last_button = button
 
             # check to see if the most recent mouse click was near the last dot to be drawn on the screen; if so,
-            # count it as a hit, otherwise its a miss.  One it hits, "forget" the last mouse click
+            # count it as a hit, otherwise its a miss.  Once it hits, "forget" the last mouse click
             if self.crt.last_mouse is not None and (
                     abs(self.crt.last_pen_point.x0 - self.crt.last_mouse.getX()) < self.crt.WIN_MOUSE_BOX) & \
                     (abs(self.crt.last_pen_point.y0 - self.crt.last_mouse.getY()) < self.crt.WIN_MOUSE_BOX):

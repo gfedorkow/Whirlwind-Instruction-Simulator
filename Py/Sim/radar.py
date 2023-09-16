@@ -60,6 +60,7 @@ class AircraftClass:
         self.last_heading_change_x = xi  # remember where the craft was last so we can extrapolate the position
         self.last_heading_change_y = yi
         self.last_heading_change_time = 0
+        self.last_heading = 0
         self.last_x = xi  # these two are for debug only
         self.last_y = yi
 
@@ -90,7 +91,10 @@ class AircraftClass:
         self.last_heading_change_x = x  # remember where the craft was last so we can extrapolate the position
         self.last_heading_change_y = y
         self.last_heading_change_time = current_time
+        self.last_heading = self.heading
         self.heading = heading
+        if True:  # heading != self.last_heading:
+            print("py_radar Aircraft %s: change heading to %d" % (self.name, heading))
 
 
 
@@ -177,9 +181,9 @@ class RadarClass:
             # And it appears that it doesn't work unless the clutter is clearly outside the zone of both the tracked
             # aircrafts!
             if self.current_azimuth == 0 and len(self.rng_list) == 0:
-                self.rng_list.append(("North_marker", 100.0))
+                self.rng_list.append(("Geo_North_marker", 100.0))
             if self.current_azimuth == 128 and len(self.rng_list) == 0:
-                self.rng_list.append(("South_marker", 100.0))   # note Azimuth is measured in 1/256ths of a revolution
+                self.rng_list.append(("Geo_South_marker", 100.0))   # note Azimuth is measured in 1/256ths of a revolution
             azi_code = (self.current_azimuth | 0o400) << 6   # convert to phone line coding
             ret = (azi_code, "Radar Return: azimuth %d" % (self.current_azimuth), new_rotation)
             self.azimuth_next = False  # given the automatic 256 of 750 azimuth slots, this flag is probably not needed...

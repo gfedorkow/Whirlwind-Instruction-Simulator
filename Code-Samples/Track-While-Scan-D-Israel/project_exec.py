@@ -426,8 +426,9 @@ def print_ff_heading(cm, decif, rl, cb):
     off_by = py_int - LastPyHeading
     msg = "WW-Heading %s, PyHeading=%d, off_by %d at t=%4.2f" % (lights, LastPyHeading, off_by, Radar.elapsed_time)
     cb.dbwgt.add_screen_print(1, msg)
-    # print(msg)
+    print(msg)
     if Interceptor:
+        print("change_heading")
         Interceptor.change_heading(Radar.elapsed_time, py_int)
 
 

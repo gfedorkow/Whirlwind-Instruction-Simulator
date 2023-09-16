@@ -1587,7 +1587,10 @@ class XwinCrt:
     # can perform another in-out instruction. Any number of instructions
     # other than in-out instructions may precede each rc. Each
     # vector to be displayed is programmed in a similar manner.
-    def ww_draw_line(self, ww_x0, ww_y0, ww_xd, ww_yd):
+    def ww_draw_line(self, ww_x0, ww_y0, ww_xd, ww_yd, scope=None):
+        if scope is None:
+            scope = self.cb.SCOPE_MAIN
+        self.cb.log.info("ww_draw_line: pt=(%d,%d) len=(%d,%d), scope=%d" % (ww_x0, ww_y0, ww_xd, ww_yd, scope)) 
         if self.cb.ana_scope:
             self.cb.ana_scope.drawVector(ww_x0, ww_y0, ww_xd, ww_yd)
         else:
@@ -1602,6 +1605,7 @@ class XwinCrt:
     def ww_draw_point(self, ww_x, ww_y, color=(0.0, 1.0, 0.0), scope=None, light_gun=False):  # default color is green
         if scope is None:
             scope = self.cb.SCOPE_MAIN
+        self.cb.log.info("ww_draw_point: x=%d, y=%d, scope=%d, gun_enable=%d" % (ww_x, ww_y, scope, light_gun)) 
         if self.cb.ana_scope:
             self.cb.ana_scope.drawPoint(ww_x, ww_y, scope)
             if light_gun:
@@ -1637,6 +1641,7 @@ class XwinCrt:
     # Both functions return a None for 'no hit', but the mouse version returns a co-ord object, and the optical
     # gun simply returns a "true'.  It's up to the caller to know which response is for what...
     def ww_check_light_gun(self, cb):
+        self.cb.log.info("ww_check_light_gun") 
         self.polling_mouse = True
         if self.cb.ana_scope:
             pt = None
@@ -1644,7 +1649,7 @@ class XwinCrt:
             if self.cb.ana_scope.checkGun() == 1:  # check only for LighGun1
                 button = 1      # default is to return "mouse button one"
                 if self.cb.ana_scope.getGunPushButton():
-                    button = 2
+                    button = 3  # return 'button 3' to emulate the PC Mouse right-click
                 pt = True       # if it were the CRT, we'd have to return an actual point, but here, it's just "hit"
                 print("Light Gun Hit: button=%d" % button)
             self.last_pen_point = None  # we don't need this var, but I don't want to break the xwin version
