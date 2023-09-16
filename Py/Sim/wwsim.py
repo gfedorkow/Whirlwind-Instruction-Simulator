@@ -1745,8 +1745,8 @@ def main_run_sim(args):
 
         # This target list is optimized to increase spacing of aircraft at the start of the sim to make
         # use of the light-gun easier
-        target_list = [radar_class.AircraftClass('T',  30.0, -80.0, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
-                       radar_class.AircraftClass('I', 120.0, -20.0, 270.0, 250.0, 7, 'I'), # was 6 revolutions
+        target_list = [radar_class.AircraftClass('T',  50.0, -100.0, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
+                       radar_class.AircraftClass('I',  90.0, -20.0, 0.0, 250.0, 7, 'I'), # was 6 revolutions
                       ]
         radar = radar_class.RadarClass(target_list, cb, cpu, args.AutoClick)
         # register a callback for anything that accesses Register 0o27 (that's the Light Gun)
