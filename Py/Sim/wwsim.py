@@ -33,6 +33,7 @@ import time
 from datetime import datetime
 import re
 import museum_mode_params as mm
+import csv
 
 # There can be a source file that contains subroutines that might be called by exec statements specific
 #   to the particular project under simulation.  If the file exists in the current working dir, import it.
@@ -386,7 +387,7 @@ class CpuClass:
                     address = addr
                     break
             if address == -1:
-                self.cb.log.warn("Python Exec: unknown label %s" % label)
+                self.cb.log.warn("Python Exec: unknown label '%s'" % label)
                 address = 0
         return address
 
@@ -436,19 +437,26 @@ class CpuClass:
     # Bug Alert - the format and arg strings can be quoted, but I'm not handling
     # the quotes properly; the Split() below will split on commas _inside_ the strings
     # as well as commas between args.
+    # https://stackoverflow.com/questions/43067373/split-by-comma-and-how-to-exclude-comma-from-quotes-in-split
+    # https://stackoverflow.com/questions/21527057/python-parse-csv-ignoring-comma-with-double-quotes
+    # import csv
+    # cStr = '"aaaa","bbbb","ccc,ddd"'
+    # newStr = ['"{}"'.format(x) for x in list(csv.reader([cStr], delimiter=',', quotechar='"'))[0]]
+
     # Bug Alert - I don't think I'm handling an unrecognized variable name properly; it
     # should at least print as <none> or something...
-    # Bug Alert - the format commands to print the Accumulator ain't implemented!
     def wwprint(self, format_and_args):
-        quoted_args = format_and_args.split(',')
+        # quoted_args = format_and_args.split(',')  # this doesn't handle splitting '"a", "b", "c,d,e"' properly
+        quoted_args = ['{}'.format(x) for x in list(csv.reader([format_and_args], delimiter=',', quotechar='"'))[0]]
         args = []
+        format_str = quoted_args.pop(0)
         for a in quoted_args:
             a = a.lstrip().rstrip()
-            a = re.sub('^["|\']', '', a)
-            a = re.sub('["|\']$', '', a)
+            a = re.sub('^["|\']', '', a)  # strip a leading quote, if any
+            a = re.sub('["|\']$', '', a)  # strip a trailing quote, if any
+            a = re.sub(' .*$', '', a)     # strip anything after a space (variable names can't have spaces)
             args.append(a)
 
-        format_str = args.pop(0)
         output_str = ''
         fmt = format_str
         while len(fmt):
@@ -1585,15 +1593,35 @@ def write_core_dump(cb, core_dump_file_name, cm):
                jump_to, core_dump_file_name, string_list)
 
 
+# This mechanism triggers run-time 'debug widgets' on the WW 'crt', that is, a display of the real-time
+# values of a handful of variables as the program runs.
+# Arrow keys also allow the values to be incremented or decremented.
+# The first run at this was wired directly to Core memory locations, i.e., state variables of the
+# running object code.
+# A modification in Sept 2023 allows the debug widget to also access, view and change variables in the Python
+# environment, to allow, for instance, a dbwgt to tweak aircraft parameters in the simulated environment in
+# the Radar module.
+# Whirlwind core memory variables are identified with either the usual label or numeric core addresses.
+# Variables in the python environment are preceded by a dot, followed by a Python var name, scoped to run
+# in the CPU object (I think!).
 def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
     for args in dbwgt_list:
         # first arg is a label or address, second optional arg is a number to use for each increment step
         cpu = cb.cpu
         dbwgt = cb.dbwgt
         label = ''
+        py_wgt_label = ''
         address = 0
         increment = 1
-        if args[0][0].isdigit():
+        if args[0][0] == '.':
+            address = -1
+            py_wgt_label = args[0][1:]
+            try:
+                eval("cb." + py_wgt_label)
+            except AttributeError:
+                cb.log.warn("Debug Widget: Can't find Python Label 'cb.%s'" % py_wgt_label)
+                py_wgt_label = ''
+        elif args[0][0].isdigit():
             address = int(args[0], 8)
             if address in cpu.SymTab:
                 label = cpu.SymTab[address][0]
@@ -1611,8 +1639,8 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
                 increment = int(args[1], 8)
             except ValueError:
                 print("can't parse Debug Widget increment arg %s in %s" % (args[1], args[0]))
-        if address >= 0:
-            dbwgt.add_widget(address, label, increment)
+        if address >= 0 or len(py_wgt_label):
+            dbwgt.add_widget(address, label, py_wgt_label, increment)
 
 #
 # ############# Main #############

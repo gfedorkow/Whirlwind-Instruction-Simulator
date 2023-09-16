@@ -1271,6 +1271,7 @@ class ScreenDebugWidgetClass:
         # core mem debug widgets
         self.mem_addrs = []   # physical address to be monitored
         self.labels = []      # label that matches the address, if any
+        self.py_labels = []      # label that matches the address, if any
         self.increments = []  # amount to be added when the 'increment' key is hit
 
         # screen print lines (i.e., not from core memory, but strings created by a python stmt)
@@ -1284,6 +1285,7 @@ class ScreenDebugWidgetClass:
             self.gfx = __import__("graphics")
         self.cm = coremem
         self.win = None
+        self.cb = cb   # keep this around so we can find the parent python env
 
     # the emulated CRT display scope is added only if there's an SI instruction that threatens to actually
     # use the display.  At which point, scale_factors should already have been set.
@@ -1295,14 +1297,20 @@ class ScreenDebugWidgetClass:
         self.y_delta = (self.point_size + 5) * int(self.gfx_scale_factor)
 
 
-    def add_widget(self, addr, label, increment):
+    def add_widget(self, addr, label, py_label, increment):
         self.mem_addrs.append(addr)
         self.labels.append(label)
+        self.py_labels.append(py_label)
         self.increments.append(increment)
         self.input_selector = 0
 
     def add_screen_print(self, line, text):
         self.screen_print_text[line] = text
+
+    def eval_py_var(self, var_name):
+        name_and_context = "self.cb." + var_name
+        val = eval(name_and_context)
+        return val
 
 
     def refresh_widgets(self):
@@ -1315,13 +1323,19 @@ class ScreenDebugWidgetClass:
         y = 0
         self.txt_objs = []
         cm = self.cm
-        for wgt in range(len(self.mem_addrs) - 1, -1, -1):  # wgt = widget
-            if len(self.labels) > 0:
-                lbl = self.labels[wgt]
+        for wgt in range(len(self.mem_addrs) - 1, -1, -1):  # wgt = widget number offset
+            val = 0
+            if self.py_labels[wgt]:
+                lbl = self.py_labels[wgt]
+                val = self.eval_py_var(self.py_labels[wgt])
             else:
-                lbl = "core@0o%04o" % self.mem_addrs[wgt]
+                if len(self.labels) > 0:
+                    lbl = self.labels[wgt]
+                else:
+                    lbl = "core@0o%04o" % self.mem_addrs[wgt]
+                val = cm.rd(self.mem_addrs[wgt])
             m = self.gfx.Text(self.gfx.Point(self.xpos, self.ypos + y), "w%d: %s = 0o%06o" %
-                     (wgt, lbl, cm.rd(self.mem_addrs[wgt])))
+                     (wgt, lbl, val))
             m.config['justify'] = 'left'   # this doesn't seem to work...
             # m.config['align'] = 'e'   # this Really doesn't work...
             m.setSize(self.point_size)

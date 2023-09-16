@@ -1154,7 +1154,12 @@ def write_core(coremem, ww_filename, ww_tapeid, ww_jumpto, output_file, isa_1950
     for s in SwitchTab:  # switch tab is indexed by name, contains a validated string for the value
         fout.write("%%Switch: %s %s\n" % (s, SwitchTab[s]))
     for w in DbWgtTab:
-        fout.write("%%DbWgt:  0o%03o  0o%02o\n" % (w.addr_binary, w.incr_binary))
+        if w.addr_binary:
+            addr = "0o%03o" % w.addr_binary
+        else:
+            addr = w.addr_str
+        fout.write("%%DbWgt:  %s  0o%02o\n" % (addr, w.incr_binary))
+
     columns = 8
     addr = 0
     while addr < CORE_SIZE:
