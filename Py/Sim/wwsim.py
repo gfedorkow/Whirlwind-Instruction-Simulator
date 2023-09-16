@@ -1738,8 +1738,15 @@ def main_run_sim(args):
         #target_list = [radar_class.AircraftClass('A', 30.0, -36.0, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
         #               radar_class.AircraftClass('B', 100.0, 0.0, 270.0, 250.0, 7, 'I')]  # was 6 revolutions
 
-        target_list = [radar_class.AircraftClass('T', 30.0, -26+21.37, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
-                       radar_class.AircraftClass('I', 70.0,  0.0, 270.0, 250.0, 7, 'I'), # was 6 revolutions
+        # This target list is the one I used for two years to debug the program...
+        #target_list = [radar_class.AircraftClass('T', 30.0, -26+21.37, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
+        #               radar_class.AircraftClass('I', 70.0,  0.0, 270.0, 250.0, 7, 'I'), # was 6 revolutions
+        #              ]
+
+        # This target list is optimized to increase spacing of aircraft at the start of the sim to make
+        # use of the light-gun easier
+        target_list = [radar_class.AircraftClass('T',  30.0, -80.0, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
+                       radar_class.AircraftClass('I', 120.0, -20.0, 270.0, 250.0, 7, 'I'), # was 6 revolutions
                       ]
         radar = radar_class.RadarClass(target_list, cb, cpu, args.AutoClick)
         # register a callback for anything that accesses Register 0o27 (that's the Light Gun)
@@ -1799,7 +1806,8 @@ def main_run_sim(args):
                     if new_rotation:
                         print("\n")
                     if rcode != 0 and (rcode & 0o40000 == 0):
-                        print("%s: radar-code=0o%o" % (reading_name, rcode))
+                        if not cb.TraceQuiet or not (" Geo_" in reading_name):
+                            print("%s: radar-code=0o%o" % (reading_name, rcode))
                     if radar.exit_alarm != cb.NO_ALARM:
                         alarm = radar.exit_alarm
 
