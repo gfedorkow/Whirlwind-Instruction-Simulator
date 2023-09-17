@@ -60,7 +60,7 @@ class AircraftClass:
         self.last_heading_change_x = xi  # remember where the craft was last so we can extrapolate the position
         self.last_heading_change_y = yi
         self.last_heading_change_time = 0
-        self.last_heading = 0
+        self.last_heading = None
         self.last_x = xi  # these two are for debug only
         self.last_y = yi
 
@@ -85,16 +85,16 @@ class AircraftClass:
             return x, y
 
 
-    def change_heading(self, current_time, heading, vmph = None):
+    def change_heading(self, current_time, heading, msg="null-msg", vmph = None):
         # figure out where we are, and reset the positions for the next linear segment
         x, y = self.get_current_position(current_time, radial = False)
-        self.last_heading_change_x = x  # remember where the craft was last so we can extrapolate the position
+        self.last_heading_change_x = x  # remember where the craft was last, so we can extrapolate the position
         self.last_heading_change_y = y
         self.last_heading_change_time = current_time
         self.last_heading = self.heading
         self.heading = heading
         if True:  # heading != self.last_heading:
-            print("py_radar Aircraft %s: change heading to %d" % (self.name, heading))
+            print("py_radar Aircraft %s: change heading to %d; msg=%s" % (self.name, heading, msg))
 
 
 
