@@ -418,6 +418,9 @@ def octal_to_bin(octal):
     return (ascii_binary + '  ' + bcd), py_int
 
 
+# This function reads the Flip-Flop Register lights showing the heading for the Interceptor
+# spelled out in BCD, converts that back to a binary int, and displays that along with the
+# Python-calculated interceptor heading
 def print_ff_heading(cm, decif, rl, cb):
     global LastPyHeading
     global Interceptor
