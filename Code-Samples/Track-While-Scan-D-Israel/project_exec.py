@@ -47,6 +47,7 @@ def record_initiation(cm, cb):
     state = which_plane(cm)
     if state == "Interceptor":
         nametag = Radar.last_aircraft_name_sent
+        print("set last_aircraft_name to %s" % nametag)
         for tgt in Radar.targets:
             if tgt.name == nametag:
                 Interceptor = tgt

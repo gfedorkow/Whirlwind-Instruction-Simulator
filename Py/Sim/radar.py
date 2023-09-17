@@ -216,7 +216,9 @@ class RadarClass:
             (x, y) = pol2cart(tgt_rng, angle_degrees)
             ret = (rng_code, "Radar Return: %s rng=%d azi=%d (%d degrees) (x,y)=(%3.1f, %3.1f) miles at t=%3.2f seconds" %
                    (tgt_name, tgt_rng, self.current_azimuth, angle_degrees, x, y, self.elapsed_time), new_rotation)
-            self.last_aircraft_name_sent = tgt_name
+            if tgt_name != "null":
+                self.last_aircraft_name_sent = tgt_name
+                print("aircraft tgt_name=%s" % tgt_name)
             self.mouse_autoclick(tgt_name)  # check to see if we should AutoClick on this antenna revolution
 
             # total debug hack; why is tracking failing after t=764??
