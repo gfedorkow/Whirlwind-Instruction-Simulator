@@ -101,6 +101,14 @@ def octal_or_none(number):
     return ret
 
 
+# This class is used to hold Python Vars that can be viewed and modified via the on-screen Debug Widget
+# at sim run time
+class DebugWidgetPyVarsClass:
+    def __init__(self, cb):
+        self.TargetHeading = cb.radar.adjust_target_heading
+
+
+
 class ConstWWbitClass:
     def __init__(self, get_screen_size=False):
         # Caution -- Whirlwind puts bit 0 to the left (Big Endian, no?)
@@ -191,7 +199,10 @@ class ConstWWbitClass:
         self.CoreFileName = None
         self.log = None
         self.cpu = None
-        self.dbwgt = None
+
+        self.dbwgt = None  # This list gives all the currently active Debug Widgets
+        self.DebugWidgetPyVars = None   # this class links up the Python-based debug widget methods, it any
+
         self.host_os = os.getenv("OS")
         self.analog_display = False   # set this flag to display on an analog oscilloscope instead of an x-window
         self.ana_scope = None   # this is a handle to the methods for operating the analog scope
@@ -1273,6 +1284,7 @@ class ScreenDebugWidgetClass:
         self.labels = []      # label that matches the address, if any
         self.py_labels = []      # label that matches the address, if any
         self.increments = []  # amount to be added when the 'increment' key is hit
+        self.format_str = []  # how to format the widget value when printing; should be "%d", "%o", etc
 
         # screen print lines (i.e., not from core memory, but strings created by a python stmt)
         self.screen_print_text = {}   # dict of text strings indexed by line number
@@ -1297,20 +1309,35 @@ class ScreenDebugWidgetClass:
         self.y_delta = (self.point_size + 5) * int(self.gfx_scale_factor)
 
 
-    def add_widget(self, addr, label, py_label, increment):
+    def add_widget(self, cb, addr, label, py_label, increment, format_str):
         self.mem_addrs.append(addr)
         self.labels.append(label)
         self.py_labels.append(py_label)
         self.increments.append(increment)
+        self.format_str.append(format_str)
         self.input_selector = 0
 
     def add_screen_print(self, line, text):
         self.screen_print_text[line] = text
 
-    def eval_py_var(self, var_name):
-        name_and_context = "self.cb." + var_name
+    def eval_py_var(self, var_name, direction_up=None, incr=1):
+        if direction_up is None:
+            op = ".rd()"
+        elif direction_up == True:
+            op = ".incr(%d)" % incr
+        else:
+            op = ".incr(%d)" % -incr
+        name_and_context = "self.cb.DebugWidgetPyVars." + var_name + op
         val = eval(name_and_context)
         return val
+
+
+    def wgt_format(self, val, format_str):
+        if val is None:
+            val_str = "None"
+        else:
+            val_str = format_str % val
+        return val_str
 
 
     def refresh_widgets(self):
@@ -1334,8 +1361,9 @@ class ScreenDebugWidgetClass:
                 else:
                     lbl = "core@0o%04o" % self.mem_addrs[wgt]
                 val = cm.rd(self.mem_addrs[wgt])
-            m = self.gfx.Text(self.gfx.Point(self.xpos, self.ypos + y), "w%d: %s = 0o%06o" %
-                     (wgt, lbl, val))
+            val_str = self.wgt_format(val, self.format_str[wgt])
+            m = self.gfx.Text(self.gfx.Point(self.xpos, self.ypos + y), "w%d: %s = %s" %
+                     (wgt, lbl, val_str))
             m.config['justify'] = 'left'   # this doesn't seem to work...
             # m.config['align'] = 'e'   # this Really doesn't work...
             m.setSize(self.point_size)
@@ -1381,23 +1409,27 @@ class ScreenDebugWidgetClass:
     def increment_addr_location(self, direction_up = False):
         cm = self.cm
         wgt = self.input_selector
-        rd = cm.rd(self.mem_addrs[wgt])
-        incr = self.increments[wgt]
-        if direction_up:
-            wr = rd + incr
-            if rd <= 0o77777 and wr >= 0o77777:  # don't roll over from Max-Plus to Max-Minus
-                wr = 0o77777
-            if wr >= 0o177777:
-                wr = (wr + 1) & 0o77777  # this corrects for ones-complement going from -1 to +0
+        addr = self.mem_addrs[wgt]
+        if addr >= 0:  # a normal WW memory reference has a non-negative address; PyVars are signalled with addr=-1
+            #  For a WW var, read the current value, add or subtract (and wrap), then write it back
+            rd = cm.rd(addr)
+            incr = self.increments[wgt]
+            if direction_up:
+                wr = rd + incr
+                if rd <= 0o77777 and wr >= 0o77777:  # don't roll over from Max-Plus to Max-Minus
+                    wr = 0o77777
+                if wr >= 0o177777:
+                    wr = (wr + 1) & 0o77777  # this corrects for ones-complement going from -1 to +0
+            else:
+                wr = rd - incr
+                if rd >= 0o100000 and wr <= 0o77777:  # don't roll over from Max-Minus to Max-Plus
+                    wr = 0o100000
+                if wr < 0:   # if it turns to a Pythonic negative, subtract one for 1's comp, and mask to 16 bits
+                    wr = (wr - 1) & 0o177777  # this corrects for ones-complement going from +0 to -1
+
+            cm.wr(self.mem_addrs[wgt], wr)
         else:
-            wr = rd - incr
-            if rd >= 0o100000 and wr <= 0o77777:  # don't roll over from Max-Minus to Max-Plus
-                wr = 0o100000
-            if wr < 0:   # if it turns to a Pythonic negative, subtract one for 1's comp, and mask to 16 bits
-                wr = (wr - 1) & 0o177777  # this corrects for ones-complement going from +0 to -1
-
-        cm.wr(self.mem_addrs[wgt], wr)
-
+            self.eval_py_var(self.py_labels[wgt], direction_up=direction_up, incr=self.increments[wgt])
 
 # This routine should probably go somewhere else...  it's a general-purpose number
 # converter, but I need it in call the analog scope modules.

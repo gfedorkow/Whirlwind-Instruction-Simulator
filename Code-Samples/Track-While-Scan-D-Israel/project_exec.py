@@ -59,9 +59,11 @@ def record_initiation(cm, cb):
     if which_tgt is None:
         cb.log.warning("Not sure why we didn't find an airplane in record_initiation()")
     if state == "Interceptor":
-                Interceptor = which_tgt
+        Interceptor = which_tgt
     if state == "Target":
-                Target = which_tgt
+        Target = which_tgt
+        if cb.DebugWidgetPyVars.TargetHeading is not None:
+            cb.DebugWidgetPyVars.TargetHeading.register(which_tgt)
 
     msg = "Initiate %s" % state
     cb.dbwgt.add_screen_print(2, msg)

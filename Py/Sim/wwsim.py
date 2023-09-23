@@ -1605,6 +1605,7 @@ def write_core_dump(cb, core_dump_file_name, cm):
 # Variables in the python environment are preceded by a dot, followed by a Python var name, scoped to run
 # in the CPU object (I think!).
 def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
+    cb.DebugWidgetPyVars = wwinfra.DebugWidgetPyVarsClass(cb)
     for args in dbwgt_list:
         # first arg is a label or address, second optional arg is a number to use for each increment step
         cpu = cb.cpu
@@ -1613,11 +1614,12 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
         py_wgt_label = ''
         address = 0
         increment = 1
+        format_str = "0o%o"   # by default, numbers should be displayed as octal
         if args[0][0] == '.':
             address = -1
             py_wgt_label = args[0][1:]
             try:
-                eval("cb." + py_wgt_label)
+                eval("cb.DebugWidgetPyVars." + py_wgt_label)
             except AttributeError:
                 cb.log.warn("Debug Widget: Can't find Python Label 'cb.%s'" % py_wgt_label)
                 py_wgt_label = ''
@@ -1640,7 +1642,7 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
             except ValueError:
                 print("can't parse Debug Widget increment arg %s in %s" % (args[1], args[0]))
         if address >= 0 or len(py_wgt_label):
-            dbwgt.add_widget(address, label, py_wgt_label, increment)
+            dbwgt.add_widget(cb, address, label, py_wgt_label, increment, format_str)
 
 #
 # ############# Main #############
@@ -1753,8 +1755,6 @@ def main_run_sim(args):
     cpu.set_isa(CoreMem.metadata["isa"])
     if cpu.isa_1950 == False and args.Radar:
         cb.log.fatal("Radar device can only be used with 1950 ISA")
-    if len(dbwgt_list):
-        parse_and_save_screen_debug_widgets(cb, dbwgt_list)
 
     # This command line arg switches graphical output to an analog oscilloscope display
     if args.AnalogScope:
@@ -1787,6 +1787,10 @@ def main_run_sim(args):
     # Cygwin xterm, but for DOS Command Shell there's a special command to enable ANSI parsing.
     # The command doesn't seem to exist in xterm, but running it doesn't break anything (yet).
     os.system("color")
+
+    if len(dbwgt_list):  # configure any Debug Widgets.  Do this before execution, but after all the
+                         # infra setup in case we need any optional python classes
+        parse_and_save_screen_debug_widgets(cb, dbwgt_list)
 
     print("Switch CheckAlarmSpecial=%o" % cpu.cpu_switches.read_switch("CheckAlarmSpecial"))
     CoreMem.reset_ff(cpu)   # Reset any Flip Flop Registers specified in the Core file

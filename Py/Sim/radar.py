@@ -93,8 +93,34 @@ class AircraftClass:
         self.last_heading_change_time = current_time
         self.last_heading = self.heading
         self.heading = heading
-        if True:  # heading != self.last_heading:
+        if heading != self.last_heading:
             print("py_radar Aircraft %s: change heading to %d; msg=%s" % (self.name, heading, msg))
+
+
+# I've added a "screen widget" to steer the target aircraft during the sim.  This class is activated
+# by that widget.
+# It's expected to have functions to read the current value, or increment or decrement the value.
+class RadarAdjustHeadingWidgetClass:
+    def __init__(self):
+        self.target = None
+
+    def register(self, target):
+        self.target = target
+    def rd(self):
+        if self.target is None:
+            return None
+        else:
+            return int(self.target.heading)
+
+    def incr(self, val):
+        if self.target is None:
+            return
+        else:
+            self.target.heading += val
+            if self.target.heading >= 360.0:
+                self.target.heading -= 360.0
+            if self.target.heading < 0.0:
+                self.target.heading += 360.0
 
 
 
@@ -133,6 +159,8 @@ class RadarClass:
         self.time_per_revolution = 15  # seconds
         self.readings_per_rotation = int(self.time_per_revolution / self.radar_time_increment)  #  that's a long way of saying "750"
         self.last_aircraft_name_sent = None
+
+        self.adjust_target_heading = RadarAdjustHeadingWidgetClass()
 
         project_register_radar(self)
 

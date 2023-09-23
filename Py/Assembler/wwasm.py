@@ -64,12 +64,13 @@ LexDebug = False
 Legacy_Numbers = False
 
 class DebugWidgetClass:
-    def __init__(self, linenumber, addr_str, incr_str):
+    def __init__(self, linenumber, addr_str, incr_str, format_str):
         self.linenumber = linenumber
         self.addr_str = addr_str
         self.incr_str = incr_str
         self.addr_binary = None
         self.incr_binary = None
+        self.format_str = format_str
 
 
 def strip_space(s1):
@@ -496,12 +497,22 @@ def dot_dbwgt_op(src_line, _binary_opcode, _operand_mask):
 
     tokens = src_line.operand.split()
     addr = strip_space(tokens[0])
-    if len(tokens) > 1:
-        incr = strip_space(tokens[1])
-    else:
-        incr = "1"
+    # defaults
+    incr = "1"
+    format_str = "%o"
+    i = 1
+    while i < len(tokens):
+        tok = strip_space(tokens[i])
+        if tok[0].isnumeric():
+            incr = tok
+        elif len(tok) > 2 and tok[0] == '"' and tok[-1] == '"' and '%' in tok:
+            format_str = tok[1:-1]
+        else:
+            print("Line %d: unknown param for .dbwgt op: %s" % (src_line.linenumber, tok))
+        i += 1
+
     # the operand could be a number or a label; resolve that later
-    DbWgtTab.append(DebugWidgetClass(src_line.linenumber, addr, incr))
+    DbWgtTab.append(DebugWidgetClass(src_line.linenumber, addr, incr, format_str))
     if Debug:
         print(".DbWgt %04s %s" % (addr, incr))
     return 0
@@ -992,11 +1003,10 @@ def resolve_dbwgt(dbwgt):
     return ret
 
 
-# There's a special case to resolve the label for the JumpTo directive
+# There's a special case to resolve the label for the psuedo-op directives
 def resolve_one_label(label, label_type):
     if label is None:
         return None
-
     ret = label
     if label[0].isalpha():  # resolve the start address, if any.
         if label in SymTab:
@@ -1158,7 +1168,7 @@ def write_core(coremem, ww_filename, ww_tapeid, ww_jumpto, output_file, isa_1950
             addr = "0o%03o" % w.addr_binary
         else:
             addr = w.addr_str
-        fout.write("%%DbWgt:  %s  0o%02o\n" % (addr, w.incr_binary))
+        fout.write("%%DbWgt:  %s  0o%02o %s\n" % (addr, w.incr_binary, w.format_str))
 
     columns = 8
     addr = 0
