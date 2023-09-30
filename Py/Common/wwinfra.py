@@ -877,8 +877,8 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             # We have to parse the items later to get all the symbolic addresses and their translations at once
             # Format:  %DbWgt: <addr> [increment]
             args = input_minus_comment.split()[1:]
-            if len(args) < 1 or len(args) > 2:
-                cb.log.warn("read_core: %%DbWgt takes one or two args, got %d" % len(args))
+            if len(args) < 1 or len(args) > 3:
+                cb.log.warn("read_core: %%DbWgt takes one, two or three args, got %d" % len(args))
             screen_debug_widgets.append(args)
 
         else:

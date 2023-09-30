@@ -1608,6 +1608,7 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
     cb.DebugWidgetPyVars = wwinfra.DebugWidgetPyVarsClass(cb)
     for args in dbwgt_list:
         # first arg is a label or address, second optional arg is a number to use for each increment step
+        # Third arg is a Format string
         cpu = cb.cpu
         dbwgt = cb.dbwgt
         label = ''
@@ -1636,11 +1637,13 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
                     break
             if address == -1:
                 cb.log.warn("Debug Widget: unknown label %s" % label)
-        if len(args) == 2:   # if there's a second arg, it would be the amount of increment in octal
+        if len(args) >= 2:   # if there's a second arg, it would be the amount of increment in octal
             try:
                 increment = int(args[1], 8)
             except ValueError:
                 print("can't parse Debug Widget increment arg %s in %s" % (args[1], args[0]))
+        if len(args) == 3:
+            format_str = args[2]
         if address >= 0 or len(py_wgt_label):
             dbwgt.add_widget(cb, address, label, py_wgt_label, increment, format_str)
 
@@ -1773,9 +1776,10 @@ def main_run_sim(args):
 
         # This target list is optimized to increase spacing of aircraft at the start of the sim to make
         # use of the light-gun easier
-        target_list = [radar_class.AircraftClass('T',  50.0, -100.0, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
-                       radar_class.AircraftClass('I',  90.0, -20.0, 350.0, 250.0, 7, 'I'), # was 6 revolutions
-                      ]
+        target_list = [radar_class.AircraftClass('T1',  50.0, -100.0, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
+                       radar_class.AircraftClass('I1',  90.0, -20.0, 350.0, 250.0, 7, 'I'), # was 6 revolutions
+                       radar_class.AircraftClass('T2', -20.0, -80.0,  20.0, 200.0, 0, ''),  # add in a stray aircraft
+                       ]
         radar = radar_class.RadarClass(target_list, cb, cpu, args.AutoClick)
         # register a callback for anything that accesses Register 0o27 (that's the Light Gun)
         CoreMem.add_tsr_callback(cb, 0o27, radar.mouse_check_callback)

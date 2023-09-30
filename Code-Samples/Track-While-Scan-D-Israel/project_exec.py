@@ -45,6 +45,7 @@ def which_plane(cm):  # figure out which plane we're scanning at the moment
 def record_initiation(cm, cb):
     global Radar
     global Interceptor, Target
+    global SmootherState
 
     # which_plane returns a string to say whether the WW code is considering Target or Interceptor
     # The radar station knows which plane it last saw, so we can search the aircraft structs to find
@@ -60,12 +61,14 @@ def record_initiation(cm, cb):
         cb.log.warning("Not sure why we didn't find an airplane in record_initiation()")
     if state == "Interceptor":
         Interceptor = which_tgt
+        SmootherState.set_nametag('I', which_tgt.name)
     if state == "Target":
         Target = which_tgt
+        SmootherState.set_nametag('T', which_tgt.name)
         if cb.DebugWidgetPyVars.TargetHeading is not None:
             cb.DebugWidgetPyVars.TargetHeading.register(which_tgt)
 
-    msg = "Initiate %s" % state
+    msg = "Initiate %s, aircraft %s" % (state, which_tgt.name)
     cb.dbwgt.add_screen_print(2, msg)
 
 
@@ -211,11 +214,18 @@ class SmootherStateClass:
     def __init__(self):
         # smoothing variables corresponding to aircraft 0 and 1
         # (where 0 is normally the target, 1 is normally the interceptor, assuming Autoclick)
-        self.X_posn_smoothed = [0, 0]
-        self.Y_posn_smoothed = [0, 0]
-        self.X_velo_smoothed = [0, 0]
-        self.Y_velo_smoothed = [0, 0]
-        self.was_tracking = [False, False]
+        # These arrays should be changed to Dicts, so we don't have to remember which offset is which function!
+        self.X_posn_smoothed = {'T': 0, 'I': 0}
+        self.Y_posn_smoothed = {'T': 0, 'I': 0}
+        self.X_velo_smoothed = {'T': 0, 'I': 0}
+        self.Y_velo_smoothed = {'T': 0, 'I': 0}
+        self.was_tracking = {'T': False, 'I': False}
+        self.nametag = {'T': None, 'I': None}
+
+    # Attach the nametag for the plane that we're tracking
+    def set_nametag(self, which, nametag):
+        self.nametag[which] = nametag
+
 
     # emulate the operation of the smoother function.  In the Real Code, the position averaging seems to work
     # with no problem, but the velocity average is Like Totally All Over the Place
@@ -228,39 +238,44 @@ py_x_posn_smoo_i, py_y_posn_smoo_i, py_x_velo_smoo_i, py_y_velo_smoo_i"
         rloc = Radar.where_are_they_now(Radar.elapsed_time, radial=False)
         g = 1.0/16.0  # constants from doc Page 37 of M-1343
         h = 5.0/16.0
-        for i in range(0, len(rloc)):
-            craft = rloc[i][0]
-            rdr_x = rloc[i][1]  # radar reports in miles, but the WW program operates in 256ths
-            rdr_y = rloc[i][2]  # This calculation is self-contained, so it's in floating-point miles
-            # the following in M-1343 are Equations 4-9
-            if azi == 1 and is_tracking[i]:  # run smoothing once per antenna revolution
-                # initialize the position when we first start tracking
-                if not self.was_tracking[i]:
-                    self.X_posn_smoothed[i] = rdr_x
-                    self.Y_posn_smoothed[i] = rdr_y
-                    self.was_tracking[i] = True
+        # WW can track two planes, one T, one I, but there could be lots of radar returns
+        # Find which radar return corresponds to the Target and Interceptor, and smooth those
+        for pl in ['T', 'I']:
+            for r in range(0, len(rloc)):
+                craft = rloc[r][0]
+                if self.nametag[pl] == craft:
+                    rdr_x = rloc[r][1]  # radar reports in miles, but the WW program operates in 256ths
+                    rdr_y = rloc[r][2]  # This calculation is self-contained, so it's in floating-point miles
 
-                predicted_x_pos = self.X_posn_smoothed[i]  # + self.X_velo_smoothed[i]
-                diff_x = rdr_x - predicted_x_pos
-                next_X_velo_smoothed = self.X_velo_smoothed[i] + g * diff_x
-                next_X_posn_smoothed = self.X_posn_smoothed[i] + next_X_velo_smoothed + h * diff_x
-                self.X_posn_smoothed[i] = next_X_posn_smoothed
-                self.X_velo_smoothed[i] = next_X_velo_smoothed
-                # and again for Y
-                predicted_y_pos = self.Y_posn_smoothed[i]  # + self.Y_velo_smoothed[i]
-                diff_y = rdr_y - predicted_y_pos
-                next_Y_velo_smoothed = self.Y_velo_smoothed[i] + g * diff_y
-                next_Y_posn_smoothed = self.Y_posn_smoothed[i] + next_Y_velo_smoothed + h * diff_y
-                self.Y_posn_smoothed[i] = next_Y_posn_smoothed
-                self.Y_velo_smoothed[i] = next_Y_velo_smoothed
+                    # the following in M-1343 are Equations 4-9
+                    if azi == 1 and is_tracking[pl]:  # run smoothing once per antenna revolution
+                        # initialize the position when we first start tracking
+                        if not self.was_tracking[pl]:
+                            self.X_posn_smoothed[pl] = rdr_x
+                            self.Y_posn_smoothed[pl] = rdr_y
+                            self.was_tracking[pl] = True
+
+                        predicted_x_pos = self.X_posn_smoothed[pl]  # + self.X_velo_smoothed[i]
+                        diff_x = rdr_x - predicted_x_pos
+                        next_X_velo_smoothed = self.X_velo_smoothed[pl] + g * diff_x
+                        next_X_posn_smoothed = self.X_posn_smoothed[pl] + next_X_velo_smoothed + h * diff_x
+                        self.X_posn_smoothed[pl] = next_X_posn_smoothed
+                        self.X_velo_smoothed[pl] = next_X_velo_smoothed
+                        # and again for Y
+                        predicted_y_pos = self.Y_posn_smoothed[pl]  # + self.Y_velo_smoothed[i]
+                        diff_y = rdr_y - predicted_y_pos
+                        next_Y_velo_smoothed = self.Y_velo_smoothed[pl] + g * diff_y
+                        next_Y_posn_smoothed = self.Y_posn_smoothed[pl] + next_Y_velo_smoothed + h * diff_y
+                        self.Y_posn_smoothed[pl] = next_Y_posn_smoothed
+                        self.Y_velo_smoothed[pl] = next_Y_velo_smoothed
 
             if not csv:
                 print("  PySmoother, Craft %s: radar=(%4.2f, %4.2f), posn_smoo=(%4.2f, %4.2f), velo_smoo=(%4.2f, %4.2f)" %
-                  (craft, rdr_x, rdr_y, self.X_posn_smoothed[i], self.Y_posn_smoothed[i],
-                   self.X_velo_smoothed[i], self.Y_velo_smoothed[i]))
+                  (craft, rdr_x, rdr_y, self.X_posn_smoothed[pl], self.Y_posn_smoothed[pl],
+                   self.X_velo_smoothed[pl], self.Y_velo_smoothed[pl]))
             if csv:
-                ret += " %4.2f, %4.2f, %4.2f, %4.2f, " % (self.X_posn_smoothed[i], self.Y_posn_smoothed[i],
-                   self.X_velo_smoothed[i], self.Y_velo_smoothed[i])
+                ret += " %4.2f, %4.2f, %4.2f, %4.2f, " % (self.X_posn_smoothed[pl], self.Y_posn_smoothed[pl],
+                   self.X_velo_smoothed[pl], self.Y_velo_smoothed[pl])
         return ret
 
 
@@ -379,14 +394,11 @@ def dump_tracking_state(cm, decif, rl, long=True):
     yvelo_i = py_int(cm.rd(rl("y_velo1"))) * 250.0 / 350.0
 
     azi = Radar.current_azimuth
-    is_tracking = ((xpos_t != 0 or ypos_t != 0), (xpos_i != 0 or ypos_i != 0))
-
-
+    # in this 'is_tracking' array, [0] is the Target, [1] is the Interceptor
+    is_tracking = dict([('T', (xpos_t != 0 or ypos_t != 0)), ('I',(xpos_i != 0 or ypos_i != 0))])
     csv = long
-
     LastPyResultStr, LastPyHeading = paper_solution(csv, xpos_t, ypos_t, xpos_i, ypos_i,
                                                     xvelo_t, yvelo_t, xvelo_i, yvelo_i, 250)
-
     if long:
         py_smooth_str = SmootherState.run_smoother(csv, azi=azi, is_tracking=is_tracking, heading=False)
         dump_long_tracking_state(cm, decif, rl, long, LastPyHeading, py_smooth_str)
@@ -452,7 +464,7 @@ def print_ff_heading(cm, decif, rl, cb):
             heading_change = True   # This ensures that the heading will print below on the first time through
         if tgt.heading != tgt.last_heading:
             heading_change = True
-        heading_summary += "%s=%d,%d deg, " % (tgt.name, tgt.heading, tgt.last_heading)
+        heading_summary += "%s=%d deg, " % (tgt.name, tgt.heading)
     # This section could surely be simplified; I made a couple of dumb versioning mistakes
     # while modifying it, and haven't gone back to unwind all the experiments.
     # In particular, I'm sure it should be able to call change_heading only when there's a change in heading!

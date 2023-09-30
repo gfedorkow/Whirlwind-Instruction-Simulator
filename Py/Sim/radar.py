@@ -207,7 +207,7 @@ class RadarClass:
             # notice that it's out of the scan sector until it gets a non-zero range return from an untracked
             # plane, or from clutter.  So here's a fake reading from due-north...
             # And it appears that it doesn't work unless the clutter is clearly outside the zone of both the tracked
-            # aircrafts!
+            # aircraft!
             if self.current_azimuth == 0 and len(self.rng_list) == 0:
                 self.rng_list.append(("Geo_North_marker", 100.0))
             if self.current_azimuth == 128 and len(self.rng_list) == 0:
@@ -246,7 +246,7 @@ class RadarClass:
                    (tgt_name, tgt_rng, self.current_azimuth, angle_degrees, x, y, self.elapsed_time), new_rotation)
             if tgt_name != "null":
                 self.last_aircraft_name_sent = tgt_name
-                print("aircraft tgt_name=%s" % tgt_name)
+                # print("aircraft tgt_name=%s" % tgt_name)
             self.mouse_autoclick(tgt_name)  # check to see if we should AutoClick on this antenna revolution
 
             # total debug hack; why is tracking failing after t=764??
