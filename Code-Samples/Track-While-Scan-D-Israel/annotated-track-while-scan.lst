@@ -150,7 +150,7 @@
 @0150:124374            sa   y_smoo0   ;  
 @0151:040374            ts   y_smoo0   ;  
 @0152:100000            ca   0         ;  @@JumpedToBy a0215 ReadBy a0075 a0176 a0306 
-                        .exec print("  @106 cleared x_diff0 and y_diff0 for Aircraft %s at time0 = %s" % (which_plane(cm), deci(cm.rd(rl("time0")))))  ;  
+                        ; .exec print("  @106 cleared x_diff0 and y_diff0 for Aircraft %s at time0 = %s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
 @0153:040377            ts   x_diff0   ; clear x_diff0 
 @0154:040400            ts   y_diff0   ; clear y_diff0 @@JumpedToBy a0357 
 
@@ -166,7 +166,7 @@
 
                         ; put the swap_air loop back together for the next call
 @0165:100040            ca   32        ; Fetch address of Time1 (Load #0o130404   "ao  time1") 
-                        .exec print("  @117 finished swap_air; Aircraft %s" % which_plane(cm))  ;  
+                        ; .exec print("  @117 finished swap_air; Aircraft %s" % which_plane(cm))
 @0166:044155            td   swap_air  ; reset the addresses of instructions 
 @0167:044157            td   111       ;  
 @0170:100041            ca   33        ; Load #0o130404   "ao  time1" 

@@ -68,7 +68,14 @@ def record_initiation(cm, cb):
         if cb.DebugWidgetPyVars.TargetHeading is not None:
             cb.DebugWidgetPyVars.TargetHeading.register(which_tgt)
 
-    msg = "Initiate %s, aircraft %s" % (state, which_tgt.name)
+    msg = 'Initiated: '
+    for pl in ('T', 'I'):
+        name = SmootherState.nametag[pl]
+        if name is None:
+            name = "(none)"
+        function = dict([('T', 'Target'), ('I', 'Intercept')])
+        msg += "%s: %s  " % (function[pl], name)
+#    msg = "Initiate %s, aircraft %s" % (state, which_tgt.name)
     cb.dbwgt.add_screen_print(2, msg)
 
 
@@ -450,21 +457,28 @@ def octal_to_bin(octal):
 # Python-calculated interceptor heading
 def print_ff_heading(cm, decif, rl, cb):
     global LastPyHeading
-    global Interceptor
+    global Interceptor, Target
 
     heading = cm.rd(rl("FF_angle"))
     lights, py_int = octal_to_bin(heading)
     off_by = py_int - LastPyHeading
 
     heading_change = False
-    heading_summary = ""
-    for tgt in Radar.targets:
-        if tgt.last_heading is None:
-            tgt.last_heading = tgt.heading
-            heading_change = True   # This ensures that the heading will print below on the first time through
-        if tgt.heading != tgt.last_heading:
-            heading_change = True
-        heading_summary += "%s=%d deg, " % (tgt.name, tgt.heading)
+    delta_distance = "(none)"
+
+    if Target is not None and Interceptor is not None:
+        delta_distance = "%4.2f" % math.sqrt((Target.last_x - Interceptor.last_x)**2 +\
+                                             (Target.last_y - Interceptor.last_y)**2)
+        heading_change = True
+
+    # heading_summary = ""
+    # for tgt in Radar.targets:
+    #     if tgt.last_heading is None:
+    #         tgt.last_heading = tgt.heading
+    #         heading_change = True   # This ensures that the heading will print below on the first time through
+    #     if tgt.heading != tgt.last_heading:
+    #         heading_change = True
+    #     heading_summary += "%s=%d deg, " % (tgt.name, tgt.heading)
     # This section could surely be simplified; I made a couple of dumb versioning mistakes
     # while modifying it, and haven't gone back to unwind all the experiments.
     # In particular, I'm sure it should be able to call change_heading only when there's a change in heading!
@@ -473,8 +487,8 @@ def print_ff_heading(cm, decif, rl, cb):
     if Target:
         Target.change_heading(Radar.elapsed_time, Target.heading)
     if heading_change:
-        msg = "WW-Heading %s, PyHeading=%d, off_by %d, hdgs:%s at t=%4.2f" % \
-              (lights, LastPyHeading, off_by, heading_summary, Radar.elapsed_time)
+        msg = "WW-Heading %s, PyHeading=%d, off_by %d, gap:%s at t=%4.2f" % \
+              (lights, LastPyHeading, off_by, delta_distance, Radar.elapsed_time)
         cb.dbwgt.add_screen_print(1, msg)
         print(msg)
 

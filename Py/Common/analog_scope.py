@@ -43,7 +43,7 @@ except ImportError:
 class AnaScope:
     def __init__(self, host_os, cb):
         #
-        version = "g1.0b"
+        version = "g1.1gf"
         if DebugAnaScope: print("Analog Scope Interface Version %s" % version)
         if host_os == "Windows_NT":
             self.PCDebug = True
