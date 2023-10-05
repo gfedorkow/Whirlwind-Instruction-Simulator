@@ -1464,26 +1464,31 @@ class XwinCrt:
         self.cb = cb
         self.win = None
 
+        widgets_only_on_xwin = False
         if cb.analog_display:
             if cb.ana_scope is None:  # first time there's a CRT SI instruction, we'll init the display modules
                 cb.ana_scope = analog_scope.AnaScope(cb.host_os, cb)
             self.WW_CHAR_HSTROKE = 8  # should be 7    (2M-0277 p.61)
             self.WW_CHAR_VSTROKE = 9  # should be 8.5
+            widgets_only_on_xwin = True
 
-        else:  # display on the laptop CRT using xwindows
+        if cb.analog_display == False or widgets_only_on_xwin: # display on the laptop CRT using xwindows
             self.gfx = __import__("graphics")
 
     #        self.get_display_size(cb)
     #        if cb.museum_mode:
     #            cb.museum_mode.museum_gfx_get_display_size(cb)
 
+            # gfx_scale_factor comes from Windows and depends on the display.  I think it's usually between 1.0 and 2.0
             self.WIN_MAX_COORD = 600.0 * cb.gfx_scale_factor # 1024.0 + 512.0  # size of window to request from the laptop window  manager
+            win_y_size = self.WIN_MAX_COORD
+            if widgets_only_on_xwin:
+                win_y_size = win_y_size / 4
 
             self.WIN_MOUSE_BOX = self.WIN_MAX_COORD / 50.0
 
             win_name = "Whirlwind CoreFile: %s" % cb.CoreFileName
-            self.win = self.gfx.GraphWin(win_name, self.WIN_MAX_COORD, self.WIN_MAX_COORD, autoflush=False)
-            #  self.win.placec(1, 1) # failed experiment!
+            self.win = self.gfx.GraphWin(win_name, self.WIN_MAX_COORD, win_y_size, autoflush=False)
 
             self.win.setBackground("Gray10")
             if cb.museum_mode:
@@ -1503,8 +1508,10 @@ class XwinCrt:
             # normal size would be "expand = 1", large size, expand = 2
             # Expand Mode is used in blackjack, not used in the Everett tape (I think)
             # so the base value of the stroke lengths here is divided by two, so it comes out right when doubled in bjack
-            self.WW_CHAR_HSTROKE = int(25.6 / 2.0 * (self.WIN_MAX_COORD / (self.WW_MAX_COORD * 2.0)))  # should be 20.0 in 'expand'
-            self.WW_CHAR_VSTROKE = int(19.2 / 2.0 * (self.WIN_MAX_COORD / (self.WW_MAX_COORD * 2.0)))  # should be 15.00
+            # If the xwin is just for debug_widgets, then the anascope section above should set character stroke sizes
+            if cb.analog_display == False:
+                self.WW_CHAR_HSTROKE = int(25.6 / 2.0 * (self.WIN_MAX_COORD / (self.WW_MAX_COORD * 2.0)))  # should be 20.0 in 'expand'
+                self.WW_CHAR_VSTROKE = int(19.2 / 2.0 * (self.WIN_MAX_COORD / (self.WW_MAX_COORD * 2.0)))  # should be 15.00
 
         # The Whirlwind CRT character generator uses a seven-segment format with a bit in a seven-bit
         # word to indicate each segment.  This list defines the sequence in which the bits are
