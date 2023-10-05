@@ -2,7 +2,7 @@
                         ;  David Israel's 1950 Track-and-Scan from M-1343
 						; Annotated by guy, Feb 11, 2021
 						
-                            .isa 1950      ;  Sherman, Set the Instruction-Set Wayback Machine to 1950
+                            .isa 1950      ;  "Sherman, Set the Instruction-Set Wayback Machine to 1950"
 
               .dbwgt .TargetHeading 5 "%d"
 							.dbwgt FF_angle
