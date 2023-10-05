@@ -1,0 +1,162 @@
+digraph flowchart {
+  size="15, 15";
+ t0 [label="number-display-annotated.acore\nWWfile: 102766750_fb131-0-2692_number_display.7c\nNotation: Octal"; shape=folder];
+  b1 [label="b1:i0040_Start(12w)\n@0o0040(i0040): CA 0o0200(r0200) ;load constant 0o12 into AC
+@0o0041(r0041): TS 0o0002(i0002) ;Store it in a FF Reg(??)
+@0o0042    : CA 0o0201(r0201) ;load constant 0o140510 into AC
+@0o0043    : TS 0o0003(w0003) ;transfer to storage (FF reg 03?)
+@0o0044    : CA 0o0202(r0202) ;load constant 0o310 into AC
+@0o0045    : TS 0o0600(u0600) ;transfer to storage
+@0o0046    : CA 0o0203(r0203) ;load constant 0o226 into AC
+@0o0047    : TS 0o0601(u0601) ;store in @0o601
+@0o0050    : CA 0o0000(w0000) ;clear AC
+@0o0051    : TS 0o0602(u0602) ;store 0 in @0o602
+@0o0052    : CS 0o0601(u0601) ;Clear and subtract
+@0o0053    : TS 0o0505(u0505) ;store -0o226 into u505
+";color="Green";shape=box3d]
+  b2 [label="b2:i0054(2w)\n@0o0054(i0054): CS 0o0600(u0600) ;clear and subtract
+@0o0055    : TS 0o0504(u0504) ;transfer to storage
+";shape=box3d]
+  b3 [label="b3:i0056(3w)\n@0o0056(i0056): CA 0o0003(w0003) ;clear and add
+@0o0057    : TS 0o0503(u0503) ;transfer to storage
+@0o0060    : CA 0o0253(r0253) ;clear and add
+";shape=box3d]
+  b4 [label="b4:i0061(4w)\n@0o0061(i0061): TS 0o0506(chr_ypos) ;Transfer to Storage
+@0o0062    : CA 0o0503(u0503) ;clear and add
+@0o0063    : SU 0o0000(w0000) ;subtract zero, i.e., prepare to branch on +0 or negative.
+@0o0064    : CP 0o0254(i0254) ;conditional program
+";shape=box3d]
+  b5 [label="b5:cycle left and hold(2w)\n@0o0065(r0065): CL 0o1033     ;
+@0o0066    : TS 0o0503(u0503) ;transfer to storage
+";shape=box3d]
+  b6 [label="b6:exchange(11w)\n@0o0067(i0067): EX 0o0000(w0000) ;
+@0o0070    : SF 0o0117(w0117) ;scale factor
+@0o0071    : TS 0o0500(u0500) ;-- and store the resulting scaled number in u0500
+@0o0072    : CA 0o0002(i0002) ;load a constant 0o12 from a FF reg
+@0o0073    : TS 0o0501(chr_cnt) ;store an initial 'character count' for the next row of chars
+@0o0074    : CA 0o0252(r0252) ;load a constant = instruction  'slh 0o024'
+@0o0075    : SU 0o0117(w0117) ;this subtracts 0o24 from the shift count calulated in @0o70
+@0o0076    : TD 0o0117(w0117) ;transfer digits -- store the result back on top of that SLH shift instruction @117
+@0o0077    : TD 0o0114(w0114) ;transfer digits - save the same result on top of an SRH
+@0o0100    : CS 0o0610(r0610) ;clear and subtract
+@0o0101    : TS 0o0507(chr_xpos) ;character x pos is the starting param to the next loop
+";shape=box3d]
+  b7 [label="b7:print_line(8w)\n@0o0102(print_line): CA 0o0000(w0000) ;clear AC
+@0o0103    : TS 0o0510(u0510) ;initialize this var to zero before starting the inner loop
+@0o0104    : CA 0o0507(chr_xpos) ;fetch the last chr_xpos
+@0o0105    : SU 0o0205(x_chr_spacing) ;subtract constant 0o010000, i.e., move 0o010000 screen units left
+@0o0106    : TS 0o0507(chr_xpos) ;store the new x base address for the character
+@0o0107    : CA 0o0501(chr_cnt) ;check the count of remaining characters
+@0o0110    : SU 0o0000(w0000) ;subtract +zero
+@0o0111    : CP 0o0173(nxt_line) ;conditional program
+";shape=box3d]
+  b8 [label="b8:start the calc to find next char (u0500 is always 0o050000 or 0o040000)(12w)\n@0o0112(calc_char): DV 0o0500(u0500) ;
+@0o0113    : SL 0o0017     ;shift left and roundoff
+@0o0114(w0114): SR 0o1002     ;shift right and hold, i.e., divide by two
+@0o0115    : TS 0o0502(u0502) ;save the result
+@0o0116    : MH 0o0500(u0500) ;multiply and hold
+@0o0117(w0117): SL 0o1002     ;This shift is the reverse of the one in w0114
+@0o0120    : EX 0o0502(u0502) ;exchange
+@0o0121    : EX 0o0501(chr_cnt) ;exchange
+@0o0122    : SU 0o0502(u0502) ;subtract x from AC, i.e. the AC figured two-instructions-ago from the current AC
+@0o0123    : AD 0o0206(chr_tab) ;add the start address of the character table
+@0o0124    : TD 0o0125(w0125) ;transfer digits
+@0o0125(w0125): CA 0o0213(chr_0) ;load next char to draw into AC
+";shape=box3d]
+  b9 [label="b9:draw_chr_End(18w)\n@0o0126(draw_chr): SF 0o0207(w0207) ;scale factor
+@0o0127    : SU 0o0210(r0210) ;subtract a constant: ts  w0000 = .word 0o040000, eliminating Bit 1 (first bit after the sign bit)
+@0o0130    : TS 0o0511(u0511) ;... and store the remaining bits in  u0511
+@0o0131    : CA 0o0207(w0207) ;Fetch the shift-count again, i.e., a small number from 0-31
+@0o0132    : AD 0o0510(u0510) ;initialized to zero just before starting the inner loop, adjusted once per pass of this inner loop
+@0o0133    : TS 0o0510(u0510) ;store whatever was in u0510 plus the shift count
+@0o0134    : MH 0o0211(r0211) ;multiply and hold -- constant .word=0o025253 (binary 0 010 101 010 101 011
+@0o0135    : TS 0o0512(u0512) ;store an intermediate result in computing the Y position
+@0o0136    : MH 0o0212(r0212) ;multiply and hold by constant .word=0o177774
+@0o0137    : SL 0o1017     ;shift left and hold
+@0o0140    : AD 0o0510(u0510) ;add
+@0o0141    : SL 0o0012     ;shift left 10 places to make a screen address
+@0o0142    : AD 0o0507(chr_xpos) ;add the character's base xpos
+@0o0143    : TS 0o0276(dot_xpos) ;Store the xpos for the next dot
+@0o0144    : CA 0o0512(u0512) ;Clear and add
+@0o0145    : SL 0o0012     ;shift left 10 places to make a screen address
+@0o0146    : AD 0o0506(chr_ypos) ;add the character's base ypos to make ypos
+@0o0147    : SP 0o0300(do_dot) ;call the routine to display a dot on the screen
+";color="Green";shape=box3d]
+  b10 [label="b10:recover the remaining bits(2w)\n@0o0150(i0150): CA 0o0511(u0511) ;
+@0o0151    : CP 0o0102(print_line) ;.. and exit the loop if negative
+";shape=box3d]
+  b11 [label="b11:sub-program(1w)\n@0o0152    : SP 0o0126(draw_chr) ;
+";shape=box3d]
+  b12 [label="b12:exchange(3w)\n@0o0153(i0153): EX 0o0600(u0600) ;
+@0o0154    : EX 0o0600(u0600) ;exchange
+@0o0155    : CP 0o0157(i0157) ;conditional program
+";shape=box3d]
+  b13 [label="b13:0o156(1w)\n@0o0156    : SP 0o0056(i0056) ;n/c
+";shape=box3d]
+  b14 [label="b14:add one(2w)\n@0o0157(i0157): AO 0o0504(u0504) ;
+@0o0160    : CP 0o0056(i0056) ;conditional program
+";shape=box3d]
+  b15 [label="b15:add one(5w)\n@0o0161    : AO 0o0002(i0002) ;
+@0o0162    : CS 0o0000(w0000) ;clear and subtract
+@0o0163    : EX 0o0601(u0601) ;exchange
+@0o0164    : EX 0o0601(u0601) ;exchange
+@0o0165    : CP 0o0167(i0167) ;conditional program
+";shape=box3d]
+  b16 [label="b16:0o166(1w)\n@0o0166    : SP 0o0054(i0054) ;n/c
+";shape=box3d]
+  b17 [label="b17:add one(2w)\n@0o0167(i0167): AO 0o0505(u0505) ;
+@0o0170    : CP 0o0054(i0054) ;conditional program
+";shape=box3d]
+  b18 [label="b18:0o171(-120w)\n@0o0171    : SI 0o0000(w0000) ;n/c
+";shape=box3d]
+  b19 [label="b19:advance y_pos to next line(3w)\n@0o0173(nxt_line): CA 0o0506(chr_ypos) ;
+@0o0174    : SU 0o0204(y_line_spacing) ;subtract
+@0o0175    : SP 0o0061(i0061) ;sub-program
+";shape=box3d]
+  b20 [label="b20:difference of magnitudes(2w)\n@0o0254(i0254): DM 0o0000(w0000) ;
+@0o0255    : CP 0o0153(i0153) ;conditional program
+";shape=box3d]
+  b21 [label="b21:add(6w)\n@0o0256    : AD 0o0610(r0610) ;
+@0o0257    : DM 0o0000(w0000) ;difference of magnitudes
+@0o0260    : TS 0o0503(u0503) ;transfer to storage
+@0o0261    : CA 0o0041(r0041) ;clear and add
+@0o0262    : CL 0o1033     ;cycle left and hold
+@0o0263    : SP 0o0067(i0067) ;sub-program
+";shape=box3d]
+  b22 [label="b22:save the AC(6w)\n@0o0300(do_dot): TS 0o0277(acctmp) ;
+@0o0301    : SI 0o0600(u0600) ;select I/O: Device Display Points base=500, mask=7
+@0o0302    : CA 0o0276(dot_xpos) ;clear and add
+@0o0303    : RC 0o0000(w0000) ;record
+@0o0304    : CA 0o0277(acctmp) ;clear and add
+@0o0305    : SP 0o0150(i0150) ;return to the only caller
+";color="Green";shape=box3d]
+  b1 -> b2 [label="x1";  color="Black"];
+  b2 -> b3 [label="x2";  color="Black"];
+  b3 -> b4 [label="x255";  color="Blue"];
+  b4 -> b20 [label="x509";  color="Blue"];
+  b4 -> b5 [label="x763";  color="Blue"];
+  b5 -> b6 [label="x763";  color="Blue"];
+  b6 -> b7 [label="x1018";  color="Blue"];
+  b7 -> b8 [label="x2292";  color="Blue"];
+  b7 -> b19 [label="x1017";  color="Blue"];
+  b8 -> b9 [label="x2292";  color="Blue"];
+  b9 -> b22 [label="x21068";  color="Red"];
+  b10 -> b11 [label="x18777";  color="Blue"];
+  b10 -> b7 [label="x2291";  color="Blue"];
+  b11 -> b9 [label="x18777";  color="Blue"];
+  b12 -> b14 [label="x254";  color="Black"];
+  b12 -> b13 [label="x0"; style=dashed color="Black"];
+  b13 -> b3 [label="x0"; style=dashed color="Black"];
+  b14 -> b3 [label="x253";  color="Black"];
+  b14 -> b15 [label="x1";  color="Black"];
+  b15 -> b17 [label="x1";  color="Black"];
+  b15 -> b16 [label="x0"; style=dashed color="Black"];
+  b16 -> b2 [label="x0"; style=dashed color="Black"];
+  b17 -> b2 [label="x1";  color="Black"];
+  b17 -> b18 [label="x0"; style=dashed color="Black"];
+  b19 -> b4 [label="x1017";  color="Blue"];
+  b20 -> b21 [label="x255";  color="Blue"];
+  b20 -> b12 [label="x254";  color="Black"];
+  b21 -> b6 [label="x255";  color="Blue"];
+  b22 -> b10 [label="x21068";  color="Red"];
+  }

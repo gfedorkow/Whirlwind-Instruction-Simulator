@@ -1,0 +1,76 @@
+how the heck does number-display this thing decode the next character??
+fedorkow, sep 1, 2023
+
+
+1010
+  12
+  10
+   T
+   
+calc_char input: acc=12 chr_cnt=0o12 w0114=0o161002 u0500=0o40000 calc_char output offset=-0 (d)  0
+calc_char input: acc=5  chr_cnt=0o5  w0114=0o161002 u0500=0o40000 calc_char output offset= 1 (d)  1
+calc_char input: acc=2  chr_cnt=0o2  w0114=0o161002 u0500=0o40000 calc_char output offset=-0 (d)  0 
+calc_char input: acc=1  chr_cnt=0o1  w0114=0o161002 u0500=0o40000 calc_char output offset= 1 (d)  1
+
+calc_char input: acc=12 chr_cnt=0o12 w0114=0o161004 u0500=0o40000 calc_char output offset=2 (d)   2
+calc_char input: acc=1  chr_cnt=0o1  w0114=0o161004 u0500=0o40000 calc_char output offset=1 (d)   1
+
+calc_char input: acc=12 chr_cnt=0o12 w0114=0o161004 u0500=0o50000 calc_char output offset=-0 (d)  0
+calc_char input: acc=1  chr_cnt=0o1  w0114=0o161004 u0500=0o50000 calc_char output offset= 1 (d)  1
+
+calc_char input: acc=12 chr_cnt=0o12 w0114=0o161005 u0500=0o40000 calc_char output offset=10 (d)  T
+
+
+---------------------
+1011
+  13
+  11
+   E
+
+
+calc_char input: acc=13 chr_cnt=0o13 w0114=0o161002 u0500=0o40000 calc_char output offset=1 (d)  1
+calc_char input: acc=5  chr_cnt=0o5  w0114=0o161002 u0500=0o40000 calc_char output offset=1 (d)  1
+calc_char input: acc=2  chr_cnt=0o2  w0114=0o161002 u0500=0o40000 calc_char output offset=-0 (d) 0
+calc_char input: acc=1  chr_cnt=0o1  w0114=0o161002 u0500=0o40000 calc_char output offset=1 (d)  1
+
+calc_char input: acc=13 chr_cnt=0o13 w0114=0o161004 u0500=0o40000 calc_char output offset=3 (d)  3
+calc_char input: acc=1  chr_cnt=0o1  w0114=0o161004 u0500=0o40000 calc_char output offset=1 (d)  1
+
+calc_char input: acc=13 chr_cnt=0o13 w0114=0o161004 u0500=0o50000 calc_char output offset=1 (d)  1
+calc_char input: acc=1  chr_cnt=0o1  w0114=0o161004 u0500=0o50000 calc_char output offset=1 (d)  1
+
+calc_char input: acc=13 chr_cnt=0o13 w0114=0o161005 u0500=0o40000 calc_char output offset=11 (d) E
+
+1100
+  14
+  12
+   L
+   
+   
+1101
+  15
+  13
+   H
+       
+1110
+  16
+  14
+   F
+          
+1111
+  17
+  15
+   C
+   
+   
+   
+10000
+   20
+   16
+   10
+   
+10010
+   22
+   19
+   13
+   

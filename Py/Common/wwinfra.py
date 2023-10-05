@@ -105,7 +105,8 @@ def octal_or_none(number):
 # at sim run time
 class DebugWidgetPyVarsClass:
     def __init__(self, cb):
-        self.TargetHeading = cb.radar.adjust_target_heading
+        if cb.radar:
+            self.TargetHeading = cb.radar.adjust_target_heading
 
 
 

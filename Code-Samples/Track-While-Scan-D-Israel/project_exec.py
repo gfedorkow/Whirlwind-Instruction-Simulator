@@ -350,16 +350,18 @@ def dump_long_tracking_state(cm, decif, rl, long, last_py_heading, py_smoother):
         heading = cm.rd(rl("FF_angle"))
         lights, ww_heading = octal_to_bin(heading)
 
-        prt = "CSV, "
-        prt += "%4.2f, %4.2f, %d, " % (Radar.elapsed_time, last_py_heading, ww_heading)
-        for i in range(0, len(rloc)):
-            prt += "%s, %4.2f, %4.2f, " % (rloc[i][0], rloc[i][1], rloc[i][2])
-        for addr in labels:
-            prt += "%s, %s, " % (decif(cm.rd(addr), decimal_0d=False), decif(cm.rd(addr + 10), decimal_0d=False))
-        for addr in more_state:
-            prt += "%s, " % (decif(cm.rd(addr), decimal_0d=False))
-        prt += py_smoother
-        print(prt)
+        print_CSV = False
+        if print_CSV:
+            prt = "CSV, "
+            prt += "%4.2f, %4.2f, %d, " % (Radar.elapsed_time, last_py_heading, ww_heading)
+            for i in range(0, len(rloc)):
+                prt += "%s, %4.2f, %4.2f, " % (rloc[i][0], rloc[i][1], rloc[i][2])
+            for addr in labels:
+                prt += "%s, %s, " % (decif(cm.rd(addr), decimal_0d=False), decif(cm.rd(addr + 10), decimal_0d=False))
+            for addr in more_state:
+                prt += "%s, " % (decif(cm.rd(addr), decimal_0d=False))
+            prt += py_smoother
+            print(prt)
 
     else:  # this format is meant for engineers to read...
         for addr in labels:
@@ -469,15 +471,15 @@ def print_ff_heading(cm, decif, rl, cb):
     if Target is not None and Interceptor is not None:
         delta_distance = "%4.2f" % math.sqrt((Target.last_x - Interceptor.last_x)**2 +\
                                              (Target.last_y - Interceptor.last_y)**2)
-        heading_change = True
+    #    heading_change = True
 
     # heading_summary = ""
-    # for tgt in Radar.targets:
-    #     if tgt.last_heading is None:
-    #         tgt.last_heading = tgt.heading
-    #         heading_change = True   # This ensures that the heading will print below on the first time through
-    #     if tgt.heading != tgt.last_heading:
-    #         heading_change = True
+    for tgt in Radar.targets:
+        if tgt.last_heading is None:
+            tgt.last_heading = tgt.heading
+            heading_change = True   # This ensures that the heading will print below on the first time through
+        if tgt.heading != tgt.last_heading:
+            heading_change = True
     #     heading_summary += "%s=%d deg, " % (tgt.name, tgt.heading)
     # This section could surely be simplified; I made a couple of dumb versioning mistakes
     # while modifying it, and haven't gone back to unwind all the experiments.

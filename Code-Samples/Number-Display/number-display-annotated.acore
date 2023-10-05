@@ -1,0 +1,249 @@
+
+; *** Core Image ***
+%File: 102766750_fb131-0-2692_number_display.7c
+%TapeID: fbl3l-0-2692
+%JumpTo 0o40
+%DbWgt:  0o002  0o01 %o
+%DbWgt:  .CORE_SIZE  0o01 %o
+@C0000: 0000000 0000001 0000000 0000000  None    None    None    None   
+@C0040: 0100200 0040002 0100201 0040003 0100202 0040600 0100203 0040601 
+@C0050: 0100000 0040602 0104601 0040505 0104600 0040504 0100003 0040503 
+@C0060: 0100253 0040506 0100503 0114000 0070254 0171033 0040503 0064000 
+@C0070: 0164117 0040500 0100002 0040501 0100252 0114117 0044117 0044114 
+@C0100: 0104610 0040507 0100000 0040510 0100507 0114205 0040507 0100501 
+@C0110: 0114000 0070173 0150500 0154017 0161000 0040502 0144500 0155000 
+@C0120: 0064502 0064501 0114502 0110206 0044125 0100000 0164207 0114210 
+@C0130: 0040511 0100207 0110510 0040510 0144211 0040512 0144212 0155017 
+@C0140: 0110510 0154012 0110507 0040276 0100512 0154012 0110506 0074300 
+@C0150: 0100511 0070102 0074126 0064600 0064600 0070157 0074056 0130504 
+@C0160: 0070056 0130002 0104000 0064601 0064601 0070167 0074054 0130505 
+@C0170: 0070054 0000000 0074040 0100506 0114204 0074061 0000000 0000000 
+@C0200: 0000012 0140510 0000012 0000226 0030000 0010000 0000213 0000000 
+@C0210: 0040000 0025253 0177774 0075557 0072262 0074217 0061216 0011755 
+@C0220: 0061647 0075747 0022217 0075757 0071757 0022227 0074747 0074444 
+@C0230: 0055755 0044747 0074447 0055757 0056656 0072227 0061243 0065556 
+@C0240: 0044656 0075111 0065656 0075555 0022255 0055665 0044457 0011157 
+@C0250: 0072222 0075257 0155024 0054000 0134000 0070153 0110610 0134000 
+@C0260: 0040503 0100041 0171033 0074067  None    None    None    None   
+@C0270:  None    None    None    None    None    None   0000000 0000000 
+@C0300: 0040277 0000600 0100276 0024000 0100277 0074150  None    None   
+@C0500: 0000000 0000000 0000000 0000000 0000000 0000000 0000000 0000000 
+@C0510: 0000000 0000000 0000000  None    None    None    None    None   
+@C0600: 0000000 0000000 0000000  None    None    None    None    None   
+@C0610: 0100000  None    None    None    None    None    None    None   
+@S0000: w0000
+@S0001: i0001
+@S0002: number_to_display
+@S0003: w0003
+@S0040: i0040
+@S0041: r0041
+@S0054: i0054
+@S0056: i0056
+@S0061: i0061
+@S0065: r0065
+@S0067: i0067
+@S0102: print_line
+@S0112: calc_char
+@S0114: w0114
+@S0117: w0117
+@S0125: w0125
+@S0126: draw_chr
+@S0150: i0150
+@S0153: i0153
+@S0157: i0157
+@S0167: i0167
+@S0173: nxt_line
+@S0177: r0177
+@S0200: r0200
+@S0201: r0201
+@S0202: n_screen_refresh
+@S0203: n_new_screens
+@S0204: y_line_spacing
+@S0205: x_chr_spacing
+@S0206: chr_tab
+@S0207: w0207
+@S0210: r0210
+@S0211: r0211
+@S0212: r0212
+@S0213: chr_0
+@S0214: chr_1
+@S0215: chr_2
+@S0216: chr_3
+@S0217: chr_4
+@S0220: chr_5
+@S0221: chr_6
+@S0222: chr_7
+@S0223: chr_8
+@S0224: chr_9
+@S0225: chr_T
+@S0232: chr_E
+@S0227: chr_L
+@S0230: chr_H
+@S0231: chr_xx
+@S0233: chr_A
+@S0234: chr_R
+@S0235: chr_I
+@S0236: chr_S
+@S0237: chr_D
+@S0240: chr_P
+@S0252: r0252
+@S0253: r0253
+@S0254: i0254
+@S0276: dot_xpos
+@S0277: acctmp
+@S0300: do_dot
+@S0500: u0500
+@S0501: disp_num
+@S0502: u0502
+@S0503: u0503
+@S0504: screen_rep_cnt
+@S0505: new_display_cnt
+@S0506: chr_ypos
+@S0507: chr_xpos
+@S0510: u0510
+@S0511: u0511
+@S0512: u0512
+@S0600: u0600
+@S0601: u0601
+@S0602: u0602
+@S0610: r0610
+@N0040: load constant 0o12 into AC
+@N0041: Store it in a FF Reg
+@N0042: load constant 0o140510 into AC
+@N0043: transfer to storage (FF reg 03?)
+@N0044: load constant 0o310 into AC
+@N0045: transfer to storage
+@N0046: load constant 0o226 into AC
+@N0047: store in @0o601
+@N0050: clear AC
+@N0051: store 0 in @0o602
+@N0053: store -0o226 into a repetition count
+@N0054: clear and subtract
+@N0055: transfer to storage
+@N0056: clear and add
+@N0057: transfer to storage
+@N0060: clear and add
+@N0062: clear and add
+@N0063: subtract zero, i.e., prepare to branch on +0 or negative.
+@N0064: conditional program
+@N0065: cycle left and hold
+@N0066: transfer to storage
+@N0067: exchange
+@N0070: scale factor ; overwrite an SLH shift instruction operand @117 with a small number
+@N0071: -- and store the resulting scaled number in u0500
+@N0072: load a constant 0o12 from a FF reg
+@N0073: store an initial 'number' for the next row of chars
+@N0074: load a constant = instruction  'slh 0o024'
+@N0075: this subtracts 0o24 from the shift count calulated in @0o70
+@N0076: transfer digits -- store the result back on top of that SLH shift instruction @117
+@N0077: transfer digits - save the same result on top of an SRH
+@N0100: clear and subtract
+@N0101: character x pos is the starting param to the next loop
+@N0102: clear AC
+@N0103: initialize this var to zero before starting the inner loop
+@N0104: fetch the last chr_xpos
+@N0105: subtract constant 0o010000, i.e., move 0o010000 screen units left
+@N0106: store the new x base address for the character
+@N0107: check the count of remaining characters
+@N0110: subtract +zero ; this converts +0 into -0 (!)
+@N0111: conditional program
+@N0112: start the calc to find next char (u0500 is always 0o050000 or 0o040000)
+@N0113: shift left and roundoff; this puts the multiplied-by-two-but-truncated result in the AC
+@N0114: shift right and hold, i.e., divide by two
+@N0115: save the result; e.g. on the first pass, this will be '5'
+@N0116: multiply and hold; u0500 would still be 0o050000 or 0o040000
+@N0117: This shift is the reverse of the one in w0114;
+@N0120: exchange
+@N0121: exchange; adjust the 'remaining' character count
+@N0122: subtract x from AC, i.e. the AC figured two-instructions-ago from the current AC; this must be the character offset in the chr table
+@N0123: add the start address of the character table
+@N0124: transfer digits ; overwrite the next instruction with an addresss into the char table
+@N0125: load next char to draw into AC
+@N0126: scale factor; w0207 is initialized to zero, so the upper bits will stay zero
+@N0127: subtract a constant: ts  w0000 = .word 0o040000, eliminating Bit 1 (first bit after the sign bit)
+@N0130: ... and store the remaining bits in  u0511
+@N0131: Fetch the shift-count again, i.e., a small number from 0-31
+@N0132: initialized to zero just before starting the inner loop, adjusted once per pass of this inner loop
+@N0133: store whatever was in u0510 plus the shift count
+@N0134: multiply and hold -- constant .word=0o025253 (binary 0 010 101 010 101 011
+@N0135: store an intermediate result in computing the Y position
+@N0136: multiply and hold by constant .word=0o177774
+@N0137: shift left and hold  ; shift 15 decimal bits left
+@N0140: add
+@N0141: shift left 10 places to make a screen address
+@N0142: add the character's base xpos
+@N0143: Store the xpos for the next dot
+@N0145: shift left 10 places to make a screen address
+@N0146: add the character's base ypos to make ypos
+@N0147: call the routine to display a dot on the screen
+@N0150: recover the remaining bits
+@N0151: .. and exit the loop if negative
+@N0152: sub-program
+@N0153: exchange
+@N0154: exchange
+@N0155: conditional program
+@N0156: sub-program
+@N0157: add one
+@N0160: conditional program
+@N0161: add one
+@N0162: clear and subtract
+@N0163: exchange
+@N0164: exchange
+@N0165: conditional program
+@N0166: sub-program
+@N0167: add one
+@N0170: conditional program
+@N0171: Halt after the rep count is exhausted
+@N0172: sub-program
+@N0173: advance y_pos to next line
+@N0174: subtract
+@N0175: sub-program
+@N0202: was .word 0o000310 ; number of times to refresh one specific display pattern    ;
+@N0203: number of new screen patterns before exit     ;
+@N0206: pointer to the base of the char table
+@N0210: transfer to storage
+@N0211: constant used by point-drawing routine
+@N0212: constant used by point-drawing routine
+@N0213: Bitmap for character Zero
+@N0214: Bitmap for character One
+@N0215: Bitmap for character Two
+@N0216: Bitmap for character Three
+@N0217: Bitmap for character Four
+@N0220: Bitmap for character Five
+@N0221: Bitmap for character Six
+@N0222: Bitmap for character Seven
+@N0223: Bitmap for character Eight
+@N0224: Bitmap for character Nine
+@N0225: Bitmap for character 'T'
+@N0226: Bitmap for character 'E'
+@N0227: Bitmap for character 'L'
+@N0230: Bitmap for character 'H'
+@N0231: Bitmap for character ?
+@N0234: Bitmap for character 'R'
+@N0241: sub-program
+@N0242: exchange
+@N0243: sub-program
+@N0244: block transfer out
+@N0245: check
+@N0246: transfer digits
+@N0247: block transfer in
+@N0250: conditional program
+@N0251: sub-program
+@N0252: shift left and hold
+@N0254: difference of magnitudes
+@N0255: conditional program
+@N0256: add
+@N0257: difference of magnitudes
+@N0260: transfer to storage
+@N0261: clear and add
+@N0262: cycle left and hold
+@N0263: sub-program
+@N0277: ad-hoc temp storage for the ACC
+@N0300: save the AC
+@N0301: select I/O: Device Display Points base=500, mask=7
+@N0302: clear and add
+@N0303: record
+@N0304: clear and add
+@N0305: return to the only caller
+@N0511: this is simply scratch storage inside the inner loop
+@N0610: clear and add
