@@ -172,7 +172,7 @@ class AnaScope:
         self.wasPoint = True
 
 
-    def drawPoint(self, posx, posy, scope):
+    def drawPoint(self, posx, posy, scope=None):
         """ draw a point as a vector of length 0
         """
         if scope is None:
@@ -235,7 +235,10 @@ class AnaScope:
       Draw a circle with center at (x,y) and radius r. 
       TODO: properly truncate at border
     """
-    def drawCircle(self, x0, y0, r, scope):
+    def drawCircle(self, x0, y0, r, scope=None):
+        if scope is None:
+            scope = self.cb.SCOPE_MAIN
+
         if DebugAnaScope: print("drawCircle: x0=%d, y0=%d, r=%d" % (x0, y0, r))
         # number of vectors: 30 for radius 1.0
         points = int(30.0 * r)
@@ -254,7 +257,10 @@ class AnaScope:
             y1 += dy
 
 
-    def drawChar(self, x, y, mask, expand, Xwin_crt, scope):
+    def drawChar(self, x, y, mask, expand, Xwin_crt, scope=None):
+        if scope is None:
+            scope = self.cb.SCOPE_MAIN
+
         last_x = x
         last_y = y
         toMove = True

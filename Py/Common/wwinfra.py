@@ -1473,7 +1473,10 @@ class XwinCrt:
             self.WW_CHAR_VSTROKE = 9  # should be 8.5
             widgets_only_on_xwin = True
 
-        if cb.analog_display == False or widgets_only_on_xwin: # display on the laptop CRT using xwindows
+        # The graphics package won't work if you don't have DISPLAY=<something> in the environment
+        # So don't bother even trying if there isn't a DISPLAY var already set
+        display = os.getenv("DISPLAY")
+        if display and (cb.analog_display == False or widgets_only_on_xwin): # display on the laptop CRT using xwindows
             self.gfx = __import__("graphics")
 
     #        self.get_display_size(cb)
@@ -1632,7 +1635,7 @@ class XwinCrt:
             scope = self.cb.SCOPE_MAIN
         self.cb.log.info("ww_draw_line: pt=(%d,%d) len=(%d,%d), scope=%d" % (ww_x0, ww_y0, ww_xd, ww_yd, scope)) 
         if self.cb.ana_scope:
-            self.cb.ana_scope.drawVector(ww_x0, ww_y0, ww_xd, ww_yd)
+            self.cb.ana_scope.drawVector(ww_x0, ww_y0, ww_xd, ww_yd, scope=scope)
         else:
             x0, y0 = self.ww_to_xwin_coords(ww_x0, ww_y0)
             x1, y1 = self.ww_to_xwin_coords(ww_x0 + ww_xd, ww_y0 + ww_yd)
@@ -1647,7 +1650,7 @@ class XwinCrt:
             scope = self.cb.SCOPE_MAIN
         self.cb.log.info("ww_draw_point: x=%d, y=%d, scope=%d, gun_enable=%d" % (ww_x, ww_y, scope, light_gun)) 
         if self.cb.ana_scope:
-            self.cb.ana_scope.drawPoint(ww_x, ww_y, scope)
+            self.cb.ana_scope.drawPoint(ww_x, ww_y, scope=scope)
             if light_gun:
                 self.last_pen_point = True  # remember the point was seen; not sure this really matters...
         else:
