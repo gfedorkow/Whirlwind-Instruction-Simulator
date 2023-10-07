@@ -480,4 +480,13 @@ def main():
 
 
 if __name__ == "__main__":
+    class LogClass:
+        def __init__(self):
+            pass
+
+    class ConstantsClass:
+        def __init__(self):
+            SCOPE_MAIN = 1
+            
     main()
+

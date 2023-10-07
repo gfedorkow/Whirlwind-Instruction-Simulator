@@ -1683,7 +1683,7 @@ def main_run_sim(args):
     global CoreMem, CommentTab   # should have put this in the CPU Class...
 
     # instantiate the class full of constants
-    cb = wwinfra.ConstWWbitClass(get_screen_size = not args.AnalogScope)  # this test probably shouldn't be here
+    cb = wwinfra.ConstWWbitClass(get_screen_size = True)
     CoreMem = wwinfra.CorememClass(cb)
     cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
     cb.cpu = cpu

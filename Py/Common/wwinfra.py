@@ -1271,6 +1271,8 @@ class FlexoClass:
 # it might turn out to be useful in the future, so I'm not turning it completely off...
 class ScreenDebugWidgetClass:
     def __init__(self, cb, coremem, analog_scope):
+        analog_scope = False  # in this routine, I'm going to try turning off AnaScope to allow
+                              # debug widgets on the hdmi screen
         if not analog_scope:
             self.point_size = 10 * int(cb.gfx_scale_factor)
             self.gfx_scale_factor = cb.gfx_scale_factor
@@ -1476,10 +1478,7 @@ class XwinCrt:
         if cb.analog_display == False or widgets_only_on_xwin: # display on the laptop CRT using xwindows
             self.gfx = __import__("graphics")
 
-    #        self.get_display_size(cb)
-    #        if cb.museum_mode:
-    #            cb.museum_mode.museum_gfx_get_display_size(cb)
-
+            cb.log.info("opening XwinCrt")
             # gfx_scale_factor comes from Windows and depends on the display.  I think it's usually between 1.0 and 2.0
             self.WIN_MAX_COORD = 600.0 * cb.gfx_scale_factor # 1024.0 + 512.0  # size of window to request from the laptop window  manager
             win_y_size = self.WIN_MAX_COORD
@@ -1769,6 +1768,9 @@ class XwinCrt:
         self.draw_red_x_and_axis(cb)    # replace the Red-X for exit symbol
         # and the screen-debug widget undraws its own objects, so that's being done twice now.
         dbwgt.refresh_widgets()
+
+        if cb.analog_display:
+            return self.cb.NO_ALARM
 
         for i in range(self.DARK, self.BRIGHT+1):
             for obj in self.screen_brightness:
