@@ -1346,7 +1346,7 @@ class ScreenDebugWidgetClass:
     def refresh_widgets(self):
         # don't refresh this part of the display unless there's something to see, and there's a display to see
         # it on!
-        if self.win and len(self.mem_addrs) == 0:
+        if self.win is None or len(self.mem_addrs) == 0:
             return
         for txt in range(0, len(self.txt_objs)):
             self.txt_objs[txt].undraw()
