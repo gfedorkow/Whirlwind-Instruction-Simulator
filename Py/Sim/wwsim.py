@@ -1652,6 +1652,11 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
 
 def poll_sim_io(cpu, cb):
     ret = cb.NO_ALARM
+    # if the analog scope interface is in use, there's a physical button which signals Stop 
+    if cb.ana_scope:
+        if cb.ana_scope.getSimStopButton():
+            return cb.QUIT_ALARM
+
     if cpu.scope.crt is not None:
         exit_alarm = cpu.scope.crt.ww_scope_update(CoreMem, cb)
         if exit_alarm != cb.NO_ALARM:

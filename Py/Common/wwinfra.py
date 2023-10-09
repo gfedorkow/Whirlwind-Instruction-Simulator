@@ -331,15 +331,16 @@ class ConstWWbitClass:
         self.screen_x = 1372
         self.screen_y = 893
 
-        screens = get_monitors()
-        # if that raises an error, put this first
-        # from os import environ
-        # environ['DISPLAY'] = ':0.0'
-        for s in screens:
-            print(s)
-            if s.is_primary:
-                self.screen_x = s.width
-                self.screen_y = s.height
+        # Cygwin depends on the xwin DISPLAY var; if it's not there, there's no point in
+        # asking about screens
+        display = os.getenv("DISPLAY")
+        if display:
+            screens = get_monitors()
+            for s in screens:
+                print(s)
+                if s.is_primary:
+                    self.screen_x = s.width
+                    self.screen_y = s.height
 
         # there must be a cleaner way of finding what scale-factor the OS is using
         # As a heuristic, if it's bigger than 1280x800, it's probably hi-res, probably 200%
@@ -1271,8 +1272,6 @@ class FlexoClass:
 # it might turn out to be useful in the future, so I'm not turning it completely off...
 class ScreenDebugWidgetClass:
     def __init__(self, cb, coremem, analog_scope):
-        analog_scope = False  # in this routine, I'm going to try turning off AnaScope to allow
-                              # debug widgets on the hdmi screen
         if not analog_scope:
             self.point_size = 10 * int(cb.gfx_scale_factor)
             self.gfx_scale_factor = cb.gfx_scale_factor
@@ -1296,8 +1295,13 @@ class ScreenDebugWidgetClass:
         # more overhead
         self.txt_objs = []    # the gfx text object created for this widget
         self.input_selector = None  # current offset for which widget is incremented/decremented
-        if not analog_scope:
+#        if not analog_scope:  # I used to only import the xwin graphics module when Not --AnaScope, now I'm using both
+#       #  But it won't work without a DISPLAY
+        if os.getenv("DISPLAY"):
             self.gfx = __import__("graphics")
+        else:
+            if not analog_scope:
+                cb.log.fatal("can't display debug widgets with no display; analog_scope=%d" % analog_scope)
         self.cm = coremem
         self.win = None
         self.cb = cb   # keep this around so we can find the parent python env
