@@ -56,13 +56,14 @@ class AnaScope:
         self.pin_doDraw = 22
         self.pin_enZ1 = 23  # not yet used
         self.pin_enZ2 = 18  # not yet used
-        self.pin_isKey = 27
+        self.pin_isKey = 27 # used as the Stop signal
         self.pin_isGun1 = 24
         self.pin_isGun2 = 25
         self.pin_isGun1on = 7
         self.pin_isGun2on = 4
         self.pin_TargetLED = 5
         self.pin_InterceptorLED = 6
+        self.pin_isIntercept = 21  # used to indicate Target or Intercept to air-defense sim
 
         # SPI pins are defined by SPI interface
 
@@ -88,6 +89,7 @@ class AnaScope:
             gpio.setup(self.pin_InterceptorLED, gpio.OUT)
 
             gpio.setup(self.pin_isKey, gpio.IN, pull_up_down=gpio.PUD_UP)
+            gpio.setup(self.pin_isIntercept, gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.setup(self.pin_isGun1, gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.setup(self.pin_isGun2, gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.setup(self.pin_isGun1on, gpio.IN, pull_up_down=gpio.PUD_UP)
@@ -320,7 +322,7 @@ class AnaScope:
             mask = 1
             self.wasGunPulse1 = True
             if DebugGun: print("first pulse, Gun 1: isGun1=%d, PushButton=%d" %
-                    (gpio.input(self.pin_isGun1on), gpio.input(self.pin_isKey)))
+                    (gpio.input(self.pin_isGun1on), gpio.input(self.pin_isIntercept)))
         if not self.wasGunPulse2 and gpio.input(self.pin_isGun2) == 0:
             mask = mask | 2
             self.wasGunPulse2 = True
@@ -365,12 +367,19 @@ class AnaScope:
     # Used in Air Defense to select Target or Interceptor
     # The pin is active low, return True if it's pushed
     def getGunPushButton(self):
-        return (gpio.input(self.pin_isKey) == 0)
+        return (gpio.input(self.pin_isIntercept) == 0)
 
 
     def setTargetInterceptLEDs(self, TargetLED, InterceptorLED):
         gpio.output(self.pin_TargetLED, TargetLED == False)  # inverted logic - write zero to turn on LED
         gpio.output(self.pin_InterceptorLED, InterceptorLED == False)
+
+
+    # Return the state of the "stop" button on Rainer's board attached to Rasp Pi
+    def getSimStopButton(self):
+        if gpio is None:
+            return False
+        return(gpio.input(self.pin_isKey) == 0)
 
 
 """ 
