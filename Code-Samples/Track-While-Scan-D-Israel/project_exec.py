@@ -472,6 +472,8 @@ def print_ff_heading(cm, decif, rl, cb):
         delta_distance = "%4.2f" % math.sqrt((Target.last_x - Interceptor.last_x)**2 +\
                                              (Target.last_y - Interceptor.last_y)**2)
     #    heading_change = True
+    if cb.ana_scope:
+        cb.ana_scope.setTargetInterceptLEDs((Target is not None), (Interceptor is not None))
 
     # heading_summary = ""
     for tgt in Radar.targets:

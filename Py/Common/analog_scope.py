@@ -61,6 +61,8 @@ class AnaScope:
         self.pin_isGun2 = 25
         self.pin_isGun1on = 7
         self.pin_isGun2on = 4
+        self.pin_TargetLED = 5
+        self.pin_InterceptorLED = 6
 
         # SPI pins are defined by SPI interface
 
@@ -82,6 +84,9 @@ class AnaScope:
             gpio.setup(self.pin_doDraw, gpio.OUT)
             gpio.setup(self.pin_enZ1,   gpio.OUT)
             gpio.setup(self.pin_enZ2,   gpio.OUT)
+            gpio.setup(self.pin_TargetLED,  gpio.OUT)
+            gpio.setup(self.pin_InterceptorLED, gpio.OUT)
+
             gpio.setup(self.pin_isKey, gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.setup(self.pin_isGun1, gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.setup(self.pin_isGun2, gpio.IN, pull_up_down=gpio.PUD_UP)
@@ -362,6 +367,10 @@ class AnaScope:
     def getGunPushButton(self):
         return (gpio.input(self.pin_isKey) == 0)
 
+
+    def setTargetInterceptLEDs(self, TargetLED, InterceptorLED):
+        gpio.output(self.pin_TargetLED, TargetLED == False)  # inverted logic - write zero to turn on LED
+        gpio.output(self.pin_InterceptorLED, InterceptorLED == False)
 
 
 """ 

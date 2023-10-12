@@ -209,9 +209,9 @@ class RadarClass:
             # And it appears that it doesn't work unless the clutter is clearly outside the zone of both the tracked
             # aircraft!
             if self.current_azimuth == 0 and len(self.rng_list) == 0:
-                self.rng_list.append(("Geo_North_marker", 100.0))
+                self.rng_list.append(("Geo_North_marker", 120.0))
             if self.current_azimuth == 128 and len(self.rng_list) == 0:
-                self.rng_list.append(("Geo_South_marker", 100.0))   # note Azimuth is measured in 1/256ths of a revolution
+                self.rng_list.append(("Geo_South_marker", 120.0))   # note Azimuth is measured in 1/256ths of a revolution
             azi_code = (self.current_azimuth | 0o400) << 6   # convert to phone line coding
             ret = (azi_code, "Radar Return: azimuth %d" % (self.current_azimuth), new_rotation)
             self.azimuth_next = False  # given the automatic 256 of 750 azimuth slots, this flag is probably not needed...
