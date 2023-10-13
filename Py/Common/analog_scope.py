@@ -85,8 +85,8 @@ class AnaScope:
             gpio.setup(self.pin_doDraw, gpio.OUT)
             gpio.setup(self.pin_enZ1,   gpio.OUT)
             gpio.setup(self.pin_enZ2,   gpio.OUT)
-            gpio.setup(self.pin_TargetLED,  gpio.OUT)
-            gpio.setup(self.pin_InterceptorLED, gpio.OUT)
+            gpio.setup(self.pin_TargetLED,  gpio.IN, pull_up_down=gpio.PUD_UP)
+            gpio.setup(self.pin_InterceptorLED, gpio.IN, pull_up_down=gpio.PUD_UP)
 
             gpio.setup(self.pin_isKey, gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.setup(self.pin_isIntercept, gpio.IN, pull_up_down=gpio.PUD_UP)
@@ -96,7 +96,7 @@ class AnaScope:
             gpio.setup(self.pin_isGun2on, gpio.IN, pull_up_down=gpio.PUD_UP)
             self.spi = spidev.SpiDev()
             self.spi.open(0, 0)
-            # spi.max_speed_hz = 4000000
+            self.spi.max_speed_hz = 4000000
 
     def __del__(self):
         if not self.PCDebug:
@@ -371,8 +371,18 @@ class AnaScope:
 
 
     def setTargetInterceptLEDs(self, TargetLED, InterceptorLED):
-        gpio.output(self.pin_TargetLED, TargetLED == False)  # inverted logic - write zero to turn on LED
-        gpio.output(self.pin_InterceptorLED, InterceptorLED == False)
+        # print("setTargetLED: T=%d I=%d" % (TargetLED, InterceptorLED))
+        if TargetLED:
+            gpio.setup(self.pin_TargetLED, gpio.OUT)
+            gpio.output(self.pin_TargetLED, 0)  # inverted logic - write zero to turn on LED
+        else:
+            gpio.setup(self.pin_TargetLED, gpio.IN, pull_up_down=gpio.PUD_UP)
+
+        if InterceptorLED:
+            gpio.setup(self.pin_InterceptorLED, gpio.OUT)
+            gpio.output(self.pin_InterceptorLED, 0)
+        else:
+            gpio.setup(self.pin_InterceptorLED, gpio.IN, pull_up_down=gpio.PUD_UP)
 
 
     # Return the state of the "stop" button on Rainer's board attached to Rasp Pi
