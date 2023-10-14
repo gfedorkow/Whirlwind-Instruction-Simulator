@@ -1824,7 +1824,13 @@ def main_run_sim(args):
             # ################### The Simulation Starts Here ###################
             alarm = cpu.run_cycle()
             # ################### The Rest is Just Overhead  ###################
-            if (sim_cycle % 500 == 0) or args.SynchronousVideo or CycleDelayTime:
+            # poll various I/O circumstances, and update the xwin screen
+            # Do this less frequently in AnaScope mode, as it slows the Rasp Pi performance,
+            # even to check the xwin stuff
+            update_rate = 500
+            if cb.analog_display:
+                update_rate = 5000
+            if (sim_cycle % update_rate == 0) or args.SynchronousVideo or CycleDelayTime:
                 exit_alarm = poll_sim_io(cpu, cb)
                 if exit_alarm != cb.NO_ALARM:
                     alarm = exit_alarm
