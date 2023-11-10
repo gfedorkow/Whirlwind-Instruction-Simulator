@@ -790,7 +790,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             tokens = re.split("[: \t][: \t]*", input_minus_comment)
             # print "tokens:", tokens
             if len(tokens[0]) == 0:
-                cb.log.warn("read_core parse error, read_core @C/@T: tokens=", tokens)
+                cb.log.warn("read_core parse error, read_core @C/@T: tokens=%s" % tokens)
                 continue
             # if it's actually a binary core file, pick up the address from @C or @T
             if re.match("^@C|^@T", input_minus_comment):
@@ -804,7 +804,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             tokens = re.split("[: \t][: \t]*", input_minus_comment)
             # print "tokens:", tokens
             if len(tokens) != 2:
-                cb.log.warn("read_core parse error, read_core @S: tokens=", tokens)
+                cb.log.warn("read_core parse error, read_core @S: tokens=%s" % tokens)
                 continue
             address = int(tokens[0][2:], 8)
             symtab[address] = (tokens[1], '')  # save the name, and a marker saying we don't know the type
@@ -812,7 +812,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             tokens = re.split("[: \t][: \t]*", input_minus_comment, maxsplit = 1)
             # print "tokens:", tokens
             if len(tokens) != 2:
-                cb.log.warn("read_core parse error, read_core @N: tokens=", tokens)
+                cb.log.warn("read_core parse error, read_core @N: tokens=%s" % tokens)
                 continue
             address = int(tokens[0][2:], 8)
             commenttab[address] = tokens[1]  # save the string
@@ -851,20 +851,20 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             if len(tokens) > 1:
                 ww_hash = tokens[1]
             else:
-                cb.log.warn("read_core: missing arg to %Hash")
+                cb.log.warn("read_core: missing arg to %%Hash")
         # identifies any thing that might be a Flexo Character string in the image
         elif re.match("^%String:", input_minus_comment):
             tokens = input_minus_comment.split()
             if len(tokens) > 1:
                 ww_strings += tokens[1] + '\n'
             else:
-                cb.log.warn("read_core: missing arg to %String")
+                cb.log.warn("read_core: missing arg to %%String")
         elif re.match("^%Stats:", input_minus_comment):  # put the Colon back in here!
             tokens = input_minus_comment.split(' ', 1)
             if len(tokens) > 1:
                 ww_stats = tokens[1]
             else:
-                cb.log.warn("read_core: missing arg to %Stats")
+                cb.log.warn("read_core: missing arg to %%Stats")
         elif re.match("^%Blocknum", input_minus_comment):
             tokens = input_minus_comment.split()
             blocknum = int(tokens[1], 8)
@@ -1297,6 +1297,11 @@ class ScreenDebugWidgetClass:
         self.input_selector = None  # current offset for which widget is incremented/decremented
 #        if not analog_scope:  # I used to only import the xwin graphics module when Not --AnaScope, now I'm using both
 #       #  But it won't work without a DISPLAY
+
+        # the following stanza will dump the complete environment to help debug
+        # for name, value in os.environ.items():
+        #     print("{0}: {1}".format(name, value))
+
         if os.getenv("DISPLAY"):
             self.gfx = __import__("graphics")
         else:
