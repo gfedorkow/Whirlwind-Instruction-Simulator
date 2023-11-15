@@ -8,10 +8,15 @@ one:      .word 1
 ;  DISPLAY POINTS 0600 TO 0677 (octal)
       .org 0o40
 main:     ca 0
+          .exec set_timezone_offset(cm, rl)
+          ca 0
+          ; sp test_mod
+          ; sp 0
+
+main_loop:          
           sp refresh_screen
           sp update_time
-          ; si 0         ; halt after one pass
-          sp main
+          sp main_loop
           
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -24,14 +29,25 @@ update_time:
                               ; but there's some common code at the end of the routine, so the other
                               ; branches all go to ut_ret
           
+          ca ut_once_per         ; don't recompute the time every refresh cycle; just every "n" cycles
+          cp ut_no_op         ; if the counter is negative, increment it and do nothing else
+          
+          ca minus5
+          ts ut_once_per         ; counter was positive; reset it and fetch new time
+          
+          ; if posix_time
+          .exec get_posix_time("cur_sec", "cur_min", "cur_hour", rll=rl)
+          sp ut_ret
+          
+          ;;; This segment is commented out so that Posix time is used
           ao cur_sec          ; increment seconds and check for overflow
           ts cur_sec
           su sixty
           dm 0
-          cp i_ut_new_minute
+          cp ut_new_minute
           sp ut_ret           ; if the seconds don't overflow, we're done
           
-i_ut_new_minute:
+ut_new_minute:
           ca 0
           ts cur_sec
           
@@ -39,23 +55,43 @@ i_ut_new_minute:
           ts cur_min
           su sixty
           dm 0
-          cp i_ut_new_hour
+          cp ut_new_hour
           sp ut_ret           ; if the minutes don't overflow, we're done
           
           
-i_ut_new_hour:          
+ut_new_hour:          ; oops, the 'hour' needs to be incremented every 12 minutes
+          ca 0
+          ts cur_min
+          
+          ao cur_hour
+          ts cur_hour
+          su sixty
+          dm 0
+          cp ut_new_day
           sp ut_ret
+          
+ut_new_day:   ; nothing to do here but prevent an Hours overflow
+          ca 0
+          ts cur_hour
 
 ut_ret:          
           ca 0
           .print "New Time hour=%d; min=%d; sec=%d", cur_hour, cur_min, cur_sec
-ut_ret_sp:          
+          ca 0    ; I shouldn't need this; it's to prevent the .print exec from running.  Bug!!
+ut_ret_sp:   
           sp 0
+          
+ut_no_op:
+          ao ut_once_per
+          sp ut_ret_sp
+
+; loocal variables
+ut_once_per: .word minus5
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;  Redraw the screen  ;;;;;;;;;;;;;;;;;
 ; Input params are hour, minute, second
-cur_sec:  .word 0
+cur_sec:  .word 15
 cur_min:  .word 0
 cur_hour: .word 0
 
@@ -64,7 +100,7 @@ refresh_screen:
           sp draw_ring
           sp draw_seconds_hand
           sp draw_minutes_hand
-          ; sp draw_hours_hand
+          sp draw_hours_hand
 rs_ret:   sp 0
 
 
@@ -94,7 +130,7 @@ draw_minutes_hand:
           
           ca point_99
           ts dth_arg_len_scale
-          ca cur_min
+          ca cur_min          ; <--- Minutes!
           ts dth_arg_angle
           ca two
           ts dth_arg_width
@@ -110,8 +146,7 @@ draw_hours_hand:
           
           ca point_75
           ts dth_arg_len_scale
-          ca cur_sec
-          ad four
+          ca cur_hour            ; <--- Hours
           ts dth_arg_angle
           ca four
           ts dth_arg_width
@@ -229,27 +264,21 @@ draw_ring:
           ca point_99
           ts rtt_arg_scale         ; it's a start to using rtt (not done yet!)
           
-          ca minutes_ring_pointer  ; initialize the instruction pointers
-          td i_ca_x1
-          ad 01
-          td i_ca_y1
           ca minus59
           ts dr_cnt1     ; initialize the loop counter
 
           ; Commence the point-drawing loop
           ; Starting with the first, every fifth of the sixty markers should be
           ;   a short vector, while the rest are dots
-          ; No args
 draw_outer_ring:
-          ; start by de-indexing pointers to x & y values
-i_ca_x1:  ca 0  
+          ca dr_cnt1
+          sp read_trig_table
+          ; Computed values are returned in rtt_x and rtt_y
+
+          ca rtt_x  
           ts dr_x1
-i_ca_y1:  ca 0  
+          ca rtt_y
           ts dr_y1
-          ao i_ca_y1      ; increment the Y address twice
-          ao i_ca_y1
-          ao i_ca_x1      ; increment the X address twice
-          ao i_ca_x1
          
           ; test the loop counter to see if this is "every fifth"
           ca dr_cnt1        ; pick up the rotational angle around the face
@@ -276,7 +305,12 @@ dr_tick:  ca dr_x1
           sp draw_vector
           
 outer_ring_dot:          
-          ao dr_cnt1         ; increment the counter
+          ; "normal" behavior would draw dots every minute;  The display renders
+          ; faster if we only draw the tick marks, i.e., every five minutes
+;          ao dr_cnt1         ; increment the counter
+          ca dr_cnt1
+          ad five
+          ts dr_cnt1
           cp draw_outer_ring   ; loop while the counter is still negative
       
 dr_ret:   sp 0            ; end of subroutine
@@ -318,6 +352,7 @@ dv_arg_y2:    .word 0
 draw_vector:
           ta dv_ret       ; save the return address
 
+          ;.print "SubroutineEntry: draw_vector"
           ca 0
           ts dv_swap_xy   ; default is to assume that the slope is less than 1.0
           ca dv_arg_x1
@@ -373,7 +408,7 @@ br_dv_x_loop:
           
           ; the following stanza sets DX to the longest allowed vector, either positive or negative as needed.
           ca dv_dx            ; test the sign of dx
-          cp br_dv_neg_dx       ; bramch if negative
+          cp br_dv_neg_dx       ; branch if negative
           ca max_vector      ; otherwise, change dx to the max +vector
           ts dv_dx
           sp br_dv_calc_y       ; continue to figure dY
@@ -384,7 +419,7 @@ br_dv_neg_dx:
           ts dv_dx
           
 br_dv_short_x:
-          sp br_dv_calc_y:   ; I don't think there's anything else to do here...
+          sp br_dv_calc_y   ; I don't think there's anything else to do here...
 
 br_dv_calc_y:          
           ; now figure out the dy value
@@ -410,12 +445,13 @@ dv_pre_test_loop_end:
           ; the two numbers have different signs, i.e., they can's possibly be equal
           ; (oops, and this might not work comparing +0 and -0)
           ; Remeber that AC contains dv_x1 at this point
-          sd dv_x2
-          cp br_dv_x_loop ; go around again
+          ;sd dv_x2
+          ;cp br_dv_x_loop ; go around again
+          ca 0   ; temporary no-op
           
 dv_test_loop_end:
           ca dv_x1
-          su dv_x2        ; test to see if x1==x2; if so, we're done
+          su dv_x2      ; test to see if x1==x2; if so, we're done
           dm 0
           cp dv_ret       ; branch if negative zero; we're done
           
@@ -478,6 +514,7 @@ dv_slope_tmp1: .word 0
 draw_short_vector:
           ta dsv_ret     ; store the return address
           
+          ;.print "SubroutineEntry: draw_short_vector"
           ca dv_swap_xy ; load the swap bit
           dm 0          ; compare to zero; dm is -0 if the value in dv_swap_xy is +0 or -0, and positive otherwise
           cp dsv_dont_do_swap
@@ -510,10 +547,10 @@ dsv_figure_offset:
           ca dsv_dy
           srr 3       ; shift to lower part of word, preserving the sign bit
           md low_6_bits   ; mask off the unused upper half
-          ad dsv_vec   ; this should be an "OR", but no such luck
+          ad dsv_vec   ; this should be an OR, but no such luck
           ts dsv_vec
           ; draw the vector
-          .print "Short Vector: x1=%d; y1=%d; dx=%d; dy=%d; vec=%o", dv_x1, dv_y1, dv_dx, dv_dy, dsv_vec
+          ;.print "Short Vector: x1=%d; y1=%d; dx=%d; dy=%d; vec=%o", dv_x1, dv_y1, dv_dx, dv_dy, dsv_vec
           ca dsv_y1         ; pick up the Y value
           si 0o1677        ; select all the scopes; set Y value
           ca dsv_x1
@@ -532,28 +569,78 @@ dsv_y1:   .word 0
 
 ;; Subroutine to calculate modulus
 ; AC should contain the number to be modulo'd
-find_mod5:
-          ta ret1
-          cp negative_arg
-          sp positive_arg
-negative_arg:
+; The modulus is returned in AC
+; The quotient is available in fm_quot
+find_mod60:
+          ta fm_ret60
+          cp fm60_negative_arg
+          sp fm60_positive_arg
+fm60_negative_arg:
           sd all_ones   ; invert the negative arg
-positive_arg:
+fm60_positive_arg:
           ts fm_arg1       ; save the incoming argument
-          dv mod
+          dv fm_mod60
           slh 9         ; after this instruction, AC contains the Quotient
-          mh mod
+          ts fm_quot
+          mh fm_mod60
+          slh 6
+          su fm_arg1    ; subtract the initial number; this gives the negative of the Remainder
+          sd all_ones   ; invert the negative result
+          dm 0          ; make sure Zero is Negative Zero
+fm_ret60: sp 0
+
+
+find_mod5:
+          ta fm_ret5
+          cp fm5_negative_arg
+          sp fm5_positive_arg
+fm5_negative_arg:
+          sd all_ones   ; invert the negative arg
+fm5_positive_arg:
+          ts fm_arg1       ; save the incoming argument
+          dv fm_mod5
+          slh 9         ; after this instruction, AC contains the Quotient
+          ts fm_quot
+          mh fm_mod5
           slh 6
           su fm_arg1    ; subtract the initial number; this gives the negative of the Remainder
           dm four       ; yeah, ok, the incoming arg is negative and counts up to zero;
           dm zero       ;    but I want the return code to start at zero and count up to four
-ret1:     sp 0
-mod:    .word 0o05000  ; that's 5/64  
+fm_ret5:  sp 0
+
+fm_mod5:  .word 0o05000  ; that's 5/64  
+fm_mod60: .word 0o74000  ; that's 60/64  
 fm_arg1:   .word 0    ; temporary storage for Mod argument
-t1:     .word 0
+fm_quot:  .word 0     ; return the quotient in this register
 
 
-; Subroutine 
+;;;;;;;;; unit test Modulo operation ;;;;;;;;;;;;;;
+test_mod:
+          ca minus120
+          ts tm_cnt_neg
+          ca large_num
+          ts tm_cnt_pos
+tm_loop:
+          ca tm_cnt_pos
+          sp find_mod60
+          .print "modulus60 of %d is %ad", tm_cnt_pos
+          ca tm_cnt_neg
+          sp find_mod5
+          .print "modulus5 of %d is %ad", tm_cnt_neg
+          ao tm_cnt_pos
+          ao tm_cnt_neg
+          cp tm_loop
+          
+          sp 0
+
+tm_cnt_pos: .word 0
+tm_cnt_neg: .word 0
+large_num:  .word 0o74000
+
+
+
+
+;;;;;;;;;;;; Subroutine read_trig_table ;;;;;;;;;;;;;;;;;
 ; Take an index, nominally 0-59, in AC and index the ring table to find x, y components
 ; The rtt_arg_scale is a multiplier to be applied to the results of the table lookup
 ; before returning.
@@ -590,16 +677,18 @@ rtt_do_lookup:
           ca rtt_index
           slr 1       ; double the offset to make a table index
           ad minutes_ring_pointer
-          td i_rtt_ca_x1
+          td i_rtt_ca_x1   ; overwrite the address for a ca instruction
           ad 01
           td i_rtt_ca_y1
           
 i_rtt_ca_x1:          
           ca 0
+          srr 1             ; scale by half to avoid overflows later
           mr rtt_arg_scale
           ts rtt_x
 i_rtt_ca_y1:
           ca 0
+          srr 1
           mr rtt_arg_scale
           ts rtt_y
 
@@ -616,7 +705,10 @@ rtt_index: .word 0
 
 two:        .word 2
 four:       .word 4
+five:       .word 5
+minus5:     .word -5
 minus59:    .word -59
+minus120:   .word -120
 fifty_nine: .word 59
 sixty:      .word 60
 twenty_eight:  .word 28
@@ -814,550 +906,5 @@ minutes_ring:
       .word -0.09407
       .word +0.89506
 
-
-hours_ring:
-      .word +0.00000
-      .word +0.70000
-
-      .word +0.07316
-      .word +0.69616
-
-      .word +0.14553
-      .word +0.68470
-
-      .word +0.21631
-      .word +0.66573
-
-      .word +0.28471
-      .word +0.63948
-
-      .word +0.34999
-      .word +0.60621
-
-      .word +0.41144
-      .word +0.56631
-
-      .word +0.46839
-      .word +0.52020
-
-      .word +0.52020
-      .word +0.46839
-
-      .word +0.56631
-      .word +0.41144
-
-      .word +0.60621
-      .word +0.35000
-
-      .word +0.63948
-      .word +0.28471
-
-      .word +0.66573
-      .word +0.21631
-
-      .word +0.68470
-      .word +0.14553
-
-      .word +0.69616
-      .word +0.07316
-
-      .word +0.70000
-      .word -0.00000
-
-      .word +0.69616
-      .word -0.07316
-
-      .word +0.68470
-      .word -0.14553
-
-      .word +0.66573
-      .word -0.21631
-
-      .word +0.63948
-      .word -0.28471
-
-      .word +0.60621
-      .word -0.34999
-
-      .word +0.56631
-      .word -0.41144
-
-      .word +0.52020
-      .word -0.46839
-
-      .word +0.46839
-      .word -0.52020
-
-      .word +0.41144
-      .word -0.56631
-
-      .word +0.34999
-      .word -0.60621
-
-      .word +0.28471
-      .word -0.63948
-
-      .word +0.21631
-      .word -0.66573
-
-      .word +0.14553
-      .word -0.68470
-
-      .word +0.07316
-      .word -0.69616
-
-      .word -0.00000
-      .word -0.70000
-
-      .word -0.07316
-      .word -0.69616
-
-      .word -0.14553
-      .word -0.68470
-
-      .word -0.21631
-      .word -0.66573
-
-      .word -0.28471
-      .word -0.63948
-
-      .word -0.35000
-      .word -0.60621
-
-      .word -0.41144
-      .word -0.56631
-
-      .word -0.46839
-      .word -0.52020
-
-      .word -0.52020
-      .word -0.46839
-
-      .word -0.56631
-      .word -0.41144
-
-      .word -0.60621
-      .word -0.35000
-
-      .word -0.63948
-      .word -0.28471
-
-      .word -0.66573
-      .word -0.21631
-
-      .word -0.68470
-      .word -0.14553
-
-      .word -0.69616
-      .word -0.07316
-
-      .word -0.70000
-      .word +0.00000
-
-      .word -0.69616
-      .word +0.07316
-
-      .word -0.68470
-      .word +0.14553
-
-      .word -0.66573
-      .word +0.21631
-
-      .word -0.63948
-      .word +0.28471
-
-      .word -0.60621
-      .word +0.35000
-
-      .word -0.56631
-      .word +0.41144
-
-      .word -0.52020
-      .word +0.46839
-
-      .word -0.46839
-      .word +0.52020
-
-      .word -0.41144
-      .word +0.56631
-
-      .word -0.35000
-      .word +0.60621
-
-      .word -0.28471
-      .word +0.63948
-
-      .word -0.21631
-      .word +0.66573
-
-      .word -0.14553
-      .word +0.68470
-
-      .word -0.07316
-      .word +0.69616
-
-
-inner_ring:
-      .word -0.00000
-      .word -0.20000
-
-      .word -0.02090
-      .word -0.19890
-
-      .word -0.04158
-      .word -0.19562
-
-      .word -0.06180
-      .word -0.19021
-
-      .word -0.08134
-      .word -0.18270
-
-      .word -0.09999
-      .word -0.17320
-
-      .word -0.11755
-      .word -0.16180
-
-      .word -0.13382
-      .word -0.14862
-
-      .word -0.14862
-      .word -0.13382
-
-      .word -0.16180
-      .word -0.11755
-
-      .word -0.17320
-      .word -0.10000
-
-      .word -0.18270
-      .word -0.08134
-
-      .word -0.19021
-      .word -0.06180
-
-      .word -0.19562
-      .word -0.04158
-
-      .word -0.19890
-      .word -0.02090
-
-      .word -0.20000
-      .word +0.00000
-
-      .word -0.19890
-      .word +0.02090
-
-      .word -0.19562
-      .word +0.04158
-
-      .word -0.19021
-      .word +0.06180
-
-      .word -0.18270
-      .word +0.08134
-
-      .word -0.17320
-      .word +0.09999
-
-      .word -0.16180
-      .word +0.11755
-
-      .word -0.14862
-      .word +0.13382
-
-      .word -0.13382
-      .word +0.14862
-
-      .word -0.11755
-      .word +0.16180
-
-      .word -0.09999
-      .word +0.17320
-
-      .word -0.08134
-      .word +0.18270
-
-      .word -0.06180
-      .word +0.19021
-
-      .word -0.04158
-      .word +0.19562
-
-      .word -0.02090
-      .word +0.19890
-
-      .word +0.00000
-      .word +0.20000
-
-      .word +0.02090
-      .word +0.19890
-
-      .word +0.04158
-      .word +0.19562
-
-      .word +0.06180
-      .word +0.19021
-
-      .word +0.08134
-      .word +0.18270
-
-      .word +0.10000
-      .word +0.17320
-
-      .word +0.11755
-      .word +0.16180
-
-      .word +0.13382
-      .word +0.14862
-
-      .word +0.14862
-      .word +0.13382
-
-      .word +0.16180
-      .word +0.11755
-
-      .word +0.17320
-      .word +0.10000
-
-      .word +0.18270
-      .word +0.08134
-
-      .word +0.19021
-      .word +0.06180
-
-      .word +0.19562
-      .word +0.04158
-
-      .word +0.19890
-      .word +0.02090
-
-      .word +0.20000
-      .word -0.00000
-
-      .word +0.19890
-      .word -0.02090
-
-      .word +0.19562
-      .word -0.04158
-
-      .word +0.19021
-      .word -0.06180
-
-      .word +0.18270
-      .word -0.08134
-
-      .word +0.17320
-      .word -0.10000
-
-      .word +0.16180
-      .word -0.11755
-
-      .word +0.14862
-      .word -0.13382
-
-      .word +0.13382
-      .word -0.14862
-
-      .word +0.11755
-      .word -0.16180
-
-      .word +0.10000
-      .word -0.17320
-
-      .word +0.08134
-      .word -0.18270
-
-      .word +0.06180
-      .word -0.19021
-
-      .word +0.04158
-      .word -0.19562
-
-      .word +0.02090
-      .word -0.19890
-
-
-markings_ring:
-      .word +0.00000
-      .word +0.94500
-
-      .word +0.09877
-      .word +0.93982
-
-      .word +0.19647
-      .word +0.92434
-
-      .word +0.29202
-      .word +0.89874
-
-      .word +0.38436
-      .word +0.86330
-
-      .word +0.47249
-      .word +0.81839
-
-      .word +0.55545
-      .word +0.76452
-
-      .word +0.63232
-      .word +0.70227
-
-      .word +0.70227
-      .word +0.63232
-
-      .word +0.76452
-      .word +0.55545
-
-      .word +0.81839
-      .word +0.47250
-
-      .word +0.86330
-      .word +0.38436
-
-      .word +0.89874
-      .word +0.29202
-
-      .word +0.92434
-      .word +0.19647
-
-      .word +0.93982
-      .word +0.09877
-
-      .word +0.94500
-      .word -0.00000
-
-      .word +0.93982
-      .word -0.09877
-
-      .word +0.92434
-      .word -0.19647
-
-      .word +0.89874
-      .word -0.29202
-
-      .word +0.86330
-      .word -0.38436
-
-      .word +0.81839
-      .word -0.47249
-
-      .word +0.76452
-      .word -0.55545
-
-      .word +0.70227
-      .word -0.63232
-
-      .word +0.63232
-      .word -0.70227
-
-      .word +0.55545
-      .word -0.76452
-
-      .word +0.47249
-      .word -0.81839
-
-      .word +0.38436
-      .word -0.86330
-
-      .word +0.29202
-      .word -0.89874
-
-      .word +0.19647
-      .word -0.92434
-
-      .word +0.09877
-      .word -0.93982
-
-      .word -0.00000
-      .word -0.94500
-
-      .word -0.09877
-      .word -0.93982
-
-      .word -0.19647
-      .word -0.92434
-
-      .word -0.29202
-      .word -0.89874
-
-      .word -0.38436
-      .word -0.86330
-
-      .word -0.47250
-      .word -0.81839
-
-      .word -0.55545
-      .word -0.76452
-
-      .word -0.63232
-      .word -0.70227
-
-      .word -0.70227
-      .word -0.63232
-
-      .word -0.76452
-      .word -0.55545
-
-      .word -0.81839
-      .word -0.47250
-
-      .word -0.86330
-      .word -0.38436
-
-      .word -0.89874
-      .word -0.29202
-
-      .word -0.92434
-      .word -0.19647
-
-      .word -0.93982
-      .word -0.09877
-
-      .word -0.94500
-      .word +0.00000
-
-      .word -0.93982
-      .word +0.09877
-
-      .word -0.92434
-      .word +0.19647
-
-      .word -0.89874
-      .word +0.29202
-
-      .word -0.86330
-      .word +0.38436
-
-      .word -0.81839
-      .word +0.47250
-
-      .word -0.76452
-      .word +0.55545
-
-      .word -0.70227
-      .word +0.63232
-
-      .word -0.63232
-      .word +0.70227
-
-      .word -0.55545
-      .word +0.76452
-
-      .word -0.47250
-      .word +0.81839
-
-      .word -0.38436
-      .word +0.86330
-
-      .word -0.29202
-      .word +0.89874
-
-      .word -0.19647
-      .word +0.92434
-
-      .word -0.09877
-      .word +0.93982
 
 
