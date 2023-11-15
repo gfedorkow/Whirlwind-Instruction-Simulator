@@ -179,6 +179,10 @@ class ConstWWbitClass:
         self.SCOPE_MAIN = 1
         self.SCOPE_AUX  = 2  # aka "F Scope"
 
+        # configure the displays
+        self.analog_display = False   # set this flag to display on an analog oscilloscope instead of an x-window
+        self.use_x_win = True         # clear this flag to completely turn off the xwin display, widgets and all
+        self.ana_scope = None   # this is a handle to the methods for operating the analog scope
         # use these vars to control how much Helpful Stuff emerges from the sim
         self.color_trace = True
         self.museum_mode = None  # command line switch to enable a repeating demo mode.
@@ -205,8 +209,6 @@ class ConstWWbitClass:
         self.DebugWidgetPyVars = None   # this class links up the Python-based debug widget methods, it any
 
         self.host_os = os.getenv("OS")
-        self.analog_display = False   # set this flag to display on an analog oscilloscope instead of an x-window
-        self.ana_scope = None   # this is a handle to the methods for operating the analog scope
         self.crt_fade_delay_param = 0
         self.radar = None   # set this if we're doing a radar-style display
         self.no_toggle_switch_warn = False  # Apologies for the double-negative, but the warning should normally
@@ -333,7 +335,7 @@ class ConstWWbitClass:
 
         # Cygwin depends on the xwin DISPLAY var; if it's not there, there's no point in
         # asking about screens
-        display = os.getenv("DISPLAY")
+        display = self.use_x_win and os.getenv("DISPLAY")
         if display:
             screens = get_monitors()
             for s in screens:
@@ -1302,7 +1304,7 @@ class ScreenDebugWidgetClass:
         # for name, value in os.environ.items():
         #     print("{0}: {1}".format(name, value))
 
-        if os.getenv("DISPLAY"):
+        if cb.use_x_win and os.getenv("DISPLAY"):
             self.gfx = __import__("graphics")
         else:
             if not analog_scope:
@@ -1487,7 +1489,7 @@ class XwinCrt:
         # The graphics package won't work if you don't have DISPLAY=<something> in the environment
         # So don't bother even trying if there isn't a DISPLAY var already set
         display = os.getenv("DISPLAY")
-        if display and (cb.analog_display == False or widgets_only_on_xwin): # display on the laptop CRT using xwindows
+        if display and cb.use_x_win and (cb.analog_display == False or widgets_only_on_xwin): # display on the laptop CRT using xwindows
             self.gfx = __import__("graphics")
 
             cb.log.info("opening XwinCrt")
@@ -1543,7 +1545,7 @@ class XwinCrt:
         # on the simulated crt -- if not, we'll poll it separately when painting the display
         self.polling_mouse = False
 
-        if not cb.analog_display:
+        if cb.use_x_win and not cb.analog_display:
             self.draw_red_x_and_axis(cb)
 
 

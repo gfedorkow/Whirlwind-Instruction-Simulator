@@ -1767,6 +1767,8 @@ def main_run_sim(args):
     # This command line arg switches graphical output to an analog oscilloscope display
     if args.AnalogScope:
         cb.analog_display = True
+    if args.NoXWin:
+        cb.use_x_win = False
 
     if args.Radar:
                                         # heading is given as degrees from North, counting up clockwise
@@ -1948,6 +1950,7 @@ def main():
     parser.add_argument("-r", "--Radar", help="Incorporate Radar Data Source", action="store_true")
     parser.add_argument("--AutoClick", help="Execute pre-programmed mouse clicks during simulation", action="store_true")
     parser.add_argument("--AnalogScope", help="Display graphical output on an analog CRT", action="store_true")
+    parser.add_argument("--NoXWin", help="Don't open any x-windows", action="store_true")
     parser.add_argument("--NoToggleSwitchWarning", help="Suppress warning if WW code writes a read-only toggle switch",
                         action="store_true")
     parser.add_argument("--LongTraceFormat", help="print all the cpu registers in TracePC",
