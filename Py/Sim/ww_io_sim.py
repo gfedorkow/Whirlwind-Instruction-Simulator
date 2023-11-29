@@ -925,7 +925,7 @@ class InterventionAndActivateClass:
         return self.cb.UNIMPLEMENTED_ALARM, 0
 
     # Read from the switches should return something
-    # This stub simply returns zero for all Activate and Intervention registers
+    # This stub simply returns zero for all unknown Activate and Intervention registers
     def rd(self, operand, acc):  # "read", i.e. input instruction from device
         reg = self.intervention_reg
         ret = 0

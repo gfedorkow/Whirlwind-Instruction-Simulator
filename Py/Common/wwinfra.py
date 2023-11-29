@@ -57,6 +57,7 @@ class LogClass:
         self._debugldr = debugldr
         self._quiet = quiet
         self._program_name = program_name
+        self.error_count = 0
 
     def log(self, message):  # unconditionally log a message
         print("Log: %s" % message)
@@ -80,6 +81,13 @@ class LogClass:
     def debugtap(self, message):
         if self._debugtap:
             print("Debug TAP: %s" % message)
+
+    # the log-class "error" is specifically meant for error messages from the assembler
+    # or similar tools, which report findings that are not fatal, but should be counted
+    # and identified in an input file as 'input errors'.
+    def error(self, line_number, message):
+        print("Line %d: %s" % (line_number, message))
+        self.error_count += 1
 
     def info(self, message):
         if not self._quiet:
