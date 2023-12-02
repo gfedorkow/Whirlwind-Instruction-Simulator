@@ -170,15 +170,15 @@ class AnaScope:
             but as a speed, the length is limited
             so that the endpoint can be predicted precise enough.
             The draw mechanism draws for 50us
-            with maximum speed, it draws 1/8 of the screen width.
-            To draw a point, use zero speeds
+            with maximum speed (1023), it draws 1/8 of the screen width,
+            i.e. from 0.0 to 0.125
+            To draw a point, use zero speed.
         """
         if DebugAnaScope: print("    drawSmallVector: posx=%d, posy=%d, speedx=%d, speedy=%d" % \
                                 (posx, posy, speedx, speedy))
         self._movePoint(posx, posy)
         self._drawSegment(speedx, speedy, scope)
-        self.wasPoint = True
-
+        
 
     def drawPoint(self, posx, posy, scope=None):
         """ draw a point as a vector of length 0
@@ -187,91 +187,48 @@ class AnaScope:
             scope = self.cb.SCOPE_MAIN
         if DebugAnaScope: print("drawPoint: posx=%d, posy=%d" % (posx, posy))
         self._drawSmallVector(posx, posy, 0, 0, scope)
+        self.wasPoint = True
 
 
     def drawVector(self, x0, y0, dx, dy, scope=None):
-        """ General vector drawing
-            if length exceeds the (short) maximum,
-            a chain of vectors is used.
+        """ Smallvector drawing
+            The distances dx and dy are 5 bit, i.e. between -31 and +31.
+            To obtain 1023 for full speed, the factor should be 33
+            However, factor 16 is currently to be used.
+            Must be checked!
         """
         if scope is None:
             scope = self.cb.SCOPE_MAIN
 
-        if DebugAnaScope: print("drawVector: x0=%d, y0=%d, dx=%d, dy=%d" % (x0, y0, dx, dy))
-        # maximum move for a short vector at full speed
-        xmaxdist = 0.23 * self.screen_max  # 0.25 nominal; adjust hardware
-        ymaxdist = 0.23 * self.screen_max
+        if DebugAnaScope: 
+            print("drawVector: x0=%d, y0=%d, dx=%d, dy=%d" % (x0, y0, dx, dy))
 
-        # determine distances
-        # dx = x1 - x0
-        # dy = y1 - y0
-        # required speed, may be larger that +/- 1.0 for long vectors
-        sx = dx / xmaxdist
-        sy = dy / ymaxdist
-        # print(x0, y0, dx, dy, sx, sy)
-
-        # Rainer, why was this special case needed?
-        # # might be a short vector, then draw now
-        # if abs(sx) <= 1.0 and abs(sy) <= 1.0:
-        #     self.drawSmallVector(x0, y0, sx, sy)
-        #     return
-
-        # determine number of segments, at least 1
-        xsegs = 1 + math.floor(abs(sx))
-        ysegs = 1 + math.floor(abs(sy))
-        segs = max(xsegs, ysegs)
-
-        # reduce distance and speed by number of segments
-        dx = dx / segs
-        dy = dy / segs
-        sx = sx / segs
-        sy = sy / segs
-
-        # loop
-        # print(segs, x0, y0, sx, sy)
-        while segs > 0:
-            self._drawSmallVector(x0, y0, int(sx * self.screen_max), int(sy * self.screen_max), scope)
-            # advance starting point by speed
-            x0 += dx
-            y0 += dy
-            # next segment
-            segs -= 1
-        self.wasPoint = False
+        # direct draw small vector
+        if abs(dx) < 32 and abs(dy) <32:
+            # the factor should be 33; to be checked agaist hardware
+            self._drawSmallVector(x0, y0, 16*dx, 16*dy, scope)
+            self.wasPoint = False
+            return
+        print("Large vectors currently unsupported")
 
 
-    """
-      Draw a circle with center at (x,y) and radius r. 
-      TODO: properly truncate at border
-    """
-    def drawCircle(self, x0, y0, r, scope=None):
-        if scope is None:
-            scope = self.cb.SCOPE_MAIN
 
-        if DebugAnaScope: print("drawCircle: x0=%d, y0=%d, r=%d" % (x0, y0, r))
-        # number of vectors: 30 for radius 1.0
-        points = int(30.0 * r)
-        # use a minimum of points
-        points = max(8, points)
-        print("points: %d" % points)
-
-        x1 = x0
-        y1 = y0 + r
-        for j in range(1, points + 1):
-            t = math.radians(j * 360 / points)
-            dx = r * math.sin(t)
-            dy = y0 + r * math.cos(t)
-            self.drawVector(x1, y1, dx, dy, scope)
-            x1 += dx
-            y1 += dy
 
 
     def drawChar(self, x, y, mask, expand, Xwin_crt, scope=None):
+        """
+            Draw a user defined character (7-segments)
+            Uses small vector drawing directly.
+            To speed up, segments not drawn are skipped 
+        """
         if scope is None:
             scope = self.cb.SCOPE_MAIN
 
         last_x = x
         last_y = y
         toMove = True
+        # to increase accuracy, do an extra move to the start
+        self._movePoint(x, y)
         for i in range(0, 7):
             if Xwin_crt.WW_CHAR_SEQ[i] == "down":
                 y = last_y - Xwin_crt.WW_CHAR_VSTROKE * expand
@@ -386,12 +343,41 @@ class AnaScope:
             gpio.setup(self.pin_InterceptorLED, gpio.IN, pull_up_down=gpio.PUD_UP)
 
 
-    # Return the state of the "stop" button on Rainer's board attached to Rasp Pi
+    # Return the state of the button on the board attached 
     def getSimStopButton(self):
         if gpio is None:
             return False
         return(gpio.input(self.pin_isKey) == 0)
 
+#
+#### next functions for stand alone test only
+#
+
+
+    """
+      Draw a circle with center at (x,y) and radius r. 
+      TODO: properly truncate at border
+    """
+    def drawCircle(self, x0, y0, r, scope=None):
+        if scope is None:
+            scope = self.cb.SCOPE_MAIN
+
+        if DebugAnaScope: print("drawCircle: x0=%d, y0=%d, r=%d" % (x0, y0, r))
+        # number of vectors: 30 for radius 1.0
+        points = int(30.0 * r)
+        # use a minimum of points
+        points = max(8, points)
+        print("points: %d" % points)
+
+        x1 = x0
+        y1 = y0 + r
+        for j in range(1, points + 1):
+            t = math.radians(j * 360 / points)
+            dx = r * math.sin(t)
+            dy = y0 + r * math.cos(t)
+            self.drawVector(x1, y1, dx, dy, scope)
+            x1 += dx
+            y1 += dy
 
 """ 
     OXO / noughts and crosses /  tic-tac-toe
@@ -472,6 +458,9 @@ def show_bounce(ana_scope, mode):
         if not ana_scope.PCDebug and gpio.input(ana_scope.pin_isKey) == 0:
             return
 
+#
+### End of unused test routines
+#
 
 
 class XwinCrt:
@@ -505,7 +494,8 @@ def charset_show(ana_scope, xwin_crt):
 def main():
     host_os = os.getenv("OS")
 
-    ana_scope = AnaScope(host_os, None)
+    cb = ConstantsClass()
+    ana_scope = AnaScope(host_os, cb)
     xwin_crt = XwinCrt()
 
     while True:
@@ -521,7 +511,7 @@ if __name__ == "__main__":
 
     class ConstantsClass:
         def __init__(self):
-            SCOPE_MAIN = 1
+            self.SCOPE_MAIN = 1
             
     main()
 

@@ -1,17 +1,36 @@
 
 ; Vector clock to run on Whirlwind
+; Guy Fedorkow, Nov 17, 2023
+; MIT Museum.
+; This program displays an analog clock face on the Whirlwind oscilloscope 
+; screen.  The clock is synchronized to local time by calling a python helper
+; to obtain time from the host via a python library.
+;
+; There are a couple of quirks to remember:
+;   - The Whilrwind CRT was "real time", i.e., refreshed by software.  If the programmer
+; isn't actively drawing something, the screen will be blank.  As a result, code must be
+; written to continually refresh the display, even in the absense of "real work".  And as
+; the refresh rate is too slow, screen flicker will rapidly increase.
+;   - WW was designed with numbers represented as fixed point in the range -1.0 < N < 1.0, and
+; anything outside that range represents overflow.  Screen dimensions are also represented
+; the same way, i.e. (0,0) is the center, +1 is the top, -1 is the bottom.  That means that
+; the length of a vector from bottom to top is  1 - (-1) = 2.  Oops, overflow.
+;   I've scaled calculations for vectors down to -0.5 < X < 0.5 so that a delta can be 
+; calculated.
+;   - Sine and Cosine calculations via approximation aren't all that hard on Whirlwind, but to 
+; avoid burning the brain cells to figure it out, I've used a pre-computed sixty-entry table 
+; representing the requisite points around a circle.  No WW programmer would ever have wasted sooo
+; much memory (120 words) on a single table just to avoid a mathematical routine.
+; 
 
       .org 0
 zero:     .word 0   ; these are set automatically
 one:      .word 1      
 
-;  DISPLAY POINTS 0600 TO 0677 (octal)
       .org 0o40
 main:     ca 0
-          .exec set_timezone_offset(cm, rl)
+          .exec set_timezone_offset(cm, rl)  ; call the OS routine to figure out the local time zone
           ca 0
-          ; sp test_mod
-          ; sp 0
 
 main_loop:          
           sp refresh_screen
@@ -21,58 +40,66 @@ main_loop:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;; Update the current time of day ;;;;;;
-; call this once per second
-; output is the three vars, cur_sec, cur_min, cur_hour
+; Call this routine once per second
+; Output is the three vars, cur_sec, cur_min, cur_hour
+; Note that Hour is denoted also in the range of 0-59, corresponding to 0-11 hours with a "fractional"
+; component that increments each five minutes.
+; As an optimization, I don't execute the entire subroutine on every call...  N out of N+1 calls recognize that
+; the time couldn't have changed yet, and so skips the rest of the routine (especially the call to obtain 
+; the system time).  (See note above about refresh rate!)
 
 update_time:
           ta ut_ret_sp        ; this points to the actual return instruction
                               ; but there's some common code at the end of the routine, so the other
                               ; branches all go to ut_ret
           
-          ca ut_once_per         ; don't recompute the time every refresh cycle; just every "n" cycles
+          ca ut_once_per      ; don't recompute the time every refresh cycle; just every "n" cycles
           cp ut_no_op         ; if the counter is negative, increment it and do nothing else
           
-          ca minus5
+          ca minus5           ; time for an actual update.  Reset the counter so we do the actual update about once per second.
           ts ut_once_per         ; counter was positive; reset it and fetch new time
           
           ; if posix_time
           .exec get_posix_time("cur_sec", "cur_min", "cur_hour", rll=rl)
           sp ut_ret
+
           
-          ;;; This segment is commented out so that Posix time is used
-          ao cur_sec          ; increment seconds and check for overflow
-          ts cur_sec
-          su sixty
-          dm 0
-          cp ut_new_minute
-          sp ut_ret           ; if the seconds don't overflow, we're done
-          
-ut_new_minute:
-          ca 0
-          ts cur_sec
-          
-          ao cur_min
-          ts cur_min
-          su sixty
-          dm 0
-          cp ut_new_hour
-          sp ut_ret           ; if the minutes don't overflow, we're done
-          
-          
-ut_new_hour:          ; oops, the 'hour' needs to be incremented every 12 minutes
-          ca 0
-          ts cur_min
-          
-          ao cur_hour
-          ts cur_hour
-          su sixty
-          dm 0
-          cp ut_new_day
-          sp ut_ret
-          
-ut_new_day:   ; nothing to do here but prevent an Hours overflow
-          ca 0
-          ts cur_hour
+; the following section would increment sec, min, hr in the customary sequence without
+; regard to "real time".  Useful for debug, not telling what time it is...
+;           ;;; This segment is commented out so that Posix time is used
+;           ao cur_sec          ; increment seconds and check for overflow
+;           ts cur_sec
+;           su sixty
+;           dm 0
+;           cp ut_new_minute
+;           sp ut_ret           ; if the seconds don't overflow, we're done
+;           
+; ut_new_minute:
+;           ca 0
+;           ts cur_sec
+;           
+;           ao cur_min
+;           ts cur_min
+;           su sixty
+;           dm 0
+;           cp ut_new_hour
+;           sp ut_ret           ; if the minutes don't overflow, we're done
+;           
+;           
+; ut_new_hour:          ; oops, the 'hour' needs to be incremented every 12 minutes
+;           ca 0
+;           ts cur_min
+;           
+;           ao cur_hour
+;           ts cur_hour
+;           su sixty
+;           dm 0
+;           cp ut_new_day
+;           sp ut_ret
+;           
+; ut_new_day:   ; nothing to do here but prevent an Hours overflow
+;           ca 0
+;           ts cur_hour
 
 ut_ret:          
           ca 0
@@ -87,6 +114,7 @@ ut_no_op:
 
 ; loocal variables
 ut_once_per: .word minus5
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;  Redraw the screen  ;;;;;;;;;;;;;;;;;
@@ -108,25 +136,27 @@ draw_seconds_hand:
           ta br_ds_ret
 
           ca 0        ; seconds hand starts from the origin, (0,0)
-          ts dv_arg_x1
+          ts dv_arg_x1  ; set the first two x,y arguments for drawing a vector 
           ts dv_arg_y1
 
           ca point_99
-          ts rtt_arg_scale
+          ts rtt_arg_scale   ; the the  arg for scaling the result from reading the trig table
           ca cur_sec  ; load the table offset into AC
           sp read_trig_table  ; then call the routine to index the table and fetch (x, y)
           
-          ca rtt_x
+          ca rtt_x            ; copy return values from read_trig_tsble
           ts dv_arg_x2
           ca rtt_y
           ts dv_arg_y2
           sp draw_vector
 br_ds_ret:
-          sp 0
+          sp 0                ; return from subroutine
           
 
+; Minutes and Hours are drawn with a triangular shape and differing lengths and widths.
+; The first two routines to the setup for the third that actually draws the hand.
 draw_minutes_hand:
-          ta br_dm_ret
+          ta dm_ret
           
           ca point_99
           ts dth_arg_len_scale
@@ -136,7 +166,7 @@ draw_minutes_hand:
           ts dth_arg_width
           sp draw_triangle_hand
 
-br_dm_ret:
+dm_ret:
           sp 0
   
 
