@@ -347,7 +347,7 @@ class ConstWWbitClass:
         if display:
             screens = get_monitors()
             for s in screens:
-                print(s)
+                # print(s)
                 if s.is_primary:
                     self.screen_x = s.width
                     self.screen_y = s.height
@@ -359,7 +359,7 @@ class ConstWWbitClass:
             self.gfx_scale_factor = 2.0
 
         # (screen_x, screen_y) = win.master.maxsize()
-        print("screen size: %d by %d, scale=%d" % (self.screen_x, self.screen_y, self.gfx_scale_factor))
+        # print("screen size: %d by %d, scale=%d" % (self.screen_x, self.screen_y, self.gfx_scale_factor))
 
         return(self.screen_x, self.screen_y, self.gfx_scale_factor)
 
@@ -623,17 +623,19 @@ class CorememClass:
              [0o020032,  True], [0o110026,  True], [0o000703,  True], [0o010036,  True],  # 28d
              ]
 
-        self.NBANKS = 6  # six 1K banks
-        self._coremem = []
-        for _i in range(self.NBANKS):
-            self._coremem.append([None] * (cb.CORE_SIZE // 2))
-        self.MemGroupA = 0  # I think Reset sets logical Group A to point to Physical Bank 0
-        self.MemGroupB = 1  # I *think* Reset sets logical Group B to point to Physical Bank 1
-        self.use_default_tsr = use_default_tsr
-        if cb.NoZeroOneTSR is False:
-            self._coremem[0][0] = 0
-            self._coremem[0][1] = 1
         self.cb = cb
+        self.NBANKS = 6  # six 1K banks
+        self.use_default_tsr = use_default_tsr
+
+        self.clear_mem()
+        # self._coremem = []
+        # for _i in range(self.NBANKS):
+        #     self._coremem.append([None] * (cb.CORE_SIZE // 2))
+        # self.MemGroupA = 0  # I think Reset sets logical Group A to point to Physical Bank 0
+        # self.MemGroupB = 1  # I *think* Reset sets logical Group B to point to Physical Bank 1
+        # if cb.NoZeroOneTSR is False:
+        #     self._coremem[0][0] = 0
+        #     self._coremem[0][1] = 1
         self.SymTab = None
         self.tsr_callback = [None] * 32
         self.metadata = {}  # a dictionary for holding assorted metadata related to the core image
@@ -697,6 +699,17 @@ class CorememClass:
         if self.cb.TraceCoreLocation == addr:
             self.cb.log.log("Read from core memory; addr=0o%05o, value=%s" % (addr, octal_or_none(ret)))
         return ret
+
+    def clear_mem(self):
+        self._coremem = []
+        for _i in range(self.NBANKS):
+            self._coremem.append([None] * (self.cb.CORE_SIZE // 2))
+        self.MemGroupA = 0  # I think Reset sets logical Group A to point to Physical Bank 0
+        self.MemGroupB = 1  # I *think* Reset sets logical Group B to point to Physical Bank 1
+        if self.cb.NoZeroOneTSR is False:
+            self._coremem[0][0] = 0
+            self._coremem[0][1] = 1
+
 
     # entry point to read a core file into 'memory'
     def read_core(self, filename, cpu, cb, file_contents=None):
