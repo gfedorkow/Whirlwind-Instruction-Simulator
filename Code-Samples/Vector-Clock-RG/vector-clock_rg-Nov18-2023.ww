@@ -1,0 +1,476 @@
+;
+; Vector clock to run on Whirlwind
+; rewritten by Rainer Glaschick
+
+      .org 0
+zero:     .word 0   ; these are set automatically
+one:      .word 1      
+
+        .org 0o40
+main_loop: 
+        sp  draw_12_ticks           ; draw the 12 hour markers
+        sp  draw_second_hand        
+        sp  draw_minute_hand
+        sp  draw_hour_hand
+        sp  update_time             
+        sp  draw_60_points         ; minutes points give much flicker
+        sp  main_loop
+
+; 
+; update the values for the seconds, minutes and hours
+; should use the timer register when available
+;
+update_time:
+        ta  upt_ret
+        ; si 7
+        ; rd  0-0
+        ; ...
+        ; simulate timer by sub-count 
+        ao  time_sub
+        su  k11
+        cp  upt_ret
+        ca  0
+        ts  time_sub
+        ; increment seconds
+        ao  time_seconds
+        su  k59
+        cp  upt_ret             ; not yet overfow
+        ca  0
+        ts  time_seconds
+        ; increment minutes
+        ao  time_minutes
+        su  k59
+        cp  upt_ret
+        ca  0
+        ts  time_minutes
+        ; increment hours
+        ao  time_hours
+        su  k11
+        cp  upt_ret
+        ca  0
+        ts  time_hours
+upt_ret:
+        sp  0-0
+time_sub:     .word 0
+time_seconds: .word 17
+time_minutes: .word 56
+time_hours:   .word 10
+k59:    .word   59
+k11: 	.word   11
+
+; 
+;  draw the 12 hour markers
+;  characters 12 are to small
+;
+draw_12_ticks:
+        ta d12_ret
+        ca 0            ; clear index    
+        ts lkup_idx
+d12_loop:
+        ; get the start point
+        sp lookup       ; read table at _index to _x and _y
+        
+        ; draw small vector towards zero
+        ca  lkup_y
+        si  0.01600
+        
+        ; prepare (negated) distances
+        ca  0
+        su  lkup_x
+        md  drt_mask_x
+        ts  drt_dxy     ; keep sign
+        ca  0
+        su  lkup_y
+        clh 8           ; shifts with sign to br 
+        ab  drt_dxy
+        ca  lkup_x
+        rc  drt_dxy
+        
+        ; increment index by 5 and check:
+        ca lkup_idx
+        ad drt_5
+        ts lkup_idx
+        su drt_60
+        cp d12_loop
+d12_ret: sp 0
+    
+;
+; draw 60 seconds marks
+; this takes much time and creates flicker,
+; thus can be switched on and off by the central point
+;
+draw_60_points:
+        ta d60_ret
+        ; check light gun
+        ca  0
+        si  0.00600
+        rc  0
+        rd  0
+        cp  d60_flip
+        ; show or no show
+        ca  d60_flag
+        ; show
+        cp  d60_ret
+        ca 0            ; clear index    
+        ts lkup_idx
+d60_loop:
+        ; get point
+        sp lookup       ; read table at _index to _x and _y
+        
+        ; draw point
+        ca  lkup_y
+        si  0.00600
+        ca  lkup_x
+        rc  0
+                
+        ; increment index by 1 and check:
+        ao lkup_idx
+        su drt_60
+        cp d60_loop
+d60_ret: sp 0
+ 
+d60_flip:
+        ca  d60_flag
+        sd  d60_bit0		; flip sign bit
+        ts  d60_flag
+        sp  d60_ret
+ 
+d60_bit0: .word 1.00000
+d60_flag: .word 1.00000
+ 
+drt_60: .word 59
+drt_5:  .word 5
+drt_dxy: .word 0
+drt_mask_x: .word 0o176000     ; sign included
+drt_mask_y: .word 0o000074     ; sign excluded
+ 
+;
+; lookup sine table from lkup_idx, store x and y in lkup_x and lkup_y
+;
+lookup:
+        ta  lkup_ret
+        ca  lkup_idx    ; clears BR
+        slr 1           
+        ad  minutes_ring_pointer
+        td  lkup1
+lkup1:  ca  0-0
+        ts  lkup_x
+        ao  lkup1
+        td  lkup2
+lkup2:  ca  0-0
+        ts  lkup_y
+lkup_ret:
+        sp  0
+lkup_idx: .word 0
+lkup_x: .word 0
+lkup_y: .word 0
+
+          
+          
+; draw the clock hand for the seconds
+; just a line from the center to the second marks
+; needs 8 segments to be drawn
+; Input is the number of seconds, 0..59
+; The coordinates of the points divided by 8 are thus the distances
+seconds_scale:    .word   +0.125
+draw_second_hand:
+        ta  dsh_ret
+        
+        ca  time_seconds
+        ts  lkup_idx
+        sp  lookup
+            
+        ca  lkup_x
+        mr  seconds_scale
+        ts  dsh_dx
+        
+        ca  lkup_y
+        mr  seconds_scale
+        ts  dsh_dy
+        
+        ca  0
+        ts  dsh_x
+        ts  dsh_y
+        sp  dsh_do8
+        
+; draw the clock hand for the minutes
+; uses same segment length, only 6 segments
+; see above for seconds hand
+minutes_scale:   .word   +0.125
+draw_minute_hand:
+        ta  dsh_ret
+        
+        ca  time_minutes
+        ts  lkup_idx
+        sp  lookup
+            
+        ca  lkup_x
+        mr  minutes_scale
+        ts  dsh_dx
+        
+        ca  lkup_y
+        mr  minutes_scale
+        ts  dsh_dy
+        
+        ca  0
+        ts  dsh_x
+        ts  dsh_y
+        sp  dsh_do6
+        
+; The hours hand goes from 0 to 11, map to 0, 5, 10, ... 55
+; to multiply an integer with 5, shift twice and add
+hours_scale:   .word   +0.100
+draw_hour_hand:
+        ta  dsh_ret
+        
+        ca  time_hours
+        slr 2			; *4
+        ad  time_hours		; *5
+        ts  lkup_idx
+        sp  lookup
+            
+        ca  lkup_x
+        mr  hours_scale
+        ts  dsh_dx
+        
+        ca  lkup_y
+        mr  hours_scale
+        ts  dsh_dy
+        
+        ca  0
+        ts  dsh_x
+        ts  dsh_y
+        sp  dsh_do5
+        
+        ; replace loop by unravelling
+dsh_do8:
+        sp  dsh_plot
+dsh_do7:
+        sp  dsh_plot
+dsh_do6:
+        sp  dsh_plot
+dsh_do5:
+        sp  dsh_plot
+        sp  dsh_plot
+        sp  dsh_plot
+        sp  dsh_plot
+        sp  dsh_plot
+        
+dsh_ret: sp 0-0
+dsh_x:  .word 0
+dsh_y:  .word 0
+dsh_dx: .word 0
+dsh_dy: .word 0
+
+dsh_plot:
+        ta dsh_plot_ret
+        
+        ; 
+        ca  dsh_y       ; position
+        si  0.01600     ; draw small vector
+        ca  dsh_dx
+        slr 3
+        md  drt_mask_x
+        ts  drt_dxy     ; keep sign
+        ca  dsh_dy
+        slr 3
+        clh 8           ; shifts with sign to br 
+        ab  drt_dxy
+        ca  dsh_x
+        rc  drt_dxy
+        
+        ; advance
+        ca  dsh_x
+        ad  dsh_dx
+        ts  dsh_x
+        ca  dsh_y
+        ad  dsh_dy
+        ts  dsh_y
+dsh_plot_ret:
+        sp  0-0
+ 
+
+minutes_ring_pointer:    .word minutes_ring
+minutes_ring:
+      .word +0.00000
+      .word +0.90000
+
+      .word +0.09407
+      .word +0.89506
+
+      .word +0.18712
+      .word +0.88033
+
+      .word +0.27811
+      .word +0.85595
+
+      .word +0.36606
+      .word +0.82219
+
+      .word +0.44999
+      .word +0.77942
+
+      .word +0.52900
+      .word +0.72811
+
+      .word +0.60221
+      .word +0.66883
+
+      .word +0.66883
+      .word +0.60221
+
+      .word +0.72811
+      .word +0.52900
+
+      .word +0.77942
+      .word +0.45000
+
+      .word +0.82219
+      .word +0.36606
+
+      .word +0.85595
+      .word +0.27811
+
+      .word +0.88033
+      .word +0.18712
+
+      .word +0.89506
+      .word +0.09407
+
+      .word +0.90000
+      .word -0.00000
+
+      .word +0.89506
+      .word -0.09407
+
+      .word +0.88033
+      .word -0.18712
+
+      .word +0.85595
+      .word -0.27811
+
+      .word +0.82219
+      .word -0.36606
+
+      .word +0.77942
+      .word -0.44999
+
+      .word +0.72811
+      .word -0.52900
+
+      .word +0.66883
+      .word -0.60221
+
+      .word +0.60221
+      .word -0.66883
+
+      .word +0.52900
+      .word -0.72811
+
+      .word +0.44999
+      .word -0.77942
+
+      .word +0.36606
+      .word -0.82219
+
+      .word +0.27811
+      .word -0.85595
+
+      .word +0.18712
+      .word -0.88033
+
+      .word +0.09407
+      .word -0.89506
+
+      .word -0.00000
+      .word -0.90000
+
+      .word -0.09407
+      .word -0.89506
+
+      .word -0.18712
+      .word -0.88033
+
+      .word -0.27811
+      .word -0.85595
+
+      .word -0.36606
+      .word -0.82219
+
+      .word -0.45000
+      .word -0.77942
+
+      .word -0.52900
+      .word -0.72811
+
+      .word -0.60221
+      .word -0.66883
+
+      .word -0.66883
+      .word -0.60221
+
+      .word -0.72811
+      .word -0.52900
+
+      .word -0.77942
+      .word -0.45000
+
+      .word -0.82219
+      .word -0.36606
+
+      .word -0.85595
+      .word -0.27811
+
+      .word -0.88033
+      .word -0.18712
+
+      .word -0.89506
+      .word -0.09407
+
+      .word -0.90000
+      .word +0.00000
+
+      .word -0.89506
+      .word +0.09407
+
+      .word -0.88033
+      .word +0.18712
+
+      .word -0.85595
+      .word +0.27811
+
+      .word -0.82219
+      .word +0.36606
+
+      .word -0.77942
+      .word +0.45000
+
+      .word -0.72811
+      .word +0.52900
+
+      .word -0.66883
+      .word +0.60221
+
+      .word -0.60221
+      .word +0.66883
+
+      .word -0.52900
+      .word +0.72811
+
+      .word -0.45000
+      .word +0.77942
+
+      .word -0.36606
+      .word +0.82219
+
+      .word -0.27811
+      .word +0.85595
+
+      .word -0.18712
+      .word +0.88033
+
+      .word -0.09407
+      .word +0.89506
+
+
+

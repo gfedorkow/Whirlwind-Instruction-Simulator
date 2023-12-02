@@ -1,0 +1,133 @@
+;
+; circle calculated by Tchebysheff approximation of sine
+; 
+        .org 0
+zero:   .word 0   ; these are set automatically
+one:    .word 1      
+
+        .org 0o40
+main_loop: 
+        sp  circle
+        sp  main_loop
+
+circle_r:   .word +0.9      ; radius
+circle_x:   .word 0   
+circle_inc: .word +0.06667  ; 1/15 
+circle_max: .word +0.46669
+circle_sin: .word 0
+circle_cos: .word 0
+;
+; draw a circle
+;
+circle:
+        ta  circle_ret
+        ca  0
+        ts  circle_x
+circle_loop:
+        ; calc sin and cos and scale with radius
+        ca  circle_x
+        sp  cos
+        mr  circle_r
+        ts  circle_cos
+        
+        ca  circle_x
+        sp  sin
+        mr  circle_r
+        ts  circle_sin
+        
+        ; display
+        ca  circle_cos
+        si  0.00600
+        ca  circle_sin
+        rc  0
+
+        cs  circle_cos
+        si  0.00600
+        ca  circle_sin
+        rc  0
+
+        cs  circle_cos
+        si  0.00600
+        cs  circle_sin
+        rc  0
+
+        ca  circle_cos
+        si  0.00600
+        cs  circle_sin
+        rc  0
+        
+        ca  circle_sin
+        si  0.00600
+        ca  circle_cos
+        rc  0
+
+        cs  circle_sin
+        si  0.00600
+        ca  circle_cos
+        rc  0
+
+        cs  circle_sin
+        si  0.00600
+        cs  circle_cos 
+        rc  0
+
+        ca  circle_sin
+        si  0.00600
+        cs  circle_cos
+        rc  0
+        
+        ; loop increment
+        ca  circle_x
+        ad  circle_inc
+        ts  circle_x
+        su  circle_max
+        cp  circle_loop 
+        
+circle_ret:
+        sp  0_0
+
+
+; calculate sin(x*pi/2) for _1.0 < x < +1.0
+; approixmated by x + 0.55 * x * (1.0 - x^2)
+; input and output is AC
+sin_x:  .word  0
+sin_tmp: .word  0
+sin_1:   .word  0.77777      ; closest to 1.0
+sin_555: .word  +0.555
+sin:    ta  sin_ret
+        ts  sin_x
+        mr  sin_x
+        ts  sin_tmp
+        ca  sin_1
+        su  sin_tmp
+        mr  sin_x
+        mr  sin_555
+        ad  sin_x
+sin_ret:
+        sp  0-0
+        
+; calculate cos(x*pi/2) for _1.0 < x < +1.0
+; approixmated by (1.0 - x^2) - 0.2222 * x^2 * (1.0 - x^2)
+; input and output is AC
+cos_x:   .word  0
+cos_x2:  .word  0
+cos_tmp: .word  0
+cos_1:   .word  0.77777
+cos_222: .word  +0.222
+cos:    ta  cos_ret
+        ts  cos_x
+        mr  cos_x
+        ts  cos_x2
+        ca  cos_1
+        su  cos_x2
+        ts  cos_tmp
+        mr  cos_x2
+        mr  cos_222
+        su  cos_tmp
+        ts  cos_tmp
+        cs  cos_tmp
+cos_ret:
+        sp  0-0
+        
+        
+        
