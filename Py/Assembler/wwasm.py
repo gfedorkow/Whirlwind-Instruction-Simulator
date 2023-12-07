@@ -39,6 +39,7 @@
 #    ad L204 ;missing label following line with blanks
 #    .WORD 123
 
+# Dec 7, 2023 - fixed a bug that was ignoring labels on lines with no operator or operand
 
 import sys
 # sys.path.append('K:\\guy\\History-of-Computing\\Whirlwind\\Py\\Common')
@@ -46,9 +47,16 @@ import re
 import argparse
 import wwinfra
 
+breakpoint_trigger = False
 def breakp(log):
-    print("hit breakpoint %s" % log)
+    global breakpoint_trigger
 
+    if breakpoint_trigger:
+        print("hit breakpoint %s" % log)
+        return True
+    if log == "Trigger":
+        breakpoint_trigger = True
+    return False
 
 # defines
 ADDRESS_MASK = 0o3777
@@ -604,13 +612,17 @@ def parse_ww(srcline):
     #   0r: ca f11
     # "real" operations increment the next address; this just records it.
     # if the line has a label but no op, we need to update the Relative Address base
+
     if len(srcline.operator) == 0:
+        # a label can appear on a line by itself, without an operator
+        err = 0
         srcline.instruction_address = NextCoreAddress
         if len(srcline.label):
+            err = add_sym(srcline.label, srcline)  #  poor form -- converting True/False to 1/0
             CurrentRelativeBase = NextCoreAddress
             if Debug: print("Line %d: Label %s: Implicit Set of Relative Base to 0o%o" %
                   (srcline.linenumber, srcline.label, CurrentRelativeBase))
-        return 0
+        return err
 
     ret = 0
     addr_inc = 0
