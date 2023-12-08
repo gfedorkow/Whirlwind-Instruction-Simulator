@@ -1,6 +1,6 @@
 
 ; *** Core Image ***
-%File: vector-clock-gf-Nov17-2023.ww
+%File: vector-clock-gf-Dec08-2023.ww
 %TapeID: None
 @C0000: 0000000 0000001  None    None    None    None    None    None   
 @C0040: 0100000 0100000 0074064 0074045 0074042 0050055 0100060 0070056 
@@ -195,7 +195,7 @@
 @S0652: minutes_ring
 @E0041: exec: set_timezone_offset(cm, rl, hours_sixty_mode_arg=True)
 @E0052: exec: get_posix_time("cur_sec", "cur_min", "cur_hour", rll=rl)
-@E0054: print: "New Time hour=%d
+@E0054: print: "New Time hour=%d, min=%d, sec=%d", cur_hour, cur_min, cur_sec
 @E0555: print: "modulus60 of %d is %ad", tm_cnt_pos
 @E0557: print: "modulus5 of %d is %ad", tm_cnt_neg
 @N0000: these are set automatically

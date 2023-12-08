@@ -103,7 +103,7 @@
 
 @0053:          ut_ret:                ;  
 @0053:100000            ca   0         ;  @@JumpedToBy a0052 
-                        .print "New Time hour=%d  ; min=%d; sec=%d", cur_hour, cur_min, cur_sec 
+                        .print "New Time hour=%d, min=%d, sec=%d", cur_hour, cur_min, cur_sec  ;  
 @0054:100000            ca   0         ; I shouldn't need this; it's to prevent the .print exec from running.  Bug!! 
 @0055:        ut_ret_sp:                ;  
 @0055:074000            sp   0         ;  @@JumpedToBy a0057 WrittenBy a0045 

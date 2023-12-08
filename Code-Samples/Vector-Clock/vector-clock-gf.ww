@@ -103,7 +103,7 @@ update_time:
 
 ut_ret:          
           ca 0
-          .print "New Time hour=%d; min=%d; sec=%d", cur_hour, cur_min, cur_sec
+          .print "New Time hour=%d, min=%d, sec=%d", cur_hour, cur_min, cur_sec
           ca 0    ; I shouldn't need this; it's to prevent the .print exec from running.  Bug!!
 ut_ret_sp:   
           sp 0
