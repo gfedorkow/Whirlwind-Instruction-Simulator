@@ -17,8 +17,12 @@ TZ = -5
 cm = None
 rl = None
 
-def set_timezone_offset(cml, rll, tz=None):
-    global TZ, cm, rl
+# guy's initial version counted "hours" as 60-per-day, so that all clock hands 
+# were computed as 0-59.  Rainer's clock takes conventional hours, as 0-11
+hours_60_mode = False
+
+def set_timezone_offset(cml, rll, tz=None, hours_sixty_mode_arg=False):
+    global TZ, cm, rl, hours_sixty_mode
 
     if tz is None:
         local = get_localzone()
@@ -30,9 +34,10 @@ def set_timezone_offset(cml, rll, tz=None):
     print("set timezone offset to %d hours" % TZ)
     cm = cml
     rl = rll
+    hours_sixty_mode = hours_sixty_mode_arg
 
 def get_posix_time(secp, minp, hourp, cml=None, rll=None):
-    global TZ, cm
+    global TZ, cm, hours_sixty_mode
     if cml:
         cm = cml
     if rll:
@@ -43,14 +48,17 @@ def get_posix_time(secp, minp, hourp, cml=None, rll=None):
     
     sec = int(posix_time % 60)
     min = int((posix_time/60) % 60)
-    hour = int(((posix_time/(60 * 12)) + (TZ * 5)) % 60)
+    hr_correction = 1
+    tz_correction = 1
+    if hours_sixty_mode:
+        hour = int(((posix_time/(60 * 12)) + (TZ * 5)) % 60)
+    else:
+        hour = int(((posix_time/3600) + TZ) % 12)
 
     cm.wr(rl(secp), sec)
     cm.wr(rl(minp), min)
     cm.wr(rl(hourp), hour)
     
-    #yvelo_i = py_int(cm.rd(rl("y_velo1"))) 
-
 
 
 def main():

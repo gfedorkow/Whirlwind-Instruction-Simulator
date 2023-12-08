@@ -1,315 +1,146 @@
 
 ; *** Core Image ***
-%File: vector-clock.ww
+%File: vector-clock-rg-gf-Dec08-2023.ww
 %TapeID: None
 @C0000: 0000000 0000001  None    None    None    None    None    None   
-@C0040: 0100000 0100000 0074114 0074045 0074042 0050105 0100110 0070106 
-@C0050: 0100661 0040110 0074103 0130111 0040111 0114665 0134000 0070061 
-@C0060: 0074103 0100000 0040111 0130112 0040112 0114665 0134000 0070071 
-@C0070: 0074103 0100000 0040112 0130113 0040113 0114665 0134000 0070101 
-@C0100: 0074103 0100000 0040113 0100000 0100000 0074000 0130110 0074105 
-@C0110: 0000661 0000017 0000000 0000000 0050121 0074257 0074122 0074140 
-@C0120: 0074151 0074000 0050137 0100000 0040323 0040324 0100672 0040616 
-@C0130: 0100111 0074621 0100617 0040325 0100620 0040326 0074327 0074000 
-@C0140: 0050150 0100672 0040163 0100112 0040162 0100656 0040164 0074165 
-@C0150: 0074000 0050161 0100674 0040163 0100113 0040162 0100657 0040164 
-@C0160: 0074165 0074000 0000000 0000000 0000000 0050251 0100163 0040616 
-@C0170: 0140675 0040256 0100162 0110667 0114164 0074621 0100617 0140256 
-@C0200: 0040323 0040254 0100620 0140256 0040324 0040255 0100162 0074621 
-@C0210: 0100617 0040325 0100620 0040326 0074327 0100162 0110667 0110164 
-@C0220: 0074621 0100617 0140256 0040323 0040252 0100620 0140256 0040324 
-@C0230: 0040253 0100162 0074621 0100617 0040325 0100620 0040326 0074327 
-@C0240: 0100252 0040323 0100253 0040324 0100254 0040325 0100255 0040326 
-@C0250: 0074327 0074000 0000000 0000000 0000000 0000000 0014631 0050317 
-@C0260: 0100672 0040616 0100662 0040322 0100322 0074621 0100617 0040320 
-@C0270: 0100620 0040321 0100322 0074555 0070302 0100321 0000677 0100320 
-@C0300: 0024000 0074313 0100320 0040323 0140673 0040325 0100321 0040324 
-@C0310: 0140673 0040326 0074327 0100322 0110660 0040322 0070264 0074000 
-@C0320: 0000000 0000000 0000000 0000000 0000000 0000000 0000000 0050437 
-@C0330: 0100000 0040464 0100323 0040453 0100324 0040454 0100325 0040455 
-@C0340: 0100326 0040456 0100454 0160001 0040466 0100456 0160001 0114466 
-@C0350: 0040460 0134000 0040465 0100453 0160001 0040466 0100455 0160001 
-@C0360: 0114466 0040457 0134000 0114465 0070440 0100460 0150457 0154017 
-@C0370: 0040463 0100457 0040461 0100460 0040462 0100461 0134000 0114700 
-@C0400: 0070411 0100461 0070406 0100700 0040461 0074412 0100000 0114700 
-@C0410: 0040461 0074412 0100461 0140463 0040462 0074467 0100454 0110462 
-@C0420: 0040454 0100453 0110461 0040453 0100000 0100453 0114455 0134000 
-@C0430: 0070437 0100455 0114453 0040461 0074375 0074437 0074437 0074000 
-@C0440: 0100001 0040464 0100323 0040454 0100324 0040453 0100325 0040456 
-@C0450: 0100326 0040455 0074342 0000000 0000000 0000000 0000000 0000000 
-@C0460: 0000000 0000000 0000000 0000000 0000000 0000000 0000000 0050531 
-@C0470: 0100464 0134000 0070504 0100461 0040534 0100462 0040533 0100453 
-@C0500: 0040536 0100454 0040535 0074514 0100461 0040533 0100462 0040534 
-@C0510: 0100453 0040535 0100454 0040536 0100533 0154005 0174676 0040532 
-@C0520: 0100534 0160003 0174677 0110532 0040532 0100536 0001677 0100535 
-@C0530: 0024532 0074000 0000000 0000000 0000000 0000000 0000000 0050554 
-@C0540: 0070542 0074543 0030671 0040575 0150574 0155011 0040576 0144574 
-@C0550: 0155006 0114575 0030671 0134000 0074000 0050572 0070560 0074561 
-@C0560: 0030671 0040575 0150573 0155011 0040576 0144573 0155006 0114575 
-@C0570: 0134657 0134000 0074000 0005000 0074000 0000000 0000000 0100663 
-@C0600: 0040614 0100615 0040613 0100613 0074537 0100614 0074555 0130613 
-@C0610: 0130614 0070603 0074000 0000000 0000000 0074000 0000000 0000000 
-@C0620: 0000000 0050654 0040655 0110662 0070627 0114665 0040655 0100655 
-@C0630: 0114000 0110001 0070634 0074636 0110664 0040655 0100655 0154001 
-@C0640: 0110701 0044644 0110001 0044650 0100000 0160001 0140616 0040617 
-@C0650: 0100000 0160001 0140616 0040620 0074000 0000000 0000002 0000004 
-@C0660: 0000005 0177771 0177704 0177607 0000073 0000074 0000034 0000036 
-@C0670: 0000040 0177777 0077270 0074631 0060000 0014631 0176000 0000374 
-@C0700: 0001740 0000702 0000000 0071463 0006012 0071221 0013763 0070256 
-@C0710: 0021631 0066617 0027333 0064475 0034631 0061704 0041666 0056462 
-@C0720: 0046425 0052634 0052634 0046425 0056462 0041666 0061704 0034631 
-@C0730: 0064475 0027333 0066617 0021631 0070256 0013763 0071221 0006012 
-@C0740: 0071463 0177777 0071221 0171765 0070256 0164014 0066617 0156146 
-@C0750: 0064475 0150444 0061704 0143146 0056462 0136111 0052634 0131352 
-@C0760: 0046425 0125143 0041666 0121315 0034631 0116073 0027333 0113302 
-@C0770: 0021631 0111160 0013763 0107521 0006012 0106556 0177777 0106314 
-@C1000: 0171765 0106556 0164014 0107521 0156146 0111160 0150444 0113302 
-@C1010: 0143146 0116073 0136111 0121315 0131352 0125143 0125143 0131352 
-@C1020: 0121315 0136111 0116073 0143146 0113302 0150444 0111160 0156146 
-@C1030: 0107521 0164014 0106556 0171765 0106314 0000000 0106556 0006012 
-@C1040: 0107521 0013763 0111160 0021631 0113302 0027333 0116073 0034631 
-@C1050: 0121315 0041666 0125143 0046425 0131352 0052634 0136111 0056462 
-@C1060: 0143146 0061704 0150444 0064475 0156146 0066617 0164014 0070256 
-@C1070: 0171765 0071221  None    None    None    None    None    None   
+@C0040: 0100000 0100000 0074114 0074271 0074310 0074327 0074051 0074140 
+@C0050: 0074042 0050105 0130106 0114113 0070105 0100000 0040106 0074105 
+@C0060: 0050105 0130106 0114113 0070105 0100000 0040106 0130107 0114112 
+@C0070: 0070105 0100000 0040107 0130110 0114112 0070105 0100000 0040110 
+@C0100: 0130111 0114113 0070105 0100000 0040111 0074000 0000000 0000021 
+@C0110: 0000070 0000012 0000073 0000013 0050137 0100000 0040265 0074251 
+@C0120: 0100267 0001600 0104266 0174247 0040246 0104267 0171010 0060246 
+@C0130: 0100266 0024246 0100265 0110245 0040265 0114244 0070117 0074000 
+@C0140: 0050167 0100000 0000600 0024000 0014000 0070172 0100171 0070167 
+@C0150: 0100000 0040265 0130265 0074176 0130265 0074176 0130265 0074176 
+@C0160: 0130265 0074176 0130265 0130265 0074176 0130265 0074176 0074000 
+@C0170: 0100000 0100000 0100171 0030170 0040171 0074167 0050243 0040265 
+@C0200: 0074251 0100267 0000600 0100266 0024000 0104267 0000600 0100266 
+@C0210: 0024000 0104267 0000600 0100000 0114266 0024000 0100267 0000600 
+@C0220: 0104266 0024000 0100266 0000600 0100267 0024000 0104266 0000600 
+@C0230: 0100267 0024000 0104266 0000600 0100000 0114267 0024000 0100266 
+@C0240: 0000600 0104267 0024000 0074000 0000073 0000005 0000000 0176000 
+@C0250: 0000074 0050264 0100265 0154001 0110416 0044256 0100000 0040266 
+@C0260: 0130256 0044262 0100000 0040267 0074000 0000000 0000000 0000000 
+@C0270: 0010000 0050363 0100107 0040265 0074251 0100266 0140270 0040366 
+@C0300: 0100267 0140270 0040367 0100000 0040364 0040365 0074353 0010000 
+@C0310: 0050363 0100110 0040265 0074251 0100266 0140307 0040366 0100267 
+@C0320: 0140307 0040367 0100000 0040364 0040365 0074355 0006314 0050363 
+@C0330: 0100111 0154002 0110111 0040371 0100110 0140370 0110371 0040265 
+@C0340: 0074251 0100266 0140326 0040366 0100267 0140326 0040367 0100000 
+@C0350: 0040364 0040365 0074356 0074372 0074372 0074372 0074372 0074372 
+@C0360: 0074372 0074372 0074372 0074000 0000000 0000000 0000000 0000000 
+@C0370: 0005252 0000000 0050415 0100365 0001600 0100366 0154003 0174247 
+@C0400: 0040246 0100367 0154003 0171010 0060246 0100364 0024246 0100364 
+@C0410: 0110366 0040364 0100365 0110367 0040365 0074000 0000417 0000000 
+@C0420: 0071463 0006012 0071221 0013763 0070256 0021631 0066617 0027333 
+@C0430: 0064475 0034631 0061704 0041666 0056462 0046425 0052634 0052634 
+@C0440: 0046425 0056462 0041666 0061704 0034631 0064475 0027333 0066617 
+@C0450: 0021631 0070256 0013763 0071221 0006012 0071463 0177777 0071221 
+@C0460: 0171765 0070256 0164014 0066617 0156146 0064475 0150444 0061704 
+@C0470: 0143146 0056462 0136111 0052634 0131352 0046425 0125143 0041666 
+@C0500: 0121315 0034631 0116073 0027333 0113302 0021631 0111160 0013763 
+@C0510: 0107521 0006012 0106556 0177777 0106314 0171765 0106556 0164014 
+@C0520: 0107521 0156146 0111160 0150444 0113302 0143146 0116073 0136111 
+@C0530: 0121315 0131352 0125143 0125143 0131352 0121315 0136111 0116073 
+@C0540: 0143146 0113302 0150444 0111160 0156146 0107521 0164014 0106556 
+@C0550: 0171765 0106314 0000000 0106556 0006012 0107521 0013763 0111160 
+@C0560: 0021631 0113302 0027333 0116073 0034631 0121315 0041666 0125143 
+@C0570: 0046425 0131352 0052634 0136111 0056462 0143146 0061704 0150444 
+@C0600: 0064475 0156146 0066617 0164014 0070256 0171765 0071221  None   
 @S0000: zero
 @S0001: one
 @S0040: main
 @S0042: main_loop
-@S0045: update_time
-@S0061: ut_new_minute
-@S0071: ut_new_hour
-@S0101: ut_new_day
-@S0103: ut_ret
-@S0105: ut_ret_sp
-@S0106: ut_no_op
-@S0110: ut_once_per
-@S0111: cur_sec
-@S0112: cur_min
-@S0113: cur_hour
-@S0114: refresh_screen
-@S0121: rs_ret
-@S0122: draw_seconds_hand
-@S0137: br_ds_ret
-@S0140: draw_minutes_hand
-@S0150: br_dm_ret
-@S0151: draw_hours_hand
-@S0161: br_dh_ret
-@S0162: dth_arg_angle
-@S0163: dth_arg_len_scale
-@S0164: dth_arg_width
-@S0165: draw_triangle_hand
-@S0240: dth_draw_tail
-@S0251: br_dth_ret
-@S0252: dth_tail_x1
-@S0253: dth_tail_y1
-@S0254: dth_tail_x2
-@S0255: dth_tail_y2
-@S0256: dth_tail_scale
-@S0257: draw_ring
-@S0264: draw_outer_ring
-@S0302: dr_tick
-@S0313: outer_ring_dot
-@S0317: dr_ret
-@S0320: dr_x1
-@S0321: dr_y1
-@S0322: dr_cnt1
-@S0323: dv_arg_x1
-@S0324: dv_arg_y1
-@S0325: dv_arg_x2
-@S0326: dv_arg_y2
-@S0327: draw_vector
-@S0342: dv_calc_slope
-@S0365: br_dv_x_is_bigger
-@S0375: br_dv_x_loop
-@S0406: br_dv_neg_dx
-@S0411: br_dv_short_x
-@S0412: br_dv_calc_y
-@S0424: dv_pre_test_loop_end
-@S0425: dv_test_loop_end
-@S0436: br_dv_loop_exit
-@S0437: dv_ret
-@S0440: br_dv_y_is_bigger
-@S0453: dv_x1
-@S0454: dv_y1
-@S0455: dv_x2
-@S0456: dv_y2
-@S0457: dv_delta_x
-@S0460: dv_delta_y
-@S0461: dv_dx
-@S0462: dv_dy
-@S0463: dv_x_slope
-@S0464: dv_swap_xy
-@S0465: dv_tmp1
-@S0466: dv_slope_tmp1
-@S0467: draw_short_vector
-@S0504: dsv_dont_do_swap
-@S0514: dsv_figure_offset
-@S0531: dsv_ret
-@S0532: dsv_vec
-@S0533: dsv_dx
-@S0534: dsv_dy
-@S0535: dsv_x1
-@S0536: dsv_y1
-@S0537: find_mod60
-@S0542: fm60_negative_arg
-@S0543: fm60_positive_arg
-@S0554: fm_ret60
-@S0555: find_mod5
-@S0560: fm5_negative_arg
-@S0561: fm5_positive_arg
-@S0572: fm_ret5
-@S0573: fm_mod5
-@S0574: fm_mod60
-@S0575: fm_arg1
-@S0576: fm_quot
-@S0577: test_mod
-@S0603: tm_loop
-@S0613: tm_cnt_pos
-@S0614: tm_cnt_neg
-@S0615: large_num
-@S0616: rtt_arg_scale
-@S0617: rtt_x
-@S0620: rtt_y
-@S0621: read_trig_table
-@S0627: rtt_smaller_than_sixty
-@S0634: rtt_less_than_zero
-@S0636: rtt_do_lookup
-@S0644: i_rtt_ca_x1
-@S0650: i_rtt_ca_y1
-@S0654: rtt_ret
-@S0655: rtt_index
-@S0656: two
-@S0657: four
-@S0660: five
-@S0661: minus5
-@S0662: minus59
-@S0663: minus120
-@S0664: fifty_nine
-@S0665: sixty
-@S0666: twenty_eight
-@S0667: thirty
-@S0670: thirty_two
-@S0671: all_ones
-@S0672: point_99
-@S0673: point_95
-@S0674: point_75
-@S0675: point_20
-@S0676: top_6_bits
-@S0677: low_6_bits
-@S0700: max_vector
-@S0701: minutes_ring_pointer
-@S0702: minutes_ring
-@E0041: exec: set_timezone_offset(cm, rl)
-@E0052: exec: get_posix_time("cur_sec", "cur_min", "cur_hour", rll=rl)
-@E0104: print: "New Time hour=%d; min=%d; sec=%d", cur_hour, cur_min, cur_sec
-@E0605: print: "modulus60 of %d is %ad", tm_cnt_pos
-@E0607: print: "modulus5 of %d is %ad", tm_cnt_neg
+@S0051: update_time
+@S0060: debug_update_time
+@S0105: upt_ret
+@S0106: time_sub
+@S0107: time_seconds
+@S0110: time_minutes
+@S0111: time_hours
+@S0112: k59
+@S0113: k11
+@S0114: draw_12_ticks
+@S0117: d12_loop
+@S0137: d12_ret
+@S0140: draw_60_points
+@S0150: show
+@S0167: d60_ret
+@S0170: d60_bit0
+@S0171: d60_flag
+@S0172: d60_flip
+@S0176: d60_draw
+@S0243: d60d_ret
+@S0244: drt_60
+@S0245: drt_5
+@S0246: drt_dxy
+@S0247: drt_mask_x
+@S0250: drt_mask_y
+@S0251: lookup
+@S0256: lkup1
+@S0262: lkup2
+@S0264: lkup_ret
+@S0265: lkup_idx
+@S0266: lkup_x
+@S0267: lkup_y
+@S0270: seconds_scale
+@S0271: draw_second_hand
+@S0307: minutes_scale
+@S0310: draw_minute_hand
+@S0326: hours_scale
+@S0327: draw_hour_hand
+@S0353: dsh_do8
+@S0354: dsh_do7
+@S0355: dsh_do6
+@S0356: dsh_do5
+@S0363: dsh_ret
+@S0364: dsh_x
+@S0365: dsh_y
+@S0366: dsh_dx
+@S0367: dsh_dy
+@S0370: k12th
+@S0371: hr_tmp1
+@S0372: dsh_plot
+@S0415: dsh_plot_ret
+@S0416: minutes_ring_pointer
+@S0417: minutes_ring
+@E0041: exec: set_timezone_offset(cm, rl, hours_sixty_mode_arg=False)
+@E0057: exec: get_posix_time("time_seconds", "time_minutes", "time_hours", rll=rl)
 @N0000: these are set automatically
-@N0045: this points to the actual return instruction
-@N0046: don't recompute the time every refresh cycle; just every "n" cycles
-@N0047: if the counter is negative, increment it and do nothing else
-@N0051: counter was positive; reset it and fetch new time
-@N0053: increment seconds and check for overflow
-@N0060: if the seconds don't overflow, we're done
-@N0070: if the minutes don't overflow, we're done
-@N0104: I shouldn't need this; it's to prevent the .print exec from running.  Bug!!
-@N0123: seconds hand starts from the origin, (0,0)
-@N0130: load the table offset into AC
-@N0131: then call the routine to index the table and fetch (x, y)
-@N0143: <--- Minutes!
-@N0154: <--- Hours
-@N0167: set the scale factor for values returned from the trig table lookup
-@N0171: set the length of the tail for the triangle hand
-@N0172: load the table offset into AC
-@N0175: then call the routine to index the table and fetch (x, y)
-@N0206: load the table offset into AC
-@N0207: then call the routine to index the table and fetch (x, y)
-@N0214: draw the left-hand edge of the minutes hand
-@N0215: load the table offset into AC
-@N0220: then call the routine to index the table and fetch (x, y)
-@N0231: load the table offset into AC
-@N0232: then call the routine to index the table and fetch (x, y)
-@N0237: draw the right hand end of the triangle hand
-@N0261: it's a start to using rtt (not done yet!)
-@N0263: initialize the loop counter
-@N0272: pick up the rotational angle around the face
-@N0273: compute the modulo-5 remainder
-@N0274: branch on neg-zero to draw a tick-mark
-@N0275: pick up the Y value
-@N0276: select all the scopes; set Y value
-@N0316: loop while the counter is still negative
-@N0317: end of subroutine
-@N0327: save the return address
-@N0331: default is to assume that the slope is less than 1.0
-@N0343: divide by two
-@N0351: find magnitude of delta_y
-@N0354: divide by two
-@N0362: find magnitude of delta_x
-@N0363: subtract |y| from |x|
-@N0364: branch if the Y delta is bigger than X
-@N0365: calculate the slope
-@N0370: save the slope
-@N0372: copy to the tmp dx
-@N0374: copy to the tmp dy
-@N0375: fetch the remaining delta
-@N0376: subtract zero from the abs value of AC (i.e., make it positive)
-@N0377: test if it's short enough to draw as-is
-@N0400: branch if it's short enough to draw as-is
-@N0401: test the sign of dx
-@N0402: branch if negative
-@N0403: otherwise, change dx to the max +vector
-@N0405: continue to figure dY
-@N0407: otherwise, change dx to the max -vector
-@N0411: I don't think there's anything else to do here...
-@N0413: multiply the delta_x by the slope
-@N0423: finished updating for this loop
-@N0424: temporary no-op
-@N0426: test to see if x1==x2; if so, we're done
-@N0430: branch if negative zero; we're done
-@N0431: if we're going around again, update dv_dx.
-@N0432: (no need to mess with dv_dy; it's recomputed from the slope
-@N0434: go around again
-@N0435: all done with the x-is-bigger vector
-@N0441: slope is greater than 1.0
-@N0464: swap x & y if this value is non-zero; don't swap if zero
-@N0467: store the return address
-@N0470: load the swap bit
-@N0471: compare to zero; dm is -0 if the value in dv_swap_xy is +0 or -0, and positive otherwise
-@N0473: copy incoming args to local vars without swap
-@N0504: copy incoming args to local vars without swap
-@N0521: shift to lower part of word, preserving the sign bit
-@N0522: mask off the unused upper half
-@N0523: this should be an OR, but no such luck
-@N0525: pick up the Y value
-@N0526: select all the scopes; set Y value
-@N0532: one word for the assembly of the Delta Vector
-@N0533: tmp copies of input args, possibly swapped.
-@N0542: invert the negative arg
-@N0543: save the incoming argument
-@N0545: after this instruction, AC contains the Quotient
-@N0551: subtract the initial number; this gives the negative of the Remainder
-@N0552: invert the negative result
-@N0553: make sure Zero is Negative Zero
-@N0560: invert the negative arg
-@N0561: save the incoming argument
-@N0563: after this instruction, AC contains the Quotient
-@N0567: subtract the initial number; this gives the negative of the Remainder
-@N0570: yeah, ok, the incoming arg is negative and counts up to zero;
-@N0571: but I want the return code to start at zero and count up to four
-@N0573: that's 5/64
-@N0574: that's 60/64
-@N0575: temporary storage for Mod argument
-@N0576: return the quotient in this register
-@N0621: save return address
-@N0622: store the index so we can do the range-checks with the AC
-@N0625: if it's larger than 60, subtract 60 to get it in range
-@N0630: make sure if it's zero, it's negative zero; not sure it there's a better way to do this!
-@N0631: increment by one.  If it was negative zero, this makes it positive; if negative one or
-@N0632: br is less than zero
-@N0634: we already incremented the AC by one, so adding 59 more wraps the index in AC
-@N0637: double the offset to make a table index
-@N0641: overwrite the address for a ca instruction
-@N0645: scale by half to avoid overflows later
-@N0676: mask for x vector offset
-@N0677: mask for y vector offset
-@N0700: It's five bits (ignoring the sign), offset to end on Bit 10
+@N0042: draw the 12 hour markers
+@N0047: minutes points give much flicker
+@N0051: store the return address
+@N0052: don't recompute the time every refresh cycle; just every "n" cycles
+@N0053: this optimization reduces impact of the Linux system call on the main refresh loop...
+@N0070: not yet overfow
+@N0115: clear index
+@N0117: read table at _index to _x and _y
+@N0124: keep sign
+@N0126: shifts with sign to br
+@N0150: clear index
+@N0151: 0
+@N0152: 1
+@N0154: 2
+@N0156: 3
+@N0160: 4
+@N0162: 5: skip
+@N0163: 6
+@N0165: 7
+@N0173: flip sign bit
+@N0200: read table at _index to _x and _y
+@N0247: sign included
+@N0250: sign excluded
+@N0252: clears BR
+@N0331: *4
+@N0332: multiply by four then add one is equivalent to multiply by five
+@N0333: put the whole number of hours aside, compute fractional hours next
+@N0334: fetch Minutes
+@N0335: multiply by 1/12 to get 0-4
+@N0336: add it to the whole number of hours
+@N0337: look up the coords in the trig table
+@N0370: approx equal to 1/12
+@N0373: position
+@N0374: draw small vector
+@N0400: keep sign
+@N0403: shifts with sign to br
