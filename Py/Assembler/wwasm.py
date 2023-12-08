@@ -118,6 +118,20 @@ def lex_line(line, line_number):
     if LexDebug:
         print(line_number, "Line=", line)
 
+    # strip auto-comment
+    r1 = re.sub(" *@@.*", '', line)
+    if LexDebug:
+        print(line_number, "remaining r1 after strip-autocomment:", r1)
+
+    # split op and save any regular comment
+    rl2 = re.split(";", r1, 1)
+    r2 = r1   # provisionally, output = input if no comment
+    if LexDebug:
+        print(line_number, "RL2 list:", rl2)
+    if len(rl2) > 1:
+        comment = strip_space(rl2[1])
+        r2 = strip_space(rl2[0])
+
     # Special Case for .exec directive
     # I'm adding directives to the assembler to:
     #    - pass a string to the simulator that should be interpreted and executed as a python statement
@@ -129,8 +143,8 @@ def lex_line(line, line_number):
     # The .exec directive will follow a 'real' WW instruction; the assumption is that it is executed after
     # the preceding instruction, before the next 'real' instruction.
     exec_match = "^[ \t][ \t]*(.exec|.print)"
-    if m := re.search(exec_match, line):
-        exec_stmt = re.sub(exec_match, '', line)
+    if m := re.search(exec_match, r2):
+        exec_stmt = re.sub(exec_match, '', r2)
         exec_stmt = exec_stmt.lstrip().rstrip()
         op = m.group(0).lstrip().rstrip()   # was '.exec'
         operand = exec_stmt
@@ -140,28 +154,13 @@ def lex_line(line, line_number):
     # strip the initial "@address:data" tag
     #    pattern = "(^@[0-7][0-9\.]*:[0-7][0-7]*) *([a-zA-Z][a-z[A-Z[0-7]*) *"
     addr_data_tag = "(^@[0-7][0-9.]*:[0-7][0-7]*) *"
-    r1 = re.sub(addr_data_tag, '', line)
+    r3 = re.sub(addr_data_tag, '', r2)
     if LexDebug:
-        print(line_number, "RS1=", r1)
-
-    # strip auto-comment
-    r2 = re.sub(" *@@.*", '', r1)
-    if LexDebug:
-        print(line_number, "remaining r2:", r2)
+        print(line_number, "RS2=", r3)
 
     # if there's nothing but a comment on the line, strip the semicolon and return it now
-    if r2[0] == ';':
-        comment = r2[1:]
+    if len(r3) == 0:
         return LexedLine(line_number, label, op, operand, comment, directive)
-
-    # split op and comment
-    rl3 = re.split(";", r2, 1)
-    r3 = r2
-    if LexDebug:
-        print(line_number, "RL3:", rl3)
-    if len(rl3) > 1:
-        comment = strip_space(rl3[1])
-        r3 = strip_space(rl3[0])
 
     # split label and op
     rl4 = re.split(":", r3)
