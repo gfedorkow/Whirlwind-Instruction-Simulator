@@ -871,74 +871,49 @@ def eval_addr_expr(expr: str, line_number):
 # Labels can have simple arithmetic expressions (I think only "label +/- Label +/- Label")
 # Dec 17, 2023; I added an OR operator "|" to combine numbers.
 # Note a fundamental problem in number-syntax -- +/- specifically identifies Decimal numbers,
-#   but +/- might also indicate addition.  So when combining numeric constants, (for now) the
-#   only choice is to OR them together
-# Here we evaluate the arithmetic
-# This routine could run into "programmed parameters", kinda like ifdefs, and will evaluate these
+# so in this parser, I'm _requiring_ arithmetic operators to be separated by spaces, and +/-
+# symbols that indicate Decimal numbers to be joined to their number.
+# e.g. it's legal to say "1 + 2 - -0.7"
+# but it's not legal to say 1+2
+# This routine could run into "programmed parameters", kinda like ifdefs, and will evaluate these as well
+
+# Dec 22, 2023 - new version of label parser, which can parse a variety of expressions as long as they
+# evaluate down into constants
+
 def label_lookup_and_eval(label_with_expr: str, srcline):
     # if there's an expression, split it into tokens
-    expr_terms_limit = 10  # this is to catch iteration bugs
-    tokens = []
-    lbl = label_with_expr
-    while re.search("[-+|]", lbl[1:]):  # search for a +/- after the first character
-        m = re.search("([-+|]?[^-+|].*?)[-+|].*", lbl)  #  note non-greedy match
-        if m is None:
-            cb.log.error("oops; no match in label_lookup_and_eval with %s" % label_with_expr)
-        token = m.group(1)
-        lbl = lbl[len(token):]   # strip the token
-        tokens.append(token)
-        if (expr_terms_limit := expr_terms_limit - 1) == 0:
-            cb.log.fatal("oops; endless loop on expr %s?" % label_with_expr)
-
-    tokens.append(lbl)  # add whatever is left into the token list
+    tokens = label_with_expr.split()
 
     # CS-II has this weird label format with an offset prepended to a label value, e.g. "19r6"
     # Separate the offset and the label and turn the offset into an explicit Add, i.e., "r6+19"
-    # I'll actually append the offset to the end of the list of tokens, on the assumption that
-    # there ain't ever gonna be expressions with multiplication or parentheses!
-    # The syntax 19r6 means r6+19.  But I can only assume pp1-19r6 means pp1-(r6 + 19) = pp1 - r6 - 19
-    # That is, I assume there's no syntax for a negative offset
-    new_tokens = []
-    for token in tokens:
-        tag = token  # remember the name, so we can remove it from the list
-        first_sign = ''   # default is assumed positive
-        second_sign = '+'
-        if token[0] == '+' or token[0] == '-' or token[0] == '|':
-            first_sign = token[0]
-            second_sign = token[0]
-            token = token[1:]
+    #   The syntax 19r6 means r6+19.  But I can only assume pp1-19r6 means pp1-(r6 + 19) = pp1 - r6 - 19
+    #   That is, I assume there's no syntax for a negative offset
+    # The 19r6-style labels are interpreted in ww_int();
+    #  That's probably a bug; they should be considered part of the expression parser.
 
-        # This stanza converts Whirlwind CS-II labels of the form "5a5" to "a5+5", i.e., moving
-        # the implicit offset from the front to an explicit add.
-        # Note that there's a very near miss between WW format "5a5" and Unix convention "0o5" for octal
-        # It's not quite ambiguous, since CS-II rules against the use of letters I or O as variable names
-        # So there's a special-case escape for Unix numbers.  Phew!
-        # If this gets a notch worse somewhere, I'll add a flag to the command line to say what
-        # number conventions are in use.
-        if m := re.search("^([-+|]?[0-9.]+)[a-zA-Z].*", token) and not re.match("^0o[0-9]", token):
-            offset = m.group(1)
-            label = token[len(offset):]
-            new_tokens.append(first_sign + label)
-            new_tokens.append(second_sign + offset)
-            print("converting %s to %s%s%s%s" % (token, first_sign, label, second_sign, offset))
-        else:
-            new_tokens.append(first_sign + token)
-    tokens = new_tokens
+    # For this parser, I'm assuming that there must be an odd number of tokens, with every second one
+    # being an arithmetic operator!
+    if (len(tokens) % 2) != 1:
+        cb.log.error(srcline.linenumber,
+                     "Expression %s must contain labels separated by operators, i.e., an odd number of tokens"
+                     % label_with_expr)
+
+    valid_expr_ops = ['+', '-', '|', '*', '/']
+    for i in range(0, len(tokens)):
+        if (i % 2) == 1 and tokens[i] not in valid_expr_ops:
+            cb.log.error(srcline.linenumber, "Invalid Expression Operator: %s" % tokens[i])
+        if (i % 2) == 0 and not re.match("[0-9a-zA-Z+-]", tokens[i]):
+            cb.log.error(srcline.linenumber, "%s doesn't look like a number or label" % tokens[i])
 
     # now we can evaluate all the terms in the expression
     # This is a bit confusing, because '+' does double-duty to indicate addition
     # but also that the following digits are a decimal number
-    # I _think_ the "op" test below has been superceded by the token parser I added above.
-    # A leading + or - simply means the sign of the number
-    result = 0
-    sign = ''
-    for token in tokens:
-        token = token.strip()
+    vals = [None] * len(tokens)
+
+    # first loop evaluates the numbers and labels
+    for i in range(0, len(tokens), 2):
+        token = tokens[i]
         val = None
-        if token[0] == '-' or token[0] == '+' or token[0] == '|':
-            # op = token[0]
-            sign = token[0]
-            token = token[1:].strip()
         if re.match("[a-zA-Z]", token):
             if token == 'r':  # special case for relative addresses
                 val = CurrentRelativeBase
@@ -948,60 +923,44 @@ def label_lookup_and_eval(label_with_expr: str, srcline):
                 cb.log.error(srcline.linenumber, "Unknown label %s in expression %s; using zero" %
                              (token, srcline.operand))
                 val = 0
-        elif re.match("[0-9.]", token):
-            if sign == '-' or sign == '+':
-                numsign = sign
-            else:
-                numsign = ''
+        elif re.match("[0-9+-]", token):
             # I need to pass the Sign into wwint to catch Decimal numbers...  ugh...
-            val = ww_int(numsign + token, srcline.linenumber,
+            val = ww_int(token, srcline.linenumber,
                                 relative_base = srcline.relative_address_base)
             if val is None:
                 cb.log.error(srcline.linenumber, "Can't convert number %s in expression; returning zero" %
-                      sign+token)
-                return 0
+                      token)
+                val = 0
         else:
             cb.log.error(srcline.linenumber, "Unknown symbol %s in label_lookup_and_eval with %s" %
                          (token, label_with_expr))
-        if val is not None:
-            if sign == '|':
-                result |= val
-            else:
-                result += val
+        if val is None:
+            return 0
+        vals[i] = val
+
+    # finally, do the arithmetic
+    result = vals[0]
+    for i in range(1, len(tokens), 2):
+        eval_op = tokens[i]
+        if len(tokens) < (i + 1):   # this test should never fail...
+            cb.log.error(srcline.linenumber, "Missing operand after eval_operator '%s'" % eval_op)
+        if eval_op == '+':
+            result += vals[i + 1]
+        elif eval_op == '-':
+            result -= vals[i + 1]
+        elif eval_op == '|':
+            result |= vals[i + 1]
+        elif eval_op == '*':
+            result *= vals[i + 1]
+        elif eval_op == '/':
+            result //= vals[i + 1]
+        else:
+            cb.log.error(srcline.linenumber, "Unexpected eval_operator '%s'" % eval_op)
 
     # print("line %d: label_lookup_and_eval(%s) resolves to %d (0o%o)" %
     #      (srcline.linenumber, label_with_expr, result, result))
     # print(tokens)
     return result
-
-
-def old_label_lookup_and_eval(label_with_expr: str, srcline):
-    if re.search("^([a-z][a-z0-9]+)", label_with_expr):  # test to see if it's a label or just a number
-        if re.search("[+\-]", label_with_expr):  # this must a label followed by an expression
-            label = re.sub("[+\-].*", "", label_with_expr)
-            expr = re.sub("^[a-z0-9]+", "", label_with_expr)
-        else:  # it's just a label, no additional adornments
-            label = label_with_expr
-            expr = ''
-    else:  # in this case, it's just a number
-        label = ''
-        expr = label_with_expr
-
-    if len(expr):
-        label_offset = eval_addr_expr(expr, srcline.linenumber)
-    else:
-        label_offset = 0
-
-    binary_operand = None
-    if label == 'r':  # special case for relative addresses
-        binary_operand = CurrentRelativeBase
-    elif label in SymTab:
-        binary_operand = SymTab[label].instruction_address
-    if binary_operand is None:
-        print("unknown label %s in line %d" % (label, srcline.linenumber))
-        binary_operand = 0
-
-    return binary_operand + label_offset
 
 
 # this routine looks up an operand to resolve a label or convert a number
