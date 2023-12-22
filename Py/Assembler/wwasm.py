@@ -200,6 +200,9 @@ def lex_line(line, line_number):
             if operand.isnumeric():
                 operand = "0o" + operand
 
+    if len(op) > 0 and op not in op_code:
+        cb.log.error(line_number, "Unknown op code: %s" % op)
+        op = ''
     return LexedLine(line_number, label, op, operand, comment, directive)
 
 
@@ -251,7 +254,7 @@ def ww_int_adhoc(nstr):
 def ww_int_csii(nstr, line_number, relative_base=None):
     try:
         ww_small_int = int(nstr, 10)
-        if ww_small_int < 8 and ww_small_int >= 0:
+        if ww_small_int < 8 and ww_small_int > -8:
             return ww_small_int
         #  otherwise, fall through to all the other tests below
     except ValueError:
@@ -865,19 +868,22 @@ def eval_addr_expr(expr: str, line_number):
     return offset
 
 
-# Labels can have simple arithmetic expressions (I think only "label +/- number +/- number")
+# Labels can have simple arithmetic expressions (I think only "label +/- Label +/- Label")
+# Dec 17, 2023; I added an OR operator "|" to combine numbers.
+# Note a fundamental problem in number-syntax -- +/- specifically identifies Decimal numbers,
+#   but +/- might also indicate addition.  So when combining numeric constants, (for now) the
+#   only choice is to OR them together
 # Here we evaluate the arithmetic
 # This routine could run into "programmed parameters", kinda like ifdefs, and will evaluate these
 def label_lookup_and_eval(label_with_expr: str, srcline):
-
     # if there's an expression, split it into tokens
     expr_terms_limit = 10  # this is to catch iteration bugs
     tokens = []
     lbl = label_with_expr
-    while re.search("[-+]", lbl[1:]):  # search for a +/- after the first character
-        m = re.search("([-+]?[^-+].*?)[-+].*", lbl)  #  note non-greedy match
+    while re.search("[-+|]", lbl[1:]):  # search for a +/- after the first character
+        m = re.search("([-+|]?[^-+|].*?)[-+|].*", lbl)  #  note non-greedy match
         if m is None:
-            cb.log.fatal("oops; no match in label_lookup_and_eval with %s" % label_with_expr)
+            cb.log.error("oops; no match in label_lookup_and_eval with %s" % label_with_expr)
         token = m.group(1)
         lbl = lbl[len(token):]   # strip the token
         tokens.append(token)
@@ -897,7 +903,7 @@ def label_lookup_and_eval(label_with_expr: str, srcline):
         tag = token  # remember the name, so we can remove it from the list
         first_sign = ''   # default is assumed positive
         second_sign = '+'
-        if token[0] == '+' or token[0] == '-':
+        if token[0] == '+' or token[0] == '-' or token[0] == '|':
             first_sign = token[0]
             second_sign = token[0]
             token = token[1:]
@@ -909,7 +915,7 @@ def label_lookup_and_eval(label_with_expr: str, srcline):
         # So there's a special-case escape for Unix numbers.  Phew!
         # If this gets a notch worse somewhere, I'll add a flag to the command line to say what
         # number conventions are in use.
-        if m := re.search("^([-+]?[0-9.]+)[a-zA-Z].*", token) and not re.match("^0o[0-9]", token):
+        if m := re.search("^([-+|]?[0-9.]+)[a-zA-Z].*", token) and not re.match("^0o[0-9]", token):
             offset = m.group(1)
             label = token[len(offset):]
             new_tokens.append(first_sign + label)
@@ -925,12 +931,11 @@ def label_lookup_and_eval(label_with_expr: str, srcline):
     # I _think_ the "op" test below has been superceded by the token parser I added above.
     # A leading + or - simply means the sign of the number
     result = 0
-    # op = '+'
     sign = ''
     for token in tokens:
         token = token.strip()
         val = None
-        if token[0] == '-' or token[0] == '+':
+        if token[0] == '-' or token[0] == '+' or token[0] == '|':
             # op = token[0]
             sign = token[0]
             token = token[1:].strip()
@@ -944,17 +949,25 @@ def label_lookup_and_eval(label_with_expr: str, srcline):
                              (token, srcline.operand))
                 val = 0
         elif re.match("[0-9.]", token):
-            val = ww_int(sign + token, srcline.linenumber,
+            if sign == '-' or sign == '+':
+                numsign = sign
+            else:
+                numsign = ''
+            # I need to pass the Sign into wwint to catch Decimal numbers...  ugh...
+            val = ww_int(numsign + token, srcline.linenumber,
                                 relative_base = srcline.relative_address_base)
             if val is None:
-                print("Line %d: can't convert number %s in expression; returning zero" %
-                      (srcline.linenumber, sign+token))
+                cb.log.error(srcline.linenumber, "Can't convert number %s in expression; returning zero" %
+                      sign+token)
                 return 0
         else:
-            cb.log.error(srcline.linenumber, "unknown symbol %s in label_lookup_and_eval with %s" %
+            cb.log.error(srcline.linenumber, "Unknown symbol %s in label_lookup_and_eval with %s" %
                          (token, label_with_expr))
         if val is not None:
-            result += val
+            if sign == '|':
+                result |= val
+            else:
+                result += val
 
     # print("line %d: label_lookup_and_eval(%s) resolves to %d (0o%o)" %
     #      (srcline.linenumber, label_with_expr, result, result))
