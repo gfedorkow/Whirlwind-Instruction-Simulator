@@ -274,6 +274,9 @@ class CpuClass:
             sign = ''
             pos = num
 
+        if num & 0o17776 == 0o100000:
+            breakp()
+
         paren = ''
         if self.cb.decimal_addresses:
             paren = "(%s0d%d)" % (sign, pos)
@@ -545,7 +548,11 @@ class CpuClass:
             Breakpoints[current_pc](self)
         return ret
 
+
     # generic WW add, used by all instructions involving add or subtract
+    # New Version, Dec 21 2023
+    # Re-written to eliminate a bug in Alarm detection, where 0 + 0 + (carry_in= -1)
+    # was incorrectly reported as an Alarm
     def ww_add(self, a, b, sam_in, sa=False):
         """ Add ones-complement WW numbers
         :param a: 16-bit ones-complement inputs
@@ -558,41 +565,44 @@ class CpuClass:
         if (a is None) | (b is None):
             print("'None' Operand, a=", a, " b=", b)
             return 0, 0, self.cb.READ_BEFORE_WRITE_ALARM
-
-        # you can't get overflow adding two numbers of different sign
-        could_overflow_pos = ((a & self.cb.WWBIT0) == 0) & ((b & self.cb.WWBIT0) == 0)  # if both sign bits are off
-        could_overflow_neg = ((a & self.cb.WWBIT0) != 0) & ((b & self.cb.WWBIT0) != 0)  # if both sign bits are on
-
-        ww_sum = a + b + sam_in
-
+        py_a = self.wwint_to_py(a)[0]
+        py_b = self.wwint_to_py(b)[0]
+        py_sam_in = sam_in
+        ww_sam_in = sam_in
+        if sam_in == -1:
+            ww_sam_in = self.ww_negate(1)
+        py_sum = py_a + py_b + py_sam_in
+        pos_overflow = False
+        neg_overflow = False
+        if py_sum > 0o77777:
+            pos_overflow = True
+        if py_sum < -0o77777:
+            neg_overflow = True
+        ww_sum = a + b + ww_sam_in
         if ww_sum >= self.cb.WW_MODULO:  # end-around carry;
             ww_sum = (ww_sum + 1) % self.cb.WW_MODULO  # WW Modulo is Python Bit 16, i.e., the 17th bit
-
         sam_out = 0  # the default is "no overflow" and "no alarm"
         alarm = self.cb.NO_ALARM
-
         if sa:
-            if could_overflow_pos & ((ww_sum & self.cb.WWBIT0) != 0):
+            if pos_overflow:
                 sam_out = 1
                 ww_sum &= ~self.cb.WWBIT0  # clear the sign bit; the result is considered Positive
-            if could_overflow_neg & ((ww_sum & self.cb.WWBIT0) == 0):
+            if neg_overflow:
                 sam_out = -1
                 ww_sum |= self.cb.WWBIT0  # set the sign bit
             # the following just makes sure the answer fits the word...  I don't think this ever does anything
             ww_sum &= self.cb.WWBIT0_15
-
         # check for positive or negative overflow.  Since we're adding two 15-bit numbers, it can't overflow
         # by more than one bit (even with the carry-in, I think:-))
         else:
-            if could_overflow_pos & ((ww_sum & self.cb.WWBIT0) != 0):
-                alarm = self.cb.OVERFLOW_ALARM
-            if could_overflow_neg & ((ww_sum & self.cb.WWBIT0) == 0):
+            if pos_overflow or neg_overflow:
                 alarm = self.cb.OVERFLOW_ALARM
 
         if self.cb.TraceALU or (alarm != self.cb.NO_ALARM and not self.cb.TraceQuiet):
-            print("ww_add: WWVals: a=%s, b=%s, sum=%s, sam_out=%o, alarm=%o" %
-                  (self.wwint_to_str(a), self.wwint_to_str(b), self.wwint_to_str(ww_sum), sam_out, alarm))
+            print("new ww_add2: WWVals: a=%s, b=%s, sam_in=%d, sum=%s, sam_out=%o, alarm=%o" %
+                  (self.wwint_to_str(a), self.wwint_to_str(b), sam_in, self.wwint_to_str(ww_sum), sam_out, alarm))
         return ww_sum, sam_out, alarm
+
 
     # basic negation function for ones-complement
     def ww_negate(self, a):

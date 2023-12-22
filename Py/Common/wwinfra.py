@@ -1633,9 +1633,11 @@ class XwinCrt:
 
         return int(xwin_x), int(xwin_y)
 
-    def ww_draw_char(self, ww_x, ww_y, mask, expand):
+    def ww_draw_char(self, ww_x, ww_y, mask, expand, scope=None):
+        if scope is None:
+            scope = self.cb.SCOPE_MAIN
         if self.cb.ana_scope:
-            self.cb.ana_scope.drawChar(ww_x, ww_y, mask, expand, self)
+            self.cb.ana_scope.drawChar(ww_x, ww_y, mask, expand, self, scope=scope)
         else:
             x0, y0 = self.ww_to_xwin_coords(ww_x, ww_y)
             obj = XwinCrtObject(x0, y0, 0, 0, 'C', mask, expand = expand)

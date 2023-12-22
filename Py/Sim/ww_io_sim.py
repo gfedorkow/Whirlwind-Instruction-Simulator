@@ -689,13 +689,15 @@ class DisplayScopeClass:
     # are given by the first six digits of v, and the sign and length
     # of the vertical component are given by digits 8 to 13 of this
     # register.
+    # Dec 20, 2023 - Rainer noted that the scope delta values are given in units
+    # of four 'pixels', i.e., must be multiplied by four to get the same units as x & y
     def convert_delta_scope_coord(self, ww_delta):
-        ww_xd = (ww_delta >> 10) & 0o77
-        if ww_xd & 0o40:  # the short coordinate form is used in vector generation, and is a six bit signed number
-            ww_xd = -(ww_xd ^ 0o77)  # so we flip the sign if negative...
-        ww_yd = (ww_delta >> 2) & 0o77
-        if ww_yd & 0o40:  # the short coordinate form is used in vector generation, and is a six bit signed number
-            ww_yd = -(ww_yd ^ 0o77)  # so we flip the sign if negative...
+        ww_xd = (ww_delta >> 8) & 0o374
+        if ww_xd & 0o200:  # the short coordinate form is used in vector generation, and is a six bit signed number
+            ww_xd = -(ww_xd ^ 0o374)  # so we flip the sign if negative...
+        ww_yd = ww_delta & 0o374
+        if ww_yd & 0o200:  # the short coordinate form is used in vector generation, and is a six bit signed number
+            ww_yd = -(ww_yd ^ 0o374)  # so we flip the sign if negative...
         return ww_xd, ww_yd
 
     # each device needs to identify its own unit number.
@@ -757,24 +759,26 @@ class DisplayScopeClass:
             # add each new character to a Pending list; draw them when the program asks for light gun input
             mask = (operand >> 8) & 0o177  # it's a seven-bit quantity to turn on character segments
             if not self.cb.TraceQuiet:
-                print("DisplayScope RC: record to scope, mode=Character, x=0o%o, y=0o%o, char-code=0o%o" %
-                      (self.scope_horizontal, self.scope_vertical, mask))
-            self.crt.ww_draw_char(self.scope_horizontal, self.scope_vertical, mask, self.scope_expand)
+                print("DisplayScope RC: record to scope 0o%o, mode=Character, x=0o%o, y=0o%o, char-code=0o%o" %
+                      (self.scope_select, self.scope_horizontal, self.scope_vertical, mask))
+            self.crt.ww_draw_char(self.scope_horizontal, self.scope_vertical,
+                                  mask, self.scope_expand, scope=self.scope_select)
 
         elif self.scope_mode == self.DISPLAY_MODE_POINTS:
             if not self.cb.TraceQuiet:
-                print("DisplayScope RC: record to scope, mode=Point, x=0o%o, y=0o%o" %
-                      (self.scope_horizontal, self.scope_vertical))
-            self.crt.ww_draw_point(self.scope_horizontal, self.scope_vertical, light_gun=True)
+                print("DisplayScope RC: record to scope 0o%o, mode=Point, x=0o%o, y=0o%o" %
+                      (self.scope_select, self.scope_horizontal, self.scope_vertical))
+            self.crt.ww_draw_point(self.scope_horizontal, self.scope_vertical,
+                                   scope=self.scope_select, light_gun=True)
 
         elif self.scope_mode == self.DISPLAY_MODE_VECTORS:
             # lines are like points, but with an additional delta in the RC instruction
             ww_xd, ww_yd = self.convert_delta_scope_coord(operand)
 
             if self.cb.TraceQuiet is False:
-                print("DisplayScope RC: record to scope, mode=Vector, x=0o%o, y=0o%o, xd=0o%o, yd=0o%o" %
-                  (self.scope_horizontal, self.scope_vertical, ww_xd, ww_yd))
-            self.crt.ww_draw_line(self.scope_horizontal, self.scope_vertical, ww_xd, ww_yd)
+                print("DisplayScope RC: record to scope 0o%o, mode=Vector, x=0o%o, y=0o%o, xd=0o%o, yd=0o%o" %
+                  (self.scope_select, self.scope_horizontal, self.scope_vertical, ww_xd, ww_yd))
+            self.crt.ww_draw_line(self.scope_horizontal, self.scope_vertical, ww_xd, ww_yd, scope=self.scope_select)
 
         return self.cb.NO_ALARM, 0
 
