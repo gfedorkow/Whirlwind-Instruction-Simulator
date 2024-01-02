@@ -786,6 +786,7 @@ class DisplayScopeClass:
     #   trigger was pulled when the last spot was displayed
     # The sign bit will be off if the trigger was not pulled and the gun didn't see anything.
     # If the sign bit is on, the return code can be analyzed to figure out which gun had been triggered.
+    # Each gun then has one bit hot, starting from Bit 1
     # See 2M-0277 pg 72 for grubby details
     def rd(self, _code, _acc):
 
@@ -810,9 +811,10 @@ class DisplayScopeClass:
                 self.crt.last_mouse = pt
                 self.crt.last_button = button
                 if self.crt.last_button == 3:   # I'm returning 0o1000000 for Button Three on the mouse
-                    val = 0o100000              #  ... added specifically for radar tracking
+                    val = 0o120000              #  ... added specifically for radar tracking ; was 0o100000, Dec 2023
                 else:
-                    val = 0o177777           # or  0o177777 for Button One (or anything else that we shouldn't get!)
+                    val = 0o140000           # or  0o177777 for Button One (or anything else that we shouldn't get!)
+                                             # (was 0o177777 Dec 2023)
 
         else:
             if pt is not None:
@@ -826,9 +828,9 @@ class DisplayScopeClass:
                     (abs(self.crt.last_pen_point.y0 - self.crt.last_mouse.getY()) < self.crt.WIN_MOUSE_BOX):
                 print("**Hit at x=0d%d, y=0d%d**" %(self.crt.last_pen_point.x0, self.crt.last_pen_point.y0))
                 if self.crt.last_button == 3:   # I'm returning 0o1000000 for Button Three on the mouse
-                    val = 0o100000              #  ... added specifically for radar tracking
-                else:
-                    val = 0o177777           # or  0o177777 for Button One (or anything else that we shouldn't get!)
+                    val = 0o120000              #  ... added specifically for radar tracking
+                else:                           # changed Dec 30, 2023; see note above
+                    val = 0o140000           # or  0o140000 for Button One (or anything else that we shouldn't get!)
                 self.crt.ww_highlight_point()
                 self.crt.last_mouse = None
                 self.crt.last_button = 0

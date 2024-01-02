@@ -269,6 +269,7 @@ class RadarClass:
 
     def mouse_check_callback(self, addr, write_val):
         ret = None
+        ff_gun = 0
         if write_val is not None:
             # print("mouse check callback Write %02o to @%02o" % (write_val, addr))
             self.light_gun_ff_reg = write_val
@@ -279,8 +280,18 @@ class RadarClass:
                 if exit_alarm != self.cb.NO_ALARM:
                     self.exit_alarm = exit_alarm
                 if gun_reading != 0:
-                    self.light_gun_ff_reg = gun_reading
+                    # 2M-0277 describes in detail how multiple light guns work.  But the air defense
+                    # demo came long before the standard interface.  In this case, I'm coding the first two
+                    # light guns as one with the Target switch, one with the Interceptor switch set.
+                    if gun_reading & 0o20000:
+                        ff_gun = 0o100000
+                    elif gun_reading & 0o40000:
+                        ff_gun = 0o177777
+                    else:
+                        print("** Unexpected Light Gun Value 0o%o ***" % gun_reading)
+                    self.light_gun_ff_reg = ff_gun
             ret = self.light_gun_ff_reg
+            print("** light_gun_ff_reg=0o%o, ff_gun=0o%o, ret=0o%o" % (self.light_gun_ff_reg, ff_gun, ret))
         return ret
 
     # autoclick means that we simulate a light-gun hit automatically a certain number of

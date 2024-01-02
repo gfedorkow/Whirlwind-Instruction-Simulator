@@ -549,7 +549,7 @@ class CpuClass:
         return ret
 
 
-    # generic WW add, used by all instructions involving add or subtract
+    # generic WW add, used by all instructions involving ones complement add or subtract
     # New Version, Dec 21 2023
     # Re-written to eliminate a bug in Alarm detection, where 0 + 0 + (carry_in= -1)
     # was incorrectly reported as an Alarm
@@ -599,7 +599,7 @@ class CpuClass:
                 alarm = self.cb.OVERFLOW_ALARM
 
         if self.cb.TraceALU or (alarm != self.cb.NO_ALARM and not self.cb.TraceQuiet):
-            print("new ww_add2: WWVals: a=%s, b=%s, sam_in=%d, sum=%s, sam_out=%o, alarm=%o" %
+            print("new ww_add: WWVals: a=%s, b=%s, sam_in=%d, sum=%s, sam_out=%o, alarm=%o" %
                   (self.wwint_to_str(a), self.wwint_to_str(b), sam_in, self.wwint_to_str(ww_sum), sam_out, alarm))
         return ww_sum, sam_out, alarm
 
