@@ -150,14 +150,15 @@ class AnaScope:
         # set speed and intensity
         self._setDA(0, speedx)
         self._setDA(1, speedy)
-        gpio.output(self.pin_enZ1, 0)
-        gpio.output(self.pin_enZ2, 0)
+        gpio.output(self.pin_enZ1, 1)
+        gpio.output(self.pin_enZ2, 1)
         if scope & self.cb.SCOPE_MAIN:
-            gpio.output(self.pin_enZ1, 1)
+            gpio.output(self.pin_enZ1, 0)
         if scope & self.cb.SCOPE_AUX:
-            gpio.output(self.pin_enZ2, 1)
+            gpio.output(self.pin_enZ2, 0)
         if scope & (self.cb.SCOPE_MAIN | self.cb.SCOPE_AUX) == 0:
-            self.cb.log.fatal("DrawSegment: Scope #0o%o is unrecognized" % scope)
+            gpio.output(self.pin_enZ1, 0)
+            gpio.output(self.pin_enZ2, 0)
         if not self.PCDebug:
             gpio.output(self.pin_doDraw, 1)
             # time.sleep(self.draw_delay)  # don't use the built-in sleep...

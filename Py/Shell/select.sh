@@ -18,8 +18,8 @@ do $base/select.py
    p="continue"
    case $rc in
       0) continue;;
-      1) p="$base/vecIF.py";;
-      2) p="$base/tictactoe.py";;
+      1) p="python $base/vecIF.py";;
+      2) p="python $base/tictactoe.py";;
       3) p="wwsim $code/Bounce/Bounce-Tape-with-Hole/fb131-0-2690_bounce-annotated.acore --Ana -q";;
       4) p="wwsim $code/Bounce/r-196-bounce-example/bounce.acore --Ana -q";;
       5) p="wwsim $code/Mad-Game/mad-game.acore --Ana -q";;
@@ -27,10 +27,10 @@ do $base/select.py
       7) p="wwsim $code/Diags/crt-test-68_001_fbl00-0-50.tcore --Ana -q";;
       8) p="wwsim $code/Vibrating-String/fb131-97-setup-and-run-Annotated.acore --Ana -q";;
       9) p="wwsim $code/Vibrating-String/fc131-204-2-merged-annotated.acore --Ana -q";;
-     10) p="wwsim $code/Vibrating-String/fc131-204-6-merged-annotated.acore --Ana -q";;
+     10) p="wwsim $code/Lorenz/lorenz.acore --NoAlarm --Ana -q";;
      11) cd $code/Track-While-Scan-D-Israel/; p="wwsim annotated-track-while-scan.acore -D -r --CrtF 5 --NoToggl --Ana -c 0 -q";;
      12) cd $code/Vector-Clock; p="wwsim vector-clock.acore --Ana -q";;
-     13) cd $code/Vector-Clock; p="wwsim vector-clock-rg.acore --Ana -q";;
+     13) cd $code/Vector-Clock; p="wwsim vector-clock-gf.acore --Ana -q";;
      14) p="wwsim $code/Number-Display/number-display-annotated.acore --Ana -q";;
      15) exit;;
     127) exit;;
