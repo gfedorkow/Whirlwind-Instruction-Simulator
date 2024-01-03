@@ -1589,28 +1589,6 @@ class XwinCrt:
 
         if cb.radar is not None:
             cb.radar.draw_axis(self)
-#        axis_color = self.gfx.color_rgb(80, 0, 80)
-#        xaxis = self.gfx.Line(self.gfx.Point(0, self.WIN_MAX_COORD/2),
-#                              self.gfx.Point(self.WIN_MAX_COORD, self.WIN_MAX_COORD/2))
-#        xaxis.setOutline(axis_color)
-#        xaxis.setWidth(1)
-#        xaxis.draw(self.win)
-#        yaxis = self.gfx.Line(self.gfx.Point(self.WIN_MAX_COORD/2, 0),
-#                              self.gfx.Point(self.WIN_MAX_COORD/2, self.WIN_MAX_COORD))
-#        yaxis.setOutline(axis_color)
-#        yaxis.setWidth(1)
-#        yaxis.draw(self.win)
-#
-#
-#        rings = 5
-#        radial_axis = [None] * rings
-#        for i in range(0, rings):
-#            # draw concentric circles every 25 miles
-#            diameter = 25 / 128 * i * ((self.WIN_MAX_COORD/2))
-#            radial_axis[i] = self.gfx.Circle(self.gfx.Point(self.WIN_MAX_COORD/2, self.WIN_MAX_COORD/2), diameter)
-#            radial_axis[i].setOutline(axis_color)
-#            radial_axis[i].setWidth(1)
-#            radial_axis[i].draw(self.win)
 
 
     def get_mouse_blocking(self):

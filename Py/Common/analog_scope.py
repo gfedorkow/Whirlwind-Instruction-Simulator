@@ -205,7 +205,7 @@ class AnaScope:
 
         # direct draw small vector
         if abs(dx) < 32 and abs(dy) <32:
-            # the factor should be 33; to be checked agaist hardware
+            # the factor should be 33; to be checked against hardware
             self._drawSmallVector(x0, y0, 16*dx, 16*dy, scope)
             self.wasPoint = False
             return
