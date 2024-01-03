@@ -1670,7 +1670,7 @@ class XwinCrt:
             scope = self.cb.SCOPE_MAIN
         self.cb.log.info("ww_draw_line: pt=(%d,%d) len=(%d,%d), scope=%d" % (ww_x0, ww_y0, ww_xd, ww_yd, scope)) 
         if self.cb.ana_scope:
-            self.cb.ana_scope.drawVector(ww_x0, ww_y0, ww_xd, ww_yd, scope=scope)
+                self.cb.ana_scope.drawVector(ww_x0, ww_y0, ww_xd>>2, ww_yd>>2, scope=scope)
         else:
             x0, y0 = self.ww_to_xwin_coords(ww_x0, ww_y0)
             x1, y1 = self.ww_to_xwin_coords(ww_x0 + ww_xd, ww_y0 + ww_yd)
