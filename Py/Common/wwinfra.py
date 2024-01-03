@@ -183,7 +183,9 @@ class ConstWWbitClass:
         self.COLOR_CF = "\033[96m"  # Cyan color code for CF Instruction
         self.COLOR_default = "\033[0m"  # Reset to default color
 
-        # some programs use two separate scopes; these constants identify which one to use
+        # Some programs use two separate scopes; these constants identify which one to use
+        # 2M-0277 says that this number selects one of "256" select lines (which must actually be 64, 'cause it's
+        # six bits) and then switches determine which scope is hooked to which combination of Select lines.
         self.SCOPE_MAIN = 1
         self.SCOPE_AUX  = 2  # aka "F Scope"
 
