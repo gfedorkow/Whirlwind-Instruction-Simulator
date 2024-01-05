@@ -33,6 +33,7 @@ import time
 from datetime import datetime
 import re
 import museum_mode_params as mm
+import csv
 
 # There can be a source file that contains subroutines that might be called by exec statements specific
 #   to the particular project under simulation.  If the file exists in the current working dir, import it.
@@ -273,6 +274,9 @@ class CpuClass:
             sign = ''
             pos = num
 
+        if num & 0o17776 == 0o100000:
+            breakp()
+
         paren = ''
         if self.cb.decimal_addresses:
             paren = "(%s0d%d)" % (sign, pos)
@@ -386,7 +390,7 @@ class CpuClass:
                     address = addr
                     break
             if address == -1:
-                self.cb.log.warn("Python Exec: unknown label %s" % label)
+                self.cb.log.warn("Python Exec: unknown label '%s'" % label)
                 address = 0
         return address
 
@@ -436,19 +440,26 @@ class CpuClass:
     # Bug Alert - the format and arg strings can be quoted, but I'm not handling
     # the quotes properly; the Split() below will split on commas _inside_ the strings
     # as well as commas between args.
+    # https://stackoverflow.com/questions/43067373/split-by-comma-and-how-to-exclude-comma-from-quotes-in-split
+    # https://stackoverflow.com/questions/21527057/python-parse-csv-ignoring-comma-with-double-quotes
+    # import csv
+    # cStr = '"aaaa","bbbb","ccc,ddd"'
+    # newStr = ['"{}"'.format(x) for x in list(csv.reader([cStr], delimiter=',', quotechar='"'))[0]]
+
     # Bug Alert - I don't think I'm handling an unrecognized variable name properly; it
     # should at least print as <none> or something...
-    # Bug Alert - the format commands to print the Accumulator ain't implemented!
     def wwprint(self, format_and_args):
-        quoted_args = format_and_args.split(',')
+        # quoted_args = format_and_args.split(',')  # this doesn't handle splitting '"a", "b", "c,d,e"' properly
+        quoted_args = ['{}'.format(x) for x in list(csv.reader([format_and_args], delimiter=',', quotechar='"'))[0]]
         args = []
+        format_str = quoted_args.pop(0)
         for a in quoted_args:
             a = a.lstrip().rstrip()
-            a = re.sub('^["|\']', '', a)
-            a = re.sub('["|\']$', '', a)
+            a = re.sub('^["|\']', '', a)  # strip a leading quote, if any
+            a = re.sub('["|\']$', '', a)  # strip a trailing quote, if any
+            a = re.sub(' .*$', '', a)     # strip anything after a space (variable names can't have spaces)
             args.append(a)
 
-        format_str = args.pop(0)
         output_str = ''
         fmt = format_str
         while len(fmt):
@@ -537,7 +548,11 @@ class CpuClass:
             Breakpoints[current_pc](self)
         return ret
 
-    # generic WW add, used by all instructions involving add or subtract
+
+    # generic WW add, used by all instructions involving ones complement add or subtract
+    # New Version, Dec 21 2023
+    # Re-written to eliminate a bug in Alarm detection, where 0 + 0 + (carry_in= -1)
+    # was incorrectly reported as an Alarm
     def ww_add(self, a, b, sam_in, sa=False):
         """ Add ones-complement WW numbers
         :param a: 16-bit ones-complement inputs
@@ -550,41 +565,44 @@ class CpuClass:
         if (a is None) | (b is None):
             print("'None' Operand, a=", a, " b=", b)
             return 0, 0, self.cb.READ_BEFORE_WRITE_ALARM
-
-        # you can't get overflow adding two numbers of different sign
-        could_overflow_pos = ((a & self.cb.WWBIT0) == 0) & ((b & self.cb.WWBIT0) == 0)  # if both sign bits are off
-        could_overflow_neg = ((a & self.cb.WWBIT0) != 0) & ((b & self.cb.WWBIT0) != 0)  # if both sign bits are on
-
-        ww_sum = a + b + sam_in
-
+        py_a = self.wwint_to_py(a)[0]
+        py_b = self.wwint_to_py(b)[0]
+        py_sam_in = sam_in
+        ww_sam_in = sam_in
+        if sam_in == -1:
+            ww_sam_in = self.ww_negate(1)
+        py_sum = py_a + py_b + py_sam_in
+        pos_overflow = False
+        neg_overflow = False
+        if py_sum > 0o77777:
+            pos_overflow = True
+        if py_sum < -0o77777:
+            neg_overflow = True
+        ww_sum = a + b + ww_sam_in
         if ww_sum >= self.cb.WW_MODULO:  # end-around carry;
             ww_sum = (ww_sum + 1) % self.cb.WW_MODULO  # WW Modulo is Python Bit 16, i.e., the 17th bit
-
         sam_out = 0  # the default is "no overflow" and "no alarm"
         alarm = self.cb.NO_ALARM
-
         if sa:
-            if could_overflow_pos & ((ww_sum & self.cb.WWBIT0) != 0):
+            if pos_overflow:
                 sam_out = 1
                 ww_sum &= ~self.cb.WWBIT0  # clear the sign bit; the result is considered Positive
-            if could_overflow_neg & ((ww_sum & self.cb.WWBIT0) == 0):
+            if neg_overflow:
                 sam_out = -1
                 ww_sum |= self.cb.WWBIT0  # set the sign bit
             # the following just makes sure the answer fits the word...  I don't think this ever does anything
             ww_sum &= self.cb.WWBIT0_15
-
         # check for positive or negative overflow.  Since we're adding two 15-bit numbers, it can't overflow
         # by more than one bit (even with the carry-in, I think:-))
         else:
-            if could_overflow_pos & ((ww_sum & self.cb.WWBIT0) != 0):
-                alarm = self.cb.OVERFLOW_ALARM
-            if could_overflow_neg & ((ww_sum & self.cb.WWBIT0) == 0):
+            if pos_overflow or neg_overflow:
                 alarm = self.cb.OVERFLOW_ALARM
 
         if self.cb.TraceALU or (alarm != self.cb.NO_ALARM and not self.cb.TraceQuiet):
-            print("ww_add: WWVals: a=%s, b=%s, sum=%s, sam_out=%o, alarm=%o" %
-                  (self.wwint_to_str(a), self.wwint_to_str(b), self.wwint_to_str(ww_sum), sam_out, alarm))
+            print("new ww_add: WWVals: a=%s, b=%s, sam_in=%d, sum=%s, sam_out=%o, alarm=%o" %
+                  (self.wwint_to_str(a), self.wwint_to_str(b), sam_in, self.wwint_to_str(ww_sum), sam_out, alarm))
         return ww_sum, sam_out, alarm
+
 
     # basic negation function for ones-complement
     def ww_negate(self, a):
@@ -1585,15 +1603,38 @@ def write_core_dump(cb, core_dump_file_name, cm):
                jump_to, core_dump_file_name, string_list)
 
 
+# This mechanism triggers run-time 'debug widgets' on the WW 'crt', that is, a display of the real-time
+# values of a handful of variables as the program runs.
+# Arrow keys also allow the values to be incremented or decremented.
+# The first run at this was wired directly to Core memory locations, i.e., state variables of the
+# running object code.
+# A modification in Sept 2023 allows the debug widget to also access, view and change variables in the Python
+# environment, to allow, for instance, a dbwgt to tweak aircraft parameters in the simulated environment in
+# the Radar module.
+# Whirlwind core memory variables are identified with either the usual label or numeric core addresses.
+# Variables in the python environment are preceded by a dot, followed by a Python var name, scoped to run
+# in the CPU object (I think!).
 def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
+    cb.DebugWidgetPyVars = wwinfra.DebugWidgetPyVarsClass(cb)
     for args in dbwgt_list:
         # first arg is a label or address, second optional arg is a number to use for each increment step
+        # Third arg is a Format string
         cpu = cb.cpu
         dbwgt = cb.dbwgt
         label = ''
+        py_wgt_label = ''
         address = 0
         increment = 1
-        if args[0][0].isdigit():
+        format_str = "0o%o"   # by default, numbers should be displayed as octal
+        if args[0][0] == '.':
+            address = -1
+            py_wgt_label = args[0][1:]
+            try:
+                eval("cb.DebugWidgetPyVars." + py_wgt_label)
+            except AttributeError:
+                cb.log.warn("Debug Widget: Can't find Python Label 'cb.%s'" % py_wgt_label)
+                py_wgt_label = ''
+        elif args[0][0].isdigit():
             address = int(args[0], 8)
             if address in cpu.SymTab:
                 label = cpu.SymTab[address][0]
@@ -1606,19 +1647,26 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
                     break
             if address == -1:
                 cb.log.warn("Debug Widget: unknown label %s" % label)
-        if len(args) == 2:   # if there's a second arg, it would be the amount of increment in octal
+        if len(args) >= 2:   # if there's a second arg, it would be the amount of increment in octal
             try:
                 increment = int(args[1], 8)
             except ValueError:
                 print("can't parse Debug Widget increment arg %s in %s" % (args[1], args[0]))
-        if address >= 0:
-            dbwgt.add_widget(address, label, increment)
+        if len(args) == 3:
+            format_str = args[2]
+        if address >= 0 or len(py_wgt_label):
+            dbwgt.add_widget(cb, address, label, py_wgt_label, increment, format_str)
 
 #
 # ############# Main #############
 
 def poll_sim_io(cpu, cb):
     ret = cb.NO_ALARM
+    # if the analog scope interface is in use, there's a physical button which signals Stop 
+    if cb.ana_scope:
+        if cb.ana_scope.getSimStopButton():
+            return cb.QUIT_ALARM
+
     if cpu.scope.crt is not None:
         exit_alarm = cpu.scope.crt.ww_scope_update(CoreMem, cb)
         if exit_alarm != cb.NO_ALARM:
@@ -1650,7 +1698,7 @@ def main_run_sim(args):
     global CoreMem, CommentTab   # should have put this in the CPU Class...
 
     # instantiate the class full of constants
-    cb = wwinfra.ConstWWbitClass(get_screen_size = not args.AnalogScope)  # this test probably shouldn't be here
+    cb = wwinfra.ConstWWbitClass(get_screen_size = True)
     CoreMem = wwinfra.CorememClass(cb)
     cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
     cb.cpu = cpu
@@ -1725,29 +1773,28 @@ def main_run_sim(args):
     cpu.set_isa(CoreMem.metadata["isa"])
     if cpu.isa_1950 == False and args.Radar:
         cb.log.fatal("Radar device can only be used with 1950 ISA")
-    if len(dbwgt_list):
-        parse_and_save_screen_debug_widgets(cb, dbwgt_list)
 
     # This command line arg switches graphical output to an analog oscilloscope display
     if args.AnalogScope:
         cb.analog_display = True
+    if args.NoXWin:
+        cb.use_x_win = False
 
     if args.Radar:
                                         # heading is given as degrees from North, counting up clockwise
                                         # name   start x/y   heading  mph  auto-click-time Target-or-Interceptor
-        #target_list = [radar_class.AircraftClass('A', 30.0, -36.0, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
-        #               radar_class.AircraftClass('B', 100.0, 0.0, 270.0, 250.0, 7, 'I')]  # was 6 revolutions
-
-        # This target list is the one I used for two years to debug the program...
-        #target_list = [radar_class.AircraftClass('T', 30.0, -26+21.37, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
-        #               radar_class.AircraftClass('I', 70.0,  0.0, 270.0, 250.0, 7, 'I'), # was 6 revolutions
-        #              ]
 
         # This target list is optimized to increase spacing of aircraft at the start of the sim to make
         # use of the light-gun easier
-        target_list = [radar_class.AircraftClass('T',  30.0, -80.0, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
-                       radar_class.AircraftClass('I', 120.0, -20.0, 270.0, 250.0, 7, 'I'), # was 6 revolutions
-                      ]
+        # target_list = [radar_class.AircraftClass('T1',  50.0, -100.0, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
+        #                radar_class.AircraftClass('I1',  90.0, -20.0, 350.0, 250.0, 7, 'I'), # was 6 revolutions
+        #                radar_class.AircraftClass('T2', -20.0, -80.0,  20.0, 200.0, 0, ''),  # add in a stray aircraft
+        #                ]
+        target_list = [radar_class.AircraftClass('T1',  40.0, -100.0, 350.0, 200.0, 3, 'T'),  # was 3 revolutions
+                       radar_class.AircraftClass('I1', 100.0,  -20.0, 350.0, 250.0, 7, 'I'), # was 6 revolutions
+                       radar_class.AircraftClass('T2', -70.0, -100.0,  17.7, 200.0, 0, ''),  # add in a stray aircraft
+                       # radar_class.AircraftClass('T3', -110.0, -70.0,  33.0, 200.0, 0, ''),  # add in a stray aircraft
+                       ]
         radar = radar_class.RadarClass(target_list, cb, cpu, args.AutoClick)
         # register a callback for anything that accesses Register 0o27 (that's the Light Gun)
         CoreMem.add_tsr_callback(cb, 0o27, radar.mouse_check_callback)
@@ -1759,6 +1806,10 @@ def main_run_sim(args):
     # Cygwin xterm, but for DOS Command Shell there's a special command to enable ANSI parsing.
     # The command doesn't seem to exist in xterm, but running it doesn't break anything (yet).
     os.system("color")
+
+    if len(dbwgt_list):  # configure any Debug Widgets.  Do this before execution, but after all the
+                         # infra setup in case we need any optional python classes
+        parse_and_save_screen_debug_widgets(cb, dbwgt_list)
 
     print("Switch CheckAlarmSpecial=%o" % cpu.cpu_switches.read_switch("CheckAlarmSpecial"))
     CoreMem.reset_ff(cpu)   # Reset any Flip Flop Registers specified in the Core file
@@ -1785,7 +1836,13 @@ def main_run_sim(args):
             # ################### The Simulation Starts Here ###################
             alarm = cpu.run_cycle()
             # ################### The Rest is Just Overhead  ###################
-            if (sim_cycle % 500 == 0) or args.SynchronousVideo or CycleDelayTime:
+            # poll various I/O circumstances, and update the xwin screen
+            # Do this less frequently in AnaScope mode, as it slows the Rasp Pi performance,
+            # even to check the xwin stuff
+            update_rate = 500
+            if cb.analog_display:
+                update_rate = 5000
+            if (sim_cycle % update_rate == 0) or args.SynchronousVideo or CycleDelayTime:
                 exit_alarm = poll_sim_io(cpu, cb)
                 if exit_alarm != cb.NO_ALARM:
                     alarm = exit_alarm
@@ -1816,7 +1873,7 @@ def main_run_sim(args):
                 print("Alarm '%s' (%d) at PC=0o%o (0d%d)" % (cb.AlarmMessage[alarm], alarm, cpu.PC - 1, cpu.PC - 1))
                 # the normal case is to stop on an alarm; if the command line flag says not to, we'll try to keep going
                 # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
-                if not args.NoAlarmStop or alarm == cb.QUIT_ALARM:
+                if not args.NoAlarmStop or alarm == cb.QUIT_ALARM  or alarm == cb.HALT_ALARM:
                     break
             sim_cycle += 1
             if sim_cycle % 400000 == 0 or alarm == cb.QUIT_ALARM:
@@ -1903,6 +1960,7 @@ def main():
     parser.add_argument("-r", "--Radar", help="Incorporate Radar Data Source", action="store_true")
     parser.add_argument("--AutoClick", help="Execute pre-programmed mouse clicks during simulation", action="store_true")
     parser.add_argument("--AnalogScope", help="Display graphical output on an analog CRT", action="store_true")
+    parser.add_argument("--NoXWin", help="Don't open any x-windows", action="store_true")
     parser.add_argument("--NoToggleSwitchWarning", help="Suppress warning if WW code writes a read-only toggle switch",
                         action="store_true")
     parser.add_argument("--LongTraceFormat", help="print all the cpu registers in TracePC",

@@ -1,0 +1,940 @@
+
+                        ; Vector clock to run on Whirlwind
+                        ; Guy Fedorkow, Nov 17, 2023
+                        ; MIT Museum.
+                        ; This program displays an analog clock face on the Whirlwind oscilloscope
+                        ; screen.  The clock is synchronized to local time by calling a python helper
+                        ; to obtain time from the host via a python library.
+
+                        ; There are a couple of quirks to remember:
+                        ; - The Whilrwind CRT was "real time", i.e., refreshed by software.  If the programmer
+                        ; isn't actively drawing something, the screen will be blank.  As a result, code must be
+                        ; written to continually refresh the display, even in the absense of "real work".  And as
+                        ; the refresh rate is too slow, screen flicker will rapidly increase.
+                        ; - WW was designed with numbers represented as fixed point in the range -1.0 < N < 1.0, and
+                        ; anything outside that range represents overflow.  Screen dimensions are also represented
+                        ; the same way, i.e. (0,0) is the center, +1 is the top, -1 is the bottom.  That means that
+                        ; the length of a vector from bottom to top is  1 - (-1) = 2.  Oops, overflow.
+                        ; I've scaled calculations for vectors down to -0.5 < X < 0.5 so that a delta can be
+                        ; calculated.
+                        ; - Sine and Cosine calculations via approximation aren't all that hard on Whirlwind, but to
+                        ; avoid burning the brain cells to figure it out, I've used a pre-computed sixty-entry table
+                        ; representing the requisite points around a circle.  No WW programmer would ever have wasted sooo
+                        ; much memory (120 words) on a single table just to avoid a mathematical routine.
+
+
+                        .org 0         ;  
+@0000:000000      zero: .word 0         ; these are set automatically @@JumpedToBy a0055 rs_ret a0107 a0120 a0131 a0221 dr_ret dv_ret dsv_ret fm_ret60 fm_ret5 a0562 a0624 ReadBy main a0041 a0053 a0054 a0073 a0300 a0321 a0332 a0346 a0356 a0374 a0377 a0441 a0523 a0541 a0600 a0614 a0620 
+@0001:000001       one: .word 1         ;  @@ReadBy a0410 a0601 a0612 
+
+                        .org 0o40      ;  
+@0040:100000      main: ca   0         ;  
+                        .exec set_timezone_offset(cm, rl, hours_sixty_mode_arg=True)  ; call the OS routine to figure out the local time zone 
+@0041:100000            ca   0         ;  
+
+@0042:        main_loop:                ;  
+@0042:074064            sp   refresh_screen  ;  @@JumpedToBy a0044 
+@0043:074045            sp   update_time  ;  
+@0044:074042            sp   main_loop  ;  
+
+
+                        ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                        ; ;;;;;;;;; Update the current time of day ;;;;;;
+                        ; Call this routine once per second
+                        ; Output is the three vars, cur_sec, cur_min, cur_hour
+                        ; Note that Hour is denoted also in the range of 0-59, corresponding to 0-11 hours with a "fractional"
+                        ; component that increments each five minutes.
+                        ; As an optimization, I don't execute the entire subroutine on every call...  N out of N+1 calls recognize that
+                        ; the time couldn't have changed yet, and so skips the rest of the routine (especially the call to obtain
+                        ; the system time).  (See note above about refresh rate!)
+
+@0045:        update_time:                ;  
+@0045:050055            ta   ut_ret_sp  ; this points to the actual return instruction @@JumpedToBy a0043 
+                        ; but there's some common code at the end of the routine, so the other
+                        ; branches all go to ut_ret
+
+@0046:100060            ca   ut_once_per  ; don't recompute the time every refresh cycle; just every "n" cycles 
+@0047:070056            cp   ut_no_op  ; if the counter is negative, increment it and do nothing else 
+
+@0050:100631            ca   minus5    ; time for an actual update.  Reset the counter so we do the actual update about once per second. 
+@0051:040060            ts   ut_once_per  ; counter was positive; reset it and fetch new time 
+
+                        ; if posix_time
+                        .exec get_posix_time("cur_sec", "cur_min", "cur_hour", rll=rl)  ;  
+@0052:074053            sp   ut_ret    ;  
+
+
+                        ; the following section would increment sec, min, hr in the customary sequence without
+                        ; regard to "real time".  Useful for debug, not telling what time it is...
+                        ; ;;; This segment is commented out so that Posix time is used
+                        ; ao cur_sec          ; increment seconds and check for overflow
+                        ; ts cur_sec
+                        ; su sixty
+                        ; dm 0
+                        ; cp ut_new_minute
+                        ; sp ut_ret           ; if the seconds don't overflow, we're done
+
+                        ; ut_new_minute:
+                        ; ca 0
+                        ; ts cur_sec
+
+                        ; ao cur_min
+                        ; ts cur_min
+                        ; su sixty
+                        ; dm 0
+                        ; cp ut_new_hour
+                        ; sp ut_ret           ; if the minutes don't overflow, we're done
+
+
+                        ; ut_new_hour:          ; oops, the 'hour' needs to be incremented every 12 minutes
+                        ; ca 0
+                        ; ts cur_min
+
+                        ; ao cur_hour
+                        ; ts cur_hour
+                        ; su sixty
+                        ; dm 0
+                        ; cp ut_new_day
+                        ; sp ut_ret
+
+                        ; ut_new_day:   ; nothing to do here but prevent an Hours overflow
+                        ; ca 0
+                        ; ts cur_hour
+
+@0053:          ut_ret:                ;  
+@0053:100000            ca   0         ;  @@JumpedToBy a0052 
+                        .print "New Time hour=%d, min=%d, sec=%d", cur_hour, cur_min, cur_sec  ;  
+@0054:100000            ca   0         ; I shouldn't need this; it's to prevent the .print exec from running.  Bug!! 
+@0055:        ut_ret_sp:                ;  
+@0055:074000            sp   0         ;  @@JumpedToBy a0057 WrittenBy a0045 
+
+@0056:        ut_no_op:                ;  
+@0056:130060            ao   ut_once_per  ;  @@JumpedToBy a0047 
+@0057:074055            sp   ut_ret_sp  ;  
+
+                        ; loocal variables
+@0060:000631  ut_once_per: .word minus5    ;  @@WrittenBy a0051 a0056 ReadBy a0046 a0056 
+
+
+                        ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                        ; ;;;;;;;;;  Redraw the screen  ;;;;;;;;;;;;;;;;;
+                        ; Input params are hour, minute, second
+@0061:000017   cur_sec: .word 15        ;  @@ReadBy a0100 
+@0062:000000   cur_min: .word 0         ;  @@ReadBy a0113 
+@0063:000000  cur_hour: .word 0         ;  @@ReadBy a0124 
+
+@0064:        refresh_screen:                ;  
+@0064:050071            ta   rs_ret    ;  @@JumpedToBy a0042 
+@0065:074227            sp   draw_ring  ;  
+@0066:074072            sp   draw_seconds_hand  ;  
+@0067:074110            sp   draw_minutes_hand  ;  
+@0070:074121            sp   draw_hours_hand  ;  
+@0071:074000    rs_ret: sp   0         ;  @@WrittenBy a0064 
+
+
+@0072:        draw_seconds_hand:                ;  
+@0072:050107            ta   br_ds_ret  ;  @@JumpedToBy a0066 
+
+@0073:100000            ca   0         ; seconds hand starts from the origin, (0,0) 
+@0074:040273            ts   dv_arg_x1  ; set the first two x,y arguments for drawing a vector 
+@0075:040274            ts   dv_arg_y1  ;  
+
+@0076:100642            ca   point_99  ;  
+@0077:040566            ts   rtt_arg_scale  ; the the  arg for scaling the result from reading the trig table 
+@0100:100061            ca   cur_sec   ; load the table offset into AC 
+@0101:074571            sp   read_trig_table  ; then call the routine to index the table and fetch (x, y) 
+
+@0102:100567            ca   rtt_x     ; copy return values from read_trig_tsble 
+@0103:040275            ts   dv_arg_x2  ;  
+@0104:100570            ca   rtt_y     ;  
+@0105:040276            ts   dv_arg_y2  ;  
+@0106:074277            sp   draw_vector  ;  
+@0107:        br_ds_ret:                ;  
+@0107:074000            sp   0         ; return from subroutine @@WrittenBy a0072 
+
+
+                        ; Minutes and Hours are drawn with a triangular shape and differing lengths and widths.
+                        ; The first two routines to the setup for the third that actually draws the hand.
+@0110:        draw_minutes_hand:                ;  
+@0110:050120            ta   dm_ret    ;  @@JumpedToBy a0067 
+
+@0111:100642            ca   point_99  ;  
+@0112:040133            ts   dth_arg_len_scale  ;  
+@0113:100062            ca   cur_min   ; <--- Minutes! 
+@0114:040132            ts   dth_arg_angle  ;  
+@0115:100626            ca   two       ;  
+@0116:040134            ts   dth_arg_width  ;  
+@0117:074135            sp   draw_triangle_hand  ;  
+
+@0120:          dm_ret:                ;  
+@0120:074000            sp   0         ;  @@WrittenBy a0110 
+
+
+
+@0121:        draw_hours_hand:                ;  
+@0121:050131            ta   br_dh_ret  ;  @@JumpedToBy a0070 
+
+@0122:100644            ca   point_75  ;  
+@0123:040133            ts   dth_arg_len_scale  ;  
+@0124:100063            ca   cur_hour  ; <--- Hours 
+@0125:040132            ts   dth_arg_angle  ;  
+@0126:100627            ca   four      ;  
+@0127:040134            ts   dth_arg_width  ;  
+@0130:074135            sp   draw_triangle_hand  ;  
+
+@0131:        br_dh_ret:                ;  
+@0131:074000            sp   0         ;  @@WrittenBy a0121 
+
+
+                        ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                        ; ;;;;; Subroutine draw_triangle_hand ;;;;;;;
+                        ; draw a clock hand in the shape of a triangle centered
+                        ; at the origin and rotated by the appropriate time offset
+                        ; in the range 0-59.
+                        ; The assumption is that we'll draw a triangle with the "point" indicating the
+                        ; current time, and a tail of the hand offset the in the opposite direction on
+                        ; the clock face.
+                        ; Args give
+                        ; - the rotational angle
+                        ; - the relative length of the hand, as a fraction of the outer ring dimension
+                        ; - the width of the hand, given in units of offset rotation (i.e., 2 or 4)
+@0132:000000  dth_arg_angle: .word 0         ;  @@WrittenBy a0114 a0125 ReadBy a0142 a0156 a0165 a0201 
+@0133:000000  dth_arg_len_scale: .word 0         ;  @@WrittenBy a0112 a0123 ReadBy a0136 
+@0134:000000  dth_arg_width: .word 0         ;  @@WrittenBy a0116 a0127 ReadBy a0144 a0167 
+
+@0135:        draw_triangle_hand:                ;  
+@0135:050221            ta   br_dth_ret  ;  @@JumpedToBy a0117 a0130 
+
+@0136:100133            ca   dth_arg_len_scale  ;  
+@0137:040566            ts   rtt_arg_scale  ; set the scale factor for values returned from the trig table lookup 
+@0140:140645            mr   point_20  ;  
+@0141:040226            ts   dth_tail_scale  ; set the length of the tail for the triangle hand 
+
+                        ; compute the left tail end of the triangle hand
+@0142:100132            ca   dth_arg_angle  ; load the table offset into AC 
+@0143:110637            ad   thirty    ;  
+@0144:114134            su   dth_arg_width  ;  
+@0145:074571            sp   read_trig_table  ; then call the routine to index the table and fetch (x, y) 
+@0146:100567            ca   rtt_x     ;  
+@0147:140226            mr   dth_tail_scale  ;  
+@0150:040273            ts   dv_arg_x1  ;  
+@0151:040224            ts   dth_tail_x2  ;  
+@0152:100570            ca   rtt_y     ;  
+@0153:140226            mr   dth_tail_scale  ;  
+@0154:040274            ts   dv_arg_y1  ;  
+@0155:040225            ts   dth_tail_y2  ;  
+
+                        ; compute the point of the minutes hand
+@0156:100132            ca   dth_arg_angle  ; load the table offset into AC 
+@0157:074571            sp   read_trig_table  ; then call the routine to index the table and fetch (x, y) 
+
+@0160:100567            ca   rtt_x     ;  
+@0161:040275            ts   dv_arg_x2  ;  
+@0162:100570            ca   rtt_y     ;  
+@0163:040276            ts   dv_arg_y2  ;  
+@0164:074277            sp   draw_vector  ; draw the left-hand edge of the minutes hand 
+
+                        ; compute the right tail end of the triangle hand
+@0165:100132            ca   dth_arg_angle  ; load the table offset into AC 
+@0166:110637            ad   thirty    ;  
+@0167:110134            ad   dth_arg_width  ;  
+@0170:074571            sp   read_trig_table  ; then call the routine to index the table and fetch (x, y) 
+@0171:100567            ca   rtt_x     ;  
+@0172:140226            mr   dth_tail_scale  ;  
+@0173:040273            ts   dv_arg_x1  ;  
+@0174:040222            ts   dth_tail_x1  ;  
+@0175:100570            ca   rtt_y     ;  
+@0176:140226            mr   dth_tail_scale  ;  
+@0177:040274            ts   dv_arg_y1  ;  
+@0200:040223            ts   dth_tail_y1  ;  
+
+                        ; (re)compute the point of the triangle hand  (this lookup could be optimized out!)
+@0201:100132            ca   dth_arg_angle  ; load the table offset into AC 
+@0202:074571            sp   read_trig_table  ; then call the routine to index the table and fetch (x, y) 
+
+@0203:100567            ca   rtt_x     ;  
+@0204:040275            ts   dv_arg_x2  ;  
+@0205:100570            ca   rtt_y     ;  
+@0206:040276            ts   dv_arg_y2  ;  
+@0207:074277            sp   draw_vector  ; draw the right hand end of the triangle hand 
+
+@0210:        dth_draw_tail:                ; close the triangle shape with one more line 
+@0210:100222            ca   dth_tail_x1  ;  
+@0211:040273            ts   dv_arg_x1  ;  
+@0212:100223            ca   dth_tail_y1  ;  
+@0213:040274            ts   dv_arg_y1  ;  
+@0214:100224            ca   dth_tail_x2  ;  
+@0215:040275            ts   dv_arg_x2  ;  
+@0216:100225            ca   dth_tail_y2  ;  
+@0217:040276            ts   dv_arg_y2  ;  
+                        ; .print "triangle hand tail: x1=%d y1=%d x2=%d y2=%d", dv_arg_x1, dv_arg_y1, dv_arg_x2, dv_arg_y2
+@0220:074277            sp   draw_vector  ;  
+
+@0221:        br_dth_ret:                ;  
+@0221:074000            sp   0         ;  @@WrittenBy a0135 
+
+                        ; local variables
+@0222:000000  dth_tail_x1: .word 0         ;  @@WrittenBy a0174 ReadBy a0210 
+@0223:000000  dth_tail_y1: .word 0         ;  @@WrittenBy a0200 ReadBy a0212 
+@0224:000000  dth_tail_x2: .word 0         ;  @@WrittenBy a0151 ReadBy a0214 
+@0225:000000  dth_tail_y2: .word 0         ;  @@WrittenBy a0155 ReadBy a0216 
+@0226:014631  dth_tail_scale: .word +0.20     ;  @@WrittenBy a0141 ReadBy a0147 a0153 a0172 a0176 
+
+
+
+
+                        ; Subroutine draw_ring draws the outer graticule of the clock, with 60
+                        ; points, and hour markers every five ticks
+
+                        ; this routine should be updated to use read_trig_table
+                        ; initialize the loop
+@0227:        draw_ring:                ;  
+@0227:050267            ta   dr_ret    ;  @@JumpedToBy a0065 
+
+@0230:100642            ca   point_99  ;  
+@0231:040566            ts   rtt_arg_scale  ; it's a start to using rtt (not done yet!) 
+
+@0232:100632            ca   minus59   ;  
+@0233:040272            ts   dr_cnt1   ; initialize the loop counter 
+
+                        ; Commence the point-drawing loop
+                        ; Starting with the first, every fifth of the sixty markers should be
+                        ; a short vector, while the rest are dots
+@0234:        draw_outer_ring:                ;  
+@0234:100272            ca   dr_cnt1   ;  @@JumpedToBy a0266 
+@0235:074571            sp   read_trig_table  ;  
+                        ; Computed values are returned in rtt_x and rtt_y
+
+@0236:100567            ca   rtt_x     ;  
+@0237:040270            ts   dr_x1     ;  
+@0240:100570            ca   rtt_y     ;  
+@0241:040271            ts   dr_y1     ;  
+
+                        ; test the loop counter to see if this is "every fifth"
+@0242:100272            ca   dr_cnt1   ; pick up the rotational angle around the face 
+@0243:074525            sp   find_mod5  ; compute the modulo-5 remainder 
+                        ; .print "find_mod return %ao"
+@0244:070252            cp   dr_tick   ; branch on neg-zero to draw a tick-mark 
+
+                        ; draw a dot
+@0245:100271            ca   dr_y1     ; pick up the Y value 
+@0246:000677            si   0o677     ; select all the scopes; set Y value 
+@0247:100270            ca   dr_x1     ;  
+@0250:024000            rc   0         ;  
+@0251:074263            sp   outer_ring_dot  ;  
+
+                        ; Draw a tick-mark instead of a dot
+@0252:100270   dr_tick: ca   dr_x1     ;  @@JumpedToBy a0244 
+@0253:040273            ts   dv_arg_x1  ;  
+@0254:140643            mr   point_95  ;  
+@0255:040275            ts   dv_arg_x2  ;  
+@0256:100271            ca   dr_y1     ;  
+@0257:040274            ts   dv_arg_y1  ;  
+@0260:140643            mr   point_95  ;  
+@0261:040276            ts   dv_arg_y2  ;  
+@0262:074277            sp   draw_vector  ;  
+
+@0263:        outer_ring_dot:                ;  
+                        ; "normal" behavior would draw dots every minute;  The display renders
+                        ; faster if we only draw the tick marks, i.e., every five minutes
+                        ; ao dr_cnt1         ; increment the counter
+@0263:100272            ca   dr_cnt1   ;  @@JumpedToBy a0251 
+@0264:110630            ad   five      ;  
+@0265:040272            ts   dr_cnt1   ;  
+@0266:070234            cp   draw_outer_ring  ; loop while the counter is still negative 
+
+@0267:074000    dr_ret: sp   0         ; end of subroutine @@WrittenBy a0227 
+                        ; local vars
+@0270:000000     dr_x1: .word 0         ;  @@WrittenBy a0237 ReadBy a0247 dr_tick 
+@0271:000000     dr_y1: .word 0         ;  @@WrittenBy a0241 ReadBy a0245 a0256 
+@0272:000000   dr_cnt1: .word 0         ;  @@WrittenBy a0233 a0265 ReadBy a0234 a0242 a0263 
+
+
+
+
+                        ; ; Subroutine draw_vector
+                        ; Args are dv_arg_x1 and dv_arg_y1, dv_arg_x2 and dv_arg_y2
+                        ; Start by finding the delta-x and delta-y
+                        ; Figure out which one is higher magnitude
+                        ; Calculate the slope to project the other delta
+                        ; Iteratively, turn it into enough short vectors to draw the line
+                        ; Each segment draws up to max_vector distance on the long side of the
+                        ; slope, reduces the remaining delta distance, and moves the origin for the next
+                        ; point to the end of the last vector
+
+                        ; delta_x = dv_x2 - dv_x1
+                        ; delta_y = dv_y2 - dv_y1
+                        ; if |delta_x| > |delta_y|
+                        ; while delta_x != 0
+                        ; dx = delta_x
+                        ; if (delta_x > max_vector)
+                        ; dx = max_vector
+                        ; dy = delta_y * slope
+                        ; short_vector(dv_x1, dv_y1, dx, dy)
+                        ; dv_x1 += dx
+                        ; dv_y1 += dy
+                        ; delta_x -= dx
+
+@0273:000000  dv_arg_x1: .word 0         ;  @@WrittenBy a0074 a0150 a0173 a0211 a0253 ReadBy a0302 a0412 
+@0274:000000  dv_arg_y1: .word 0         ;  @@WrittenBy a0075 a0154 a0177 a0213 a0257 ReadBy a0304 a0414 
+@0275:000000  dv_arg_x2: .word 0         ;  @@WrittenBy a0103 a0161 a0204 a0215 a0255 ReadBy a0306 a0416 
+@0276:000000  dv_arg_y2: .word 0         ;  @@WrittenBy a0105 a0163 a0206 a0217 a0261 ReadBy a0310 a0420 
+@0277:        draw_vector:                ;  
+@0277:050407            ta   dv_ret    ; save the return address @@JumpedToBy a0106 a0164 a0207 a0220 a0262 
+
+                        ; .print "SubroutineEntry: draw_vector"
+@0300:100000            ca   0         ;  
+@0301:040434            ts   dv_swap_xy  ; default is to assume that the slope is less than 1.0 
+@0302:100273            ca   dv_arg_x1  ;  
+@0303:040423            ts   dv_x1     ;  
+@0304:100274            ca   dv_arg_y1  ;  
+@0305:040424            ts   dv_y1     ;  
+@0306:100275            ca   dv_arg_x2  ;  
+@0307:040425            ts   dv_x2     ;  
+@0310:100276            ca   dv_arg_y2  ;  
+@0311:040426            ts   dv_y2     ;  
+
+@0312:        dv_calc_slope:                ;  
+                        ; compute the two deltas and find which one has a larger magnitude
+@0312:100424            ca   dv_y1     ;  @@JumpedToBy a0422 
+@0313:160001            srr  1         ; divide by two 
+@0314:040436            ts   dv_slope_tmp1  ;  
+
+@0315:100426            ca   dv_y2     ;  
+@0316:160001            srr  1         ;  
+@0317:114436            su   dv_slope_tmp1  ;  
+@0320:040430            ts   dv_delta_y  ;  
+@0321:134000            dm   0         ; find magnitude of delta_y 
+@0322:040435            ts   dv_tmp1   ;  
+
+@0323:100423            ca   dv_x1     ;  
+@0324:160001            srr  1         ; divide by two 
+@0325:040436            ts   dv_slope_tmp1  ;  
+
+@0326:100425            ca   dv_x2     ;  
+@0327:160001            srr  1         ;  
+@0330:114436            su   dv_slope_tmp1  ;  
+@0331:040427            ts   dv_delta_x  ;  
+@0332:134000            dm   0         ; find magnitude of delta_x 
+@0333:114435            su   dv_tmp1   ; subtract |y| from |x| 
+@0334:070410            cp   br_dv_y_is_bigger  ; branch if the Y delta is bigger than X 
+
+@0335:        br_dv_x_is_bigger:                ;  
+@0335:100430            ca   dv_delta_y  ; calculate the slope 
+@0336:150427            dv   dv_delta_x  ;  
+@0337:154017            slr  15        ;  
+@0340:040433            ts   dv_x_slope  ; save the slope 
+
+@0341:100427            ca   dv_delta_x  ;  
+@0342:040431            ts   dv_dx     ; copy to the tmp dx 
+@0343:100430            ca   dv_delta_y  ;  
+@0344:040432            ts   dv_dy     ; copy to the tmp dy 
+
+@0345:        br_dv_x_loop:                ;  
+@0345:100431            ca   dv_dx     ; fetch the remaining delta @@JumpedToBy a0404 
+@0346:134000            dm   0         ; subtract zero from the abs value of AC (i.e., make it positive) 
+@0347:114650            su   max_vector  ; test if it's short enough to draw as-is 
+@0350:070361            cp   br_dv_short_x  ; branch if it's short enough to draw as-is 
+
+                        ; the following stanza sets DX to the longest allowed vector, either positive or negative as needed.
+@0351:100431            ca   dv_dx     ; test the sign of dx 
+@0352:070356            cp   br_dv_neg_dx  ; branch if negative 
+@0353:100650            ca   max_vector  ; otherwise, change dx to the max +vector 
+@0354:040431            ts   dv_dx     ;  
+@0355:074362            sp   br_dv_calc_y  ; continue to figure dY 
+
+@0356:        br_dv_neg_dx:                ;  
+@0356:100000            ca   0         ;  @@JumpedToBy a0352 
+@0357:114650            su   max_vector  ; otherwise, change dx to the max -vector 
+@0360:040431            ts   dv_dx     ;  
+
+@0361:        br_dv_short_x:                ;  
+@0361:074362            sp   br_dv_calc_y  ; I don't think there's anything else to do here... @@JumpedToBy a0350 
+
+@0362:        br_dv_calc_y:                ;  
+                        ; now figure out the dy value
+@0362:100431            ca   dv_dx     ;  @@JumpedToBy a0355 a0361 
+@0363:140433            mr   dv_x_slope  ; multiply the delta_x by the slope 
+@0364:040432            ts   dv_dy     ;  
+
+
+@0365:074437            sp   draw_short_vector  ;  
+
+                        ; move the starting point by the dx, dy just used, in prep for the next pass through the loop
+@0366:100424            ca   dv_y1     ;  
+@0367:110432            ad   dv_dy     ;  
+@0370:040424            ts   dv_y1     ;  
+@0371:100423            ca   dv_x1     ;  
+@0372:110431            ad   dv_dx     ;  
+@0373:040423            ts   dv_x1     ; finished updating for this loop 
+@0374:        dv_pre_test_loop_end:                ;  
+                        ; Just testing for Equal isn't a Piece of Cake.  For small numbers, we just subtract one from
+                        ; the other, then compare the magnitude of the result to zero.  But for numbers larger than 1/2,
+                        ; that's not so easy; (1 - (-1)) = 2.
+                        ; So I'm xor'ing the two numbers first; if the sign bit turns on after the xor, that must mean
+                        ; the two numbers have different signs, i.e., they can's possibly be equal
+                        ; (oops, and this might not work comparing +0 and -0)
+                        ; Remeber that AC contains dv_x1 at this point
+                        ; sd dv_x2
+                        ; cp br_dv_x_loop ; go around again
+@0374:100000            ca   0         ; temporary no-op 
+
+@0375:        dv_test_loop_end:                ;  
+@0375:100423            ca   dv_x1     ;  
+@0376:114425            su   dv_x2     ; test to see if x1==x2; if so, we're done 
+@0377:134000            dm   0         ;  
+@0400:070407            cp   dv_ret    ; branch if negative zero; we're done 
+
+@0401:100425            ca   dv_x2     ; if we're going around again, update dv_dx. 
+@0402:114423            su   dv_x1     ; (no need to mess with dv_dy; it's recomputed from the slope 
+@0403:040431            ts   dv_dx     ;  
+@0404:074345            sp   br_dv_x_loop  ; go around again 
+
+
+@0405:074407            sp   dv_ret    ; all done with the x-is-bigger vector 
+
+@0406:        br_dv_loop_exit:                ;  
+@0406:074407            sp   dv_ret    ;  
+
+@0407:074000    dv_ret: sp   0         ;  @@JumpedToBy a0400 a0405 a0406 WrittenBy a0277 
+
+
+@0410:        br_dv_y_is_bigger:                ; slope is greater than 1.0, so swap (x, y) 
+@0410:100001            ca   1         ;  @@JumpedToBy a0334 
+@0411:040434            ts   dv_swap_xy  ; slope is greater than 1.0 
+@0412:100273            ca   dv_arg_x1  ;  
+@0413:040424            ts   dv_y1     ;  
+@0414:100274            ca   dv_arg_y1  ;  
+@0415:040423            ts   dv_x1     ;  
+@0416:100275            ca   dv_arg_x2  ;  
+@0417:040426            ts   dv_y2     ;  
+@0420:100276            ca   dv_arg_y2  ;  
+@0421:040425            ts   dv_x2     ;  
+
+@0422:074312            sp   dv_calc_slope  ;  
+
+
+                        ; local vars
+@0423:000000     dv_x1: .word 0         ;  @@WrittenBy a0303 a0373 a0415 ReadBy a0323 a0371 a0375 a0402 a0447 a0460 
+@0424:000000     dv_y1: .word 0         ;  @@WrittenBy a0305 a0370 a0413 ReadBy a0312 a0366 a0451 a0462 
+@0425:000000     dv_x2: .word 0         ;  @@WrittenBy a0307 a0421 ReadBy a0326 a0376 a0401 
+@0426:000000     dv_y2: .word 0         ;  @@WrittenBy a0311 a0417 ReadBy a0315 
+
+@0427:000000  dv_delta_x: .word 0         ;  @@WrittenBy a0331 ReadBy a0336 a0341 
+@0430:000000  dv_delta_y: .word 0         ;  @@WrittenBy a0320 ReadBy a0335 a0343 
+@0431:000000     dv_dx: .word 0         ;  @@WrittenBy a0342 a0354 a0360 a0403 ReadBy a0345 a0351 a0362 a0372 a0443 a0454 
+@0432:000000     dv_dy: .word 0         ;  @@WrittenBy a0344 a0364 ReadBy a0367 a0445 a0456 
+@0433:000000  dv_x_slope: .word 0         ;  @@WrittenBy a0340 ReadBy a0363 
+@0434:000000  dv_swap_xy: .word 0         ; swap x & y if this value is non-zero; don't swap if zero @@WrittenBy a0301 a0411 ReadBy a0440 
+@0435:000000   dv_tmp1: .word 0         ;  @@WrittenBy a0322 ReadBy a0333 
+@0436:000000  dv_slope_tmp1: .word 0         ;  @@WrittenBy a0314 a0325 ReadBy a0317 a0330 
+
+
+
+
+                        ; ; Subroutine to Draw Short Vector
+                        ; Input Args:
+                        ; The starting point is assumed to be in dv_x1 and dv_y1
+                        ; The deltas are in dv_dx and dv_dy
+                        ; All four numbers are in the same units -- a signed ten-bit number in the top 11 bits of the word
+                        ; If the dv_swap_xy flag is non-zero, swap x & y to accommodate a vector with slope > 1
+                        ; Don't change the input args during processing in this routine!
+                        ; Start by assembling the single word that gives the x and y offsets from the
+                        ; vector starting point
+@0437:        draw_short_vector:                ;  
+@0437:050501            ta   dsv_ret   ; store the return address @@JumpedToBy a0365 
+
+                        ; .print "SubroutineEntry: draw_short_vector"
+@0440:100434            ca   dv_swap_xy  ; load the swap bit 
+@0441:134000            dm   0         ; compare to zero; dm is -0 if the value in dv_swap_xy is +0 or -0, and positive otherwise 
+@0442:070454            cp   dsv_dont_do_swap  ;  
+
+@0443:100431            ca   dv_dx     ; copy incoming args to local vars without swap 
+@0444:040504            ts   dsv_dy    ;  
+@0445:100432            ca   dv_dy     ;  
+@0446:040503            ts   dsv_dx    ;  
+@0447:100423            ca   dv_x1     ;  
+@0450:040506            ts   dsv_y1    ;  
+@0451:100424            ca   dv_y1     ;  
+@0452:040505            ts   dsv_x1    ;  
+@0453:074464            sp   dsv_figure_offset  ;  
+
+@0454:        dsv_dont_do_swap:                ;  
+@0454:100431            ca   dv_dx     ; copy incoming args to local vars without swap @@JumpedToBy a0442 
+@0455:040503            ts   dsv_dx    ;  
+@0456:100432            ca   dv_dy     ;  
+@0457:040504            ts   dsv_dy    ;  
+@0460:100423            ca   dv_x1     ;  
+@0461:040505            ts   dsv_x1    ;  
+@0462:100424            ca   dv_y1     ;  
+@0463:040506            ts   dsv_y1    ;  
+
+@0464:        dsv_figure_offset:                ;  
+@0464:100503            ca   dsv_dx    ;  @@JumpedToBy a0453 
+@0465:154005            slr  5         ;  
+@0466:174646            md   top_6_bits  ;  
+@0467:040502            ts   dsv_vec   ;  
+@0470:100504            ca   dsv_dy    ;  
+@0471:160003            srr  3         ; shift to lower part of word, preserving the sign bit 
+@0472:174647            md   low_6_bits  ; mask off the unused upper half 
+@0473:110502            ad   dsv_vec   ; this should be an OR, but no such luck 
+@0474:040502            ts   dsv_vec   ;  
+                        ; draw the vector
+                        ; .print "Short Vector: x1=%d; y1=%d; dx=%d; dy=%d; vec=%o", dv_x1, dv_y1, dv_dx, dv_dy, dsv_vec
+@0475:100506            ca   dsv_y1    ; pick up the Y value 
+@0476:001677            si   0o1677    ; select all the scopes; set Y value 
+@0477:100505            ca   dsv_x1    ;  
+@0500:024502            rc   dsv_vec   ;  
+
+@0501:074000   dsv_ret: sp   0         ;  @@WrittenBy a0437 
+
+                        ; local variables
+@0502:000000   dsv_vec: .word 0         ; one word for the assembly of the Delta Vector @@WrittenBy a0467 a0474 ReadBy a0473 
+@0503:000000    dsv_dx: .word 0         ; tmp copies of input args, possibly swapped. @@WrittenBy a0446 a0455 ReadBy a0464 
+@0504:000000    dsv_dy: .word 0         ;  @@WrittenBy a0444 a0457 ReadBy a0470 
+@0505:000000    dsv_x1: .word 0         ;  @@WrittenBy a0452 a0461 ReadBy a0477 
+@0506:000000    dsv_y1: .word 0         ;  @@WrittenBy a0450 a0463 ReadBy a0475 
+
+
+
+                        ; ; Subroutine to calculate modulus
+                        ; AC should contain the number to be modulo'd
+                        ; The modulus is returned in AC
+                        ; The quotient is available in fm_quot
+@0507:        find_mod60:                ;  
+@0507:050524            ta   fm_ret60  ;  @@JumpedToBy a0554 
+@0510:070512            cp   fm60_negative_arg  ;  
+@0511:074513            sp   fm60_positive_arg  ;  
+@0512:        fm60_negative_arg:                ;  
+@0512:030641            sd   all_ones  ; invert the negative arg @@JumpedToBy a0510 
+@0513:        fm60_positive_arg:                ;  
+@0513:040545            ts   fm_arg1   ; save the incoming argument @@JumpedToBy a0511 
+@0514:150544            dv   fm_mod60  ;  
+@0515:155011            slh  9         ; after this instruction, AC contains the Quotient 
+@0516:040546            ts   fm_quot   ;  
+@0517:144544            mh   fm_mod60  ;  
+@0520:155006            slh  6         ;  
+@0521:114545            su   fm_arg1   ; subtract the initial number; this gives the negative of the Remainder 
+@0522:030641            sd   all_ones  ; invert the negative result 
+@0523:134000            dm   0         ; make sure Zero is Negative Zero 
+@0524:074000  fm_ret60: sp   0         ;  @@WrittenBy a0507 
+
+
+@0525:        find_mod5:                ;  
+@0525:050542            ta   fm_ret5   ;  @@JumpedToBy a0243 a0556 
+@0526:070530            cp   fm5_negative_arg  ;  
+@0527:074531            sp   fm5_positive_arg  ;  
+@0530:        fm5_negative_arg:                ;  
+@0530:030641            sd   all_ones  ; invert the negative arg @@JumpedToBy a0526 
+@0531:        fm5_positive_arg:                ;  
+@0531:040545            ts   fm_arg1   ; save the incoming argument @@JumpedToBy a0527 
+@0532:150543            dv   fm_mod5   ;  
+@0533:155011            slh  9         ; after this instruction, AC contains the Quotient 
+@0534:040546            ts   fm_quot   ;  
+@0535:144543            mh   fm_mod5   ;  
+@0536:155006            slh  6         ;  
+@0537:114545            su   fm_arg1   ; subtract the initial number; this gives the negative of the Remainder 
+@0540:134627            dm   four      ; yeah, ok, the incoming arg is negative and counts up to zero; 
+@0541:134000            dm   zero      ; but I want the return code to start at zero and count up to four 
+@0542:074000   fm_ret5: sp   0         ;  @@WrittenBy a0525 
+
+@0543:005000   fm_mod5: .word 0o05000   ; that's 5/64 @@ReadBy a0532 a0535 
+@0544:074000  fm_mod60: .word 0o74000   ; that's 60/64 @@ReadBy a0514 a0517 
+@0545:000000   fm_arg1: .word 0         ; temporary storage for Mod argument @@WrittenBy a0513 a0531 ReadBy a0521 a0537 
+@0546:000000   fm_quot: .word 0         ; return the quotient in this register @@WrittenBy a0516 a0534 
+
+
+                        ; ;;;;;;;; unit test Modulo operation ;;;;;;;;;;;;;;
+@0547:        test_mod:                ;  
+@0547:100633            ca   minus120  ;  
+@0550:040564            ts   tm_cnt_neg  ;  
+@0551:100565            ca   large_num  ;  
+@0552:040563            ts   tm_cnt_pos  ;  
+@0553:         tm_loop:                ;  
+@0553:100563            ca   tm_cnt_pos  ;  @@JumpedToBy a0561 
+@0554:074507            sp   find_mod60  ;  
+                        .print "modulus60 of %d is %ad", tm_cnt_pos  ;  
+@0555:100564            ca   tm_cnt_neg  ;  
+@0556:074525            sp   find_mod5  ;  
+                        .print "modulus5 of %d is %ad", tm_cnt_neg  ;  
+@0557:130563            ao   tm_cnt_pos  ;  
+@0560:130564            ao   tm_cnt_neg  ;  
+@0561:070553            cp   tm_loop   ;  
+
+@0562:074000            sp   0         ;  
+
+@0563:000000  tm_cnt_pos: .word 0         ;  @@WrittenBy a0552 a0557 ReadBy a0553 a0557 
+@0564:000000  tm_cnt_neg: .word 0         ;  @@WrittenBy a0550 a0560 ReadBy a0555 a0560 
+@0565:074000  large_num: .word 0o74000   ;  @@ReadBy a0551 
+
+
+
+
+                        ; ;;;;;;;;;;; Subroutine read_trig_table ;;;;;;;;;;;;;;;;;
+                        ; Take an index, nominally 0-59, in AC and index the ring table to find x, y components
+                        ; The rtt_arg_scale is a multiplier to be applied to the results of the table lookup
+                        ; before returning.
+                        ; Computed values are returned in rtt_x and rtt_y
+
+@0566:000000  rtt_arg_scale: .word 0         ;  @@WrittenBy a0077 a0137 a0231 ReadBy a0616 a0622 
+@0567:000000     rtt_x: .word 0         ;  @@WrittenBy a0617 ReadBy a0102 a0146 a0160 a0171 a0203 a0236 
+@0570:000000     rtt_y: .word 0         ;  @@WrittenBy a0623 ReadBy a0104 a0152 a0162 a0175 a0205 a0240 
+@0571:        read_trig_table:                ;  
+@0571:050624            ta   rtt_ret   ; save return address @@JumpedToBy a0101 a0145 a0157 a0170 a0202 a0235 
+
+@0572:040625            ts   rtt_index  ; store the index so we can do the range-checks with the AC 
+
+                        ; wrap the table index to get it into the 0-59 range
+                        ; I'm assuming that any out-of-range is less than a full rotation, i.e. we don't
+                        ; need a modulus operation
+                        ; Is it bigger than 59?
+@0573:110632            ad   minus59   ;  
+@0574:070577            cp   rtt_smaller_than_sixty  ;  
+@0575:114635            su   sixty     ; if it's larger than 60, subtract 60 to get it in range 
+@0576:040625            ts   rtt_index  ;  
+@0577:        rtt_smaller_than_sixty:                ;  
+                        ; test for less than zero
+@0577:100625            ca   rtt_index  ;  @@JumpedToBy a0574 
+@0600:114000            su   0         ; make sure if it's zero, it's negative zero; not sure it there's a better way to do this! 
+@0601:110001            ad   one       ; increment by one.  If it was negative zero, this makes it positive; if negative one or 
+                        ; less, the addition will cause it to stay negative
+@0602:070604            cp   rtt_less_than_zero  ; br is less than zero 
+@0603:074606            sp   rtt_do_lookup  ;  
+@0604:        rtt_less_than_zero:                ;  
+@0604:110634            ad   fifty_nine  ; we already incremented the AC by one, so adding 59 more wraps the index in AC @@JumpedToBy a0602 
+@0605:040625            ts   rtt_index  ;  
+@0606:        rtt_do_lookup:                ;  
+@0606:100625            ca   rtt_index  ;  @@JumpedToBy a0603 
+@0607:154001            slr  1         ; double the offset to make a table index 
+@0610:110651            ad   minutes_ring_pointer  ;  
+@0611:044614            td   i_rtt_ca_x1  ; overwrite the address for a ca instruction 
+@0612:110001            ad   01        ;  
+@0613:044620            td   i_rtt_ca_y1  ;  
+
+@0614:        i_rtt_ca_x1:                ;  
+@0614:100000            ca   0         ;  @@WrittenBy a0611 
+@0615:160001            srr  1         ; scale by half to avoid overflows later 
+@0616:140566            mr   rtt_arg_scale  ;  
+@0617:040567            ts   rtt_x     ;  
+@0620:        i_rtt_ca_y1:                ;  
+@0620:100000            ca   0         ;  @@WrittenBy a0613 
+@0621:160001            srr  1         ;  
+@0622:140566            mr   rtt_arg_scale  ;  
+@0623:040570            ts   rtt_y     ;  
+
+@0624:         rtt_ret:                ;  
+@0624:074000            sp   0         ;  @@WrittenBy a0571 
+                        ; local vars
+@0625:000000  rtt_index: .word 0         ;  @@WrittenBy a0572 a0576 a0605 ReadBy a0577 a0606 
+
+
+
+
+                        ; ;;;;;;;;;;;  Constants ;;;;;;;;;;;;
+
+
+@0626:000002       two: .word 2         ;  @@ReadBy a0115 
+@0627:000004      four: .word 4         ;  @@ReadBy a0126 a0540 
+@0630:000005      five: .word 5         ;  @@ReadBy a0264 
+@0631:177772    minus5: .word -5        ;  @@ReadBy a0050 
+@0632:177704   minus59: .word -59       ;  @@ReadBy a0232 a0573 
+@0633:177607  minus120: .word -120      ;  @@ReadBy a0547 
+@0634:000073  fifty_nine: .word 59        ;  @@ReadBy a0604 
+@0635:000074     sixty: .word 60        ;  @@ReadBy a0575 
+@0636:000034  twenty_eight: .word 28        ;  
+@0637:000036    thirty: .word 30        ;  @@ReadBy a0143 a0166 
+@0640:000040  thirty_two: .word 32        ;  
+@0641:177777  all_ones: .word 0o177777  ;  @@ReadBy a0512 a0522 a0530 
+@0642:077270  point_99: .word +0.99     ;  @@ReadBy a0076 a0111 a0230 
+@0643:074631  point_95: .word +0.95     ;  @@ReadBy a0254 a0260 
+@0644:060000  point_75: .word +0.75     ;  @@ReadBy a0122 
+@0645:014631  point_20: .word +0.20     ;  @@ReadBy a0140 
+@0646:176000  top_6_bits: .word 0o176000  ; mask for x vector offset @@ReadBy a0466 
+@0647:000374  low_6_bits: .word 0o000374  ; mask for y vector offset @@ReadBy a0472 
+@0650:001740  max_vector: .word 0o001740  ; It's five bits (ignoring the sign), offset to end on Bit 10 @@ReadBy a0347 a0353 a0357 
+
+
+@0651:000652  minutes_ring_pointer: .word minutes_ring  ;  @@ReadBy a0610 
+@0652:        minutes_ring:                ;  
+@0652:000000            .word +0.00000  ;  
+@0653:071463            .word +0.90000  ;  
+
+@0654:006012            .word +0.09407  ;  
+@0655:071221            .word +0.89506  ;  
+
+@0656:013763            .word +0.18712  ;  
+@0657:070256            .word +0.88033  ;  
+
+@0660:021631            .word +0.27811  ;  
+@0661:066617            .word +0.85595  ;  
+
+@0662:027333            .word +0.36606  ;  
+@0663:064475            .word +0.82219  ;  
+
+@0664:034631            .word +0.44999  ;  
+@0665:061704            .word +0.77942  ;  
+
+@0666:041666            .word +0.52900  ;  
+@0667:056462            .word +0.72811  ;  
+
+@0670:046425            .word +0.60221  ;  
+@0671:052634            .word +0.66883  ;  
+
+@0672:052634            .word +0.66883  ;  
+@0673:046425            .word +0.60221  ;  
+
+@0674:056462            .word +0.72811  ;  
+@0675:041666            .word +0.52900  ;  
+
+@0676:061704            .word +0.77942  ;  
+@0677:034631            .word +0.45000  ;  
+
+@0700:064475            .word +0.82219  ;  
+@0701:027333            .word +0.36606  ;  
+
+@0702:066617            .word +0.85595  ;  
+@0703:021631            .word +0.27811  ;  
+
+@0704:070256            .word +0.88033  ;  
+@0705:013763            .word +0.18712  ;  
+
+@0706:071221            .word +0.89506  ;  
+@0707:006012            .word +0.09407  ;  
+
+@0710:071463            .word +0.90000  ;  
+@0711:177777            .word -0.00000  ;  
+
+@0712:071221            .word +0.89506  ;  
+@0713:171765            .word -0.09407  ;  
+
+@0714:070256            .word +0.88033  ;  
+@0715:164014            .word -0.18712  ;  
+
+@0716:066617            .word +0.85595  ;  
+@0717:156146            .word -0.27811  ;  
+
+@0720:064475            .word +0.82219  ;  
+@0721:150444            .word -0.36606  ;  
+
+@0722:061704            .word +0.77942  ;  
+@0723:143146            .word -0.44999  ;  
+
+@0724:056462            .word +0.72811  ;  
+@0725:136111            .word -0.52900  ;  
+
+@0726:052634            .word +0.66883  ;  
+@0727:131352            .word -0.60221  ;  
+
+@0730:046425            .word +0.60221  ;  
+@0731:125143            .word -0.66883  ;  
+
+@0732:041666            .word +0.52900  ;  
+@0733:121315            .word -0.72811  ;  
+
+@0734:034631            .word +0.44999  ;  
+@0735:116073            .word -0.77942  ;  
+
+@0736:027333            .word +0.36606  ;  
+@0737:113302            .word -0.82219  ;  
+
+@0740:021631            .word +0.27811  ;  
+@0741:111160            .word -0.85595  ;  
+
+@0742:013763            .word +0.18712  ;  
+@0743:107521            .word -0.88033  ;  
+
+@0744:006012            .word +0.09407  ;  
+@0745:106556            .word -0.89506  ;  
+
+@0746:177777            .word -0.00000  ;  
+@0747:106314            .word -0.90000  ;  
+
+@0750:171765            .word -0.09407  ;  
+@0751:106556            .word -0.89506  ;  
+
+@0752:164014            .word -0.18712  ;  
+@0753:107521            .word -0.88033  ;  
+
+@0754:156146            .word -0.27811  ;  
+@0755:111160            .word -0.85595  ;  
+
+@0756:150444            .word -0.36606  ;  
+@0757:113302            .word -0.82219  ;  
+
+@0760:143146            .word -0.45000  ;  
+@0761:116073            .word -0.77942  ;  
+
+@0762:136111            .word -0.52900  ;  
+@0763:121315            .word -0.72811  ;  
+
+@0764:131352            .word -0.60221  ;  
+@0765:125143            .word -0.66883  ;  
+
+@0766:125143            .word -0.66883  ;  
+@0767:131352            .word -0.60221  ;  
+
+@0770:121315            .word -0.72811  ;  
+@0771:136111            .word -0.52900  ;  
+
+@0772:116073            .word -0.77942  ;  
+@0773:143146            .word -0.45000  ;  
+
+@0774:113302            .word -0.82219  ;  
+@0775:150444            .word -0.36606  ;  
+
+@0776:111160            .word -0.85595  ;  
+@0777:156146            .word -0.27811  ;  
+
+@1000:107521            .word -0.88033  ;  
+@1001:164014            .word -0.18712  ;  
+
+@1002:106556            .word -0.89506  ;  
+@1003:171765            .word -0.09407  ;  
+
+@1004:106314            .word -0.90000  ;  
+@1005:000000            .word +0.00000  ;  
+
+@1006:106556            .word -0.89506  ;  
+@1007:006012            .word +0.09407  ;  
+
+@1010:107521            .word -0.88033  ;  
+@1011:013763            .word +0.18712  ;  
+
+@1012:111160            .word -0.85595  ;  
+@1013:021631            .word +0.27811  ;  
+
+@1014:113302            .word -0.82219  ;  
+@1015:027333            .word +0.36606  ;  
+
+@1016:116073            .word -0.77942  ;  
+@1017:034631            .word +0.45000  ;  
+
+@1020:121315            .word -0.72811  ;  
+@1021:041666            .word +0.52900  ;  
+
+@1022:125143            .word -0.66883  ;  
+@1023:046425            .word +0.60221  ;  
+
+@1024:131352            .word -0.60221  ;  
+@1025:052634            .word +0.66883  ;  
+
+@1026:136111            .word -0.52900  ;  
+@1027:056462            .word +0.72811  ;  
+
+@1030:143146            .word -0.45000  ;  
+@1031:061704            .word +0.77942  ;  
+
+@1032:150444            .word -0.36606  ;  
+@1033:064475            .word +0.82219  ;  
+
+@1034:156146            .word -0.27811  ;  
+@1035:066617            .word +0.85595  ;  
+
+@1036:164014            .word -0.18712  ;  
+@1037:070256            .word +0.88033  ;  
+
+@1040:171765            .word -0.09407  ;  
+@1041:071221            .word +0.89506  ;  
+
+
+

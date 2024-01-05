@@ -1,0 +1,311 @@
+
+; *** Core Image ***
+%File: vector-clock-gf-Dec08-2023.ww
+%TapeID: None
+@C0000: 0000000 0000001  None    None    None    None    None    None   
+@C0040: 0100000 0100000 0074064 0074045 0074042 0050055 0100060 0070056 
+@C0050: 0100631 0040060 0074053 0100000 0100000 0074000 0130060 0074055 
+@C0060: 0000631 0000017 0000000 0000000 0050071 0074227 0074072 0074110 
+@C0070: 0074121 0074000 0050107 0100000 0040273 0040274 0100642 0040566 
+@C0100: 0100061 0074571 0100567 0040275 0100570 0040276 0074277 0074000 
+@C0110: 0050120 0100642 0040133 0100062 0040132 0100626 0040134 0074135 
+@C0120: 0074000 0050131 0100644 0040133 0100063 0040132 0100627 0040134 
+@C0130: 0074135 0074000 0000000 0000000 0000000 0050221 0100133 0040566 
+@C0140: 0140645 0040226 0100132 0110637 0114134 0074571 0100567 0140226 
+@C0150: 0040273 0040224 0100570 0140226 0040274 0040225 0100132 0074571 
+@C0160: 0100567 0040275 0100570 0040276 0074277 0100132 0110637 0110134 
+@C0170: 0074571 0100567 0140226 0040273 0040222 0100570 0140226 0040274 
+@C0200: 0040223 0100132 0074571 0100567 0040275 0100570 0040276 0074277 
+@C0210: 0100222 0040273 0100223 0040274 0100224 0040275 0100225 0040276 
+@C0220: 0074277 0074000 0000000 0000000 0000000 0000000 0014631 0050267 
+@C0230: 0100642 0040566 0100632 0040272 0100272 0074571 0100567 0040270 
+@C0240: 0100570 0040271 0100272 0074525 0070252 0100271 0000677 0100270 
+@C0250: 0024000 0074263 0100270 0040273 0140643 0040275 0100271 0040274 
+@C0260: 0140643 0040276 0074277 0100272 0110630 0040272 0070234 0074000 
+@C0270: 0000000 0000000 0000000 0000000 0000000 0000000 0000000 0050407 
+@C0300: 0100000 0040434 0100273 0040423 0100274 0040424 0100275 0040425 
+@C0310: 0100276 0040426 0100424 0160001 0040436 0100426 0160001 0114436 
+@C0320: 0040430 0134000 0040435 0100423 0160001 0040436 0100425 0160001 
+@C0330: 0114436 0040427 0134000 0114435 0070410 0100430 0150427 0154017 
+@C0340: 0040433 0100427 0040431 0100430 0040432 0100431 0134000 0114650 
+@C0350: 0070361 0100431 0070356 0100650 0040431 0074362 0100000 0114650 
+@C0360: 0040431 0074362 0100431 0140433 0040432 0074437 0100424 0110432 
+@C0370: 0040424 0100423 0110431 0040423 0100000 0100423 0114425 0134000 
+@C0400: 0070407 0100425 0114423 0040431 0074345 0074407 0074407 0074000 
+@C0410: 0100001 0040434 0100273 0040424 0100274 0040423 0100275 0040426 
+@C0420: 0100276 0040425 0074312 0000000 0000000 0000000 0000000 0000000 
+@C0430: 0000000 0000000 0000000 0000000 0000000 0000000 0000000 0050501 
+@C0440: 0100434 0134000 0070454 0100431 0040504 0100432 0040503 0100423 
+@C0450: 0040506 0100424 0040505 0074464 0100431 0040503 0100432 0040504 
+@C0460: 0100423 0040505 0100424 0040506 0100503 0154005 0174646 0040502 
+@C0470: 0100504 0160003 0174647 0110502 0040502 0100506 0001677 0100505 
+@C0500: 0024502 0074000 0000000 0000000 0000000 0000000 0000000 0050524 
+@C0510: 0070512 0074513 0030641 0040545 0150544 0155011 0040546 0144544 
+@C0520: 0155006 0114545 0030641 0134000 0074000 0050542 0070530 0074531 
+@C0530: 0030641 0040545 0150543 0155011 0040546 0144543 0155006 0114545 
+@C0540: 0134627 0134000 0074000 0005000 0074000 0000000 0000000 0100633 
+@C0550: 0040564 0100565 0040563 0100563 0074507 0100564 0074525 0130563 
+@C0560: 0130564 0070553 0074000 0000000 0000000 0074000 0000000 0000000 
+@C0570: 0000000 0050624 0040625 0110632 0070577 0114635 0040625 0100625 
+@C0600: 0114000 0110001 0070604 0074606 0110634 0040625 0100625 0154001 
+@C0610: 0110651 0044614 0110001 0044620 0100000 0160001 0140566 0040567 
+@C0620: 0100000 0160001 0140566 0040570 0074000 0000000 0000002 0000004 
+@C0630: 0000005 0177772 0177704 0177607 0000073 0000074 0000034 0000036 
+@C0640: 0000040 0177777 0077270 0074631 0060000 0014631 0176000 0000374 
+@C0650: 0001740 0000652 0000000 0071463 0006012 0071221 0013763 0070256 
+@C0660: 0021631 0066617 0027333 0064475 0034631 0061704 0041666 0056462 
+@C0670: 0046425 0052634 0052634 0046425 0056462 0041666 0061704 0034631 
+@C0700: 0064475 0027333 0066617 0021631 0070256 0013763 0071221 0006012 
+@C0710: 0071463 0177777 0071221 0171765 0070256 0164014 0066617 0156146 
+@C0720: 0064475 0150444 0061704 0143146 0056462 0136111 0052634 0131352 
+@C0730: 0046425 0125143 0041666 0121315 0034631 0116073 0027333 0113302 
+@C0740: 0021631 0111160 0013763 0107521 0006012 0106556 0177777 0106314 
+@C0750: 0171765 0106556 0164014 0107521 0156146 0111160 0150444 0113302 
+@C0760: 0143146 0116073 0136111 0121315 0131352 0125143 0125143 0131352 
+@C0770: 0121315 0136111 0116073 0143146 0113302 0150444 0111160 0156146 
+@C1000: 0107521 0164014 0106556 0171765 0106314 0000000 0106556 0006012 
+@C1010: 0107521 0013763 0111160 0021631 0113302 0027333 0116073 0034631 
+@C1020: 0121315 0041666 0125143 0046425 0131352 0052634 0136111 0056462 
+@C1030: 0143146 0061704 0150444 0064475 0156146 0066617 0164014 0070256 
+@C1040: 0171765 0071221  None    None    None    None    None    None   
+@S0000: zero
+@S0001: one
+@S0040: main
+@S0042: main_loop
+@S0045: update_time
+@S0053: ut_ret
+@S0055: ut_ret_sp
+@S0056: ut_no_op
+@S0060: ut_once_per
+@S0061: cur_sec
+@S0062: cur_min
+@S0063: cur_hour
+@S0064: refresh_screen
+@S0071: rs_ret
+@S0072: draw_seconds_hand
+@S0107: br_ds_ret
+@S0110: draw_minutes_hand
+@S0120: dm_ret
+@S0121: draw_hours_hand
+@S0131: br_dh_ret
+@S0132: dth_arg_angle
+@S0133: dth_arg_len_scale
+@S0134: dth_arg_width
+@S0135: draw_triangle_hand
+@S0210: dth_draw_tail
+@S0221: br_dth_ret
+@S0222: dth_tail_x1
+@S0223: dth_tail_y1
+@S0224: dth_tail_x2
+@S0225: dth_tail_y2
+@S0226: dth_tail_scale
+@S0227: draw_ring
+@S0234: draw_outer_ring
+@S0252: dr_tick
+@S0263: outer_ring_dot
+@S0267: dr_ret
+@S0270: dr_x1
+@S0271: dr_y1
+@S0272: dr_cnt1
+@S0273: dv_arg_x1
+@S0274: dv_arg_y1
+@S0275: dv_arg_x2
+@S0276: dv_arg_y2
+@S0277: draw_vector
+@S0312: dv_calc_slope
+@S0335: br_dv_x_is_bigger
+@S0345: br_dv_x_loop
+@S0356: br_dv_neg_dx
+@S0361: br_dv_short_x
+@S0362: br_dv_calc_y
+@S0374: dv_pre_test_loop_end
+@S0375: dv_test_loop_end
+@S0406: br_dv_loop_exit
+@S0407: dv_ret
+@S0410: br_dv_y_is_bigger
+@S0423: dv_x1
+@S0424: dv_y1
+@S0425: dv_x2
+@S0426: dv_y2
+@S0427: dv_delta_x
+@S0430: dv_delta_y
+@S0431: dv_dx
+@S0432: dv_dy
+@S0433: dv_x_slope
+@S0434: dv_swap_xy
+@S0435: dv_tmp1
+@S0436: dv_slope_tmp1
+@S0437: draw_short_vector
+@S0454: dsv_dont_do_swap
+@S0464: dsv_figure_offset
+@S0501: dsv_ret
+@S0502: dsv_vec
+@S0503: dsv_dx
+@S0504: dsv_dy
+@S0505: dsv_x1
+@S0506: dsv_y1
+@S0507: find_mod60
+@S0512: fm60_negative_arg
+@S0513: fm60_positive_arg
+@S0524: fm_ret60
+@S0525: find_mod5
+@S0530: fm5_negative_arg
+@S0531: fm5_positive_arg
+@S0542: fm_ret5
+@S0543: fm_mod5
+@S0544: fm_mod60
+@S0545: fm_arg1
+@S0546: fm_quot
+@S0547: test_mod
+@S0553: tm_loop
+@S0563: tm_cnt_pos
+@S0564: tm_cnt_neg
+@S0565: large_num
+@S0566: rtt_arg_scale
+@S0567: rtt_x
+@S0570: rtt_y
+@S0571: read_trig_table
+@S0577: rtt_smaller_than_sixty
+@S0604: rtt_less_than_zero
+@S0606: rtt_do_lookup
+@S0614: i_rtt_ca_x1
+@S0620: i_rtt_ca_y1
+@S0624: rtt_ret
+@S0625: rtt_index
+@S0626: two
+@S0627: four
+@S0630: five
+@S0631: minus5
+@S0632: minus59
+@S0633: minus120
+@S0634: fifty_nine
+@S0635: sixty
+@S0636: twenty_eight
+@S0637: thirty
+@S0640: thirty_two
+@S0641: all_ones
+@S0642: point_99
+@S0643: point_95
+@S0644: point_75
+@S0645: point_20
+@S0646: top_6_bits
+@S0647: low_6_bits
+@S0650: max_vector
+@S0651: minutes_ring_pointer
+@S0652: minutes_ring
+@E0041: exec: set_timezone_offset(cm, rl, hours_sixty_mode_arg=True)
+@E0052: exec: get_posix_time("cur_sec", "cur_min", "cur_hour", rll=rl)
+@E0054: print: "New Time hour=%d, min=%d, sec=%d", cur_hour, cur_min, cur_sec
+@E0555: print: "modulus60 of %d is %ad", tm_cnt_pos
+@E0557: print: "modulus5 of %d is %ad", tm_cnt_neg
+@N0000: these are set automatically
+@N0045: this points to the actual return instruction
+@N0046: don't recompute the time every refresh cycle; just every "n" cycles
+@N0047: if the counter is negative, increment it and do nothing else
+@N0050: time for an actual update.  Reset the counter so we do the actual update about once per second.
+@N0051: counter was positive; reset it and fetch new time
+@N0054: I shouldn't need this; it's to prevent the .print exec from running.  Bug!!
+@N0073: seconds hand starts from the origin, (0,0)
+@N0074: set the first two x,y arguments for drawing a vector
+@N0077: the the  arg for scaling the result from reading the trig table
+@N0100: load the table offset into AC
+@N0101: then call the routine to index the table and fetch (x, y)
+@N0102: copy return values from read_trig_tsble
+@N0107: return from subroutine
+@N0113: <--- Minutes!
+@N0124: <--- Hours
+@N0137: set the scale factor for values returned from the trig table lookup
+@N0141: set the length of the tail for the triangle hand
+@N0142: load the table offset into AC
+@N0145: then call the routine to index the table and fetch (x, y)
+@N0156: load the table offset into AC
+@N0157: then call the routine to index the table and fetch (x, y)
+@N0164: draw the left-hand edge of the minutes hand
+@N0165: load the table offset into AC
+@N0170: then call the routine to index the table and fetch (x, y)
+@N0201: load the table offset into AC
+@N0202: then call the routine to index the table and fetch (x, y)
+@N0207: draw the right hand end of the triangle hand
+@N0231: it's a start to using rtt (not done yet!)
+@N0233: initialize the loop counter
+@N0242: pick up the rotational angle around the face
+@N0243: compute the modulo-5 remainder
+@N0244: branch on neg-zero to draw a tick-mark
+@N0245: pick up the Y value
+@N0246: select all the scopes; set Y value
+@N0266: loop while the counter is still negative
+@N0267: end of subroutine
+@N0277: save the return address
+@N0301: default is to assume that the slope is less than 1.0
+@N0313: divide by two
+@N0321: find magnitude of delta_y
+@N0324: divide by two
+@N0332: find magnitude of delta_x
+@N0333: subtract |y| from |x|
+@N0334: branch if the Y delta is bigger than X
+@N0335: calculate the slope
+@N0340: save the slope
+@N0342: copy to the tmp dx
+@N0344: copy to the tmp dy
+@N0345: fetch the remaining delta
+@N0346: subtract zero from the abs value of AC (i.e., make it positive)
+@N0347: test if it's short enough to draw as-is
+@N0350: branch if it's short enough to draw as-is
+@N0351: test the sign of dx
+@N0352: branch if negative
+@N0353: otherwise, change dx to the max +vector
+@N0355: continue to figure dY
+@N0357: otherwise, change dx to the max -vector
+@N0361: I don't think there's anything else to do here...
+@N0363: multiply the delta_x by the slope
+@N0373: finished updating for this loop
+@N0374: temporary no-op
+@N0376: test to see if x1==x2; if so, we're done
+@N0400: branch if negative zero; we're done
+@N0401: if we're going around again, update dv_dx.
+@N0402: (no need to mess with dv_dy; it's recomputed from the slope
+@N0404: go around again
+@N0405: all done with the x-is-bigger vector
+@N0411: slope is greater than 1.0
+@N0434: swap x & y if this value is non-zero; don't swap if zero
+@N0437: store the return address
+@N0440: load the swap bit
+@N0441: compare to zero; dm is -0 if the value in dv_swap_xy is +0 or -0, and positive otherwise
+@N0443: copy incoming args to local vars without swap
+@N0454: copy incoming args to local vars without swap
+@N0471: shift to lower part of word, preserving the sign bit
+@N0472: mask off the unused upper half
+@N0473: this should be an OR, but no such luck
+@N0475: pick up the Y value
+@N0476: select all the scopes; set Y value
+@N0502: one word for the assembly of the Delta Vector
+@N0503: tmp copies of input args, possibly swapped.
+@N0512: invert the negative arg
+@N0513: save the incoming argument
+@N0515: after this instruction, AC contains the Quotient
+@N0521: subtract the initial number; this gives the negative of the Remainder
+@N0522: invert the negative result
+@N0523: make sure Zero is Negative Zero
+@N0530: invert the negative arg
+@N0531: save the incoming argument
+@N0533: after this instruction, AC contains the Quotient
+@N0537: subtract the initial number; this gives the negative of the Remainder
+@N0540: yeah, ok, the incoming arg is negative and counts up to zero;
+@N0541: but I want the return code to start at zero and count up to four
+@N0543: that's 5/64
+@N0544: that's 60/64
+@N0545: temporary storage for Mod argument
+@N0546: return the quotient in this register
+@N0571: save return address
+@N0572: store the index so we can do the range-checks with the AC
+@N0575: if it's larger than 60, subtract 60 to get it in range
+@N0600: make sure if it's zero, it's negative zero; not sure it there's a better way to do this!
+@N0601: increment by one.  If it was negative zero, this makes it positive; if negative one or
+@N0602: br is less than zero
+@N0604: we already incremented the AC by one, so adding 59 more wraps the index in AC
+@N0607: double the offset to make a table index
+@N0611: overwrite the address for a ca instruction
+@N0615: scale by half to avoid overflows later
+@N0646: mask for x vector offset
+@N0647: mask for y vector offset
+@N0650: It's five bits (ignoring the sign), offset to end on Bit 10

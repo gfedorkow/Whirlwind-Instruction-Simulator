@@ -5,6 +5,7 @@
 
 import wwinfra
 import numpy as np
+import math
 
 
 def breakp():
@@ -17,6 +18,7 @@ def deg_to_rad(deg):
 
 Radar = None
 Interceptor = None
+Target = None
 
 
 def project_register_radar(radar_arg):
@@ -37,20 +39,43 @@ def which_plane(cm):  # figure out which plane we're scanning at the moment
     return ret
 
 
-# When the simulator identifes a radar return as the Interceptor, we want to record which aircraft
+# When the simulator identifies a radar return as the Interceptor, we want to record which aircraft
 # that is, so later we can start to steer the interceptor towards the target.
 # Called from .exec when the sim initiates tracking of the last echo return
 def record_initiation(cm, cb):
     global Radar
-    global Interceptor
+    global Interceptor, Target
+    global SmootherState
 
+    # which_plane returns a string to say whether the WW code is considering Target or Interceptor
+    # The radar station knows which plane it last saw, so we can search the aircraft structs to find
+    # the one we're Initiating
+    # from there, we can set Globals inside project_exec to remember which is which
     state = which_plane(cm)
+    which_tgt = None
+    nametag = Radar.last_aircraft_name_sent
+    for tgt in Radar.targets:
+        if tgt.name == nametag:
+            which_tgt = tgt
+    if which_tgt is None:
+        cb.log.warning("Not sure why we didn't find an airplane in record_initiation()")
     if state == "Interceptor":
-        nametag = Radar.last_aircraft_name_sent
-        for tgt in Radar.targets:
-            if tgt.name == nametag:
-                Interceptor = tgt
-    msg = "Initiate %s" % state
+        Interceptor = which_tgt
+        SmootherState.set_nametag('I', which_tgt.name)
+    if state == "Target":
+        Target = which_tgt
+        SmootherState.set_nametag('T', which_tgt.name)
+        if cb.DebugWidgetPyVars.TargetHeading is not None:
+            cb.DebugWidgetPyVars.TargetHeading.register(which_tgt)
+
+    msg = 'Initiated: '
+    for pl in ('T', 'I'):
+        name = SmootherState.nametag[pl]
+        if name is None:
+            name = "(none)"
+        function = dict([('T', 'Target'), ('I', 'Intercept')])
+        msg += "%s: %s  " % (function[pl], name)
+#    msg = "Initiate %s, aircraft %s" % (state, which_tgt.name)
     cb.dbwgt.add_screen_print(2, msg)
 
 
@@ -71,7 +96,7 @@ def py_int(ww_int):
         py_intv = ww_int
     return py_intv
 
-#=======================================
+# =======================================
 # --------------------------------
 # Intercept Solver
 # Added May 25, 2023
@@ -129,7 +154,8 @@ class GeometryClass:
     #               (x_t_collision_point, x_i_collision_point))
     #
     #     print(
-    #         "Solution #2: Theta_t %6.2f --> Theta_i=%6.2f, V_tx=%6.2f, V_ix=%6.2f, Tau=%4.3f, x_t_collision_point=%4.2f" % \
+    #         "Solution #2: Theta_t %6.2f --> Theta_i=%6.2f, V_tx=%6.2f, V_ix=%6.2f, Tau=%4.3f, \
+    #         x_t_collision_point=%4.2f" % \
     #         (Theta_target, Theta_interceptor, x_target_velocity, x_interceptor_velocity, Tau, x_t_collision_point))
     #     return (Theta_interceptor, Tau)
 
@@ -149,7 +175,6 @@ class GeometryClass:
     # This step solves for 'Tau', time-to-intercept, without figuring the interceptor heading
     def solve_for_Tau(self, xvelo_t, yvelo_t):
         s = self
-        i = 0
         diff = 0
         # s.x_target_velocity = np.cos((Theta_target / 180) * np.pi) * self.V_target
         # s.y_target_velocity = np.sin((Theta_target / 180) * np.pi) * self.V_target
@@ -158,8 +183,8 @@ class GeometryClass:
         Tau_inverse = 0.1  # initial value doesn't matter, but it keeps PyCharm from complaining
         for i in range(1, 500):
             Tau_inverse = i / 10  # This is 1/Tau
-            diff = (s.dx * Tau_inverse + s.x_target_velocity) ** 2.0 + (s.dy * Tau_inverse + s.y_target_velocity) ** 2.0 \
-                   - s.V_interceptor ** 2
+            diff = (s.dx * Tau_inverse + s.x_target_velocity) ** 2.0 + (s.dy * Tau_inverse + s.y_target_velocity) \
+                ** 2.0 - s.V_interceptor ** 2
             # print("  Iteration i=%d, Tau=%4.2f, diff= %4.2f" % (i, 1 / Tau_inverse, diff))
             if diff >= 0:
                 break
@@ -173,7 +198,8 @@ class GeometryClass:
         Theta_I_ww = self.velocity_to_Theta((s.dx / Tau + s.x_target_velocity), (s.dy / Tau + s.y_target_velocity))
         return Theta_I_ww
 
-    # take X and Y velocity readings and return the implied angle relative to the +x-axis, in degrees (i.e., not heading)
+    # take X and Y velocity readings and return the implied angle relative to
+    #   the +x-axis, in degrees (i.e., not heading)
     def velocity_to_Theta(self, velo_x, velo_y):
         # huh, there must be a cleaner way to avoid a divide by zero...
         # I can trap on a divide exception, but I'm not sure if the value returned by atan is any
@@ -195,11 +221,17 @@ class SmootherStateClass:
     def __init__(self):
         # smoothing variables corresponding to aircraft 0 and 1
         # (where 0 is normally the target, 1 is normally the interceptor, assuming Autoclick)
-        self.X_posn_smoothed = [0, 0]
-        self.Y_posn_smoothed = [0, 0]
-        self.X_velo_smoothed = [0, 0]
-        self.Y_velo_smoothed = [0, 0]
-        self.was_tracking = [False, False]
+        # These arrays should be changed to Dicts, so we don't have to remember which offset is which function!
+        self.X_posn_smoothed = {'T': 0, 'I': 0}
+        self.Y_posn_smoothed = {'T': 0, 'I': 0}
+        self.X_velo_smoothed = {'T': 0, 'I': 0}
+        self.Y_velo_smoothed = {'T': 0, 'I': 0}
+        self.was_tracking = {'T': False, 'I': False}
+        self.nametag = {'T': None, 'I': None}
+
+    # Attach the nametag for the plane that we're tracking
+    def set_nametag(self, which, nametag):
+        self.nametag[which] = nametag
 
 
     # emulate the operation of the smoother function.  In the Real Code, the position averaging seems to work
@@ -213,39 +245,44 @@ py_x_posn_smoo_i, py_y_posn_smoo_i, py_x_velo_smoo_i, py_y_velo_smoo_i"
         rloc = Radar.where_are_they_now(Radar.elapsed_time, radial=False)
         g = 1.0/16.0  # constants from doc Page 37 of M-1343
         h = 5.0/16.0
-        for i in range(0, len(rloc)):
-            craft = rloc[i][0]
-            rdr_x = rloc[i][1] # radar reports in miles, but the WW program operates in 256ths
-            rdr_y = rloc[i][2] # This calculation is self-contained, so it's in floating-point miles
-            # the following in M-1343 are Equations 4-9
-            if azi == 1 and is_tracking[i]:  # run smoothing once per antenna revolution
-                # initialize the position when we first start tracking
-                if self.was_tracking[i] == False:
-                    self.X_posn_smoothed[i] = rdr_x
-                    self.Y_posn_smoothed[i] = rdr_y
-                    self.was_tracking[i] = True
+        # WW can track two planes, one T, one I, but there could be lots of radar returns
+        # Find which radar return corresponds to the Target and Interceptor, and smooth those
+        for pl in ['T', 'I']:
+            for r in range(0, len(rloc)):
+                craft = rloc[r][0]
+                if self.nametag[pl] == craft:
+                    rdr_x = rloc[r][1]  # radar reports in miles, but the WW program operates in 256ths
+                    rdr_y = rloc[r][2]  # This calculation is self-contained, so it's in floating-point miles
 
-                predicted_x_pos = self.X_posn_smoothed[i] # + self.X_velo_smoothed[i]
-                diff_x = rdr_x - predicted_x_pos
-                next_X_velo_smoothed = self.X_velo_smoothed[i] + g * diff_x
-                next_X_posn_smoothed = self.X_posn_smoothed[i] + next_X_velo_smoothed + h * diff_x
-                self.X_posn_smoothed[i] = next_X_posn_smoothed
-                self.X_velo_smoothed[i] = next_X_velo_smoothed
-                # and again for Y
-                predicted_y_pos = self.Y_posn_smoothed[i] # + self.Y_velo_smoothed[i]
-                diff_y = rdr_y - predicted_y_pos
-                next_Y_velo_smoothed = self.Y_velo_smoothed[i] + g * diff_y
-                next_Y_posn_smoothed = self.Y_posn_smoothed[i] + next_Y_velo_smoothed + h * diff_y
-                self.Y_posn_smoothed[i] = next_Y_posn_smoothed
-                self.Y_velo_smoothed[i] = next_Y_velo_smoothed
+                    # the following in M-1343 are Equations 4-9
+                    if azi == 1 and is_tracking[pl]:  # run smoothing once per antenna revolution
+                        # initialize the position when we first start tracking
+                        if not self.was_tracking[pl]:
+                            self.X_posn_smoothed[pl] = rdr_x
+                            self.Y_posn_smoothed[pl] = rdr_y
+                            self.was_tracking[pl] = True
+
+                        predicted_x_pos = self.X_posn_smoothed[pl]  # + self.X_velo_smoothed[i]
+                        diff_x = rdr_x - predicted_x_pos
+                        next_X_velo_smoothed = self.X_velo_smoothed[pl] + g * diff_x
+                        next_X_posn_smoothed = self.X_posn_smoothed[pl] + next_X_velo_smoothed + h * diff_x
+                        self.X_posn_smoothed[pl] = next_X_posn_smoothed
+                        self.X_velo_smoothed[pl] = next_X_velo_smoothed
+                        # and again for Y
+                        predicted_y_pos = self.Y_posn_smoothed[pl]  # + self.Y_velo_smoothed[i]
+                        diff_y = rdr_y - predicted_y_pos
+                        next_Y_velo_smoothed = self.Y_velo_smoothed[pl] + g * diff_y
+                        next_Y_posn_smoothed = self.Y_posn_smoothed[pl] + next_Y_velo_smoothed + h * diff_y
+                        self.Y_posn_smoothed[pl] = next_Y_posn_smoothed
+                        self.Y_velo_smoothed[pl] = next_Y_velo_smoothed
 
             if not csv:
                 print("  PySmoother, Craft %s: radar=(%4.2f, %4.2f), posn_smoo=(%4.2f, %4.2f), velo_smoo=(%4.2f, %4.2f)" %
-                  (craft, rdr_x, rdr_y, self.X_posn_smoothed[i], self.Y_posn_smoothed[i],
-                   self.X_velo_smoothed[i], self.Y_velo_smoothed[i]))
+                  (craft, rdr_x, rdr_y, self.X_posn_smoothed[pl], self.Y_posn_smoothed[pl],
+                   self.X_velo_smoothed[pl], self.Y_velo_smoothed[pl]))
             if csv:
-                ret += " %4.2f, %4.2f, %4.2f, %4.2f, " % (self.X_posn_smoothed[i], self.Y_posn_smoothed[i],
-                   self.X_velo_smoothed[i], self.Y_velo_smoothed[i])
+                ret += " %4.2f, %4.2f, %4.2f, %4.2f, " % (self.X_posn_smoothed[pl], self.Y_posn_smoothed[pl],
+                   self.X_velo_smoothed[pl], self.Y_velo_smoothed[pl])
         return ret
 
 
@@ -305,24 +342,26 @@ def dump_long_tracking_state(cm, decif, rl, long, last_py_heading, py_smoother):
                 prt += "%s0(@%d), %s1(@%d), " % (labels[addr], addr, labels[addr], addr + 10)
             for addr in more_state:
                 prt += "%s(@%d), " % (more_state[addr], addr)
-            g = GeometryClass(0,0,0,0,0)
-            prt += SmootherState.run_smoother(True, azi = None, heading=True)
+            g = GeometryClass(0, 0, 0, 0, 0)
+            prt += SmootherState.run_smoother(True, azi=None, heading=True)
             print(prt)
             First = False
         # print the actual data
         heading = cm.rd(rl("FF_angle"))
         lights, ww_heading = octal_to_bin(heading)
 
-        prt = "CSV, "
-        prt += "%4.2f, %4.2f, %d, " % (Radar.elapsed_time, last_py_heading, ww_heading)
-        for i in range(0, len(rloc)):
-            prt += "%s, %4.2f, %4.2f, " % (rloc[i][0], rloc[i][1], rloc[i][2])
-        for addr in labels:
-            prt += "%s, %s, " % (decif(cm.rd(addr), decimal_0d=False), decif(cm.rd(addr + 10), decimal_0d=False))
-        for addr in more_state:
-            prt += "%s, " % (decif(cm.rd(addr), decimal_0d=False))
-        prt += py_smoother
-        print(prt)
+        print_CSV = False
+        if print_CSV:
+            prt = "CSV, "
+            prt += "%4.2f, %4.2f, %d, " % (Radar.elapsed_time, last_py_heading, ww_heading)
+            for i in range(0, len(rloc)):
+                prt += "%s, %4.2f, %4.2f, " % (rloc[i][0], rloc[i][1], rloc[i][2])
+            for addr in labels:
+                prt += "%s, %s, " % (decif(cm.rd(addr), decimal_0d=False), decif(cm.rd(addr + 10), decimal_0d=False))
+            for addr in more_state:
+                prt += "%s, " % (decif(cm.rd(addr), decimal_0d=False))
+            prt += py_smoother
+            print(prt)
 
     else:  # this format is meant for engineers to read...
         for addr in labels:
@@ -344,11 +383,12 @@ def dump_long_tracking_state(cm, decif, rl, long, last_py_heading, py_smoother):
 
 LastPyHeading = 0  # remember the pencil-and-paper pythonic heading
 LastPyResultStr = ''
+
 # cm is the core mem pointer.
 # 'deci' is a routine that converts native to decimal numbers, assuming ww conventions.
 #  I'm passing it in here since it's a local routine in the py_exec function.
-# Set long = 'csv' to output the tracking stats for excel
-def dump_tracking_state(cm, decif, rl, long = True):
+# Set long = 'csv' to output the tracking stats for Excel
+def dump_tracking_state(cm, decif, rl, long=True):
     global LastPyHeading
     global LastPyResultStr
     global SmootherState
@@ -363,16 +403,13 @@ def dump_tracking_state(cm, decif, rl, long = True):
     yvelo_i = py_int(cm.rd(rl("y_velo1"))) * 250.0 / 350.0
 
     azi = Radar.current_azimuth
-    is_tracking = ((xpos_t != 0 or ypos_t != 0), (xpos_i != 0 or ypos_i != 0))
-
-
+    # in this 'is_tracking' array, [0] is the Target, [1] is the Interceptor
+    is_tracking = dict([('T', (xpos_t != 0 or ypos_t != 0)), ('I',(xpos_i != 0 or ypos_i != 0))])
     csv = long
-
     LastPyResultStr, LastPyHeading = paper_solution(csv, xpos_t, ypos_t, xpos_i, ypos_i,
                                                     xvelo_t, yvelo_t, xvelo_i, yvelo_i, 250)
-
     if long:
-        py_smooth_str = SmootherState.run_smoother(csv, azi = azi, is_tracking=is_tracking, heading=False)
+        py_smooth_str = SmootherState.run_smoother(csv, azi=azi, is_tracking=is_tracking, heading=False)
         dump_long_tracking_state(cm, decif, rl, long, LastPyHeading, py_smooth_str)
 
     print(LastPyResultStr)
@@ -398,7 +435,7 @@ def check_heading(cm, decif, rl):
 # python number.
 def octal_to_bin(octal):
     spaces_list = (1, 5, 6, 10, 11, 15)
-    bcd_digit_value =(1600, 800, 400, 200, 100, 0, 80, 40, 20, 10, 0, 8, 4, 2, 1, 0)
+    bcd_digit_value = (1600, 800, 400, 200, 100, 0, 80, 40, 20, 10, 0, 8, 4, 2, 1, 0)
     ascii_binary = ''
     py_int = 0
     num = octal
@@ -417,23 +454,53 @@ def octal_to_bin(octal):
     return (ascii_binary + '  ' + bcd), py_int
 
 
+# This function reads the Flip-Flop Register lights showing the heading for the Interceptor
+# spelled out in BCD, converts that back to a binary int, and displays that along with the
+# Python-calculated interceptor heading
 def print_ff_heading(cm, decif, rl, cb):
     global LastPyHeading
-    global Interceptor
+    global Interceptor, Target
 
     heading = cm.rd(rl("FF_angle"))
     lights, py_int = octal_to_bin(heading)
     off_by = py_int - LastPyHeading
-    msg = "WW-Heading %s, PyHeading=%d, off_by %d at t=%4.2f" % (lights, LastPyHeading, off_by, Radar.elapsed_time)
-    cb.dbwgt.add_screen_print(1, msg)
-    # print(msg)
+
+    heading_change = False
+    delta_distance = "(none)"
+
+    if Target is not None and Interceptor is not None:
+        delta_distance = "%4.2f" % math.sqrt((Target.last_x - Interceptor.last_x)**2 +\
+                                             (Target.last_y - Interceptor.last_y)**2)
+    #    heading_change = True
+    if cb.ana_scope:
+        cb.ana_scope.setTargetInterceptLEDs((Target is not None), (Interceptor is not None))
+
+    # heading_summary = ""
+    for tgt in Radar.targets:
+        if tgt.last_heading is None:
+            tgt.last_heading = tgt.heading
+            heading_change = True   # This ensures that the heading will print below on the first time through
+        if tgt.heading != tgt.last_heading:
+            heading_change = True
+    #     heading_summary += "%s=%d deg, " % (tgt.name, tgt.heading)
+    # This section could surely be simplified; I made a couple of dumb versioning mistakes
+    # while modifying it, and haven't gone back to unwind all the experiments.
+    # In particular, I'm sure it should be able to call change_heading only when there's a change in heading!
     if Interceptor:
         Interceptor.change_heading(Radar.elapsed_time, py_int)
+    if Target:
+        Target.change_heading(Radar.elapsed_time, Target.heading)
+    if heading_change:
+        msg = "WW-Heading %s, PyHeading=%d, off_by %d, gap:%s at t=%4.2f" % \
+              (lights, LastPyHeading, off_by, delta_distance, Radar.elapsed_time)
+        cb.dbwgt.add_screen_print(1, msg)
+        print(msg)
 
 
 # def main():
 #     g = GeometryClass()
-#     #    print("V_interceptor=%4.2f, V_target=%4.2f, interceptor_position=(%4.1f, %4.1f), target_position=(%4.1f, %4.1f)" % \
+#     #    print("V_interceptor=%4.2f, V_target=%4.2f, interceptor_position=(%4.1f, %4.1f), \
+#     #        target_position=(%4.1f, %4.1f)" % \
 #     #        (g.V_interceptor, g.V_target,        g.X_interceptor_position,
 #     #        g.Y_interceptor_position,        g.X_target_initial_position,
 #     #        g.Y_target_initial_position))
@@ -488,6 +555,9 @@ def old_paper_solution(xpos_t, ypos_t, xpos_i, ypos_i, xvelo_t, yvelo_t, xvelo_i
           (perfectest_angle, heading, perfectest_Tau*60.0, measured_velo_i)
     return ret, heading
 
+
+def main():
+    print("There is no Main!")
 
 
 if __name__ == "__main__":

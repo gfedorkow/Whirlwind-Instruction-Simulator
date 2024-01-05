@@ -60,6 +60,7 @@ class AircraftClass:
         self.last_heading_change_x = xi  # remember where the craft was last so we can extrapolate the position
         self.last_heading_change_y = yi
         self.last_heading_change_time = 0
+        self.last_heading = None
         self.last_x = xi  # these two are for debug only
         self.last_y = yi
 
@@ -84,13 +85,42 @@ class AircraftClass:
             return x, y
 
 
-    def change_heading(self, current_time, heading, vmph = None):
+    def change_heading(self, current_time, heading, msg="null-msg", vmph = None):
         # figure out where we are, and reset the positions for the next linear segment
         x, y = self.get_current_position(current_time, radial = False)
-        self.last_heading_change_x = x  # remember where the craft was last so we can extrapolate the position
+        self.last_heading_change_x = x  # remember where the craft was last, so we can extrapolate the position
         self.last_heading_change_y = y
         self.last_heading_change_time = current_time
+        self.last_heading = self.heading
         self.heading = heading
+        if heading != self.last_heading:
+            print("py_radar Aircraft %s: change heading to %d; msg=%s" % (self.name, heading, msg))
+
+
+# I've added a "screen widget" to steer the target aircraft during the sim.  This class is activated
+# by that widget.
+# It's expected to have functions to read the current value, or increment or decrement the value.
+class RadarAdjustHeadingWidgetClass:
+    def __init__(self):
+        self.target = None
+
+    def register(self, target):
+        self.target = target
+    def rd(self):
+        if self.target is None:
+            return None
+        else:
+            return int(self.target.heading)
+
+    def incr(self, val):
+        if self.target is None:
+            return
+        else:
+            self.target.heading += val
+            if self.target.heading >= 360.0:
+                self.target.heading -= 360.0
+            if self.target.heading < 0.0:
+                self.target.heading += 360.0
 
 
 
@@ -129,6 +159,8 @@ class RadarClass:
         self.time_per_revolution = 15  # seconds
         self.readings_per_rotation = int(self.time_per_revolution / self.radar_time_increment)  #  that's a long way of saying "750"
         self.last_aircraft_name_sent = None
+
+        self.adjust_target_heading = RadarAdjustHeadingWidgetClass()
 
         project_register_radar(self)
 
@@ -175,15 +207,19 @@ class RadarClass:
             # notice that it's out of the scan sector until it gets a non-zero range return from an untracked
             # plane, or from clutter.  So here's a fake reading from due-north...
             # And it appears that it doesn't work unless the clutter is clearly outside the zone of both the tracked
-            # aircrafts!
+            # aircraft!
             if self.current_azimuth == 0 and len(self.rng_list) == 0:
-                self.rng_list.append(("Geo_North_marker", 100.0))
+                self.rng_list.append(("Geo_North_marker", 120.0))
             if self.current_azimuth == 128 and len(self.rng_list) == 0:
-                self.rng_list.append(("Geo_South_marker", 100.0))   # note Azimuth is measured in 1/256ths of a revolution
+                self.rng_list.append(("Geo_South_marker", 120.0))   # note Azimuth is measured in 1/256ths of a revolution
             azi_code = (self.current_azimuth | 0o400) << 6   # convert to phone line coding
             ret = (azi_code, "Radar Return: azimuth %d" % (self.current_azimuth), new_rotation)
             self.azimuth_next = False  # given the automatic 256 of 750 azimuth slots, this flag is probably not needed...
             self.last_azimuth = self.current_azimuth
+
+            # This call shows the current radar Azimuth on the LCD screen
+            # It was originally added to help debug the problem caused by lack of clutter
+            # I disabled the function Oct 5, 2023, as it didn't seem to be adding much value
             if self.current_azimuth % 4 == 0:
                 self.draw_radar_scan(self.current_azimuth)
 
@@ -212,12 +248,10 @@ class RadarClass:
             (x, y) = pol2cart(tgt_rng, angle_degrees)
             ret = (rng_code, "Radar Return: %s rng=%d azi=%d (%d degrees) (x,y)=(%3.1f, %3.1f) miles at t=%3.2f seconds" %
                    (tgt_name, tgt_rng, self.current_azimuth, angle_degrees, x, y, self.elapsed_time), new_rotation)
-            self.last_aircraft_name_sent = tgt_name
+            if tgt_name != "null":
+                self.last_aircraft_name_sent = tgt_name
+                # print("aircraft tgt_name=%s" % tgt_name)
             self.mouse_autoclick(tgt_name)  # check to see if we should AutoClick on this antenna revolution
-
-            # total debug hack; why is tracking failing after t=764??
-            # if (self.elapsed_time > 750 and self.elapsed_time < 800):
-            #     self.cb.TracePC = 250
 
             # yeah, ok, if the two targets are at the same spot, we'll send two identical Range readings
             # This couldn't actually happen (there's only one echo) but I don't think the WW program will care.
@@ -235,6 +269,7 @@ class RadarClass:
 
     def mouse_check_callback(self, addr, write_val):
         ret = None
+        ff_gun = 0
         if write_val is not None:
             # print("mouse check callback Write %02o to @%02o" % (write_val, addr))
             self.light_gun_ff_reg = write_val
@@ -245,8 +280,18 @@ class RadarClass:
                 if exit_alarm != self.cb.NO_ALARM:
                     self.exit_alarm = exit_alarm
                 if gun_reading != 0:
-                    self.light_gun_ff_reg = gun_reading
+                    # 2M-0277 describes in detail how multiple light guns work.  But the air defense
+                    # demo came long before the standard interface.  In this case, I'm coding the first two
+                    # light guns as one with the Target switch, one with the Interceptor switch set.
+                    if gun_reading & 0o20000:
+                        ff_gun = 0o100000
+                    elif gun_reading & 0o40000:
+                        ff_gun = 0o177777
+                    else:
+                        print("** Unexpected Light Gun Value 0o%o ***" % gun_reading)
+                    self.light_gun_ff_reg = ff_gun
             ret = self.light_gun_ff_reg
+            print("** light_gun_ff_reg=0o%o, ff_gun=0o%o, ret=0o%o" % (self.light_gun_ff_reg, ff_gun, ret))
         return ret
 
     # autoclick means that we simulate a light-gun hit automatically a certain number of
@@ -311,7 +356,9 @@ class RadarClass:
     # This routine shows debug information around the (circular) edge of the radar screen, e.g., where the
     # antenna is pointing, who's in the Scan zone, etc
     def draw_radar_scan(self, azimuth):
-        if self.crt is None:
+        return  # disabled for now
+
+        if self.crt is None or self.cb.analog_display:
             return
 
         # show the antenna angle

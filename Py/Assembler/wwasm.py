@@ -39,6 +39,7 @@
 #    ad L204 ;missing label following line with blanks
 #    .WORD 123
 
+# Dec 7, 2023 - fixed a bug that was ignoring labels on lines with no operator or operand
 
 import sys
 # sys.path.append('K:\\guy\\History-of-Computing\\Whirlwind\\Py\\Common')
@@ -46,9 +47,16 @@ import re
 import argparse
 import wwinfra
 
+breakpoint_trigger = False
 def breakp(log):
-    print("hit breakpoint %s" % log)
+    global breakpoint_trigger
 
+    if breakpoint_trigger:
+        print("hit breakpoint %s" % log)
+        return True
+    if log == "Trigger":
+        breakpoint_trigger = True
+    return False
 
 # defines
 ADDRESS_MASK = 0o3777
@@ -64,12 +72,13 @@ LexDebug = False
 Legacy_Numbers = False
 
 class DebugWidgetClass:
-    def __init__(self, linenumber, addr_str, incr_str):
+    def __init__(self, linenumber, addr_str, incr_str, format_str):
         self.linenumber = linenumber
         self.addr_str = addr_str
         self.incr_str = incr_str
         self.addr_binary = None
         self.incr_binary = None
+        self.format_str = format_str
 
 
 def strip_space(s1):
@@ -109,6 +118,20 @@ def lex_line(line, line_number):
     if LexDebug:
         print(line_number, "Line=", line)
 
+    # strip auto-comment
+    r1 = re.sub(" *@@.*", '', line)
+    if LexDebug:
+        print(line_number, "remaining r1 after strip-autocomment:", r1)
+
+    # split op and save any regular comment
+    rl2 = re.split(";", r1, 1)
+    r2 = r1   # provisionally, output = input if no comment
+    if LexDebug:
+        print(line_number, "RL2 list:", rl2)
+    if len(rl2) > 1:
+        comment = strip_space(rl2[1])
+        r2 = strip_space(rl2[0])
+
     # Special Case for .exec directive
     # I'm adding directives to the assembler to:
     #    - pass a string to the simulator that should be interpreted and executed as a python statement
@@ -120,40 +143,24 @@ def lex_line(line, line_number):
     # The .exec directive will follow a 'real' WW instruction; the assumption is that it is executed after
     # the preceding instruction, before the next 'real' instruction.
     exec_match = "^[ \t][ \t]*(.exec|.print)"
-    if m := re.search(exec_match, line):
-        exec_stmt = re.sub(exec_match, '', line)
+    if m := re.search(exec_match, r2):
+        exec_stmt = re.sub(exec_match, '', r2)
         exec_stmt = exec_stmt.lstrip().rstrip()
-        op = m.group(0).lstrip().rstrip()   #  was '.exec'
+        op = m.group(0).lstrip().rstrip()   # was '.exec'
         operand = exec_stmt
         # as above, .lower() removed
         return LexedLine(line_number, label, op, operand, comment, directive)
 
-
     # strip the initial "@address:data" tag
     #    pattern = "(^@[0-7][0-9\.]*:[0-7][0-7]*) *([a-zA-Z][a-z[A-Z[0-7]*) *"
     addr_data_tag = "(^@[0-7][0-9.]*:[0-7][0-7]*) *"
-    r1 = re.sub(addr_data_tag, '', line)
+    r3 = re.sub(addr_data_tag, '', r2)
     if LexDebug:
-        print(line_number, "RS1=", r1)
-
-    # strip auto-comment
-    r2 = re.sub(" *@@.*", '', r1)
-    if LexDebug:
-        print(line_number, "remaining r2:", r2)
+        print(line_number, "RS2=", r3)
 
     # if there's nothing but a comment on the line, strip the semicolon and return it now
-    if r2[0] == ';':
-        comment = r2[1:]
+    if len(r3) == 0:
         return LexedLine(line_number, label, op, operand, comment, directive)
-
-    # split op and comment
-    rl3 = re.split(";", r2, 1)
-    r3 = r2
-    if LexDebug:
-        print(line_number, "RL3:", rl3)
-    if len(rl3) > 1:
-        comment = strip_space(rl3[1])
-        r3 = strip_space(rl3[0])
 
     # split label and op
     rl4 = re.split(":", r3)
@@ -193,6 +200,9 @@ def lex_line(line, line_number):
             if operand.isnumeric():
                 operand = "0o" + operand
 
+    if len(op) > 0 and op not in op_code:
+        cb.log.error(line_number, "Unknown op code: %s" % op)
+        op = ''
     return LexedLine(line_number, label, op, operand, comment, directive)
 
 
@@ -244,7 +254,7 @@ def ww_int_adhoc(nstr):
 def ww_int_csii(nstr, line_number, relative_base=None):
     try:
         ww_small_int = int(nstr, 10)
-        if ww_small_int < 8 and ww_small_int >= 0:
+        if ww_small_int < 8 and ww_small_int > -8:
             return ww_small_int
         #  otherwise, fall through to all the other tests below
     except ValueError:
@@ -277,27 +287,29 @@ def ww_int_csii(nstr, line_number, relative_base=None):
 
     if re.match('\+|-|[1-9]|0$', nstr):  # Try Decimal conversion
         sign = 1   # default to a positive number
+        sign_str = '+'
         if nstr[0] == '-':
             sign = -1
+            sign_str = '-'
         dec_str = re.sub(r'-|\+', '', nstr)
         if re.search(r'^[0-9.][0-9.]*$', dec_str) is None:
-            print("Line %d: Expecting +/- decimal number; got %s" % (line_number, nstr))
+            cb.log.error(line_number, "Expecting +/- decimal number; got %s" % (nstr))
             return None
         if nstr.find(".") == -1:  # if the number has no decimal point, it's an integer
             ones_comp = int(dec_str, 10)
             if ones_comp >= 0o77777:
-                print("Line %d: Oversized decimal number: %d" % (line_number, ones_comp))
+                cb.log.error(line_number, "Oversized decimal number: %s%d" % (sign_str, ones_comp))
                 return None
         else:    # it must be a decimal float
             ones_comp = int(float(dec_str) * 0o100000)
             if ones_comp >= 0o77777:
-                print("Line %d: Oversized decimal float: %s" % (line_number, dec_str))
+                cb.log.error(line_number, "Oversized decimal float: %s%s" % (sign_str, dec_str))
                 return None
         if sign == -1:
             ones_comp = ones_comp ^ 0o177777  # this should handle -0 automatically
         return ones_comp
         # add More Code for fractional decimal numbers with exponents
-    print("Line %d: not sure what to do with this so-called number: '%s'" % (line_number, nstr))
+    cb.log.error(line_number, "not sure what to do with this number: '%s'" % (nstr))
     return None
 
 
@@ -335,7 +347,7 @@ def dot_org_op(srcline, _binary_opcode, _operand_mask):
     global NextCoreAddress, CurrentRelativeBase
 
     # put a try/except around this conversion
-    next_add = ww_int_csii(srcline.operand, srcline.linenumber, relative_base = CurrentRelativeBase)
+    next_add = ww_int_csii(srcline.operand, srcline.linenumber, relative_base=CurrentRelativeBase)
     if next_add is None:
         print("Line %d: can't parse number in .org" % srcline.linenumber)
         return 1
@@ -366,15 +378,19 @@ def dot_relative_base_op(srcline, _binary_opcode, _operand_mask):
     return 0
 
 
-# Program Parameters are like #define statements; they don't generate code, but
+# Preset Parameters are like #define statements; they don't generate code, but
 # they do put values in the symbol table for later use.
 # They can be "called" in the source code as a way to insert a word of whatever value was
 # assigned to the pp.
 #  Samples look like this:       .PP pp15=pp14+1408  ;  @line:19a
-#  The program parameter label (e.g. pp15), apparently is always two letters plus some digits,
+#  The program parameter label (e.g. pp15), apparently is always two letters plus one or two digits,
 #  but not necessarily always 'pp'
 # I am not so sure how to handle these guys!
-def dot_program_param_op(srcline, _binary_opcode, _operand_mask):
+# See M-2539-2 Comprehensive System manual, pdf page 75 for the CS-II rules.  This assembler
+# doesn't enforce any of the rules; a Preset Param is just another label in the symbol table.
+# Preset Parameters are only represented as labels in the symbol table for the simulator, i.e.,
+# the .pp pseudo-op is not passed through.
+def dot_preset_param_op(srcline, _binary_opcode, _operand_mask):
     #
     lhs = re.sub("=.*", '', srcline.operand)
     rhs = re.sub(".*=", '', srcline.operand)
@@ -382,8 +398,6 @@ def dot_program_param_op(srcline, _binary_opcode, _operand_mask):
     SymTab[lhs] = srcline
 
     srcline.instruction_address = label_lookup_and_eval(rhs, srcline)
-    #cb.log.warn("Line %d: Insert Program Parameter %s %s" %
-    #            (srcline.linenumber, srcline.operator, srcline.operand))
     return 0
 
 
@@ -393,6 +407,7 @@ def insert_program_param_op(srcline, _binary_opcode, _operand_mask):
     cb.log.warn("Line %d: Insert Program Parameter %s %s as a word" %
                 (srcline.linenumber, srcline.operator, srcline.operand))
     return 0
+
 
 # the Source Code may have a DITTO operation
 # don't know exactly what it does yet, except to duplicate words in memory
@@ -451,7 +466,9 @@ def dot_switch_op(srcline, _binary_opcode, _operand_mask):
 
 # # process a .WORD statement, to initialize the next word of storage
 # coming into the routine, the number to which storage should be set is
-# already in the operand field of the srcline class
+# already in the operand field of the srcline class.
+# This same routine handles .flexh and .flexl for inserting words that
+# correspond to Flexowriter characters.
 def dot_word_op(src_line, _binary_opcode, _operand_mask):
     global NextCoreAddress, CurrentRelativeBase
 
@@ -496,12 +513,22 @@ def dot_dbwgt_op(src_line, _binary_opcode, _operand_mask):
 
     tokens = src_line.operand.split()
     addr = strip_space(tokens[0])
-    if len(tokens) > 1:
-        incr = strip_space(tokens[1])
-    else:
-        incr = "1"
+    # defaults
+    incr = "1"
+    format_str = "%o"
+    i = 1
+    while i < len(tokens):
+        tok = strip_space(tokens[i])
+        if tok[0].isnumeric():
+            incr = tok
+        elif len(tok) > 2 and tok[0] == '"' and tok[-1] == '"' and '%' in tok:
+            format_str = tok[1:-1]
+        else:
+            print("Line %d: unknown param for .dbwgt op: %s" % (src_line.linenumber, tok))
+        i += 1
+
     # the operand could be a number or a label; resolve that later
-    DbWgtTab.append(DebugWidgetClass(src_line.linenumber, addr, incr))
+    DbWgtTab.append(DebugWidgetClass(src_line.linenumber, addr, incr, format_str))
     if Debug:
         print(".DbWgt %04s %s" % (addr, incr))
     return 0
@@ -558,11 +585,26 @@ def dot_ww_tapeid_op(src_line, _binary_opcode, _operand_mask):
     return 0
 
 
-# # parse a line after it's been Lexed.  This routine simply looks up the
+# Look up a label; generate an error if it's already in the symtab, otherwise
+# add the object corresponding to the line with the label to the symbol table.
+# Return zero for "it's all ok" and one for "not so good", so I can just add
+# the return code to the overall error count.
+def add_sym(label, srcline):
+    global SymTab, cb
+
+    if label in SymTab:
+        cb.log.error(srcline.linenumber, "Ignoring duplicate label %s" % (srcline.label))
+        return 1
+
+    SymTab[label] = srcline
+    return 0
+
+
+# # Parse a line after it's been Lexed.  This routine simply looks up the
 # # opcode string to find the binary opcode, and also to find if it's
 # # a five- or six-bit opcode, or a pseudo-op
 # I'm ignoring upper/lower case in op codes
-# return the number of errors
+# Return the number of errors
 def parse_ww(srcline):
     global NextCoreAddress, CurrentRelativeBase
     # the special case at the start handles lines where there's a label but no operation
@@ -572,16 +614,17 @@ def parse_ww(srcline):
     #   0r: ca f11
     # "real" operations increment the next address; this just records it.
     # if the line has a label but no op, we need to update the Relative Address base
-    if srcline.label == "z1":
-        breakp("z1")
+
     if len(srcline.operator) == 0:
+        # a label can appear on a line by itself, without an operator
+        err = 0
         srcline.instruction_address = NextCoreAddress
         if len(srcline.label):
-            SymTab[srcline.label] = srcline  # store the label in the symtab
+            err = add_sym(srcline.label, srcline)  #  poor form -- converting True/False to 1/0
             CurrentRelativeBase = NextCoreAddress
             if Debug: print("Line %d: Label %s: Implicit Set of Relative Base to 0o%o" %
                   (srcline.linenumber, srcline.label, CurrentRelativeBase))
-        return 0
+        return err
 
     ret = 0
     addr_inc = 0
@@ -592,7 +635,7 @@ def parse_ww(srcline):
         op_list = op_code[op]
         addr_inc = op_list[0](srcline, op_list[1], op_list[2])  # dispatch to the appropriate operator
     else:
-        print("Unrecognized operator in line %d: %s" % (srcline.linenumber, srcline.operator))
+        cb.log.error(srcline.linenumber, "Unrecognized operator: %s" % (srcline.operator))
         ret += 1
 
     # Adjust the Relative label (e.g. '0r:')
@@ -613,14 +656,15 @@ def parse_ww(srcline):
     else:
         # the book says that any 'comma operator', i.e. a label, resets the Relative Address
         if len(srcline.label):
-            SymTab[srcline.label] = srcline
+            if add_sym(srcline.label, srcline):
+                ret += 1
             if srcline.instruction_address is not None:
                 CurrentRelativeBase = srcline.instruction_address
                 if Debug: print("Line %d: Label %s: Setting Relative Base to 0o%o" %
                         (srcline.linenumber, srcline.label, CurrentRelativeBase))
 
     if len(srcline.operand) == 0:
-        print("Missing operand in line %d: %s" % (srcline.linenumber, srcline.operator))
+        cb.log.error(srcline.linenumber, "Missing operand: %s" % (srcline.operator))
         ret += 1
 
     NextCoreAddress += addr_inc
@@ -744,7 +788,7 @@ meta_op_code = {
     ".isa": [dot_change_isa_op, 0, 0, OPERAND_NONE],  # directive to switch to the older 1950 instruction set
     ".exec": [dot_python_exec_op, 0, 0, OPERAND_NONE],
     ".print": [dot_python_exec_op, 0, 0, OPERAND_NONE],
-    ".pp":   [dot_program_param_op, 0, 0, OPERAND_NONE],
+    ".pp":   [dot_preset_param_op, 0, 0, OPERAND_NONE],
     "pp": [insert_program_param_op, 0, 0, OPERAND_NONE],
     "ditto": [ditto_op, 0, 0, OPERAND_NONE],
 }
@@ -797,7 +841,7 @@ def eval_addr_expr(expr: str, line_number):
     while len(terms):
         loop += 1
         if loop > 20:
-            print("eval_addr_expr stuck in loop, line %d: expr=%s" % (line_number, expr))
+            print("eval_addr_expr probably stuck in loop, line %d: expr=%s" % (line_number, expr))
             exit(1)
 
         if terms[0] == '+' or terms[0] == '-':
@@ -810,6 +854,11 @@ def eval_addr_expr(expr: str, line_number):
             terms = re.sub("[0-9.]*", "", terms)
             if len(number_str):
                 number = ww_int(number_str, line_number)
+                if number is None:
+                    # we've already printed a number-conversion error message, but stop processing here
+                    print("Line %d: can't evaluate number %s in expression; returning zero offset",
+                          line_number, number_str)
+                    return 0
             else:
                 number = 0
             if op == '-':
@@ -819,129 +868,99 @@ def eval_addr_expr(expr: str, line_number):
     return offset
 
 
-# Labels can have simple arithmetic expressions (I think only "label +/- number +/- number")
-# Here we evaluate the arithmetic
-# This routine could run into "programmed parameters", kinda like ifdefs, and will evaluate these
+# Labels can have simple arithmetic expressions (I think only "label +/- Label +/- Label")
+# Dec 17, 2023; I added an OR operator "|" to combine numbers.
+# Note a fundamental problem in number-syntax -- +/- specifically identifies Decimal numbers,
+# so in this parser, I'm _requiring_ arithmetic operators to be separated by spaces, and +/-
+# symbols that indicate Decimal numbers to be joined to their number.
+# e.g. it's legal to say "1 + 2 - -0.7"
+# but it's not legal to say 1+2
+# This routine could run into "programmed parameters", kinda like ifdefs, and will evaluate these as well
+
+# Dec 22, 2023 - new version of label parser, which can parse a variety of expressions as long as they
+# evaluate down into constants
+
 def label_lookup_and_eval(label_with_expr: str, srcline):
-
     # if there's an expression, split it into tokens
-    expr_terms_limit = 10  # this is to catch iteration bugs
-    tokens = []
-    lbl = label_with_expr
-    while re.search("[-+]", lbl[1:]):  # search for a +/- after the first character
-        m = re.search("([-+]?[^-+].*?)[-+].*", lbl)  #  note non-greedy match
-        if m is None:
-            cb.log.fatal("oops; no match in label_lookup_and_eval with %s" % label_with_expr)
-        token = m.group(1)
-        lbl = lbl[len(token):]   # strip the token
-        tokens.append(token)
-        if (expr_terms_limit := expr_terms_limit - 1) == 0:
-            cb.log.fatal("oops; endless loop on expr %s?" % label_with_expr)
-
-    tokens.append(lbl)  # add whatever is left into the token list
+    tokens = label_with_expr.split()
 
     # CS-II has this weird label format with an offset prepended to a label value, e.g. "19r6"
     # Separate the offset and the label and turn the offset into an explicit Add, i.e., "r6+19"
-    # I'll actually append the offset to the end of the list of tokens, on the assumption that
-    # there ain't ever gonna be expressions with multiplication or parentheses!
-    # The syntax 19r6 means r6+19.  But I can only assume pp1-19r6 means pp1-(r6 + 19) = pp1 - r6 - 19
-    # That is, I assume there's no syntax for a negative offset
-    new_tokens = []
-    for token in tokens:
-        tag = token  # remember the name, so we can remove it from the list
-        first_sign = ''   # default is assumed positive
-        second_sign = '+'
-        if token[0] == '+' or token[0] == '-':
-            first_sign = token[0]
-            second_sign = token[0]
-            token = token[1:]
+    #   The syntax 19r6 means r6+19.  But I can only assume pp1-19r6 means pp1-(r6 + 19) = pp1 - r6 - 19
+    #   That is, I assume there's no syntax for a negative offset
+    # The 19r6-style labels are interpreted in ww_int();
+    #  That's probably a bug; they should be considered part of the expression parser.
 
-        # This stanza converts Whirlwind CS-II labels of the form "5a5" to "a5+5", i.e., moving
-        # the implicit offset from the front to an explicit add.
-        # Note that there's a very near miss between WW format "5a5" and Unix convention "0o5" for octal
-        # It's not quite ambiguous, since CS-II rules against the use of letters I or O as variable names
-        # So there's a special-case escape for Unix numbers.  Phew!
-        # If this gets a notch worse somewhere, I'll add a flag to the command line to say what
-        # number conventions are in use.
-        if m := re.search("^([-+]?[0-9.]+)[a-zA-Z].*", token) and not re.match("^0o[0-9]", token):
-            offset = m.group(1)
-            label = token[len(offset):]
-            new_tokens.append(first_sign + label)
-            new_tokens.append(second_sign + offset)
-            print("converting %s to %s%s%s%s" % (token, first_sign, label, second_sign, offset))
-        else:
-            new_tokens.append(first_sign + token)
-    tokens = new_tokens
+    # For this parser, I'm assuming that there must be an odd number of tokens, with every second one
+    # being an arithmetic operator!
+    if (len(tokens) % 2) != 1:
+        cb.log.error(srcline.linenumber,
+                     "Expression %s must contain labels separated by operators, i.e., an odd number of tokens"
+                     % label_with_expr)
+
+    valid_expr_ops = ['+', '-', '|', '*', '/']
+    for i in range(0, len(tokens)):
+        if (i % 2) == 1 and tokens[i] not in valid_expr_ops:
+            cb.log.error(srcline.linenumber, "Invalid Expression Operator: %s" % tokens[i])
+        if (i % 2) == 0 and not re.match("[0-9a-zA-Z+-]", tokens[i]):
+            cb.log.error(srcline.linenumber, "%s doesn't look like a number or label" % tokens[i])
 
     # now we can evaluate all the terms in the expression
     # This is a bit confusing, because '+' does double-duty to indicate addition
     # but also that the following digits are a decimal number
-    # I _think_ the "op" test below has been superceded by the token parser I added above.
-    # A leading + or - simply means the sign of the number
-    result = 0
-    # op = '+'
-    sign = ''
-    for token in tokens:
+    vals = [None] * len(tokens)
+
+    # first loop evaluates the numbers and labels
+    for i in range(0, len(tokens), 2):
+        token = tokens[i]
         val = None
-        if token[0] == '-' or token[0] == '+':
-            # op = token[0]
-            sign = token[0]
-            token = token[1:]
         if re.match("[a-zA-Z]", token):
             if token == 'r':  # special case for relative addresses
                 val = CurrentRelativeBase
             elif token in SymTab:
                 val = SymTab[token].instruction_address
             if val is None:
-                cb.log.fatal("Line %d: Unknown label %s in %s" % (srcline.linenumber, token, srcline.operand))
+                cb.log.error(srcline.linenumber, "Unknown label %s in expression %s; using zero" %
+                             (token, srcline.operand))
                 val = 0
-        elif re.match("[0-9.]", token):
-            val = ww_int(sign + token, srcline.linenumber,
+        elif re.match("[0-9+-]", token):
+            # I need to pass the Sign into wwint to catch Decimal numbers...  ugh...
+            val = ww_int(token, srcline.linenumber,
                                 relative_base = srcline.relative_address_base)
+            if val is None:
+                cb.log.error(srcline.linenumber, "Can't convert number %s in expression; returning zero" %
+                      token)
+                val = 0
         else:
-            cb.log.warn("unknown symbol %s in label_lookup_and_eval with %s" % (token, label_with_expr))
-        if val is not None:
-            result += val
+            cb.log.error(srcline.linenumber, "Unknown symbol %s in label_lookup_and_eval with %s" %
+                         (token, label_with_expr))
+        if val is None:
+            return 0
+        vals[i] = val
+
+    # finally, do the arithmetic
+    result = vals[0]
+    for i in range(1, len(tokens), 2):
+        eval_op = tokens[i]
+        if len(tokens) < (i + 1):   # this test should never fail...
+            cb.log.error(srcline.linenumber, "Missing operand after eval_operator '%s'" % eval_op)
+        if eval_op == '+':
+            result += vals[i + 1]
+        elif eval_op == '-':
+            result -= vals[i + 1]
+        elif eval_op == '|':
+            result |= vals[i + 1]
+        elif eval_op == '*':
+            result *= vals[i + 1]
+        elif eval_op == '/':
+            result //= vals[i + 1]
+        else:
+            cb.log.error(srcline.linenumber, "Unexpected eval_operator '%s'" % eval_op)
 
     # print("line %d: label_lookup_and_eval(%s) resolves to %d (0o%o)" %
     #      (srcline.linenumber, label_with_expr, result, result))
     # print(tokens)
     return result
-
-
-
-
-
-
-
-
-def old_label_lookup_and_eval(label_with_expr: str, srcline):
-    if re.search("^([a-z][a-z0-9]+)", label_with_expr):  # test to see if it's a label or just a number
-        if re.search("[+\-]", label_with_expr):  # this must a label followed by an expression
-            label = re.sub("[+\-].*", "", label_with_expr)
-            expr = re.sub("^[a-z0-9]+", "", label_with_expr)
-        else:  # it's just a label, no additional adornments
-            label = label_with_expr
-            expr = ''
-    else:  # in this case, it's just a number
-        label = ''
-        expr = label_with_expr
-
-    if len(expr):
-        label_offset = eval_addr_expr(expr, srcline.linenumber)
-    else:
-        label_offset = 0
-
-    binary_operand = None
-    if label == 'r':  # special case for relative addresses
-        binary_operand = CurrentRelativeBase
-    elif label in SymTab:
-        binary_operand = SymTab[label].instruction_address
-    if binary_operand is None:
-        print("unknown label %s in line %d" % (label, srcline.linenumber))
-        binary_operand = 0
-
-    return binary_operand + label_offset
 
 
 # this routine looks up an operand to resolve a label or convert a number
@@ -992,11 +1011,10 @@ def resolve_dbwgt(dbwgt):
     return ret
 
 
-# There's a special case to resolve the label for the JumpTo directive
+# There's a special case to resolve the label for the psuedo-op directives
 def resolve_one_label(label, label_type):
     if label is None:
         return None
-
     ret = label
     if label[0].isalpha():  # resolve the start address, if any.
         if label in SymTab:
@@ -1154,7 +1172,12 @@ def write_core(coremem, ww_filename, ww_tapeid, ww_jumpto, output_file, isa_1950
     for s in SwitchTab:  # switch tab is indexed by name, contains a validated string for the value
         fout.write("%%Switch: %s %s\n" % (s, SwitchTab[s]))
     for w in DbWgtTab:
-        fout.write("%%DbWgt:  0o%03o  0o%02o\n" % (w.addr_binary, w.incr_binary))
+        if w.addr_binary:
+            addr = "0o%03o" % w.addr_binary
+        else:
+            addr = w.addr_str
+        fout.write("%%DbWgt:  %s  0o%02o %s\n" % (addr, w.incr_binary, w.format_str))
+
     columns = 8
     addr = 0
     while addr < CORE_SIZE:
@@ -1232,6 +1255,7 @@ def main():
 
     parser = argparse.ArgumentParser(description='Assemble a Whirlwind Program.')
     parser.add_argument("inputfile", help="file name of ww asm source file")
+    parser.add_argument("--Verbose", '-v',  help="print progress messages", action="store_true")
     parser.add_argument("--Debug", '-d', help="Print lotsa debug info", action="store_true")
     parser.add_argument("--Legacy_Numbers", help="guy-legacy - Assume numeric strings are Octal", action="store_true")
     parser.add_argument("-D", "--DecimalAddresses", help="Display traec information in decimal (default is octal)",
@@ -1240,7 +1264,6 @@ def main():
                         action="store_true")
     parser.add_argument('--outputfilebase', '-o', type=str, help='base name for output file')
     args = parser.parse_args()
-    print(parser.prog, ' ', args)
 
     cb.log = wwinfra.LogClass(sys.argv[0], quiet=False)
     cb.decimal_addresses = args.DecimalAddresses  # if set, trace output is expressed in Decimal to suit 1950's chic
@@ -1249,8 +1272,10 @@ def main():
     output_file_base_name = re.sub("\.ww$", '', input_file_name)
     if args.outputfilebase is not None:
         output_file_base_name = args.outputfilebase
-    print('File %s' % input_file_name)
     Debug = args.Debug
+    verbose = args.Verbose
+    if verbose:
+        print('File %s' % input_file_name)
     Legacy_Numbers = args.Legacy_Numbers
     op_code = change_isa(op_code_1958)
     if args.ISA_1950:
@@ -1261,7 +1286,8 @@ def main():
     # labels, operators and operands.
     # Convert the source program into a list of 'input line' structures
 
-    print("***Lexical Phase")
+    if verbose:
+        print("***Lexical Phase")
     line_number = 0
     error_count = 0
     SwitchTab = {}
@@ -1280,43 +1306,37 @@ def main():
     if Debug:
         print("SourceProgram Length %d lines", (len(SourceProgram)))
 
-    # # Scan the source again to create the symbol table
-    for srcline in SourceProgram:
-        if Debug:
-            srcline.formatit()
-        if len(srcline.label):
-            if srcline.label in SymTab:
-                print("duplicate label %s at Line %d" % (srcline.label, srcline.linenumber))
-                error_count += 1
-
-    print("*** Symbol Table:")
     if Debug:
+        print("*** Symbol Table:")
         for s in SymTab:
             print("Symbol %s: line %d" % (s, SymTab[s].linenumber))
-    else:
+    elif verbose:
         print("  %d symbols" % len(SymTab))
 
     # # Scan again to parse instructions and assign addresses
     # # Parse Instructions
-    print("*** Parse Instructions")
+    if verbose:
+        print("*** Parse Instructions")
     for srcline in SourceProgram:
         error_count += parse_ww(srcline)
 
-    if error_count != 0:  # bail out if there were errors in parsing the source
-        print("Error Count = %d" % error_count)
-        exit(1)
+#    if error_count != 0:  # bail out if there were errors in parsing the source
+#        print("Error Count = %d" % error_count)
+#        exit(1)
 
     # # Scan Again to resolve address labels and generate the final binary instruction
-    print("*** Resolve Labels and Generate Instructions")
+    if verbose:
+        print("*** Resolve Labels and Generate Instructions")
     for srcline in SourceProgram:
         if len(srcline.operator) != 0:
             error_count += resolve_labels_gen_instr(srcline)
 
-    if error_count != 0:  # bail out if there were errors in parsing the source
-        print("Error Count = %d" % error_count)
-        exit(1)
+#    if error_count != 0:  # bail out if there were errors in parsing the source
+#        print("Error Count = %d" % error_count)
+#        exit(1)
 
-    print("*** Identify Cross-References")
+    if verbose:
+        print("*** Identify Cross-References")
     for srcline in SourceProgram:
         if len(srcline.operator) != 0:
             label_code(srcline)
@@ -1326,16 +1346,25 @@ def main():
     jumpto = resolve_one_label(WW_JumptoAddress, "JumpTo")
     error_count += resolve_dbwgt(DbWgtTab)
 
+    # ok, so Nov 2023 it dawned on me that it would be cleaner to print error messages
+    # and count errors in the Log class, not ad-hoc one at a time.
+    # So I 'should' eliminate the local error_count var by using the Log class routine
+    # In the meantime, I have both :-(
+    error_count += cb.log.error_count
+
+
     if error_count != 0:  # bail out if there were errors in parsing the source
         print("Error Count = %d; output files suppressed" % error_count)
         exit(1)
     else:
         # # Listing & Output
-        print("*** Listing ***")
+        if verbose:
+            print("*** Listing ***")
         write_listing(cb, SourceProgram, output_file_base_name + OutputListingFileExtension)
 
         # # Output Core Image
-        print("\n*** Core Image ***")
+        if verbose:
+            print("\n*** Core Image ***")
         write_core(CoreMem, WW_Filename, WW_TapeID, jumpto,
                    output_file_base_name + OutputCoreFileExtension, ISA_1950)
 

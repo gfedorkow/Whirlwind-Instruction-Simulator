@@ -1,0 +1,940 @@
+
+; Vector clock to run on Whirlwind
+; Guy Fedorkow, Nov 17, 2023
+; MIT Museum.
+; This program displays an analog clock face on the Whirlwind oscilloscope 
+; screen.  The clock is synchronized to local time by calling a python helper
+; to obtain time from the host via a python library.
+;
+; There are a couple of quirks to remember:
+;   - The Whilrwind CRT was "real time", i.e., refreshed by software.  If the programmer
+; isn't actively drawing something, the screen will be blank.  As a result, code must be
+; written to continually refresh the display, even in the absense of "real work".  And as
+; the refresh rate is too slow, screen flicker will rapidly increase.
+;   - WW was designed with numbers represented as fixed point in the range -1.0 < N < 1.0, and
+; anything outside that range represents overflow.  Screen dimensions are also represented
+; the same way, i.e. (0,0) is the center, +1 is the top, -1 is the bottom.  That means that
+; the length of a vector from bottom to top is  1 - (-1) = 2.  Oops, overflow.
+;   I've scaled calculations for vectors down to -0.5 < X < 0.5 so that a delta can be 
+; calculated.
+;   - Sine and Cosine calculations via approximation aren't all that hard on Whirlwind, but to 
+; avoid burning the brain cells to figure it out, I've used a pre-computed sixty-entry table 
+; representing the requisite points around a circle.  No WW programmer would ever have wasted sooo
+; much memory (120 words) on a single table just to avoid a mathematical routine.
+; 
+
+      .org 0
+zero:     .word 0   ; these are set automatically
+one:      .word 1      
+
+      .org 0o40
+main:     ca 0
+          .exec set_timezone_offset(cm, rl, hours_sixty_mode_arg=True)  ; call the OS routine to figure out the local time zone
+          ca 0
+
+main_loop:          
+          sp refresh_screen
+          sp update_time
+          sp main_loop
+          
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;; Update the current time of day ;;;;;;
+; Call this routine once per second
+; Output is the three vars, cur_sec, cur_min, cur_hour
+; Note that Hour is denoted also in the range of 0-59, corresponding to 0-11 hours with a "fractional"
+; component that increments each five minutes.
+; As an optimization, I don't execute the entire subroutine on every call...  N out of N+1 calls recognize that
+; the time couldn't have changed yet, and so skips the rest of the routine (especially the call to obtain 
+; the system time).  (See note above about refresh rate!)
+
+update_time:
+          ta ut_ret_sp        ; this points to the actual return instruction
+                              ; but there's some common code at the end of the routine, so the other
+                              ; branches all go to ut_ret
+          
+          ca ut_once_per      ; don't recompute the time every refresh cycle; just every "n" cycles
+          cp ut_no_op         ; if the counter is negative, increment it and do nothing else
+          
+          ca minus5           ; time for an actual update.  Reset the counter so we do the actual update about once per second.
+          ts ut_once_per         ; counter was positive; reset it and fetch new time
+          
+          ; if posix_time
+          .exec get_posix_time("cur_sec", "cur_min", "cur_hour", rll=rl)
+          sp ut_ret
+
+          
+; the following section would increment sec, min, hr in the customary sequence without
+; regard to "real time".  Useful for debug, not telling what time it is...
+;           ;;; This segment is commented out so that Posix time is used
+;           ao cur_sec          ; increment seconds and check for overflow
+;           ts cur_sec
+;           su sixty
+;           dm 0
+;           cp ut_new_minute
+;           sp ut_ret           ; if the seconds don't overflow, we're done
+;           
+; ut_new_minute:
+;           ca 0
+;           ts cur_sec
+;           
+;           ao cur_min
+;           ts cur_min
+;           su sixty
+;           dm 0
+;           cp ut_new_hour
+;           sp ut_ret           ; if the minutes don't overflow, we're done
+;           
+;           
+; ut_new_hour:          ; oops, the 'hour' needs to be incremented every 12 minutes
+;           ca 0
+;           ts cur_min
+;           
+;           ao cur_hour
+;           ts cur_hour
+;           su sixty
+;           dm 0
+;           cp ut_new_day
+;           sp ut_ret
+;           
+; ut_new_day:   ; nothing to do here but prevent an Hours overflow
+;           ca 0
+;           ts cur_hour
+
+ut_ret:          
+          ca 0
+          .print "New Time hour=%d, min=%d, sec=%d", cur_hour, cur_min, cur_sec
+          ca 0    ; I shouldn't need this; it's to prevent the .print exec from running.  Bug!!
+ut_ret_sp:   
+          sp 0
+          
+ut_no_op:
+          ao ut_once_per
+          sp ut_ret_sp
+
+; loocal variables
+ut_once_per: .word minus5
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;  Redraw the screen  ;;;;;;;;;;;;;;;;;
+; Input params are hour, minute, second
+cur_sec:  .word 15
+cur_min:  .word 0
+cur_hour: .word 0
+
+refresh_screen:
+          ta rs_ret
+          sp draw_ring
+          sp draw_seconds_hand
+          sp draw_minutes_hand
+          sp draw_hours_hand
+rs_ret:   sp 0
+
+
+draw_seconds_hand:
+          ta br_ds_ret
+
+          ca 0        ; seconds hand starts from the origin, (0,0)
+          ts dv_arg_x1  ; set the first two x,y arguments for drawing a vector 
+          ts dv_arg_y1
+
+          ca point_99
+          ts rtt_arg_scale   ; the the  arg for scaling the result from reading the trig table
+          ca cur_sec  ; load the table offset into AC
+          sp read_trig_table  ; then call the routine to index the table and fetch (x, y)
+          
+          ca rtt_x            ; copy return values from read_trig_tsble
+          ts dv_arg_x2
+          ca rtt_y
+          ts dv_arg_y2
+          sp draw_vector
+br_ds_ret:
+          sp 0                ; return from subroutine
+          
+
+; Minutes and Hours are drawn with a triangular shape and differing lengths and widths.
+; The first two routines to the setup for the third that actually draws the hand.
+draw_minutes_hand:
+          ta dm_ret
+          
+          ca point_99
+          ts dth_arg_len_scale
+          ca cur_min          ; <--- Minutes!
+          ts dth_arg_angle
+          ca two
+          ts dth_arg_width
+          sp draw_triangle_hand
+
+dm_ret:
+          sp 0
+  
+
+
+draw_hours_hand:
+          ta br_dh_ret
+          
+          ca point_75
+          ts dth_arg_len_scale
+          ca cur_hour            ; <--- Hours
+          ts dth_arg_angle
+          ca four
+          ts dth_arg_width
+          sp draw_triangle_hand
+
+br_dh_ret:
+          sp 0
+  
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;; Subroutine draw_triangle_hand ;;;;;;;
+; draw a clock hand in the shape of a triangle centered
+; at the origin and rotated by the appropriate time offset
+; in the range 0-59.
+; The assumption is that we'll draw a triangle with the "point" indicating the
+; current time, and a tail of the hand offset the in the opposite direction on 
+; the clock face.
+; Args give
+;   - the rotational angle
+;   - the relative length of the hand, as a fraction of the outer ring dimension
+;   - the width of the hand, given in units of offset rotation (i.e., 2 or 4)
+dth_arg_angle:     .word 0
+dth_arg_len_scale: .word 0
+dth_arg_width:     .word 0
+
+draw_triangle_hand:
+          ta br_dth_ret
+          
+          ca dth_arg_len_scale
+          ts rtt_arg_scale      ; set the scale factor for values returned from the trig table lookup
+          mr point_20
+          ts dth_tail_scale     ; set the length of the tail for the triangle hand
+          
+          ; compute the left tail end of the triangle hand
+          ca dth_arg_angle  ; load the table offset into AC
+          ad thirty
+          su dth_arg_width
+          sp read_trig_table  ; then call the routine to index the table and fetch (x, y)
+          ca rtt_x
+          mr dth_tail_scale
+          ts dv_arg_x1
+          ts dth_tail_x2
+          ca rtt_y
+          mr dth_tail_scale
+          ts dv_arg_y1
+          ts dth_tail_y2
+
+          ; compute the point of the minutes hand
+          ca dth_arg_angle  ; load the table offset into AC
+          sp read_trig_table  ; then call the routine to index the table and fetch (x, y)
+          
+          ca rtt_x
+          ts dv_arg_x2
+          ca rtt_y
+          ts dv_arg_y2
+          sp draw_vector  ; draw the left-hand edge of the minutes hand
+          
+          ; compute the right tail end of the triangle hand
+          ca dth_arg_angle  ; load the table offset into AC
+          ad thirty
+          ad dth_arg_width
+          sp read_trig_table  ; then call the routine to index the table and fetch (x, y)
+          ca rtt_x
+          mr dth_tail_scale
+          ts dv_arg_x1
+          ts dth_tail_x1
+          ca rtt_y
+          mr dth_tail_scale
+          ts dv_arg_y1
+          ts dth_tail_y1
+
+          ; (re)compute the point of the triangle hand  (this lookup could be optimized out!)
+          ca dth_arg_angle  ; load the table offset into AC
+          sp read_trig_table  ; then call the routine to index the table and fetch (x, y)
+          
+          ca rtt_x
+          ts dv_arg_x2
+          ca rtt_y
+          ts dv_arg_y2
+          sp draw_vector    ; draw the right hand end of the triangle hand
+
+dth_draw_tail:              ; close the triangle shape with one more line
+          ca dth_tail_x1
+          ts dv_arg_x1
+          ca dth_tail_y1
+          ts dv_arg_y1
+          ca dth_tail_x2
+          ts dv_arg_x2
+          ca dth_tail_y2
+          ts dv_arg_y2
+          ; .print "triangle hand tail: x1=%d y1=%d x2=%d y2=%d", dv_arg_x1, dv_arg_y1, dv_arg_x2, dv_arg_y2
+          sp draw_vector
+
+br_dth_ret:
+          sp 0
+
+; local variables
+dth_tail_x1:  .word 0
+dth_tail_y1:  .word 0
+dth_tail_x2:  .word 0
+dth_tail_y2:  .word 0
+dth_tail_scale: .word +0.20
+         
+
+
+
+; Subroutine draw_ring draws the outer graticule of the clock, with 60
+; points, and hour markers every five ticks
+
+; this routine should be updated to use read_trig_table
+          ; initialize the loop
+draw_ring:
+          ta dr_ret
+          
+          ca point_99
+          ts rtt_arg_scale         ; it's a start to using rtt (not done yet!)
+          
+          ca minus59
+          ts dr_cnt1     ; initialize the loop counter
+
+          ; Commence the point-drawing loop
+          ; Starting with the first, every fifth of the sixty markers should be
+          ;   a short vector, while the rest are dots
+draw_outer_ring:
+          ca dr_cnt1
+          sp read_trig_table
+          ; Computed values are returned in rtt_x and rtt_y
+
+          ca rtt_x  
+          ts dr_x1
+          ca rtt_y
+          ts dr_y1
+         
+          ; test the loop counter to see if this is "every fifth"
+          ca dr_cnt1        ; pick up the rotational angle around the face
+          sp find_mod5      ; compute the modulo-5 remainder
+          ; .print "find_mod return %ao"
+          cp dr_tick        ; branch on neg-zero to draw a tick-mark
+          
+          ; draw a dot
+          ca dr_y1          ; pick up the Y value
+          si 0o677          ; select all the scopes; set Y value
+          ca dr_x1
+          rc 0
+          sp outer_ring_dot
+          
+          ; Draw a tick-mark instead of a dot
+dr_tick:  ca dr_x1
+          ts dv_arg_x1
+          mr point_95
+          ts dv_arg_x2
+          ca dr_y1
+          ts dv_arg_y1
+          mr point_95
+          ts dv_arg_y2
+          sp draw_vector
+          
+outer_ring_dot:          
+          ; "normal" behavior would draw dots every minute;  The display renders
+          ; faster if we only draw the tick marks, i.e., every five minutes
+;          ao dr_cnt1         ; increment the counter
+          ca dr_cnt1
+          ad five
+          ts dr_cnt1
+          cp draw_outer_ring   ; loop while the counter is still negative
+      
+dr_ret:   sp 0            ; end of subroutine
+; local vars
+dr_x1:    .word 0
+dr_y1:    .word 0
+dr_cnt1:  .word 0
+
+
+
+
+;; Subroutine draw_vector
+; Args are dv_arg_x1 and dv_arg_y1, dv_arg_x2 and dv_arg_y2
+; Start by finding the delta-x and delta-y
+; Figure out which one is higher magnitude
+; Calculate the slope to project the other delta
+; Iteratively, turn it into enough short vectors to draw the line
+;   Each segment draws up to max_vector distance on the long side of the
+;   slope, reduces the remaining delta distance, and moves the origin for the next
+;   point to the end of the last vector
+
+;   delta_x = dv_x2 - dv_x1
+;   delta_y = dv_y2 - dv_y1
+;   if |delta_x| > |delta_y|
+;      while delta_x != 0
+;          dx = delta_x
+;          if (delta_x > max_vector)
+;              dx = max_vector
+;          dy = delta_y * slope
+;          short_vector(dv_x1, dv_y1, dx, dy)
+;          dv_x1 += dx
+;          dv_y1 += dy
+;          delta_x -= dx
+
+dv_arg_x1:    .word 0
+dv_arg_y1:    .word 0
+dv_arg_x2:    .word 0
+dv_arg_y2:    .word 0
+draw_vector:
+          ta dv_ret       ; save the return address
+
+          ;.print "SubroutineEntry: draw_vector"
+          ca 0
+          ts dv_swap_xy   ; default is to assume that the slope is less than 1.0
+          ca dv_arg_x1
+          ts dv_x1
+          ca dv_arg_y1
+          ts dv_y1
+          ca dv_arg_x2
+          ts dv_x2
+          ca dv_arg_y2
+          ts dv_y2
+
+dv_calc_slope:          
+          ; compute the two deltas and find which one has a larger magnitude
+          ca dv_y1
+          srr 1             ; divide by two
+          ts dv_slope_tmp1
+          
+          ca dv_y2
+          srr 1
+          su dv_slope_tmp1
+          ts dv_delta_y
+          dm 0            ; find magnitude of delta_y
+          ts dv_tmp1
+          
+          ca dv_x1
+          srr 1             ; divide by two
+          ts dv_slope_tmp1
+          
+          ca dv_x2
+          srr 1
+          su dv_slope_tmp1
+          ts dv_delta_x
+          dm 0            ; find magnitude of delta_x
+          su dv_tmp1      ; subtract |y| from |x|
+          cp br_dv_y_is_bigger  ; branch if the Y delta is bigger than X
+          
+br_dv_x_is_bigger:
+          ca dv_delta_y      ; calculate the slope
+          dv dv_delta_x
+          slr 15
+          ts dv_x_slope      ; save the slope
+          
+          ca dv_delta_x
+          ts dv_dx            ; copy to the tmp dx
+          ca dv_delta_y
+          ts dv_dy            ; copy to the tmp dy
+          
+br_dv_x_loop:
+          ca dv_dx            ; fetch the remaining delta
+          dm 0               ; subtract zero from the abs value of AC (i.e., make it positive)
+          su max_vector      ; test if it's short enough to draw as-is
+          cp br_dv_short_x      ; branch if it's short enough to draw as-is
+          
+          ; the following stanza sets DX to the longest allowed vector, either positive or negative as needed.
+          ca dv_dx            ; test the sign of dx
+          cp br_dv_neg_dx       ; branch if negative
+          ca max_vector      ; otherwise, change dx to the max +vector
+          ts dv_dx
+          sp br_dv_calc_y       ; continue to figure dY
+          
+br_dv_neg_dx:
+          ca 0
+          su max_vector      ; otherwise, change dx to the max -vector
+          ts dv_dx
+          
+br_dv_short_x:
+          sp br_dv_calc_y   ; I don't think there's anything else to do here...
+
+br_dv_calc_y:          
+          ; now figure out the dy value
+          ca dv_dx
+          mr dv_x_slope  ; multiply the delta_x by the slope
+          ts dv_dy
+
+
+          sp draw_short_vector
+          
+          ; move the starting point by the dx, dy just used, in prep for the next pass through the loop
+          ca dv_y1
+          ad dv_dy
+          ts dv_y1
+          ca dv_x1
+          ad dv_dx
+          ts dv_x1        ; finished updating for this loop
+dv_pre_test_loop_end:
+          ; Just testing for Equal isn't a Piece of Cake.  For small numbers, we just subtract one from
+          ; the other, then compare the magnitude of the result to zero.  But for numbers larger than 1/2,
+          ; that's not so easy; (1 - (-1)) = 2.  
+          ; So I'm xor'ing the two numbers first; if the sign bit turns on after the xor, that must mean 
+          ; the two numbers have different signs, i.e., they can's possibly be equal
+          ; (oops, and this might not work comparing +0 and -0)
+          ; Remeber that AC contains dv_x1 at this point
+          ;sd dv_x2
+          ;cp br_dv_x_loop ; go around again
+          ca 0   ; temporary no-op
+          
+dv_test_loop_end:
+          ca dv_x1
+          su dv_x2      ; test to see if x1==x2; if so, we're done
+          dm 0
+          cp dv_ret       ; branch if negative zero; we're done
+          
+          ca dv_x2        ; if we're going around again, update dv_dx.
+          su dv_x1        ;  (no need to mess with dv_dy; it's recomputed from the slope
+          ts dv_dx
+          sp br_dv_x_loop ; go around again
+          
+
+          sp dv_ret       ; all done with the x-is-bigger vector
+
+br_dv_loop_exit:
+          sp dv_ret
+
+dv_ret:   sp 0
+
+
+br_dv_y_is_bigger:  ; slope is greater than 1.0, so swap (x, y) 
+          ca 1
+          ts dv_swap_xy   ; slope is greater than 1.0
+          ca dv_arg_x1
+          ts dv_y1
+          ca dv_arg_y1
+          ts dv_x1
+          ca dv_arg_x2
+          ts dv_y2
+          ca dv_arg_y2
+          ts dv_x2
+          
+          sp dv_calc_slope
+
+
+; local vars
+dv_x1:    .word 0
+dv_y1:    .word 0
+dv_x2:    .word 0
+dv_y2:    .word 0
+
+dv_delta_x:  .word 0
+dv_delta_y:  .word 0
+dv_dx:       .word 0
+dv_dy:       .word 0
+dv_x_slope:  .word 0
+dv_swap_xy:  .word 0     ; swap x & y if this value is non-zero; don't swap if zero
+dv_tmp1:     .word 0 
+dv_slope_tmp1: .word 0
+
+
+
+
+;; Subroutine to Draw Short Vector
+          ; Input Args:
+          ; The starting point is assumed to be in dv_x1 and dv_y1
+          ; The deltas are in dv_dx and dv_dy
+          ; All four numbers are in the same units -- a signed ten-bit number in the top 11 bits of the word
+          ; If the dv_swap_xy flag is non-zero, swap x & y to accommodate a vector with slope > 1
+          ; Don't change the input args during processing in this routine!
+          ; Start by assembling the single word that gives the x and y offsets from the 
+          ; vector starting point
+draw_short_vector:
+          ta dsv_ret     ; store the return address
+          
+          ;.print "SubroutineEntry: draw_short_vector"
+          ca dv_swap_xy ; load the swap bit
+          dm 0          ; compare to zero; dm is -0 if the value in dv_swap_xy is +0 or -0, and positive otherwise
+          cp dsv_dont_do_swap
+          
+          ca dv_dx      ; copy incoming args to local vars without swap
+          ts dsv_dy
+          ca dv_dy
+          ts dsv_dx
+          ca dv_x1
+          ts dsv_y1
+          ca dv_y1
+          ts dsv_x1
+          sp dsv_figure_offset
+
+dsv_dont_do_swap:
+          ca dv_dx      ; copy incoming args to local vars without swap
+          ts dsv_dx
+          ca dv_dy
+          ts dsv_dy
+          ca dv_x1
+          ts dsv_x1
+          ca dv_y1
+          ts dsv_y1
+          
+dsv_figure_offset:          
+          ca dsv_dx
+          slr 5
+          md top_6_bits
+          ts dsv_vec
+          ca dsv_dy
+          srr 3       ; shift to lower part of word, preserving the sign bit
+          md low_6_bits   ; mask off the unused upper half
+          ad dsv_vec   ; this should be an OR, but no such luck
+          ts dsv_vec
+          ; draw the vector
+          ;.print "Short Vector: x1=%d; y1=%d; dx=%d; dy=%d; vec=%o", dv_x1, dv_y1, dv_dx, dv_dy, dsv_vec
+          ca dsv_y1         ; pick up the Y value
+          si 0o1677        ; select all the scopes; set Y value
+          ca dsv_x1
+          rc dsv_vec
+
+dsv_ret:   sp 0
+
+; local variables
+dsv_vec:  .word 0   ; one word for the assembly of the Delta Vector
+dsv_dx:   .word 0   ; tmp copies of input args, possibly swapped.
+dsv_dy:   .word 0
+dsv_x1:   .word 0
+dsv_y1:   .word 0
+
+
+
+;; Subroutine to calculate modulus
+; AC should contain the number to be modulo'd
+; The modulus is returned in AC
+; The quotient is available in fm_quot
+find_mod60:
+          ta fm_ret60
+          cp fm60_negative_arg
+          sp fm60_positive_arg
+fm60_negative_arg:
+          sd all_ones   ; invert the negative arg
+fm60_positive_arg:
+          ts fm_arg1       ; save the incoming argument
+          dv fm_mod60
+          slh 9         ; after this instruction, AC contains the Quotient
+          ts fm_quot
+          mh fm_mod60
+          slh 6
+          su fm_arg1    ; subtract the initial number; this gives the negative of the Remainder
+          sd all_ones   ; invert the negative result
+          dm 0          ; make sure Zero is Negative Zero
+fm_ret60: sp 0
+
+
+find_mod5:
+          ta fm_ret5
+          cp fm5_negative_arg
+          sp fm5_positive_arg
+fm5_negative_arg:
+          sd all_ones   ; invert the negative arg
+fm5_positive_arg:
+          ts fm_arg1       ; save the incoming argument
+          dv fm_mod5
+          slh 9         ; after this instruction, AC contains the Quotient
+          ts fm_quot
+          mh fm_mod5
+          slh 6
+          su fm_arg1    ; subtract the initial number; this gives the negative of the Remainder
+          dm four       ; yeah, ok, the incoming arg is negative and counts up to zero;
+          dm zero       ;    but I want the return code to start at zero and count up to four
+fm_ret5:  sp 0
+
+fm_mod5:  .word 0o05000  ; that's 5/64  
+fm_mod60: .word 0o74000  ; that's 60/64  
+fm_arg1:   .word 0    ; temporary storage for Mod argument
+fm_quot:  .word 0     ; return the quotient in this register
+
+
+;;;;;;;;; unit test Modulo operation ;;;;;;;;;;;;;;
+test_mod:
+          ca minus120
+          ts tm_cnt_neg
+          ca large_num
+          ts tm_cnt_pos
+tm_loop:
+          ca tm_cnt_pos
+          sp find_mod60
+          .print "modulus60 of %d is %ad", tm_cnt_pos
+          ca tm_cnt_neg
+          sp find_mod5
+          .print "modulus5 of %d is %ad", tm_cnt_neg
+          ao tm_cnt_pos
+          ao tm_cnt_neg
+          cp tm_loop
+          
+          sp 0
+
+tm_cnt_pos: .word 0
+tm_cnt_neg: .word 0
+large_num:  .word 0o74000
+
+
+
+
+;;;;;;;;;;;; Subroutine read_trig_table ;;;;;;;;;;;;;;;;;
+; Take an index, nominally 0-59, in AC and index the ring table to find x, y components
+; The rtt_arg_scale is a multiplier to be applied to the results of the table lookup
+; before returning.
+; Computed values are returned in rtt_x and rtt_y
+
+rtt_arg_scale:  .word 0
+rtt_x:  .word 0
+rtt_y:  .word 0
+read_trig_table:
+          ta rtt_ret      ; save return address
+          
+          ts rtt_index    ; store the index so we can do the range-checks with the AC
+          
+          ; wrap the table index to get it into the 0-59 range
+          ; I'm assuming that any out-of-range is less than a full rotation, i.e. we don't
+          ; need a modulus operation
+          ; Is it bigger than 59?
+          ad minus59
+          cp rtt_smaller_than_sixty
+          su sixty    ; if it's larger than 60, subtract 60 to get it in range
+          ts rtt_index
+rtt_smaller_than_sixty:
+          ; test for less than zero
+          ca rtt_index
+          su 0        ; make sure if it's zero, it's negative zero; not sure it there's a better way to do this!
+          ad one      ; increment by one.  If it was negative zero, this makes it positive; if negative one or 
+                      ;   less, the addition will cause it to stay negative
+          cp rtt_less_than_zero  ; br is less than zero
+          sp rtt_do_lookup
+rtt_less_than_zero:
+          ad fifty_nine   ; we already incremented the AC by one, so adding 59 more wraps the index in AC
+          ts rtt_index
+rtt_do_lookup:          
+          ca rtt_index
+          slr 1       ; double the offset to make a table index
+          ad minutes_ring_pointer
+          td i_rtt_ca_x1   ; overwrite the address for a ca instruction
+          ad 01
+          td i_rtt_ca_y1
+          
+i_rtt_ca_x1:          
+          ca 0
+          srr 1             ; scale by half to avoid overflows later
+          mr rtt_arg_scale
+          ts rtt_x
+i_rtt_ca_y1:
+          ca 0
+          srr 1
+          mr rtt_arg_scale
+          ts rtt_y
+
+rtt_ret:
+        sp 0
+; local vars
+rtt_index: .word 0
+
+ 
+ 
+
+;;;;;;;;;;;;  Constants ;;;;;;;;;;;;
+
+
+two:        .word 2
+four:       .word 4
+five:       .word 5
+minus5:     .word -5
+minus59:    .word -59
+minus120:   .word -120
+fifty_nine: .word 59
+sixty:      .word 60
+twenty_eight:  .word 28
+thirty:     .word 30
+thirty_two: .word 32
+all_ones:   .word 0o177777
+point_99:   .word +0.99
+point_95:   .word +0.95
+point_75:   .word +0.75
+point_20:   .word +0.20
+top_6_bits: .word 0o176000  ; mask for x vector offset
+low_6_bits: .word 0o000374  ; mask for y vector offset
+max_vector: .word 0o001740    ; It's five bits (ignoring the sign), offset to end on Bit 10
+
+
+minutes_ring_pointer:    .word minutes_ring
+minutes_ring:
+      .word +0.00000
+      .word +0.90000
+
+      .word +0.09407
+      .word +0.89506
+
+      .word +0.18712
+      .word +0.88033
+
+      .word +0.27811
+      .word +0.85595
+
+      .word +0.36606
+      .word +0.82219
+
+      .word +0.44999
+      .word +0.77942
+
+      .word +0.52900
+      .word +0.72811
+
+      .word +0.60221
+      .word +0.66883
+
+      .word +0.66883
+      .word +0.60221
+
+      .word +0.72811
+      .word +0.52900
+
+      .word +0.77942
+      .word +0.45000
+
+      .word +0.82219
+      .word +0.36606
+
+      .word +0.85595
+      .word +0.27811
+
+      .word +0.88033
+      .word +0.18712
+
+      .word +0.89506
+      .word +0.09407
+
+      .word +0.90000
+      .word -0.00000
+
+      .word +0.89506
+      .word -0.09407
+
+      .word +0.88033
+      .word -0.18712
+
+      .word +0.85595
+      .word -0.27811
+
+      .word +0.82219
+      .word -0.36606
+
+      .word +0.77942
+      .word -0.44999
+
+      .word +0.72811
+      .word -0.52900
+
+      .word +0.66883
+      .word -0.60221
+
+      .word +0.60221
+      .word -0.66883
+
+      .word +0.52900
+      .word -0.72811
+
+      .word +0.44999
+      .word -0.77942
+
+      .word +0.36606
+      .word -0.82219
+
+      .word +0.27811
+      .word -0.85595
+
+      .word +0.18712
+      .word -0.88033
+
+      .word +0.09407
+      .word -0.89506
+
+      .word -0.00000
+      .word -0.90000
+
+      .word -0.09407
+      .word -0.89506
+
+      .word -0.18712
+      .word -0.88033
+
+      .word -0.27811
+      .word -0.85595
+
+      .word -0.36606
+      .word -0.82219
+
+      .word -0.45000
+      .word -0.77942
+
+      .word -0.52900
+      .word -0.72811
+
+      .word -0.60221
+      .word -0.66883
+
+      .word -0.66883
+      .word -0.60221
+
+      .word -0.72811
+      .word -0.52900
+
+      .word -0.77942
+      .word -0.45000
+
+      .word -0.82219
+      .word -0.36606
+
+      .word -0.85595
+      .word -0.27811
+
+      .word -0.88033
+      .word -0.18712
+
+      .word -0.89506
+      .word -0.09407
+
+      .word -0.90000
+      .word +0.00000
+
+      .word -0.89506
+      .word +0.09407
+
+      .word -0.88033
+      .word +0.18712
+
+      .word -0.85595
+      .word +0.27811
+
+      .word -0.82219
+      .word +0.36606
+
+      .word -0.77942
+      .word +0.45000
+
+      .word -0.72811
+      .word +0.52900
+
+      .word -0.66883
+      .word +0.60221
+
+      .word -0.60221
+      .word +0.66883
+
+      .word -0.52900
+      .word +0.72811
+
+      .word -0.45000
+      .word +0.77942
+
+      .word -0.36606
+      .word +0.82219
+
+      .word -0.27811
+      .word +0.85595
+
+      .word -0.18712
+      .word +0.88033
+
+      .word -0.09407
+      .word +0.89506
+
+
+

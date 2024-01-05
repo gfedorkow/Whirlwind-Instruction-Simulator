@@ -57,6 +57,7 @@ class LogClass:
         self._debugldr = debugldr
         self._quiet = quiet
         self._program_name = program_name
+        self.error_count = 0
 
     def log(self, message):  # unconditionally log a message
         print("Log: %s" % message)
@@ -81,6 +82,13 @@ class LogClass:
         if self._debugtap:
             print("Debug TAP: %s" % message)
 
+    # the log-class "error" is specifically meant for error messages from the assembler
+    # or similar tools, which report findings that are not fatal, but should be counted
+    # and identified in an input file as 'input errors'.
+    def error(self, line_number, message):
+        print("Line %d: %s" % (line_number, message))
+        self.error_count += 1
+
     def info(self, message):
         if not self._quiet:
             print("Info: %s" % message)
@@ -99,6 +107,15 @@ def octal_or_none(number):
     if number is not None:
         ret = "0o%06o" % number
     return ret
+
+
+# This class is used to hold Python Vars that can be viewed and modified via the on-screen Debug Widget
+# at sim run time
+class DebugWidgetPyVarsClass:
+    def __init__(self, cb):
+        if cb.radar:
+            self.TargetHeading = cb.radar.adjust_target_heading
+
 
 
 class ConstWWbitClass:
@@ -166,10 +183,16 @@ class ConstWWbitClass:
         self.COLOR_CF = "\033[96m"  # Cyan color code for CF Instruction
         self.COLOR_default = "\033[0m"  # Reset to default color
 
-        # some programs use two separate scopes; these constants identify which one to use
+        # Some programs use two separate scopes; these constants identify which one to use
+        # 2M-0277 says that this number selects one of "256" select lines (which must actually be 64, 'cause it's
+        # six bits) and then switches determine which scope is hooked to which combination of Select lines.
         self.SCOPE_MAIN = 1
         self.SCOPE_AUX  = 2  # aka "F Scope"
 
+        # configure the displays
+        self.analog_display = False   # set this flag to display on an analog oscilloscope instead of an x-window
+        self.use_x_win = True         # clear this flag to completely turn off the xwin display, widgets and all
+        self.ana_scope = None   # this is a handle to the methods for operating the analog scope
         # use these vars to control how much Helpful Stuff emerges from the sim
         self.color_trace = True
         self.museum_mode = None  # command line switch to enable a repeating demo mode.
@@ -191,10 +214,11 @@ class ConstWWbitClass:
         self.CoreFileName = None
         self.log = None
         self.cpu = None
-        self.dbwgt = None
+
+        self.dbwgt = None  # This list gives all the currently active Debug Widgets
+        self.DebugWidgetPyVars = None   # this class links up the Python-based debug widget methods, it any
+
         self.host_os = os.getenv("OS")
-        self.analog_display = False   # set this flag to display on an analog oscilloscope instead of an x-window
-        self.ana_scope = None   # this is a handle to the methods for operating the analog scope
         self.crt_fade_delay_param = 0
         self.radar = None   # set this if we're doing a radar-style display
         self.no_toggle_switch_warn = False  # Apologies for the double-negative, but the warning should normally
@@ -319,15 +343,16 @@ class ConstWWbitClass:
         self.screen_x = 1372
         self.screen_y = 893
 
-        screens = get_monitors()
-        # if that raises an error, put this first
-        # from os import environ
-        # environ['DISPLAY'] = ':0.0'
-        for s in screens:
-            print(s)
-            if s.is_primary:
-                self.screen_x = s.width
-                self.screen_y = s.height
+        # Cygwin depends on the xwin DISPLAY var; if it's not there, there's no point in
+        # asking about screens
+        display = self.use_x_win and os.getenv("DISPLAY")
+        if display:
+            screens = get_monitors()
+            for s in screens:
+                # print(s)
+                if s.is_primary:
+                    self.screen_x = s.width
+                    self.screen_y = s.height
 
         # there must be a cleaner way of finding what scale-factor the OS is using
         # As a heuristic, if it's bigger than 1280x800, it's probably hi-res, probably 200%
@@ -336,7 +361,7 @@ class ConstWWbitClass:
             self.gfx_scale_factor = 2.0
 
         # (screen_x, screen_y) = win.master.maxsize()
-        print("screen size: %d by %d, scale=%d" % (self.screen_x, self.screen_y, self.gfx_scale_factor))
+        # print("screen size: %d by %d, scale=%d" % (self.screen_x, self.screen_y, self.gfx_scale_factor))
 
         return(self.screen_x, self.screen_y, self.gfx_scale_factor)
 
@@ -600,17 +625,19 @@ class CorememClass:
              [0o020032,  True], [0o110026,  True], [0o000703,  True], [0o010036,  True],  # 28d
              ]
 
-        self.NBANKS = 6  # six 1K banks
-        self._coremem = []
-        for _i in range(self.NBANKS):
-            self._coremem.append([None] * (cb.CORE_SIZE // 2))
-        self.MemGroupA = 0  # I think Reset sets logical Group A to point to Physical Bank 0
-        self.MemGroupB = 1  # I *think* Reset sets logical Group B to point to Physical Bank 1
-        self.use_default_tsr = use_default_tsr
-        if cb.NoZeroOneTSR is False:
-            self._coremem[0][0] = 0
-            self._coremem[0][1] = 1
         self.cb = cb
+        self.NBANKS = 6  # six 1K banks
+        self.use_default_tsr = use_default_tsr
+
+        self.clear_mem()
+        # self._coremem = []
+        # for _i in range(self.NBANKS):
+        #     self._coremem.append([None] * (cb.CORE_SIZE // 2))
+        # self.MemGroupA = 0  # I think Reset sets logical Group A to point to Physical Bank 0
+        # self.MemGroupB = 1  # I *think* Reset sets logical Group B to point to Physical Bank 1
+        # if cb.NoZeroOneTSR is False:
+        #     self._coremem[0][0] = 0
+        #     self._coremem[0][1] = 1
         self.SymTab = None
         self.tsr_callback = [None] * 32
         self.metadata = {}  # a dictionary for holding assorted metadata related to the core image
@@ -674,6 +701,17 @@ class CorememClass:
         if self.cb.TraceCoreLocation == addr:
             self.cb.log.log("Read from core memory; addr=0o%05o, value=%s" % (addr, octal_or_none(ret)))
         return ret
+
+    def clear_mem(self):
+        self._coremem = []
+        for _i in range(self.NBANKS):
+            self._coremem.append([None] * (self.cb.CORE_SIZE // 2))
+        self.MemGroupA = 0  # I think Reset sets logical Group A to point to Physical Bank 0
+        self.MemGroupB = 1  # I *think* Reset sets logical Group B to point to Physical Bank 1
+        if self.cb.NoZeroOneTSR is False:
+            self._coremem[0][0] = 0
+            self._coremem[0][1] = 1
+
 
     # entry point to read a core file into 'memory'
     def read_core(self, filename, cpu, cb, file_contents=None):
@@ -777,7 +815,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             tokens = re.split("[: \t][: \t]*", input_minus_comment)
             # print "tokens:", tokens
             if len(tokens[0]) == 0:
-                cb.log.warn("read_core parse error, read_core @C/@T: tokens=", tokens)
+                cb.log.warn("read_core parse error, read_core @C/@T: tokens=%s" % tokens)
                 continue
             # if it's actually a binary core file, pick up the address from @C or @T
             if re.match("^@C|^@T", input_minus_comment):
@@ -791,7 +829,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             tokens = re.split("[: \t][: \t]*", input_minus_comment)
             # print "tokens:", tokens
             if len(tokens) != 2:
-                cb.log.warn("read_core parse error, read_core @S: tokens=", tokens)
+                cb.log.warn("read_core parse error, read_core @S: tokens=%s" % tokens)
                 continue
             address = int(tokens[0][2:], 8)
             symtab[address] = (tokens[1], '')  # save the name, and a marker saying we don't know the type
@@ -799,7 +837,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             tokens = re.split("[: \t][: \t]*", input_minus_comment, maxsplit = 1)
             # print "tokens:", tokens
             if len(tokens) != 2:
-                cb.log.warn("read_core parse error, read_core @N: tokens=", tokens)
+                cb.log.warn("read_core parse error, read_core @N: tokens=%s" % tokens)
                 continue
             address = int(tokens[0][2:], 8)
             commenttab[address] = tokens[1]  # save the string
@@ -838,20 +876,20 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             if len(tokens) > 1:
                 ww_hash = tokens[1]
             else:
-                cb.log.warn("read_core: missing arg to %Hash")
+                cb.log.warn("read_core: missing arg to %%Hash")
         # identifies any thing that might be a Flexo Character string in the image
         elif re.match("^%String:", input_minus_comment):
             tokens = input_minus_comment.split()
             if len(tokens) > 1:
                 ww_strings += tokens[1] + '\n'
             else:
-                cb.log.warn("read_core: missing arg to %String")
+                cb.log.warn("read_core: missing arg to %%String")
         elif re.match("^%Stats:", input_minus_comment):  # put the Colon back in here!
             tokens = input_minus_comment.split(' ', 1)
             if len(tokens) > 1:
                 ww_stats = tokens[1]
             else:
-                cb.log.warn("read_core: missing arg to %Stats")
+                cb.log.warn("read_core: missing arg to %%Stats")
         elif re.match("^%Blocknum", input_minus_comment):
             tokens = input_minus_comment.split()
             blocknum = int(tokens[1], 8)
@@ -866,8 +904,8 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             # We have to parse the items later to get all the symbolic addresses and their translations at once
             # Format:  %DbWgt: <addr> [increment]
             args = input_minus_comment.split()[1:]
-            if len(args) < 1 or len(args) > 2:
-                cb.log.warn("read_core: %%DbWgt takes one or two args, got %d" % len(args))
+            if len(args) < 1 or len(args) > 3:
+                cb.log.warn("read_core: %%DbWgt takes one, two or three args, got %d" % len(args))
             screen_debug_widgets.append(args)
 
         else:
@@ -1271,7 +1309,9 @@ class ScreenDebugWidgetClass:
         # core mem debug widgets
         self.mem_addrs = []   # physical address to be monitored
         self.labels = []      # label that matches the address, if any
+        self.py_labels = []      # label that matches the address, if any
         self.increments = []  # amount to be added when the 'increment' key is hit
+        self.format_str = []  # how to format the widget value when printing; should be "%d", "%o", etc
 
         # screen print lines (i.e., not from core memory, but strings created by a python stmt)
         self.screen_print_text = {}   # dict of text strings indexed by line number
@@ -1280,10 +1320,21 @@ class ScreenDebugWidgetClass:
         # more overhead
         self.txt_objs = []    # the gfx text object created for this widget
         self.input_selector = None  # current offset for which widget is incremented/decremented
-        if not analog_scope:
+#        if not analog_scope:  # I used to only import the xwin graphics module when Not --AnaScope, now I'm using both
+#       #  But it won't work without a DISPLAY
+
+        # the following stanza will dump the complete environment to help debug
+        # for name, value in os.environ.items():
+        #     print("{0}: {1}".format(name, value))
+
+        if cb.use_x_win and os.getenv("DISPLAY"):
             self.gfx = __import__("graphics")
+        else:
+            if not analog_scope:
+                cb.log.fatal("can't display debug widgets with no display; analog_scope=%d" % analog_scope)
         self.cm = coremem
         self.win = None
+        self.cb = cb   # keep this around so we can find the parent python env
 
     # the emulated CRT display scope is added only if there's an SI instruction that threatens to actually
     # use the display.  At which point, scale_factors should already have been set.
@@ -1295,33 +1346,61 @@ class ScreenDebugWidgetClass:
         self.y_delta = (self.point_size + 5) * int(self.gfx_scale_factor)
 
 
-    def add_widget(self, addr, label, increment):
+    def add_widget(self, cb, addr, label, py_label, increment, format_str):
         self.mem_addrs.append(addr)
         self.labels.append(label)
+        self.py_labels.append(py_label)
         self.increments.append(increment)
+        self.format_str.append(format_str)
         self.input_selector = 0
 
     def add_screen_print(self, line, text):
         self.screen_print_text[line] = text
 
+    def eval_py_var(self, var_name, direction_up=None, incr=1):
+        if direction_up is None:
+            op = ".rd()"
+        elif direction_up == True:
+            op = ".incr(%d)" % incr
+        else:
+            op = ".incr(%d)" % -incr
+        name_and_context = "self.cb.DebugWidgetPyVars." + var_name + op
+        val = eval(name_and_context)
+        return val
+
+
+    def wgt_format(self, val, format_str):
+        if val is None:
+            val_str = "None"
+        else:
+            val_str = format_str % val
+        return val_str
+
 
     def refresh_widgets(self):
         # don't refresh this part of the display unless there's something to see, and there's a display to see
         # it on!
-        if self.win and len(self.mem_addrs) == 0:
+        if self.win is None or len(self.mem_addrs) == 0:
             return
         for txt in range(0, len(self.txt_objs)):
             self.txt_objs[txt].undraw()
         y = 0
         self.txt_objs = []
         cm = self.cm
-        for wgt in range(len(self.mem_addrs) - 1, -1, -1):  # wgt = widget
-            if len(self.labels) > 0:
-                lbl = self.labels[wgt]
+        for wgt in range(len(self.mem_addrs) - 1, -1, -1):  # wgt = widget number offset
+            val = 0
+            if self.py_labels[wgt]:
+                lbl = self.py_labels[wgt]
+                val = self.eval_py_var(self.py_labels[wgt])
             else:
-                lbl = "core@0o%04o" % self.mem_addrs[wgt]
-            m = self.gfx.Text(self.gfx.Point(self.xpos, self.ypos + y), "w%d: %s = 0o%06o" %
-                     (wgt, lbl, cm.rd(self.mem_addrs[wgt])))
+                if len(self.labels) > 0:
+                    lbl = self.labels[wgt]
+                else:
+                    lbl = "core@0o%04o" % self.mem_addrs[wgt]
+                val = cm.rd(self.mem_addrs[wgt])
+            val_str = self.wgt_format(val, self.format_str[wgt])
+            m = self.gfx.Text(self.gfx.Point(self.xpos, self.ypos + y), "w%d: %s = %s" %
+                     (wgt, lbl, val_str))
             m.config['justify'] = 'left'   # this doesn't seem to work...
             # m.config['align'] = 'e'   # this Really doesn't work...
             m.setSize(self.point_size)
@@ -1367,23 +1446,27 @@ class ScreenDebugWidgetClass:
     def increment_addr_location(self, direction_up = False):
         cm = self.cm
         wgt = self.input_selector
-        rd = cm.rd(self.mem_addrs[wgt])
-        incr = self.increments[wgt]
-        if direction_up:
-            wr = rd + incr
-            if rd <= 0o77777 and wr >= 0o77777:  # don't roll over from Max-Plus to Max-Minus
-                wr = 0o77777
-            if wr >= 0o177777:
-                wr = (wr + 1) & 0o77777  # this corrects for ones-complement going from -1 to +0
+        addr = self.mem_addrs[wgt]
+        if addr >= 0:  # a normal WW memory reference has a non-negative address; PyVars are signalled with addr=-1
+            #  For a WW var, read the current value, add or subtract (and wrap), then write it back
+            rd = cm.rd(addr)
+            incr = self.increments[wgt]
+            if direction_up:
+                wr = rd + incr
+                if rd <= 0o77777 and wr >= 0o77777:  # don't roll over from Max-Plus to Max-Minus
+                    wr = 0o77777
+                if wr >= 0o177777:
+                    wr = (wr + 1) & 0o77777  # this corrects for ones-complement going from -1 to +0
+            else:
+                wr = rd - incr
+                if rd >= 0o100000 and wr <= 0o77777:  # don't roll over from Max-Minus to Max-Plus
+                    wr = 0o100000
+                if wr < 0:   # if it turns to a Pythonic negative, subtract one for 1's comp, and mask to 16 bits
+                    wr = (wr - 1) & 0o177777  # this corrects for ones-complement going from +0 to -1
+
+            cm.wr(self.mem_addrs[wgt], wr)
         else:
-            wr = rd - incr
-            if rd >= 0o100000 and wr <= 0o77777:  # don't roll over from Max-Minus to Max-Plus
-                wr = 0o100000
-            if wr < 0:   # if it turns to a Pythonic negative, subtract one for 1's comp, and mask to 16 bits
-                wr = (wr - 1) & 0o177777  # this corrects for ones-complement going from +0 to -1
-
-        cm.wr(self.mem_addrs[wgt], wr)
-
+            self.eval_py_var(self.py_labels[wgt], direction_up=direction_up, incr=self.increments[wgt])
 
 # This routine should probably go somewhere else...  it's a general-purpose number
 # converter, but I need it in call the analog scope modules.
@@ -1418,26 +1501,31 @@ class XwinCrt:
         self.cb = cb
         self.win = None
 
+        widgets_only_on_xwin = False
         if cb.analog_display:
             if cb.ana_scope is None:  # first time there's a CRT SI instruction, we'll init the display modules
                 cb.ana_scope = analog_scope.AnaScope(cb.host_os, cb)
             self.WW_CHAR_HSTROKE = 8  # should be 7    (2M-0277 p.61)
             self.WW_CHAR_VSTROKE = 9  # should be 8.5
+            widgets_only_on_xwin = True
 
-        else:  # display on the laptop CRT using xwindows
+        # The graphics package won't work if you don't have DISPLAY=<something> in the environment
+        # So don't bother even trying if there isn't a DISPLAY var already set
+        display = os.getenv("DISPLAY")
+        if display and cb.use_x_win and (cb.analog_display == False or widgets_only_on_xwin): # display on the laptop CRT using xwindows
             self.gfx = __import__("graphics")
 
-    #        self.get_display_size(cb)
-    #        if cb.museum_mode:
-    #            cb.museum_mode.museum_gfx_get_display_size(cb)
-
+            cb.log.info("opening XwinCrt")
+            # gfx_scale_factor comes from Windows and depends on the display.  I think it's usually between 1.0 and 2.0
             self.WIN_MAX_COORD = 600.0 * cb.gfx_scale_factor # 1024.0 + 512.0  # size of window to request from the laptop window  manager
+            win_y_size = self.WIN_MAX_COORD
+            if widgets_only_on_xwin:
+                win_y_size = win_y_size / 4
 
             self.WIN_MOUSE_BOX = self.WIN_MAX_COORD / 50.0
 
             win_name = "Whirlwind CoreFile: %s" % cb.CoreFileName
-            self.win = self.gfx.GraphWin(win_name, self.WIN_MAX_COORD, self.WIN_MAX_COORD, autoflush=False)
-            #  self.win.placec(1, 1) # failed experiment!
+            self.win = self.gfx.GraphWin(win_name, self.WIN_MAX_COORD, win_y_size, autoflush=False)
 
             self.win.setBackground("Gray10")
             if cb.museum_mode:
@@ -1457,8 +1545,10 @@ class XwinCrt:
             # normal size would be "expand = 1", large size, expand = 2
             # Expand Mode is used in blackjack, not used in the Everett tape (I think)
             # so the base value of the stroke lengths here is divided by two, so it comes out right when doubled in bjack
-            self.WW_CHAR_HSTROKE = int(25.6 / 2.0 * (self.WIN_MAX_COORD / (self.WW_MAX_COORD * 2.0)))  # should be 20.0 in 'expand'
-            self.WW_CHAR_VSTROKE = int(19.2 / 2.0 * (self.WIN_MAX_COORD / (self.WW_MAX_COORD * 2.0)))  # should be 15.00
+            # If the xwin is just for debug_widgets, then the anascope section above should set character stroke sizes
+            if cb.analog_display == False:
+                self.WW_CHAR_HSTROKE = int(25.6 / 2.0 * (self.WIN_MAX_COORD / (self.WW_MAX_COORD * 2.0)))  # should be 20.0 in 'expand'
+                self.WW_CHAR_VSTROKE = int(19.2 / 2.0 * (self.WIN_MAX_COORD / (self.WW_MAX_COORD * 2.0)))  # should be 15.00
 
         # The Whirlwind CRT character generator uses a seven-segment format with a bit in a seven-bit
         # word to indicate each segment.  This list defines the sequence in which the bits are
@@ -1478,7 +1568,7 @@ class XwinCrt:
         # on the simulated crt -- if not, we'll poll it separately when painting the display
         self.polling_mouse = False
 
-        if not cb.analog_display:
+        if cb.use_x_win and not cb.analog_display:
             self.draw_red_x_and_axis(cb)
 
 
@@ -1499,28 +1589,6 @@ class XwinCrt:
 
         if cb.radar is not None:
             cb.radar.draw_axis(self)
-#        axis_color = self.gfx.color_rgb(80, 0, 80)
-#        xaxis = self.gfx.Line(self.gfx.Point(0, self.WIN_MAX_COORD/2),
-#                              self.gfx.Point(self.WIN_MAX_COORD, self.WIN_MAX_COORD/2))
-#        xaxis.setOutline(axis_color)
-#        xaxis.setWidth(1)
-#        xaxis.draw(self.win)
-#        yaxis = self.gfx.Line(self.gfx.Point(self.WIN_MAX_COORD/2, 0),
-#                              self.gfx.Point(self.WIN_MAX_COORD/2, self.WIN_MAX_COORD))
-#        yaxis.setOutline(axis_color)
-#        yaxis.setWidth(1)
-#        yaxis.draw(self.win)
-#
-#
-#        rings = 5
-#        radial_axis = [None] * rings
-#        for i in range(0, rings):
-#            # draw concentric circles every 25 miles
-#            diameter = 25 / 128 * i * ((self.WIN_MAX_COORD/2))
-#            radial_axis[i] = self.gfx.Circle(self.gfx.Point(self.WIN_MAX_COORD/2, self.WIN_MAX_COORD/2), diameter)
-#            radial_axis[i].setOutline(axis_color)
-#            radial_axis[i].setWidth(1)
-#            radial_axis[i].draw(self.win)
 
 
     def get_mouse_blocking(self):
@@ -1545,9 +1613,11 @@ class XwinCrt:
 
         return int(xwin_x), int(xwin_y)
 
-    def ww_draw_char(self, ww_x, ww_y, mask, expand):
+    def ww_draw_char(self, ww_x, ww_y, mask, expand, scope=None):
+        if scope is None:
+            scope = self.cb.SCOPE_MAIN
         if self.cb.ana_scope:
-            self.cb.ana_scope.drawChar(ww_x, ww_y, mask, expand, self)
+            self.cb.ana_scope.drawChar(ww_x, ww_y, mask, expand, self, scope=scope)
         else:
             x0, y0 = self.ww_to_xwin_coords(ww_x, ww_y)
             obj = XwinCrtObject(x0, y0, 0, 0, 'C', mask, expand = expand)
@@ -1578,7 +1648,7 @@ class XwinCrt:
             scope = self.cb.SCOPE_MAIN
         self.cb.log.info("ww_draw_line: pt=(%d,%d) len=(%d,%d), scope=%d" % (ww_x0, ww_y0, ww_xd, ww_yd, scope)) 
         if self.cb.ana_scope:
-            self.cb.ana_scope.drawVector(ww_x0, ww_y0, ww_xd, ww_yd)
+                self.cb.ana_scope.drawVector(ww_x0, ww_y0, ww_xd>>2, ww_yd>>2, scope=scope)
         else:
             x0, y0 = self.ww_to_xwin_coords(ww_x0, ww_y0)
             x1, y1 = self.ww_to_xwin_coords(ww_x0 + ww_xd, ww_y0 + ww_yd)
@@ -1593,7 +1663,7 @@ class XwinCrt:
             scope = self.cb.SCOPE_MAIN
         self.cb.log.info("ww_draw_point: x=%d, y=%d, scope=%d, gun_enable=%d" % (ww_x, ww_y, scope, light_gun)) 
         if self.cb.ana_scope:
-            self.cb.ana_scope.drawPoint(ww_x, ww_y, scope)
+            self.cb.ana_scope.drawPoint(ww_x, ww_y, scope=scope)
             if light_gun:
                 self.last_pen_point = True  # remember the point was seen; not sure this really matters...
         else:
@@ -1715,6 +1785,9 @@ class XwinCrt:
         self.draw_red_x_and_axis(cb)    # replace the Red-X for exit symbol
         # and the screen-debug widget undraws its own objects, so that's being done twice now.
         dbwgt.refresh_widgets()
+
+        if cb.analog_display:
+            return self.cb.NO_ALARM
 
         for i in range(self.DARK, self.BRIGHT+1):
             for obj in self.screen_brightness:

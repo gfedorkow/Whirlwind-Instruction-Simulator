@@ -689,13 +689,15 @@ class DisplayScopeClass:
     # are given by the first six digits of v, and the sign and length
     # of the vertical component are given by digits 8 to 13 of this
     # register.
+    # Dec 20, 2023 - Rainer noted that the scope delta values are given in units
+    # of four 'pixels', i.e., must be multiplied by four to get the same units as x & y
     def convert_delta_scope_coord(self, ww_delta):
-        ww_xd = (ww_delta >> 10) & 0o77
-        if ww_xd & 0o40:  # the short coordinate form is used in vector generation, and is a six bit signed number
-            ww_xd = -(ww_xd ^ 0o37)  # so we flip the sign if negative...
-        ww_yd = (ww_delta >> 2) & 0o77
-        if ww_yd & 0o40:  # the short coordinate form is used in vector generation, and is a six bit signed number
-            ww_yd = -(ww_yd ^ 0o37)  # so we flip the sign if negative...
+        ww_xd = (ww_delta >> 8) & 0o374
+        if ww_xd & 0o200:  # the short coordinate form is used in vector generation, and is a six bit signed number
+            ww_xd = -(ww_xd ^ 0o374)  # so we flip the sign if negative...
+        ww_yd = ww_delta & 0o374
+        if ww_yd & 0o200:  # the short coordinate form is used in vector generation, and is a six bit signed number
+            ww_yd = -(ww_yd ^ 0o374)  # so we flip the sign if negative...
         return ww_xd, ww_yd
 
     # each device needs to identify its own unit number.
@@ -757,24 +759,26 @@ class DisplayScopeClass:
             # add each new character to a Pending list; draw them when the program asks for light gun input
             mask = (operand >> 8) & 0o177  # it's a seven-bit quantity to turn on character segments
             if not self.cb.TraceQuiet:
-                print("DisplayScope RC: record to scope, mode=Character, x=0o%o, y=0o%o, char-code=0o%o" %
-                      (self.scope_horizontal, self.scope_vertical, mask))
-            self.crt.ww_draw_char(self.scope_horizontal, self.scope_vertical, mask, self.scope_expand)
+                print("DisplayScope RC: record to scope 0o%o, mode=Character, x=0o%o, y=0o%o, char-code=0o%o" %
+                      (self.scope_select, self.scope_horizontal, self.scope_vertical, mask))
+            self.crt.ww_draw_char(self.scope_horizontal, self.scope_vertical,
+                                  mask, self.scope_expand, scope=self.scope_select)
 
         elif self.scope_mode == self.DISPLAY_MODE_POINTS:
             if not self.cb.TraceQuiet:
-                print("DisplayScope RC: record to scope, mode=Point, x=0o%o, y=0o%o" %
-                      (self.scope_horizontal, self.scope_vertical))
-            self.crt.ww_draw_point(self.scope_horizontal, self.scope_vertical, light_gun=True)
+                print("DisplayScope RC: record to scope 0o%o, mode=Point, x=0o%o, y=0o%o" %
+                      (self.scope_select, self.scope_horizontal, self.scope_vertical))
+            self.crt.ww_draw_point(self.scope_horizontal, self.scope_vertical,
+                                   scope=self.scope_select, light_gun=True)
 
         elif self.scope_mode == self.DISPLAY_MODE_VECTORS:
             # lines are like points, but with an additional delta in the RC instruction
             ww_xd, ww_yd = self.convert_delta_scope_coord(operand)
 
             if self.cb.TraceQuiet is False:
-                print("DisplayScope RC: record to scope, mode=Vector, x=0o%o, y=0o%o, xd=0o%o, yd=0o%o" %
-                  (self.scope_horizontal, self.scope_vertical, ww_xd, ww_yd))
-            self.crt.ww_draw_line(self.scope_horizontal, self.scope_vertical, ww_xd, ww_yd)
+                print("DisplayScope RC: record to scope 0o%o, mode=Vector, x=0o%o, y=0o%o, xd=0o%o, yd=0o%o" %
+                  (self.scope_select, self.scope_horizontal, self.scope_vertical, ww_xd, ww_yd))
+            self.crt.ww_draw_line(self.scope_horizontal, self.scope_vertical, ww_xd, ww_yd, scope=self.scope_select)
 
         return self.cb.NO_ALARM, 0
 
@@ -782,6 +786,7 @@ class DisplayScopeClass:
     #   trigger was pulled when the last spot was displayed
     # The sign bit will be off if the trigger was not pulled and the gun didn't see anything.
     # If the sign bit is on, the return code can be analyzed to figure out which gun had been triggered.
+    # Each gun then has one bit hot, starting from Bit 1
     # See 2M-0277 pg 72 for grubby details
     def rd(self, _code, _acc):
 
@@ -806,9 +811,10 @@ class DisplayScopeClass:
                 self.crt.last_mouse = pt
                 self.crt.last_button = button
                 if self.crt.last_button == 3:   # I'm returning 0o1000000 for Button Three on the mouse
-                    val = 0o100000              #  ... added specifically for radar tracking
+                    val = 0o120000              #  ... added specifically for radar tracking ; was 0o100000, Dec 2023
                 else:
-                    val = 0o177777           # or  0o177777 for Button One (or anything else that we shouldn't get!)
+                    val = 0o140000           # or  0o177777 for Button One (or anything else that we shouldn't get!)
+                                             # (was 0o177777 Dec 2023)
 
         else:
             if pt is not None:
@@ -822,9 +828,9 @@ class DisplayScopeClass:
                     (abs(self.crt.last_pen_point.y0 - self.crt.last_mouse.getY()) < self.crt.WIN_MOUSE_BOX):
                 print("**Hit at x=0d%d, y=0d%d**" %(self.crt.last_pen_point.x0, self.crt.last_pen_point.y0))
                 if self.crt.last_button == 3:   # I'm returning 0o1000000 for Button Three on the mouse
-                    val = 0o100000              #  ... added specifically for radar tracking
-                else:
-                    val = 0o177777           # or  0o177777 for Button One (or anything else that we shouldn't get!)
+                    val = 0o120000              #  ... added specifically for radar tracking
+                else:                           # changed Dec 30, 2023; see note above
+                    val = 0o140000           # or  0o140000 for Button One (or anything else that we shouldn't get!)
                 self.crt.ww_highlight_point()
                 self.crt.last_mouse = None
                 self.crt.last_button = 0
@@ -865,7 +871,10 @@ class DisplayScopeClass:
     # guy says: I'm assuming that QF is like QD except that it shows on a different scope
     #  (note M-1083 Interim Display Equipment and Temporary Operation qf: F - Scope Display)
     def qd_qf(self, _operand, acc, scope):
-        color=(0.0, 1.0, 0.0)  # default to green
+        if scope == self.cb.SCOPE_AUX:
+            color=(1.0, 1.0, 0.0)  # Scope F / aux scope should be yellow on the PC screen
+        else:
+            color=(0.0, 1.0, 0.0)  # default to green
         self.scope_vertical = self.convert_scope_coord(acc)
         if not self.cb.TraceQuiet:
             print("DisplayScope QD/QF: record to scope, mode=Point, x=0o%o, y=0o%o" %
@@ -922,7 +931,7 @@ class InterventionAndActivateClass:
         return self.cb.UNIMPLEMENTED_ALARM, 0
 
     # Read from the switches should return something
-    # This stub simply returns zero for all Activate and Intervention registers
+    # This stub simply returns zero for all unknown Activate and Intervention registers
     def rd(self, operand, acc):  # "read", i.e. input instruction from device
         reg = self.intervention_reg
         ret = 0

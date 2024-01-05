@@ -2,8 +2,9 @@
                         ; David Israel's 1950 Track-and-Scan from M-1343
                         ; Annotated by guy, Feb 11, 2021
 
-                        .isa 1950      ;  
+                        .isa 1950      ; Sherman, Set the Instruction-Set Wayback Machine to 1950 
 
+                        .dbwgt .TargetHeading 5 "%d"  ;  
                         .dbwgt FF_angle  ;  
                         .dbwgt Veloc_I   ;  
 
@@ -99,17 +100,17 @@
 @0107:144421            mh   273       ; [this number is probably sine of the azimuth] 
 @0110:154005            sl   5         ;  
 @0111:034420            qd   272       ; display the Y value, and save it at 272 
-                        ; 							.exec print("range conversion: x=%s, y=%s" % (deci(cm.rd(274)), deci(cm.rd(272))))
+                        ; .exec print("range conversion: x=%s, y=%s" % (deci(cm.rd(274)), deci(cm.rd(272))))
 @0112:100027            ca   Lt_GunFF  ; Read Light Gun to see if there's anything spotted, i.e., any negative value 
 @0113:070177            cp   lg_hit    ; branch if light-gun hit 
 
 @0114:130372            ao   time0     ; no light-gun hit; increment Time0 @@JumpedToBy a0200 
-                        .exec print("@076 Starting search for Aircraft %s; Angular Time0=%s,  Angular Time1=%s" % (which_plane(cm), deci(cm.rd(rl("time0"))), deci(cm.rd(rl("time1")))))  ;  
+                        ; .exec print("@076 Starting search for Aircraft %s; Angular Time0=%s,  Angular Time1=%s" % (which_plane(cm), deci(cm.rd(rl("time0"))), deci(cm.rd(rl("time1")))))
 
                         ; .exec cb.TracePC = 20
 @0115:070155            cp   swap_air  ; [this branch usually falls through, 'cause we start with Time set slightly positive] 
 
-                        .exec print("    @078 Time to Search for Aircraft %s; Time0=%s" % (which_plane(cm), deci(cm.rd(rl("time0")))))  ;  
+                        ; .exec print("    @078 Time to Search for Aircraft %s; Time0=%s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
 @0116:114370            su   num_200   ; appears to subtract a constant 0d200; AC ends with (Time0 - 0d200) 
 @0117:070330            cp   not_covered  ; fall through "if search sector has been covered"; branch if not covered 
 
@@ -117,10 +118,10 @@
                         ; search window right on top of where the target was last seen
 @0120:114366            su   num_550   ; "...so reset the time counter" by subtracting another 0d550 
 @0121:040372            ts   time0     ; ... and storing it back 
-                        .exec print("    @081 Reset Time0 counter for Aircraft %s to Time0=%s" % (which_plane(cm), deci(cm.rd(rl("time0")))))  ;  
+                        ; .exec print("    @081 Reset Time0 counter for Aircraft %s to Time0=%s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
 @0122:100401            ca   srch_i0   ; test to see "if the aircraft was found during this scan of the antenna" 
 @0123:114402            su   srch_r0   ;  
-                        .exec print("     @083 Test if aircraft %s found during this scan; srch_i0=0d%d, srch_r0=0d%d" % (which_plane(cm), cm.rd(rl("srch_i0")), cm.rd(rl("srch_r0"))))  ;  
+                        ; .exec print("     @083 Test if aircraft %s found during this scan; srch_i0=0d%d, srch_r0=0d%d" % (which_plane(cm), cm.rd(rl("srch_i0")), cm.rd(rl("srch_r0"))))
 @0124:070216            cp   142       ;  
 
 @0125:100373            ca   x_smoo0   ; "Display Tracked Aircraft on F-Scope" 
@@ -149,7 +150,7 @@
 @0150:124374            sa   y_smoo0   ;  
 @0151:040374            ts   y_smoo0   ;  
 @0152:100000            ca   0         ;  @@JumpedToBy a0215 ReadBy a0075 a0176 a0306 
-                        .exec print("  @106 cleared x_diff0 and y_diff0 for Aircraft %s at time0 = %s" % (which_plane(cm), deci(cm.rd(rl("time0")))))  ;  
+                        ; .exec print("  @106 cleared x_diff0 and y_diff0 for Aircraft %s at time0 = %s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
 @0153:040377            ts   x_diff0   ; clear x_diff0 
 @0154:040400            ts   y_diff0   ; clear y_diff0 @@JumpedToBy a0357 
 
@@ -165,7 +166,7 @@
 
                         ; put the swap_air loop back together for the next call
 @0165:100040            ca   32        ; Fetch address of Time1 (Load #0o130404   "ao  time1") 
-                        .exec print("  @117 finished swap_air; Aircraft %s" % which_plane(cm))  ;  
+                        ; .exec print("  @117 finished swap_air; Aircraft %s" % which_plane(cm))
 @0166:044155            td   swap_air  ; reset the addresses of instructions 
 @0167:044157            td   111       ;  
 @0170:100041            ca   33        ; Load #0o130404   "ao  time1" 
@@ -204,7 +205,7 @@
 @0215:074152            sp   106       ;  
 
 @0216:100363            ca   large_srch  ; constant 32d for "large" search area; @@JumpedToBy a0124 
-                        .exec print("     @142 Not Found - Aircraft %s; Time0=%s, x_smoo0=%d, y_smoo0=%d" % (which_plane(cm), deci(cm.rd(rl("time0"))), cm.rd(rl("x_smoo0")), cm.rd(rl("y_smoo0"))))  ;  
+                        ; .exec print("     @142 Not Found - Aircraft %s; Time0=%s, x_smoo0=%d, y_smoo0=%d" % (which_plane(cm), deci(cm.rd(rl("time0"))), cm.rd(rl("x_smoo0")), cm.rd(rl("y_smoo0"))))
 @0217:074132            sp   90        ;  
 
                         ; A zero range reading is the trigger to compute new headings
@@ -314,6 +315,7 @@
 @0322:110035            ad   Tau_inv   ;  
 @0323:154001            sl   1         ;  
 @0324:044010            td   FF_angle  ;  
+                        ; the following exec needs to be renamed; it doesn't just print, it also steers the Interceptor
                         .exec print_ff_heading(cm, deci, rl, cb)  ;  
 @0325:100000            ca   0         ;  
 @0326:040035            ts   Tau_inv   ;  
@@ -334,7 +336,7 @@
 @0341:124365            sa   245       ;  
 @0342:040365            ts   245       ;  
 @0343:100402            ca   srch_r0   ;  
-                        .exec print("  @228 Test if new data corresponds more closely: srch_r0=%s - @245=%s" % (deci(cm.rd(rl("srch_r0"))), deci(cm.rd(245))))  ;  
+                        ; .exec print("  @228 Test if new data corresponds more closely: srch_r0=%s - @245=%s" % (deci(cm.rd(rl("srch_r0"))), deci(cm.rd(245))))
 @0344:114365            su   245       ;  
 @0345:070155            cp   swap_air  ; Take this branch "if the latest piece of data does not correspond more closely..." 
 
@@ -345,7 +347,7 @@
 @0352:104415            cs   269       ;  
 @0353:140126            mr   86        ; an instruction used as a constant; @0126.086:030000   qh   000 
 @0354:040377            ts   x_diff0   ;  
-                        .exec print("    @233 Yes, it corresponds - Reset angular time counter for aircraft %s to %s, x_diff to %s" % (which_plane(cm), deci(cm.rd(rl("time0"))), deci(cm.rd(rl("x_diff0")))))  ;  
+                        ; .exec print("    @233 Yes, it corresponds - Reset angular time counter for aircraft %s to %s, x_diff to %s" % (which_plane(cm), deci(cm.rd(rl("time0"))), deci(cm.rd(rl("x_diff0")))))
 @0355:104403            cs   259       ;  
 @0356:140126            mr   86        ;  
 @0357:074154            sp   108       ; note that @108 is a "ts y_diff0", i.e., they saved a word by jumping into the middle of the "clear diffs" sequence 

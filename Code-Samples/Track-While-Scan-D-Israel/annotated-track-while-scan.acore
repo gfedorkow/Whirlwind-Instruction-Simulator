@@ -10,8 +10,9 @@
 %Switch: FlipFlopPreset34 0o177777
 %Switch: FlipFlopPreset35 0o0
 %Switch: FlipFlopPreset36 0o372
-%DbWgt:  0o010  0o01
-%DbWgt:  0o036  0o01
+%DbWgt:  .TargetHeading  0o05 %d
+%DbWgt:  0o010  0o01 %o
+%DbWgt:  0o036  0o01 %o
 @C0000: 0000000 0020000  None    None    None    None    None    None   
 @C0010: 0000000  None    None    None    None    None    None    None   
 @C0020:  None    None    None    None    None    None    None   0000000 
@@ -108,20 +109,11 @@
 @S0435: start
 @S0442: num71300
 @S0443: vIsqd32
-; @E0115: exec: print("@076 Starting search for Aircraft %s; Angular Time0=%s,  Angular Time1=%s" % (which_plane(cm), deci(cm.rd(rl("time0"))), deci(cm.rd(rl("time1")))))
-; @E0116: exec: print("    @078 Time to Search for Aircraft %s; Time0=%s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
-; @E0122: exec: print("    @081 Reset Time0 counter for Aircraft %s to Time0=%s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
-; @E0124: exec: print("     @083 Test if aircraft %s found during this scan; srch_i0=0d%d, srch_r0=0d%d" % (which_plane(cm), cm.rd(rl("srch_i0")), cm.rd(rl("srch_r0"))))
 @E0126: exec: print("     @085 Found - Display Tracked Aircraft %s on F-Scope; Time0=%s, x_smoo0=%d, y_smoo0=%d" % (which_plane(cm), deci(cm.rd(rl("time0"))), cm.rd(rl("x_smoo0")), cm.rd(rl("y_smoo0"))))
-; @E0153: exec: print("  @106 cleared x_diff0 and y_diff0 for Aircraft %s at time0 = %s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
-; @E0166: exec: print("  @117 finished swap_air; Aircraft %s" % which_plane(cm))
-; @E0174: exec: if cm.rd(rl("which_tgt")) > 32*1024: dump_tracking_state(cm, deci, rl, long=True)
+@E0174: exec: if cm.rd(rl("which_tgt")) > 32*1024: dump_tracking_state(cm, deci, rl, long=True)
 @E0202: exec: print("@129 Initiate Aircraft %s; set time to %s" % (which_plane(cm), deci(cm.rd(rl("time0"))))) \n exec: record_initiation(cm, cb)
-; @E0217: exec: print("     @142 Not Found - Aircraft %s; Time0=%s, x_smoo0=%d, y_smoo0=%d" % (which_plane(cm), deci(cm.rd(rl("time0"))), cm.rd(rl("x_smoo0")), cm.rd(rl("y_smoo0"))))
 @E0325: exec: print_ff_heading(cm, deci, rl, cb)
-; @E0331: exec: print("  @216 Radar response is in search zone for Aircraft %s; Time0=%s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
-; @E0344: exec: print("  @228 Test if new data corresponds more closely: srch_r0=%s - @245=%s" % (deci(cm.rd(rl("srch_r0"))), deci(cm.rd(245))))
-; @E0355: exec: print("    @233 Yes, it corresponds - Reset angular time counter for aircraft %s to %s, x_diff to %s" % (which_plane(cm), deci(cm.rd(rl("time0"))), deci(cm.rd(rl("x_diff0")))))
+@E0331: exec: print("  @216 Radar response is in search zone for Aircraft %s; Time0=%s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
 @N0001: value is '1/4'  (not the usual 0o000001)
 @N0027: addr 0o27
 @N0034: addr 0o34
