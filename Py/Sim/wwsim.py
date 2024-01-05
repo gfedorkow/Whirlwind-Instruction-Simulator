@@ -1873,7 +1873,7 @@ def main_run_sim(args):
                 print("Alarm '%s' (%d) at PC=0o%o (0d%d)" % (cb.AlarmMessage[alarm], alarm, cpu.PC - 1, cpu.PC - 1))
                 # the normal case is to stop on an alarm; if the command line flag says not to, we'll try to keep going
                 # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
-                if not args.NoAlarmStop or alarm == cb.QUIT_ALARM:
+                if not args.NoAlarmStop or alarm == cb.QUIT_ALARM  or alarm == cb.HALT_ALARM:
                     break
             sim_cycle += 1
             if sim_cycle % 400000 == 0 or alarm == cb.QUIT_ALARM:
