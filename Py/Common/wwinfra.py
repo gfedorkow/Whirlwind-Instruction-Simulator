@@ -108,7 +108,6 @@ def octal_or_none(number):
         ret = "0o%06o" % number
     return ret
 
-
 # This class is used to hold Python Vars that can be viewed and modified via the on-screen Debug Widget
 # at sim run time
 class DebugWidgetPyVarsClass:
@@ -120,6 +119,7 @@ class DebugWidgetPyVarsClass:
 
 class ConstWWbitClass:
     def __init__(self, get_screen_size=False):
+
         # Caution -- Whirlwind puts bit 0 to the left (Big Endian, no?)
         self.WWBIT0 = 0o100000
         self.WWBIT1 = 0o040000
@@ -264,6 +264,8 @@ class ConstWWbitClass:
             ["md", "multiply digits no roundoff (AND)", self.OPERAND_RD_DATA]  # 37o, 31d aka "AND"
         ]
         # I/O addresses.  I've put them here so the disassembler can identify I/O devices using this shared module.
+        self.PTR_BASE_ADDRESS = 0o200  # starting address of mechanical paper tape reader
+        self.PTR_ADDR_MASK = ~0o003  # sub-addresses cover PETR-A and PETR-B, word-by-word vs char-by-char
         self.PETR_BASE_ADDRESS = 0o210  # starting address of PETR device(s)
         self.PETR_ADDR_MASK = ~0o003  # sub-addresses cover PETR-A and PETR-B, word-by-word vs char-by-char
 
@@ -629,7 +631,7 @@ class CorememClass:
         self.NBANKS = 6  # six 1K banks
         self.use_default_tsr = use_default_tsr
 
-        self.clear_mem()
+        self.clear_mem()  # this call instantiates the memory banks themselves
         # self._coremem = []
         # for _i in range(self.NBANKS):
         #     self._coremem.append([None] * (cb.CORE_SIZE // 2))
@@ -876,14 +878,14 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             if len(tokens) > 1:
                 ww_hash = tokens[1]
             else:
-                cb.log.warn("read_core: missing arg to %%Hash")
+                cb.log.warn("read_core: missing arg to %Hash")
         # identifies any thing that might be a Flexo Character string in the image
         elif re.match("^%String:", input_minus_comment):
             tokens = input_minus_comment.split()
             if len(tokens) > 1:
                 ww_strings += tokens[1] + '\n'
             else:
-                cb.log.warn("read_core: missing arg to %%String")
+                cb.log.warn("read_core: missing arg to %String")
         elif re.match("^%Stats:", input_minus_comment):  # put the Colon back in here!
             tokens = input_minus_comment.split(' ', 1)
             if len(tokens) > 1:

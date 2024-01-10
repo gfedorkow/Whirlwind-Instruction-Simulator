@@ -103,7 +103,6 @@ class PhotoElectricTapeReaderClass:
         global petrBfile
         self.cb = cb
 
-
         self.name = "PhotoElectricTapeReader"
         self.PETR_device = 'A'
         self.PETR_mode = 'Word'
@@ -115,7 +114,8 @@ class PhotoElectricTapeReaderClass:
 
     # each device needs to identify its own unit number.
     def is_this_for_me(self, io_address):
-        if (io_address & self.cb.PETR_ADDR_MASK) == self.cb.PETR_BASE_ADDRESS:
+        if ((io_address & self.cb.PETR_ADDR_MASK) == self.cb.PETR_BASE_ADDRESS) or \
+            ((io_address & self.cb.PTR_ADDR_MASK) == self.cb.PTR_BASE_ADDRESS):
             return self
         else:
             return None
@@ -133,6 +133,7 @@ class PhotoElectricTapeReaderClass:
             self.PETR_mode = 'Char'
 
         if self.PETR_fd[self.PETR_device] is None:
+            fd = None
             try:
                 self.PETR_fd[self.PETR_device] = open(filename, "r")
                 fd = self.PETR_fd[self.PETR_device]
