@@ -1941,7 +1941,7 @@ def main_run_sim(args):
             if args.DrumStateFile:
                 d.save_drum_state(args.DrumStateFile)
 
-    return alarm != cb.NO_ALARM   # if there are any alarms, tell the caller we really want to stop!
+    return (alarm != cb.NO_ALARM, sim_cycle)   # if there are any alarms, tell the caller we really want to stop!
 
 
 
@@ -1991,8 +1991,8 @@ def main():
 
     args = parser.parse_args()
 
-    stop_sim = main_run_sim(args)
-    print("de-alloc mem=%dMB" % (psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
+    (stop_sim, sim_cycle) = main_run_sim(args)
+    print("Ran %d cycles; Used mem=%dMB" % (sim_cycle, psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
     sys.exit(stop_sim)
 
 

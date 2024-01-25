@@ -338,6 +338,24 @@ class ConstWWbitClass:
             ((self.CAMERA_INDEX_BASE_ADDRESS, ~0), "Camera Index"),
         ]
 
+
+    def Decode_IO(io_address):
+        devname = ''
+        addr_info = (0, 0)
+        for d in self.DevNameDecoder:
+            addr_info = d[0]
+            addr_base = addr_info[0]
+            addr_mask = addr_info[1]
+            if (io_address & addr_mask) == addr_base:
+                devname = d[1]
+        #            print "device-place-holder base=%o, mask=%o, name=%s" % (addr_info[0], ~addr_info[1], devname)
+        if devname != '':
+            ret = "Device %s base=0o%o, mask=0o%o" % (devname, addr_info[0], ~addr_info[1])
+        else:
+            ret = "Unknown Device"
+        return ret
+
+
     # read the size of the display itself from Windows
     def get_display_size(self):
         # default to the dimensions for my surface pro built-in screen
