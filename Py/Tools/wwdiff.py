@@ -172,9 +172,9 @@ def main():
 
         if args.Merge:
             merge_core(coremem_a, coremem_b, cb)  # "ww_tapeid", "hash", "strings", "stats", "filename_from_core"
-            wwinfra.write_core(cb, [coremem_a._coremem[0] + coremem_a._coremem[1]], 0, False, coremem_a.metadata["filename_from_core"],
-                                 coremem_a.metadata["ww_tapeid"], coremem_a.metadata["jumpto"],
-                                 "merge.tcore", coremem_a.metadata["strings"])
+            wwinfra.write_core(cb, [coremem_a._coremem[0] + coremem_a._coremem[1]], 0, False,
+                               coremem_a.metadata["filename_from_core"], coremem_a.metadata["ww_tapeid"],
+                               coremem_a.metadata["jumpto"], args.outputfile, coremem_a.metadata["strings"])
         else:
             diff_core(coremem_a, coremem_b, cb)
         passnum += 1
