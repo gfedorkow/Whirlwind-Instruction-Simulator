@@ -1,0 +1,1701 @@
+                        ; @line:3a
+
+                        ; .org 0o40
+
+                        ; CS-II Src: a1,6	5	0	7	b1	b2	3	2	b3	a2,b4	1
+@0040:000006        a1: .word 6         ; @line:4a 
+@0041:000005            .word 5         ; @line:4b 
+@0042:000000            .word 0         ; @line:4c @@WrittenBy a0605 a0612 a2401 a2406 a2423 a2436 ReadBy a0605 a0606 a2401 a2402 
+@0043:000007            .word 7         ; @line:4d @@ReadBy a0413 a0456 a0607 
+@0044:000255            .word b1        ; @line:4e @@ReadBy a0451 a0504 
+@0045:000265            .word b2        ; @line:4f 
+@0046:000003            .word 3         ; @line:4g @@ReadBy a2403 
+@0047:000002            .word 2         ; @line:4h @@ReadBy a2414 a2431 
+@0050:000275            .word b3        ; @line:4i 
+@0051:000305        a2: .word b4        ; @line:4j 
+@0052:000001            .word 1         ; @line:4k @@ReadBy a0702 a2356 a2360 a2362 a2364 a2366 a2370 a2372 a2374 
+
+                        ; CS-II Src: b7	-0	0	0	2	0	4	0	a3,0	a4,0.51071
+@0053:000317            .word b7        ; @line:5a @@ReadBy a0471 
+@0054:000000            .word -0        ; @line:5b 
+@0055:000000            .word 0         ; @line:5c @@WrittenBy a2413 a2421 a2437 ReadBy a2413 a2415 
+@0056:000000            .word 0         ; @line:5d @@WrittenBy a2430 a2440 ReadBy a2430 a2432 
+@0057:000002            .word 2         ; @line:5e @@WrittenBy a0376 ReadBy a0404 
+@0060:000000            .word 0         ; @line:5f @@WrittenBy a0455 a0466 a0661 ReadBy a0455 
+@0061:000004            .word 4         ; @line:5g @@WrittenBy a0420 a0435 ReadBy a0432 a0441 
+@0062:000000            .word 0         ; @line:5h @@WrittenBy a0422 a0431 a0443 ReadBy a0426 a0442 a0453 a0501 g4 
+@0063:000000        a3: .word 0         ; @line:5i 
+@0064:051071        a4: .word 0.51071   ; @line:5j 
+
+                        ; CS-II Src: 0.12075	0.60024	0.24052	0.21010	0.71040	0.75050	0.02010	0.34060	0.70054	0.16040	0.02024
+@0065:012075            .word 0.12075   ; @line:6a 
+@0066:060024            .word 0.60024   ; @line:6b 
+@0067:024052            .word 0.24052   ; @line:6c 
+@0070:021010            .word 0.21010   ; @line:6d 
+@0071:071040            .word 0.71040   ; @line:6e 
+@0072:075050            .word 0.75050   ; @line:6f 
+@0073:002010            .word 0.02010   ; @line:6g 
+@0074:034060            .word 0.34060   ; @line:6h 
+@0075:070054            .word 0.70054   ; @line:6i 
+@0076:016040            .word 0.16040   ; @line:6j 
+@0077:002024            .word 0.02024   ; @line:6k 
+
+                        ; CS-II Src: 0.10050	0.06012	0.10046	0.60030	0.10040	0.50002	0.10064	0.06070	0.02021	1.51077	a5,0.51020
+@0100:010050            .word 0.10050   ; @line:7a 
+@0101:006012            .word 0.06012   ; @line:7b 
+@0102:010046            .word 0.10046   ; @line:7c 
+@0103:060030            .word 0.60030   ; @line:7d 
+@0104:010040            .word 0.10040   ; @line:7e 
+@0105:050002            .word 0.50002   ; @line:7f 
+@0106:010064            .word 0.10064   ; @line:7g 
+@0107:006070            .word 0.06070   ; @line:7h 
+@0110:002021            .word 0.02021   ; @line:7i 
+@0111:151077            .word 1.51077   ; @line:7j 
+@0112:051020        a5: .word 0.51020   ; @line:7k 
+
+                        ; CS-II Src: 0.71034	0.75060	0.30064	0.24006	0.40016	0.44006	0.40014	0.60030	0.12031	0.10052	0.60016
+@0113:071034            .word 0.71034   ; @line:8a 
+@0114:075060            .word 0.75060   ; @line:8b 
+@0115:030064            .word 0.30064   ; @line:8c 
+@0116:024006            .word 0.24006   ; @line:8d 
+@0117:040016            .word 0.40016   ; @line:8e 
+@0120:044006            .word 0.44006   ; @line:8f 
+@0121:040014            .word 0.40014   ; @line:8g 
+@0122:060030            .word 0.60030   ; @line:8h 
+@0123:012031            .word 0.12031   ; @line:8i 
+@0124:010052            .word 0.10052   ; @line:8j 
+@0125:060016            .word 0.60016   ; @line:8k 
+
+                        ; CS-II Src: 0.10050	0.06074	0.02010	0.46060	0.30010	0.40050	0.02010	0.64006	0.70002	0.21020	1.51077
+@0126:010050            .word 0.10050   ; @line:9a 
+@0127:006074            .word 0.06074   ; @line:9b 
+@0130:002010            .word 0.02010   ; @line:9c 
+@0131:046060            .word 0.46060   ; @line:9d 
+@0132:030010            .word 0.30010   ; @line:9e 
+@0133:040050            .word 0.40050   ; @line:9f 
+@0134:002010            .word 0.02010   ; @line:9g 
+@0135:064006            .word 0.64006   ; @line:9h 
+@0136:070002            .word 0.70002   ; @line:9i 
+@0137:021020            .word 0.21020   ; @line:9j 
+@0140:151077            .word 1.51077   ; @line:9k 
+
+                        ; CS-II Src: a6,0.51071	0.52075	0.60016	0.24010	0.70060	0.74002	0.10014	0.12010	0.14044	0.44002
+@0141:051071        a6: .word 0.51071   ; @line:10a 
+@0142:052075            .word 0.52075   ; @line:10b 
+@0143:060016            .word 0.60016   ; @line:10c 
+@0144:024010            .word 0.24010   ; @line:10d 
+@0145:070060            .word 0.70060   ; @line:10e 
+@0146:074002            .word 0.74002   ; @line:10f 
+@0147:010014            .word 0.10014   ; @line:10g 
+@0150:012010            .word 0.12010   ; @line:10h 
+@0151:014044            .word 0.14044   ; @line:10i 
+@0152:044002            .word 0.44002   ; @line:10j 
+
+                        ; CS-II Src: 0.64006	0.44021	0.10071	0.54075	0.44002	0.06012	0.02010	0.40024	0.52010	0.06030	0.60040
+@0153:064006            .word 0.64006   ; @line:11a 
+@0154:044021            .word 0.44021   ; @line:11b 
+@0155:010071            .word 0.10071   ; @line:11c 
+@0156:054075            .word 0.54075   ; @line:11d 
+@0157:044002            .word 0.44002   ; @line:11e 
+@0160:006012            .word 0.06012   ; @line:11f 
+@0161:002010            .word 0.02010   ; @line:11g 
+@0162:040024            .word 0.40024   ; @line:11h 
+@0163:052010            .word 0.52010   ; @line:11i 
+@0164:006030            .word 0.06030   ; @line:11j 
+@0165:060040            .word 0.60040   ; @line:11k 
+
+                        ; CS-II Src: 0.50002	0.24010	0.70660	0.74002	1.21051	a7,0	0	0	0	1	0
+@0166:050002            .word 0.50002   ; @line:12a 
+@0167:024010            .word 0.24010   ; @line:12b 
+@0170:070660            .word 0.70660   ; @line:12c 
+@0171:074002            .word 0.74002   ; @line:12d 
+@0172:121051            .word 1.21051   ; @line:12e 
+@0173:000000        a7: .word 0         ; @line:12f @@WrittenBy a0377 a0461 a0655 ReadBy f2 a0377 
+@0174:000000            .word 0         ; @line:12g @@WrittenBy f7 a0462 a0660 a0676 ReadBy f7 a0403 a0674 
+@0175:000000            .word 0         ; @line:12h @@WrittenBy a0402 a0465 ReadBy a0402 
+@0176:000000            .word 0         ; @line:12i @@WrittenBy a0357 a0464 a0657 a0703 ReadBy a0357 a0444 g2 a0677 
+@0177:000001            .word 1         ; @line:12j @@WrittenBy a0463 a0656 a2456 a2473 ReadBy f5 a2456 a2473 
+@0200:000000            .word 0         ; @line:12k @@WrittenBy a2504 a2562 a2573 a2601 ReadBy z8 z10 a2571 z12 a2605 
+
+                        ; CS-II Src: a8,0	0	0	+0.01	0.5	0	10	9	b8	b9	a9,0
+@0201:000000        a8: .word 0         ; @line:13a @@WrittenBy a2507 a2554 a2570 a2604 ReadBy a2536 z9 z11 a2602 
+@0202:000000            .word 0         ; @line:13b @@WrittenBy a2513 ReadBy a2540 a2563 a2574 a2606 
+@0203:000000            .word 0         ; @line:13c @@WrittenBy a2520 ReadBy a2543 a2555 
+@0204:000507            .word +0.01     ; @line:13d @@ReadBy a2553 a2561 a2567 a2572 a2600 a2603 
+@0205:040000            .word +0.5      ; @line:13e 
+@0206:000000            .word 0         ; @line:13f @@WrittenBy a2526 ReadBy a2546 
+@0207:000012            .word 10        ; @line:13g @@ReadBy a0427 w2 
+@0210:000011            .word 9         ; @line:13h @@ReadBy a0423 a0436 
+@0211:000327            .word b8        ; @line:13i 
+@0212:000337            .word b9        ; @line:13j 
+@0213:000000        a9: .word 0         ; @line:13k @@WrittenBy a1251 a1331 a1404 a1500 a1622 a1673 a1742 a2007 a2073 a2263 ReadBy a1255 a1335 a1410 a1504 a1626 a1677 a1746 a2013 a2077 a2267 
+
+                        ; CS-II Src: 0	+0.05	+0.10	+0.15	+0.20	+0.25	+0.30	-0.60	-0.30	a10,+0.40	+0.70
+@0214:000000            .word 0         ; @line:14a @@WrittenBy a1254 a1334 a1407 a1503 a1625 a1676 a1745 a2012 a2076 a2266 ReadBy a1265 a1345 a1424 a1525 a1636 a1717 a1760 a2030 a2127 a2301 
+@0215:003146            .word +0.05     ; @line:14b @@ReadBy a1343 a1346 a1351 a1354 a1416 a1420 a1513 a1517 a1535 a1702 a1710 a1731 a2015 a2024 a2110 a2116 a2136 a2146 
+@0216:006314            .word +0.10     ; @line:14c @@ReadBy a1507 a1522 a1630 a1705 a1714 a2103 a2123 a2142 
+@0217:011463            .word +0.15     ; @line:14d @@ReadBy a1531 a1724 a1752 a1755 a2272 a2275 
+@0220:014631            .word +0.20     ; @line:14e @@ReadBy a1271 a1413 a1431 a1633 a1641 a1765 a2020 a2035 a2306 
+@0221:020000            .word +0.25     ; @line:14f 
+@0222:023146            .word +0.30     ; @line:14g @@ReadBy a1261 a1340 
+@0223:131463            .word -0.60     ; @line:14h @@ReadBy w74 
+@0224:154631            .word -0.30     ; @line:14i 
+@0225:031463       a10: .word +0.40     ; @line:14j @@ReadBy a2462 a2466 
+@0226:054631            .word +0.70     ; @line:14k 
+
+                        ; CS-II Src: +0.60	+0.10	-0.40	-0.90	8	2a10	9a9	8a9	a11,b8	b7	0
+@0227:046314            .word +0.60     ; @line:15a @@ReadBy w73 
+@0230:006314            .word +0.10     ; @line:15b 
+@0231:146314            .word -0.40     ; @line:15c 
+@0232:106314            .word -0.90     ; @line:15d 
+@0233:000010            .word 8         ; @line:15e 
+@0234:000227            .word a10 + 2   ; ;old label: 2a10, new label: a10 + 2 @line:15f @@ReadBy a2407 a2424 a2441 
+@0235:000224            .word a9 + 9    ; ;old label: 9a9, new label: a9 + 9 @line:15g @@ReadBy a2426 
+@0236:000223            .word a9 + 8    ; ;old label: 8a9, new label: a9 + 8 @line:15h @@ReadBy a2443 
+@0237:000327       a11: .word b8        ; @line:15i @@ReadBy a2445 
+@0240:000317            .word b7        ; @line:15j 
+@0241:000000            .word 0         ; @line:15k @@WrittenBy a0412 ReadBy g3 a0503 
+
+                        ; CS-II Src: 6	5	4	0	0	0	0	a12,0	0	0	0
+@0242:000006            .word 6         ; @line:16a @@WrittenBy a0371 
+@0243:000005            .word 5         ; @line:16b @@WrittenBy a0367 ReadBy a0514 
+@0244:000004            .word 4         ; @line:16c @@WrittenBy a0374 
+@0245:000000            .word 0         ; @line:16d 
+@0246:000000            .word 0         ; @line:16e 
+@0247:000000            .word 0         ; @line:16f 
+@0250:000000            .word 0         ; @line:16g 
+@0251:000000       a12: .word 0         ; @line:16h 
+@0252:000000            .word 0         ; @line:16i 
+@0253:000000            .word 0         ; @line:16j 
+@0254:000000            .word 0         ; @line:16k 
+
+                        ; CS-II Src: b1,0	0	0	0	0	0	0	0	b2,0
+@0255:000000        b1: .word 0         ; @line:17a 
+@0256:000000            .word 0         ; @line:17b 
+@0257:000000            .word 0         ; @line:17c 
+@0260:000000            .word 0         ; @line:17d 
+@0261:000000            .word 0         ; @line:17e 
+@0262:000000            .word 0         ; @line:17f 
+@0263:000000            .word 0         ; @line:17g 
+@0264:000000            .word 0         ; @line:17h 
+@0265:000000        b2: .word 0         ; @line:17i 
+
+                        ; CS-II Src: 0	0	0	0	0	0	0	b3,0	0	0	0
+@0266:000000            .word 0         ; @line:18a 
+@0267:000000            .word 0         ; @line:18b 
+@0270:000000            .word 0         ; @line:18c 
+@0271:000000            .word 0         ; @line:18d 
+@0272:000000            .word 0         ; @line:18e 
+@0273:000000            .word 0         ; @line:18f 
+@0274:000000            .word 0         ; @line:18g 
+@0275:000000        b3: .word 0         ; @line:18h 
+@0276:000000            .word 0         ; @line:18i 
+@0277:000000            .word 0         ; @line:18j 
+@0300:000000            .word 0         ; @line:18k 
+
+                        ; CS-II Src: 0	0	0	0	b4,0	0	0	0	0	0	0
+@0301:000000            .word 0         ; @line:19a 
+@0302:000000            .word 0         ; @line:19b 
+@0303:000000            .word 0         ; @line:19c 
+@0304:000000            .word 0         ; @line:19d 
+@0305:000000        b4: .word 0         ; @line:19e 
+@0306:000000            .word 0         ; @line:19f 
+@0307:000000            .word 0         ; @line:19g 
+@0310:000000            .word 0         ; @line:19h 
+@0311:000000            .word 0         ; @line:19i 
+@0312:000000            .word 0         ; @line:19j 
+@0313:000000            .word 0         ; @line:19k 
+
+                        ; CS-II Src: 0	b5,0	b6,0	b7,0	0	0	0	0	0	0	0
+@0314:000000            .word 0         ; @line:20a 
+@0315:000000        b5: .word 0         ; @line:20b 
+@0316:000000        b6: .word 0         ; @line:20c 
+@0317:000000        b7: .word 0         ; @line:20d @@WrittenBy a0662 
+@0320:000000            .word 0         ; @line:20e @@WrittenBy a0663 
+@0321:000000            .word 0         ; @line:20f @@WrittenBy a0664 
+@0322:000000            .word 0         ; @line:20g @@WrittenBy a0665 
+@0323:000000            .word 0         ; @line:20h @@WrittenBy a0666 
+@0324:000000            .word 0         ; @line:20i @@WrittenBy a0667 
+@0325:000000            .word 0         ; @line:20j @@WrittenBy a0670 
+@0326:000000            .word 0         ; @line:20k @@WrittenBy a0671 
+
+                        ; CS-II Src: b8,0	0	0	0	0	0	0	0	b9,0	0	0
+@0327:000000        b8: .word 0         ; @line:21a @@WrittenBy a0642 ReadBy w75 
+@0330:000000            .word 0         ; @line:21b @@WrittenBy a0643 
+@0331:000000            .word 0         ; @line:21c @@WrittenBy a0644 
+@0332:000000            .word 0         ; @line:21d @@WrittenBy a0645 
+@0333:000000            .word 0         ; @line:21e @@WrittenBy a0646 
+@0334:000000            .word 0         ; @line:21f @@WrittenBy a0647 
+@0335:000000            .word 0         ; @line:21g @@WrittenBy a0650 
+@0336:000000            .word 0         ; @line:21h @@WrittenBy a0651 
+@0337:000000        b9: .word 0         ; @line:21i 
+@0340:000000            .word 0         ; @line:21j 
+@0341:000000            .word 0         ; @line:21k 
+
+                        ; CS-II Src: 0	0	0	0	0	b10,0	f1,si192	rd	cpf2	spw1	f2,caa7	su0	cpf5	ao3a7	spg1
+@0342:000000            .word 0         ; @line:22a 
+@0343:000000            .word 0         ; @line:22b 
+@0344:000000            .word 0         ; @line:22c 
+@0345:000000            .word 0         ; @line:22d 
+@0346:000000            .word 0         ; @line:22e 
+@0347:000000       b10: .word 0         ; @line:22f 
+@0350:000300        f1: si   192       ; @line:22g; Auto-Annotate I/O: Intervention and Activate Device @@JumpedToBy a2447 
+@0351:014000            rd   0         ; default operand;  @line:22h 
+@0352:070354            cp   f2        ; @line:22i 
+@0353:074705            sp   w1        ; @line:22j 
+@0354:100173        f2: ca   a7        ; @line:22k @@JumpedToBy a0352 
+@0355:114000            su   0         ; @line:22l 
+@0356:070361            cp   f5        ; @line:22m 
+@0357:130176            ao   a7 + 3    ; ;old label: 3a7, new label: a7 + 3 @line:22n 
+@0360:074410            sp   g1        ; @line:22o 
+
+                        ; CS-II Src: f5,ca4a7	su0
+@0361:100177        f5: ca   a7 + 4    ; ;old label: 4a7, new label: a7 + 4 @line:23a @@JumpedToBy a0356 
+@0362:114000            su   0         ; @line:23b 
+
+                        ; CS-II Src: cpf7	spu1	si8	ca2	ts4a11	ad1	ts3a11	su1	su1	ts5a11	ca3
+@0363:070401            cp   f7        ; @line:24a 
+@0364:074653            sp   u1        ; @line:24b 
+@0365:000010            si   8         ; @line:24c; Auto-Annotate I/O: unknown i/o device 
+@0366:100002            ca   2         ; @line:24d 
+@0367:040243            ts   a11 + 4   ; ;old label: 4a11, new label: a11 + 4 @line:24e 
+@0370:110001            ad   1         ; @line:24f 
+@0371:040242            ts   a11 + 3   ; ;old label: 3a11, new label: a11 + 3 @line:24g 
+@0372:114001            su   1         ; @line:24h 
+@0373:114001            su   1         ; @line:24i 
+@0374:040244            ts   a11 + 5   ; ;old label: 5a11, new label: a11 + 5 @line:24j 
+@0375:100003            ca   3         ; @line:24k 
+
+                        ; CS-II Src: ts6a2	aoa7	spw1	f7,ao1a7	ao2a7	ca1a7	su6a2	cpg1
+@0376:040057            ts   a2 + 6    ; ;old label: 6a2, new label: a2 + 6 @line:25a 
+@0377:130173            ao   a7        ; @line:25b 
+@0400:074705            sp   w1        ; @line:25c 
+@0401:130174        f7: ao   a7 + 1    ; ;old label: 1a7, new label: a7 + 1 @line:25d @@JumpedToBy a0363 
+@0402:130175            ao   a7 + 2    ; ;old label: 2a7, new label: a7 + 2 @line:25e 
+@0403:100174            ca   a7 + 1    ; ;old label: 1a7, new label: a7 + 1 @line:25f 
+@0404:114057            su   a2 + 6    ; ;old label: 6a2, new label: a2 + 6 @line:25g 
+@0405:070410            cp   g1        ; @line:25h 
+
+                        ; CS-II Src: spu1	spp1	g1,si222	rd	ts2a11	su3a1	cp6g1	spu3	si223	rd	ts8a2	srr6
+@0406:074653            sp   u1        ; @line:26a 
+@0407:074000            sp   0         ; @line:26b 
+@0410:000336        g1: si   222       ; @line:26c; Auto-Annotate I/O: Intervention and Activate Device @@JumpedToBy a0360 a0405 
+@0411:014000            rd   0         ; default operand;  @line:26d 
+@0412:040241            ts   a11 + 2   ; ;old label: 2a11, new label: a11 + 2 @line:26e 
+@0413:114043            su   a1 + 3    ; ;old label: 3a1, new label: a1 + 3 @line:26f 
+@0414:070416            cp   g1 + 6    ; ;old label: 6g1, new label: g1 + 6 @line:26g 
+@0415:074673            sp   u3        ; @line:26h 
+@0416:000337            si   223       ; @line:26i; Auto-Annotate I/O: Intervention and Activate Device @@JumpedToBy a0414 
+@0417:014000            rd   0         ; default operand;  @line:26j 
+@0420:040061            ts   a2 + 8    ; ;old label: 8a2, new label: a2 + 8 @line:26k 
+@0421:160006            srr  6         ; @line:26l 
+
+                        ; CS-II Src: ts9a2	su7a8	cp14g1	spu3	ca9a2	mh6a8	slh15	ts9a2	ca8a2	slr9	srr9	ts8a2
+@0422:040062            ts   a2 + 9    ; ;old label: 9a2, new label: a2 + 9 @line:27a 
+@0423:114210            su   a8 + 7    ; ;old label: 7a8, new label: a8 + 7 @line:27b 
+@0424:070426            cp   g1 + 14   ; ;old label: 14g1, new label: g1 + 14 @line:27c 
+@0425:074673            sp   u3        ; @line:27d 
+@0426:100062            ca   a2 + 9    ; ;old label: 9a2, new label: a2 + 9 @line:27e @@JumpedToBy a0424 
+@0427:144207            mh   a8 + 6    ; ;old label: 6a8, new label: a8 + 6 @line:27f 
+@0430:155017            slh  15        ; @line:27g 
+@0431:040062            ts   a2 + 9    ; ;old label: 9a2, new label: a2 + 9 @line:27h 
+@0432:100061            ca   a2 + 8    ; ;old label: 8a2, new label: a2 + 8 @line:27i 
+@0433:154011            slr  9         ; @line:27j 
+@0434:160011            srr  9         ; @line:27k 
+@0435:040061            ts   a2 + 8    ; ;old label: 8a2, new label: a2 + 8 @line:27l 
+
+                        ; CS-II Src: su7a8	cp25g1	spu3	ca8a2	ad9a2	ts9a2	ca3a7	su0	cpg4	g2,ca3a7	su1	ad4a1
+@0436:114210            su   a8 + 7    ; ;old label: 7a8, new label: a8 + 7 @line:28a 
+@0437:070441            cp   g1 + 25   ; ;old label: 25g1, new label: g1 + 25 @line:28b 
+@0440:074673            sp   u3        ; @line:28c 
+@0441:100061            ca   a2 + 8    ; ;old label: 8a2, new label: a2 + 8 @line:28d @@JumpedToBy a0437 
+@0442:110062            ad   a2 + 9    ; ;old label: 9a2, new label: a2 + 9 @line:28e 
+@0443:040062            ts   a2 + 9    ; ;old label: 9a2, new label: a2 + 9 @line:28f 
+@0444:100176            ca   a7 + 3    ; ;old label: 3a7, new label: a7 + 3 @line:28g 
+@0445:114000            su   0         ; @line:28h 
+@0446:070513            cp   g4        ; @line:28i 
+@0447:100176        g2: ca   a7 + 3    ; ;old label: 3a7, new label: a7 + 3 @line:28j 
+@0450:114001            su   1         ; @line:28k 
+@0451:110044            ad   a1 + 4    ; ;old label: 4a1, new label: a1 + 4 @line:28l 
+
+                        ; CS-II Src: td5g2	ca9a2	ts	ao7a2	su3a1	cpw1	ca0	tsa7	ts1a7	ts4a7	ts3a7	ts2a7
+@0452:044454            td   g2 + 5    ; ;old label: 5g2, new label: g2 + 5 @line:29a 
+@0453:100062            ca   a2 + 9    ; ;old label: 9a2, new label: a2 + 9 @line:29b 
+@0454:040000            ts   0         ; default operand;  @line:29c @@WrittenBy a0452 
+@0455:130060            ao   a2 + 7    ; ;old label: 7a2, new label: a2 + 7 @line:29d 
+@0456:114043            su   a1 + 3    ; ;old label: 3a1, new label: a1 + 3 @line:29e 
+@0457:070705            cp   w1        ; @line:29f 
+@0460:100000            ca   0         ; @line:29g 
+@0461:040173            ts   a7        ; @line:29h 
+@0462:040174            ts   a7 + 1    ; ;old label: 1a7, new label: a7 + 1 @line:29i 
+@0463:040177            ts   a7 + 4    ; ;old label: 4a7, new label: a7 + 4 @line:29j 
+@0464:040176            ts   a7 + 3    ; ;old label: 3a7, new label: a7 + 3 @line:29k 
+@0465:040175            ts   a7 + 2    ; ;old label: 2a7, new label: a7 + 2 @line:29l 
+
+                        ; CS-II Src: ts7a2	spw1	g3,ca2a11	ad2a2	td5g3	td10g3	td16g3	ca	su0	cp9g3	spu3
+@0466:040060            ts   a2 + 7    ; ;old label: 7a2, new label: a2 + 7 @line:30a 
+@0467:074705            sp   w1        ; @line:30b 
+@0470:100241        g3: ca   a11 + 2   ; ;old label: 2a11, new label: a11 + 2 @line:30c @@JumpedToBy a0515 
+@0471:110053            ad   a2 + 2    ; ;old label: 2a2, new label: a2 + 2 @line:30d 
+@0472:044475            td   g3 + 5    ; ;old label: 5g3, new label: g3 + 5 @line:30e 
+@0473:044502            td   g3 + 10   ; ;old label: 10g3, new label: g3 + 10 @line:30f 
+@0474:044510            td   g3 + 16   ; ;old label: 16g3, new label: g3 + 16 @line:30g 
+@0475:100000            ca   0         ; default operand;  @line:30h @@WrittenBy a0472 
+@0476:114000            su   0         ; @line:30i 
+@0477:070501            cp   g3 + 9    ; ;old label: 9g3, new label: g3 + 9 @line:30j 
+@0500:074673            sp   u3        ; @line:30k 
+
+                        ; CS-II Src: ca9a2	ts	ca2a11	ad4a1	td15g3	td17g3	ca	su	ts	spw1	g4,ca9a2	su4a11
+@0501:100062            ca   a2 + 9    ; ;old label: 9a2, new label: a2 + 9 @line:31a @@JumpedToBy a0477 
+@0502:040000            ts   0         ; default operand;  @line:31b @@WrittenBy a0473 
+@0503:100241            ca   a11 + 2   ; ;old label: 2a11, new label: a11 + 2 @line:31c 
+@0504:110044            ad   a1 + 4    ; ;old label: 4a1, new label: a1 + 4 @line:31d 
+@0505:044507            td   g3 + 15   ; ;old label: 15g3, new label: g3 + 15 @line:31e 
+@0506:044511            td   g3 + 17   ; ;old label: 17g3, new label: g3 + 17 @line:31f 
+@0507:100000            ca   0         ; default operand;  @line:31g @@WrittenBy a0505 
+@0510:114000            su   0         ; default operand;  @line:31h @@WrittenBy a0474 
+@0511:040000            ts   0         ; default operand;  @line:31i @@WrittenBy a0506 
+@0512:074705            sp   w1        ; @line:31j 
+@0513:100062        g4: ca   a2 + 9    ; ;old label: 9a2, new label: a2 + 9 @line:31k @@JumpedToBy a0446 
+@0514:114243            su   a11 + 4   ; ;old label: 4a11, new label: a11 + 4 @line:31l 
+
+                        ; CS-II Src: cpg3	spu3	p2,tap3	tap4	tap5
+@0515:070470            cp   g3        ; @line:32a 
+@0516:074673            sp   u3        ; @line:32b 
+@0517:050530        p2: ta   p3        ; @line:32c @@JumpedToBy w3 
+@0520:050533            ta   p4        ; @line:32d 
+@0521:050537            ta   p5        ; @line:32e 
+
+                        ; CS-II Src: tap6	tap10	aop10	aop10	aop10	aop10
+@0522:050552            ta   p6        ; @line:33a 
+@0523:050613            ta   p10       ; @line:33b 
+@0524:130613            ao   p10       ; @line:33c 
+@0525:130613            ao   p10       ; @line:33d 
+@0526:130613            ao   p10       ; @line:33e 
+@0527:130613            ao   p10       ; @line:33f 
+
+                        ; CS-II Src: p3,ca	tsp12	aop4	p4,ca	tdp7	aop5	aop5	p5,ca	td1p7	td2p7	td4p7
+@0530:100000        p3: ca   0         ; default operand;  @line:34a @@WrittenBy p2 
+@0531:040620            ts   p12       ; @line:34b 
+@0532:130533            ao   p4        ; @line:34c 
+@0533:100000        p4: ca   0         ; default operand;  @line:34d @@WrittenBy a0520 a0532 ReadBy a0532 
+@0534:044555            td   p7        ; @line:34e 
+@0535:130537            ao   p5        ; @line:34f 
+@0536:130537            ao   p5        ; @line:34g 
+@0537:100000        p5: ca   0         ; default operand;  @line:34h @@WrittenBy a0521 a0535 a0536 ReadBy a0535 a0536 
+@0540:044556            td   p7 + 1    ; ;old label: 1p7, new label: p7 + 1 @line:34i 
+@0541:044557            td   p7 + 2    ; ;old label: 2p7, new label: p7 + 2 @line:34j 
+@0542:044561            td   p7 + 4    ; ;old label: 4p7, new label: p7 + 4 @line:34k 
+
+                        ; CS-II Src: tdp8	td2p8	td4p8	td1p11	aop6	aop6	aop6	p6,ca	td6p7	td2p11	p7,ca
+@0543:044565            td   p8        ; @line:35a 
+@0544:044567            td   p8 + 2    ; ;old label: 2p8, new label: p8 + 2 @line:35b 
+@0545:044571            td   p8 + 4    ; ;old label: 4p8, new label: p8 + 4 @line:35c 
+@0546:044615            td   p11 + 1   ; ;old label: 1p11, new label: p11 + 1 @line:35d 
+@0547:130552            ao   p6        ; @line:35e 
+@0550:130552            ao   p6        ; @line:35f 
+@0551:130552            ao   p6        ; @line:35g 
+@0552:100000        p6: ca   0         ; default operand;  @line:35h @@WrittenBy a0522 a0547 a0550 a0551 ReadBy a0547 a0550 a0551 
+@0553:044563            td   p7 + 6    ; ;old label: 6p7, new label: p7 + 6 @line:35i 
+@0554:044616            td   p11 + 2   ; ;old label: 2p11, new label: p11 + 2 @line:35j 
+@0555:100000        p7: ca   0         ; default operand;  @line:35k @@JumpedToBy a0610 WrittenBy a0534 p9 ReadBy p9 
+
+                        ; CS-II Src: ts	ca	sup12	ts	cpp8	ao	sp2p7	p8,ca	adp12	ts	cap12
+@0556:040000            ts   0         ; default operand;  @line:36a @@WrittenBy a0540 a0574 ReadBy a0574 
+@0557:100000            ca   0         ; default operand;  @line:36b @@JumpedToBy a0564 WrittenBy a0541 a0575 ReadBy a0575 
+@0560:114620            su   p12       ; @line:36c 
+@0561:040000            ts   0         ; default operand;  @line:36d @@WrittenBy a0542 a0576 ReadBy a0576 
+@0562:070565            cp   p8        ; @line:36e 
+@0563:130000            ao   0         ; default operand;  @line:36f @@WrittenBy a0553 a0577 ReadBy a0577 
+@0564:074557            sp   p7 + 2    ; ;old label: 2p7, new label: p7 + 2 @line:36g 
+@0565:100000        p8: ca   0         ; default operand;  @line:36h @@JumpedToBy a0562 WrittenBy a0543 a0600 ReadBy a0600 
+@0566:110620            ad   p12       ; @line:36i 
+@0567:040000            ts   0         ; default operand;  @line:36j @@WrittenBy a0544 a0601 ReadBy a0601 
+@0570:100620            ca   p12       ; @line:36k 
+
+                        ; CS-II Src: su	cpp11	p9,aop7	ao1p7	ao2p7	ao4p7	ao6p7	aop8	ao2p8	ao4p8	ao2p11
+@0571:114000            su   0         ; default operand;  @line:37a @@WrittenBy a0545 a0602 ReadBy a0602 
+@0572:070614            cp   p11       ; @line:37b 
+@0573:130555        p9: ao   p7        ; @line:37c @@JumpedToBy a0617 
+@0574:130556            ao   p7 + 1    ; ;old label: 1p7, new label: p7 + 1 @line:37d 
+@0575:130557            ao   p7 + 2    ; ;old label: 2p7, new label: p7 + 2 @line:37e 
+@0576:130561            ao   p7 + 4    ; ;old label: 4p7, new label: p7 + 4 @line:37f 
+@0577:130563            ao   p7 + 6    ; ;old label: 6p7, new label: p7 + 6 @line:37g 
+@0600:130565            ao   p8        ; @line:37h 
+@0601:130567            ao   p8 + 2    ; ;old label: 2p8, new label: p8 + 2 @line:37i 
+@0602:130571            ao   p8 + 4    ; ;old label: 4p8, new label: p8 + 4 @line:37j 
+@0603:130616            ao   p11 + 2   ; ;old label: 2p11, new label: p11 + 2 @line:37k 
+
+                        ; CS-II Src: ao1p11	ao2a1	ca2a1	su3a1	cpp7	ca0	ts2a1	p10,sp	p11,ca0	ts	ao	spp9
+@0604:130615            ao   p11 + 1   ; ;old label: 1p11, new label: p11 + 1 @line:38a 
+@0605:130042            ao   a1 + 2    ; ;old label: 2a1, new label: a1 + 2 @line:38b 
+@0606:100042            ca   a1 + 2    ; ;old label: 2a1, new label: a1 + 2 @line:38c 
+@0607:114043            su   a1 + 3    ; ;old label: 3a1, new label: a1 + 3 @line:38d 
+@0610:070555            cp   p7        ; @line:38e 
+@0611:100000            ca   0         ; @line:38f 
+@0612:040042            ts   a1 + 2    ; ;old label: 2a1, new label: a1 + 2 @line:38g 
+@0613:074000       p10: sp   0         ; default operand;  @line:38h @@WrittenBy a0523 a0524 a0525 a0526 a0527 ReadBy a0524 a0525 a0526 a0527 
+@0614:100000       p11: ca   0         ; @line:38i @@JumpedToBy a0572 
+@0615:040000            ts   0         ; default operand;  @line:38j @@WrittenBy a0546 a0604 ReadBy a0604 
+@0616:130000            ao   0         ; default operand;  @line:38k @@WrittenBy a0554 a0603 ReadBy a0603 
+@0617:074573            sp   p9        ; @line:38l 
+
+                        ; CS-II Src: p12,0	s1,tas2	tas3	si149	s2,ca	tds4	s4,ca	clh1	rc	clh9	rc	clh22
+@0620:000000       p12: .word 0         ; @line:39a @@WrittenBy a0531 ReadBy a0560 a0566 a0570 
+@0621:050624        s1: ta   s2        ; @line:39b @@JumpedToBy a2451 y1 z1 
+@0622:050640            ta   s3        ; @line:39c 
+@0623:000225            si   149       ; @line:39d; Auto-Annotate I/O: Printer 
+@0624:100000        s2: ca   0         ; default operand;  @line:39e @@WrittenBy s1 
+@0625:044626            td   s4        ; @line:39f 
+@0626:100000        s4: ca   0         ; default operand;  @line:39g @@JumpedToBy a0636 WrittenBy a0625 a0635 ReadBy a0635 
+@0627:171001            clh  1         ; @line:39h 
+@0630:024000            rc   0         ; default operand;  @line:39i 
+@0631:171011            clh  9         ; @line:39j 
+@0632:024000            rc   0         ; default operand;  @line:39k 
+@0633:171026            clh  22        ; @line:39l 
+
+                        ; CS-II Src: cps5	aos4	sps4	s5,aos3	s3,sp	v2,ca0	tsb8	ts1b8	ts2b8	ts3b8	ts4b8	ts5b8
+@0634:070637            cp   s5        ; @line:40a 
+@0635:130626            ao   s4        ; @line:40b 
+@0636:074626            sp   s4        ; @line:40c 
+@0637:130640        s5: ao   s3        ; @line:40d @@JumpedToBy a0634 
+@0640:074000        s3: sp   0         ; default operand;  @line:40e @@WrittenBy a0622 s5 ReadBy s5 
+@0641:100000        v2: ca   0         ; @line:40f @@JumpedToBy a1237 
+@0642:040327            ts   b8        ; @line:40g 
+@0643:040330            ts   b8 + 1    ; ;old label: 1b8, new label: b8 + 1 @line:40h 
+@0644:040331            ts   b8 + 2    ; ;old label: 2b8, new label: b8 + 2 @line:40i 
+@0645:040332            ts   b8 + 3    ; ;old label: 3b8, new label: b8 + 3 @line:40j 
+@0646:040333            ts   b8 + 4    ; ;old label: 4b8, new label: b8 + 4 @line:40k 
+@0647:040334            ts   b8 + 5    ; ;old label: 5b8, new label: b8 + 5 @line:40l 
+
+                        ; CS-II Src: ts6b8	ts7b8	spw3	u1,tau2	ca0	tsa7	ts4a7	ts3a7	ts1a7	ts7a2	tsb7	ts1b7
+@0650:040335            ts   b8 + 6    ; ;old label: 6b8, new label: b8 + 6 @line:41a 
+@0651:040336            ts   b8 + 7    ; ;old label: 7b8, new label: b8 + 7 @line:41b 
+@0652:075240            sp   w3        ; @line:41c 
+@0653:050672        u1: ta   u2        ; @line:41d @@JumpedToBy a0364 a0406 
+@0654:100000            ca   0         ; @line:41e 
+@0655:040173            ts   a7        ; @line:41f 
+@0656:040177            ts   a7 + 4    ; ;old label: 4a7, new label: a7 + 4 @line:41g 
+@0657:040176            ts   a7 + 3    ; ;old label: 3a7, new label: a7 + 3 @line:41h 
+@0660:040174            ts   a7 + 1    ; ;old label: 1a7, new label: a7 + 1 @line:41i 
+@0661:040060            ts   a2 + 7    ; ;old label: 7a2, new label: a2 + 7 @line:41j 
+@0662:040317            ts   b7        ; @line:41k 
+@0663:040320            ts   b7 + 1    ; ;old label: 1b7, new label: b7 + 1 @line:41l 
+
+                        ; CS-II Src: ts2b7	ts3b7	ts4b7	ts5b7	ts6b7	ts7b7	u2,sp
+@0664:040321            ts   b7 + 2    ; ;old label: 2b7, new label: b7 + 2 @line:42a 
+@0665:040322            ts   b7 + 3    ; ;old label: 3b7, new label: b7 + 3 @line:42b 
+@0666:040323            ts   b7 + 4    ; ;old label: 4b7, new label: b7 + 4 @line:42c 
+@0667:040324            ts   b7 + 5    ; ;old label: 5b7, new label: b7 + 5 @line:42d 
+@0670:040325            ts   b7 + 6    ; ;old label: 6b7, new label: b7 + 6 @line:42e 
+@0671:040326            ts   b7 + 7    ; ;old label: 7b7, new label: b7 + 7 @line:42f 
+@0672:074000        u2: sp   0         ; default operand;  @line:42g @@WrittenBy u1 
+
+                        ; CS-II Src: u3,spx1	ca1a7	su1	ts1a7	ca3a7	su0	cpw1	su1a2	ts3a7	spw1
+@0673:076450        u3: sp   x1        ; @line:43a @@JumpedToBy a0415 a0425 a0440 a0500 a0516 
+@0674:100174            ca   a7 + 1    ; ;old label: 1a7, new label: a7 + 1 @line:43b 
+@0675:114001            su   1         ; @line:43c 
+@0676:040174            ts   a7 + 1    ; ;old label: 1a7, new label: a7 + 1 @line:43d 
+@0677:100176            ca   a7 + 3    ; ;old label: 3a7, new label: a7 + 3 @line:43e 
+@0700:114000            su   0         ; @line:43f 
+@0701:070705            cp   w1        ; @line:43g 
+@0702:114052            su   a2 + 1    ; ;old label: 1a2, new label: a2 + 1 @line:43h 
+@0703:040176            ts   a7 + 3    ; ;old label: 3a7, new label: a7 + 3 @line:43i 
+@0704:074705            sp   w1        ; @line:43j 
+
+                        ; CS-II Src: w1,spz2	+0.60	-0.90	+0.90	0.00	0.00	spz2	+0.90	-0.90
+@0705:076475        w1: sp   z2        ; @line:44a @@JumpedToBy a0353 a0400 a0457 a0467 a0512 a0701 a0704 a2457 a2474 
+@0706:046314            .word +0.60     ; @line:44b 
+@0707:106314            .word -0.90     ; @line:44c 
+@0710:071463            .word +0.90     ; @line:44d 
+@0711:000000            .word 0.00      ; @line:44e 
+@0712:000000            .word 0.00      ; @line:44f 
+@0713:076475            sp   z2        ; @line:44g 
+@0714:071463            .word +0.90     ; @line:44h 
+@0715:106314            .word -0.90     ; @line:44i 
+
+                        ; CS-II Src: 0.00	-0.70	0.00	spz2	+0.75	-0.90	0.00	-0.70	0.00	spz2	+0.60
+@0716:000000            .word 0.00      ; @line:45a 
+@0717:123146            .word -0.70     ; @line:45b 
+@0720:000000            .word 0.00      ; @line:45c 
+@0721:076475            sp   z2        ; @line:45d 
+@0722:060000            .word +0.75     ; @line:45e 
+@0723:106314            .word -0.90     ; @line:45f 
+@0724:000000            .word 0.00      ; @line:45g 
+@0725:123146            .word -0.70     ; @line:45h 
+@0726:000000            .word 0.00      ; @line:45i 
+@0727:076475            sp   z2        ; @line:45j 
+@0730:046314            .word +0.60     ; @line:45k 
+
+                        ; CS-II Src: -0.70	+0.90	0.00	0.00	spz2	+0.10	-0.90	+0.40	0.00	0.00	spz2
+@0731:123146            .word -0.70     ; @line:46a 
+@0732:071463            .word +0.90     ; @line:46b 
+@0733:000000            .word 0.00      ; @line:46c 
+@0734:000000            .word 0.00      ; @line:46d 
+@0735:076475            sp   z2        ; @line:46e 
+@0736:006314            .word +0.10     ; @line:46f 
+@0737:106314            .word -0.90     ; @line:46g 
+@0740:031463            .word +0.40     ; @line:46h 
+@0741:000000            .word 0.00      ; @line:46i 
+@0742:000000            .word 0.00      ; @line:46j 
+@0743:076475            sp   z2        ; @line:46k 
+
+                        ; CS-II Src: +0.40	-0.90	0.00	-0.70	0.00	spz2	+0.25	-0.90	0.00	-0.75	0.00
+@0744:031463            .word +0.40     ; @line:47a 
+@0745:106314            .word -0.90     ; @line:47b 
+@0746:000000            .word 0.00      ; @line:47c 
+@0747:123146            .word -0.70     ; @line:47d 
+@0750:000000            .word 0.00      ; @line:47e 
+@0751:076475            sp   z2        ; @line:47f 
+@0752:020000            .word +0.25     ; @line:47g 
+@0753:106314            .word -0.90     ; @line:47h 
+@0754:000000            .word 0.00      ; @line:47i 
+@0755:117777            .word -0.75     ; @line:47j 
+@0756:000000            .word 0.00      ; @line:47k 
+
+                        ; CS-II Src: spz2	+0.10	-0.90	0.00	-0.70	0.00	spz2	+0.10	-0.70	+0.20	0.00
+@0757:076475            sp   z2        ; @line:48a 
+@0760:006314            .word +0.10     ; @line:48b 
+@0761:106314            .word -0.90     ; @line:48c 
+@0762:000000            .word 0.00      ; @line:48d 
+@0763:123146            .word -0.70     ; @line:48e 
+@0764:000000            .word 0.00      ; @line:48f 
+@0765:076475            sp   z2        ; @line:48g 
+@0766:006314            .word +0.10     ; @line:48h 
+@0767:123146            .word -0.70     ; @line:48i 
+@0770:014631            .word +0.20     ; @line:48j 
+@0771:000000            .word 0.00      ; @line:48k 
+
+                        ; CS-II Src: 0.00	spz2	+0.30	-0.70	+0.40	0.00	0.00	spz2	+0.25	-0.75	+0.30
+@0772:000000            .word 0.00      ; @line:49a 
+@0773:076475            sp   z2        ; @line:49b 
+@0774:023146            .word +0.30     ; @line:49c 
+@0775:123146            .word -0.70     ; @line:49d 
+@0776:031463            .word +0.40     ; @line:49e 
+@0777:000000            .word 0.00      ; @line:49f 
+@1000:000000            .word 0.00      ; @line:49g 
+@1001:076475            sp   z2        ; @line:49h 
+@1002:020000            .word +0.25     ; @line:49i 
+@1003:117777            .word -0.75     ; @line:49j 
+@1004:023146            .word +0.30     ; @line:49k 
+
+                        ; CS-II Src: -0.70	0.00	spz2	+0.20	-0.70	+0.25	-0.75	+0.50	spz2	-0.40	-0.90
+@1005:123146            .word -0.70     ; @line:50a 
+@1006:000000            .word 0.00      ; @line:50b 
+@1007:076475            sp   z2        ; @line:50c 
+@1010:014631            .word +0.20     ; @line:50d 
+@1011:123146            .word -0.70     ; @line:50e 
+@1012:020000            .word +0.25     ; @line:50f 
+@1013:117777            .word -0.75     ; @line:50g 
+@1014:040000            .word +0.50     ; @line:50h 
+@1015:076475            sp   z2        ; @line:50i 
+@1016:146314            .word -0.40     ; @line:50j 
+@1017:106314            .word -0.90     ; @line:50k 
+
+                        ; CS-II Src: -0.10	0.00	0.00	spz2	-0.10	-0.90	0.00	-0.70	0.00	spz2	-0.40
+@1020:171463            .word -0.10     ; @line:51a 
+@1021:000000            .word 0.00      ; @line:51b 
+@1022:000000            .word 0.00      ; @line:51c 
+@1023:076475            sp   z2        ; @line:51d 
+@1024:171463            .word -0.10     ; @line:51e 
+@1025:106314            .word -0.90     ; @line:51f 
+@1026:000000            .word 0.00      ; @line:51g 
+@1027:123146            .word -0.70     ; @line:51h 
+@1030:000000            .word 0.00      ; @line:51i 
+@1031:076475            sp   z2        ; @line:51j 
+@1032:146314            .word -0.40     ; @line:51k 
+
+                        ; CS-II Src: -0.90	0.00	-0.70	0.00	spz2	-0.90	-0.90	-0.60	0.00	0.00	spz2
+@1033:106314            .word -0.90     ; @line:52a 
+@1034:000000            .word 0.00      ; @line:52b 
+@1035:123146            .word -0.70     ; @line:52c 
+@1036:000000            .word 0.00      ; @line:52d 
+@1037:076475            sp   z2        ; @line:52e 
+@1040:106314            .word -0.90     ; @line:52f 
+@1041:106314            .word -0.90     ; @line:52g 
+@1042:131463            .word -0.60     ; @line:52h 
+@1043:000000            .word 0.00      ; @line:52i 
+@1044:000000            .word 0.00      ; @line:52j 
+@1045:076475            sp   z2        ; @line:52k 
+
+                        ; CS-II Src: -0.85	-0.70	-0.65	0.00	0.00	spz2	-0.60	-0.90	0.00	-0.75	0.00
+@1046:111463            .word -0.85     ; @line:53a 
+@1047:123146            .word -0.70     ; @line:53b 
+@1050:126314            .word -0.65     ; @line:53c 
+@1051:000000            .word 0.00      ; @line:53d 
+@1052:000000            .word 0.00      ; @line:53e 
+@1053:076475            sp   z2        ; @line:53f 
+@1054:131463            .word -0.60     ; @line:53g 
+@1055:106314            .word -0.90     ; @line:53h 
+@1056:000000            .word 0.00      ; @line:53i 
+@1057:117777            .word -0.75     ; @line:53j 
+@1060:000000            .word 0.00      ; @line:53k 
+
+                        ; CS-II Src: spz2	-0.90	-0.90	0.00	-0.75	0.00	spz2	-0.90	-0.75	-0.85	-0.70
+@1061:076475            sp   z2        ; @line:54a 
+@1062:106314            .word -0.90     ; @line:54b 
+@1063:106314            .word -0.90     ; @line:54c 
+@1064:000000            .word 0.00      ; @line:54d 
+@1065:117777            .word -0.75     ; @line:54e 
+@1066:000000            .word 0.00      ; @line:54f 
+@1067:076475            sp   z2        ; @line:54g 
+@1070:106314            .word -0.90     ; @line:54h 
+@1071:117777            .word -0.75     ; @line:54i 
+@1072:111463            .word -0.85     ; @line:54j 
+@1073:123146            .word -0.70     ; @line:54k 
+
+                        ; CS-II Src: 0.00	spz2	-0.65	-0.70	-0.60	-0.75	+0.50	spz2	+0.60	+0.10	+0.90
+@1074:000000            .word 0.00      ; @line:55a 
+@1075:076475            sp   z2        ; @line:55b 
+@1076:126314            .word -0.65     ; @line:55c 
+@1077:123146            .word -0.70     ; @line:55d 
+@1100:131463            .word -0.60     ; @line:55e 
+@1101:117777            .word -0.75     ; @line:55f 
+@1102:040000            .word +0.50     ; @line:55g 
+@1103:076475            sp   z2        ; @line:55h 
+@1104:046314            .word +0.60     ; @line:55i 
+@1105:006314            .word +0.10     ; @line:55j 
+@1106:071463            .word +0.90     ; @line:55k 
+
+                        ; CS-II Src: 0.00	0.00	spz2	+0.90	+0.10	0.00	+0.30	0.00	spz2	+0.75	+0.10
+@1107:000000            .word 0.00      ; @line:56a 
+@1110:000000            .word 0.00      ; @line:56b 
+@1111:076475            sp   z2        ; @line:56c 
+@1112:071463            .word +0.90     ; @line:56d 
+@1113:006314            .word +0.10     ; @line:56e 
+@1114:000000            .word 0.00      ; @line:56f 
+@1115:023146            .word +0.30     ; @line:56g 
+@1116:000000            .word 0.00      ; @line:56h 
+@1117:076475            sp   z2        ; @line:56i 
+@1120:060000            .word +0.75     ; @line:56j 
+@1121:006314            .word +0.10     ; @line:56k 
+
+                        ; CS-II Src: 0.00	+0.30	0.00	spz2	+0.60	+0.10	+0.00	+0.30	0.00	spz2	+0.10
+@1122:000000            .word 0.00      ; @line:57a 
+@1123:023146            .word +0.30     ; @line:57b 
+@1124:000000            .word 0.00      ; @line:57c 
+@1125:076475            sp   z2        ; @line:57d 
+@1126:046314            .word +0.60     ; @line:57e 
+@1127:006314            .word +0.10     ; @line:57f 
+@1130:000000            .word +0.00     ; @line:57g 
+@1131:023146            .word +0.30     ; @line:57h 
+@1132:000000            .word 0.00      ; @line:57i 
+@1133:076475            sp   z2        ; @line:57j 
+@1134:006314            .word +0.10     ; @line:57k 
+
+                        ; CS-II Src: +0.10	+0.40	0.00	0.00	spz2	+0.40	+0.10	0.00	+0.30	0.00	spz2
+@1135:006314            .word +0.10     ; @line:58a 
+@1136:031463            .word +0.40     ; @line:58b 
+@1137:000000            .word 0.00      ; @line:58c 
+@1140:000000            .word 0.00      ; @line:58d 
+@1141:076475            sp   z2        ; @line:58e 
+@1142:031463            .word +0.40     ; @line:58f 
+@1143:006314            .word +0.10     ; @line:58g 
+@1144:000000            .word 0.00      ; @line:58h 
+@1145:023146            .word +0.30     ; @line:58i 
+@1146:000000            .word 0.00      ; @line:58j 
+@1147:076475            sp   z2        ; @line:58k 
+
+                        ; CS-II Src: +0.25	+0.10	0.00	+0.30	0.00	spz2	-0.40	+0.10	-0.10	0.00	0.00
+@1150:020000            .word +0.25     ; @line:59a 
+@1151:006314            .word +0.10     ; @line:59b 
+@1152:000000            .word 0.00      ; @line:59c 
+@1153:023146            .word +0.30     ; @line:59d 
+@1154:000000            .word 0.00      ; @line:59e 
+@1155:076475            sp   z2        ; @line:59f 
+@1156:146314            .word -0.40     ; @line:59g 
+@1157:006314            .word +0.10     ; @line:59h 
+@1160:171463            .word -0.10     ; @line:59i 
+@1161:000000            .word 0.00      ; @line:59j 
+@1162:000000            .word 0.00      ; @line:59k 
+
+                        ; CS-II Src: spz2	-0.40	+0.30	-0.25	0.00	0.00	spz2	-0.10	+0.10	0.00	+0.30
+@1163:076475            sp   z2        ; @line:60a 
+@1164:146314            .word -0.40     ; @line:60b 
+@1165:023146            .word +0.30     ; @line:60c 
+@1166:157777            .word -0.25     ; @line:60d 
+@1167:000000            .word 0.00      ; @line:60e 
+@1170:000000            .word 0.00      ; @line:60f 
+@1171:076475            sp   z2        ; @line:60g 
+@1172:171463            .word -0.10     ; @line:60h 
+@1173:006314            .word +0.10     ; @line:60i 
+@1174:000000            .word 0.00      ; @line:60j 
+@1175:023146            .word +0.30     ; @line:60k 
+
+                        ; CS-II Src: 0.00	spz2	-0.25	+0.20	0.00	+0.30	0.00	spz2	-0.40	+0.10	0.00
+@1176:000000            .word 0.00      ; @line:61a 
+@1177:076475            sp   z2        ; @line:61b 
+@1200:157777            .word -0.25     ; @line:61c 
+@1201:014631            .word +0.20     ; @line:61d 
+@1202:000000            .word 0.00      ; @line:61e 
+@1203:023146            .word +0.30     ; @line:61f 
+@1204:000000            .word 0.00      ; @line:61g 
+@1205:076475            sp   z2        ; @line:61h 
+@1206:146314            .word -0.40     ; @line:61i 
+@1207:006314            .word +0.10     ; @line:61j 
+@1210:000000            .word 0.00      ; @line:61k 
+
+                        ; CS-II Src: +0.30	0.00	spz2	-0.90	+0.10	-0.60	0.00	0.00	spz2	-0.90	+0.30
+@1211:023146            .word +0.30     ; @line:62a 
+@1212:000000            .word 0.00      ; @line:62b 
+@1213:076475            sp   z2        ; @line:62c 
+@1214:106314            .word -0.90     ; @line:62d 
+@1215:006314            .word +0.10     ; @line:62e 
+@1216:131463            .word -0.60     ; @line:62f 
+@1217:000000            .word 0.00      ; @line:62g 
+@1220:000000            .word 0.00      ; @line:62h 
+@1221:076475            sp   z2        ; @line:62i 
+@1222:106314            .word -0.90     ; @line:62j 
+@1223:023146            .word +0.30     ; @line:62k 
+
+                        ; CS-II Src: -0.60	0.00	0.00	spz2	-0.75	+0.10	0.00	+0.30	0.00	w2,ca6a8
+@1224:131463            .word -0.60     ; @line:63a 
+@1225:000000            .word 0.00      ; @line:63b 
+@1226:000000            .word 0.00      ; @line:63c 
+@1227:076475            sp   z2        ; @line:63d 
+@1230:117777            .word -0.75     ; @line:63e 
+@1231:006314            .word +0.10     ; @line:63f 
+@1232:000000            .word 0.00      ; @line:63g 
+@1233:023146            .word +0.30     ; @line:63h 
+@1234:000000            .word 0.00      ; @line:63i 
+@1235:100207        w2: ca   a8 + 6    ; ;old label: 6a8, new label: a8 + 6 @line:63j 
+
+                        ; CS-II Src: ts1w3	spv2	w3,spp2	0	b1	b9	b8	spw73	w4,taw5	taw6
+@1236:041241            ts   w3 + 1    ; ;old label: 1w3, new label: w3 + 1 @line:64a 
+@1237:074641            sp   v2        ; @line:64b 
+@1240:074517        w3: sp   p2        ; @line:64c @@JumpedToBy a0652 
+@1241:000000            .word 0         ; @line:64d @@WrittenBy a1236 
+@1242:000255            .word b1        ; @line:64e 
+@1243:000337            .word b9        ; @line:64f 
+@1244:000327            .word b8        ; @line:64g 
+@1245:076325            sp   w73       ; @line:64h 
+@1246:051250        w4: ta   w5        ; @line:64i @@JumpedToBy z20 
+@1247:051253            ta   w6        ; @line:64j 
+
+                        ; CS-II Src: w5,ca	tsa9	aow6	w6,ca	ts1a9	caa9	ts1w7	ts1w8	ts1w9
+@1250:100000        w5: ca   0         ; default operand;  @line:65a @@WrittenBy w4 
+@1251:040213            ts   a9        ; @line:65b 
+@1252:131253            ao   w6        ; @line:65c 
+@1253:100000        w6: ca   0         ; default operand;  @line:65d @@WrittenBy a1247 a1252 ReadBy a1252 
+@1254:040214            ts   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:65e 
+@1255:100213            ca   a9        ; @line:65f 
+@1256:041276            ts   w7 + 1    ; ;old label: 1w7, new label: w7 + 1 @line:65g 
+@1257:041304            ts   w8 + 1    ; ;old label: 1w8, new label: w8 + 1 @line:65h 
+@1260:041312            ts   w9 + 1    ; ;old label: 1w9, new label: w9 + 1 @line:65i 
+
+                        ; CS-II Src: ad7a9	ts3w7	ts3w8	ts1w10	ca1a9	ts2w7	ts2w9	ts2w10	ad5a9	ts2w8	ts4w9
+@1261:110222            ad   a9 + 7    ; ;old label: 7a9, new label: a9 + 7 @line:66a 
+@1262:041300            ts   w7 + 3    ; ;old label: 3w7, new label: w7 + 3 @line:66b 
+@1263:041306            ts   w8 + 3    ; ;old label: 3w8, new label: w8 + 3 @line:66c 
+@1264:041320            ts   w10 + 1   ; ;old label: 1w10, new label: w10 + 1 @line:66d 
+@1265:100214            ca   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:66e 
+@1266:041277            ts   w7 + 2    ; ;old label: 2w7, new label: w7 + 2 @line:66f 
+@1267:041313            ts   w9 + 2    ; ;old label: 2w9, new label: w9 + 2 @line:66g 
+@1270:041321            ts   w10 + 2   ; ;old label: 2w10, new label: w10 + 2 @line:66h 
+@1271:110220            ad   a9 + 5    ; ;old label: 5a9, new label: a9 + 5 @line:66i 
+@1272:041305            ts   w8 + 2    ; ;old label: 2w8, new label: w8 + 2 @line:66j 
+@1273:041315            ts   w9 + 4    ; ;old label: 4w9, new label: w9 + 4 @line:66k 
+
+                        ; CS-II Src: ts4w10	w7,spz2	0	0	0	0	0	w8,spz2	0	0	0
+@1274:041323            ts   w10 + 4   ; ;old label: 4w10, new label: w10 + 4 @line:67a 
+@1275:076475        w7: sp   z2        ; @line:67b 
+@1276:000000            .word 0         ; @line:67c @@WrittenBy a1256 
+@1277:000000            .word 0         ; @line:67d @@WrittenBy a1266 
+@1300:000000            .word 0         ; @line:67e @@WrittenBy a1262 
+@1301:000000            .word 0         ; @line:67f 
+@1302:000000            .word 0         ; @line:67g 
+@1303:076475        w8: sp   z2        ; @line:67h 
+@1304:000000            .word 0         ; @line:67i @@WrittenBy a1257 
+@1305:000000            .word 0         ; @line:67j @@WrittenBy a1272 
+@1306:000000            .word 0         ; @line:67k @@WrittenBy a1263 
+
+                        ; CS-II Src: 0	0	w9,spz2	0	0	0	0	0	w10,spz2	0	0
+@1307:000000            .word 0         ; @line:68a 
+@1310:000000            .word 0         ; @line:68b 
+@1311:076475        w9: sp   z2        ; @line:68c 
+@1312:000000            .word 0         ; @line:68d @@WrittenBy a1260 
+@1313:000000            .word 0         ; @line:68e @@WrittenBy a1267 
+@1314:000000            .word 0         ; @line:68f 
+@1315:000000            .word 0         ; @line:68g @@WrittenBy a1273 
+@1316:000000            .word 0         ; @line:68h 
+@1317:076475       w10: sp   z2        ; @line:68i 
+@1320:000000            .word 0         ; @line:68j @@WrittenBy a1264 
+@1321:000000            .word 0         ; @line:68k @@WrittenBy a1270 
+
+                        ; CS-II Src: 0	0	0	w11,spw76	w12,taw13	taw14
+@1322:000000            .word 0         ; @line:69a 
+@1323:000000            .word 0         ; @line:69b @@WrittenBy a1274 
+@1324:000000            .word 0         ; @line:69c 
+@1325:076377       w11: sp   w76       ; @line:69d 
+@1326:051330       w12: ta   w13       ; @line:69e @@JumpedToBy z21 
+@1327:051333            ta   w14       ; @line:69f 
+
+                        ; CS-II Src: w13,ca
+@1330:100000       w13: ca   0         ; default operand;  @line:70a @@WrittenBy w12 
+
+                        ; CS-II Src: tsa9	aow14	w14,ca	ts1a9	caa9	ts1w15	ts1w16	ad7a9	ts3w15	ts3w17	su2a9
+@1331:040213            ts   a9        ; @line:71a 
+@1332:131333            ao   w14       ; @line:71b 
+@1333:100000       w14: ca   0         ; default operand;  @line:71c @@WrittenBy a1327 a1332 ReadBy a1332 
+@1334:040214            ts   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:71d 
+@1335:100213            ca   a9        ; @line:71e 
+@1336:041357            ts   w15 + 1   ; ;old label: 1w15, new label: w15 + 1 @line:71f 
+@1337:041365            ts   w16 + 1   ; ;old label: 1w16, new label: w16 + 1 @line:71g 
+@1340:110222            ad   a9 + 7    ; ;old label: 7a9, new label: a9 + 7 @line:71h 
+@1341:041361            ts   w15 + 3   ; ;old label: 3w15, new label: w15 + 3 @line:71i 
+@1342:041375            ts   w17 + 3   ; ;old label: 3w17, new label: w17 + 3 @line:71j 
+@1343:114215            su   a9 + 2    ; ;old label: 2a9, new label: a9 + 2 @line:71k 
+
+                        ; CS-II Src: ts1w17	ca1a9	ad2a9	ts2w16	ts2w17	ad2a9	ts2w15	ts4w17	ad2a9	ts4w16	w15,spz2
+@1344:041373            ts   w17 + 1   ; ;old label: 1w17, new label: w17 + 1 @line:72a 
+@1345:100214            ca   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:72b 
+@1346:110215            ad   a9 + 2    ; ;old label: 2a9, new label: a9 + 2 @line:72c 
+@1347:041366            ts   w16 + 2   ; ;old label: 2w16, new label: w16 + 2 @line:72d 
+@1350:041374            ts   w17 + 2   ; ;old label: 2w17, new label: w17 + 2 @line:72e 
+@1351:110215            ad   a9 + 2    ; ;old label: 2a9, new label: a9 + 2 @line:72f 
+@1352:041360            ts   w15 + 2   ; ;old label: 2w15, new label: w15 + 2 @line:72g 
+@1353:041376            ts   w17 + 4   ; ;old label: 4w17, new label: w17 + 4 @line:72h 
+@1354:110215            ad   a9 + 2    ; ;old label: 2a9, new label: a9 + 2 @line:72i 
+@1355:041370            ts   w16 + 4   ; ;old label: 4w16, new label: w16 + 4 @line:72j 
+@1356:076475       w15: sp   z2        ; @line:72k 
+                        ; | @line:73a
+
+                        ; CS-II Src: 0	0	0	0	0	w16,spz2	0	0	0	0	0
+@1357:000000            .word 0         ; @line:74a @@WrittenBy a1336 
+@1360:000000            .word 0         ; @line:74b @@WrittenBy a1352 
+@1361:000000            .word 0         ; @line:74c @@WrittenBy a1341 
+@1362:000000            .word 0         ; @line:74d 
+@1363:000000            .word 0         ; @line:74e 
+@1364:076475       w16: sp   z2        ; @line:74f 
+@1365:000000            .word 0         ; @line:74g @@WrittenBy a1337 
+@1366:000000            .word 0         ; @line:74h @@WrittenBy a1347 
+@1367:000000            .word 0         ; @line:74i 
+@1370:000000            .word 0         ; @line:74j @@WrittenBy a1355 
+@1371:000000            .word 0         ; @line:74k 
+
+                        ; CS-II Src: w17,spz2	0	0	0	0	0	w18,spw76	w19,taw20	taw21
+@1372:076475       w17: sp   z2        ; @line:75a 
+@1373:000000            .word 0         ; @line:75b @@WrittenBy a1344 
+@1374:000000            .word 0         ; @line:75c @@WrittenBy a1350 
+@1375:000000            .word 0         ; @line:75d @@WrittenBy a1342 
+@1376:000000            .word 0         ; @line:75e @@WrittenBy a1353 
+@1377:000000            .word 0         ; @line:75f 
+@1400:076377       w18: sp   w76       ; @line:75g 
+@1401:051403       w19: ta   w20       ; @line:75h @@JumpedToBy z22 
+@1402:051406            ta   w21       ; @line:75i 
+
+                        ; CS-II Src: w20,ca	tsa9	aow21	w21,ca	ts1a9	caa9	ts1w25	ts1w26	ad5a9
+@1403:100000       w20: ca   0         ; default operand;  @line:76a @@WrittenBy w19 
+@1404:040213            ts   a9        ; @line:76b 
+@1405:131406            ao   w21       ; @line:76c 
+@1406:100000       w21: ca   0         ; default operand;  @line:76d @@WrittenBy a1402 a1405 ReadBy a1405 
+@1407:040214            ts   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:76e 
+@1410:100213            ca   a9        ; @line:76f 
+@1411:041461            ts   w25 + 1   ; ;old label: 1w25, new label: w25 + 1 @line:76g 
+@1412:041467            ts   w26 + 1   ; ;old label: 1w26, new label: w26 + 1 @line:76h 
+@1413:110220            ad   a9 + 5    ; ;old label: 5a9, new label: a9 + 5 @line:76i 
+
+                        ; CS-II Src: ts1w23	ts3w26	ad2a9	ts1w22	ad2a9	ts3w22	ts3w23	ts1w24	ca1a9	ts2w22	ts2w24
+@1414:041445            ts   w23 + 1   ; ;old label: 1w23, new label: w23 + 1 @line:77a 
+@1415:041471            ts   w26 + 3   ; ;old label: 3w26, new label: w26 + 3 @line:77b 
+@1416:110215            ad   a9 + 2    ; ;old label: 2a9, new label: a9 + 2 @line:77c 
+@1417:041437            ts   w22 + 1   ; ;old label: 1w22, new label: w22 + 1 @line:77d 
+@1420:110215            ad   a9 + 2    ; ;old label: 2a9, new label: a9 + 2 @line:77e 
+@1421:041441            ts   w22 + 3   ; ;old label: 3w22, new label: w22 + 3 @line:77f 
+@1422:041447            ts   w23 + 3   ; ;old label: 3w23, new label: w23 + 3 @line:77g 
+@1423:041453            ts   w24 + 1   ; ;old label: 1w24, new label: w24 + 1 @line:77h 
+@1424:100214            ca   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:77i 
+@1425:041440            ts   w22 + 2   ; ;old label: 2w22, new label: w22 + 2 @line:77j 
+@1426:041454            ts   w24 + 2   ; ;old label: 2w24, new label: w24 + 2 @line:77k 
+
+                        ; CS-II Src: ts2w25	ts2w26	ad5a9	ts4w24	ts4w25	ts4w26	ts2w23	w22,spz2	0	0	0
+@1427:041462            ts   w25 + 2   ; ;old label: 2w25, new label: w25 + 2 @line:78a 
+@1430:041470            ts   w26 + 2   ; ;old label: 2w26, new label: w26 + 2 @line:78b 
+@1431:110220            ad   a9 + 5    ; ;old label: 5a9, new label: a9 + 5 @line:78c 
+@1432:041456            ts   w24 + 4   ; ;old label: 4w24, new label: w24 + 4 @line:78d 
+@1433:041464            ts   w25 + 4   ; ;old label: 4w25, new label: w25 + 4 @line:78e 
+@1434:041472            ts   w26 + 4   ; ;old label: 4w26, new label: w26 + 4 @line:78f 
+@1435:041446            ts   w23 + 2   ; ;old label: 2w23, new label: w23 + 2 @line:78g 
+@1436:076475       w22: sp   z2        ; @line:78h 
+@1437:000000            .word 0         ; @line:78i @@WrittenBy a1417 
+@1440:000000            .word 0         ; @line:78j @@WrittenBy a1425 
+@1441:000000            .word 0         ; @line:78k @@WrittenBy a1421 
+
+                        ; CS-II Src: 0	0	w23,spz2	0	0	0	0	0	w24,spz2	0	0
+@1442:000000            .word 0         ; @line:79a 
+@1443:000000            .word 0         ; @line:79b 
+@1444:076475       w23: sp   z2        ; @line:79c 
+@1445:000000            .word 0         ; @line:79d @@WrittenBy a1414 
+@1446:000000            .word 0         ; @line:79e @@WrittenBy a1435 
+@1447:000000            .word 0         ; @line:79f @@WrittenBy a1422 
+@1450:000000            .word 0         ; @line:79g 
+@1451:000000            .word 0         ; @line:79h 
+@1452:076475       w24: sp   z2        ; @line:79i 
+@1453:000000            .word 0         ; @line:79j @@WrittenBy a1423 
+@1454:000000            .word 0         ; @line:79k @@WrittenBy a1426 
+
+                        ; CS-II Src: 0	0	0	w25,spz2	0	0	0	0	0	w26,spz2	0
+@1455:000000            .word 0         ; @line:80a 
+@1456:000000            .word 0         ; @line:80b @@WrittenBy a1432 
+@1457:000000            .word 0         ; @line:80c 
+@1460:076475       w25: sp   z2        ; @line:80d 
+@1461:000000            .word 0         ; @line:80e @@WrittenBy a1411 
+@1462:000000            .word 0         ; @line:80f @@WrittenBy a1427 
+@1463:000000            .word 0         ; @line:80g 
+@1464:000000            .word 0         ; @line:80h @@WrittenBy a1433 
+@1465:000000            .word 0         ; @line:80i 
+@1466:076475       w26: sp   z2        ; @line:80j 
+@1467:000000            .word 0         ; @line:80k @@WrittenBy a1412 
+
+                        ; CS-II Src: 0	0	0	0	w27,spw76	w28,taw29	taw30
+@1470:000000            .word 0         ; @line:81a @@WrittenBy a1430 
+@1471:000000            .word 0         ; @line:81b @@WrittenBy a1415 
+@1472:000000            .word 0         ; @line:81c @@WrittenBy a1434 
+@1473:000000            .word 0         ; @line:81d 
+@1474:076377       w27: sp   w76       ; @line:81e 
+@1475:051477       w28: ta   w29       ; @line:81f @@JumpedToBy z23 
+@1476:051502            ta   w30       ; @line:81g 
+
+                        ; CS-II Src: w29,ca	tsa9	aow30	w30,ca	ts1a9	caa9	ts1w31	ts1w34	ad3a9	ts3w34	ts1w37
+@1477:100000       w29: ca   0         ; default operand;  @line:82a @@WrittenBy w28 
+@1500:040213            ts   a9        ; @line:82b 
+@1501:131502            ao   w30       ; @line:82c 
+@1502:100000       w30: ca   0         ; default operand;  @line:82d @@WrittenBy a1476 a1501 ReadBy a1501 
+@1503:040214            ts   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:82e 
+@1504:100213            ca   a9        ; @line:82f 
+@1505:041545            ts   w31 + 1   ; ;old label: 1w31, new label: w31 + 1 @line:82g 
+@1506:041567            ts   w34 + 1   ; ;old label: 1w34, new label: w34 + 1 @line:82h 
+@1507:110216            ad   a9 + 3    ; ;old label: 3a9, new label: a9 + 3 @line:82i 
+@1510:041571            ts   w34 + 3   ; ;old label: 3w34, new label: w34 + 3 @line:82j 
+@1511:041611            ts   w37 + 1   ; ;old label: 1w37, new label: w37 + 1 @line:82k 
+
+                        ; CS-II Src: ts3w34	ad2a9	ts1w32	ts1w36	ts3w37	ad2a9	ts1w35	ts3w36	ad3a9	ts1w33	ts3w35
+@1512:041571            ts   w34 + 3   ; ;old label: 3w34, new label: w34 + 3 @line:83a 
+@1513:110215            ad   a9 + 2    ; ;old label: 2a9, new label: a9 + 2 @line:83b 
+@1514:041553            ts   w32 + 1   ; ;old label: 1w32, new label: w32 + 1 @line:83c 
+@1515:041603            ts   w36 + 1   ; ;old label: 1w36, new label: w36 + 1 @line:83d 
+@1516:041613            ts   w37 + 3   ; ;old label: 3w37, new label: w37 + 3 @line:83e 
+@1517:110215            ad   a9 + 2    ; ;old label: 2a9, new label: a9 + 2 @line:83f 
+@1520:041575            ts   w35 + 1   ; ;old label: 1w35, new label: w35 + 1 @line:83g 
+@1521:041605            ts   w36 + 3   ; ;old label: 3w36, new label: w36 + 3 @line:83h 
+@1522:110216            ad   a9 + 3    ; ;old label: 3a9, new label: a9 + 3 @line:83i 
+@1523:041561            ts   w33 + 1   ; ;old label: 1w33, new label: w33 + 1 @line:83j 
+@1524:041577            ts   w35 + 3   ; ;old label: 3w35, new label: w35 + 3 @line:83k 
+
+                        ; CS-II Src: ca1a9	ts2w31	ts2w32	ts2w33	ad4a9	ts4w32	ts2w36	ts4w37	ad2a9	ts4w31	ts4w33
+@1525:100214            ca   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:84a 
+@1526:041546            ts   w31 + 2   ; ;old label: 2w31, new label: w31 + 2 @line:84b 
+@1527:041554            ts   w32 + 2   ; ;old label: 2w32, new label: w32 + 2 @line:84c 
+@1530:041562            ts   w33 + 2   ; ;old label: 2w33, new label: w33 + 2 @line:84d 
+@1531:110217            ad   a9 + 4    ; ;old label: 4a9, new label: a9 + 4 @line:84e 
+@1532:041556            ts   w32 + 4   ; ;old label: 4w32, new label: w32 + 4 @line:84f 
+@1533:041604            ts   w36 + 2   ; ;old label: 2w36, new label: w36 + 2 @line:84g 
+@1534:041614            ts   w37 + 4   ; ;old label: 4w37, new label: w37 + 4 @line:84h 
+@1535:110215            ad   a9 + 2    ; ;old label: 2a9, new label: a9 + 2 @line:84i 
+@1536:041550            ts   w31 + 4   ; ;old label: 4w31, new label: w31 + 4 @line:84j 
+@1537:041564            ts   w33 + 4   ; ;old label: 4w33, new label: w33 + 4 @line:84k 
+
+                        ; CS-II Src: ts2w34	ts2w35	ts4w36	ts2w37	w31,spz2	0	0	0	0	0	w32,spz2
+@1540:041570            ts   w34 + 2   ; ;old label: 2w34, new label: w34 + 2 @line:85a 
+@1541:041576            ts   w35 + 2   ; ;old label: 2w35, new label: w35 + 2 @line:85b 
+@1542:041606            ts   w36 + 4   ; ;old label: 4w36, new label: w36 + 4 @line:85c 
+@1543:041612            ts   w37 + 2   ; ;old label: 2w37, new label: w37 + 2 @line:85d 
+@1544:076475       w31: sp   z2        ; @line:85e @@JumpedToBy a1736 a2003 a2324 
+@1545:000000            .word 0         ; @line:85f @@WrittenBy a1505 a1716 a1757 a2300 
+@1546:000000            .word 0         ; @line:85g @@WrittenBy a1526 a1721 a1762 a2303 
+@1547:000000            .word 0         ; @line:85h 
+@1550:000000            .word 0         ; @line:85i @@WrittenBy a1536 a1733 a1767 a2310 
+@1551:000000            .word 0         ; @line:85j 
+@1552:076475       w32: sp   z2        ; @line:85k 
+
+                        ; CS-II Src: 0	0	0	0	0	w33,spz2	0	0	0	0	0
+@1553:000000            .word 0         ; @line:86a @@WrittenBy a1514 a1712 a1754 a2274 
+@1554:000000            .word 0         ; @line:86b @@WrittenBy a1527 a1722 a1763 a2304 
+@1555:000000            .word 0         ; @line:86c 
+@1556:000000            .word 0         ; @line:86d @@WrittenBy a1532 a1725 a1770 a2311 
+@1557:000000            .word 0         ; @line:86e 
+@1560:076475       w33: sp   z2        ; @line:86f 
+@1561:000000            .word 0         ; @line:86g @@WrittenBy a1523 a1700 a1751 a2271 
+@1562:000000            .word 0         ; @line:86h @@WrittenBy a1530 a1723 a1764 a2305 
+@1563:000000            .word 0         ; @line:86i 
+@1564:000000            .word 0         ; @line:86j @@WrittenBy a1537 a1726 a1771 a2312 
+@1565:000000            .word 0         ; @line:86k 
+
+                        ; CS-II Src: w34,spz2	0	0	0	0	0	w35,spz2	0	0	0	0
+@1566:076475       w34: sp   z2        ; @line:87a 
+@1567:000000            .word 0         ; @line:87b @@WrittenBy a1506 a1711 a1747 a2273 
+@1570:000000            .word 0         ; @line:87c @@WrittenBy a1540 a1720 a1761 a2302 
+@1571:000000            .word 0         ; @line:87d @@WrittenBy a1510 a1512 a1715 a1756 a2276 
+@1572:000000            .word 0         ; @line:87e 
+@1573:000000            .word 0         ; @line:87f 
+@1574:076475       w35: sp   z2        ; @line:87g 
+@1575:000000            .word 0         ; @line:87h @@WrittenBy a1520 a1703 a1750 a2270 
+@1576:000000            .word 0         ; @line:87i @@WrittenBy a1541 a1732 a1766 a2307 
+@1577:000000            .word 0         ; @line:87j @@WrittenBy a1524 a1706 a1753 a2277 
+@1600:000000            .word 0         ; @line:87k 
+
+                        ; CS-II Src: 0	w36,spz2	0	0	0	0	0	w37,spz2	0	0	0
+@1601:000000            .word 0         ; @line:88a 
+@1602:076475       w36: sp   z2        ; @line:88b 
+@1603:000000            .word 0         ; @line:88c @@WrittenBy a1515 a1701 a1773 a2314 
+@1604:000000            .word 0         ; @line:88d @@WrittenBy a1533 a1727 a1774 a2315 
+@1605:000000            .word 0         ; @line:88e @@WrittenBy a1521 a1704 a1775 a2316 
+@1606:000000            .word 0         ; @line:88f @@WrittenBy a1542 a1734 a1776 a2317 
+@1607:000000            .word 0         ; @line:88g 
+@1610:076475       w37: sp   z2        ; @line:88h 
+@1611:000000            .word 0         ; @line:88i @@WrittenBy a1511 a1707 a1777 a2320 
+@1612:000000            .word 0         ; @line:88j @@WrittenBy a1543 a1735 a2000 a2321 
+@1613:000000            .word 0         ; @line:88k @@WrittenBy a1516 a1713 a2001 a2322 
+
+                        ; CS-II Src: 0	0.5	w38,spw76	w39,taw40	taw41	w40,ca	tsa9
+@1614:000000            .word 0         ; @line:89a @@WrittenBy a1534 a1730 a2002 a2323 
+@1615:040000            .word +0.5      ; @line:89b 
+@1616:076377       w38: sp   w76       ; @line:89c 
+@1617:051621       w39: ta   w40       ; @line:89d @@JumpedToBy z24 
+@1620:051624            ta   w41       ; @line:89e 
+@1621:100000       w40: ca   0         ; default operand;  @line:89f @@WrittenBy w39 
+@1622:040213            ts   a9        ; @line:89g 
+
+                        ; CS-II Src: aow41	w41,ca	ts1a9	caa9	ts1w44	ad3a9	ts1w42	ts1w43	ad5a9	ts3w42	ts3w44
+@1623:131624            ao   w41       ; @line:90a 
+@1624:100000       w41: ca   0         ; default operand;  @line:90b @@WrittenBy a1620 a1623 ReadBy a1623 
+@1625:040214            ts   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:90c 
+@1626:100213            ca   a9        ; @line:90d 
+@1627:041662            ts   w44 + 1   ; ;old label: 1w44, new label: w44 + 1 @line:90e 
+@1630:110216            ad   a9 + 3    ; ;old label: 3a9, new label: a9 + 3 @line:90f 
+@1631:041646            ts   w42 + 1   ; ;old label: 1w42, new label: w42 + 1 @line:90g 
+@1632:041654            ts   w43 + 1   ; ;old label: 1w43, new label: w43 + 1 @line:90h 
+@1633:110220            ad   a9 + 5    ; ;old label: 5a9, new label: a9 + 5 @line:90i 
+@1634:041650            ts   w42 + 3   ; ;old label: 3w42, new label: w42 + 3 @line:90j 
+@1635:041664            ts   w44 + 3   ; ;old label: 3w44, new label: w44 + 3 @line:90k 
+
+                        ; CS-II Src: ca1a9	ts2w42	ts2w43	ad5a9	ts4w42	ts4w43	ts2w44	w42,spz2	0	0
+@1636:100214            ca   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:91a 
+@1637:041647            ts   w42 + 2   ; ;old label: 2w42, new label: w42 + 2 @line:91b 
+@1640:041655            ts   w43 + 2   ; ;old label: 2w43, new label: w43 + 2 @line:91c 
+@1641:110220            ad   a9 + 5    ; ;old label: 5a9, new label: a9 + 5 @line:91d 
+@1642:041651            ts   w42 + 4   ; ;old label: 4w42, new label: w42 + 4 @line:91e 
+@1643:041657            ts   w43 + 4   ; ;old label: 4w43, new label: w43 + 4 @line:91f 
+@1644:041663            ts   w44 + 2   ; ;old label: 2w44, new label: w44 + 2 @line:91g 
+@1645:076475       w42: sp   z2        ; @line:91h 
+@1646:000000            .word 0         ; @line:91i @@WrittenBy a1631 
+@1647:000000            .word 0         ; @line:91j @@WrittenBy a1637 
+
+                        ; CS-II Src: 0	0	0	w43,spz2	0	0	0	0	0	w44,spz2
+@1650:000000            .word 0         ; @line:92a @@WrittenBy a1634 
+@1651:000000            .word 0         ; @line:92b @@WrittenBy a1642 
+@1652:000000            .word 0         ; @line:92c 
+@1653:076475       w43: sp   z2        ; @line:92d 
+@1654:000000            .word 0         ; @line:92e @@WrittenBy a1632 
+@1655:000000            .word 0         ; @line:92f @@WrittenBy a1640 
+@1656:000000            .word 0         ; @line:92g 
+@1657:000000            .word 0         ; @line:92h @@WrittenBy a1643 
+@1660:000000            .word 0         ; @line:92i 
+@1661:076475       w44: sp   z2        ; @line:92j 
+
+                        ; CS-II Src: 0	0	0	0	0	w45,spw76	w46,taw47	taw48
+@1662:000000            .word 0         ; @line:93a @@WrittenBy a1627 
+@1663:000000            .word 0         ; @line:93b @@WrittenBy a1644 
+@1664:000000            .word 0         ; @line:93c @@WrittenBy a1635 
+@1665:000000            .word 0         ; @line:93d 
+@1666:000000            .word 0         ; @line:93e 
+@1667:076377       w45: sp   w76       ; @line:93f 
+@1670:051672       w46: ta   w47       ; @line:93g @@JumpedToBy z25 
+@1671:051675            ta   w48       ; @line:93h 
+
+                        ; CS-II Src: w47,ca	tsa9	aow48	w48,ca	ts1a9	caa9	ts1w33	ts1w36	ad2a9	ts1w35
+@1672:100000       w47: ca   0         ; default operand;  @line:94a @@WrittenBy w46 
+@1673:040213            ts   a9        ; @line:94b 
+@1674:131675            ao   w48       ; @line:94c 
+@1675:100000       w48: ca   0         ; default operand;  @line:94d @@WrittenBy a1671 a1674 ReadBy a1674 
+@1676:040214            ts   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:94e 
+@1677:100213            ca   a9        ; @line:94f 
+@1700:041561            ts   w33 + 1   ; ;old label: 1w33, new label: w33 + 1 @line:94g 
+@1701:041603            ts   w36 + 1   ; ;old label: 1w36, new label: w36 + 1 @line:94h 
+@1702:110215            ad   a9 + 2    ; ;old label: 2a9, new label: a9 + 2 @line:94i 
+@1703:041575            ts   w35 + 1   ; ;old label: 1w35, new label: w35 + 1 @line:94j 
+
+                        ; CS-II Src: ts3w36	ad3a9	ts3w35	ts1w37	ad2a9	ts1w34	ts1w32	ts3w37	ad3a9	ts3w34	ts1w31
+@1704:041605            ts   w36 + 3   ; ;old label: 3w36, new label: w36 + 3 @line:95a 
+@1705:110216            ad   a9 + 3    ; ;old label: 3a9, new label: a9 + 3 @line:95b 
+@1706:041577            ts   w35 + 3   ; ;old label: 3w35, new label: w35 + 3 @line:95c 
+@1707:041611            ts   w37 + 1   ; ;old label: 1w37, new label: w37 + 1 @line:95d 
+@1710:110215            ad   a9 + 2    ; ;old label: 2a9, new label: a9 + 2 @line:95e 
+@1711:041567            ts   w34 + 1   ; ;old label: 1w34, new label: w34 + 1 @line:95f 
+@1712:041553            ts   w32 + 1   ; ;old label: 1w32, new label: w32 + 1 @line:95g 
+@1713:041613            ts   w37 + 3   ; ;old label: 3w37, new label: w37 + 3 @line:95h 
+@1714:110216            ad   a9 + 3    ; ;old label: 3a9, new label: a9 + 3 @line:95i 
+@1715:041571            ts   w34 + 3   ; ;old label: 3w34, new label: w34 + 3 @line:95j 
+@1716:041545            ts   w31 + 1   ; ;old label: 1w31, new label: w31 + 1 @line:95k 
+
+                        ; CS-II Src: ca1a9	ts2w34	ts2w31	ts2w32	ts2w33	ad4a9	ts4w32	ts4w33	ts2w36	ts4w37	ad2a9
+@1717:100214            ca   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:96a 
+@1720:041570            ts   w34 + 2   ; ;old label: 2w34, new label: w34 + 2 @line:96b 
+@1721:041546            ts   w31 + 2   ; ;old label: 2w31, new label: w31 + 2 @line:96c 
+@1722:041554            ts   w32 + 2   ; ;old label: 2w32, new label: w32 + 2 @line:96d 
+@1723:041562            ts   w33 + 2   ; ;old label: 2w33, new label: w33 + 2 @line:96e 
+@1724:110217            ad   a9 + 4    ; ;old label: 4a9, new label: a9 + 4 @line:96f 
+@1725:041556            ts   w32 + 4   ; ;old label: 4w32, new label: w32 + 4 @line:96g 
+@1726:041564            ts   w33 + 4   ; ;old label: 4w33, new label: w33 + 4 @line:96h 
+@1727:041604            ts   w36 + 2   ; ;old label: 2w36, new label: w36 + 2 @line:96i 
+@1730:041614            ts   w37 + 4   ; ;old label: 4w37, new label: w37 + 4 @line:96j 
+@1731:110215            ad   a9 + 2    ; ;old label: 2a9, new label: a9 + 2 @line:96k 
+
+                        ; CS-II Src: ts2w35	ts4w31	ts4w36	ts2w37	spw31	w49,taw50	taw51
+@1732:041576            ts   w35 + 2   ; ;old label: 2w35, new label: w35 + 2 @line:97a 
+@1733:041550            ts   w31 + 4   ; ;old label: 4w31, new label: w31 + 4 @line:97b 
+@1734:041606            ts   w36 + 4   ; ;old label: 4w36, new label: w36 + 4 @line:97c 
+@1735:041612            ts   w37 + 2   ; ;old label: 2w37, new label: w37 + 2 @line:97d 
+@1736:075544            sp   w31       ; @line:97e 
+@1737:051741       w49: ta   w50       ; @line:97f @@JumpedToBy z26 
+@1740:051744            ta   w51       ; @line:97g 
+
+                        ; CS-II Src: w50,ca	tsa9	aow51	w51,ca	ts1a9	caa9	ts1w34	ts1w35	ts1w33	ad4a9	ts3w35
+@1741:100000       w50: ca   0         ; default operand;  @line:98a @@WrittenBy w49 
+@1742:040213            ts   a9        ; @line:98b 
+@1743:131744            ao   w51       ; @line:98c 
+@1744:100000       w51: ca   0         ; default operand;  @line:98d @@WrittenBy a1740 a1743 ReadBy a1743 
+@1745:040214            ts   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:98e 
+@1746:100213            ca   a9        ; @line:98f 
+@1747:041567            ts   w34 + 1   ; ;old label: 1w34, new label: w34 + 1 @line:98g 
+@1750:041575            ts   w35 + 1   ; ;old label: 1w35, new label: w35 + 1 @line:98h 
+@1751:041561            ts   w33 + 1   ; ;old label: 1w33, new label: w33 + 1 @line:98i 
+@1752:110217            ad   a9 + 4    ; ;old label: 4a9, new label: a9 + 4 @line:98j 
+@1753:041577            ts   w35 + 3   ; ;old label: 3w35, new label: w35 + 3 @line:98k 
+
+                        ; CS-II Src: ts1w32	ad4a9	ts3w34	ts1w31	ca1a9	ts2w34	ts2w31	ts2w32	ts2w33	ad5a9	ts2w35
+@1754:041553            ts   w32 + 1   ; ;old label: 1w32, new label: w32 + 1 @line:99a 
+@1755:110217            ad   a9 + 4    ; ;old label: 4a9, new label: a9 + 4 @line:99b 
+@1756:041571            ts   w34 + 3   ; ;old label: 3w34, new label: w34 + 3 @line:99c 
+@1757:041545            ts   w31 + 1   ; ;old label: 1w31, new label: w31 + 1 @line:99d 
+@1760:100214            ca   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:99e 
+@1761:041570            ts   w34 + 2   ; ;old label: 2w34, new label: w34 + 2 @line:99f 
+@1762:041546            ts   w31 + 2   ; ;old label: 2w31, new label: w31 + 2 @line:99g 
+@1763:041554            ts   w32 + 2   ; ;old label: 2w32, new label: w32 + 2 @line:99h 
+@1764:041562            ts   w33 + 2   ; ;old label: 2w33, new label: w33 + 2 @line:99i 
+@1765:110220            ad   a9 + 5    ; ;old label: 5a9, new label: a9 + 5 @line:99j 
+@1766:041576            ts   w35 + 2   ; ;old label: 2w35, new label: w35 + 2 @line:99k 
+
+                        ; CS-II Src: ts4w31	ts4w32	ts4w33	ca0	ts1w36	ts2w36	ts3w36	ts4w36	ts1w37	ts2w37	ts3w37
+@1767:041550            ts   w31 + 4   ; ;old label: 4w31, new label: w31 + 4 @line:100a 
+@1770:041556            ts   w32 + 4   ; ;old label: 4w32, new label: w32 + 4 @line:100b 
+@1771:041564            ts   w33 + 4   ; ;old label: 4w33, new label: w33 + 4 @line:100c 
+@1772:100000            ca   0         ; @line:100d 
+@1773:041603            ts   w36 + 1   ; ;old label: 1w36, new label: w36 + 1 @line:100e 
+@1774:041604            ts   w36 + 2   ; ;old label: 2w36, new label: w36 + 2 @line:100f 
+@1775:041605            ts   w36 + 3   ; ;old label: 3w36, new label: w36 + 3 @line:100g 
+@1776:041606            ts   w36 + 4   ; ;old label: 4w36, new label: w36 + 4 @line:100h 
+@1777:041611            ts   w37 + 1   ; ;old label: 1w37, new label: w37 + 1 @line:100i 
+@2000:041612            ts   w37 + 2   ; ;old label: 2w37, new label: w37 + 2 @line:100j 
+@2001:041613            ts   w37 + 3   ; ;old label: 3w37, new label: w37 + 3 @line:100k 
+
+                        ; CS-II Src: ts4w37	spw31	w52,taw53	taw54	w53,ca	tsa9	aow54
+@2002:041614            ts   w37 + 4   ; ;old label: 4w37, new label: w37 + 4 @line:101a 
+@2003:075544            sp   w31       ; @line:101b 
+@2004:052006       w52: ta   w53       ; @line:101c @@JumpedToBy z27 
+@2005:052011            ta   w54       ; @line:101d 
+@2006:100000       w53: ca   0         ; default operand;  @line:101e @@WrittenBy w52 
+@2007:040213            ts   a9        ; @line:101f 
+@2010:132011            ao   w54       ; @line:101g 
+
+                        ; CS-II Src: w54,ca	ts1a9	caa9	ts1w58	ad2a9	ts3w58	ts1w65	ad5a9	ts1w59	ts1w60	ts3w65
+@2011:100000       w54: ca   0         ; default operand;  @line:102a @@WrittenBy a2005 a2010 ReadBy a2010 
+@2012:040214            ts   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:102b 
+@2013:100213            ca   a9        ; @line:102c 
+@2014:042156            ts   w58 + 1   ; ;old label: 1w58, new label: w58 + 1 @line:102d 
+@2015:110215            ad   a9 + 2    ; ;old label: 2a9, new label: a9 + 2 @line:102e 
+@2016:042160            ts   w58 + 3   ; ;old label: 3w58, new label: w58 + 3 @line:102f 
+@2017:042230            ts   w65 + 1   ; ;old label: 1w65, new label: w65 + 1 @line:102g 
+@2020:110220            ad   a9 + 5    ; ;old label: 5a9, new label: a9 + 5 @line:102h 
+@2021:042164            ts   w59 + 1   ; ;old label: 1w59, new label: w59 + 1 @line:102i 
+@2022:042172            ts   w60 + 1   ; ;old label: 1w60, new label: w60 + 1 @line:102j 
+@2023:042232            ts   w65 + 3   ; ;old label: 3w65, new label: w65 + 3 @line:102k 
+
+                        ; CS-II Src: ad2a9	ts3w59	ts3w60	ts1w62	ca1a9	ts2w58	ts2w59	ts2w62	ts2w65	ad5a9	ts2w60
+@2024:110215            ad   a9 + 2    ; ;old label: 2a9, new label: a9 + 2 @line:103a 
+@2025:042166            ts   w59 + 3   ; ;old label: 3w59, new label: w59 + 3 @line:103b 
+@2026:042174            ts   w60 + 3   ; ;old label: 3w60, new label: w60 + 3 @line:103c 
+@2027:042206            ts   w62 + 1   ; ;old label: 1w62, new label: w62 + 1 @line:103d 
+@2030:100214            ca   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:103e 
+@2031:042157            ts   w58 + 2   ; ;old label: 2w58, new label: w58 + 2 @line:103f 
+@2032:042165            ts   w59 + 2   ; ;old label: 2w59, new label: w59 + 2 @line:103g 
+@2033:042207            ts   w62 + 2   ; ;old label: 2w62, new label: w62 + 2 @line:103h 
+@2034:042231            ts   w65 + 2   ; ;old label: 2w65, new label: w65 + 2 @line:103i 
+@2035:110220            ad   a9 + 5    ; ;old label: 5a9, new label: a9 + 5 @line:103j 
+@2036:042173            ts   w60 + 2   ; ;old label: 2w60, new label: w60 + 2 @line:103k 
+
+                        ; CS-II Src: ts4w62	ts4w65	ca0	ts1w61	ts2w61	ts3w61	ts1w63	ts2w63	ts4w63	ts1w64	ts2w64
+@2037:042211            ts   w62 + 4   ; ;old label: 4w62, new label: w62 + 4 @line:104a 
+@2040:042233            ts   w65 + 4   ; ;old label: 4w65, new label: w65 + 4 @line:104b 
+@2041:100000            ca   0         ; @line:104c 
+@2042:042200            ts   w61 + 1   ; ;old label: 1w61, new label: w61 + 1 @line:104d 
+@2043:042201            ts   w61 + 2   ; ;old label: 2w61, new label: w61 + 2 @line:104e 
+@2044:042202            ts   w61 + 3   ; ;old label: 3w61, new label: w61 + 3 @line:104f 
+@2045:042214            ts   w63 + 1   ; ;old label: 1w63, new label: w63 + 1 @line:104g 
+@2046:042215            ts   w63 + 2   ; ;old label: 2w63, new label: w63 + 2 @line:104h 
+@2047:042217            ts   w63 + 4   ; ;old label: 4w63, new label: w63 + 4 @line:104i 
+@2050:042222            ts   w64 + 1   ; ;old label: 1w64, new label: w64 + 1 @line:104j 
+@2051:042223            ts   w64 + 2   ; ;old label: 2w64, new label: w64 + 2 @line:104k 
+
+                        ; CS-II Src: ts4w64	ts1w66	ts2w66	ts3w66	ts4w66	ts1w67	ts2w67	ts3w67	ts4w67	ts1w68	ts2w68
+@2052:042225            ts   w64 + 4   ; ;old label: 4w64, new label: w64 + 4 @line:105a 
+@2053:042236            ts   w66 + 1   ; ;old label: 1w66, new label: w66 + 1 @line:105b 
+@2054:042237            ts   w66 + 2   ; ;old label: 2w66, new label: w66 + 2 @line:105c 
+@2055:042240            ts   w66 + 3   ; ;old label: 3w66, new label: w66 + 3 @line:105d 
+@2056:042241            ts   w66 + 4   ; ;old label: 4w66, new label: w66 + 4 @line:105e 
+@2057:042244            ts   w67 + 1   ; ;old label: 1w67, new label: w67 + 1 @line:105f 
+@2060:042245            ts   w67 + 2   ; ;old label: 2w67, new label: w67 + 2 @line:105g 
+@2061:042246            ts   w67 + 3   ; ;old label: 3w67, new label: w67 + 3 @line:105h 
+@2062:042247            ts   w67 + 4   ; ;old label: 4w67, new label: w67 + 4 @line:105i 
+@2063:042252            ts   w68 + 1   ; ;old label: 1w68, new label: w68 + 1 @line:105j 
+@2064:042253            ts   w68 + 2   ; ;old label: 2w68, new label: w68 + 2 @line:105k 
+
+                        ; CS-II Src: ts3w68	ts4w68	spw58	w55,taw56	taw57	w56,ca	tsa9
+@2065:042254            ts   w68 + 3   ; ;old label: 3w68, new label: w68 + 3 @line:106a 
+@2066:042255            ts   w68 + 4   ; ;old label: 4w68, new label: w68 + 4 @line:106b 
+@2067:076155            sp   w58       ; @line:106c 
+@2070:052072       w55: ta   w56       ; @line:106d @@JumpedToBy z28 
+@2071:052075            ta   w57       ; @line:106e 
+@2072:100000       w56: ca   0         ; default operand;  @line:106f @@WrittenBy w55 
+@2073:040213            ts   a9        ; @line:106g 
+
+                        ; CS-II Src: aow57	w57,ca	ts1a9	caa9	ts1w58	ts1w60	ts1w64	ad3a9	ts3w58	ts3w60	ts1w65
+@2074:132075            ao   w57       ; @line:107a 
+@2075:100000       w57: ca   0         ; default operand;  @line:107b @@WrittenBy a2071 a2074 ReadBy a2074 
+@2076:040214            ts   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:107c 
+@2077:100213            ca   a9        ; @line:107d 
+@2100:042156            ts   w58 + 1   ; ;old label: 1w58, new label: w58 + 1 @line:107e 
+@2101:042172            ts   w60 + 1   ; ;old label: 1w60, new label: w60 + 1 @line:107f 
+@2102:042222            ts   w64 + 1   ; ;old label: 1w64, new label: w64 + 1 @line:107g 
+@2103:110216            ad   a9 + 3    ; ;old label: 3a9, new label: a9 + 3 @line:107h 
+@2104:042160            ts   w58 + 3   ; ;old label: 3w58, new label: w58 + 3 @line:107i 
+@2105:042174            ts   w60 + 3   ; ;old label: 3w60, new label: w60 + 3 @line:107j 
+@2106:042230            ts   w65 + 1   ; ;old label: 1w65, new label: w65 + 1 @line:107k 
+
+                        ; CS-II Src: ts1w68	ad2a9	ts1w63	ts3w65	ts1w66	ts1w67	ts3w68	ad2a9	ts1w59	ts1w61	ts3w66
+@2107:042252            ts   w68 + 1   ; ;old label: 1w68, new label: w68 + 1 @line:108a 
+@2110:110215            ad   a9 + 2    ; ;old label: 2a9, new label: a9 + 2 @line:108b 
+@2111:042214            ts   w63 + 1   ; ;old label: 1w63, new label: w63 + 1 @line:108c 
+@2112:042232            ts   w65 + 3   ; ;old label: 3w65, new label: w65 + 3 @line:108d 
+@2113:042236            ts   w66 + 1   ; ;old label: 1w66, new label: w66 + 1 @line:108e 
+@2114:042244            ts   w67 + 1   ; ;old label: 1w67, new label: w67 + 1 @line:108f 
+@2115:042254            ts   w68 + 3   ; ;old label: 3w68, new label: w68 + 3 @line:108g 
+@2116:110215            ad   a9 + 2    ; ;old label: 2a9, new label: a9 + 2 @line:108h 
+@2117:042164            ts   w59 + 1   ; ;old label: 1w59, new label: w59 + 1 @line:108i 
+@2120:042200            ts   w61 + 1   ; ;old label: 1w61, new label: w61 + 1 @line:108j 
+@2121:042240            ts   w66 + 3   ; ;old label: 3w66, new label: w66 + 3 @line:108k 
+
+                        ; CS-II Src: ts3w67	ad3a9	ts3w59	ts3w61	ts1w62	ca1a9	ts2w58	ts2w59	ts2w62	ts2w64	ts2w65
+@2122:042246            ts   w67 + 3   ; ;old label: 3w67, new label: w67 + 3 @line:109a 
+@2123:110216            ad   a9 + 3    ; ;old label: 3a9, new label: a9 + 3 @line:109b 
+@2124:042166            ts   w59 + 3   ; ;old label: 3w59, new label: w59 + 3 @line:109c 
+@2125:042202            ts   w61 + 3   ; ;old label: 3w61, new label: w61 + 3 @line:109d 
+@2126:042206            ts   w62 + 1   ; ;old label: 1w62, new label: w62 + 1 @line:109e 
+@2127:100214            ca   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:109f 
+@2130:042157            ts   w58 + 2   ; ;old label: 2w58, new label: w58 + 2 @line:109g 
+@2131:042165            ts   w59 + 2   ; ;old label: 2w59, new label: w59 + 2 @line:109h 
+@2132:042207            ts   w62 + 2   ; ;old label: 2w62, new label: w62 + 2 @line:109i 
+@2133:042223            ts   w64 + 2   ; ;old label: 2w64, new label: w64 + 2 @line:109j 
+@2134:042231            ts   w65 + 2   ; ;old label: 2w65, new label: w65 + 2 @line:109k 
+
+                        ; CS-II Src: ts4w67	ad2a9	ts2w63	ts4w65	ts2w67	ad3a9	ts4w63	ts2w66	ts4w68	ad2a9	ts2w60
+@2135:042247            ts   w67 + 4   ; ;old label: 4w67, new label: w67 + 4 @line:110a 
+@2136:110215            ad   a9 + 2    ; ;old label: 2a9, new label: a9 + 2 @line:110b 
+@2137:042215            ts   w63 + 2   ; ;old label: 2w63, new label: w63 + 2 @line:110c 
+@2140:042233            ts   w65 + 4   ; ;old label: 4w65, new label: w65 + 4 @line:110d 
+@2141:042245            ts   w67 + 2   ; ;old label: 2w67, new label: w67 + 2 @line:110e 
+@2142:110216            ad   a9 + 3    ; ;old label: 3a9, new label: a9 + 3 @line:110f 
+@2143:042217            ts   w63 + 4   ; ;old label: 4w63, new label: w63 + 4 @line:110g 
+@2144:042237            ts   w66 + 2   ; ;old label: 2w66, new label: w66 + 2 @line:110h 
+@2145:042255            ts   w68 + 4   ; ;old label: 4w68, new label: w68 + 4 @line:110i 
+@2146:110215            ad   a9 + 2    ; ;old label: 2a9, new label: a9 + 2 @line:110j 
+@2147:042173            ts   w60 + 2   ; ;old label: 2w60, new label: w60 + 2 @line:110k 
+
+                        ; CS-II Src: ts2w61	ts4w62	ts4w64	ts4w66	ts2w68	w58,spz2	0	0	0	0	0
+@2150:042201            ts   w61 + 2   ; ;old label: 2w61, new label: w61 + 2 @line:111a 
+@2151:042211            ts   w62 + 4   ; ;old label: 4w62, new label: w62 + 4 @line:111b 
+@2152:042225            ts   w64 + 4   ; ;old label: 4w64, new label: w64 + 4 @line:111c 
+@2153:042241            ts   w66 + 4   ; ;old label: 4w66, new label: w66 + 4 @line:111d 
+@2154:042253            ts   w68 + 2   ; ;old label: 2w68, new label: w68 + 2 @line:111e 
+@2155:076475       w58: sp   z2        ; @line:111f @@JumpedToBy a2067 
+@2156:000000            .word 0         ; @line:111g @@WrittenBy a2014 a2100 
+@2157:000000            .word 0         ; @line:111h @@WrittenBy a2031 a2130 
+@2160:000000            .word 0         ; @line:111i @@WrittenBy a2016 a2104 
+@2161:000000            .word 0         ; @line:111j 
+@2162:000000            .word 0         ; @line:111k 
+
+                        ; CS-II Src: w59,spz2	0	0	0	0	0	w60,spz2	0	0	0	0
+@2163:076475       w59: sp   z2        ; @line:112a 
+@2164:000000            .word 0         ; @line:112b @@WrittenBy a2021 a2117 
+@2165:000000            .word 0         ; @line:112c @@WrittenBy a2032 a2131 
+@2166:000000            .word 0         ; @line:112d @@WrittenBy a2025 a2124 
+@2167:000000            .word 0         ; @line:112e 
+@2170:000000            .word 0         ; @line:112f 
+@2171:076475       w60: sp   z2        ; @line:112g 
+@2172:000000            .word 0         ; @line:112h @@WrittenBy a2022 a2101 
+@2173:000000            .word 0         ; @line:112i @@WrittenBy a2036 a2147 
+@2174:000000            .word 0         ; @line:112j @@WrittenBy a2026 a2105 
+@2175:000000            .word 0         ; @line:112k 
+
+                        ; CS-II Src: 0	w61,spz2	0	0	0	0	0	w62,spz2	0	0	0
+@2176:000000            .word 0         ; @line:113a 
+@2177:076475       w61: sp   z2        ; @line:113b 
+@2200:000000            .word 0         ; @line:113c @@WrittenBy a2042 a2120 
+@2201:000000            .word 0         ; @line:113d @@WrittenBy a2043 a2150 
+@2202:000000            .word 0         ; @line:113e @@WrittenBy a2044 a2125 
+@2203:000000            .word 0         ; @line:113f 
+@2204:000000            .word 0         ; @line:113g 
+@2205:076475       w62: sp   z2        ; @line:113h 
+@2206:000000            .word 0         ; @line:113i @@WrittenBy a2027 a2126 
+@2207:000000            .word 0         ; @line:113j @@WrittenBy a2033 a2132 
+@2210:000000            .word 0         ; @line:113k 
+
+                        ; CS-II Src: 0	0	w63,spz2	0	0	0	0	0	w64,spz2	0	0
+@2211:000000            .word 0         ; @line:114a @@WrittenBy a2037 a2151 
+@2212:000000            .word 0         ; @line:114b 
+@2213:076475       w63: sp   z2        ; @line:114c 
+@2214:000000            .word 0         ; @line:114d @@WrittenBy a2045 a2111 
+@2215:000000            .word 0         ; @line:114e @@WrittenBy a2046 a2137 
+@2216:000000            .word 0         ; @line:114f 
+@2217:000000            .word 0         ; @line:114g @@WrittenBy a2047 a2143 
+@2220:000000            .word 0         ; @line:114h 
+@2221:076475       w64: sp   z2        ; @line:114i 
+@2222:000000            .word 0         ; @line:114j @@WrittenBy a2050 a2102 
+@2223:000000            .word 0         ; @line:114k @@WrittenBy a2051 a2133 
+
+                        ; CS-II Src: 0	0	0	w65,spz2	0	0	0	0	0	w66,spz2	0
+@2224:000000            .word 0         ; @line:115a 
+@2225:000000            .word 0         ; @line:115b @@WrittenBy a2052 a2152 
+@2226:000000            .word 0         ; @line:115c 
+@2227:076475       w65: sp   z2        ; @line:115d 
+@2230:000000            .word 0         ; @line:115e @@WrittenBy a2017 a2106 
+@2231:000000            .word 0         ; @line:115f @@WrittenBy a2034 a2134 
+@2232:000000            .word 0         ; @line:115g @@WrittenBy a2023 a2112 
+@2233:000000            .word 0         ; @line:115h @@WrittenBy a2040 a2140 
+@2234:000000            .word 0         ; @line:115i 
+@2235:076475       w66: sp   z2        ; @line:115j 
+@2236:000000            .word 0         ; @line:115k @@WrittenBy a2053 a2113 
+
+                        ; CS-II Src: 0	0	0	0	w67,spz2	0	0	0	0	0.5	w68,spz2
+@2237:000000            .word 0         ; @line:116a @@WrittenBy a2054 a2144 
+@2240:000000            .word 0         ; @line:116b @@WrittenBy a2055 a2121 
+@2241:000000            .word 0         ; @line:116c @@WrittenBy a2056 a2153 
+@2242:000000            .word 0         ; @line:116d 
+@2243:076475       w67: sp   z2        ; @line:116e 
+@2244:000000            .word 0         ; @line:116f @@WrittenBy a2057 a2114 
+@2245:000000            .word 0         ; @line:116g @@WrittenBy a2060 a2141 
+@2246:000000            .word 0         ; @line:116h @@WrittenBy a2061 a2122 
+@2247:000000            .word 0         ; @line:116i @@WrittenBy a2062 a2135 
+@2250:040000            .word +0.5      ; @line:116j 
+@2251:076475       w68: sp   z2        ; @line:116k 
+
+                        ; CS-II Src: 0	0	0	0	0.5	w69,spw76	w70,taw71	taw72
+@2252:000000            .word 0         ; @line:117a @@WrittenBy a2063 a2107 
+@2253:000000            .word 0         ; @line:117b @@WrittenBy a2064 a2154 
+@2254:000000            .word 0         ; @line:117c @@WrittenBy a2065 a2115 
+@2255:000000            .word 0         ; @line:117d @@WrittenBy a2066 a2145 
+@2256:040000            .word +0.5      ; @line:117e 
+@2257:076377       w69: sp   w76       ; @line:117f 
+@2260:052262       w70: ta   w71       ; @line:117g @@JumpedToBy z29 
+@2261:052265            ta   w72       ; @line:117h 
+
+                        ; CS-II Src: w71,ca	tsa9	aow72	w72,ca	ts1a9	caa9	ts1w35	ts1w33	ad4a9	ts1w34
+@2262:100000       w71: ca   0         ; default operand;  @line:118a @@WrittenBy w70 
+@2263:040213            ts   a9        ; @line:118b 
+@2264:132265            ao   w72       ; @line:118c 
+@2265:100000       w72: ca   0         ; default operand;  @line:118d @@WrittenBy a2261 a2264 ReadBy a2264 
+@2266:040214            ts   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:118e 
+@2267:100213            ca   a9        ; @line:118f 
+@2270:041575            ts   w35 + 1   ; ;old label: 1w35, new label: w35 + 1 @line:118g 
+@2271:041561            ts   w33 + 1   ; ;old label: 1w33, new label: w33 + 1 @line:118h 
+@2272:110217            ad   a9 + 4    ; ;old label: 4a9, new label: a9 + 4 @line:118i 
+@2273:041567            ts   w34 + 1   ; ;old label: 1w34, new label: w34 + 1 @line:118j 
+
+                        ; CS-II Src: ts1w32	ad4a9	ts3w34	ts3w35	ts1w31	ca1a9	ts2w34	ts2w31	ts2w32	ts2w33	ad5a9
+@2274:041553            ts   w32 + 1   ; ;old label: 1w32, new label: w32 + 1 @line:119a 
+@2275:110217            ad   a9 + 4    ; ;old label: 4a9, new label: a9 + 4 @line:119b 
+@2276:041571            ts   w34 + 3   ; ;old label: 3w34, new label: w34 + 3 @line:119c 
+@2277:041577            ts   w35 + 3   ; ;old label: 3w35, new label: w35 + 3 @line:119d 
+@2300:041545            ts   w31 + 1   ; ;old label: 1w31, new label: w31 + 1 @line:119e 
+@2301:100214            ca   a9 + 1    ; ;old label: 1a9, new label: a9 + 1 @line:119f 
+@2302:041570            ts   w34 + 2   ; ;old label: 2w34, new label: w34 + 2 @line:119g 
+@2303:041546            ts   w31 + 2   ; ;old label: 2w31, new label: w31 + 2 @line:119h 
+@2304:041554            ts   w32 + 2   ; ;old label: 2w32, new label: w32 + 2 @line:119i 
+@2305:041562            ts   w33 + 2   ; ;old label: 2w33, new label: w33 + 2 @line:119j 
+@2306:110220            ad   a9 + 5    ; ;old label: 5a9, new label: a9 + 5 @line:119k 
+
+                        ; CS-II Src: ts2w35	ts4w31	ts4w32	ts4w33	ca0	ts1w36	ts2w36	ts3w36	ts4w36	ts1w37	ts2w37
+@2307:041576            ts   w35 + 2   ; ;old label: 2w35, new label: w35 + 2 @line:120a 
+@2310:041550            ts   w31 + 4   ; ;old label: 4w31, new label: w31 + 4 @line:120b 
+@2311:041556            ts   w32 + 4   ; ;old label: 4w32, new label: w32 + 4 @line:120c 
+@2312:041564            ts   w33 + 4   ; ;old label: 4w33, new label: w33 + 4 @line:120d 
+@2313:100000            ca   0         ; @line:120e 
+@2314:041603            ts   w36 + 1   ; ;old label: 1w36, new label: w36 + 1 @line:120f 
+@2315:041604            ts   w36 + 2   ; ;old label: 2w36, new label: w36 + 2 @line:120g 
+@2316:041605            ts   w36 + 3   ; ;old label: 3w36, new label: w36 + 3 @line:120h 
+@2317:041606            ts   w36 + 4   ; ;old label: 4w36, new label: w36 + 4 @line:120i 
+@2320:041611            ts   w37 + 1   ; ;old label: 1w37, new label: w37 + 1 @line:120j 
+@2321:041612            ts   w37 + 2   ; ;old label: 2w37, new label: w37 + 2 @line:120k 
+
+                        ; CS-II Src: ts3w37	ts4w37	spw31	w73,ca2a10	ts1z20	ts1z21	ts1z22	ts1z23	ts1z24	ts1z25
+@2322:041613            ts   w37 + 3   ; ;old label: 3w37, new label: w37 + 3 @line:121a 
+@2323:041614            ts   w37 + 4   ; ;old label: 4w37, new label: w37 + 4 @line:121b 
+@2324:075544            sp   w31       ; @line:121c 
+@2325:100227       w73: ca   a10 + 2   ; ;old label: 2a10, new label: a10 + 2 @line:121d @@JumpedToBy a1245 w77 a2434 WrittenBy w76 a2410 a2425 a2442 ReadBy w76 
+@2326:042613            ts   z20 + 1   ; ;old label: 1z20, new label: z20 + 1 @line:121e 
+@2327:042616            ts   z21 + 1   ; ;old label: 1z21, new label: z21 + 1 @line:121f 
+@2330:042621            ts   z22 + 1   ; ;old label: 1z22, new label: z22 + 1 @line:121g 
+@2331:042624            ts   z23 + 1   ; ;old label: 1z23, new label: z23 + 1 @line:121h 
+@2332:042627            ts   z24 + 1   ; ;old label: 1z24, new label: z24 + 1 @line:121i 
+@2333:042632            ts   z25 + 1   ; ;old label: 1z25, new label: z25 + 1 @line:121j 
+
+                        ; CS-II Src: ts1z26	ts1z27	ts1z28	ts1z29	w74,ca8a9	ts2z20	ts2z21	ts2z22	ts2z23	ts2z24
+@2334:042635            ts   z26 + 1   ; ;old label: 1z26, new label: z26 + 1 @line:122a 
+@2335:042640            ts   z27 + 1   ; ;old label: 1z27, new label: z27 + 1 @line:122b 
+@2336:042643            ts   z28 + 1   ; ;old label: 1z28, new label: z28 + 1 @line:122c 
+@2337:042646            ts   z29 + 1   ; ;old label: 1z29, new label: z29 + 1 @line:122d 
+@2340:100223       w74: ca   a9 + 8    ; ;old label: 8a9, new label: a9 + 8 @line:122e @@WrittenBy a2411 a2412 a2427 a2444 ReadBy a2411 a2412 
+@2341:042614            ts   z20 + 2   ; ;old label: 2z20, new label: z20 + 2 @line:122f 
+@2342:042617            ts   z21 + 2   ; ;old label: 2z21, new label: z21 + 2 @line:122g 
+@2343:042622            ts   z22 + 2   ; ;old label: 2z22, new label: z22 + 2 @line:122h 
+@2344:042625            ts   z23 + 2   ; ;old label: 2z23, new label: z23 + 2 @line:122i 
+@2345:042630            ts   z24 + 2   ; ;old label: 2z24, new label: z24 + 2 @line:122j 
+
+                        ; CS-II Src: ts2z25	ts2z26	ts2z27	ts2z28	ts2z29	w75,cab8	su0	cpy2	su1a2	cpz21
+@2346:042633            ts   z25 + 2   ; ;old label: 2z25, new label: z25 + 2 @line:123a 
+@2347:042636            ts   z26 + 2   ; ;old label: 2z26, new label: z26 + 2 @line:123b 
+@2350:042641            ts   z27 + 2   ; ;old label: 2z27, new label: z27 + 2 @line:123c 
+@2351:042644            ts   z28 + 2   ; ;old label: 2z28, new label: z28 + 2 @line:123d 
+@2352:042647            ts   z29 + 2   ; ;old label: 2z29, new label: z29 + 2 @line:123e 
+@2353:100327       w75: ca   b8        ; @line:123f @@WrittenBy a2400 a2446 ReadBy a2400 
+@2354:114000            su   0         ; @line:123g 
+@2355:072460            cp   y2        ; @line:123h 
+@2356:114052            su   a2 + 1    ; ;old label: 1a2, new label: a2 + 1 @line:123i 
+@2357:072615            cp   z21       ; @line:123j 
+
+                        ; CS-II Src: su1a2	cpz22	su1a2	cpz23	su1a2	cpz24	su1a2	cpz25	su1a2	cpz26	su1a2
+@2360:114052            su   a2 + 1    ; ;old label: 1a2, new label: a2 + 1 @line:124a 
+@2361:072620            cp   z22       ; @line:124b 
+@2362:114052            su   a2 + 1    ; ;old label: 1a2, new label: a2 + 1 @line:124c 
+@2363:072623            cp   z23       ; @line:124d 
+@2364:114052            su   a2 + 1    ; ;old label: 1a2, new label: a2 + 1 @line:124e 
+@2365:072626            cp   z24       ; @line:124f 
+@2366:114052            su   a2 + 1    ; ;old label: 1a2, new label: a2 + 1 @line:124g 
+@2367:072631            cp   z25       ; @line:124h 
+@2370:114052            su   a2 + 1    ; ;old label: 1a2, new label: a2 + 1 @line:124i 
+@2371:072634            cp   z26       ; @line:124j 
+@2372:114052            su   a2 + 1    ; ;old label: 1a2, new label: a2 + 1 @line:124k 
+
+                        ; CS-II Src: cpz27	su1a2	cpz28	spz29	w76,aow73	aow75	ao2a1	ca2a1	su6a1	cpw77
+@2373:072637            cp   z27       ; @line:125a 
+@2374:114052            su   a2 + 1    ; ;old label: 1a2, new label: a2 + 1 @line:125b 
+@2375:072642            cp   z28       ; @line:125c 
+@2376:076645            sp   z29       ; @line:125d 
+@2377:132325       w76: ao   w73       ; @line:125e @@JumpedToBy w11 w18 w27 w38 w45 w69 a2463 a2467 
+@2400:132353            ao   w75       ; @line:125f 
+@2401:130042            ao   a1 + 2    ; ;old label: 2a1, new label: a1 + 2 @line:125g 
+@2402:100042            ca   a1 + 2    ; ;old label: 2a1, new label: a1 + 2 @line:125h 
+@2403:114046            su   a1 + 6    ; ;old label: 6a1, new label: a1 + 6 @line:125i 
+@2404:072417            cp   w77       ; @line:125j 
+
+                        ; CS-II Src: ca0	ts2a1	ca7a10	tdw73	aow74	aow74	ao4a2	ca7a1	su4a2	cpw78	w77,spw73
+@2405:100000            ca   0         ; @line:126a 
+@2406:040042            ts   a1 + 2    ; ;old label: 2a1, new label: a1 + 2 @line:126b 
+@2407:100234            ca   a10 + 7   ; ;old label: 7a10, new label: a10 + 7 @line:126c 
+@2410:046325            td   w73       ; @line:126d 
+@2411:132340            ao   w74       ; @line:126e 
+@2412:132340            ao   w74       ; @line:126f 
+@2413:130055            ao   a2 + 4    ; ;old label: 4a2, new label: a2 + 4 @line:126g 
+@2414:100047            ca   a1 + 7    ; ;old label: 7a1, new label: a1 + 7 @line:126h 
+@2415:114055            su   a2 + 4    ; ;old label: 4a2, new label: a2 + 4 @line:126i 
+@2416:072420            cp   w78       ; @line:126j 
+@2417:076325       w77: sp   w73       ; @line:126k @@JumpedToBy a2404 
+
+                        ; CS-II Src: w78,ca0	ts4a2	ca0	ts2a1	ca7a10	tdw73	ca8a10	tdw74	ao5a2	ca7a1	su5a2
+@2420:100000       w78: ca   0         ; @line:127a @@JumpedToBy a2416 
+@2421:040055            ts   a2 + 4    ; ;old label: 4a2, new label: a2 + 4 @line:127b 
+@2422:100000            ca   0         ; @line:127c 
+@2423:040042            ts   a1 + 2    ; ;old label: 2a1, new label: a1 + 2 @line:127d 
+@2424:100234            ca   a10 + 7   ; ;old label: 7a10, new label: a10 + 7 @line:127e 
+@2425:046325            td   w73       ; @line:127f 
+@2426:100235            ca   a10 + 8   ; ;old label: 8a10, new label: a10 + 8 @line:127g 
+@2427:046340            td   w74       ; @line:127h 
+@2430:130056            ao   a2 + 5    ; ;old label: 5a2, new label: a2 + 5 @line:127i 
+@2431:100047            ca   a1 + 7    ; ;old label: 7a1, new label: a1 + 7 @line:127j 
+@2432:114056            su   a2 + 5    ; ;old label: 5a2, new label: a2 + 5 @line:127k 
+
+                        ; CS-II Src: cpw79	spw73	w79,ca0	ts2a1	ts4a2	ts5a2	ca7a10	tdw73	ca9a10	tdw74	caa11
+@2433:072435            cp   w79       ; @line:128a 
+@2434:076325            sp   w73       ; @line:128b 
+@2435:100000       w79: ca   0         ; @line:128c @@JumpedToBy a2433 
+@2436:040042            ts   a1 + 2    ; ;old label: 2a1, new label: a1 + 2 @line:128d 
+@2437:040055            ts   a2 + 4    ; ;old label: 4a2, new label: a2 + 4 @line:128e 
+@2440:040056            ts   a2 + 5    ; ;old label: 5a2, new label: a2 + 5 @line:128f 
+@2441:100234            ca   a10 + 7   ; ;old label: 7a10, new label: a10 + 7 @line:128g 
+@2442:046325            td   w73       ; @line:128h 
+@2443:100236            ca   a10 + 9   ; ;old label: 9a10, new label: a10 + 9 @line:128i 
+@2444:046340            td   w74       ; @line:128j 
+@2445:100237            ca   a11       ; @line:128k 
+
+                        ; CS-II Src: tdw75	spf1	x1,ta3x1	sps1	a6	sp	y1,sps1	a5	ao4a7	spw1	y2,ca2z20	cpy3
+@2446:046353            td   w75       ; @line:129a 
+@2447:074350            sp   f1        ; @line:129b 
+@2450:052453        x1: ta   x1 + 3    ; ;old label: 3x1, new label: x1 + 3 @line:129c @@JumpedToBy u3 
+@2451:074621            sp   s1        ; @line:129d 
+@2452:000141            .word a6        ; @line:129e 
+@2453:074000            sp   0         ; default operand;  @line:129f @@WrittenBy x1 
+@2454:074621        y1: sp   s1        ; @line:129g 
+@2455:000112            .word a5        ; @line:129h 
+@2456:130177            ao   a7 + 4    ; ;old label: 4a7, new label: a7 + 4 @line:129i 
+@2457:074705            sp   w1        ; @line:129j 
+@2460:102614        y2: ca   z20 + 2   ; ;old label: 2z20, new label: z20 + 2 @line:129k @@JumpedToBy a2355 
+@2461:072465            cp   y3        ; @line:129l 
+
+                        ; CS-II Src: sua10	cpw76	spz20	y3,ca2z20	ada10	cpw76	spz20	z1,sps1	a4
+@2462:114225            su   a10       ; @line:130a 
+@2463:072377            cp   w76       ; @line:130b 
+@2464:076612            sp   z20       ; @line:130c 
+@2465:102614        y3: ca   z20 + 2   ; ;old label: 2z20, new label: z20 + 2 @line:130d @@JumpedToBy a2461 
+@2466:110225            ad   a10       ; @line:130e 
+@2467:072377            cp   w76       ; @line:130f 
+@2470:076612            sp   z20       ; @line:130g 
+@2471:074621        z1: sp   s1        ; @line:130h 
+@2472:000064            .word a4        ; @line:130i 
+
+                        ; CS-II Src: ao4a7	spw1	z2,taz3	taz4	taz5	taz6	taz13	taz7	z3,ca	ts5a7	aoz4
+@2473:130177            ao   a7 + 4    ; ;old label: 4a7, new label: a7 + 4 @line:131a 
+@2474:074705            sp   w1        ; @line:131b 
+@2475:052503        z2: ta   z3        ; @line:131c @@JumpedToBy w1 a0713 a0721 a0727 a0735 a0743 a0751 a0757 a0765 a0773 a1001 a1007 a1015 a1023 a1031 a1037 a1045 a1053 a1061 a1067 a1075 a1103 a1111 a1117 a1125 a1133 a1141 a1147 a1155 a1163 a1171 a1177 a1205 a1213 a1221 a1227 w7 w8 w9 w10 w15 w16 w17 w22 w23 w24 w25 w26 w31 w32 w33 w34 w35 w36 w37 w42 w43 w44 w58 w59 w60 w61 w62 w63 w64 w65 w66 w67 w68 
+@2476:052506            ta   z4        ; @line:131d 
+@2477:052512            ta   z5        ; @line:131e 
+@2500:052517            ta   z6        ; @line:131f 
+@2501:052611            ta   z13       ; @line:131g 
+@2502:052525            ta   z7        ; @line:131h 
+@2503:100000        z3: ca   0         ; default operand;  @line:131i @@WrittenBy z2 
+@2504:040200            ts   a7 + 5    ; ;old label: 5a7, new label: a7 + 5 @line:131j 
+@2505:132506            ao   z4        ; @line:131k 
+
+                        ; CS-II Src: z4,ca	tsa8	aoz5	aoz5	z5,ca	ts1a8	aoz6	aoz6	aoz6	z6,ca	ts2a8
+@2506:100000        z4: ca   0         ; default operand;  @line:132a @@WrittenBy a2476 a2505 ReadBy a2505 
+@2507:040201            ts   a8        ; @line:132b 
+@2510:132512            ao   z5        ; @line:132c 
+@2511:132512            ao   z5        ; @line:132d 
+@2512:100000        z5: ca   0         ; default operand;  @line:132e @@WrittenBy a2477 a2510 a2511 ReadBy a2510 a2511 
+@2513:040202            ts   a8 + 1    ; ;old label: 1a8, new label: a8 + 1 @line:132f 
+@2514:132517            ao   z6        ; @line:132g 
+@2515:132517            ao   z6        ; @line:132h 
+@2516:132517            ao   z6        ; @line:132i 
+@2517:100000        z6: ca   0         ; default operand;  @line:132j @@WrittenBy a2500 a2514 a2515 a2516 ReadBy a2514 a2515 a2516 
+@2520:040203            ts   a8 + 2    ; ;old label: 2a8, new label: a8 + 2 @line:132k 
+
+                        ; CS-II Src: aoz7	aoz7	aoz7	aoz7	z7,ca	ts5a8	aoz13	aoz13	aoz13	aoz13	aoz13
+@2521:132525            ao   z7        ; @line:133a 
+@2522:132525            ao   z7        ; @line:133b 
+@2523:132525            ao   z7        ; @line:133c 
+@2524:132525            ao   z7        ; @line:133d 
+@2525:100000        z7: ca   0         ; default operand;  @line:133e @@WrittenBy a2502 a2521 a2522 a2523 a2524 ReadBy a2521 a2522 a2523 a2524 
+@2526:040206            ts   a8 + 5    ; ;old label: 5a8, new label: a8 + 5 @line:133f 
+@2527:132611            ao   z13       ; @line:133g 
+@2530:132611            ao   z13       ; @line:133h 
+@2531:132611            ao   z13       ; @line:133i 
+@2532:132611            ao   z13       ; @line:133j 
+@2533:132611            ao   z13       ; @line:133k 
+
+                        ; CS-II Src: z8,ca5a7	si384	caa8	rc	cm1a8	su0	cpz9	cm2a8	su0	cpz10	cm5a8
+@2534:100200        z8: ca   a7 + 5    ; ;old label: 5a7, new label: a7 + 5 @line:134a @@JumpedToBy a2556 a2564 a2575 a2607 
+@2535:000600            si   384       ; @line:134b; Auto-Annotate I/O: Display Points 
+@2536:100201            ca   a8        ; @line:134c 
+@2537:024000            rc   0         ; default operand;  @line:134d 
+@2540:120202            cm   a8 + 1    ; ;old label: 1a8, new label: a8 + 1 @line:134e 
+@2541:114000            su   0         ; @line:134f 
+@2542:072552            cp   z9        ; @line:134g 
+@2543:120203            cm   a8 + 2    ; ;old label: 2a8, new label: a8 + 2 @line:134h 
+@2544:114000            su   0         ; @line:134i 
+@2545:072560            cp   z10       ; @line:134j 
+@2546:120206            cm   a8 + 5    ; ;old label: 5a8, new label: a8 + 5 @line:134k 
+
+                        ; CS-II Src: su0	cpz11	spz12	z9,caa8	ad3a8	tsa8	su2a8	cpz8	spz13	z10,ca5a7
+@2547:114000            su   0         ; @line:135a 
+@2550:072566            cp   z11       ; @line:135b 
+@2551:076577            sp   z12       ; @line:135c 
+@2552:100201        z9: ca   a8        ; @line:135d @@JumpedToBy a2542 
+@2553:110204            ad   a8 + 3    ; ;old label: 3a8, new label: a8 + 3 @line:135e 
+@2554:040201            ts   a8        ; @line:135f 
+@2555:114203            su   a8 + 2    ; ;old label: 2a8, new label: a8 + 2 @line:135g 
+@2556:072534            cp   z8        ; @line:135h 
+@2557:076611            sp   z13       ; @line:135i 
+@2560:100200       z10: ca   a7 + 5    ; ;old label: 5a7, new label: a7 + 5 @line:135j @@JumpedToBy a2545 
+
+                        ; CS-II Src: ad3a8	ts5a7	su1a8	cpz8	spz13	z11,caa8	ad3a8	tsa8	ca5a7	ad3a8
+@2561:110204            ad   a8 + 3    ; ;old label: 3a8, new label: a8 + 3 @line:136a 
+@2562:040200            ts   a7 + 5    ; ;old label: 5a7, new label: a7 + 5 @line:136b 
+@2563:114202            su   a8 + 1    ; ;old label: 1a8, new label: a8 + 1 @line:136c 
+@2564:072534            cp   z8        ; @line:136d 
+@2565:076611            sp   z13       ; @line:136e 
+@2566:100201       z11: ca   a8        ; @line:136f @@JumpedToBy a2550 
+@2567:110204            ad   a8 + 3    ; ;old label: 3a8, new label: a8 + 3 @line:136g 
+@2570:040201            ts   a8        ; @line:136h 
+@2571:100200            ca   a7 + 5    ; ;old label: 5a7, new label: a7 + 5 @line:136i 
+@2572:110204            ad   a8 + 3    ; ;old label: 3a8, new label: a8 + 3 @line:136j 
+
+                        ; CS-II Src: ts5a7	su1a8	cpz8	spz13	z12,ca5a7	ad3a8	ts5a7	caa8	su3a8	tsa8
+@2573:040200            ts   a7 + 5    ; ;old label: 5a7, new label: a7 + 5 @line:137a 
+@2574:114202            su   a8 + 1    ; ;old label: 1a8, new label: a8 + 1 @line:137b 
+@2575:072534            cp   z8        ; @line:137c 
+@2576:076611            sp   z13       ; @line:137d 
+@2577:100200       z12: ca   a7 + 5    ; ;old label: 5a7, new label: a7 + 5 @line:137e @@JumpedToBy a2551 
+@2600:110204            ad   a8 + 3    ; ;old label: 3a8, new label: a8 + 3 @line:137f 
+@2601:040200            ts   a7 + 5    ; ;old label: 5a7, new label: a7 + 5 @line:137g 
+@2602:100201            ca   a8        ; @line:137h 
+@2603:114204            su   a8 + 3    ; ;old label: 3a8, new label: a8 + 3 @line:137i 
+@2604:040201            ts   a8        ; @line:137j 
+
+                        ; CS-II Src: ca5a7	su1a8	cpz8	spz13	z13,sp	z20,spw4	0	0	z21,spw12	0
+@2605:100200            ca   a7 + 5    ; ;old label: 5a7, new label: a7 + 5 @line:138a 
+@2606:114202            su   a8 + 1    ; ;old label: 1a8, new label: a8 + 1 @line:138b 
+@2607:072534            cp   z8        ; @line:138c 
+@2610:076611            sp   z13       ; @line:138d 
+@2611:074000       z13: sp   0         ; default operand;  @line:138e @@JumpedToBy a2557 a2565 a2576 a2610 WrittenBy a2501 a2527 a2530 a2531 a2532 a2533 ReadBy a2527 a2530 a2531 a2532 a2533 
+@2612:075246       z20: sp   w4        ; @line:138f @@JumpedToBy a2464 a2470 
+@2613:000000            .word 0         ; @line:138g @@WrittenBy a2326 
+@2614:000000            .word 0         ; @line:138h @@WrittenBy a2341 ReadBy y2 y3 
+@2615:075326       z21: sp   w12       ; @line:138i @@JumpedToBy a2357 
+@2616:000000            .word 0         ; @line:138j @@WrittenBy a2327 
+
+                        ; CS-II Src: 0	z22,spw19	0	0
+@2617:000000            .word 0         ; @line:139a @@WrittenBy a2342 
+@2620:075401       z22: sp   w19       ; @line:139b @@JumpedToBy a2361 
+@2621:000000            .word 0         ; @line:139c @@WrittenBy a2330 
+@2622:000000            .word 0         ; @line:139d @@WrittenBy a2343 
+
+                        ; CS-II Src: z23,spw28	0	0	z24,spw39	0
+@2623:075475       z23: sp   w28       ; @line:140a @@JumpedToBy a2363 
+@2624:000000            .word 0         ; @line:140b @@WrittenBy a2331 
+@2625:000000            .word 0         ; @line:140c @@WrittenBy a2344 
+@2626:075617       z24: sp   w39       ; @line:140d @@JumpedToBy a2365 
+@2627:000000            .word 0         ; @line:140e @@WrittenBy a2332 
+
+                        ; CS-II Src: 0	z25,spw46	0	0	z26,spw49
+@2630:000000            .word 0         ; @line:141a @@WrittenBy a2345 
+@2631:075670       z25: sp   w46       ; @line:141b @@JumpedToBy a2367 
+@2632:000000            .word 0         ; @line:141c @@WrittenBy a2333 
+@2633:000000            .word 0         ; @line:141d @@WrittenBy a2346 
+@2634:075737       z26: sp   w49       ; @line:141e @@JumpedToBy a2371 
+
+                        ; CS-II Src: 0	0	z27,spw52	0	0	z28,spw55	0	0	z29,spw70
+@2635:000000            .word 0         ; @line:142a @@WrittenBy a2334 
+@2636:000000            .word 0         ; @line:142b @@WrittenBy a2347 
+@2637:076004       z27: sp   w52       ; @line:142c @@JumpedToBy a2373 
+@2640:000000            .word 0         ; @line:142d @@WrittenBy a2335 
+@2641:000000            .word 0         ; @line:142e @@WrittenBy a2350 
+@2642:076070       z28: sp   w55       ; @line:142f @@JumpedToBy a2375 
+@2643:000000            .word 0         ; @line:142g @@WrittenBy a2336 
+@2644:000000            .word 0         ; @line:142h @@WrittenBy a2351 
+@2645:076260       z29: sp   w70       ; @line:142i @@JumpedToBy a2376 
+
+                        ; CS-II Src: 0	0
+@2646:000000            .word 0         ; @line:143a @@WrittenBy a2337 
+@2647:000000            .word 0         ; @line:143b @@WrittenBy a2352 
+                        ; @line:143c
+                        .jumpto w1        ; START AT w1 @line:144a 
+                        ; @line:145a
