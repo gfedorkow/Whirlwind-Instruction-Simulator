@@ -144,7 +144,7 @@ def main():
     cb = wwinfra.ConstWWbitClass()
     cpu = CpuClass(cb)
     cb.cpu = cpu
-    cpu.cpu_switches = wwinfra.WWSwitchClass()
+    cpu.cpu_switches = wwinfra.WWSwitchClass(cb)
     log = wwinfra.LogClass(sys.argv[0], quiet=args.Quiet, debug556=args.Debug556)
     cb.log = log
 
