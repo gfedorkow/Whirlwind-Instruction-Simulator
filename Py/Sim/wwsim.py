@@ -1698,11 +1698,11 @@ def main_run_sim(args):
     global CoreMem, CommentTab   # should have put this in the CPU Class...
 
     # instantiate the class full of constants
-    cb = wwinfra.ConstWWbitClass(get_screen_size = True)
+    cb = wwinfra.ConstWWbitClass(args=args, get_screen_size=True)
     CoreMem = wwinfra.CorememClass(cb)
     cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
     cb.cpu = cpu
-    cpu.cpu_switches = wwinfra.WWSwitchClass()
+    cpu.cpu_switches = wwinfra.WWSwitchClass(cb)
     cb.log = wwinfra.LogClass(sys.argv[0], quiet=args.Quiet)
     cb.dbwgt = wwinfra.ScreenDebugWidgetClass(cb, CoreMem, args.AnalogScope)
 
@@ -1843,7 +1843,11 @@ def main_run_sim(args):
             if cb.analog_display:
                 update_rate = 5000
             if (sim_cycle % update_rate == 0) or args.SynchronousVideo or CycleDelayTime:
-                exit_alarm = poll_sim_io(cpu, cb)
+                exit_alarm = cb.NO_ALARM
+                if cb.panel:
+                    if cb.panel.checkMouse() == False:  # watch for mouse clicks on the panel
+                        exit_alarm = cb.HALT_ALARM
+                exit_alarm |= poll_sim_io(cpu, cb)
                 if exit_alarm != cb.NO_ALARM:
                     alarm = exit_alarm
 
@@ -1972,6 +1976,8 @@ def main():
                         help="File name for photoelectric paper tape reader B input file")
     parser.add_argument("--NoAlarmStop", help="Don't stop on alarms", action="store_true")
     parser.add_argument("-n", "--NoCloseOnStop", help="Don't close the display on halt", action="store_true")
+    parser.add_argument("-p", "--Panel",
+                        help="Pop up a Whirlwind Manual Intervention Panel", action="store_true")
     parser.add_argument("--NoZeroOneTSR",
                         help="Don't automatically return 0 and 1 for locations 0 and 1", action="store_true")
     parser.add_argument("--SynchronousVideo",

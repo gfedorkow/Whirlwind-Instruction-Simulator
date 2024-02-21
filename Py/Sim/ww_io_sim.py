@@ -894,12 +894,15 @@ class InterventionAndActivateClass:
         self.cb = cb
 
         self.name = "Intervention-and-Activate"
-        self.acvtivate_reg = None
+        self.activate_reg = None
         self.intervention_reg = None
         self.cpu_class = cpu_class
-        self.intervention_reg_name = {0o36: "LeftInterventionReg",
-                                      0o37: "RightInterventionReg",
-                                      }
+        self.intervention_reg_name = {
+                                    0o36: "LeftInterventionReg",
+                                    0o37: "RightInterventionReg",
+                                    0o00: "ActivationReg0",
+                                    0o01: "ActivationReg1",
+        }
 
     # each device needs to identify its own unit number.
     def is_this_for_me(self, io_address):
@@ -909,13 +912,14 @@ class InterventionAndActivateClass:
             return None
 
     def si(self, device, _acc, _cm):
-        self.acvtivate_reg = None
+        self.activate_reg = None
         self.intervention_reg = None
 
         device = device & ~self.cb.INTERVENTION_ADDR_MASK
         if (device == 0) | (device == 1):  # i.e., if the device is #0 or #1, it's an Activate register
-            self.acvtivate_reg = device
-            print("SI: configured Activate device %o" % self.acvtivate_reg)
+            self.activate_reg = device
+            if self.cb.TraceQuiet is False:
+                print("SI: configured Activate device %o" % self.activate_reg)
             return self.cb.NO_ALARM
         else:  # i.e., if the device is #2 to #32d, it's an Activate register
             self.intervention_reg = device
@@ -923,8 +927,8 @@ class InterventionAndActivateClass:
                 name = self.intervention_reg_name[device]
             else:
                 name = "Switch-%d" % device
-            print("SI: configured Intervention device 0o%o  %s" %
-                  (self.intervention_reg, name))
+            if self.cb.TraceQuiet is False:
+                print("SI: configured Intervention device 0o%o  %s" % (self.intervention_reg, name))
             return self.cb.NO_ALARM
 
     def rc(self, _operand, _acc):  # "record", i.e. output instruction to device
@@ -934,7 +938,11 @@ class InterventionAndActivateClass:
     # Read from the switches should return something
     # This stub simply returns zero for all unknown Activate and Intervention registers
     def rd(self, operand, acc):  # "read", i.e. input instruction from device
-        reg = self.intervention_reg
+        # I thought I'd need Activate and Intervention separated; so far, it appears not.
+        if self.activate_reg is not None:
+            reg = self.activate_reg
+        else:
+            reg = self.intervention_reg
         ret = 0
         if reg in self.intervention_reg_name:
             ret = self.cpu_class.cpu_switches.read_switch(self.intervention_reg_name[reg])

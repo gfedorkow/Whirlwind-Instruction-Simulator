@@ -1,6 +1,6 @@
 
 
-# Copyright 2020 Guy C. Fedorkow
+# Copyright 2024 Guy C. Fedorkow
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 # associated documentation files (the "Software"), to deal in the Software without restriction,
 # including without limitation the rights to use, copy, modify, merge, publish, distribute,
@@ -23,6 +23,7 @@ import re
 import hashlib
 import sys
 import analog_scope
+import control_panel
 import os
 from screeninfo import get_monitors
 
@@ -118,7 +119,7 @@ class DebugWidgetPyVarsClass:
 
 
 class ConstWWbitClass:
-    def __init__(self, get_screen_size=False):
+    def __init__(self, args=None, get_screen_size=False):
 
         # Caution -- Whirlwind puts bit 0 to the left (Big Endian, no?)
         self.WWBIT0 = 0o100000
@@ -193,6 +194,10 @@ class ConstWWbitClass:
         self.analog_display = False   # set this flag to display on an analog oscilloscope instead of an x-window
         self.use_x_win = True         # clear this flag to completely turn off the xwin display, widgets and all
         self.ana_scope = None   # this is a handle to the methods for operating the analog scope
+        self.panel = None
+        if args and args.Panel:
+            self.panel = control_panel.PanelClass()
+
         # use these vars to control how much Helpful Stuff emerges from the sim
         self.color_trace = True
         self.museum_mode = None  # command line switch to enable a repeating demo mode.
@@ -339,7 +344,7 @@ class ConstWWbitClass:
         ]
 
 
-    def Decode_IO(io_address):
+    def Decode_IO(self, io_address):
         devname = ''
         addr_info = (0, 0)
         for d in self.DevNameDecoder:
@@ -404,22 +409,27 @@ class ConstWWbitClass:
 
 
 class WWSwitchClass:
-    def __init__(self):
+    def __init__(self, cb):
+        self.cb = cb
         # I modified this routine to accept any Flip Flop Preset Switch as a directive
         #  FF Presets are numbered by the address at which they appear
         # I actually don't know what they configured to tell which of the five FF Reg's showed up at which address...
+        # Modified Jan 2024 to support PanelClass().
+        #   Part of that modification was (for better or worse) naming the switches and registers inside the simulator
+        # with shorter names that the Assembler uses, basically to reduce typing.  This is done by adding an "internal
+        # name" field to the dictionary below...
         self.SwitchNameDict = {
-            # name: [default_val, mask]
-            "CheckAlarmSpecial": [0, 0o01],  # Controls the behavior of the CK instruction; see 2M-0277
+            # name: [default_val, mask, internal_name]
+            "CheckAlarmSpecial": [0, 0o01, None],  # Controls the behavior of the CK instruction; see 2M-0277
                                              # "normal" is 'off'
-            "LeftInterventionReg": [0, 0xffff],   # Left Manual Intervention Register - aka LMIR
-            "RightInterventionReg": [0, 0xffff],  # Right Manual Intervention Register - aka RMIR
-            #  "FlipFlopPreset0": [0, 0xffff],  # Flip Flop Register preset switches in Test Control
-            #  "FlipFlopPreset1": [0, 0xffff],  # Flip Flop Register preset switches in Test Control
+            "LeftInterventionReg":  [0, 0xffff, "LMIR"],   # Left Manual Intervention Register - aka LMIR
+            "RightInterventionReg": [0, 0xffff, "RMIR"],  # Right Manual Intervention Register - aka RMIR
+            "ActivationReg0":       [0, 0xffff, "ActivationReg0"],  #
+            "ActivationReg1":       [0, 0xffff, "ActivationReg1"],  #
         }
         for s in range(2, 32):
             name = "FlipFlopPreset%02o" % s
-            self.SwitchNameDict[name] = [None, 0xffff]
+            self.SwitchNameDict[name] = [None, 0xffff, "FF%02oSw" % s]
 
     # The five Flip Flop Registers could be assigned to different locations in the lower
     # 32 words of the address space.  I can't imagine why they did that, and I haven't found
@@ -438,7 +448,7 @@ class WWSwitchClass:
     # writing the parser twice...  If this works, it might be possible to share more stuff.
     # So the routine returns an array of True/False for the sim, and a cleaned and validated
     # arg list for the assembler
-    def parse_ff_reg_assignment(self, cb, name, args):
+    def parse_ff_reg_assignment(self, name, args):
         ffreg_str = ''
         validated_str = ''
         for arg in args:
@@ -452,10 +462,10 @@ class WWSwitchClass:
             try:
                 val = int(ffreg, 8)
             except:
-                cb.log.warn((".SWITCH %s setting %s must be an octal number" % (name, ffreg)))
+                self.cb.log.warn((".SWITCH %s setting %s must be an octal number" % (name, ffreg)))
                 return None, ''
             if (~mask & val) != 0:
-                cb.log.warn(("max value for switch %s is 0o%o, got 0o%o" % (name, mask, val)))
+                self.cb.log.warn(("max value for switch %s is 0o%o, got 0o%o" % (name, mask, val)))
                 return None, ''
             if len(validated_str) != 0:
                 validated_str += ','   # make a new comma-separated list
@@ -464,42 +474,51 @@ class WWSwitchClass:
         return write_protect_list, validated_str
 
 
-    def parse_switch_directive(self, cb, args):    # return one for error, zero for ok.
+    def parse_switch_directive(self, args):    # return one for error, zero for ok.
         if args[0] == "FFRegAssign":  # special case syntax for assigning FF Register addresses
             args.append('')   # cheap trick; add a null on the end to make sure the next statement doesn't trap
-            write_protect_list, ffreg_str = self.parse_ff_reg_assignment(cb, args[0], args[1:])
+            write_protect_list, ffreg_str = self.parse_ff_reg_assignment(args[0], args[1:])
             if write_protect_list is None:
                 return 1
-            cb.cpu.cm.set_ff_reg_mask(write_protect_list)
-            cb.log.info("Assigning Flip Flop Registers to addresses: %s" % ffreg_str)
+            self.cb.cpu.cm.set_ff_reg_mask(write_protect_list)
+            self.cb.log.info("Assigning Flip Flop Registers to addresses: %s" % ffreg_str)
             return 0
 
         if len(args) != 2:
-            cb.log.warn("Switch Setting: expected <name> <val>, got: ")
+            self.cb.log.warn("Switch Setting: expected <name> <val>, got: ")
             print(args)
             return 1
 
         name = args[0]
         if name not in self.SwitchNameDict:
-            cb.log.warn(("No machine switch named %s" % name))
+            self.cb.log.warn(("No machine switch named %s" % name))
             return 1
 
         try:
             val = int(args[1], 8)
         except:
-            cb.log.warn((".SWITCH %s setting %s must be an octal number" % (name, args[1])))
+            self.cb.log.warn((".SWITCH %s setting %s must be an octal number" % (name, args[1])))
             return 1
         mask = self.SwitchNameDict[name][1]
+        panel_name = self.SwitchNameDict[name][2]
         if (~mask & val) != 0:
-            cb.log.warn(("max value for switch %s is 0o%o, got 0o%o" % (name, mask, val)))
+            self.cb.log.warn(("max value for switch %s is 0o%o, got 0o%o" % (name, mask, val)))
             return 1
         self.SwitchNameDict[name][0] = val
-        cb.log.info((".SWITCH %s set to 0o%o" % (name, val)))
+        if self.cb.panel:
+            self.cb.panel.write_register(panel_name, val)
+        self.cb.log.info((".SWITCH %s (%s) set to 0o%o" % (name, panel_name, val)))
         return 0
 
     def read_switch(self, name):
         if name in self.SwitchNameDict:
-            return self.SwitchNameDict[name][0]
+            if self.cb.panel and name in self.SwitchNameDict and self.SwitchNameDict[name][2]:
+                # call the Panel object to read switches, should it be present, and if it's a switch
+                # that's represented on the panel.  Use the internal name string (i.e., offset 2 in the dict)
+                ret = self.cb.panel.read_register(self.SwitchNameDict[name][2])
+                return ret
+            else:
+                return self.SwitchNameDict[name][0]
         return None
 
 # collect a histogram of opcode frequency
@@ -691,7 +710,7 @@ class CorememClass:
                         self.cb.log.warn("Overwriting a read-only toggle switch at addr=0o%o, was 0o%o, is 0o%o" %
                                          (addr, self._toggle_switch_mem_default[addr][0], val))
 
-                    self._toggle_switch_mem_default[addr][0] = val
+                    self.write_ff_reg(addr, val)
         if addr & self.cb.WWBIT5:  # High half of the address space, Group B
             self._coremem[self.MemGroupB][addr & self.cb.WWBIT6_15] = val
         else:
@@ -749,18 +768,33 @@ class CorememClass:
             self._toggle_switch_mem_default[addr][1] = write_protect_list[addr]
 
 
+    # store a new value in a flip-flop reg
+    # This is simply updating a table entry unless the Panel Display is enabled, in which
+    # case it needs to be updated in two places...
+    def write_ff_reg(self, addr, val):
+        self._toggle_switch_mem_default[addr][0] = val
+        if self.cb.panel:
+            self.cb.panel.write_register(addr, val)
+
+
+    # integration with the Control Panel is kinda crude here...
     def reset_ff(self, cpu):
-        for addr in range(0, self._toggle_switch_mask + 1):
-            val = cpu.cpu_switches.read_switch("FlipFlopPreset%02o" % addr)
-            if val is not None:
-                # [addr][1] is True for Read-only addrs, False for FF Reg
-                if self._toggle_switch_mem_default[addr][1] is True and \
-                    self._toggle_switch_mem_default[addr][0] != val:
-                    self.cb.log.warn("Resetting 'read-only' toggle-switch register %02o from %o to %o" %
-                                     (addr, self._toggle_switch_mem_default[addr][0], val))
-                self._toggle_switch_mem_default[addr][0] = val  # None for switches not found in the core file
-                val_str = "0o%o" % val
-                self.cb.log.info("Reset FF%02o at address 0o%o to %s" % (addr, addr, val_str))
+        reset_info_string = "Reset FF%02o at address 0o%o to %s"
+        if self.cb.panel:
+            self.cb.panel.reset_ff_registers(self.write_ff_reg, self.cb.log, reset_info_string)
+
+        else:
+            for addr in range(0, self._toggle_switch_mask + 1):
+                val = cpu.cpu_switches.read_switch("FlipFlopPreset%02o" % addr)
+                if val is not None:
+                    # [addr][1] is True for Read-only addrs, False for FF Reg
+                    if self._toggle_switch_mem_default[addr][1] is True and \
+                        self._toggle_switch_mem_default[addr][0] != val:
+                        self.cb.log.warn("Resetting 'read-only' toggle-switch register %02o from %o to %o" %
+                                         (addr, self._toggle_switch_mem_default[addr][0], val))
+                    self.write_ff_reg(addr, val)  # None for switches not found in the core file
+                    val_str = "0o%o" % val
+                    self.cb.log.info(reset_info_string % (addr, addr, val_str))
 
 
     # this callback is here specifically to manage the Light Gun used in the 1952 Track and Scan,
@@ -873,7 +907,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             tokens = input_minus_comment.split()
             if switch_class is None:
                 cb.log.fatal("Read Core File: %%Switch directive, but no switch_class")
-            ret = switch_class.parse_switch_directive(cb, tokens[1:])
+            ret = switch_class.parse_switch_directive(tokens[1:])
             if ret != 0:
                 cb.log.warn("Errors setting switches")
 
@@ -1119,7 +1153,8 @@ class FlexoClass:
         self.stop_on_zero = None
         self.packed = None
         self.null_count = 0
-        self.FlexoOutput = []
+        self.FlexoOutput = []  # this is the accumulation of all output from the Flexowriter
+        self.FlexoLine = ""    # this one accumulates one line of Flexo output for immediate printing
         self.name = "Flexowriter"
         self.cb = cb   # what's the right way to do this??
 
@@ -1283,8 +1318,11 @@ class FlexoClass:
         code = acc >> 10  # the code is in the upper six bits of the accumulator
         symbol = self.code_to_letter(code)  # look up the code, mess with Upper Case and Color
         self.FlexoOutput.append(symbol)
+        self.FlexoLine += symbol
         if symbol == '\n':
-            symbol = '\\n'
+            symbol = '\\n'   # convert the newline into something that can go in a Record status message
+            print("Flexo: %s" % self.FlexoLine[0:-1])   # print the full line on the console, ignoring the line feed
+            self.FlexoLine = ""                         # and start accumulating the next line
         return self.cb.NO_ALARM, symbol
 
     def bo(self, address, acc, cm):  # "block transfer out"
