@@ -475,7 +475,7 @@ def dot_switch_op(srcline, _binary_opcode, _operand_mask):
     global SwitchTab
     global cb
 
-    sw_class = wwinfra.WWSwitchClass()
+    sw_class = wwinfra.WWSwitchClass(cb)
     ret = 0
     # put a try/except around this conversion
     tokens = re.split("[ \t]", srcline.operand)
