@@ -18,6 +18,10 @@ venv/
 *.bak
 Backup/
 
+#ignore trace files
+Code-Samples/*/flow.gv
+Code-Samples/*/flow.svg
+
 
 # Pycharm control files
 .idea/
