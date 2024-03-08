@@ -129,6 +129,42 @@ def diff_core(core_a, core_b, cb):
 #            diffs += 1
     cb.log.info("Core Diffs = %d(d), Metadata Diffs = %d(d)" % (diffs, metadata_diffs))
 
+
+def scan_similarity(core_a, core_b, cb):
+    longest_longest_run = 0
+    for core_b_offset in range(0, 2000):
+        (longest_run, longest_run_start_at, n_runs) = measure_similarity(core_a, core_b, core_b_offset, cb)
+        print("Offset %d: longest_run = %d at 0o%o, n_runs = %d" %
+              (core_b_offset, longest_run, longest_run_start_at, n_runs))
+        if longest_run > longest_longest_run:
+            longest_longest_run = longest_run
+    print("longest run = %d" % longest_longest_run)
+
+def measure_similarity(core_a, core_b, core_b_offset, cb):
+    longest_run = 0
+    current_run = 0
+    longest_run_start_at = 0
+    current_run_start_at = 0
+    n_runs = 0
+    for address in range(0, cb.CORE_SIZE):
+        wrd_a = core_a.rd(address, fix_none=False)
+        wrd_b = core_b.rd((address + core_b_offset) % cb.CORE_SIZE, fix_none=False)
+        if wrd_a is None or wrd_b is None:
+            continue
+        if wrd_a & 0o174 == wrd_b & 0o174 :
+            current_run += 1
+            if current_run == 1:
+                current_run_start_at = address
+            if current_run == 5:
+                n_runs += 1
+        else:
+            if current_run > longest_run:
+                longest_run = current_run
+                longest_run_start_at = current_run_start_at
+            current_run = 0
+    return(longest_run, current_run_start_at, n_runs)
+
+
 # Pythonic entry point
 def main():
     parser = argparse.ArgumentParser(description='Compare a Whirlwind tape image.')
@@ -138,6 +174,7 @@ def main():
     parser.add_argument("-q", "--Quiet", help="Suppress run-time message", action="store_true")
     parser.add_argument("-m", "--Merge", help="Merge files into File A", action="store_true")
     parser.add_argument("-5", "--Debug556", help="WW 556 block debug info", action="store_true")
+    parser.add_argument("-s", "--Similarity", help="Measure similarity of Core A and Core B", action="store_true")
 
     args = parser.parse_args()
 
@@ -175,6 +212,8 @@ def main():
             wwinfra.write_core(cb, [coremem_a._coremem[0] + coremem_a._coremem[1]], 0, False,
                                coremem_a.metadata["filename_from_core"], coremem_a.metadata["ww_tapeid"],
                                coremem_a.metadata["jumpto"], args.outputfile, coremem_a.metadata["strings"])
+        elif args.Similarity:
+            scan_similarity(coremem_a, coremem_b, cb)
         else:
             diff_core(coremem_a, coremem_b, cb)
         passnum += 1
