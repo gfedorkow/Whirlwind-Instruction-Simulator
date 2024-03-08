@@ -233,6 +233,7 @@ def lex_line(line, line_number):
     if len(rl5) > 1:
         operand = strip_space(rl5[1])
         op = strip_space(rl5[0])
+        op = op.lower()
         if Legacy_Numbers:   # guy's "legacy numbers" were purely and totally octal; the asm is now more flexible.
             if operand.isnumeric():
                 operand = "0o" + operand
