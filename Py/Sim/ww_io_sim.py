@@ -722,7 +722,7 @@ class DisplayScopeClass:
 
         if (io_address & self.cb.DISPLAY_EXPAND_ADDR_MASK) == self.cb.DISPLAY_EXPAND_BASE_ADDRESS:
             # See 2M-0277 Page 63; not clear exactly how this Expand thing works!
-            expand_op = io_address & self.cb.DISPLAY_EXPAND_ADDR_MASK  # o14=Expand, o15=UnExpand
+            expand_op = io_address  # o14=Expand, o15=UnExpand
             if self.cb.TraceQuiet is False:
                 print("DisplayScope SI: Display Expand Operand set to 0o%o; Expand=0o14, UnExpand=0o15" % expand_op)
             if expand_op == 0o14:
