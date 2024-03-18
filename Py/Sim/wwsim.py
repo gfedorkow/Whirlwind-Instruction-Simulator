@@ -24,6 +24,7 @@ import sys
 import os
 import psutil
 # sys.path.append('K:\\guy\\History-of-Computing\\Whirlwind\\Py\\Common')
+# sys.path.append('C:\\Users\\lstabile\\whirlwind\\InstructionSimulator\\Py\\Common')
 import argparse
 import wwinfra
 import ww_io_sim
@@ -298,11 +299,13 @@ class CpuClass:
 
     # convert an address to a string, adding a label from the symbol table if there is one
     # "Label_Only" causes the routine to check the symbol table, and if there's a label, it returns
-    #  it without adding the number.  If there's no label in the symTab, you get the number
+    # it without adding the number.  If there's no label in the symTab, you get the number.
+    # [Feb 8, 2024] no_label causes just the address to be returned.
+    # If both label_only_flag and no_label are true, label_only_flag wins.
     # [Jan 30, 2021] The routine also now returns octal by default, but will add the decimal
     # equivalent if the global flag is set.  Format is (for eg) "0o0100.64"
     # [Jan 28, 2022] Add an indicator of which bank is in use if it's not the default configuration.
-    def wwaddr_to_str(self, num, label_only_flag=False):
+    def wwaddr_to_str(self, num, label_only_flag=False, no_label=False):
         bank_str = ''  # by default, we don't give a bank number
         high_bank = (num & self.cb.WWBIT5)
         if high_bank and CoreMem.MemGroupB != 1:
@@ -322,7 +325,7 @@ class CpuClass:
         if label_only_flag:
             return label_only
         else:
-            return ("%s0o%04o%s" % (bank_str, num, decimal)) + label
+            return ("%s0o%04o%s" % (bank_str, num, decimal)) + (label if no_label == False else "")
 
     # print a number in octal and decimal, then pad with spaces up to a specified column number.
     # The point is allow long fields that exceed column boundaries once in a while, but get the
@@ -410,10 +413,10 @@ class CpuClass:
         for line in cmd.split('\\n '):
             exec_op = None
             # the next two lines were combined with a Walrus Operator :-
-            m = re.match("(\w+): ", line)
+            m = re.match("(\\w+): ", line)
             if m:
                 exec_op = m.group(1)
-                line = re.sub("^\w+: +", '', line)
+                line = re.sub("^\\w+: +", '', line)
             if exec_op is None:
                 exec_op = "exec"
                 self.cb.log.warn("deprecated @E format: '%s'" % line)
@@ -1692,8 +1695,6 @@ def poll_sim_io(cpu, cb):
             wgt.increment_addr_location(direction_up = False)
     return ret
 
-
-
 def main_run_sim(args):
     global CoreMem, CommentTab   # should have put this in the CPU Class...
 
@@ -1910,7 +1911,7 @@ def main_run_sim(args):
                   (radar.elapsed_time / 60.0, radar.antenna_revolutions))
     if cb.tracelog:
         title = "%s\\nWWfile: %s" % (cb.CoreFileName, CoreMem.metadata['filename_from_core'])
-        ww_flow_graph.finish_flow_graph_from_sim(cb, CoreMem, cpu, title, "flow.gv")
+        ww_flow_graph.finish_flow_graph_from_sim (cb, CoreMem, cpu, title, re.sub ("\\.acore$", "", os.path.basename (cb.CoreFileName)) + ".flow.gv")
 
     if core_dump_file_name is not None:
         write_core_dump(cb, core_dump_file_name, CoreMem)
