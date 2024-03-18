@@ -187,7 +187,6 @@ class BlockClass:  # this class holds a summarized block of code, with links to 
 
     def add_instruction_notation(self, cpu, pc, opcode, operand):
         label = cpu.wwaddr_to_str(pc, label_only_flag=True)
-#        return "@%s:%s %s" % (self.cb.int_str(pc), opcode, self.cb.int_str(operand))
         return "@%s:%s %s" % (label, opcode, self.cb.int_str(operand))
 
 #        if self.decimal_addresses:
@@ -377,7 +376,7 @@ def static_trace(core_meta_data, start_pc, prev_pc, cm, cpu):
         core_meta_data.make_core_node(pc, label, opcode, operand, comment)
         if pc == start_pc:
             core_meta_data.rd(pc).branched_to_by[prev_pc] = 0
-        instruction_list += "@0o%02o:%s 0o%02o\n" % (pc, opcode, operand)
+        instruction_list += "@0o%02o:%s 0o%02o\\l" % (pc, opcode, operand)
         # test for the end of a block; could be a branch, or it could be a halt instruction
         if opcode == "CP" or opcode == "SP" or instruction == 0 or instruction == 0o1:
             break
@@ -495,8 +494,8 @@ def define_blocks(cb, core_meta_data, cm, cpu):
                     current_block = make_block(cb, pc, core_meta_data.rd(pc))
 
             if current_block:
-                current_block.instruction_trace += "@%-10s: %s %-10s ;%s\n" % \
-                                                   (cpu.wwaddr_to_str(pc), core_meta_data.rd(pc).opcode,
+                current_block.instruction_trace += "@%-10s: %s %-10s ;%s\\l" % \
+                                                   (cpu.wwaddr_to_str(pc,no_label=True), core_meta_data.rd(pc).opcode,
                                                     cpu.wwaddr_to_str(core_meta_data.rd(pc).operand),
                                                     core_meta_data.rd(pc).comment)
                 # update the core memory address to remember which block it's in
@@ -579,7 +578,7 @@ def dump_block_list(blocklist, block_index, core):
             addr += 1
         print("instruction trace:\n%s" % b.instruction_trace)
         for link in b.branches_to:
-            print("  %s -> %s;" % (b.id, block_index[link]))
+            print("  %s:s -> %s:n;" % (b.id, block_index[link]))
     print('')
 
 
@@ -610,7 +609,7 @@ def dump_block_list(blocklist, block_index, core):
 #  b2 -> b3 [label="x0"; style=dashed color="Blue"];
 #  b3 -> b4 [label="x1";  color="Red"];
 
-def format_one_block(b, block_info_len):
+def format_one_block(b, block_info_len, cpu):
     block_len = b.end_addr - b.start_addr + 1
     if block_info_len != FLOW_BLOCK_ALL_CODE:
         short = (block_info_len == FLOW_BLOCK_TERSE)
@@ -633,15 +632,15 @@ def format_one_block(b, block_info_len):
         style = ';color="Green"'
     if b.contains_cf:  # CF fields have special (bad) meaning in flow-graphs, so that supersedes I/O designation
         style = ';color="Red"'
-    graph_label = '  %s [label="%s(%dw)\\n%s%s"%s;shape=box3d]\n' % \
-                  (b.id, b.label, block_len, block_start_label, block_end_label, style)
+    graph_label = '  %s [label="%s(%dw)\\l%s:\\l%s%s"%s;fontname=courier;shape=box3d]\n' % \
+                  (b.id, b.label, block_len, cpu.wwaddr_to_str (b.start_addr, label_only_flag=True), block_start_label, block_end_label, style)
     return(graph_label)
 
 
 
 # The flag 'short' controls whether source code comments should be included
 # in the flow graph bubbles
-def output_block_list(cb, blocklist, core, title, output_file, block_info_len):
+def output_block_list(cb, blocklist, core, title, output_file, block_info_len, cpu):
     if output_file is None:
         fout = sys.stdout
     else:
@@ -668,7 +667,7 @@ def output_block_list(cb, blocklist, core, title, output_file, block_info_len):
     fout.write('  size="15, 15";\n')   # ultimately this sets the pixel size for a png output file
     fout.write(' t0 [label="%s"; shape=folder];\n' % title_box)
     for b in blocklist:
-        graph_label = format_one_block(b, block_info_len)
+        graph_label = format_one_block(b, block_info_len, cpu)
         fout.write(graph_label)
     fout.write('')
 
@@ -683,11 +682,11 @@ def output_block_list(cb, blocklist, core, title, output_file, block_info_len):
                     style = "style=dashed"
                 else:
                     style = ''
-                fout.write('  %s -> %s [label="x%d"; %s color="%s"];\n' %
+                fout.write('  %s:s -> %s:n [label="x%d"; %s color="%s"];\n' %
                            (b.id, block_index[link], edge_branch_count, style,
                             pick_edge_color(edge_color_thresholds, edge_branch_count)))
                 if b.subroutine_return_block_id:
-                    fout.write('  %s -> %s [label="rts"; style="dashed" color="Orange"];\n' %
+                    fout.write('  %s:s -> %s:n [label="rts"; style="dashed" color="Orange"];\n' %
                                (b.id, b.subroutine_return_block_id))
     fout.write('  }\n')
 
@@ -709,7 +708,7 @@ def run_flow_analysis(cb, tracelog, cm, cpu, title, output_file, block_info_len)
     core_meta_data = CoreMemoryMetaData(cb)
     trace_to_core(tracelog, core_meta_data, cm, cpu)  # summarize the trace log into a core image
     blocklist = define_blocks(cb, core_meta_data, cm, cpu)
-    output_block_list(cb, blocklist, core_meta_data, title, output_file, block_info_len)
+    output_block_list(cb, blocklist, core_meta_data, title, output_file, block_info_len, cpu)
 
 
 def main():
@@ -722,7 +721,7 @@ def main():
         Debug = True  # get rid of these local vars
 
     tracelog = readlog(args.logfile)
-    run_flow_analysis(tracelog, None, short=False)
+    run_flow_analysis(tracelog, None, short=False)          # Incorrect call sig -- must run from sim 
 
 
 if __name__ == '__main__':
