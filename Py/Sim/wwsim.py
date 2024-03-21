@@ -76,7 +76,6 @@ def breakp(msg=""):
 
 Breakpoints = {
     #  address   action
-    #    0032: breakp_dump_sim_state,
     #    0117: breakp_start_trace,
 }
 
@@ -273,9 +272,6 @@ class CpuClass:
         else:
             sign = ''
             pos = num
-
-        if num & 0o17776 == 0o100000:
-            breakp()
 
         paren = ''
         if self.cb.decimal_addresses:
@@ -1822,6 +1818,9 @@ def main_run_sim(args):
         cpu.PC = int(args.JumpTo, 8)
     print("start at 0o%o" % cpu.PC)
 
+    #if project_exec_init is not None:
+    #    project_exec_init(args.AutoClick)
+
     start_time = time.time()
     last_day = get_the_date()
     #  Here Commences The Main Loop
@@ -1833,6 +1832,18 @@ def main_run_sim(args):
     # to avoid an error message on subsequent calls
     try:
         while True:
+            # if the simulation is stopped, we should poll the panel and wait for a start of some wort
+            #  The panel_update will set the cpu_state if start or stop buttons are pressed, and will update
+            #  the PC to the starting address if needed.
+            # When the simulation is not stopped, we do this check below ever n-hundred cycles to keep the
+            #  panel overhead in check.
+            if cb.sim_state == cb.SIM_STATE_STOP and cb.panel:
+                if cb.panel.update_panel(cb, cpu.PC, 0, cpu._AC) == False:  # watch for mouse clicks on the panel
+                    alarm = cb.HALT_ALARM
+                    break  # bail out of the While True loop if display update says to stop
+                time.sleep(0.1)
+                continue
+
             # ################### The Simulation Starts Here ###################
             alarm = cpu.run_cycle()
             # ################### The Rest is Just Overhead  ###################
@@ -1845,7 +1856,7 @@ def main_run_sim(args):
             if (sim_cycle % update_rate == 0) or args.SynchronousVideo or CycleDelayTime:
                 exit_alarm = cb.NO_ALARM
                 if cb.panel:
-                    if cb.panel.checkMouse() == False:  # watch for mouse clicks on the panel
+                    if cb.panel.update_panel(cb, cpu.PC, 0, cpu._AC) == False:  # watch for mouse clicks on the panel
                         exit_alarm = cb.HALT_ALARM
                 exit_alarm |= poll_sim_io(cpu, cb)
                 if exit_alarm != cb.NO_ALARM:
@@ -1872,9 +1883,14 @@ def main_run_sim(args):
                     if radar.exit_alarm != cb.NO_ALARM:
                         alarm = radar.exit_alarm
 
+            # if we're doing "single step", then after each instruction, set the state back to Stop
+            if cb.sim_state == cb.SIM_STATE_SINGLE_STEP:
+                cb.sim_state = cb.SIM_STATE_STOP
 
             if alarm != cb.NO_ALARM:
                 print("Alarm '%s' (%d) at PC=0o%o (0d%d)" % (cb.AlarmMessage[alarm], alarm, cpu.PC - 1, cpu.PC - 1))
+                if cb.panel and cb.panel.update_panel(cb, cpu.PC, 0, cpu._AC, alarm_state=alarm) == False:  # watch for mouse clicks on the panel
+                    break
                 # the normal case is to stop on an alarm; if the command line flag says not to, we'll try to keep going
                 # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
                 if not args.NoAlarmStop or alarm == cb.QUIT_ALARM  or alarm == cb.HALT_ALARM:

@@ -120,6 +120,12 @@ class DebugWidgetPyVarsClass:
 
 class ConstWWbitClass:
     def __init__(self, args=None, get_screen_size=False):
+        # This state variable controls whether the simulator simply moves ahead to execute
+        # each instruction, or if it pauses to wait for a person to click a button (or run single-step).
+        self.SIM_STATE_STOP = 0
+        self.SIM_STATE_RUN = 1
+        self.SIM_STATE_SINGLE_STEP = 2
+        self.sim_state = self.SIM_STATE_STOP
 
         # Caution -- Whirlwind puts bit 0 to the left (Big Endian, no?)
         self.WWBIT0 = 0o100000
@@ -277,7 +283,7 @@ class ConstWWbitClass:
         self.CLEAR_BASE_ADDRESS = 0o17  # starting address of memory-clear device(s)
         self.CLEAR_ADDR_MASK = ~0000  # there aren't any sub-addresses
 
-        self.FFCLEAR_BASE_ADDRESS = 0o10  # starting address of memory-clear device(s)
+        self.FFCLEAR_BASE_ADDRESS = 0o10  # device address for reloading FF Regs from switches(s)
         self.FFCLEAR_ADDR_MASK = ~0000  # there aren't any sub-addresses
 
         self.DRUM_BASE_ADDRESS = 0o700  # starting address of Drum device(s)

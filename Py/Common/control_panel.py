@@ -34,8 +34,58 @@ class BboxClass:   # Bounding Box for buttons
         return x > self.min_x and x < self.max_x and y > self.min_y and y < self.max_y
 
 
+class OneToggleClass:  # make a toggle switch
+    def __init__(self, win, x, y, radius, name=None, initial_value = 0,
+                 on_color="blue", off_color="black", outline_color="white"):
+        self.win = win
+        self.current_state = initial_value
+        self.name = name
+        self.on_color = on_color
+        self.off_color = off_color
+        self.outline_color = outline_color
+        self.rect = Rectangle(Point(x-radius, y-2*radius), Point(x+radius, y+radius))
+        if name is not None:
+            self.tag = Text(Point(x, y+2*radius+compensate_justification(name)), name)
+            self.tag.setTextAngle(-90)
+            self.tag.setFill("white")
+            self.tag.setFace("helvetica")
+            self.tag.draw(win)
+        self.rect.setOutline(outline_color)
+        self.rect.setWidth(2)
+        self.draw_toggle(initial_value, initialize=True)
+        self.bbox = BboxClass(x - radius, y - 2* radius, 2 * radius, 2 * radius)
+        return
+
+    # call this method to draw a toggle switch with either the 'on' or 'off' fill color
+    # If the button has previously been initialized, it must be "undrawn".
+    # If it's been initialized, note that we short-circuit the process if the new value
+    # would be the same as what's already there.
+    def draw_toggle(self, val, initialize=False):
+        if not initialize:
+            if val == self.current_state:
+                return
+            self.rect.undraw()
+
+        if val is None:  # if we're not setting the switch to something, just reverse its polarity
+            val = ~ self.current_state & 1
+
+        if val:
+            fill_color = self.on_color
+            self.current_state = 1
+        else:
+            fill_color = self.off_color
+            self.current_state = 0
+        self.rect.setFill(fill_color)
+        self.rect.draw(self.win)
+
+    def test_for_hit(self, x, y):
+        if x > self.bbox.min_x and x < self.bbox.max_x and y > self.bbox.min_y and y < self.bbox.max_y:
+            return True
+        return False
+
+
 class OneButtonClass:
-    def __init__(self, win, x, y, radius, initial_value = 0, on_color="blue", off_color="black", outline_color="white"):
+    def __init__(self, win, x, y, radius, name=None, initial_value=0, on_color="blue", off_color="black", outline_color="white"):
         self.win = win
         self.current_state = initial_value
         self.on_color = on_color
@@ -46,6 +96,11 @@ class OneButtonClass:
         self.circle.setWidth(2)
         self.draw_button(initial_value, initialize=True)
         self.bbox = BboxClass(x - radius, y - radius, 2 * radius, 2 * radius)
+        if name is not None:
+            self.tag = Text(Point(x, y+2*radius+compensate_justification(name)), name)
+            self.tag.setTextAngle(-90)
+            self.tag.setFill("white")
+            self.tag.draw(win)
         return
 
     # call this method to draw a button with either the 'on' or 'off' fill color
@@ -65,6 +120,11 @@ class OneButtonClass:
             self.current_state = 0
         self.circle.setFill(fill_color)
         self.circle.draw(self.win)
+
+    def test_for_hit(self, x, y):
+        if x > self.bbox.min_x and x < self.bbox.max_x and y > self.bbox.min_y and y < self.bbox.max_y:
+            return True
+        return False
 
 
 class OneLampClass:
@@ -233,6 +293,9 @@ class ActivateButtonClass:
             ret = 0
         return(ret)
 
+    def write_bit(self, val):
+        self.lamp.current_state = val
+
 
 class OneInterventionRegisterClass:
     def __init__(self, win, x, y, name, initial_value=0o52525):
@@ -311,6 +374,25 @@ class DualInterventionRegisterClass:
     def set_left_register(self, value):
         self.left_ir.set_register(value)
 
+class CPURregClass:
+    def __init__(self, panel, name='?', x=0, y=0, initial_value=0, pc_special=False):
+        self.win = panel.win
+        self.name = name
+        self.y_step = 0               # this says it's a horizontal vector of buttons
+        self.x_step = panel.x_step
+        self.diameter = panel.diameter
+        self.lamp_vector = LampVectorClass(self, 16, x=x, y=y, x_step= self.x_step, y_step=0,
+                                           diameter=panel.diameter, initial_value=initial_value,
+                                           name=self.name)
+        nametag = Text(Point(x + 16*self.x_step + 10, y), self.name)
+        nametag.setTextColor("white")
+        nametag.draw(panel.win)
+
+    # write the reg value, setting the lights
+    def write_cpu_register(self, value):
+        self.lamp_vector.set_lamp_register(value)
+
+
 
 class FFRregClass:
     def __init__(self, panel, addr=2, x=0, y=0, initial_value=1):
@@ -379,6 +461,23 @@ class FFRregClass:
             log.info(info_string % (self.addr, self.addr, val))
 
 
+class ControlButtonAndLight:
+    def __init__(self, panel, x, y,  y_step, switch_name, lamp_name, toggle=False):
+        self.switch_name = switch_name
+        self.lamp_name = lamp_name
+        self.toggle = toggle
+        self.button_object = None
+        if lamp_name is not None:
+            self.lamp_object = OneLampClass(panel.win, x, y,
+                                        y_step/3, on_color="orange", initial_value=False)
+        if toggle == False:
+            self.button_object =  OneButtonClass(panel.win, x, y + y_step, y_step/3, name=switch_name, on_color="white")
+        else:
+            self.button_object = OneToggleClass(panel.win, x, y + y_step, y_step/3, name=switch_name, on_color="white")
+
+    def test_for_hit(self, x, y):
+        return self.button_object.test_for_hit(x, y)
+
 # CPU Control provides the buttons and lights for starting and stopping the processor
 # Including
 #  Start at 40
@@ -388,53 +487,157 @@ class FFRregClass:
 #  Alarm
 
 class CPUControlClass:
-    def __init__(self, panel, x=0, y=0, x_step=20):
-        lights_def =   ["Alarm", "Run"]
-        switches_def = ["Clear Alarm", "Start at 40", "Start Over", "Restart", "Stop", "Order-by-Order", "Read In"]
-        self.lamp_vector = LampVectorClass(self, 16, x=x, y=y, x_step= self.x_step, y_step=0,
-                                           diameter=panel.diameter, initial_value=0o123,
-                                           name=self.name)
-        nametag = Text(Point(x + 16*self.x_step + 30, y), self.name)
-        nametag.setTextColor("white")
-        nametag.draw(panel.win)
+    def __init__(self, panel, x=0, y=0, x_step=20, y_step=20):
+        toggle_sw_def = ["Stop on CK", "Stop on SI-1"]
+        lights_def =   ["Alarm",        "Stop",  None,        "Run",      None,          None,             None, None]
+        buttons_def =  ["Clear Alarm", "Stop", "Start Over", "Restart", "Start at 40", "Order-by-Order", "Examine",
+                                                                                                            "Read In"]
+        self.control = []   # list of control panel objects indexed by x axis location
+        self.dispatch = {}  # list of control panel objects indexed by switch name
 
+        xi = x
+        for i in range(0, len(toggle_sw_def)):
+            ts = ControlButtonAndLight(panel, xi, y,  y_step, toggle_sw_def[i], None, toggle=True)
+            self.control.append(ts)
+            self.dispatch[toggle_sw_def[i]] = ts
+            xi += x_step
+        for i in range(0, len(buttons_def)):
+            pb = ControlButtonAndLight(panel, xi, y,  y_step, buttons_def[i], lights_def[i], toggle=False)
+            self.control.append(pb)
+            self.dispatch[buttons_def[i]] = pb
+            xi += x_step
 
+    def test_for_hit(self, x, y, cb):
+        for cbl in self.control:
+            hit = cbl.test_for_hit(x, y)
+            if hit:
+                print("Hit switch %s" % cbl.switch_name)
+                self.local_state_machine(cbl)
+                self.sim_state_machine(cbl, cb)
+
+    # this small routine manages local interactions in the buttons and lights
+    def local_state_machine(self, cbl):
+        sw = cbl.switch_name
+        # reverse the state of a toggle switch if there was a hit
+        if sw == "Stop on CK" or sw == "Stop on SI-1":
+            self.dispatch[sw].button_object.draw_toggle(None)
+            return
+
+    # This state machine is used to control the flow of execution for the simulator
+    def sim_state_machine(self, cbl, cb):
+        sw = cbl.switch_name
+        if sw == "Stop":
+            cb.sim_state = cb.SIM_STATE_STOP
+            # self.dispatch["Stop"].lamp_object.set_lamp(True)
+            # self.dispatch["Start at 40"].lamp_object.set_lamp(False)
+            return
+        if sw == "Restart":   # don't mess with the PC, just pick up from the last address
+            cb.sim_state = cb.SIM_STATE_RUN
+            return
+
+        if sw == "Start at 40":
+            cb.sim_state = cb.SIM_STATE_RUN
+            cb.cpu.PC = 0o40
+            return
+
+        if sw == "Order-by-Order":  # don't mess with the PC, just pick up from the last address
+            cb.sim_state = cb.SIM_STATE_SINGLE_STEP
+            return
+
+    def set_cpu_state_lamps(self, cb, sim_state, alarm_state):
+        run = sim_state != cb.SIM_STATE_STOP
+        self.dispatch["Restart"].lamp_object.set_lamp(run)
+        self.dispatch["Stop"].lamp_object.set_lamp(~run)
 
 class PanelClass:
     def __init__(self, left_init=0, right_init=0):
         self.scale = 1.0
-        self.PANX = 512
-        self.PANY = 512
-        self.win = GraphWin("Control Panel Layout", self.PANX, self.PANY)
+        self.PANEL_X_SIZE = 512
+        self.PANEL_Y_SIZE = 800
+        self.XBOX = 20
+        self.win = GraphWin("Control Panel Layout", self.PANEL_X_SIZE, self.PANEL_Y_SIZE)
         self.win.setBackground("Gray30")
 
         self.y_step = 20
         self.x_step = 20
         self.diameter = self.x_step * 16/20
+        y_start = 70
 
-        message_panel = Text(Point(self.PANX / 2, 20), "Whirlwind Control Panel")
+        message_panel = Text(Point(self.PANEL_X_SIZE / 2, 20), "Whirlwind Control Panel")
         message_panel.setTextColor("pink")
         message_panel.draw(self.win)
 
+        # I've put a mouse zone in the top right corner to Exit the program, i.e., to synthesize a Whirlwind
+        # alarm that causes the interpreter to exit.  Mark the spot with a red X
+        xline = Line(Point(self.PANEL_X_SIZE - self.XBOX, self.XBOX),
+                     Point(self.PANEL_X_SIZE, 0))
+        xline.setOutline("Red")
+        xline.setWidth(2)
+        xline.draw(self.win)
+        xline = Line(Point(self.PANEL_X_SIZE - self.XBOX, 0),
+                     Point(self.PANEL_X_SIZE, self.XBOX))
+        xline.setOutline("Red")
+        xline.setWidth(2)
+        xline.draw(self.win)
+
         self.dual_ir = DualInterventionRegisterClass(self.win, x=50, y=50, left_init=left_init, right_init=right_init)
 
+        row = 9
         self.ffreg = []
-        self.ffreg.append(FFRregClass(self, addr=2, x=30, y=70 + 10*self.y_step))
-        self.ffreg.append(FFRregClass(self, addr=3, x=30, y=70 + 13*self.y_step))
+        # self.ffreg.append(FFRregClass(self, addr=1, x=30, y=y_start+row*self.y_step))
+        # row += 3
+        self.ffreg.append(FFRregClass(self, addr=2, x=30, y=y_start+row*self.y_step))
+        row += 3
+        self.ffreg.append(FFRregClass(self, addr=3, x=30, y=y_start+row*self.y_step))
+        row += 3
+        self.ffreg.append(FFRregClass(self, addr=4, x=30, y=y_start+row*self.y_step))
+        row += 3
+        self.ffreg.append(FFRregClass(self, addr=5, x=30, y=y_start+row*self.y_step))
+        row += 3
+        self.ffreg.append(FFRregClass(self, addr=6, x=30, y=y_start+row*self.y_step))
+        row += 3
+
+        self.cpu_reg_acc = CPURregClass(self, "ACC", x=30, y=y_start + row * self.y_step, initial_value=0)
+        row += 1
+        self.cpu_reg_breg = CPURregClass(self, "BR", x=30, y=y_start + row * self.y_step, initial_value=0)
+        row += 1
+        self.cpu_reg_areg = CPURregClass(self, "AR", x=30, y=y_start + row * self.y_step, initial_value=0)
+        row += 1
+        self.cpu_reg_pc = CPURregClass(self, "PC", x=30, y=y_start+row*self.y_step, initial_value=0, pc_special=True)
+        row += 2
+
+        self.cpu_control = CPUControlClass(self, x=30, y=y_start+row*self.y_step, x_step=self.x_step, y_step=self.y_step)
 
         # the first element in the dict is the switch Read entry point, the second is the one to set the switches
         self.dispatch = {"LMIR":[self.dual_ir.read_left_register, self.dual_ir.set_left_register],
                     "RMIR": [self.dual_ir.read_right_register, self.dual_ir.set_right_register],
-                    "ActivationReg0": [self.activate_reg_read, None],
+                    "ActivationReg0": [self.activate_reg_read, self.activate_reg_write],
+                    # "FF01": [self.ffreg[0].read_ff_register, self.ffreg[0].write_ff_register],
+                    # "FF01Sw": [self.ffreg[0].read_switch_register, self.ffreg[0].set_switch_register],
                     "FF02": [self.ffreg[0].read_ff_register, self.ffreg[0].write_ff_register],
                     "FF02Sw": [self.ffreg[0].read_switch_register, self.ffreg[0].set_switch_register],
                     "FF03": [self.ffreg[1].read_ff_register, self.ffreg[1].write_ff_register],
-                    "FF03Sw": [self.ffreg[1].read_switch_register, self.ffreg[1].set_switch_register]
+                    "FF03Sw": [self.ffreg[1].read_switch_register, self.ffreg[1].set_switch_register],
+                    "FF04": [self.ffreg[2].read_ff_register, self.ffreg[2].write_ff_register],
+                    "FF04Sw": [self.ffreg[2].read_switch_register, self.ffreg[2].set_switch_register],
+                    "FF05": [self.ffreg[3].read_ff_register, self.ffreg[3].write_ff_register],
+                    "FF05Sw": [self.ffreg[3].read_switch_register, self.ffreg[3].set_switch_register],
+                    "FF06": [self.ffreg[4].read_ff_register, self.ffreg[4].write_ff_register],
+                    "FF06Sw": [self.ffreg[4].read_switch_register, self.ffreg[4].set_switch_register],
                     }
+
 
     # Check the mouse, and update any buttons.  The only return from this call should be True or False to say
     # whether the Exit box was clicked or not.
-    def checkMouse(self):
+    # As a side effect, the simulator run state in cb is updated
+    def update_panel(self, cb, pc, bank, acc, alarm_state=0, standalone=False):
+        if not standalone:
+            cpu = cb.cpu
+            self.cpu_reg_acc.write_cpu_register(cpu._AC)
+            self.cpu_reg_areg.write_cpu_register(cpu._AReg)
+            self.cpu_reg_breg.write_cpu_register(cpu._BReg)
+            self.cpu_reg_pc.write_cpu_register(cpu.PC + (bank << 12))
+
         pt = self.win.checkMouse()
         if pt[0]:
             # print("Panel mouse x=%d, y=%d" % (pt[0].x, pt[0].y))
@@ -447,8 +650,15 @@ class PanelClass:
             for ff in self.ffreg:
                 ff.test_for_ff_hit(pt[0].x, pt[0].y)
 
-            if pt[0].x > self.PANX - 40 and pt[0].y < 40:
+            self.cpu_control.test_for_hit(pt[0].x, pt[0].y, cb)
+
+            # This test checks for hit of the Red X in the top right corner
+            if pt[0].x > self.PANEL_X_SIZE - self.XBOX and pt[0].y < self.XBOX:
                 return False
+
+        # update all the blinkenlights
+        if not standalone:
+            self.cpu_control.set_cpu_state_lamps(cb, cb.sim_state, alarm_state)
         return True
 
     # read a register from the switches and lights panel.
@@ -470,7 +680,7 @@ class PanelClass:
         if type(which_one) is int:
             which_one = "FF%02o" % which_one
         if which_one not in self.dispatch:
-            print("Panel.write_register: unknown register %s", which_one)
+            print("Panel.write_register: unknown register %s" % which_one)
             exit()
         # element zero in the dispatch is the Read entry; element one is the Set entry
         return self.dispatch[which_one][1](value)
@@ -498,26 +708,57 @@ class PanelClass:
 
         # I _think_ Upper/Lower (i.e. left/right) Activate buttons return the top two bits or ActReg0
         ret = left_activate << 15 | (right_activate << 14)
-        # The following test is a hack, since I don't know which Activation Reg bit does what!
-        #if ret:
-        #    ret = 0x0ffff
-        #    print("Activate Read Reg returning all ones")
         return ret
+
+    def activate_reg_write(self, val):
+        fn = [self.dual_ir.left_ir.activate.write_bit, self.dual_ir.right_ir.activate.write_bit]
+        lamp = [self.dual_ir.left_ir.activate.lamp.set_lamp, self.dual_ir.right_ir.activate.lamp.set_lamp]
+        shift = [15, 14]
+
+        for i in range(0, len(fn)):
+            bit = (val >> shift[i]) & 1  # pick up the bit for each Activate, one at a time
+            if bit:
+                fn[i](1)        # "push" the activate button
+                lamp[i](True)   # turn on the light associated with the button
 
     def reset_ff_registers(self, function, log=None, info_str=''):
 
         for ff in self.ffreg:
             ff.reset_register(function, log, info_str)
 
+def compensate_justification(txt, font=9):
+    count = len(txt)
+    offset = count * (font / 3)
+    return offset
 
 # ########################## Framework ###########################
 def main():
     crt_win = GraphWin("Control Panel Layout", 512, 512)
     crt_win.setBackground("Gray10")
 
-    message_crt = Text(Point(30, 20), "Hello CRT!")
+
+    x = 30
+    y = 100
+    txt = "Hello GraphWin CRT!"
+    message_crt = Text(Point(x, y + compensate_justification(txt)), txt)
     message_crt.setTextColor("yellow")
+    message_crt.setTextAngle("-90")
     message_crt.draw(crt_win)
+    # rect = Rectangle(Point(x - 6, y - 4*len(txt)), Point(x + 6, y + 4*len(txt)))
+    rect = Rectangle(Point(x - 6, y - 6), Point(x + 6, y + 6))
+    rect.setOutline("white")
+    rect.setWidth(2)
+    rect.draw(crt_win)
+
+
+#    m = crt_win
+#    return self.tk.getint(self.tk.call(
+#        self._w, 'create', itemType,
+#        *(args + self._options(cnf, kw))))
+#    ret = m.tk.call(
+#        m._w, 'create', 'text', '100.0', '70.0', '-angle', '-90', '-justify', 'left',
+#        '-fill', 'green', '-text', 'Hello TK CRT!', '-font', 'helvetica 12 normal')
+#        *(args + self._options(cnf, kw))))
 
     panel = PanelClass(left_init=0o123456, right_init=0o012345)
 
@@ -554,7 +795,7 @@ def main():
                 break
 
         # second
-        if panel.checkMouse() == False: # watch for mouse clicks on the panel
+        if panel.update_panel(None, None, None, None, standalone=True) == False: # watch for mouse clicks on the panel
             break
 
         #  not sure how to regulate which window gets the key clicks, but in this case, it's the Panel
