@@ -85,13 +85,18 @@ class OneToggleClass:  # make a toggle switch
 
 
 class OneButtonClass:
-    def __init__(self, win, x, y, radius, name=None, initial_value=0, on_color="blue", off_color="black", outline_color="white"):
+    def __init__(self, win, x, y, radius, name=None, initial_value=0, toggle=False,
+                 on_color="blue", off_color="black", outline_color="white"):
         self.win = win
         self.current_state = initial_value
         self.on_color = on_color
         self.off_color = off_color
         self.outline_color = outline_color
-        self.circle = Circle(Point(x, y), radius)  # circle method takes radius, not diameter
+        if toggle:
+            # toggle is like a button but square!
+            self.circle = Rectangle(Point(x-radius+1, y-radius+1), Point(x+radius-1, y+radius-1))
+        else:
+            self.circle = Circle(Point(x, y), radius)  # circle method takes radius, not diameter
         self.circle.setOutline(outline_color)
         self.circle.setWidth(2)
         self.draw_button(initial_value, initialize=True)
@@ -181,10 +186,12 @@ class LampVectorClass:
 class ButtonVectorClass:
     # x and y coords correspond to the center of the first button; subsequent buttons are
     # drawn at x + n*x_step, etc
-    def __init__(self, win, n_button, name, x, y, x_step, y_step, diameter, radio=True, initial_value=0o125252):
+    def __init__(self, win, n_button, name, x, y, x_step, y_step, diameter,
+                 tag = None, radio=True, toggle=False, initial_value=0o125252):
         self.win = win
         self.name = name
         self.radio = radio
+        self.toggle = toggle
         self.n_button = n_button
         self.x = x
         self.y = y
@@ -207,6 +214,11 @@ class ButtonVectorClass:
             print("fatal in ButtonVectorClass: only x_step or y_step, not both")
             exit(1)
 
+        if tag is not None:
+            nametag = Text(Point(x + self.n_button*self.x_step + compensate_justification(tag), y), tag)
+            nametag.setTextColor("white")
+            nametag.draw(self.win)
+
         # now draw the initial set of buttons
         for i in range(0, self.n_button):
             val = 0
@@ -218,7 +230,7 @@ class ButtonVectorClass:
                 if initial_value & (1 << (self.n_button - i - 1)):
                     val = 1
             b = OneButtonClass(self.win, self.x + i * self.x_step, self.y + i * self.y_step, self.radius,
-                               initial_value=val, on_color=self.on_color, off_color=self.off_color)
+                               initial_value=val, on_color=self.on_color, off_color=self.off_color, toggle=self.toggle)
             self.button_obj.append(b)
         if self.radio == False:
             self.current_register_value = initial_value
@@ -488,7 +500,7 @@ class ControlButtonAndLight:
 
 class CPUControlClass:
     def __init__(self, panel, x=0, y=0, x_step=20, y_step=20):
-        toggle_sw_def = ["Stop on CK", "Stop on SI-1"]
+        toggle_sw_def = ["Stop on Addr", "Stop on CK", "Stop on SI-1"]
         lights_def =   ["Alarm",        "Stop",  None,        "Run",      None,          None,             None, None]
         buttons_def =  ["Clear Alarm", "Stop", "Start Over", "Restart", "Start at 40", "Order-by-Order", "Examine",
                                                                                                             "Read In"]
@@ -604,6 +616,13 @@ class PanelClass:
         self.cpu_reg_areg = CPURregClass(self, "AR", x=30, y=y_start + row * self.y_step, initial_value=0)
         row += 1
         self.cpu_reg_pc = CPURregClass(self, "PC", x=30, y=y_start+row*self.y_step, initial_value=0, pc_special=True)
+        row += 1
+        self.bank_toggle_sw = ButtonVectorClass(self.win, 3, '', 30, y_start+row*self.y_step,
+                                                self.x_step, 0, 2*self.y_step/3,
+                                                radio=False, toggle=True, initial_value=0o1)
+        self.pc_toggle_sw = ButtonVectorClass(self.win, 11, "PC Preset", 30 + 5*self.x_step, y_start+row*self.y_step,
+                                              self.x_step, 0, 2*self.y_step/3, tag="PC Preset",
+                                              radio=False, toggle=True, initial_value=0o1234)
         row += 2
 
         self.cpu_control = CPUControlClass(self, x=30, y=y_start+row*self.y_step, x_step=self.x_step, y_step=self.y_step)
@@ -652,6 +671,12 @@ class PanelClass:
 
             self.cpu_control.test_for_hit(pt[0].x, pt[0].y, cb)
 
+            bn = self.pc_toggle_sw.test_button_vector_hit(pt[0].x, pt[0].y)
+            if bn is not None:
+                self.pc_toggle_sw.flip_a_button(bn)
+            bn = self.bank_toggle_sw.test_button_vector_hit(pt[0].x, pt[0].y)
+            if bn is not None:
+                self.bank_toggle_sw.flip_a_button(bn)
             # This test checks for hit of the Red X in the top right corner
             if pt[0].x > self.PANEL_X_SIZE - self.XBOX and pt[0].y < self.XBOX:
                 return False

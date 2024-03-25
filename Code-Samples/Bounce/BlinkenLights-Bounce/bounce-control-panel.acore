@@ -1,0 +1,78 @@
+
+; *** Core Image ***
+%File: bounce-control-panel.ww
+%TapeID: None
+%JumpTo 0o40
+%DbWgt:  0o005  0o01 %o
+%DbWgt:  0o201  0o200 %o
+%DbWgt:  0o002  0o400 %o
+%DbWgt:  0o003  0o100 %o
+@C0000:  None    None   0000000 0000000  None   0000000  None    None   
+@C0040: 0100204 0040002 0100205 0040003 0100206 0040005 0100002 0110207 
+@C0050: 0040002 0100211 0000600 0100002 0024000 0104003 0070067 0104005 
+@C0060: 0070067 0100005 0140201 0040005 0100211 0040003 0074072 0100005 
+@C0070: 0114202 0040005 0140203 0110003 0040003 0000600 0100002 0024000 
+@C0100: 0120002 0114210 0070046 0074040  None    None    None    None   
+@C0200:  None   0107777 0001000 0040000 0117777 0060000 0000000 0000600 
+@C0210: 0060000 0000000  None    None    None    None    None    None   
+@S0040: main
+@S0046: loop
+@S0061: bounce
+@S0067: nobounce
+@S0072: continue
+@S0002: Xi
+@S0003: Yi
+@S0005: Vy
+@S0201: R
+@S0202: Gdt
+@S0203: dt
+@S0204: XI
+@S0205: YI
+@S0206: VYi
+@S0207: Vxdt
+@S0210: Xul
+@S0211: Yha
+@N0002: current i'th value of x
+@N0003: current i'th value of y
+@N0005: current i'th value of velocity of y
+@N0040: Initialize X axis
+@N0042: initialize Y axis
+@N0044: Initialize Y Velocity    ;; guy: this was the designated loop return in the exemplar, but that's clearly wrong
+@N0046: fetch current X value
+@N0047: add the velocity increment
+@N0050: store the next X back to Xi
+@N0051: fetch the y (horizontal) axis line
+@N0052: select point; the Y deflection is Yha, picked up from ACC
+@N0053: put x in ACC
+@N0054: output a point to the display
+@N0055: compare current Y to Y Axis    ;guy - cs seems like the wrong op code; it assumes Y Axis is zero
+@N0056: @17 branch if it's not time to bounce
+@N0057: fetch velocity to see if we're already starting to bounce
+@N0060: branch if velocity is already positive [instruction added by guy]
+@N0061: @203 ; fetch Y velocity
+@N0062: @204 ; multiply by bounce loss and reverse the sign
+@N0063: @203 ; store the result in Y Velocity
+@N0064: fetch the Y Axis (better be zero until the bug above is fixed)
+@N0066: skip the step adding negative gravitation acceleration
+@N0067: for no bounce, fetch the current velocity
+@N0070: subtract gravitational constant
+@N0071: store the result in Y Velocity
+@N0072: multiply velocity by time increment
+@N0073: add the incremental distance to the current Y value
+@N0074: @202  ;guy: emulate store that was part of qd
+@N0075: new-style i/o instruction; set the Y coord now in the ACC
+@N0076: put X coord in ACC
+@N0077: output a point to the display
+@N0100: retrieve current X coord
+@N0101: compare to X Upper Limit
+@N0102: @5   ; branch to next iteration
+@N0103: @1   ; start all over to refresh the display
+@N0201: "coefficient of Restitution", i.e., energy loss during the bounce.  This number should be negative to reverse the ball's direction
+@N0202: constant graviational constant times delta t
+@N0203: constant time step (delta t)
+@N0204: (-0.600)         ; constant starting position for X
+@N0205: constant starting position for Y
+@N0206: constant starting velocity for Y
+@N0207: constant X velocity times delta t
+@N0210: constant X upper limit (i.e., the right-hand end of the simulation)
+@N0211: constant Y value of horizontal axis
