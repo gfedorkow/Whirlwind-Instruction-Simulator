@@ -3,18 +3,18 @@
 %File: bounce-control-panel.ww
 %TapeID: None
 %JumpTo 0o40
-%DbWgt:  0o005  0o01 %o
-%DbWgt:  0o201  0o200 %o
+%DbWgt:  0o201  0o01 %o
+%DbWgt:  0o202  0o200 %o
 %DbWgt:  0o002  0o400 %o
 %DbWgt:  0o003  0o100 %o
-@C0000:  None    None   0000000 0000000  None   0000000  None    None   
-@C0040: 0100204 0040002 0100205 0040003 0100206 0040005 0100002 0110207 
-@C0050: 0040002 0100211 0000600 0100002 0024000 0104003 0070067 0104005 
-@C0060: 0070067 0100005 0140201 0040005 0100211 0040003 0074072 0100005 
-@C0070: 0114202 0040005 0140203 0110003 0040003 0000600 0100002 0024000 
-@C0100: 0120002 0114210 0070046 0074040  None    None    None    None   
-@C0200:  None   0107777 0001000 0040000 0117777 0060000 0000000 0000600 
-@C0210: 0060000 0000000  None    None    None    None    None    None   
+@C0000:  None    None   0000000 0000000  None    None    None    None   
+@C0040: 0100205 0040002 0100206 0040003 0100207 0040201 0100002 0110210 
+@C0050: 0040002 0100212 0000600 0100002 0024000 0104003 0070067 0104201 
+@C0060: 0070067 0100201 0140202 0040201 0100212 0040003 0074072 0100201 
+@C0070: 0114203 0040201 0140204 0110003 0040003 0000600 0100002 0024000 
+@C0100: 0120002 0114211 0070046 0074040  None    None    None    None   
+@C0200:  None   0000000 0107777 0001000 0040000 0117777 0060000 0000000 
+@C0210: 0000600 0060000 0000000  None    None    None    None    None   
 @S0040: main
 @S0046: loop
 @S0061: bounce
@@ -22,19 +22,18 @@
 @S0072: continue
 @S0002: Xi
 @S0003: Yi
-@S0005: Vy
-@S0201: R
-@S0202: Gdt
-@S0203: dt
-@S0204: XI
-@S0205: YI
-@S0206: VYi
-@S0207: Vxdt
-@S0210: Xul
-@S0211: Yha
+@S0201: Vy
+@S0202: R
+@S0203: Gdt
+@S0204: dt
+@S0205: XI
+@S0206: YI
+@S0207: VYi
+@S0210: Vxdt
+@S0211: Xul
+@S0212: Yha
 @N0002: current i'th value of x
 @N0003: current i'th value of y
-@N0005: current i'th value of velocity of y
 @N0040: Initialize X axis
 @N0042: initialize Y axis
 @N0044: Initialize Y Velocity    ;; guy: this was the designated loop return in the exemplar, but that's clearly wrong
@@ -67,12 +66,13 @@
 @N0101: compare to X Upper Limit
 @N0102: @5   ; branch to next iteration
 @N0103: @1   ; start all over to refresh the display
-@N0201: "coefficient of Restitution", i.e., energy loss during the bounce.  This number should be negative to reverse the ball's direction
-@N0202: constant graviational constant times delta t
-@N0203: constant time step (delta t)
-@N0204: (-0.600)         ; constant starting position for X
-@N0205: constant starting position for Y
-@N0206: constant starting velocity for Y
-@N0207: constant X velocity times delta t
-@N0210: constant X upper limit (i.e., the right-hand end of the simulation)
-@N0211: constant Y value of horizontal axis
+@N0201: current i'th value of velocity of y
+@N0202: "coefficient of Restitution", i.e., energy loss during the bounce.  This number should be negative to reverse the ball's direction
+@N0203: constant graviational constant times delta t
+@N0204: constant time step (delta t)
+@N0205: (-0.600)         ; constant starting position for X
+@N0206: constant starting position for Y
+@N0207: constant starting velocity for Y
+@N0210: constant X velocity times delta t
+@N0211: constant X upper limit (i.e., the right-hand end of the simulation)
+@N0212: constant Y value of horizontal axis

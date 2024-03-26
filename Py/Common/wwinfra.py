@@ -200,6 +200,9 @@ class ConstWWbitClass:
         self.analog_display = False   # set this flag to display on an analog oscilloscope instead of an x-window
         self.use_x_win = True         # clear this flag to completely turn off the xwin display, widgets and all
         self.ana_scope = None   # this is a handle to the methods for operating the analog scope
+        self.argAutoClick = False
+        if args and args.AutoClick:
+            self.argAutoClick = True
         self.panel = None
         if args and args.Panel:
             self.panel = control_panel.PanelClass()

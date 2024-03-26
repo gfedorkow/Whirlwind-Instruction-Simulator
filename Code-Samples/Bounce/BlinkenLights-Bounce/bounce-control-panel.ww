@@ -68,10 +68,9 @@ continue:   mr dt   ; multiply velocity by time increment
        .ORG 0o2  ; put two vars into FF Registers
 Xi:    .word 0          ; current i'th value of x
 Yi:    .word 0          ; current i'th value of y
-       .ORG 0o5
-Vy:    .word 0          ; current i'th value of velocity of y
        
        .ORG 0o201
+Vy:    .word 0          ; current i'th value of velocity of y
 R:     .word 1.07777   ; "coefficient of Restitution", i.e., energy loss during the bounce.  This number should be negative to reverse the ball's direction
 Gdt:   .word 0.01000   ; constant graviational constant times delta t
 dt:    .word 0.40000   ; constant time step (delta t)

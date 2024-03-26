@@ -602,8 +602,8 @@ class PanelClass:
         row += 3
         self.ffreg.append(FFRregClass(self, addr=3, x=30, y=y_start+row*self.y_step))
         row += 3
-        self.ffreg.append(FFRregClass(self, addr=4, x=30, y=y_start+row*self.y_step))
-        row += 3
+        # self.ffreg.append(FFRregClass(self, addr=4, x=30, y=y_start+row*self.y_step))
+        # row += 3
         self.ffreg.append(FFRregClass(self, addr=5, x=30, y=y_start+row*self.y_step))
         row += 3
         self.ffreg.append(FFRregClass(self, addr=6, x=30, y=y_start+row*self.y_step))
@@ -631,18 +631,16 @@ class PanelClass:
         self.dispatch = {"LMIR":[self.dual_ir.read_left_register, self.dual_ir.set_left_register],
                     "RMIR": [self.dual_ir.read_right_register, self.dual_ir.set_right_register],
                     "ActivationReg0": [self.activate_reg_read, self.activate_reg_write],
-                    # "FF01": [self.ffreg[0].read_ff_register, self.ffreg[0].write_ff_register],
-                    # "FF01Sw": [self.ffreg[0].read_switch_register, self.ffreg[0].set_switch_register],
                     "FF02": [self.ffreg[0].read_ff_register, self.ffreg[0].write_ff_register],
                     "FF02Sw": [self.ffreg[0].read_switch_register, self.ffreg[0].set_switch_register],
                     "FF03": [self.ffreg[1].read_ff_register, self.ffreg[1].write_ff_register],
                     "FF03Sw": [self.ffreg[1].read_switch_register, self.ffreg[1].set_switch_register],
-                    "FF04": [self.ffreg[2].read_ff_register, self.ffreg[2].write_ff_register],
-                    "FF04Sw": [self.ffreg[2].read_switch_register, self.ffreg[2].set_switch_register],
-                    "FF05": [self.ffreg[3].read_ff_register, self.ffreg[3].write_ff_register],
-                    "FF05Sw": [self.ffreg[3].read_switch_register, self.ffreg[3].set_switch_register],
-                    "FF06": [self.ffreg[4].read_ff_register, self.ffreg[4].write_ff_register],
-                    "FF06Sw": [self.ffreg[4].read_switch_register, self.ffreg[4].set_switch_register],
+                    "FF05": [self.ffreg[2].read_ff_register, self.ffreg[2].write_ff_register],
+                    "FF05Sw": [self.ffreg[2].read_switch_register, self.ffreg[2].set_switch_register],
+                    "FF06": [self.ffreg[3].read_ff_register, self.ffreg[3].write_ff_register],
+                    "FF06Sw": [self.ffreg[3].read_switch_register, self.ffreg[3].set_switch_register],
+                    # "FF06": [self.ffreg[4].read_ff_register, self.ffreg[4].write_ff_register],
+                    # "FF06Sw": [self.ffreg[4].read_switch_register, self.ffreg[4].set_switch_register],
                     }
 
 
