@@ -18,6 +18,10 @@ venv/
 *.bak
 Backup/
 
+#ignore trace files
+Code-Samples/*/flow.gv
+Code-Samples/*/flow.svg
+
 
 # Pycharm control files
 .idea/
@@ -28,3 +32,33 @@ Py/Sim/dist/
 
 # ignore random ephemeral files 
 Py/Common/history
+
+# huh, turning on Google Drive created a zillion .ini files
+# This may not have been a good idea...
+Code-Samples/Addition/desktop.ini
+Code-Samples/Blackjack/desktop.ini
+Code-Samples/Bounce/Bounce-Tape-with-Hole/desktop.ini
+Code-Samples/Bounce/desktop.ini
+Code-Samples/Bounce/r-196-bounce-example/desktop.ini
+Code-Samples/CRT-Test-Guy/desktop.ini
+Code-Samples/Diags/desktop.ini
+Code-Samples/Lorenz/desktop.ini
+Code-Samples/Mad-Game/desktop.ini
+Code-Samples/Number-Display/desktop.ini
+Code-Samples/Quick-Brown/desktop.ini
+Code-Samples/Selection-Sort/desktop.ini
+Code-Samples/Track-While-Scan-D-Israel/desktop.ini
+Code-Samples/Vector-Clock/desktop.ini
+Code-Samples/Vibrating-String/desktop.ini
+Code-Samples/desktop.ini
+MacOS-Binary/desktop.ini
+Py/Assembler/desktop.ini
+Py/Common/desktop.ini
+Py/Disassembler/desktop.ini
+Py/Shell/desktop.ini
+Py/Sim/desktop.ini
+Py/Tape-Decode/desktop.ini
+Py/Tools/desktop.ini
+Py/desktop.ini
+Win-Binary/desktop.ini
+desktop.ini

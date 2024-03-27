@@ -77,7 +77,6 @@ def breakp(msg=""):
 
 Breakpoints = {
     #  address   action
-    #    0032: breakp_dump_sim_state,
     #    0117: breakp_start_trace,
 }
 
@@ -274,9 +273,6 @@ class CpuClass:
         else:
             sign = ''
             pos = num
-
-        if num & 0o17776 == 0o100000:
-            breakp()
 
         paren = ''
         if self.cb.decimal_addresses:
@@ -1699,11 +1695,11 @@ def main_run_sim(args):
     global CoreMem, CommentTab   # should have put this in the CPU Class...
 
     # instantiate the class full of constants
-    cb = wwinfra.ConstWWbitClass(get_screen_size = True)
+    cb = wwinfra.ConstWWbitClass(args=args, get_screen_size=True)
     CoreMem = wwinfra.CorememClass(cb)
     cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
     cb.cpu = cpu
-    cpu.cpu_switches = wwinfra.WWSwitchClass()
+    cpu.cpu_switches = wwinfra.WWSwitchClass(cb)
     cb.log = wwinfra.LogClass(sys.argv[0], quiet=args.Quiet)
     cb.dbwgt = wwinfra.ScreenDebugWidgetClass(cb, CoreMem, args.AnalogScope)
 
@@ -1823,6 +1819,9 @@ def main_run_sim(args):
         cpu.PC = int(args.JumpTo, 8)
     print("start at 0o%o" % cpu.PC)
 
+    #if project_exec_init is not None:
+    #    project_exec_init(args.AutoClick)
+
     start_time = time.time()
     last_day = get_the_date()
     #  Here Commences The Main Loop
@@ -1834,6 +1833,18 @@ def main_run_sim(args):
     # to avoid an error message on subsequent calls
     try:
         while True:
+            # if the simulation is stopped, we should poll the panel and wait for a start of some wort
+            #  The panel_update will set the cpu_state if start or stop buttons are pressed, and will update
+            #  the PC to the starting address if needed.
+            # When the simulation is not stopped, we do this check below ever n-hundred cycles to keep the
+            #  panel overhead in check.
+            if cb.sim_state == cb.SIM_STATE_STOP and cb.panel:
+                if cb.panel.update_panel(cb, cpu.PC, 0, cpu._AC) == False:  # watch for mouse clicks on the panel
+                    alarm = cb.HALT_ALARM
+                    break  # bail out of the While True loop if display update says to stop
+                time.sleep(0.1)
+                continue
+
             # ################### The Simulation Starts Here ###################
             alarm = cpu.run_cycle()
             # ################### The Rest is Just Overhead  ###################
@@ -1844,7 +1855,11 @@ def main_run_sim(args):
             if cb.analog_display:
                 update_rate = 5000
             if (sim_cycle % update_rate == 0) or args.SynchronousVideo or CycleDelayTime:
-                exit_alarm = poll_sim_io(cpu, cb)
+                exit_alarm = cb.NO_ALARM
+                if cb.panel:
+                    if cb.panel.update_panel(cb, cpu.PC, 0, cpu._AC) == False:  # watch for mouse clicks on the panel
+                        exit_alarm = cb.HALT_ALARM
+                exit_alarm |= poll_sim_io(cpu, cb)
                 if exit_alarm != cb.NO_ALARM:
                     alarm = exit_alarm
 
@@ -1869,9 +1884,14 @@ def main_run_sim(args):
                     if radar.exit_alarm != cb.NO_ALARM:
                         alarm = radar.exit_alarm
 
+            # if we're doing "single step", then after each instruction, set the state back to Stop
+            if cb.sim_state == cb.SIM_STATE_SINGLE_STEP:
+                cb.sim_state = cb.SIM_STATE_STOP
 
             if alarm != cb.NO_ALARM:
                 print("Alarm '%s' (%d) at PC=0o%o (0d%d)" % (cb.AlarmMessage[alarm], alarm, cpu.PC - 1, cpu.PC - 1))
+                if cb.panel and cb.panel.update_panel(cb, cpu.PC, 0, cpu._AC, alarm_state=alarm) == False:  # watch for mouse clicks on the panel
+                    break
                 # the normal case is to stop on an alarm; if the command line flag says not to, we'll try to keep going
                 # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
                 if not args.NoAlarmStop or alarm == cb.QUIT_ALARM  or alarm == cb.HALT_ALARM:
@@ -1942,7 +1962,7 @@ def main_run_sim(args):
             if args.DrumStateFile:
                 d.save_drum_state(args.DrumStateFile)
 
-    return alarm != cb.NO_ALARM   # if there are any alarms, tell the caller we really want to stop!
+    return (alarm != cb.NO_ALARM, sim_cycle)   # if there are any alarms, tell the caller we really want to stop!
 
 
 
@@ -1973,6 +1993,8 @@ def main():
                         help="File name for photoelectric paper tape reader B input file")
     parser.add_argument("--NoAlarmStop", help="Don't stop on alarms", action="store_true")
     parser.add_argument("-n", "--NoCloseOnStop", help="Don't close the display on halt", action="store_true")
+    parser.add_argument("-p", "--Panel",
+                        help="Pop up a Whirlwind Manual Intervention Panel", action="store_true")
     parser.add_argument("--NoZeroOneTSR",
                         help="Don't automatically return 0 and 1 for locations 0 and 1", action="store_true")
     parser.add_argument("--SynchronousVideo",
@@ -1992,8 +2014,8 @@ def main():
 
     args = parser.parse_args()
 
-    stop_sim = main_run_sim(args)
-    print("de-alloc mem=%dMB" % (psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
+    (stop_sim, sim_cycle) = main_run_sim(args)
+    print("Ran %d cycles; Used mem=%dMB" % (sim_cycle, psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
     sys.exit(stop_sim)
 
 

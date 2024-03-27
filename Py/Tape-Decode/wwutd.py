@@ -29,7 +29,8 @@ from typing import List, Dict, Tuple, Sequence, Union, Any
 DebugTAP = False
 Debug556 = False
 DebugXsum = False
-DrumOffset = 0o40    # optional argument for (I think) loading 'drum dump' tapes
+# DrumOffset = 0o40    # optional argument for (I think) loading 'drum dump' tapes
+DrumOffset = 0o00    # optional argument for (I think) loading 'drum dump' tapes
 cb = wwinfra.ConstWWbitClass()
 flexo = wwinfra.FlexoClass(cb)
 
