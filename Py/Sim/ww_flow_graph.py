@@ -15,18 +15,16 @@
 import re
 import argparse
 import sys
+import os
 import statistics as stat
-
 
 CORESIZE: int = 2048
 NBANKS: int = 6
 
-Debug = True
-
+Debug = False
 
 def breakp():
     return
-
 
 # defines for how much stuff to put in each block in the flow graph.
 FLOW_BLOCK_TERSE = 1         # just the identifiers
@@ -59,20 +57,6 @@ class TraceLogClass:
         self.log_end = log_end
 
         self.itsabranch = (opcode == 'SP') or (opcode == 'CP') or (opcode == 'CK')
-
-
-# The main sim process calls these two routines to start and finish a flow graph
-def init_log_from_sim():
-    tracelog = []
-    tracelog.append(TraceLogClass(0, '', '', 0, 0, '', log_beginning=True))
-    return tracelog
-
-
-def finish_flow_graph_from_sim(cb, cm, cpu, title, output_filename, block_info_len=FLOW_BLOCK_ALL_CODE):
-    tracelog = cb.tracelog
-    tracelog.append(TraceLogClass(0, '', '', 0, 0, '', log_end=True))
-    run_flow_analysis(cb, tracelog, cm, cpu, title, output_filename, block_info_len)
-
 
 class CoreMemoryMetaData:
     def __init__(self, cb):
@@ -637,15 +621,15 @@ def format_one_block(b, block_info_len, cpu):
     return(graph_label)
 
 
-
+# Write the flow diagram gv file.
 # The flag 'short' controls whether source code comments should be included
 # in the flow graph bubbles
 def output_block_list(cb, blocklist, core, title, output_file, block_info_len, cpu):
     if output_file is None:
         fout = sys.stdout
     else:
-        fout = open(output_file, 'wt')
         print("flow-graph output to file %s" % output_file)
+        fout = open(output_file, 'wt')
     # fout.write("\n; *** %s ***\n" % filetype)
 
     block_index = {}  # dictionary of block_id names indexed by start address
@@ -698,31 +682,50 @@ def output_block_list(cb, blocklist, core, title, output_file, block_info_len, c
     print("Flow Statistics: Nodes=%d, Edges=%d, core-locations-touched=%d" %
           (len(blocklist), edge_count, core_locations))
 
+class FlowGraph:
+    def __init__ (self, argFlowGraph, argFlowGraphOutFile, argFlowGraphOutDir, cb):
+        self.outfile = ""
+        self.outfile_basename = ""
+        self.do_flowgraph = argFlowGraph
+        self.flowgraph_outfile = argFlowGraphOutFile
+        self.flowgraph_outdir = argFlowGraphOutDir
+        self.cb = cb
+        # If outfile is spec'd, it supersedes the dir if the dir is spec'd. In
+        # specifying the dir standard derived naming will be used.
+        if self.flowgraph_outfile is not None:
+            self.do_flowgraph = True
+            self.outfile = self.flowgraph_outfile
+        else:
+            self.outfile_basename = re.sub ("\\.acore$", "", os.path.basename (self.cb.CoreFileName)) + ".flow.gv"
+        if self.flowgraph_outdir is not None:
+            self.do_flowgraph = True
+            self.outfile = self.flowgraph_outdir + "/" + self.outfile_basename
+        else:
+            self.outfile = self.outfile_basename
+        if self.do_flowgraph:
+            cb.tracelog = self.init_log()
 
-def run_flow_analysis(cb, tracelog, cm, cpu, title, output_file, block_info_len):
-    # uh-oh.  The flow analysis keeps an image of core memory with pointers, links, etc for
-    # each instruction executed (but not the ones that aren't).  But for static analysis, we also need
-    # to know what's in the underlying core memory to see what it would have executed had it got there.
-    #  That's all ok, just that the naming is convoluted
-    # core_meta_data = [None] * CORESIZE
-    core_meta_data = CoreMemoryMetaData(cb)
-    trace_to_core(tracelog, core_meta_data, cm, cpu)  # summarize the trace log into a core image
-    blocklist = define_blocks(cb, core_meta_data, cm, cpu)
-    output_block_list(cb, blocklist, core_meta_data, title, output_file, block_info_len, cpu)
+    # Private
+    def run_flow_analysis (self, cb, tracelog, cm, cpu, title, block_info_len):
+        # uh-oh.  The flow analysis keeps an image of core memory with pointers, links, etc for
+        # each instruction executed (but not the ones that aren't).  But for static analysis, we also need
+        # to know what's in the underlying core memory to see what it would have executed had it got there.
+        #  That's all ok, just that the naming is convoluted
+        # core_meta_data = [None] * CORESIZE
+        core_meta_data = CoreMemoryMetaData(cb)
+        trace_to_core(tracelog, core_meta_data, cm, cpu)  # summarize the trace log into a core image
+        blocklist = define_blocks(cb, core_meta_data, cm, cpu)
+        output_block_list(cb, blocklist, core_meta_data, title, self.outfile, block_info_len, cpu)
 
+    def init_log (self):
+        tracelog = []
+        tracelog.append (TraceLogClass(0, '', '', 0, 0, '', log_beginning=True))
+        return tracelog
 
-def main():
-    global Debug
-    parser = argparse.ArgumentParser(description='Convert WW Sim log into a flow graph')
-    parser.add_argument("logfile", help="file name of simulation trace log")
-    parser.add_argument("-d", "--Debug", help="copious debug info", action="store_true")
-    args = parser.parse_args()
-    if args.Debug:
-        Debug = True  # get rid of these local vars
+    # Public
+    def finish_flow_graph_from_sim (self, cb, cm, cpu, title, block_info_len=FLOW_BLOCK_ALL_CODE):
+        if self.do_flowgraph:
+            tracelog = cb.tracelog
+            tracelog.append(TraceLogClass(0, '', '', 0, 0, '', log_end=True))
+            self.run_flow_analysis(cb, tracelog, cm, cpu, title, block_info_len)
 
-    tracelog = readlog(args.logfile)
-    run_flow_analysis(tracelog, None, short=False)          # Incorrect call sig -- must run from sim 
-
-
-if __name__ == '__main__':
-    main()

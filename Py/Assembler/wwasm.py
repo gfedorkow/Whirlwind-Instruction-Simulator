@@ -41,6 +41,7 @@
 
 # Dec 7, 2023 - fixed a bug that was ignoring labels on lines with no operator or operand
 
+import os
 import sys
 # sys.path.append('K:\\guy\\History-of-Computing\\Whirlwind\\Py\\Common')
 import re
@@ -180,13 +181,13 @@ def lex_line(line, line_number):
     if (len(r4) > 0) and (r4[0] == '.'):
         if r4.find(".w ") == 0:
             directive = DOT_WORD_OP
-            r4 = re.sub("\.w *", '', r4)
+            r4 = re.sub("\\.w *", '', r4)
         if r4.find(".fl ") == 0:
             directive = DOT_FLEXL_OP
-            r4 = re.sub("\.fl *", '', r4)
+            r4 = re.sub("\\.fl *", '', r4)
         if r4.find(".fh ") == 0:
             directive = DOT_FLEXH_OP
-            r4 = re.sub("\.fh *", '', r4)
+            r4 = re.sub("\\.fh *", '', r4)
 
     # split the operator and operand
     rl5 = re.split(" ", r4, maxsplit=1)
@@ -264,7 +265,7 @@ def ww_int_csii(nstr, line_number, relative_base=None):
     # or Octal, but it seems to come closer to matching the Octal pattern.
     # In general, I think this routine is more conservative about number types than the real assembler,
     # but I don't know what rules they actually used.
-    if re.match('0\.|1\.', nstr):  # try Whirlwind fixed-point octal conversion, e.g. n.nnnnn
+    if re.match('0\\.|1\\.', nstr):  # try Whirlwind fixed-point octal conversion, e.g. n.nnnnn
         octal_str = nstr.replace('.', '')
         if re.search('^[01][0-7][0-7][0-7][0-7][0-7]$', octal_str) is None and \
             re.search('^0.0$', nstr) is None:
@@ -285,7 +286,7 @@ def ww_int_csii(nstr, line_number, relative_base=None):
         print("relative label %s: %d + %d" % (nstr, offset, relative_base))
         return offset + relative_base
 
-    if re.match('\+|-|[1-9]|0$', nstr):  # Try Decimal conversion
+    if re.match('\\+|-|[1-9]|0$', nstr):  # Try Decimal conversion
         sign = 1   # default to a positive number
         sign_str = '+'
         if nstr[0] == '-':
@@ -363,8 +364,8 @@ def dot_org_op(srcline, _binary_opcode, _operand_mask):
 def dot_daorg_op(srcline, _binary_opcode, _operand_mask):
     global NextCoreAddress, CurrentRelativeBase
 
-    cb.log.warn("Line %d: Drum Address psuedo-op %s %s" %
-                (srcline.linenumber, srcline.operator, srcline.operand))
+    cb.log.warn(srcline.linenumber, "Drum Address psuedo-op %s %s" %
+                (srcline.operator, srcline.operand))
     return 0
 
 # # process a .BASE statement, resetting the relative addr count to zero
@@ -374,7 +375,7 @@ def dot_relative_base_op(srcline, _binary_opcode, _operand_mask):
     global NextCoreAddress, CurrentRelativeBase
 
     CurrentRelativeBase = 0
-    cb.log.warn("Deprecated .BASE @%04oo" % NextCoreAddress)
+    cb.log.warn(srcline.linenumber, "Deprecated .BASE @%04oo" % NextCoreAddress)
     return 0
 
 
@@ -404,22 +405,22 @@ def dot_preset_param_op(srcline, _binary_opcode, _operand_mask):
 # This routine is called when "pp" turns up as an op code.
 # In which case we're supposed to include the value of the parameter as a word
 def insert_program_param_op(srcline, _binary_opcode, _operand_mask):
-    cb.log.warn("Line %d: Insert Program Parameter %s %s as a word" %
-                (srcline.linenumber, srcline.operator, srcline.operand))
+    cb.log.warn(srcline.linenumber, "Insert Program Parameter %s %s as a word" %
+                (srcline.operator, srcline.operand))
     return 0
 
 
 # the Source Code may have a DITTO operation
 # don't know exactly what it does yet, except to duplicate words in memory
 def ditto_op(srcline, _binary_opcode, _operand_mask):
-    cb.log.warn("Line %d: DITTO operation %s %s" %
-                (srcline.linenumber, srcline.operator, srcline.operand))
+    cb.log.warn(srcline.linenumber, "DITTO operation %s %s" %
+                (srcline.operator, srcline.operand))
     return 0
 
 
 def csii_op(src_line, _binary_opcode, _operand_mask):
-    cb.log.warn("Line %d: CS-II operation %s %s; inserting .word 0" %
-                (src_line.linenumber, src_line.operator, src_line.operand))
+    cb.log.warn(src_line.linenumber, "CS-II operation %s %s; inserting .word 0" %
+                (src_line.operator, src_line.operand))
     global NextCoreAddress, CurrentRelativeBase
     ret = 0
     src_line.instruction_address = NextCoreAddress
@@ -446,17 +447,17 @@ def dot_switch_op(srcline, _binary_opcode, _operand_mask):
         tokens.append('')  # cheap trick; add a null on the end to make sure the next statement doesn't trap
         ff_reg_map, val = sw_class.parse_ff_reg_assignment(cb, name, tokens[1:])
         if ff_reg_map is None:
-            cb.log.warn("can't parse %s: %s" % (name, tokens[1]))
+            cb.log.warn(srcline.linenumber, "can't parse %s: %s" % (name, tokens[1]))
             ret = 1
     else:
         if len(tokens) != 2:
-            cb.log.warn("usage:  .SWITCH <switchname> <value>")
+            cb.log.warn(srcline.linenumber, "usage:  .SWITCH <switchname> <value>")
             return 1
         int_val = ww_int(tokens[1], srcline.linenumber)  # this will trap if it can't convert the number
         if int_val is not None:
             val = "0o%o" % int_val   # convert the number into canonical octal
         else:
-            cb.log.warn(".SWITCH %s setting %s must be an octal number" % (name, tokens[1]))
+            cb.log.warn(srcline.linenumber, ".SWITCH %s setting %s must be an octal number" % (name, tokens[1]))
             ret = 1
             val = ' '
     SwitchTab[name] = val       # we're going to save the validated string, not numeric value
@@ -477,11 +478,11 @@ def dot_word_op(src_line, _binary_opcode, _operand_mask):
 
     # a flex[hl] directive can have a single quoted letter as an argument; otherwise treat the operand as a
     # regular number or label
-    if re.match("\.flexh|\.flexl", src_line.operator) and re.match("\"|\'.\"|\'", src_line.operand):
+    if re.match("\\.flexh|\\.flexl", src_line.operator) and re.match("\"|\\'.\"|\\'", src_line.operand):
             # The argument should be a valid flexo character
             fc = wwinfra.FlexoClass(None)
             flexo_char = fc.ascii_to_flexo(src_line.operand[1])
-            if re.match("\.flexh", src_line.operator):
+            if re.match("\\.flexh", src_line.operator):
                 flexo_char <<= 10  # if it's "high", shift the six-bit code to WW bits 0..5
             # convert the result back into a string and replace the incoming Operand with the new one
             src_line.operand = "0o%o" % flexo_char
@@ -552,7 +553,7 @@ def dot_python_exec_op(src_line, _binary_opcode, _operand_mask):
     global ExecTab, NextCoreAddress
 
     # transform a .exec or .print command slightly to make it more readable in the .acore file
-    exec_cmd = re.sub("^\.", "", src_line.operator) + ':'
+    exec_cmd = re.sub("^\\.", "", src_line.operator) + ':'
     exec_arg = src_line.operand
     exec = exec_cmd + ' ' + exec_arg
     addr = NextCoreAddress
@@ -650,8 +651,8 @@ def parse_ww(srcline):
             CurrentRelativeBase = srcline.instruction_address
         else:
             if new_relative_base != CurrentRelativeBase:
-                cb.log.warn("Line %d: Label %s: Changing Relative Base from 0o%o to 0o%o" %
-                        (srcline.linenumber, srcline.label, CurrentRelativeBase, new_relative_base))
+                cb.log.warn(srcline.linenumber, "Label %s: Changing Relative Base from 0o%o to 0o%o" %
+                        (srcline.label, CurrentRelativeBase, new_relative_base))
                 CurrentRelativeBase = new_relative_base
     else:
         # the book says that any 'comma operator', i.e. a label, resets the Relative Address
@@ -1231,7 +1232,6 @@ WW_TapeID = None
 WW_JumptoAddress = None  # symbolic name for the start address, if any
 SwitchTab = {}
 ISA_1950 = False  # flag to show which instruction set is in force
-cb = wwinfra.ConstWWbitClass()
 
 
 # #############  Main  #################
@@ -1253,7 +1253,7 @@ def main():
     # to 0onnn format
     Legacy_Numbers = False
 
-    parser = argparse.ArgumentParser(description='Assemble a Whirlwind Program.')
+    parser = wwinfra.StdArgs().getParser ("Assemble a Whirlwind Program.")
     parser.add_argument("inputfile", help="file name of ww asm source file")
     parser.add_argument("--Verbose", '-v',  help="print progress messages", action="store_true")
     parser.add_argument("--Debug", '-d', help="Print lotsa debug info", action="store_true")
@@ -1265,13 +1265,18 @@ def main():
     parser.add_argument('--outputfilebase', '-o', type=str, help='base name for output file')
     args = parser.parse_args()
 
-    cb.log = wwinfra.LogClass(sys.argv[0], quiet=False)
+    cb = wwinfra.ConstWWbitClass (args = args)
+    wwinfra.theConstWWbitClass = cb
     cb.decimal_addresses = args.DecimalAddresses  # if set, trace output is expressed in Decimal to suit 1950's chic
 
     input_file_name = args.inputfile
-    output_file_base_name = re.sub("\.ww$", '', input_file_name)
+    output_file_base_name = re.sub("\\.ww$", '', input_file_name)
     if args.outputfilebase is not None:
         output_file_base_name = args.outputfilebase
+
+    cb.CoreFileName = os.path.basename (output_file_base_name)
+    cb.log = wwinfra.LogFactory().getLog (isAsmLog = True)
+        
     Debug = args.Debug
     verbose = args.Verbose
     if verbose:

@@ -50,6 +50,7 @@ def pol2cart(rho, angle):  # radius in miles, angle in degrees
 class AircraftClass:
     def __init__(self, name, xi, yi, heading, v_mph, autoclick_revolutions, autoclick_type):
         self.name = name
+        self.log = wwinfra.LogFactory().getLog ()
         self.v_mph = v_mph   # real-world velocity in MPH
         self.heading = heading  # real-world heading in degrees
         self.distance_scale = 128.0  # represents 128 real world miles
@@ -94,7 +95,7 @@ class AircraftClass:
         self.last_heading = self.heading
         self.heading = heading
         if heading != self.last_heading:
-            print("py_radar Aircraft %s: change heading to %d; msg=%s" % (self.name, heading, msg))
+            self.log.info ("py_radar Aircraft %s: change heading to %d; msg=%s" % (self.name, heading, msg))
 
 
 # I've added a "screen widget" to steer the target aircraft during the sim.  This class is activated
@@ -130,6 +131,7 @@ class RadarAdjustHeadingWidgetClass:
 #  Autoclick allows perfectly-repeatable simulation runs as a (substantial) aid to debug.
 class RadarClass:
     def __init__(self, target_list, cb, cpu, autoclick_enable):
+        self.log = wwinfra.LogFactory().getLog ()
         self.azimuth_steps = 256
         self.rng_list = []   # list of radar reflections at the current azimuth
         self.current_azimuth = 0
@@ -288,10 +290,10 @@ class RadarClass:
                     elif gun_reading & 0o40000:
                         ff_gun = 0o177777
                     else:
-                        print("** Unexpected Light Gun Value 0o%o ***" % gun_reading)
+                        self.log.info ("** Unexpected Light Gun Value 0o%o ***" % gun_reading)
                     self.light_gun_ff_reg = ff_gun
             ret = self.light_gun_ff_reg
-            print("** light_gun_ff_reg=0o%o, ff_gun=0o%o, ret=0o%o" % (self.light_gun_ff_reg, ff_gun, ret))
+            self.log.info ("** light_gun_ff_reg=0o%o, ff_gun=0o%o, ret=0o%o" % (self.light_gun_ff_reg, ff_gun, ret))
         return ret
 
     # autoclick means that we simulate a light-gun hit automatically a certain number of
@@ -308,23 +310,23 @@ class RadarClass:
             return   # don't even try
         if self.mouse_clicked_once_for_autostart == False and self.cpu.scope.crt and \
                 self.cpu.scope.crt.win and self.antenna_revolutions == 1 and self.current_azimuth == 10:
-            print("wait for mouse")
+            self.log.info ("wait for mouse")
             self.cpu.scope.crt.win.getMouse()
-            print("let's go!")
+            self.log.info ("let's go!")
             self.mouse_clicked_once_for_autostart = True
 
         for tgt in self.targets:
             if self.antenna_revolutions > 0 and \
                 self.antenna_revolutions == tgt.autoclick_revolutions and tgt_name == tgt.name:
                 click_type = tgt.autoclick_type
-                print("  *** Autoclick Aircraft %s, type %s, revolution %d, elapsed time=%3.2f" %
+                self.log.info ("  *** Autoclick Aircraft %s, type %s, revolution %d, elapsed time=%3.2f" %
                       (tgt.name, click_type, self.antenna_revolutions, self.elapsed_time))
                 if click_type == 'T':
                     self.light_gun_ff_reg = 0o177777
                 elif click_type == 'I':
                     self.light_gun_ff_reg = 0o100000
                 else:
-                    print("  Autoclick: Invalid Type: %s, aircraft %s", (click_type, tgt_name))
+                    self.log.info ("  Autoclick: Invalid Type: %s, aircraft %s", (click_type, tgt_name))
 
 
     def draw_axis(self, crt):
@@ -388,7 +390,7 @@ def main():
             (code, string) = radar.get_next_radar()
             if string is None:
                 break
-            print(string)
+            radar.log.info (string)
 
     else:
         print("oops; exit")

@@ -25,10 +25,12 @@ import sys
 import analog_scope
 import os
 from screeninfo import get_monitors
+from enum import Enum
+import argparse
+
+theConstWWbitClass = None       # everything should use the same instance of the cb. Set in wwsim.
 
 from typing import List, Dict, Tuple, Sequence, Union, Any
-
-
 
 def breakp():
     print("** Breakpoint **")
@@ -46,59 +48,236 @@ class CpuClass:
         self.CommentTab = [None] * 2048
         self.cm = core_mem
 
+class LogSeqno:
+    def __init__ (self):
+        self.seqno = 0
+
+class LogFactory:
+    logs = {}                           # class var -- dictionary of LogClass instances keyed by log name
+    cb = None                           # class var -- only one instance of the "constants"
+    logSeqno = LogSeqno()               # class var -- global log entry seqno
+    def getLog (self, logname=None, isAsmLog=False, **kwargs):
+        if self.cb is None:
+            self.cb = theConstWWbitClass
+        if logname is None:
+            baseCoreFile = re.sub ("\\.acore$", "", os.path.basename (self.cb.CoreFileName))
+            baseCommandName = re.sub ("\\.py$", "", os.path.basename (self.cb.command_name))
+            logname = baseCoreFile + "." + baseCommandName
+        if logname in self.logs:
+            return self.logs[logname]
+        else:
+            if isAsmLog:
+                newlog = AsmLogClass ("", logfile = self.cb.logDir + "/" + logname + ".log", factory = self, **kwargs)
+            else:
+                newlog = LogClass ("", logfile = self.cb.logDir + "/" + logname + ".log", factory = self, **kwargs)
+            self.logs[logname] = newlog
+            # print ("LAS1", self.logs, self.cb.CoreFileName, self.cb.command_name, baseCoreFile, baseCommandName)
+            return newlog
+
+LogMsgType = Enum ("LogMsgType", ["Log", "Debug", "Debug7ch", "Debug556", "DebugLoader", "DebugTap"])
+
+LogMsgSeverity = Enum ("LogMsgType", ["Error", "Info", "Warning", "Fatal"])
 
 class LogClass:
-    def __init__(self, program_name, quiet: bool = None, debug556: bool = None, debugtap: bool = None,
-                 debugldr: bool = None, debug7ch: bool = None, debug: bool = None):
+    def __init__(self, corefile, quiet: bool = None, debug556: bool = None, debugtap: bool = None,
+                 debugldr: bool = None, debug7ch: bool = None, debug: bool = None,
+                 factory = None, logfile = None):
         self._debug = debug
         self._debug556 = debug556
         self._debug7ch = debug7ch
         self._debugtap = debugtap
         self._debugldr = debugldr
         self._quiet = quiet
-        self._program_name = program_name
+        self.corefile = corefile
         self.error_count = 0
+        self.factory = factory
+        self.logfile = logfile if logfile is not None else "./" # LAS !!!
+        self.logout = open (self.logfile, "wt")
+
+    # Private
+        
+    def writeLog (self, logMsgType: LogMsgType, logMsgSev: LogMsgSeverity, message, lineNo = None):
+        msgStr = "%d " % self.factory.logSeqno.seqno if False else ""       # Activate this for seqnos in the log(s)
+        msgTypeName = " " + logMsgType.name + ":" if logMsgType != LogMsgType.Log else ""
+        msgStr = "%s: %s%s%s\n" % (
+            logMsgSev.name,
+            msgTypeName,
+            "Line %d: " % lineNo if lineNo is not None else "",
+            message
+            )
+        self.logout.write (msgStr)
+        if self.factory.cb.logToStderr and logMsgSev in [LogMsgSeverity.Error, LogMsgSeverity.Warning, LogMsgSeverity.Fatal]:
+            sys.stderr.write (msgStr)
+        self.factory.logSeqno.seqno += 1
+
+    # Public
 
     def log(self, message):  # unconditionally log a message
-        print("Log: %s" % message)
+        self.writeLog (LogMsgType.Log, LogMsgSeverity.Info, message)
 
     def debug(self, message):
         if self._debug:
-            print("Debug: %s" % message)
+            self.writeLog (LogMsgType.Debug, LogMsgSeverity.Info, message)
 
     def debug7ch(self, message):
         if self._debug7ch:
-            print("Debug 7ch: %s" % message)
+            self.writeLog (LogMsgType.Debug7ch, LogMsgSeverity.Info, message)
 
     def debug556(self, message):
         if self._debug556:
-            print("Debug 556: %s" % message)
+            self.writeLog (LogMsgType.Debug556, LogMsgSeverity.Info, message)
 
     def debugldr(self, message):
         if self._debugldr:
-            print("Debug Loader: %s" % message)
+            self.writeLog (LogMsgType.DebugLoader, LogMsgSeverity.Info, message)
 
     def debugtap(self, message):
         if self._debugtap:
-            print("Debug TAP: %s" % message)
+            self.writeLog (LogMsgType.DebugTap, LogMsgSeverity.Info, message)
 
+    # LAS check
     # the log-class "error" is specifically meant for error messages from the assembler
     # or similar tools, which report findings that are not fatal, but should be counted
     # and identified in an input file as 'input errors'.
-    def error(self, line_number, message):
-        print("Line %d: %s" % (line_number, message))
+
+    def error(self, message):
+        self.writeLog (LogMsgType.Log, LogMsgSeverity.Error, message)
         self.error_count += 1
 
     def info(self, message):
-        if not self._quiet:
-            print("Info: %s" % message)
+        if not self._quiet:                             # LAS check def of quiet
+            self.writeLog (LogMsgType.Log, LogMsgSeverity.Info, message)
 
     def warn(self, message):
-        print("Warning: %s" % message)
+        self.writeLog (LogMsgType.Log, LogMsgSeverity.Warning, message)
 
     def fatal(self, message):
-        print("Fatal: %s" % message)
+        self.writeLog (LogMsgType.Log, LogMsgSeverity.Fatal, message)
         sys.exit(1)
+
+class AsmLogClass (LogClass):
+    def __init__ (self, corefile, **kwargs):
+        super().__init__ (corefile, **kwargs)
+    def error (self, line_number, message):
+        self.writeLog (LogMsgType.Log, LogMsgSeverity.Error, message, lineNo = line_number)
+        self.error_count += 1
+    def warn (self, line_number, message):
+        self.writeLog (LogMsgType.Log, LogMsgSeverity.Warning, message, lineNo = line_number)
+
+# LAS 3/25/24
+#
+# When set up with a .print string, each call to getToken will return a string
+# which is the next lexical item to process. Each string is either a fragment of
+# the format string, or an argument, from the csv list.
+#
+# The initial series of tokens are format tokens, consisting of literal strings,
+# and directives such as "%o" or "%ad". The end of the format tokens is denoted
+# by the token Tokenizer.endOfFmt. After seeing this token, the remaining tokens
+# are arguments. See wwprint for usage.
+#
+# A quoted string appearing in the arguments will be following by an endOfFmt
+# token. Typically (as in wwprint) this is ignored.
+#
+# Any character may appear between double quotes. A double quote can be
+# embedded using \". A \ may be embedded using \\.
+
+class Tokenizer:
+    endOfString = "<end-of-string>"
+    endOfFmt = "<end-of-fmt>"
+    def __init__ (self, str, delimiter=','):
+        self.pos = 0
+        self.state = 0
+        self.str = str
+        self.slen = len (str)
+        self.delimiter = delimiter
+    def isWhitespace (self, c) -> bool:
+        return c == ' ' or c == '\t'
+    def getToken (self) -> str:
+        token = ""
+        while self.pos <= self.slen:
+            if self.pos < self.slen:
+                c = self.str[self.pos]
+            else:
+                c = self.endOfString
+            # print (c, self.state, self.pos, token) # LAS
+            match self.state:
+                case 0:
+                    if self.isWhitespace (c):
+                        self.pos += 1
+                    elif c == '"':
+                        self.state = 1
+                        self.pos += 1
+                    else:
+                        self.state = 3
+                        token = token + c
+                        self.pos += 1
+                case 1:
+                    if c == '\\':
+                        self.state = 2
+                        self.pos += 1
+                    elif c == '"':
+                        self.state = 7
+                        self.pos += 1
+                        return token
+                    elif c == '%':
+                        self.state = 5
+                        self.pos += 1
+                        return token
+                    else:
+                        token = token + c
+                        self.pos += 1
+                case 2:
+                    token = token + c
+                    self.state = 1
+                    self.pos += 1
+                case 3:
+                    if c == self.delimiter:
+                        self.state = 0
+                        self.pos += 1
+                        return token
+                    elif c == self.endOfString:
+                        self.state = 8
+                        return token
+                    elif self.isWhitespace (c):
+                        self.pos += 1
+                        print ("error 1")  # error -- Tokens are separated by whitespace but not comma, eg ``abc def'' # LAS
+                        return self.endOfString
+                    else:
+                        token = token + c
+                        self.pos += 1
+                case 4:
+                    if c == self.delimiter:
+                        self.state = 0
+                        self.pos += 1
+                    elif c == self.endOfString:
+                        return self.endOfString
+                    else:
+                        self.pos += 1
+                        print ("error 2")   # error -- Tokens are separated by whitespace but not comma, eg ``"xxx" abc, def'' # LAS
+                        return self.endOfString
+                case 5:
+                    if (c == 'a' or c == 'b'):
+                        self.state = 6
+                        self.pos += 1
+                        token = token + c
+                    elif (c == 'd' or c == 'o'):
+                        self.state = 1
+                        self.pos += 1
+                        token = '%' + token + c
+                        return token
+                case 6:
+                    if (c == 'd' or c == 'o'):
+                        self.state = 1
+                        self.pos += 1
+                        token = '%' + token + c
+                        return token
+                case 7:
+                        self.state = 4
+                        return self.endOfFmt
+                case 8:
+                        self.state = 0
+                        return self.endOfString
+        return self.endOfString
 
 
 # simple routine to print an octal number that might be 'None'
@@ -116,10 +295,20 @@ class DebugWidgetPyVarsClass:
         if cb.radar:
             self.TargetHeading = cb.radar.adjust_target_heading
 
-
+class StdArgs:
+    def __init__ (self):
+        pass
+    def getParser (self, description: str) -> argparse.ArgumentParser:
+        parser = argparse.ArgumentParser (description)
+        parser.add_argument("--LogDir",
+                            help="Directory into which to store logs. Default is current wd.", type=str)
+        parser.add_argument("--NoStdErr",
+                            help="Normally warnings, errors, and fatals are written to stderr in addition to being logged. " \
+                            "With this option only the log is written.", action="store_true")
+        return parser
 
 class ConstWWbitClass:
-    def __init__(self, get_screen_size=False):
+    def __init__(self, get_screen_size=False, corefile=None, args=None):
         # Caution -- Whirlwind puts bit 0 to the left (Big Endian, no?)
         self.WWBIT0 = 0o100000
         self.WWBIT1 = 0o040000
@@ -211,8 +400,17 @@ class ConstWWbitClass:
         self.TraceDisplayScope = False
         self.PETRAfilename = None
         self.PETRBfilename = None
-        self.CoreFileName = None
+
+        #
+        # Read std args
+        #
+        self.command_name = sys.argv[0] # Leaf name of command running this code, i.e., argv[0]
+        self.CoreFileName = corefile # Name of ww core file
         self.log = None
+        self.logToStderr = not args.NoStdErr # Default is to write to stderr all warnings, errors, and fatals.
+        self.logDirSpecified = True if args.LogDir is not None else False
+        self.logDir = args.LogDir if self.logDirSpecified else "./"
+
         self.cpu = None
 
         self.dbwgt = None  # This list gives all the currently active Debug Widgets

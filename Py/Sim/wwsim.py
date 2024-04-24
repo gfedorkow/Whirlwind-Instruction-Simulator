@@ -48,6 +48,10 @@ from typing import List, Dict, Tuple, Sequence, Union, Any
 TTYoutput = []
 Debug = False
 
+flowgraph = None
+
+def getiolog():
+    return ww_io_sim.getiolog()
 
 # move these into the "constants" class
 # use these vars to control how much Helpful Stuff emerges from the sim
@@ -122,7 +126,6 @@ def deci(ww_num: int, decimal_0d=True) -> str:
         ret = '-' + ret
     return ret
 
-
 class CpuClass:
     def __init__(self, cb, core_mem):
         global CoreMem  # get rid of this global -- change to the cm in this class
@@ -143,6 +146,7 @@ class CpuClass:
 
         self.cb = cb
         self.cm = core_mem
+        self.ww_exec_log = wwinfra.LogFactory().getLog()
 
         # we need to keep track of the scope object since it needs background processing
         self.scope = ww_io_sim.DisplayScopeClass(cb)
@@ -397,7 +401,6 @@ class CpuClass:
                 address = 0
         return address
 
-
     # I added a directive to allow a python statement to be added following execution of particular
     # instructions in the WW program, e.g., a print statement to see what's going on.
     # This def includes a special lookup to accept numbers or labels from the WW source file
@@ -406,6 +409,9 @@ class CpuClass:
 
         def rl(label):
             return self.rl(label)
+
+        def wwlog (str):
+            self.ww_exec_log.info (str)
 
         cm = self.cm
         cb = self.cb
@@ -451,7 +457,7 @@ class CpuClass:
 
     # Bug Alert - I don't think I'm handling an unrecognized variable name properly; it
     # should at least print as <none> or something...
-    def wwprint(self, format_and_args):
+    def old_wwprint(self, format_and_args):
         # quoted_args = format_and_args.split(',')  # this doesn't handle splitting '"a", "b", "c,d,e"' properly
         quoted_args = ['{}'.format(x) for x in list(csv.reader([format_and_args], delimiter=',', quotechar='"'))[0]]
         args = []
@@ -515,8 +521,55 @@ class CpuClass:
         if len(args):
             print("wwprint: too many args for '%s'" % format_str)
             return None
-        print(output_str)
+        self.ww_exec_log.info (output_str)
 
+    # New version using tokenizer
+
+    def wwprint (self, format_and_args):
+        t = wwinfra.Tokenizer (format_and_args)
+        fmtListDone = False
+        fmtList = []
+        argList = []
+        while True:
+            tok = t.getToken()
+            if tok == t.endOfString:
+                break
+            if not fmtListDone:
+                if tok != t.endOfFmt:
+                    fmtList.append (tok)
+                else:
+                    fmtListDone = True
+            else:
+                if tok != t.endOfFmt:
+                    argList.append (tok)
+        output_str = ""
+        sign = ""
+        for fmt in fmtList:
+            if fmt in ["%d","%o","%ad","%ao","%bd","%bo"]:
+                if fmt in ["%d","%o"]:
+                    addr = self.rl (argList.pop(0))
+                    register = self.cm.rd (addr)
+                    if fmt == "%o":
+                        output_str += "0o"
+                    elif fmt == "%d":
+                        register, sign = self.wwint_to_py (register)
+                    output_str += sign + fmt % register
+                else:
+                    register = None
+                    if fmt[1] == 'a':
+                        register = self._AC
+                    elif fmt[1] == 'b':
+                        register = self._BReg
+                    number_format = "%%%s" % fmt[2]
+                    if fmt[2] == 'd':
+                        register, sign = self.wwint_to_py (register)
+                    output_str += sign + number_format % register
+            else:
+                output_str += fmt
+        if argList != []:
+            print ("LAS ", "wwprint: too many args for ", fmtList, argList)
+            return None
+        self.ww_exec_log.info (output_str)
 
     def run_cycle(self):
         global CoreMem
@@ -754,13 +807,13 @@ class CpuClass:
     # will remain unexercised.
     def rc_inst(self, _pc, address, _opcode, _op_description):
         if self.IODeviceClass is None:
-            self.cb.log.warn("RC to unknown I/O device %s" % self.wwint_to_str(self.IODevice))
+            getiolog().warn("RC to unknown I/O device %s" % self.wwint_to_str(self.IODevice))
             return self.cb.UNKNOWN_IO_DEVICE_ALARM
 
         alarm, symbol = self.IODeviceClass.rc(CoreMem.rd(address), self._AC)
 
         if self.cb.TraceQuiet is False:
-            print("RC: Record to Device %s: Dev=0%oo, Output Word=0%06oo, (%s) Sub-Address %05oo" %
+            getiolog().info("RC: Record to Device %s: Dev=0%oo, Output Word=0%06oo, (%s) Sub-Address %05oo" %
                   (self.IODeviceClass.name, self.IODevice, self._AC, symbol, address))
         return alarm
 
@@ -768,7 +821,7 @@ class CpuClass:
     # The function of this instruction depends entirely on the previous SI.  Read the book. (2M-0277)
     def rd_inst(self, _pc, address, _opcode, _op_description):
         if self.IODeviceClass is None:
-            self.cb.log.warn("RD to unknown I/O device %s" % self.wwint_to_str(self.IODevice))
+            getiolog().warn("RD to unknown I/O device %s" % self.wwint_to_str(self.IODevice))
             return self.cb.UNKNOWN_IO_DEVICE_ALARM
 
         (ret, acc) = self.IODeviceClass.rd(CoreMem.rd(address), self._AC)
@@ -777,7 +830,7 @@ class CpuClass:
 
     def bi_inst(self, _pc, address, _opcode, _op_description):
         if self.IODeviceClass is None:
-            self.cb.log.warn("BI to unknown I/O device %s" % self.wwint_to_str(self.IODevice))
+            getiolog().warn("BI to unknown I/O device %s" % self.wwint_to_str(self.IODevice))
             return self.cb.UNKNOWN_IO_DEVICE_ALARM
 
         ret = self.IODeviceClass.bi(address, self._AC, CoreMem)
@@ -787,7 +840,7 @@ class CpuClass:
 
     def bo_inst(self, _pc, address, _opcode, _op_description):
         if self.IODeviceClass is None:
-            self.cb.log.warn("BO to unknown I/O device %s" % self.wwint_to_str(self.IODevice))
+            getiolog().warn("BO to unknown I/O device %s" % self.wwint_to_str(self.IODevice))
             return self.cb.UNKNOWN_IO_DEVICE_ALARM
 
         ret = self.IODeviceClass.bo(address, self._AC, CoreMem)
@@ -842,8 +895,8 @@ class CpuClass:
             else:
                 bdir = "forwards"
             if self.cb.TraceBranch:
-                print("branch %s from pc=%s to %s" %
-                      (bdir, self.wwaddr_to_str(self.PC - 1), self.wwaddr_to_str(address)))
+                self.cb.log.info ("branch %s from pc=%s to %s" %
+                                  (bdir, self.wwaddr_to_str(self.PC - 1), self.wwaddr_to_str(address)))
 
         # save the current PC+1 as a return address
         self._AReg = self.PC    # the PC was incremented in the calling routine (I think)
@@ -1699,12 +1752,16 @@ def main_run_sim(args):
     global CoreMem, CommentTab   # should have put this in the CPU Class...
 
     # instantiate the class full of constants
-    cb = wwinfra.ConstWWbitClass(get_screen_size = True)
+    cb = wwinfra.ConstWWbitClass (get_screen_size = True, args = args)
+    wwinfra.theConstWWbitClass = cb
+    
+    cb.CoreFileName = args.corefile
+    cb.log = wwinfra.LogFactory().getLog (quiet=args.Quiet)
+
     CoreMem = wwinfra.CorememClass(cb)
     cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
     cb.cpu = cpu
     cpu.cpu_switches = wwinfra.WWSwitchClass()
-    cb.log = wwinfra.LogClass(sys.argv[0], quiet=args.Quiet)
     cb.dbwgt = wwinfra.ScreenDebugWidgetClass(cb, CoreMem, args.AnalogScope)
 
     cycle_limit = 0  # default limit for number of sim cycles to run; 'zero' means 'forever'
@@ -1718,8 +1775,7 @@ def main_run_sim(args):
         cb.TraceALU = True
     if args.TraceCoreLocation:
         cb.TraceCoreLocation = int(args.TraceCoreLocation, 8)
-    if args.FlowGraph:
-        cb.tracelog = ww_flow_graph.init_log_from_sim()
+
     cb.decimal_addresses = args.DecimalAddresses  # if set, trace output is expressed in Decimal to suit 1950's chic
     cb.no_toggle_switch_warn = args.NoToggleSwitchWarning
 
@@ -1729,17 +1785,17 @@ def main_run_sim(args):
 
     if args.Quiet:
         cb.TraceQuiet = True
-        print("TraceQuiet turned on")
+        cb.log.info ("TraceQuiet turned on")
     if args.NoZeroOneTSR:
         cb.NoZeroOneTSR = True
     else:
         cb.log.info("Automatically return 0 and 1 from locations 0 and 1")
     if args.CycleLimit is not None:
         cycle_limit = args.CycleLimit
-        print("CycleLimit set to %d" % cycle_limit)
+        cb.log.info ("CycleLimit set to %d" % cycle_limit)
     if args.CrtFadeDelay:
         cb.crt_fade_delay_param = args.CrtFadeDelay
-        print("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
+        cb.log.info ("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
     core_dump_file_name = None
     if args.DumpCoreToFile:
         core_dump_file_name = args.DumpCoreToFile
@@ -1770,10 +1826,11 @@ def main_run_sim(args):
 
     (cpu.SymTab, JumpTo, WWfile, WWtapeID, dbwgt_list) = \
         CoreMem.read_core(args.corefile, cpu, cb)
-    cb.CoreFileName = args.corefile
     cpu.set_isa(CoreMem.metadata["isa"])
     if cpu.isa_1950 == False and args.Radar:
         cb.log.fatal("Radar device can only be used with 1950 ISA")
+
+    flowgraph = ww_flow_graph.FlowGraph (args.FlowGraph, args.FlowGraphOutFile, args.FlowGraphOutDir, cb)
 
     # This command line arg switches graphical output to an analog oscilloscope display
     if args.AnalogScope:
@@ -1911,7 +1968,7 @@ def main_run_sim(args):
                   (radar.elapsed_time / 60.0, radar.antenna_revolutions))
     if cb.tracelog:
         title = "%s\\nWWfile: %s" % (cb.CoreFileName, CoreMem.metadata['filename_from_core'])
-        ww_flow_graph.finish_flow_graph_from_sim (cb, CoreMem, cpu, title, re.sub ("\\.acore$", "", os.path.basename (cb.CoreFileName)) + ".flow.gv")
+        flowgraph.finish_flow_graph_from_sim (cb, CoreMem, cpu, title)
 
     if core_dump_file_name is not None:
         write_core_dump(cb, core_dump_file_name, CoreMem)
@@ -1920,17 +1977,25 @@ def main_run_sim(args):
         if d.name == "Flexowriter":
             s = d.get_saved_output()
             if len(s):
+                logstr = ""
                 print("\nFlexowriter Said:")
                 for c in s:
                     sys.stdout.write(c)
+                    logstr += c
                 sys.stdout.write("\n")
+                cb.log.info ("Begin Flexout:\n" + logstr)
+                cb.log.info ("End Flexout")
 
         if d.name == "Teletype":
             s = d.get_saved_output()
             if len(s):
+                logstr = ""
                 print("\nTeletype Said:")
                 for c in s:
                     sys.stdout.write(c)
+                    logstr += c                    
+                cb.log.info ("Begin Ttyout:\n" + logstr)
+                cb.log.info ("End Ttyout")
 
         if d.name == "DisplayScope":
             if d.crt is not None:
@@ -1947,11 +2012,13 @@ def main_run_sim(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Run a Whirlwind Simulation.')
+    parser = wwinfra.StdArgs().getParser ("Run a Whirlwind Simulation.")
     parser.add_argument("corefile", help="file name of simulation core file")
     parser.add_argument("-t", "--TracePC", help="Trace PC for each instruction", action="store_true")
     parser.add_argument("-a", "--TraceALU", help="Trace ALU for each instruction", action="store_true")
-    parser.add_argument("-f", "--FlowGraph", help="Collect data to make a flow graph", action="store_true")
+    parser.add_argument("-f", "--FlowGraph", help="Collect data to make a flow graph. Default output file <corefile-base-name>.flow.gv", action="store_true")
+    parser.add_argument("-fo", "--FlowGraphOutFile", help="Specify flow graph output file. Implies -f", type=str)
+    parser.add_argument("-fd", "--FlowGraphOutDir", help="Specify flow graph output directory. Implies -f", type=str)
     parser.add_argument("-j", "--JumpTo", type=str, help="Sim Start Address in octal")
     parser.add_argument("-q", "--Quiet", help="Suppress run-time message", action="store_true")
     parser.add_argument("-D", "--DecimalAddresses", help="Display trace information in decimal (default is octal)",
