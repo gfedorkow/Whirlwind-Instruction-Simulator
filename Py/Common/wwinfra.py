@@ -315,7 +315,7 @@ class ConstWWbitClass:
         self.PUNCH_BASE_ADDRESS = 0o204       # paper tape punch
         self.PUNCH_ADDR_MASK = ~0o03
 
-        self.PRINTER_BASE_ADDRESS = 0o225
+        self.PRINTER_BASE_ADDRESS = 0o225     # Flexowriter
         self.ANELEX_BASE_ADDRESS = 0o244      # Anelex line printer
         self.ANELEX_ADDR_MASK = ~0o01
 
@@ -344,7 +344,7 @@ class ConstWWbitClass:
             ((self.MAG_TAPE_BASE_ADDRESS, self.MAG_TAPE_ADDR_MASK), "Magnetic Tape"),
             ((self.MECH_PAPER_TAPE_BASE_ADDRESS, self.MECH_PAPER_TAPE_ADDR_MASK), "Mechanical Paper Tape Reader"),
             ((self.PUNCH_BASE_ADDRESS, self.PUNCH_ADDR_MASK), "Paper Tape Punch"),
-            ((self.PRINTER_BASE_ADDRESS, ~0), "Printer"),
+            ((self.PRINTER_BASE_ADDRESS, ~0), "FlexoPrinter"),
             ((self.ANELEX_BASE_ADDRESS, self.ANELEX_ADDR_MASK), "Anelex Line Printer"),
             ((self.TELETYPE_BASE_ADDRESS, ~0), "Teletype"),
             ((self.INDICATOR_LIGHT_BASE_ADDRESS, self.INDICATOR_LIGHT_ADDR_MASK), "Indicator Light Registers"),
@@ -696,12 +696,15 @@ class CorememClass:
 #        self.metadata_ww_tapeid = []
         self.exec_directives = {}  # keep a dictionary of all the python exec directives found in the core file
                                    #   indexed by bank and address
-
+        self.mem_addr_reg = 0       # store the most recent memory access address and data for blinkenlights
+        self.mem_data_reg = 0
     # the WR method has two optional args
     # 'force' arg overwrites the "read only" toggle switches
     # 'track' is used only in the case of initializing the drum storage
     def wr(self, addr, val, force=False, track=0):
-        if self.cb.TraceCoreLocation == addr:
+        self.mem_addr_reg = addr
+        self.mem_data_reg = val
+        if self.cb.TraceCoreLocation == addr:  # (I bet this var should be stored locally for faster access)
             self.cb.log.log("Write to core memory; addr=0o%05o, value=0o%05o" % (addr, val))
         if (addr & ~self._toggle_switch_mask) == 0 and self.use_default_tsr:   # toggle_switch_mask is a constant 0o37
             if self.tsr_callback[addr] is not None:
@@ -725,12 +728,13 @@ class CorememClass:
         else:
             self._coremem[self.MemGroupA][addr & self.cb.WWBIT6_15] = val
 
+
     # memory is filled with None at the start, so read-before-write will cause a trap in my sim.
     #   Some programs don't seem to be too careful about that, so I fixed so most cases just get
     #   a warning, a zero and move on.  But returning a zero to an instruction fetch is not a good idea...
     # I don't know how to tell if the first 32 words of the address space are always test-storage, or if
     # it's only the first 32 words of Bank 0.  I'm assuming test storage is always accessible.
-    def rd(self, addr, fix_none=True):
+    def rd(self, addr, fix_none=True, skip_mar=False):
         if (addr & ~self._toggle_switch_mask) == 0 and self.use_default_tsr:
             if self.tsr_callback[addr] is not None:
                 ret = self.tsr_callback[addr](addr, None)
@@ -748,6 +752,9 @@ class CorememClass:
             ret = 0
         if self.cb.TraceCoreLocation == addr:
             self.cb.log.log("Read from core memory; addr=0o%05o, value=%s" % (addr, octal_or_none(ret)))
+        if not skip_mar:
+            self.mem_addr_reg = addr    # save the results for blinkenlights
+            self.mem_data_reg = ret     # But _don't_ save when the rd() is from the control panel reading FF reg!
         return ret
 
     def clear_mem(self):
@@ -782,8 +789,8 @@ class CorememClass:
     # case it needs to be updated in two places...
     def write_ff_reg(self, addr, val):
         self._toggle_switch_mem_default[addr][0] = val
-        if self.cb.panel:
-            self.cb.panel.write_register(addr, val)
+        # if self.cb.panel:  #Mar 28, 2024 - I used to "push" ff changes to the panel, but I think it's better
+        #    self.cb.panel.write_register(addr, val)    # to "pull" them when updating other registers
 
 
     # integration with the Control Panel is kinda crude here...
@@ -861,10 +868,9 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
         line_number += 1
         if len(line) == 0:  # skip blank lines
             continue
-        all_tokens = re.split(";", line)  # strip comments
-        input_minus_comment = all_tokens[0].rstrip(' ')  # strip any blanks at the end of the line
-        if len(input_minus_comment) == 0:  # skip blank lines
+        if len(line) and line[0] == ';':  # skip comment lines
             continue
+        input_minus_comment = line
         if not re.match("^@N|^@C|^@T|^@S|^@E|^%[a-zA-Z]", input_minus_comment):
             cb.log.warn("ignoring line %d: %s" % (line_number, line))
             continue     # ignore anything that doesn't start with:
@@ -1296,7 +1302,7 @@ class FlexoClass:
             flexo_code = self.flexo_ascii_ucase_dict[a]
             upper_case = True
         else:
-            self.cb.log.warn("no flexo translation for '%s'", a)
+            self.cb.log.warn("no flexo translation for '%s'" % a)
         return flexo_code
 
 

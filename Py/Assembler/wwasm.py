@@ -509,7 +509,7 @@ def dot_switch_op(srcline, _binary_opcode, _operand_mask):
 # This same routine handles .flexh and .flexl for inserting words that
 # correspond to Flexowriter characters.
 def dot_word_op(src_line, _binary_opcode, _operand_mask):
-    global NextCoreAddress, CurrentRelativeBase
+    global NextCoreAddress, CurrentRelativeBase, cb
 
     ret = 0
     # op-code contains the type of .word directive
@@ -518,8 +518,10 @@ def dot_word_op(src_line, _binary_opcode, _operand_mask):
     # regular number or label
     if re.match("\.flexh|\.flexl", src_line.operator) and re.match("\"|\'.\"|\'", src_line.operand):
             # The argument should be a valid flexo character
-            fc = wwinfra.FlexoClass(None)
+            fc = wwinfra.FlexoClass(cb)
             flexo_char = fc.ascii_to_flexo(src_line.operand[1])
+            if flexo_char is None:
+                cb.log.fatal("Line %d: can't convert ASCII character to Flexo" % src_line.linenumber)
             if re.match("\.flexh", src_line.operator):
                 flexo_char <<= 10  # if it's "high", shift the six-bit code to WW bits 0..5
             # convert the result back into a string and replace the incoming Operand with the new one
