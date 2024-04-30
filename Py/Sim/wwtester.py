@@ -38,7 +38,9 @@ import sys
 import subprocess
 import argparse
 import yaml
+import re
 from wwinfra import Tokenizer
+
 
 class Test:
     def __init__ (self, args):
@@ -61,13 +63,6 @@ class Test:
 
     def unixPathFormat (self, x):       # Python is smart enough not to need this
         return x
-
-    def filterWithRegexp (self, stringList, regexp):
-        r = []
-        for str in stringList:
-            if re.match (str, regexp):
-                r += str
-        return r
 
     def parseOptions (self, str):
         if str is None:
@@ -125,14 +120,28 @@ class Test:
 
     def runSubprocess (self, cmd):
         if self.dryRun:
-            print ("Dry run: " + self.listToString (cmd))
+            print ("Dry run: " + self.cmdListToString (cmd))
         else:
             print ("*** wwtester running command: ", self.cmdListToString (cmd))
             sys.stdout.flush()
             return subprocess.run (cmd)
-       
-    def verify (self):
-        pass
+
+    def report (self):
+        sys.stdout.write ("*** wwtester checking test results...\n")
+        for logFilter in self.logFilters:
+            logFilter.report()
+        sys.stdout.write ("*** wwtester test complete\n")
+
+class LineStream:
+    def __init__ (self, file):
+        self.file = file
+        self.stream = open (file, "r")
+        self.lineNo = 0
+    def readline (self):
+        r = self.stream.readline()
+        if r != "":
+            self.lineNo += 1
+        return r
 
 # The log name is the command name used, the middle piece of a log file name
 # consisting of <core-file-base>.<command-name>.log, e.g., bounce.wwsim.log.
@@ -142,25 +151,59 @@ class Test:
 class LogFilter:
     def __init__ (self, logName, filterRegexp, test: Test):
         self.logName = logName
-        self.filterRegexp = filterRegexp
+        self.filterRegexp = "^.*" + filterRegexp + ".*$"
         self.test = test
-    def verify (self):
-        srcLogFile = test.srcDir + "/" + test.testBaseName + "." + self.logName + ".log"
-        dstLogFile = test.dstDir + "/" + test.testBaseName + "." + self.logName + ".log"
-        
-
-
+        self.srcLogFile = self.test.srcDir + "/" + self.test.testBaseName + "." + self.logName + ".log"
+        self.dstLogFile = self.test.dstDir + "/" + self.test.testBaseName + "." + self.logName + ".log"
+    # private
+    def scanForMatch (self, s) -> str:
+        while (True):
+            line = s.readline()
+            if len (line) == 0:
+                return ""
+            elif re.match (self.filterRegexp, line):
+                return line
+    def verify (self) -> (bool, str, int, str, int):
+        src = LineStream (self.srcLogFile)
+        dst = LineStream (self.dstLogFile)
+        while (True):
+            srcLine = self.scanForMatch (src)
+            dstLine = self.scanForMatch (dst)
+            if srcLine == "" and dstLine == "":
+                return (True, "", 0, "", 0)
+            if srcLine != "" and dstLine != "" and srcLine == dstLine:
+                continue
+            else:
+                return (False, srcLine, src.lineNo, dstLine, dst.lineNo)
+    # public
+    def report (self):
+        (verifyStatus, srcLine, srcLineNo, dstLine, dstLineNo) = self.verify()
+        sys.stdout.write ("Checking logs %s and %s with filter regexp \"%s\"..." % (self.srcLogFile, self.dstLogFile, self.filterRegexp))
+        if verifyStatus:
+            sys.stdout.write ("PASSED\n")
+        else:
+            sys.stdout.write ("FAILED: First diff found is:\n%dc%d\n < %s---\n > %s" %
+                              (srcLineNo,
+                               dstLineNo,
+                               srcLine,
+                               dstLine))
         
 # Assemble a .ww and run it, without generating a flowgraph (.gv) file
 
-class AsmSimTest (Test): 
+class AsmSimTest (Test):
     def __init__ (self, *args):
         super().__init__ (*args)
+    def spaces (self, n):
+        r = ""
+        for i in range (0, n):
+            r += " "
+        return r
     def run (self):
         super().run()
         self.runSubprocess (self.asmCmd)
         self.runSubprocess (self.simCmd)
-        
+        self.report()
+
 # Disassamble a core file. LAS 4/7/24: We need to establish criteria for
 # success, e.g., idempotency modulo dates when reassembled, etc. For now success
 # will simply mean the program ran successfully.
