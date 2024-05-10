@@ -1828,6 +1828,8 @@ def main_run_sim(args):
     # simulate each cycle one by one
     sim_cycle = 0
     alarm = cb.NO_ALARM
+    if cb.panel:
+        cb.panel.update_panel(cb, 0, init_PC=cpu.PC)  # I don't think we can miss a mouse clicks on this call
     # the main sim loop is enclosed in a try/except so we can clean up from a keyboard interrupt
     # Mostly this doesn't matter...  but the analog GPIO and SPI libraries need to be closed
     # to avoid an error message on subsequent calls
@@ -1839,7 +1841,7 @@ def main_run_sim(args):
             # When the simulation is not stopped, we do this check below ever n-hundred cycles to keep the
             #  panel overhead in check.
             if cb.sim_state == cb.SIM_STATE_STOP and cb.panel:
-                if cb.panel.update_panel(cb, cpu.PC, 0, cpu._AC) == False:  # watch for mouse clicks on the panel
+                if cb.panel.update_panel(cb, 0) == False:  # watch for mouse clicks on the panel
                     alarm = cb.HALT_ALARM
                     break  # bail out of the While True loop if display update says to stop
                 time.sleep(0.1)
@@ -1857,7 +1859,7 @@ def main_run_sim(args):
             if (sim_cycle % update_rate == 0) or args.SynchronousVideo or CycleDelayTime:
                 exit_alarm = cb.NO_ALARM
                 if cb.panel:
-                    if cb.panel.update_panel(cb, cpu.PC, 0, cpu._AC) == False:  # watch for mouse clicks on the panel
+                    if cb.panel.update_panel(cb, 0) == False:  # watch for mouse clicks on the panel
                         exit_alarm = cb.HALT_ALARM
                 exit_alarm |= poll_sim_io(cpu, cb)
                 if exit_alarm != cb.NO_ALARM:
@@ -1890,7 +1892,7 @@ def main_run_sim(args):
 
             if alarm != cb.NO_ALARM:
                 print("Alarm '%s' (%d) at PC=0o%o (0d%d)" % (cb.AlarmMessage[alarm], alarm, cpu.PC - 1, cpu.PC - 1))
-                if cb.panel and cb.panel.update_panel(cb, cpu.PC, 0, cpu._AC, alarm_state=alarm) == False:  # watch for mouse clicks on the panel
+                if cb.panel and cb.panel.update_panel(cb, 0, alarm_state=alarm) == False:  # watch for mouse clicks on the panel
                     break
                 # the normal case is to stop on an alarm; if the command line flag says not to, we'll try to keep going
                 # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
