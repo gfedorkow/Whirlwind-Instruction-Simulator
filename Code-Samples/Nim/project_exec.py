@@ -19,7 +19,7 @@ def auto_config_switches(cb):
 
     switch_settings_by_state = [
         [(None, 0)],
-        [("FF02Sw", 7), ("FF03Sw", 1)],  # remove up to seven pieces from one group per move
+        [("FF02Sw", 1), ("FF03Sw", 1)],  # remove up to [seven] pieces from one group per move
         [("RMIR", 4)],
         [("RMIR", 3)],
         [("RMIR", 2)],
