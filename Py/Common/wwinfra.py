@@ -184,12 +184,12 @@ class AsmLogClass (LogClass):
 class Tokenizer:
     endOfString = "<end-of-string>"
     endOfFmt = "<end-of-fmt>"
-    def __init__ (self, str, delimiter=','):
+    def __init__ (self, str):
         self.pos = 0
         self.state = 0
         self.str = str
         self.slen = len (str)
-        self.delimiter = delimiter
+        self.delimiter = ','
     def isWhitespace (self, c) -> bool:
         return c == ' ' or c == '\t'
     def getToken (self) -> str:
@@ -279,6 +279,13 @@ class Tokenizer:
                         return self.endOfString
         return self.endOfString
 
+class WwPrintTokenizer (Tokenizer):
+    pass
+
+class ArgsTokenizer (Tokenizer):
+    def __init__ (self, str):
+        super().__init__ (str)
+        self.delimiter = ' '
 
 # simple routine to print an octal number that might be 'None'
 def octal_or_none(number):

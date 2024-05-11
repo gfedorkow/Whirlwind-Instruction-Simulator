@@ -39,35 +39,41 @@ import subprocess
 import argparse
 import yaml
 import re
-from wwinfra import Tokenizer
+import shutil
+from wwinfra import ArgsTokenizer
 
 
 class Test:
     def __init__ (self, args):
+        self.testName = ""
         self.simArgs = []
         self.asmArgs = []
         self.coreArgs = []
-        self.srcDir = "." if args.SrcDir is None else args.SrcDir
-        self.dstDir =  self.srcDir + "/" + "TestResults" if args.DstDir is None else args.DstDir
-        self.dstSpecified = args.DstDir is not None
         self.testBaseName = args.testBaseName
+        self.commonDir = os.environ["PYTHONPATH"] # LAS Bail if don't find this
+        self.testsDir = os.path.normpath (self.commonDir + "/../../Tests")
+        self.testDir = os.path.normpath (self.testsDir + "/" + self.testBaseName)
+        self.testRefsDir = os.path.normpath (self.testDir + "/TestRefs")
+        self.testResultsDir = os.path.normpath (self.testDir + "/TestResults")
         self.dryRun = args.DryRun
         self.logFilters = []
-        self.commonDir = self.unixPathFormat (os.environ["PYTHONPATH"]) # LAS Bail if don't find this
-        self.asmPyProg = self.commonDir + "/../Assembler/wwasm.py"
-        self.disasmPyProg = self.commonDir + "/../Disassembler/wwdisasm.py"
-        self.simPyProg = self.commonDir + "/../Sim/wwsim.py"
-        self.wwFile = self.srcDir + "/" + self.testBaseName + ".ww"
-        self.coreFileBase = self.dstDir + "/" + self.testBaseName
+        self.asmPyProg = os.path.normpath (self.commonDir + "/../Assembler/wwasm.py")
+        self.disasmPyProg = os.path.normpath (self.commonDir + "/../Disassembler/wwdisasm.py")
+        self.simPyProg = os.path.normpath (self.commonDir + "/../Sim/wwsim.py")
+        self.wwFile = os.path.normpath (self.testDir + "/" + self.testBaseName + ".ww")
+        self.coreFileBase = os.path.normpath (self.testResultsDir + "/" + self.testBaseName)
         self.coreFile = self.coreFileBase + ".acore"
 
-    def unixPathFormat (self, x):       # Python is smart enough not to need this
-        return x
+    def spaces (self, n):
+        r = ""
+        for i in range (0, n):
+            r += " "
+        return r
 
     def parseOptions (self, str):
         if str is None:
             return []
-        t = Tokenizer (str, delimiter = ' ')
+        t = ArgsTokenizer (str)
         optionList = []
         while True:
             tok = t.getToken()
@@ -77,11 +83,35 @@ class Test:
                 optionList.append (tok)
         return optionList
 
+    def confirmOkDir (self, dir):
+        sys.stdout.write ("%s is not the standard test directory. Ok to delete? [y,N]: " % dir)
+        sys.stdout.flush()
+        r = sys.stdin.readline().lower()
+        return True if r == "y\n" else False
+
+    def setupResultsDir (self):
+        testResultsDirBaseName = os.path.basename (self.testResultsDir)
+        oldDir = self.testResultsDir + ".old"
+        if os.path.exists (oldDir):
+            if testResultsDirBaseName == "TestResults":
+                print ("LAS del1", oldDir)
+                shutil.rmtree (oldDir)
+            else:
+                if not confirmOkDir (oldDir):
+                    sys.exit (True)
+                else:
+                    print ("LAS del2", oldDir)
+                    shutil.rmtree (oldDir)
+        if os.path.exists (self.testResultsDir):
+            os.rename (self.testResultsDir, oldDir)
+        os.mkdir (self.testResultsDir)
+
     def readTestInfoFile (self):
-        s = open (self.srcDir + "/" + "TestInfo.yaml", "r")
+        s = open (self.testDir + "/" + "TestInfo.yaml", "r")
         # LAS check error
         y = yaml.Loader (s)
         d = y.get_data()
+        self.testName = d["test"]
         keys = list (d)
         if "asmOptions" in keys:
             self.asmArgs += (self.parseOptions (d["asmOptions"]))
@@ -94,18 +124,19 @@ class Test:
             for verifyDict in d["verify"]:
                 logDict = verifyDict["log"]
                 self.logFilters.append (LogFilter (logDict["name"], logDict["filter"], self))
+        return self
 
     def run (self):     # Subclass overrides should call super
         # x = subprocess.run(["ls", "-1"],capture_output=True).stdout
         self.readTestInfoFile()
-        if not self.dstSpecified and not os.path.exists (self.dstDir): 
-            os.mkdir (self.dstDir)
+        print ("LAS", self.testName)
+        self.setupResultsDir()
         if "-c" not in self.simArgs and "--CycleLimit" not in self.simArgs:
             self.simArgs += ["-c", "10000"]
         if "--LogDir" not in self.simArgs:
-            self.simArgs += ["--LogDir", self.dstDir]
+            self.simArgs += ["--LogDir", self.testResultsDir]
         if "--LogDir" not in self.asmArgs:
-            self.asmArgs += ["--LogDir", self.dstDir]
+            self.asmArgs += ["--LogDir", self.testResultsDir]
         self.asmCmd = ["python", self.asmPyProg, self.wwFile] + self.asmArgs + ["-o", self.coreFileBase]
         self.simCmd = ["python", self.simPyProg] + self.simArgs + [self.coreFile] + self.coreArgs
 
@@ -153,8 +184,8 @@ class LogFilter:
         self.logName = logName
         self.filterRegexp = "^.*" + filterRegexp + ".*$"
         self.test = test
-        self.srcLogFile = self.test.srcDir + "/" + self.test.testBaseName + "." + self.logName + ".log"
-        self.dstLogFile = self.test.dstDir + "/" + self.test.testBaseName + "." + self.logName + ".log"
+        self.srcLogFile = os.path.normpath (self.test.testRefsDir + "/" + self.test.testBaseName + "." + self.logName + ".log")
+        self.dstLogFile = os.path.normpath (self.test.testResultsDir + "/" + self.test.testBaseName + "." + self.logName + ".log")
     # private
     def scanForMatch (self, s) -> str:
         while (True):
@@ -193,11 +224,6 @@ class LogFilter:
 class AsmSimTest (Test):
     def __init__ (self, *args):
         super().__init__ (*args)
-    def spaces (self, n):
-        r = ""
-        for i in range (0, n):
-            r += " "
-        return r
     def run (self):
         super().run()
         self.runSubprocess (self.asmCmd)
@@ -219,16 +245,15 @@ class DisasmTest (Test):
 
 def main():
     parser = argparse.ArgumentParser (description="Run Whirlwind Tests")
-    parser.add_argument ("testBaseName", help="base name of test")
-    parser.add_argument ("--SrcDir", help="Dir of source ww code, reference logs, etc.", type=str)
-    parser.add_argument ("--DstDir", help="Dir where to deposit logs and other files from the test run.", type=str)
+    parser.add_argument ("testBaseName", help="base name of test. Specify \"All\" to run all tests.")
+    parser.add_argument ("--TestsDir", help="Dir where to find tests. Default $PYTHONPATH/../../Tests.", type=str)
     parser.add_argument ("--DryRun", help="Print out commands to be run, but don't run them.", action="store_true")
     args = parser.parse_args()
-    test = AsmSimTest (args)
+    # Instantiate a direct instance of Test just so we can read test info to find what subclass to instantiate
+    testClassName = Test(args).readTestInfoFile().testName + "Test"
+    # Now make the real test subclass using the metasystem
+    test = globals()[testClassName](args)
     test.run()
-    # test = DisasmTest (args)
-    # test.run()
-
 
 if __name__ == "__main__":
     main()

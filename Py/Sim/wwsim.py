@@ -526,7 +526,7 @@ class CpuClass:
     # New version using tokenizer
 
     def wwprint (self, format_and_args):
-        t = wwinfra.Tokenizer (format_and_args)
+        t = wwinfra.WwPrintTokenizer (format_and_args)
         fmtListDone = False
         fmtList = []
         argList = []
