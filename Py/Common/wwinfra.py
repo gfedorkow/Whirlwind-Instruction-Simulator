@@ -91,7 +91,7 @@ class LogClass:
         self.corefile = corefile
         self.error_count = 0
         self.factory = factory
-        self.logfile = logfile if logfile is not None else "./" # LAS !!!
+        self.logfile = logfile if logfile is not None else "./" # LAS check
         self.logout = open (self.logfile, "wt")
 
     # Private
@@ -135,7 +135,10 @@ class LogClass:
         if self._debugtap:
             self.writeLog (LogMsgType.DebugTap, LogMsgSeverity.Info, message)
 
-    # LAS check
+    # LAS 5/14/24 addendum: Yes, "error" is subject to a count, but we
+    # specialize to support the assembler version, since it needs to add line
+    # numbers: see AsmLogClass below.
+    #
     # the log-class "error" is specifically meant for error messages from the assembler
     # or similar tools, which report findings that are not fatal, but should be counted
     # and identified in an input file as 'input errors'.

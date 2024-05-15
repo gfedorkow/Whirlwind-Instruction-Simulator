@@ -1,0 +1,61 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+testType: Disasm
+baseName: quickbrn
+asmOptions:
+coreOptions:
+disasmOptions: --NoStdErr
+verify:
+  - log:
+      name: wwdisasm
+      filter: Warning|Error
+  - file:
+      name: quickbrn.ww
+      filter: .*

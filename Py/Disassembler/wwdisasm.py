@@ -492,7 +492,6 @@ def main():
     parser.add_argument("--Debug", '-d', help="Print lotsa debug info", action="store_true")
 
     args = parser.parse_args()
-    print(args)
 
     input_file_name = args.inputfile
     base_filename = re.sub('\\..*core$', '', input_file_name)
