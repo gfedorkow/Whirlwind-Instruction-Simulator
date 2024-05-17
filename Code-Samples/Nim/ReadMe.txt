@@ -19,3 +19,4 @@ nim-fc.ww gives a part of the program in source format from a CHM tape...  This 
 but does not appear to include the game algorithm.
 
 
+[Merged to main, Mar 27, 2024]

@@ -242,8 +242,8 @@ class ButtonVectorClass:
                 ret = int((y - self.bbox.min_y) // self.y_step)
             if self.y_step == 0:
                 ret = int((x - self.bbox.min_x) // self.x_step)
-        if ret is not None:
-            print("Button hit: class %s, button %d" % (self.name, self.n_button - 1 - ret))
+        # if ret is not None:
+        #     print("Button hit: class %s, button %d" % (self.name, self.n_button - 1 - ret))
         return ret
 
     # New Button is an offset in the vector 0..n_buttons
@@ -506,6 +506,7 @@ class CPUControlClass:
                                                                                                             "Read In"]
         self.control = []   # list of control panel objects indexed by x axis location
         self.dispatch = {}  # list of control panel objects indexed by switch name
+        self.panel = panel
 
         xi = x
         for i in range(0, len(toggle_sw_def)):
@@ -523,7 +524,7 @@ class CPUControlClass:
         for cbl in self.control:
             hit = cbl.test_for_hit(x, y)
             if hit:
-                print("Hit switch %s" % cbl.switch_name)
+                # print("Hit switch %s" % cbl.switch_name)
                 self.local_state_machine(cbl)
                 self.sim_state_machine(cbl, cb)
 
@@ -552,12 +553,29 @@ class CPUControlClass:
             cb.cpu.PC = 0o40
             return
 
+        if sw == "Start Over":  # start executing at the address in the PC switch register
+            cb.sim_state = cb.SIM_STATE_RUN
+            cb.cpu.PC = self.panel.pc_toggle_sw.read_button_vector()
+            return
+
         if sw == "Order-by-Order":  # don't mess with the PC, just pick up from the last address
             cb.sim_state = cb.SIM_STATE_SINGLE_STEP
             return
 
+        if sw == "Examine":  # don't mess with the PC, just pick up from the last address
+            if cb.sim_state == cb.SIM_STATE_RUN:
+                cb.log.warn("Examine button may only be used when the machine is stopped")
+            addr = self.panel.pc_toggle_sw.read_button_vector()
+            cb.cpu.cm.rd(addr)   # simply reading the register has the side effect of updating MAR and PAR/MDR
+            return
+
+        print("Unhandled Button %s" % sw)
+
+
     def set_cpu_state_lamps(self, cb, sim_state, alarm_state):
         run = sim_state != cb.SIM_STATE_STOP
+        if alarm_state:     # Zero is No Alarm
+            self.dispatch["Clear Alarm"].lamp_object.set_lamp(True)
         self.dispatch["Restart"].lamp_object.set_lamp(run)
         self.dispatch["Stop"].lamp_object.set_lamp(~run)
 
@@ -609,6 +627,10 @@ class PanelClass:
         self.ffreg.append(FFRregClass(self, addr=6, x=30, y=y_start+row*self.y_step))
         row += 3
 
+        self.cpu_reg_mar = CPURregClass(self, "MAR", x=30, y=y_start+row*self.y_step, initial_value=0)
+        row += 1
+        self.cpu_reg_par = CPURregClass(self, "PAR/MDR", x=30, y=y_start+row*self.y_step, initial_value=0)
+        row += 1
         self.cpu_reg_acc = CPURregClass(self, "ACC", x=30, y=y_start + row * self.y_step, initial_value=0)
         row += 1
         self.cpu_reg_breg = CPURregClass(self, "BR", x=30, y=y_start + row * self.y_step, initial_value=0)
@@ -647,13 +669,24 @@ class PanelClass:
     # Check the mouse, and update any buttons.  The only return from this call should be True or False to say
     # whether the Exit box was clicked or not.
     # As a side effect, the simulator run state in cb is updated
-    def update_panel(self, cb, pc, bank, acc, alarm_state=0, standalone=False):
+    def update_panel(self, cb, bank, alarm_state=0, standalone=False, init_PC=None):
         if not standalone:
             cpu = cb.cpu
             self.cpu_reg_acc.write_cpu_register(cpu._AC)
             self.cpu_reg_areg.write_cpu_register(cpu._AReg)
             self.cpu_reg_breg.write_cpu_register(cpu._BReg)
             self.cpu_reg_pc.write_cpu_register(cpu.PC + (bank << 12))
+            self.cpu_reg_mar.write_cpu_register(cpu.cm.mem_addr_reg)
+            par = cpu.cm.mem_data_reg
+            if par:  # make sure we're not sending None to the PAR lights register
+                self.cpu_reg_par.write_cpu_register(par)
+            if init_PC:
+                self.pc_toggle_sw.set_button_vector(init_PC)
+
+            for ff in self.ffreg:
+                val = cpu.cm.rd(ff.addr, skip_mar=True)   # 'skip_mar' says to _not_ update the MAR/PAR with this read
+                ff.write_ff_register(val)
+                # print("read ff reg %s at %d: val 0x%x" % (ff.name, ff.addr, val))
 
         pt = self.win.checkMouse()
         if pt[0]:
