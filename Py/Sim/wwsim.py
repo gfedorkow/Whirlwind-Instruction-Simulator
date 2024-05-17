@@ -1691,66 +1691,29 @@ def poll_sim_io(cpu, cb):
             wgt.increment_addr_location(direction_up = False)
     return ret
 
-def main_run_sim(args):
+def main_run_sim(args, cb):
     global CoreMem, CommentTab   # should have put this in the CPU Class...
 
-    # instantiate the class full of constants
-    cb = wwinfra.ConstWWbitClass(args=args, get_screen_size=True)
     CoreMem = wwinfra.CorememClass(cb)
     cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
     cb.cpu = cpu
     cpu.cpu_switches = wwinfra.WWSwitchClass(cb)
-    cb.log = wwinfra.LogClass(sys.argv[0], quiet=args.Quiet)
     cb.dbwgt = wwinfra.ScreenDebugWidgetClass(cb, CoreMem, args.AnalogScope)
 
     cycle_limit = 0  # default limit for number of sim cycles to run; 'zero' means 'forever'
     # crt_fade_delay = 500
     stop_sim = False
 
-    if args.TracePC:
-        cb.TracePC = -1
-    cb.LongTraceFormat = args.LongTraceFormat
-    if args.TraceALU:
-        cb.TraceALU = True
-    if args.TraceCoreLocation:
-        cb.TraceCoreLocation = int(args.TraceCoreLocation, 8)
-    if args.FlowGraph:
-        cb.tracelog = ww_flow_graph.init_log_from_sim()
-    cb.decimal_addresses = args.DecimalAddresses  # if set, trace output is expressed in Decimal to suit 1950's chic
-    cb.no_toggle_switch_warn = args.NoToggleSwitchWarning
-
     CycleDelayTime = 0
     if args.CycleDelayTime:
         CycleDelayTime = int(args.CycleDelayTime)
 
-    if args.Quiet:
-        cb.TraceQuiet = True
-        print("TraceQuiet turned on")
-    if args.NoZeroOneTSR:
-        cb.NoZeroOneTSR = True
-    else:
-        cb.log.info("Automatically return 0 and 1 from locations 0 and 1")
     if args.CycleLimit is not None:
         cycle_limit = args.CycleLimit
         print("CycleLimit set to %d" % cycle_limit)
-    if args.CrtFadeDelay:
-        cb.crt_fade_delay_param = args.CrtFadeDelay
-        print("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
     core_dump_file_name = None
     if args.DumpCoreToFile:
         core_dump_file_name = args.DumpCoreToFile
-
-    # WW programs may read paper tape.  If the simulator is invoked specifically with a
-    # name for the file containing paper tape bytes, use it.  If not, try taking the name
-    # of the sim file, stripping the usual .acore and adding .petrA
-    if args.PETRAfile is not None:
-        cb.PETRAfilename = args.PETRAfile
-    else:
-        cb.PETRAfilename = re.sub("\\..core$", "", args.corefile) + ".petrA"
-    if args.PETRBfile is not None:
-        cb.PETRBfilename = args.PETRBfile
-    else:
-        cb.PETRBfilename = re.sub("\\..core$", "", args.corefile) + ".petrB"
 
     if args.RestoreCoreFromFile:
         (a, b, c, d, dbwgt) = CoreMem.read_core(args.RestoreCoreFromFile, cpu, cb)
@@ -1770,12 +1733,6 @@ def main_run_sim(args):
     cpu.set_isa(CoreMem.metadata["isa"])
     if cpu.isa_1950 == False and args.Radar:
         cb.log.fatal("Radar device can only be used with 1950 ISA")
-
-    # This command line arg switches graphical output to an analog oscilloscope display
-    if args.AnalogScope:
-        cb.analog_display = True
-    if args.NoXWin:
-        cb.use_x_win = False
 
     if args.Radar:
                                         # heading is given as degrees from North, counting up clockwise
@@ -1799,16 +1756,11 @@ def main_run_sim(args):
     else:
         radar = None
 
-    # I added colored text to the trace log using ANSI escape sequences.  This works by default with
-    # Cygwin xterm, but for DOS Command Shell there's a special command to enable ANSI parsing.
-    # The command doesn't seem to exist in xterm, but running it doesn't break anything (yet).
-    os.system("color")
-
     if len(dbwgt_list):  # configure any Debug Widgets.  Do this before execution, but after all the
                          # infra setup in case we need any optional python classes
         parse_and_save_screen_debug_widgets(cb, dbwgt_list)
 
-    print("Switch CheckAlarmSpecial=%o" % cpu.cpu_switches.read_switch("CheckAlarmSpecial"))
+    cb.log.info("Switch CheckAlarmSpecial=%o" % cpu.cpu_switches.read_switch("CheckAlarmSpecial"))
     CoreMem.reset_ff(cpu)   # Reset any Flip Flop Registers specified in the Core file
     # set the CPU start address
     if JumpTo is None:
@@ -1827,7 +1779,9 @@ def main_run_sim(args):
     #  Here Commences The Main Loop
     # simulate each cycle one by one
     sim_cycle = 0
-    alarm = cb.NO_ALARM
+    if args.Panel:
+        cb.sim_state = cb.SIM_STATE_STOP
+    alarm_state = cb.NO_ALARM
     if cb.panel:
         cb.panel.update_panel(cb, 0, init_PC=cpu.PC)  # I don't think we can miss a mouse clicks on this call
     # the main sim loop is enclosed in a try/except so we can clean up from a keyboard interrupt
@@ -1842,13 +1796,13 @@ def main_run_sim(args):
             #  panel overhead in check.
             if cb.sim_state == cb.SIM_STATE_STOP and cb.panel:
                 if cb.panel.update_panel(cb, 0) == False:  # watch for mouse clicks on the panel
-                    alarm = cb.HALT_ALARM
+                    alarm_state = cb.QUIT_ALARM
                     break  # bail out of the While True loop if display update says to stop
                 time.sleep(0.1)
                 continue
 
             # ################### The Simulation Starts Here ###################
-            alarm = cpu.run_cycle()
+            alarm_state = cpu.run_cycle()
             # ################### The Rest is Just Overhead  ###################
             # poll various I/O circumstances, and update the xwin screen
             # Do this less frequently in AnaScope mode, as it slows the Rasp Pi performance,
@@ -1860,10 +1814,10 @@ def main_run_sim(args):
                 exit_alarm = cb.NO_ALARM
                 if cb.panel:
                     if cb.panel.update_panel(cb, 0) == False:  # watch for mouse clicks on the panel
-                        exit_alarm = cb.HALT_ALARM
+                        exit_alarm = cb.QUIT_ALARM
                 exit_alarm |= poll_sim_io(cpu, cb)
                 if exit_alarm != cb.NO_ALARM:
-                    alarm = exit_alarm
+                    alarm_state = exit_alarm
 
             if CycleDelayTime:
                 time.sleep(CycleDelayTime/1000)  # Sleep() takes time in fractional seconds
@@ -1884,22 +1838,22 @@ def main_run_sim(args):
                         if not cb.TraceQuiet or not (" Geo_" in reading_name):
                             print("%s: radar-code=0o%o" % (reading_name, rcode))
                     if radar.exit_alarm != cb.NO_ALARM:
-                        alarm = radar.exit_alarm
+                        alarm_state = radar.exit_alarm
 
             # if we're doing "single step", then after each instruction, set the state back to Stop
             if cb.sim_state == cb.SIM_STATE_SINGLE_STEP:
                 cb.sim_state = cb.SIM_STATE_STOP
 
-            if alarm != cb.NO_ALARM:
-                print("Alarm '%s' (%d) at PC=0o%o (0d%d)" % (cb.AlarmMessage[alarm], alarm, cpu.PC - 1, cpu.PC - 1))
-                if cb.panel and cb.panel.update_panel(cb, 0, alarm_state=alarm) == False:  # watch for mouse clicks on the panel
+            if alarm_state != cb.NO_ALARM:
+                print("Alarm '%s' (%d) at PC=0o%o (0d%d)" % (cb.AlarmMessage[alarm_state], alarm_state, cpu.PC - 1, cpu.PC - 1))
+                if cb.panel and cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # watch for mouse clicks on the panel
                     break
                 # the normal case is to stop on an alarm; if the command line flag says not to, we'll try to keep going
                 # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
-                if not args.NoAlarmStop or alarm == cb.QUIT_ALARM  or alarm == cb.HALT_ALARM:
+                if not args.NoAlarmStop or alarm_state == cb.QUIT_ALARM  or alarm_state == cb.HALT_ALARM:
                     break
             sim_cycle += 1
-            if sim_cycle % 400000 == 0 or alarm == cb.QUIT_ALARM:
+            if sim_cycle % 400000 == 0 or alarm_state == cb.QUIT_ALARM:
                 print("cycle %2.1fM; mem=%dMB" % (sim_cycle / (1000000.0), psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
             if cycle_limit and sim_cycle == cycle_limit:
                 if not cb.museum_mode:  # this is the normal case, not configured for Museum Mode forever-cycles
@@ -1916,7 +1870,7 @@ def main_run_sim(args):
                 now_day = get_the_date()
                 if last_day != now_day:
                     print("Midnight Detected; Time to Restart!  New Day = %d" % now_day)
-                    alarm = cb.NO_ALARM
+                    alarm_state = cb.NO_ALARM
                     break
 
         # Here Ends The Main Loop
@@ -1964,7 +1918,7 @@ def main_run_sim(args):
             if args.DrumStateFile:
                 d.save_drum_state(args.DrumStateFile)
 
-    return (alarm != cb.NO_ALARM, sim_cycle)   # if there are any alarms, tell the caller we really want to stop!
+    return (alarm_state, sim_cycle)   # tell the caller why we stopped!
 
 
 
@@ -2016,9 +1970,72 @@ def main():
 
     args = parser.parse_args()
 
-    (stop_sim, sim_cycle) = main_run_sim(args)
+    # instantiate the class full of constants
+    cb = wwinfra.ConstWWbitClass(args=args, get_screen_size=True)
+    cb.log = wwinfra.LogClass(sys.argv[0], quiet=args.Quiet)
+
+    # Many args are just transformed a bit and stored in the Universal Bit Bucket 'cb'
+
+    # WW programs may read paper tape.  If the simulator is invoked specifically with a
+    # name for the file containing paper tape bytes, use it.  If not, try taking the name
+    # of the sim file, stripping the usual .acore and adding .petrA
+    if args.PETRAfile is not None:
+        cb.PETRAfilename = args.PETRAfile
+    else:
+        cb.PETRAfilename = re.sub("\\..core$", "", args.corefile) + ".petrA"
+    if args.PETRBfile is not None:
+        cb.PETRBfilename = args.PETRBfile
+    else:
+        cb.PETRBfilename = re.sub("\\..core$", "", args.corefile) + ".petrB"
+
+    # This command line arg switches graphical output to an analog oscilloscope display
+    if args.AnalogScope:
+        cb.analog_display = True
+    if args.NoXWin:
+        cb.use_x_win = False
+
+    if args.CrtFadeDelay:
+        cb.crt_fade_delay_param = args.CrtFadeDelay
+        cb.log.info("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
+
+    if args.Quiet:
+        cb.TraceQuiet = True
+        cb.log.info("TraceQuiet turned on")
+    if args.NoZeroOneTSR:
+        cb.NoZeroOneTSR = True
+    else:
+        cb.log.info("Automatically return 0 and 1 from locations 0 and 1")
+
+    if args.TracePC:
+        cb.TracePC = -1
+    cb.LongTraceFormat = args.LongTraceFormat
+    if args.TraceALU:
+        cb.TraceALU = True
+    if args.TraceCoreLocation:
+        cb.TraceCoreLocation = int(args.TraceCoreLocation, 8)
+    if args.FlowGraph:
+        cb.tracelog = ww_flow_graph.init_log_from_sim()
+    cb.decimal_addresses = args.DecimalAddresses  # if set, trace output is expressed in Decimal to suit 1950's chic
+    cb.no_toggle_switch_warn = args.NoToggleSwitchWarning
+
+    # I added colored text to the trace log using ANSI escape sequences.  This works by default with
+    # Cygwin xterm, but for DOS Command Shell there's a special command to enable ANSI parsing.
+    # The command doesn't seem to exist in xterm, but running it doesn't break anything (yet).
+    os.system("color")
+
+    # This loop runs the main part of the simulator.
+    # It's a loop so that it can be restarted from the control panel, if that's in use.
+    # When the Control Panel is Not in use, the sim halts with any return of an Alarm.
+    # When the control panel _is_ in use, the sim only halts when there's an explicit Quit, e.g.
+    # a click of the red box.
+    while True:
+        (alarm_state, sim_cycle) = main_run_sim(args, cb)
+        if (alarm_state == cb.QUIT_ALARM) or \
+                (args.Panel == False and alarm_state != cb.NO_ALARM):
+            break
+
     print("Ran %d cycles; Used mem=%dMB" % (sim_cycle, psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
-    sys.exit(stop_sim)
+    sys.exit(alarm_state != cb.NO_ALARM)
 
 
 if __name__ == "__main__":

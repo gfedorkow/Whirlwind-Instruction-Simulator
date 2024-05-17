@@ -564,7 +564,7 @@ class CPUControlClass:
 
         if sw == "Examine":  # don't mess with the PC, just pick up from the last address
             if cb.sim_state == cb.SIM_STATE_RUN:
-                print("Exaamine button may only be used when the machine is stopped")
+                cb.log.warn("Examine button may only be used when the machine is stopped")
             addr = self.panel.pc_toggle_sw.read_button_vector()
             cb.cpu.cm.rd(addr)   # simply reading the register has the side effect of updating MAR and PAR/MDR
             return
