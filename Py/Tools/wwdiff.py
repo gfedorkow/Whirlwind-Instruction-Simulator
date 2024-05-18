@@ -13,7 +13,7 @@ import wwinfra
 #        self.cpu_switches = None
 
 
-# sigh, I'll put this stub here so I can call Read Core without more special cases.
+# sigh, I'll put this stub here, so I can call Read Core without more special cases.
 class CpuClass:
     def __init__(self, cb):
         self.cb = cb
@@ -24,6 +24,59 @@ class CpuClass:
         self.cm = None
         self.ExecTab = {}
 
+
+# Functionality extended in Jan 2024 to include not just seeing the diffs, but creating a
+# merge of them, overwriting the first core with diffs from the second.
+# This is used to merge base and patch tapes into a single runnable image.
+# Core A is used as the base; Core B is merged into the base.
+def merge_core(core_a, core_b, cb):
+    line_a = ''
+    merges = 0
+    overwrites = 0
+    col_diffs = 0
+    column = 0
+    for address in range(0, cb.CORE_SIZE):
+        if column == 0:
+            line_a = '@C%05o: ' % address
+
+        wrd_a = core_a.rd(address, fix_none=False)
+        wrd_b = core_b.rd(address, fix_none=False)
+        if (wrd_a is None) and (wrd_b is not None):
+            core_a.wr(address, wrd_b)
+            line_a += "m %-9s" % (wwinfra.octal_or_none(wrd_b) + ' ')
+            merges += 1
+            col_diffs += 1
+        elif (wrd_a is not None) and (wrd_b is not None) and (wrd_a != wrd_b):
+            core_a.wr(address, wrd_b)
+            line_a += "o %-9s" % (wwinfra.octal_or_none(wrd_b) + ' ')
+            overwrites += 1
+            col_diffs += 1
+
+        else:
+            line_a += '     --    '
+        column += 1
+        if column == 8 or address == (cb.CORE_SIZE - 1):
+            if col_diffs != 0:
+                print("%s" % line_a)
+            col_diffs = 0
+            column = 0
+
+    metadata_diffs = 0
+    # most of the metadata is just string-compare...
+    for s in ("ww_tapeid", "filename_from_core"):
+        core_a.metadata[s] += " + " + core_b.metadata[s]
+        print(" meta %s: %s" % (s, core_a.metadata[s]))
+
+    core_a.metadata["strings"] += core_b.metadata["strings"]
+    # ...but jump-to is an integer
+    if core_a.metadata["jumpto"] != core_b.metadata["jumpto"]:
+        print("< meta %s: %s" % (s, core_a.metadata["jumpto"]))
+        print("> meta %s: %s" % (s, core_b.metadata["jumpto"]))
+        metadata_diffs += 1
+        # metadata_goto = jumpto_addr
+
+    cb.log.info("Core Merges = %d(d), Core Overwrites = %d(d), Metadata Diffs = %d(d)" %
+                (merges, overwrites, metadata_diffs))
 
 
 def diff_core(core_a, core_b, cb):
@@ -58,7 +111,7 @@ def diff_core(core_a, core_b, cb):
 
     metadata_diffs = 0
     # most of the metadata is just string-compare...
-    for s in ("ww_tapeid", "hash", "strings", "stats", "filename_from_core", ):
+    for s in ("ww_tapeid", "hash", "strings", "stats", "filename_from_core"):
         if core_a.metadata[s] != core_b.metadata[s]:
             print("< meta %s: %s" % (s, core_a.metadata[s]))
             print("> meta %s: %s" % (s, core_b.metadata[s]))
@@ -76,36 +129,94 @@ def diff_core(core_a, core_b, cb):
 #            diffs += 1
     cb.log.info("Core Diffs = %d(d), Metadata Diffs = %d(d)" % (diffs, metadata_diffs))
 
+
+def scan_similarity(core_a, core_b, cb):
+    longest_longest_run = 0
+    for core_b_offset in range(0, 2000):
+        (longest_run, longest_run_start_at, n_runs) = measure_similarity(core_a, core_b, core_b_offset, cb)
+        print("Offset %d: longest_run = %d at 0o%o, n_runs = %d" %
+              (core_b_offset, longest_run, longest_run_start_at, n_runs))
+        if longest_run > longest_longest_run:
+            longest_longest_run = longest_run
+    print("longest run = %d" % longest_longest_run)
+
+def measure_similarity(core_a, core_b, core_b_offset, cb):
+    longest_run = 0
+    current_run = 0
+    longest_run_start_at = 0
+    current_run_start_at = 0
+    n_runs = 0
+    for address in range(0, cb.CORE_SIZE):
+        wrd_a = core_a.rd(address, fix_none=False)
+        wrd_b = core_b.rd((address + core_b_offset) % cb.CORE_SIZE, fix_none=False)
+        if wrd_a is None or wrd_b is None:
+            continue
+        if wrd_a & 0o174 == wrd_b & 0o174 :
+            current_run += 1
+            if current_run == 1:
+                current_run_start_at = address
+            if current_run == 5:
+                n_runs += 1
+        else:
+            if current_run > longest_run:
+                longest_run = current_run
+                longest_run_start_at = current_run_start_at
+            current_run = 0
+    return(longest_run, current_run_start_at, n_runs)
+
+
 # Pythonic entry point
 def main():
     parser = argparse.ArgumentParser(description='Compare a Whirlwind tape image.')
-    parser.add_argument("diff_file_a", help="first .core file")
-    parser.add_argument("diff_file_b", help="second .core file")
+    parser.add_argument("inputfiles", nargs='*', help=".core file(s)")
+    # parser.add_argument("diff_file_b", help="second .core file")
+    parser.add_argument("-o", "--outputfile", help="Merged file output", type=str)
     parser.add_argument("-q", "--Quiet", help="Suppress run-time message", action="store_true")
+    parser.add_argument("-m", "--Merge", help="Merge files into File A", action="store_true")
     parser.add_argument("-5", "--Debug556", help="WW 556 block debug info", action="store_true")
+    parser.add_argument("-s", "--Similarity", help="Measure similarity of Core A and Core B", action="store_true")
 
     args = parser.parse_args()
 
     cb = wwinfra.ConstWWbitClass()
     cpu = CpuClass(cb)
     cb.cpu = cpu
-    cpu.cpu_switches = wwinfra.WWSwitchClass()
+    cpu.cpu_switches = wwinfra.WWSwitchClass(cb)
     log = wwinfra.LogClass(sys.argv[0], quiet=args.Quiet, debug556=args.Debug556)
     cb.log = log
+
+    if args.Merge and args.outputfile is None:
+        cb.log.fatal("%s requires an output file (-o) for Merge mode" % sys.argv[0])
+
+    if len(args.inputfiles) < 2:
+        cb.log.fatal("%s needs more than one file arg" % sys.argv[0])
+    if len(args.inputfiles) > 2 and (not args.Merge):
+        cb.log.fatal("%s can only diff two files" % sys.argv[0])
 
     coremem_a = wwinfra.CorememClass(cb)
     coremem_b = wwinfra.CorememClass(cb)
 
-    cb.log.info("input files: %s = <,   %s = >" % (args.diff_file_a, args.diff_file_b))
-
     # ugh, this network of semi-global data structures is getting out of hand...
     # I hadn't anticipated more than one CoreMem when writing the code...
     cb.cpu.cm = coremem_a
-    coremem_a.read_core(args.diff_file_a, cpu, cb)
-    cb.cpu.cm = coremem_b
-    coremem_b.read_core(args.diff_file_b, cpu, cb)
+    coremem_a.read_core(args.inputfiles[0], cpu, cb)
 
-    diff_core(coremem_a, coremem_b, cb)
+    passnum = 1  # count from One (not zero)
+    while passnum < len(args.inputfiles):
+        cb.log.info("input file pair: %s = <,   %s = >" % (args.inputfiles[0], args.inputfiles[passnum]))
+        cb.cpu.cm = coremem_b
+        coremem_b.read_core(args.inputfiles[passnum], cpu, cb)
+
+        if args.Merge:
+            merge_core(coremem_a, coremem_b, cb)  # "ww_tapeid", "hash", "strings", "stats", "filename_from_core"
+            wwinfra.write_core(cb, [coremem_a._coremem[0] + coremem_a._coremem[1]], 0, False,
+                               coremem_a.metadata["filename_from_core"], coremem_a.metadata["ww_tapeid"],
+                               coremem_a.metadata["jumpto"], args.outputfile, coremem_a.metadata["strings"])
+        elif args.Similarity:
+            scan_similarity(coremem_a, coremem_b, cb)
+        else:
+            diff_core(coremem_a, coremem_b, cb)
+        passnum += 1
 
 
 if __name__ == "__main__":

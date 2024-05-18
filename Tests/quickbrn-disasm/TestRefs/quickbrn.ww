@@ -3,7 +3,7 @@
 @0001:000001     one: .word 0o1  @@Flexo:'#'
                .ORG 0o00040
 @0040:100261   start:  ca  r0261   ; clear and add  
-@0041:000402           si  0o402   ; select I/O: Device Teletype base=0o4, mask=0o0  
+@0041:000402           si  0o402   ; select I/O: Teletype  
 @0042:024000   i0042:  rc    0o0   ; record @@ JumpedToBy: a0044  
 @0043:074045           sp  i0045   ; sub-program  
 
@@ -18,7 +18,7 @@
 @0053:044055           td  i0055   ; transfer digits  
 @0054:044072           td  i0072   ; transfer digits  
 @0055:100317   i0055:  ca  r0317   ; clear and add @@ JumpedToBy: a0064 WrittenBy: a0053 ReadBy: a0063  
-@0056:000402           si  0o402   ; select I/O: Device Teletype base=0o4, mask=0o0  
+@0056:000402           si  0o402   ; select I/O: Teletype  
 @0057:024000   i0057:  rc    0o0   ; record @@ JumpedToBy: a0061  
 @0060:074062           sp  i0062   ; sub-program  
 
@@ -30,14 +30,14 @@
 @0064:074055           sp  i0055   ; sub-program  
 
 @0065:100262   i0065:  ca  r0262   ; clear and add @@ JumpedToBy: i0062  
-@0066:000402           si  0o402   ; select I/O: Device Teletype base=0o4, mask=0o0  
+@0066:000402           si  0o402   ; select I/O: Teletype  
 @0067:024000   i0067:  rc    0o0   ; record @@ JumpedToBy: a0071  
 @0070:074072           sp  i0072   ; sub-program  
 
 @0071:074067           sp  i0067   ; sub-program  
 
 @0072:100317   i0072:  ca  r0317   ; clear and add @@ JumpedToBy: a0070 a0101 WrittenBy: a0054 ReadBy: a0100  
-@0073:000402           si  0o402   ; select I/O: Device Teletype base=0o4, mask=0o0  
+@0073:000402           si  0o402   ; select I/O: Teletype  
 @0074:024000   i0074:  rc    0o0   ; record @@ JumpedToBy: a0076  
 @0075:074077           sp  i0077   ; sub-program  
 
@@ -89,7 +89,7 @@
 @0144:074145           sp  i0145   ; sub-program  
 
 @0145:100263   i0145:  ca  r0263   ; clear and add @@ JumpedToBy: a0117 a0135 a0144  
-@0146:000402           si  0o402   ; select I/O: Device Teletype base=0o4, mask=0o0  
+@0146:000402           si  0o402   ; select I/O: Teletype  
 @0147:024000   i0147:  rc    0o0   ; record @@ JumpedToBy: a0151  
 @0150:074152           sp  i0152   ; sub-program  
 
@@ -111,7 +111,7 @@
 @0167:110216   w0167:  ad  r0216   ; add @@ WrittenBy: a0162  
 @0170:074171           sp  i0171   ; sub-program  
 
-@0171:000402   i0171:  si  0o402   ; select I/O: Device Teletype base=0o4, mask=0o0 @@ JumpedToBy: a0170  
+@0171:000402   i0171:  si  0o402   ; select I/O: Teletype @@ JumpedToBy: a0170  
 @0172:024000   i0172:  rc    0o0   ; record @@ JumpedToBy: a0174  
 @0173:074175           sp  i0175   ; sub-program  
 
@@ -124,7 +124,7 @@
 
 @0201:100230   r0201:  ca  string   ; clear and add @@ ReadBy: a0176  
 @0202:100230 inner_loop:  ca  string   ; clear and add @@ JumpedToBy: a0200 a0211 WrittenBy: a0177 ReadBy: a0210  
-@0203:000402           si  0o402   ; select I/O: Device Teletype base=0o4, mask=0o0  
+@0203:000402           si  0o402   ; select I/O: Teletype  
 @0204:024000   i0204:  rc    0o0   ; record @@ JumpedToBy: a0206  
 @0205:074207           sp  inner_end_test   ; sub-program  
 
@@ -135,20 +135,20 @@
 @0210:130202           ao  inner_loop   ; add one  
 @0211:074202           sp  inner_loop   ; sub-program  
 
-@0212:000567   w0212:  si  0o567   ; select I/O: Unknown Device @@ WrittenBy: a0046 a0133 a0143 ReadBy: a0047 i0102 a0105 a0111 a0134 i0175  
+@0212:000567   w0212:  si  0o567   ; select I/O: unknown i/o device @@ WrittenBy: a0046 a0133 a0143 ReadBy: a0047 i0102 a0105 a0111 a0134 i0175  
 @0213:000001   w0213: .word 0o1 @@ WrittenBy: a0104 a0121 ReadBy: a0115 a0142 a0161  @@Flexo:'#'
-@0214:000010   w0214:  si   0o10   ; select I/O: Unknown Device @@ WrittenBy: a0110 a0126 ReadBy: a0122 a0140 a0156  @@Flexo:' '
-@0215:000100   w0215:  si  0o100   ; select I/O: Device Magnetic Tape base=0o4, mask=0o0 @@ WrittenBy: a0114 ReadBy: a0127 i0136 w0153  
-@0216:000015   r0216:  si   0o15   ; select I/O: Device Expand Display base=0o4, mask=0o0 @@ ReadBy: w0163 w0165 w0167 r0265  @@Flexo:'+'
-@0217:000035           si   0o35   ; select I/O: Unknown Device  @@Flexo:'-'
-@0220:000031           si   0o31   ; select I/O: Unknown Device  @@Flexo:','
-@0221:000020           si   0o20   ; select I/O: Unknown Device  @@Flexo:'<color>'
-@0222:000012           si   0o12   ; select I/O: Unknown Device  @@Flexo:'s'
+@0214:000010   w0214:  si   0o10   ; select I/O: unknown i/o device @@ WrittenBy: a0110 a0126 ReadBy: a0122 a0140 a0156  @@Flexo:' '
+@0215:000100   w0215:  si  0o100   ; select I/O: Magnetic Tape @@ WrittenBy: a0114 ReadBy: a0127 i0136 w0153  
+@0216:000015   r0216:  si   0o15   ; select I/O: Expand Display @@ ReadBy: w0163 w0165 w0167 r0265  @@Flexo:'+'
+@0217:000035           si   0o35   ; select I/O: unknown i/o device  @@Flexo:'-'
+@0220:000031           si   0o31   ; select I/O: unknown i/o device  @@Flexo:','
+@0221:000020           si   0o20   ; select I/O: unknown i/o device  @@Flexo:'<color>'
+@0222:000012           si   0o12   ; select I/O: unknown i/o device  @@Flexo:'s'
 @0223:000001   i0223: .word 0o1 @@ JumpedToBy: a0234 WrittenBy: a0251  @@Flexo:'#'
-@0224:000025           si   0o25   ; select I/O: Unknown Device  @@Flexo:'l'
-@0225:000034           si   0o34   ; select I/O: Unknown Device  @@Flexo:'c'
-@0226:000014           si   0o14   ; select I/O: Device Expand Display base=0o4, mask=0o0  @@Flexo:'i'
-@0227:000003           si    0o3   ; select I/O: Unknown Device  @@Flexo:'8'
+@0224:000025           si   0o25   ; select I/O: unknown i/o device  @@Flexo:'l'
+@0225:000034           si   0o34   ; select I/O: unknown i/o device  @@Flexo:'c'
+@0226:000014           si   0o14   ; select I/O: Expand Display  @@Flexo:'i'
+@0227:000003           si    0o3   ; select I/O: unknown i/o device  @@Flexo:'8'
 @0230:004000  string: .word 0o004000 @@ ReadBy: r0201 inner_loop  
 @0231:076045           sp  0o2045   ; sub-program  
 
@@ -175,19 +175,19 @@
 @0253:066344           ex  0o2344   ; exchange  
 @0254:011575           bi  0o1575   ; block transfer in  
 @0255:063012           ab  0o3012   ; add B-Reg  
-@0256:002233           si  0o2233   ; select I/O: Unknown Device  
+@0256:002233           si  0o2233   ; select I/O: unknown i/o device  
 @0257:053614           ta  0o3614   ; transfer address  
 @0260:006642          .word 0o006642  
 @0261:166277   r0261:  sf  0o2277   ; scale factor @@ ReadBy: start  
-@0262:001740   r0262:  si  0o1740   ; select I/O: Unknown Device @@ ReadBy: i0065  
+@0262:001740   r0262:  si  0o1740   ; select I/O: unknown i/o device @@ ReadBy: i0065  
 @0263:010233   r0263:  bi  w0233   ; block transfer in @@ ReadBy: i0145  
 @0264:071740           cp  0o1740   ; conditional program  
 
 @0265:100216   r0265:  ca  r0216   ; clear and add @@ ReadBy: i0152 a0155 a0160  
-@0266:000011   r0266:  si   0o11   ; select I/O: Unknown Device @@ ReadBy: a0116 a0123 a0130  @@Flexo:'='
-@0267:000017   r0267:  si   0o17   ; select I/O: Device Memory-Clear Device base=0o4, mask=0o0 @@ ReadBy: a0103  @@Flexo:'2'
-@0270:000360   r0270:  si  0o360   ; select I/O: Unknown Device @@ ReadBy: a0106  
-@0271:003400   r0271:  si  0o3400   ; select I/O: Unknown Device @@ ReadBy: a0112  
+@0266:000011   r0266:  si   0o11   ; select I/O: unknown i/o device @@ ReadBy: a0116 a0123 a0130  @@Flexo:'='
+@0267:000017   r0267:  si   0o17   ; select I/O: Memory-Clear Device @@ ReadBy: a0103  @@Flexo:'2'
+@0270:000360   r0270:  si  0o360   ; select I/O: unknown i/o device @@ ReadBy: a0106  
+@0271:003400   r0271:  si  0o3400   ; select I/O: unknown i/o device @@ ReadBy: a0112  
 @0272:130307 exit_inner:  ao  outer_loop_counter   ; add one @@ JumpedToBy: inner_end_test  
 @0273:070052 outer_end_test:  cp  outer_loop   ; conditional program  
 
@@ -206,11 +206,11 @@
 @0307:177730 outer_loop_counter:  md  0o3730   ; multiply digits no roundoff (AND) @@ WrittenBy: a0275 ReadBy: exit_inner  
 @0310:177730 init_outer_loop:  md  0o3730   ; multiply digits no roundoff (AND) @@ ReadBy: a0274  
 @0311:100312   r0311:  ca  r0312   ; clear and add @@ ReadBy: a0050  
-@0312:000317   r0312:  si  0o317   ; select I/O: Device Intervention and Activate Device base=0o4, mask=0o0 @@ ReadBy: outer_loop r0311  
-@0313:000320           si  0o320   ; select I/O: Device Intervention and Activate Device base=0o4, mask=0o0  
-@0314:000324           si  0o324   ; select I/O: Device Intervention and Activate Device base=0o4, mask=0o0  
-@0315:000327           si  0o327   ; select I/O: Device Intervention and Activate Device base=0o4, mask=0o0  
-@0316:000334           si  0o334   ; select I/O: Device Intervention and Activate Device base=0o4, mask=0o0  
+@0312:000317   r0312:  si  0o317   ; select I/O: Intervention and Activate Device @@ ReadBy: outer_loop r0311  
+@0313:000320           si  0o320   ; select I/O: Intervention and Activate Device  
+@0314:000324           si  0o324   ; select I/O: Intervention and Activate Device  
+@0315:000327           si  0o327   ; select I/O: Intervention and Activate Device  
+@0316:000334           si  0o334   ; select I/O: Intervention and Activate Device  
 @0317:172000   r0317: .word 0o172000 @@ ReadBy: i0055 i0072  
 @0320:061404           ab  0o1404   ; add B-Reg  
 @0321:047144           td  0o3144   ; transfer digits  

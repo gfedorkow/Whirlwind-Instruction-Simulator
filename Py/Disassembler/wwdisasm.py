@@ -119,10 +119,14 @@ def cf_decode(pqr):
     return op
 
 
-def Decode_IO(io_address):
+
+"""
+I moved this routine into wwinfra so I could re-use it in the assembler
+It *should* be safe to delete this copy!
+def old_Decode_IO(lcb, io_address):
     devname = ''
     addr_info = (0, 0)
-    for d in cb.DevNameDecoder:
+    for d in lcb.DevNameDecoder:
         addr_info = d[0]
         addr_base = addr_info[0]
         addr_mask = addr_info[1]
@@ -134,7 +138,7 @@ def Decode_IO(io_address):
     else:
         ret = "Unknown Device"
     return ret
-
+"""
 
 def DecodeOp(w, pc, auto_sym, manual_sym, short=False):
     global cb
@@ -177,7 +181,7 @@ def DecodeOp(w, pc, auto_sym, manual_sym, short=False):
         long_op = "%3s  %5s" % (cb.op_code[op][0], operand)
         comment = "cf" + cf_decode(addr)
     elif op_name == "si":
-        comment = "select I/O: " + Decode_IO(addr)
+        comment = "select I/O: " + cb.Decode_IO(addr)
 
     if short:
         return op_name

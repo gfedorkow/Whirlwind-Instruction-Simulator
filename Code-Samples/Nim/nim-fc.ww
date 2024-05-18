@@ -1,0 +1,1701 @@
+                        ;  @line:3a
+
+;        .org 0o40
+
+       ;CS-II Src: a1,6	5	0	7	b1	b2	3	2	b3	a2,b4	1
+a1:    .word 6               ;  @line:4a
+       .word 5               ;  @line:4b
+       .word 0               ;  @line:4c
+       .word 7               ;  @line:4d
+       .word b1              ;  @line:4e
+       .word b2              ;  @line:4f
+       .word 3               ;  @line:4g
+       .word 2               ;  @line:4h
+       .word b3              ;  @line:4i
+a2:    .word b4              ;  @line:4j
+       .word 1               ;  @line:4k
+
+       ;CS-II Src: b7	-0	0	0	2	0	4	0	a3,0	a4,0.51071
+       .word b7              ;  @line:5a
+       .word -0              ;  @line:5b
+       .word 0               ;  @line:5c
+       .word 0               ;  @line:5d
+       .word 2               ;  @line:5e
+       .word 0               ;  @line:5f
+       .word 4               ;  @line:5g
+       .word 0               ;  @line:5h
+a3:    .word 0               ;  @line:5i
+a4:    .word 0.51071         ;  @line:5j
+
+       ;CS-II Src: 0.12075	0.60024	0.24052	0.21010	0.71040	0.75050	0.02010	0.34060	0.70054	0.16040	0.02024
+       .word 0.12075         ;  @line:6a
+       .word 0.60024         ;  @line:6b
+       .word 0.24052         ;  @line:6c
+       .word 0.21010         ;  @line:6d
+       .word 0.71040         ;  @line:6e
+       .word 0.75050         ;  @line:6f
+       .word 0.02010         ;  @line:6g
+       .word 0.34060         ;  @line:6h
+       .word 0.70054         ;  @line:6i
+       .word 0.16040         ;  @line:6j
+       .word 0.02024         ;  @line:6k
+
+       ;CS-II Src: 0.10050	0.06012	0.10046	0.60030	0.10040	0.50002	0.10064	0.06070	0.02021	1.51077	a5,0.51020
+       .word 0.10050         ;  @line:7a
+       .word 0.06012         ;  @line:7b
+       .word 0.10046         ;  @line:7c
+       .word 0.60030         ;  @line:7d
+       .word 0.10040         ;  @line:7e
+       .word 0.50002         ;  @line:7f
+       .word 0.10064         ;  @line:7g
+       .word 0.06070         ;  @line:7h
+       .word 0.02021         ;  @line:7i
+       .word 1.51077         ;  @line:7j
+a5:    .word 0.51020         ;  @line:7k
+
+       ;CS-II Src: 0.71034	0.75060	0.30064	0.24006	0.40016	0.44006	0.40014	0.60030	0.12031	0.10052	0.60016
+       .word 0.71034         ;  @line:8a
+       .word 0.75060         ;  @line:8b
+       .word 0.30064         ;  @line:8c
+       .word 0.24006         ;  @line:8d
+       .word 0.40016         ;  @line:8e
+       .word 0.44006         ;  @line:8f
+       .word 0.40014         ;  @line:8g
+       .word 0.60030         ;  @line:8h
+       .word 0.12031         ;  @line:8i
+       .word 0.10052         ;  @line:8j
+       .word 0.60016         ;  @line:8k
+
+       ;CS-II Src: 0.10050	0.06074	0.02010	0.46060	0.30010	0.40050	0.02010	0.64006	0.70002	0.21020	1.51077
+       .word 0.10050         ;  @line:9a
+       .word 0.06074         ;  @line:9b
+       .word 0.02010         ;  @line:9c
+       .word 0.46060         ;  @line:9d
+       .word 0.30010         ;  @line:9e
+       .word 0.40050         ;  @line:9f
+       .word 0.02010         ;  @line:9g
+       .word 0.64006         ;  @line:9h
+       .word 0.70002         ;  @line:9i
+       .word 0.21020         ;  @line:9j
+       .word 1.51077         ;  @line:9k
+
+       ;CS-II Src: a6,0.51071	0.52075	0.60016	0.24010	0.70060	0.74002	0.10014	0.12010	0.14044	0.44002
+a6:    .word 0.51071         ;  @line:10a
+       .word 0.52075         ;  @line:10b
+       .word 0.60016         ;  @line:10c
+       .word 0.24010         ;  @line:10d
+       .word 0.70060         ;  @line:10e
+       .word 0.74002         ;  @line:10f
+       .word 0.10014         ;  @line:10g
+       .word 0.12010         ;  @line:10h
+       .word 0.14044         ;  @line:10i
+       .word 0.44002         ;  @line:10j
+
+       ;CS-II Src: 0.64006	0.44021	0.10071	0.54075	0.44002	0.06012	0.02010	0.40024	0.52010	0.06030	0.60040
+       .word 0.64006         ;  @line:11a
+       .word 0.44021         ;  @line:11b
+       .word 0.10071         ;  @line:11c
+       .word 0.54075         ;  @line:11d
+       .word 0.44002         ;  @line:11e
+       .word 0.06012         ;  @line:11f
+       .word 0.02010         ;  @line:11g
+       .word 0.40024         ;  @line:11h
+       .word 0.52010         ;  @line:11i
+       .word 0.06030         ;  @line:11j
+       .word 0.60040         ;  @line:11k
+
+       ;CS-II Src: 0.50002	0.24010	0.70660	0.74002	1.21051	a7,0	0	0	0	1	0
+       .word 0.50002         ;  @line:12a
+       .word 0.24010         ;  @line:12b
+       .word 0.70660         ;  @line:12c
+       .word 0.74002         ;  @line:12d
+       .word 1.21051         ;  @line:12e
+a7:    .word 0               ;  @line:12f
+       .word 0               ;  @line:12g
+       .word 0               ;  @line:12h
+       .word 0               ;  @line:12i
+       .word 1               ;  @line:12j
+       .word 0               ;  @line:12k
+
+       ;CS-II Src: a8,0	0	0	+0.01	0.5	0	10	9	b8	b9	a9,0
+a8:    .word 0               ;  @line:13a
+       .word 0               ;  @line:13b
+       .word 0               ;  @line:13c
+       .word +0.01           ;  @line:13d
+       .word +0.5             ;  @line:13e
+       .word 0               ;  @line:13f
+       .word 10              ;  @line:13g
+       .word 9               ;  @line:13h
+       .word b8              ;  @line:13i
+       .word b9              ;  @line:13j
+a9:    .word 0               ;  @line:13k
+
+       ;CS-II Src: 0	+0.05	+0.10	+0.15	+0.20	+0.25	+0.30	-0.60	-0.30	a10,+0.40	+0.70
+       .word 0               ;  @line:14a
+       .word +0.05           ;  @line:14b
+       .word +0.10           ;  @line:14c
+       .word +0.15           ;  @line:14d
+       .word +0.20           ;  @line:14e
+       .word +0.25           ;  @line:14f
+       .word +0.30           ;  @line:14g
+       .word -0.60           ;  @line:14h
+       .word -0.30           ;  @line:14i
+a10:   .word +0.40           ;  @line:14j
+       .word +0.70           ;  @line:14k
+
+       ;CS-II Src: +0.60	+0.10	-0.40	-0.90	8	2a10	9a9	8a9	a11,b8	b7	0
+       .word +0.60           ;  @line:15a
+       .word +0.10           ;  @line:15b
+       .word -0.40           ;  @line:15c
+       .word -0.90           ;  @line:15d
+       .word 8               ;  @line:15e
+       .word a10 + 2         ; ;old label: 2a10, new label: a10 + 2 @line:15f
+       .word a9 + 9          ; ;old label: 9a9, new label: a9 + 9 @line:15g
+       .word a9 + 8          ; ;old label: 8a9, new label: a9 + 8 @line:15h
+a11:   .word b8              ;  @line:15i
+       .word b7              ;  @line:15j
+       .word 0               ;  @line:15k
+
+       ;CS-II Src: 6	5	4	0	0	0	0	a12,0	0	0	0
+       .word 6               ;  @line:16a
+       .word 5               ;  @line:16b
+       .word 4               ;  @line:16c
+       .word 0               ;  @line:16d
+       .word 0               ;  @line:16e
+       .word 0               ;  @line:16f
+       .word 0               ;  @line:16g
+a12:   .word 0               ;  @line:16h
+       .word 0               ;  @line:16i
+       .word 0               ;  @line:16j
+       .word 0               ;  @line:16k
+
+       ;CS-II Src: b1,0	0	0	0	0	0	0	0	b2,0
+b1:    .word 0               ;  @line:17a
+       .word 0               ;  @line:17b
+       .word 0               ;  @line:17c
+       .word 0               ;  @line:17d
+       .word 0               ;  @line:17e
+       .word 0               ;  @line:17f
+       .word 0               ;  @line:17g
+       .word 0               ;  @line:17h
+b2:    .word 0               ;  @line:17i
+
+       ;CS-II Src: 0	0	0	0	0	0	0	b3,0	0	0	0
+       .word 0               ;  @line:18a
+       .word 0               ;  @line:18b
+       .word 0               ;  @line:18c
+       .word 0               ;  @line:18d
+       .word 0               ;  @line:18e
+       .word 0               ;  @line:18f
+       .word 0               ;  @line:18g
+b3:    .word 0               ;  @line:18h
+       .word 0               ;  @line:18i
+       .word 0               ;  @line:18j
+       .word 0               ;  @line:18k
+
+       ;CS-II Src: 0	0	0	0	b4,0	0	0	0	0	0	0
+       .word 0               ;  @line:19a
+       .word 0               ;  @line:19b
+       .word 0               ;  @line:19c
+       .word 0               ;  @line:19d
+b4:    .word 0               ;  @line:19e
+       .word 0               ;  @line:19f
+       .word 0               ;  @line:19g
+       .word 0               ;  @line:19h
+       .word 0               ;  @line:19i
+       .word 0               ;  @line:19j
+       .word 0               ;  @line:19k
+
+       ;CS-II Src: 0	b5,0	b6,0	b7,0	0	0	0	0	0	0	0
+       .word 0               ;  @line:20a
+b5:    .word 0               ;  @line:20b
+b6:    .word 0               ;  @line:20c
+b7:    .word 0               ;  @line:20d
+       .word 0               ;  @line:20e
+       .word 0               ;  @line:20f
+       .word 0               ;  @line:20g
+       .word 0               ;  @line:20h
+       .word 0               ;  @line:20i
+       .word 0               ;  @line:20j
+       .word 0               ;  @line:20k
+
+       ;CS-II Src: b8,0	0	0	0	0	0	0	0	b9,0	0	0
+b8:    .word 0               ;  @line:21a
+       .word 0               ;  @line:21b
+       .word 0               ;  @line:21c
+       .word 0               ;  @line:21d
+       .word 0               ;  @line:21e
+       .word 0               ;  @line:21f
+       .word 0               ;  @line:21g
+       .word 0               ;  @line:21h
+b9:    .word 0               ;  @line:21i
+       .word 0               ;  @line:21j
+       .word 0               ;  @line:21k
+
+       ;CS-II Src: 0	0	0	0	0	b10,0	f1,si192	rd	cpf2	spw1	f2,caa7	su0	cpf5	ao3a7	spg1
+       .word 0               ;  @line:22a
+       .word 0               ;  @line:22b
+       .word 0               ;  @line:22c
+       .word 0               ;  @line:22d
+       .word 0               ;  @line:22e
+b10:   .word 0               ;  @line:22f
+f1:    si 192             ;  @line:22g
+       rd 0               ; default operand;  @line:22h
+       cp f2              ;  @line:22i
+       sp w1              ;  @line:22j
+f2:    ca a7              ;  @line:22k
+       su 0               ;  @line:22l
+       cp f5              ;  @line:22m
+       ao a7 + 3          ; ;old label: 3a7, new label: a7 + 3 @line:22n
+       sp g1              ;  @line:22o
+
+       ;CS-II Src: f5,ca4a7	su0
+f5:    ca a7 + 4          ; ;old label: 4a7, new label: a7 + 4 @line:23a
+       su 0               ;  @line:23b
+
+       ;CS-II Src: cpf7	spu1	si8	ca2	ts4a11	ad1	ts3a11	su1	su1	ts5a11	ca3
+       cp f7              ;  @line:24a
+       sp u1              ;  @line:24b
+       si 8               ;  @line:24c
+       ca 2               ;  @line:24d
+       ts a11 + 4         ; ;old label: 4a11, new label: a11 + 4 @line:24e
+       ad 1               ;  @line:24f
+       ts a11 + 3         ; ;old label: 3a11, new label: a11 + 3 @line:24g
+       su 1               ;  @line:24h
+       su 1               ;  @line:24i
+       ts a11 + 5         ; ;old label: 5a11, new label: a11 + 5 @line:24j
+       ca 3               ;  @line:24k
+
+       ;CS-II Src: ts6a2	aoa7	spw1	f7,ao1a7	ao2a7	ca1a7	su6a2	cpg1
+       ts a2 + 6          ; ;old label: 6a2, new label: a2 + 6 @line:25a
+       ao a7              ;  @line:25b
+       sp w1              ;  @line:25c
+f7:    ao a7 + 1          ; ;old label: 1a7, new label: a7 + 1 @line:25d
+       ao a7 + 2          ; ;old label: 2a7, new label: a7 + 2 @line:25e
+       ca a7 + 1          ; ;old label: 1a7, new label: a7 + 1 @line:25f
+       su a2 + 6          ; ;old label: 6a2, new label: a2 + 6 @line:25g
+       cp g1              ;  @line:25h
+
+       ;CS-II Src: spu1	spp1	g1,si222	rd	ts2a11	su3a1	cp6g1	spu3	si223	rd	ts8a2	srr6
+       sp u1              ;  @line:26a
+       sp 0              ;  @line:26b
+g1:    si 222             ;  @line:26c
+       rd 0               ; default operand;  @line:26d
+       ts a11 + 2         ; ;old label: 2a11, new label: a11 + 2 @line:26e
+       su a1 + 3          ; ;old label: 3a1, new label: a1 + 3 @line:26f
+       cp g1 + 6          ; ;old label: 6g1, new label: g1 + 6 @line:26g
+       sp u3              ;  @line:26h
+       si 223             ;  @line:26i
+       rd 0               ; default operand;  @line:26j
+       ts a2 + 8          ; ;old label: 8a2, new label: a2 + 8 @line:26k
+       srr 6               ;  @line:26l
+
+       ;CS-II Src: ts9a2	su7a8	cp14g1	spu3	ca9a2	mh6a8	slh15	ts9a2	ca8a2	slr9	srr9	ts8a2
+       ts a2 + 9          ; ;old label: 9a2, new label: a2 + 9 @line:27a
+       su a8 + 7          ; ;old label: 7a8, new label: a8 + 7 @line:27b
+       cp g1 + 14         ; ;old label: 14g1, new label: g1 + 14 @line:27c
+       sp u3              ;  @line:27d
+       ca a2 + 9          ; ;old label: 9a2, new label: a2 + 9 @line:27e
+       mh a8 + 6          ; ;old label: 6a8, new label: a8 + 6 @line:27f
+       slh 15              ;  @line:27g
+       ts a2 + 9          ; ;old label: 9a2, new label: a2 + 9 @line:27h
+       ca a2 + 8          ; ;old label: 8a2, new label: a2 + 8 @line:27i
+       slr 9               ;  @line:27j
+       srr 9               ;  @line:27k
+       ts a2 + 8          ; ;old label: 8a2, new label: a2 + 8 @line:27l
+
+       ;CS-II Src: su7a8	cp25g1	spu3	ca8a2	ad9a2	ts9a2	ca3a7	su0	cpg4	g2,ca3a7	su1	ad4a1
+       su a8 + 7          ; ;old label: 7a8, new label: a8 + 7 @line:28a
+       cp g1 + 25         ; ;old label: 25g1, new label: g1 + 25 @line:28b
+       sp u3              ;  @line:28c
+       ca a2 + 8          ; ;old label: 8a2, new label: a2 + 8 @line:28d
+       ad a2 + 9          ; ;old label: 9a2, new label: a2 + 9 @line:28e
+       ts a2 + 9          ; ;old label: 9a2, new label: a2 + 9 @line:28f
+       ca a7 + 3          ; ;old label: 3a7, new label: a7 + 3 @line:28g
+       su 0               ;  @line:28h
+       cp g4              ;  @line:28i
+g2:    ca a7 + 3          ; ;old label: 3a7, new label: a7 + 3 @line:28j
+       su 1               ;  @line:28k
+       ad a1 + 4          ; ;old label: 4a1, new label: a1 + 4 @line:28l
+
+       ;CS-II Src: td5g2	ca9a2	ts	ao7a2	su3a1	cpw1	ca0	tsa7	ts1a7	ts4a7	ts3a7	ts2a7
+       td g2 + 5          ; ;old label: 5g2, new label: g2 + 5 @line:29a
+       ca a2 + 9          ; ;old label: 9a2, new label: a2 + 9 @line:29b
+       ts 0               ; default operand;  @line:29c
+       ao a2 + 7          ; ;old label: 7a2, new label: a2 + 7 @line:29d
+       su a1 + 3          ; ;old label: 3a1, new label: a1 + 3 @line:29e
+       cp w1              ;  @line:29f
+       ca 0               ;  @line:29g
+       ts a7              ;  @line:29h
+       ts a7 + 1          ; ;old label: 1a7, new label: a7 + 1 @line:29i
+       ts a7 + 4          ; ;old label: 4a7, new label: a7 + 4 @line:29j
+       ts a7 + 3          ; ;old label: 3a7, new label: a7 + 3 @line:29k
+       ts a7 + 2          ; ;old label: 2a7, new label: a7 + 2 @line:29l
+
+       ;CS-II Src: ts7a2	spw1	g3,ca2a11	ad2a2	td5g3	td10g3	td16g3	ca	su0	cp9g3	spu3
+       ts a2 + 7          ; ;old label: 7a2, new label: a2 + 7 @line:30a
+       sp w1              ;  @line:30b
+g3:    ca a11 + 2         ; ;old label: 2a11, new label: a11 + 2 @line:30c
+       ad a2 + 2          ; ;old label: 2a2, new label: a2 + 2 @line:30d
+       td g3 + 5          ; ;old label: 5g3, new label: g3 + 5 @line:30e
+       td g3 + 10         ; ;old label: 10g3, new label: g3 + 10 @line:30f
+       td g3 + 16         ; ;old label: 16g3, new label: g3 + 16 @line:30g
+       ca 0               ; default operand;  @line:30h
+       su 0               ;  @line:30i
+       cp g3 + 9          ; ;old label: 9g3, new label: g3 + 9 @line:30j
+       sp u3              ;  @line:30k
+
+       ;CS-II Src: ca9a2	ts	ca2a11	ad4a1	td15g3	td17g3	ca	su	ts	spw1	g4,ca9a2	su4a11
+       ca a2 + 9          ; ;old label: 9a2, new label: a2 + 9 @line:31a
+       ts 0               ; default operand;  @line:31b
+       ca a11 + 2         ; ;old label: 2a11, new label: a11 + 2 @line:31c
+       ad a1 + 4          ; ;old label: 4a1, new label: a1 + 4 @line:31d
+       td g3 + 15         ; ;old label: 15g3, new label: g3 + 15 @line:31e
+       td g3 + 17         ; ;old label: 17g3, new label: g3 + 17 @line:31f
+       ca 0               ; default operand;  @line:31g
+       su 0               ; default operand;  @line:31h
+       ts 0               ; default operand;  @line:31i
+       sp w1              ;  @line:31j
+g4:    ca a2 + 9          ; ;old label: 9a2, new label: a2 + 9 @line:31k
+       su a11 + 4         ; ;old label: 4a11, new label: a11 + 4 @line:31l
+
+       ;CS-II Src: cpg3	spu3	p2,tap3	tap4	tap5
+       cp g3              ;  @line:32a
+       sp u3              ;  @line:32b
+p2:    ta p3              ;  @line:32c
+       ta p4              ;  @line:32d
+       ta p5              ;  @line:32e
+
+       ;CS-II Src: tap6	tap10	aop10	aop10	aop10	aop10
+       ta p6              ;  @line:33a
+       ta p10             ;  @line:33b
+       ao p10             ;  @line:33c
+       ao p10             ;  @line:33d
+       ao p10             ;  @line:33e
+       ao p10             ;  @line:33f
+
+       ;CS-II Src: p3,ca	tsp12	aop4	p4,ca	tdp7	aop5	aop5	p5,ca	td1p7	td2p7	td4p7
+p3:    ca 0               ; default operand;  @line:34a
+       ts p12             ;  @line:34b
+       ao p4              ;  @line:34c
+p4:    ca 0               ; default operand;  @line:34d
+       td p7              ;  @line:34e
+       ao p5              ;  @line:34f
+       ao p5              ;  @line:34g
+p5:    ca 0               ; default operand;  @line:34h
+       td p7 + 1          ; ;old label: 1p7, new label: p7 + 1 @line:34i
+       td p7 + 2          ; ;old label: 2p7, new label: p7 + 2 @line:34j
+       td p7 + 4          ; ;old label: 4p7, new label: p7 + 4 @line:34k
+
+       ;CS-II Src: tdp8	td2p8	td4p8	td1p11	aop6	aop6	aop6	p6,ca	td6p7	td2p11	p7,ca
+       td p8              ;  @line:35a
+       td p8 + 2          ; ;old label: 2p8, new label: p8 + 2 @line:35b
+       td p8 + 4          ; ;old label: 4p8, new label: p8 + 4 @line:35c
+       td p11 + 1         ; ;old label: 1p11, new label: p11 + 1 @line:35d
+       ao p6              ;  @line:35e
+       ao p6              ;  @line:35f
+       ao p6              ;  @line:35g
+p6:    ca 0               ; default operand;  @line:35h
+       td p7 + 6          ; ;old label: 6p7, new label: p7 + 6 @line:35i
+       td p11 + 2         ; ;old label: 2p11, new label: p11 + 2 @line:35j
+p7:    ca 0               ; default operand;  @line:35k
+
+       ;CS-II Src: ts	ca	sup12	ts	cpp8	ao	sp2p7	p8,ca	adp12	ts	cap12
+       ts 0               ; default operand;  @line:36a
+       ca 0               ; default operand;  @line:36b
+       su p12             ;  @line:36c
+       ts 0               ; default operand;  @line:36d
+       cp p8              ;  @line:36e
+       ao 0               ; default operand;  @line:36f
+       sp p7 + 2          ; ;old label: 2p7, new label: p7 + 2 @line:36g
+p8:    ca 0               ; default operand;  @line:36h
+       ad p12             ;  @line:36i
+       ts 0               ; default operand;  @line:36j
+       ca p12             ;  @line:36k
+
+       ;CS-II Src: su	cpp11	p9,aop7	ao1p7	ao2p7	ao4p7	ao6p7	aop8	ao2p8	ao4p8	ao2p11
+       su 0               ; default operand;  @line:37a
+       cp p11             ;  @line:37b
+p9:    ao p7              ;  @line:37c
+       ao p7 + 1          ; ;old label: 1p7, new label: p7 + 1 @line:37d
+       ao p7 + 2          ; ;old label: 2p7, new label: p7 + 2 @line:37e
+       ao p7 + 4          ; ;old label: 4p7, new label: p7 + 4 @line:37f
+       ao p7 + 6          ; ;old label: 6p7, new label: p7 + 6 @line:37g
+       ao p8              ;  @line:37h
+       ao p8 + 2          ; ;old label: 2p8, new label: p8 + 2 @line:37i
+       ao p8 + 4          ; ;old label: 4p8, new label: p8 + 4 @line:37j
+       ao p11 + 2         ; ;old label: 2p11, new label: p11 + 2 @line:37k
+
+       ;CS-II Src: ao1p11	ao2a1	ca2a1	su3a1	cpp7	ca0	ts2a1	p10,sp	p11,ca0	ts	ao	spp9
+       ao p11 + 1         ; ;old label: 1p11, new label: p11 + 1 @line:38a
+       ao a1 + 2          ; ;old label: 2a1, new label: a1 + 2 @line:38b
+       ca a1 + 2          ; ;old label: 2a1, new label: a1 + 2 @line:38c
+       su a1 + 3          ; ;old label: 3a1, new label: a1 + 3 @line:38d
+       cp p7              ;  @line:38e
+       ca 0               ;  @line:38f
+       ts a1 + 2          ; ;old label: 2a1, new label: a1 + 2 @line:38g
+p10:   sp 0               ; default operand;  @line:38h
+p11:   ca 0               ;  @line:38i
+       ts 0               ; default operand;  @line:38j
+       ao 0               ; default operand;  @line:38k
+       sp p9              ;  @line:38l
+
+       ;CS-II Src: p12,0	s1,tas2	tas3	si149	s2,ca	tds4	s4,ca	clh1	rc	clh9	rc	clh22
+p12:   .word 0               ;  @line:39a
+s1:    ta s2              ;  @line:39b
+       ta s3              ;  @line:39c
+       si 149             ;  @line:39d
+s2:    ca 0               ; default operand;  @line:39e
+       td s4              ;  @line:39f
+s4:    ca 0               ; default operand;  @line:39g
+       clh 1               ;  @line:39h
+       rc 0               ; default operand;  @line:39i
+       clh 9               ;  @line:39j
+       rc 0               ; default operand;  @line:39k
+       clh 22              ;  @line:39l
+
+       ;CS-II Src: cps5	aos4	sps4	s5,aos3	s3,sp	v2,ca0	tsb8	ts1b8	ts2b8	ts3b8	ts4b8	ts5b8
+       cp s5              ;  @line:40a
+       ao s4              ;  @line:40b
+       sp s4              ;  @line:40c
+s5:    ao s3              ;  @line:40d
+s3:    sp 0               ; default operand;  @line:40e
+v2:    ca 0               ;  @line:40f
+       ts b8              ;  @line:40g
+       ts b8 + 1          ; ;old label: 1b8, new label: b8 + 1 @line:40h
+       ts b8 + 2          ; ;old label: 2b8, new label: b8 + 2 @line:40i
+       ts b8 + 3          ; ;old label: 3b8, new label: b8 + 3 @line:40j
+       ts b8 + 4          ; ;old label: 4b8, new label: b8 + 4 @line:40k
+       ts b8 + 5          ; ;old label: 5b8, new label: b8 + 5 @line:40l
+
+       ;CS-II Src: ts6b8	ts7b8	spw3	u1,tau2	ca0	tsa7	ts4a7	ts3a7	ts1a7	ts7a2	tsb7	ts1b7
+       ts b8 + 6          ; ;old label: 6b8, new label: b8 + 6 @line:41a
+       ts b8 + 7          ; ;old label: 7b8, new label: b8 + 7 @line:41b
+       sp w3              ;  @line:41c
+u1:    ta u2              ;  @line:41d
+       ca 0               ;  @line:41e
+       ts a7              ;  @line:41f
+       ts a7 + 4          ; ;old label: 4a7, new label: a7 + 4 @line:41g
+       ts a7 + 3          ; ;old label: 3a7, new label: a7 + 3 @line:41h
+       ts a7 + 1          ; ;old label: 1a7, new label: a7 + 1 @line:41i
+       ts a2 + 7          ; ;old label: 7a2, new label: a2 + 7 @line:41j
+       ts b7              ;  @line:41k
+       ts b7 + 1          ; ;old label: 1b7, new label: b7 + 1 @line:41l
+
+       ;CS-II Src: ts2b7	ts3b7	ts4b7	ts5b7	ts6b7	ts7b7	u2,sp
+       ts b7 + 2          ; ;old label: 2b7, new label: b7 + 2 @line:42a
+       ts b7 + 3          ; ;old label: 3b7, new label: b7 + 3 @line:42b
+       ts b7 + 4          ; ;old label: 4b7, new label: b7 + 4 @line:42c
+       ts b7 + 5          ; ;old label: 5b7, new label: b7 + 5 @line:42d
+       ts b7 + 6          ; ;old label: 6b7, new label: b7 + 6 @line:42e
+       ts b7 + 7          ; ;old label: 7b7, new label: b7 + 7 @line:42f
+u2:    sp 0               ; default operand;  @line:42g
+
+       ;CS-II Src: u3,spx1	ca1a7	su1	ts1a7	ca3a7	su0	cpw1	su1a2	ts3a7	spw1
+u3:    sp x1              ;  @line:43a
+       ca a7 + 1          ; ;old label: 1a7, new label: a7 + 1 @line:43b
+       su 1               ;  @line:43c
+       ts a7 + 1          ; ;old label: 1a7, new label: a7 + 1 @line:43d
+       ca a7 + 3          ; ;old label: 3a7, new label: a7 + 3 @line:43e
+       su 0               ;  @line:43f
+       cp w1              ;  @line:43g
+       su a2 + 1          ; ;old label: 1a2, new label: a2 + 1 @line:43h
+       ts a7 + 3          ; ;old label: 3a7, new label: a7 + 3 @line:43i
+       sp w1              ;  @line:43j
+
+       ;CS-II Src: w1,spz2	+0.60	-0.90	+0.90	0.00	0.00	spz2	+0.90	-0.90
+w1:    sp z2              ;  @line:44a
+       .word +0.60           ;  @line:44b
+       .word -0.90           ;  @line:44c
+       .word +0.90           ;  @line:44d
+       .word 0.00            ;  @line:44e
+       .word 0.00            ;  @line:44f
+       sp z2              ;  @line:44g
+       .word +0.90           ;  @line:44h
+       .word -0.90           ;  @line:44i
+
+       ;CS-II Src: 0.00	-0.70	0.00	spz2	+0.75	-0.90	0.00	-0.70	0.00	spz2	+0.60
+       .word 0.00            ;  @line:45a
+       .word -0.70           ;  @line:45b
+       .word 0.00            ;  @line:45c
+       sp z2              ;  @line:45d
+       .word +0.75           ;  @line:45e
+       .word -0.90           ;  @line:45f
+       .word 0.00            ;  @line:45g
+       .word -0.70           ;  @line:45h
+       .word 0.00            ;  @line:45i
+       sp z2              ;  @line:45j
+       .word +0.60           ;  @line:45k
+
+       ;CS-II Src: -0.70	+0.90	0.00	0.00	spz2	+0.10	-0.90	+0.40	0.00	0.00	spz2
+       .word -0.70           ;  @line:46a
+       .word +0.90           ;  @line:46b
+       .word 0.00            ;  @line:46c
+       .word 0.00            ;  @line:46d
+       sp z2              ;  @line:46e
+       .word +0.10           ;  @line:46f
+       .word -0.90           ;  @line:46g
+       .word +0.40           ;  @line:46h
+       .word 0.00            ;  @line:46i
+       .word 0.00            ;  @line:46j
+       sp z2              ;  @line:46k
+
+       ;CS-II Src: +0.40	-0.90	0.00	-0.70	0.00	spz2	+0.25	-0.90	0.00	-0.75	0.00
+       .word +0.40           ;  @line:47a
+       .word -0.90           ;  @line:47b
+       .word 0.00            ;  @line:47c
+       .word -0.70           ;  @line:47d
+       .word 0.00            ;  @line:47e
+       sp z2              ;  @line:47f
+       .word +0.25           ;  @line:47g
+       .word -0.90           ;  @line:47h
+       .word 0.00            ;  @line:47i
+       .word -0.75           ;  @line:47j
+       .word 0.00            ;  @line:47k
+
+       ;CS-II Src: spz2	+0.10	-0.90	0.00	-0.70	0.00	spz2	+0.10	-0.70	+0.20	0.00
+       sp z2              ;  @line:48a
+       .word +0.10           ;  @line:48b
+       .word -0.90           ;  @line:48c
+       .word 0.00            ;  @line:48d
+       .word -0.70           ;  @line:48e
+       .word 0.00            ;  @line:48f
+       sp z2              ;  @line:48g
+       .word +0.10           ;  @line:48h
+       .word -0.70           ;  @line:48i
+       .word +0.20           ;  @line:48j
+       .word 0.00            ;  @line:48k
+
+       ;CS-II Src: 0.00	spz2	+0.30	-0.70	+0.40	0.00	0.00	spz2	+0.25	-0.75	+0.30
+       .word 0.00            ;  @line:49a
+       sp z2              ;  @line:49b
+       .word +0.30           ;  @line:49c
+       .word -0.70           ;  @line:49d
+       .word +0.40           ;  @line:49e
+       .word 0.00            ;  @line:49f
+       .word 0.00            ;  @line:49g
+       sp z2              ;  @line:49h
+       .word +0.25           ;  @line:49i
+       .word -0.75           ;  @line:49j
+       .word +0.30           ;  @line:49k
+
+       ;CS-II Src: -0.70	0.00	spz2	+0.20	-0.70	+0.25	-0.75	+0.50	spz2	-0.40	-0.90
+       .word -0.70           ;  @line:50a
+       .word 0.00            ;  @line:50b
+       sp z2              ;  @line:50c
+       .word +0.20           ;  @line:50d
+       .word -0.70           ;  @line:50e
+       .word +0.25           ;  @line:50f
+       .word -0.75           ;  @line:50g
+       .word +0.50           ;  @line:50h
+       sp z2              ;  @line:50i
+       .word -0.40           ;  @line:50j
+       .word -0.90           ;  @line:50k
+
+       ;CS-II Src: -0.10	0.00	0.00	spz2	-0.10	-0.90	0.00	-0.70	0.00	spz2	-0.40
+       .word -0.10           ;  @line:51a
+       .word 0.00            ;  @line:51b
+       .word 0.00            ;  @line:51c
+       sp z2              ;  @line:51d
+       .word -0.10           ;  @line:51e
+       .word -0.90           ;  @line:51f
+       .word 0.00            ;  @line:51g
+       .word -0.70           ;  @line:51h
+       .word 0.00            ;  @line:51i
+       sp z2              ;  @line:51j
+       .word -0.40           ;  @line:51k
+
+       ;CS-II Src: -0.90	0.00	-0.70	0.00	spz2	-0.90	-0.90	-0.60	0.00	0.00	spz2
+       .word -0.90           ;  @line:52a
+       .word 0.00            ;  @line:52b
+       .word -0.70           ;  @line:52c
+       .word 0.00            ;  @line:52d
+       sp z2              ;  @line:52e
+       .word -0.90           ;  @line:52f
+       .word -0.90           ;  @line:52g
+       .word -0.60           ;  @line:52h
+       .word 0.00            ;  @line:52i
+       .word 0.00            ;  @line:52j
+       sp z2              ;  @line:52k
+
+       ;CS-II Src: -0.85	-0.70	-0.65	0.00	0.00	spz2	-0.60	-0.90	0.00	-0.75	0.00
+       .word -0.85           ;  @line:53a
+       .word -0.70           ;  @line:53b
+       .word -0.65           ;  @line:53c
+       .word 0.00            ;  @line:53d
+       .word 0.00            ;  @line:53e
+       sp z2              ;  @line:53f
+       .word -0.60           ;  @line:53g
+       .word -0.90           ;  @line:53h
+       .word 0.00            ;  @line:53i
+       .word -0.75           ;  @line:53j
+       .word 0.00            ;  @line:53k
+
+       ;CS-II Src: spz2	-0.90	-0.90	0.00	-0.75	0.00	spz2	-0.90	-0.75	-0.85	-0.70
+       sp z2              ;  @line:54a
+       .word -0.90           ;  @line:54b
+       .word -0.90           ;  @line:54c
+       .word 0.00            ;  @line:54d
+       .word -0.75           ;  @line:54e
+       .word 0.00            ;  @line:54f
+       sp z2              ;  @line:54g
+       .word -0.90           ;  @line:54h
+       .word -0.75           ;  @line:54i
+       .word -0.85           ;  @line:54j
+       .word -0.70           ;  @line:54k
+
+       ;CS-II Src: 0.00	spz2	-0.65	-0.70	-0.60	-0.75	+0.50	spz2	+0.60	+0.10	+0.90
+       .word 0.00            ;  @line:55a
+       sp z2              ;  @line:55b
+       .word -0.65           ;  @line:55c
+       .word -0.70           ;  @line:55d
+       .word -0.60           ;  @line:55e
+       .word -0.75           ;  @line:55f
+       .word +0.50           ;  @line:55g
+       sp z2              ;  @line:55h
+       .word +0.60           ;  @line:55i
+       .word +0.10           ;  @line:55j
+       .word +0.90           ;  @line:55k
+
+       ;CS-II Src: 0.00	0.00	spz2	+0.90	+0.10	0.00	+0.30	0.00	spz2	+0.75	+0.10
+       .word 0.00            ;  @line:56a
+       .word 0.00            ;  @line:56b
+       sp z2              ;  @line:56c
+       .word +0.90           ;  @line:56d
+       .word +0.10           ;  @line:56e
+       .word 0.00            ;  @line:56f
+       .word +0.30           ;  @line:56g
+       .word 0.00            ;  @line:56h
+       sp z2              ;  @line:56i
+       .word +0.75           ;  @line:56j
+       .word +0.10           ;  @line:56k
+
+       ;CS-II Src: 0.00	+0.30	0.00	spz2	+0.60	+0.10	+0.00	+0.30	0.00	spz2	+0.10
+       .word 0.00            ;  @line:57a
+       .word +0.30           ;  @line:57b
+       .word 0.00            ;  @line:57c
+       sp z2              ;  @line:57d
+       .word +0.60           ;  @line:57e
+       .word +0.10           ;  @line:57f
+       .word +0.00           ;  @line:57g
+       .word +0.30           ;  @line:57h
+       .word 0.00            ;  @line:57i
+       sp z2              ;  @line:57j
+       .word +0.10           ;  @line:57k
+
+       ;CS-II Src: +0.10	+0.40	0.00	0.00	spz2	+0.40	+0.10	0.00	+0.30	0.00	spz2
+       .word +0.10           ;  @line:58a
+       .word +0.40           ;  @line:58b
+       .word 0.00            ;  @line:58c
+       .word 0.00            ;  @line:58d
+       sp z2              ;  @line:58e
+       .word +0.40           ;  @line:58f
+       .word +0.10           ;  @line:58g
+       .word 0.00            ;  @line:58h
+       .word +0.30           ;  @line:58i
+       .word 0.00            ;  @line:58j
+       sp z2              ;  @line:58k
+
+       ;CS-II Src: +0.25	+0.10	0.00	+0.30	0.00	spz2	-0.40	+0.10	-0.10	0.00	0.00
+       .word +0.25           ;  @line:59a
+       .word +0.10           ;  @line:59b
+       .word 0.00            ;  @line:59c
+       .word +0.30           ;  @line:59d
+       .word 0.00            ;  @line:59e
+       sp z2              ;  @line:59f
+       .word -0.40           ;  @line:59g
+       .word +0.10           ;  @line:59h
+       .word -0.10           ;  @line:59i
+       .word 0.00            ;  @line:59j
+       .word 0.00            ;  @line:59k
+
+       ;CS-II Src: spz2	-0.40	+0.30	-0.25	0.00	0.00	spz2	-0.10	+0.10	0.00	+0.30
+       sp z2              ;  @line:60a
+       .word -0.40           ;  @line:60b
+       .word +0.30           ;  @line:60c
+       .word -0.25           ;  @line:60d
+       .word 0.00            ;  @line:60e
+       .word 0.00            ;  @line:60f
+       sp z2              ;  @line:60g
+       .word -0.10           ;  @line:60h
+       .word +0.10           ;  @line:60i
+       .word 0.00            ;  @line:60j
+       .word +0.30           ;  @line:60k
+
+       ;CS-II Src: 0.00	spz2	-0.25	+0.20	0.00	+0.30	0.00	spz2	-0.40	+0.10	0.00
+       .word 0.00            ;  @line:61a
+       sp z2              ;  @line:61b
+       .word -0.25           ;  @line:61c
+       .word +0.20           ;  @line:61d
+       .word 0.00            ;  @line:61e
+       .word +0.30           ;  @line:61f
+       .word 0.00            ;  @line:61g
+       sp z2              ;  @line:61h
+       .word -0.40           ;  @line:61i
+       .word +0.10           ;  @line:61j
+       .word 0.00            ;  @line:61k
+
+       ;CS-II Src: +0.30	0.00	spz2	-0.90	+0.10	-0.60	0.00	0.00	spz2	-0.90	+0.30
+       .word +0.30           ;  @line:62a
+       .word 0.00            ;  @line:62b
+       sp z2              ;  @line:62c
+       .word -0.90           ;  @line:62d
+       .word +0.10           ;  @line:62e
+       .word -0.60           ;  @line:62f
+       .word 0.00            ;  @line:62g
+       .word 0.00            ;  @line:62h
+       sp z2              ;  @line:62i
+       .word -0.90           ;  @line:62j
+       .word +0.30           ;  @line:62k
+
+       ;CS-II Src: -0.60	0.00	0.00	spz2	-0.75	+0.10	0.00	+0.30	0.00	w2,ca6a8
+       .word -0.60           ;  @line:63a
+       .word 0.00            ;  @line:63b
+       .word 0.00            ;  @line:63c
+       sp z2              ;  @line:63d
+       .word -0.75           ;  @line:63e
+       .word +0.10           ;  @line:63f
+       .word 0.00            ;  @line:63g
+       .word +0.30           ;  @line:63h
+       .word 0.00            ;  @line:63i
+w2:    ca a8 + 6          ; ;old label: 6a8, new label: a8 + 6 @line:63j
+
+       ;CS-II Src: ts1w3	spv2	w3,spp2	0	b1	b9	b8	spw73	w4,taw5	taw6
+       ts w3 + 1          ; ;old label: 1w3, new label: w3 + 1 @line:64a
+       sp v2              ;  @line:64b
+w3:    sp p2              ;  @line:64c
+       .word 0               ;  @line:64d
+       .word b1              ;  @line:64e
+       .word b9              ;  @line:64f
+       .word b8              ;  @line:64g
+       sp w73             ;  @line:64h
+w4:    ta w5              ;  @line:64i
+       ta w6              ;  @line:64j
+
+       ;CS-II Src: w5,ca	tsa9	aow6	w6,ca	ts1a9	caa9	ts1w7	ts1w8	ts1w9
+w5:    ca 0               ; default operand;  @line:65a
+       ts a9              ;  @line:65b
+       ao w6              ;  @line:65c
+w6:    ca 0               ; default operand;  @line:65d
+       ts a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:65e
+       ca a9              ;  @line:65f
+       ts w7 + 1          ; ;old label: 1w7, new label: w7 + 1 @line:65g
+       ts w8 + 1          ; ;old label: 1w8, new label: w8 + 1 @line:65h
+       ts w9 + 1          ; ;old label: 1w9, new label: w9 + 1 @line:65i
+
+       ;CS-II Src: ad7a9	ts3w7	ts3w8	ts1w10	ca1a9	ts2w7	ts2w9	ts2w10	ad5a9	ts2w8	ts4w9
+       ad a9 + 7          ; ;old label: 7a9, new label: a9 + 7 @line:66a
+       ts w7 + 3          ; ;old label: 3w7, new label: w7 + 3 @line:66b
+       ts w8 + 3          ; ;old label: 3w8, new label: w8 + 3 @line:66c
+       ts w10 + 1         ; ;old label: 1w10, new label: w10 + 1 @line:66d
+       ca a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:66e
+       ts w7 + 2          ; ;old label: 2w7, new label: w7 + 2 @line:66f
+       ts w9 + 2          ; ;old label: 2w9, new label: w9 + 2 @line:66g
+       ts w10 + 2         ; ;old label: 2w10, new label: w10 + 2 @line:66h
+       ad a9 + 5          ; ;old label: 5a9, new label: a9 + 5 @line:66i
+       ts w8 + 2          ; ;old label: 2w8, new label: w8 + 2 @line:66j
+       ts w9 + 4          ; ;old label: 4w9, new label: w9 + 4 @line:66k
+
+       ;CS-II Src: ts4w10	w7,spz2	0	0	0	0	0	w8,spz2	0	0	0
+       ts w10 + 4         ; ;old label: 4w10, new label: w10 + 4 @line:67a
+w7:    sp z2              ;  @line:67b
+       .word 0               ;  @line:67c
+       .word 0               ;  @line:67d
+       .word 0               ;  @line:67e
+       .word 0               ;  @line:67f
+       .word 0               ;  @line:67g
+w8:    sp z2              ;  @line:67h
+       .word 0               ;  @line:67i
+       .word 0               ;  @line:67j
+       .word 0               ;  @line:67k
+
+       ;CS-II Src: 0	0	w9,spz2	0	0	0	0	0	w10,spz2	0	0
+       .word 0               ;  @line:68a
+       .word 0               ;  @line:68b
+w9:    sp z2              ;  @line:68c
+       .word 0               ;  @line:68d
+       .word 0               ;  @line:68e
+       .word 0               ;  @line:68f
+       .word 0               ;  @line:68g
+       .word 0               ;  @line:68h
+w10:   sp z2              ;  @line:68i
+       .word 0               ;  @line:68j
+       .word 0               ;  @line:68k
+
+       ;CS-II Src: 0	0	0	w11,spw76	w12,taw13	taw14
+       .word 0               ;  @line:69a
+       .word 0               ;  @line:69b
+       .word 0               ;  @line:69c
+w11:   sp w76             ;  @line:69d
+w12:   ta w13             ;  @line:69e
+       ta w14             ;  @line:69f
+
+       ;CS-II Src: w13,ca
+w13:   ca 0               ; default operand;  @line:70a
+
+       ;CS-II Src: tsa9	aow14	w14,ca	ts1a9	caa9	ts1w15	ts1w16	ad7a9	ts3w15	ts3w17	su2a9
+       ts a9              ;  @line:71a
+       ao w14             ;  @line:71b
+w14:   ca 0               ; default operand;  @line:71c
+       ts a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:71d
+       ca a9              ;  @line:71e
+       ts w15 + 1         ; ;old label: 1w15, new label: w15 + 1 @line:71f
+       ts w16 + 1         ; ;old label: 1w16, new label: w16 + 1 @line:71g
+       ad a9 + 7          ; ;old label: 7a9, new label: a9 + 7 @line:71h
+       ts w15 + 3         ; ;old label: 3w15, new label: w15 + 3 @line:71i
+       ts w17 + 3         ; ;old label: 3w17, new label: w17 + 3 @line:71j
+       su a9 + 2          ; ;old label: 2a9, new label: a9 + 2 @line:71k
+
+       ;CS-II Src: ts1w17	ca1a9	ad2a9	ts2w16	ts2w17	ad2a9	ts2w15	ts4w17	ad2a9	ts4w16	w15,spz2
+       ts w17 + 1         ; ;old label: 1w17, new label: w17 + 1 @line:72a
+       ca a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:72b
+       ad a9 + 2          ; ;old label: 2a9, new label: a9 + 2 @line:72c
+       ts w16 + 2         ; ;old label: 2w16, new label: w16 + 2 @line:72d
+       ts w17 + 2         ; ;old label: 2w17, new label: w17 + 2 @line:72e
+       ad a9 + 2          ; ;old label: 2a9, new label: a9 + 2 @line:72f
+       ts w15 + 2         ; ;old label: 2w15, new label: w15 + 2 @line:72g
+       ts w17 + 4         ; ;old label: 4w17, new label: w17 + 4 @line:72h
+       ad a9 + 2          ; ;old label: 2a9, new label: a9 + 2 @line:72i
+       ts w16 + 4         ; ;old label: 4w16, new label: w16 + 4 @line:72j
+w15:   sp z2              ;  @line:72k
+                        ; | @line:73a
+
+       ;CS-II Src: 0	0	0	0	0	w16,spz2	0	0	0	0	0
+       .word 0               ;  @line:74a
+       .word 0               ;  @line:74b
+       .word 0               ;  @line:74c
+       .word 0               ;  @line:74d
+       .word 0               ;  @line:74e
+w16:   sp z2              ;  @line:74f
+       .word 0               ;  @line:74g
+       .word 0               ;  @line:74h
+       .word 0               ;  @line:74i
+       .word 0               ;  @line:74j
+       .word 0               ;  @line:74k
+
+       ;CS-II Src: w17,spz2	0	0	0	0	0	w18,spw76	w19,taw20	taw21
+w17:   sp z2              ;  @line:75a
+       .word 0               ;  @line:75b
+       .word 0               ;  @line:75c
+       .word 0               ;  @line:75d
+       .word 0               ;  @line:75e
+       .word 0               ;  @line:75f
+w18:   sp w76             ;  @line:75g
+w19:   ta w20             ;  @line:75h
+       ta w21             ;  @line:75i
+
+       ;CS-II Src: w20,ca	tsa9	aow21	w21,ca	ts1a9	caa9	ts1w25	ts1w26	ad5a9
+w20:   ca 0               ; default operand;  @line:76a
+       ts a9              ;  @line:76b
+       ao w21             ;  @line:76c
+w21:   ca 0               ; default operand;  @line:76d
+       ts a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:76e
+       ca a9              ;  @line:76f
+       ts w25 + 1         ; ;old label: 1w25, new label: w25 + 1 @line:76g
+       ts w26 + 1         ; ;old label: 1w26, new label: w26 + 1 @line:76h
+       ad a9 + 5          ; ;old label: 5a9, new label: a9 + 5 @line:76i
+
+       ;CS-II Src: ts1w23	ts3w26	ad2a9	ts1w22	ad2a9	ts3w22	ts3w23	ts1w24	ca1a9	ts2w22	ts2w24
+       ts w23 + 1         ; ;old label: 1w23, new label: w23 + 1 @line:77a
+       ts w26 + 3         ; ;old label: 3w26, new label: w26 + 3 @line:77b
+       ad a9 + 2          ; ;old label: 2a9, new label: a9 + 2 @line:77c
+       ts w22 + 1         ; ;old label: 1w22, new label: w22 + 1 @line:77d
+       ad a9 + 2          ; ;old label: 2a9, new label: a9 + 2 @line:77e
+       ts w22 + 3         ; ;old label: 3w22, new label: w22 + 3 @line:77f
+       ts w23 + 3         ; ;old label: 3w23, new label: w23 + 3 @line:77g
+       ts w24 + 1         ; ;old label: 1w24, new label: w24 + 1 @line:77h
+       ca a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:77i
+       ts w22 + 2         ; ;old label: 2w22, new label: w22 + 2 @line:77j
+       ts w24 + 2         ; ;old label: 2w24, new label: w24 + 2 @line:77k
+
+       ;CS-II Src: ts2w25	ts2w26	ad5a9	ts4w24	ts4w25	ts4w26	ts2w23	w22,spz2	0	0	0
+       ts w25 + 2         ; ;old label: 2w25, new label: w25 + 2 @line:78a
+       ts w26 + 2         ; ;old label: 2w26, new label: w26 + 2 @line:78b
+       ad a9 + 5          ; ;old label: 5a9, new label: a9 + 5 @line:78c
+       ts w24 + 4         ; ;old label: 4w24, new label: w24 + 4 @line:78d
+       ts w25 + 4         ; ;old label: 4w25, new label: w25 + 4 @line:78e
+       ts w26 + 4         ; ;old label: 4w26, new label: w26 + 4 @line:78f
+       ts w23 + 2         ; ;old label: 2w23, new label: w23 + 2 @line:78g
+w22:   sp z2              ;  @line:78h
+       .word 0               ;  @line:78i
+       .word 0               ;  @line:78j
+       .word 0               ;  @line:78k
+
+       ;CS-II Src: 0	0	w23,spz2	0	0	0	0	0	w24,spz2	0	0
+       .word 0               ;  @line:79a
+       .word 0               ;  @line:79b
+w23:   sp z2              ;  @line:79c
+       .word 0               ;  @line:79d
+       .word 0               ;  @line:79e
+       .word 0               ;  @line:79f
+       .word 0               ;  @line:79g
+       .word 0               ;  @line:79h
+w24:   sp z2              ;  @line:79i
+       .word 0               ;  @line:79j
+       .word 0               ;  @line:79k
+
+       ;CS-II Src: 0	0	0	w25,spz2	0	0	0	0	0	w26,spz2	0
+       .word 0               ;  @line:80a
+       .word 0               ;  @line:80b
+       .word 0               ;  @line:80c
+w25:   sp z2              ;  @line:80d
+       .word 0               ;  @line:80e
+       .word 0               ;  @line:80f
+       .word 0               ;  @line:80g
+       .word 0               ;  @line:80h
+       .word 0               ;  @line:80i
+w26:   sp z2              ;  @line:80j
+       .word 0               ;  @line:80k
+
+       ;CS-II Src: 0	0	0	0	w27,spw76	w28,taw29	taw30
+       .word 0               ;  @line:81a
+       .word 0               ;  @line:81b
+       .word 0               ;  @line:81c
+       .word 0               ;  @line:81d
+w27:   sp w76             ;  @line:81e
+w28:   ta w29             ;  @line:81f
+       ta w30             ;  @line:81g
+
+       ;CS-II Src: w29,ca	tsa9	aow30	w30,ca	ts1a9	caa9	ts1w31	ts1w34	ad3a9	ts3w34	ts1w37
+w29:   ca 0               ; default operand;  @line:82a
+       ts a9              ;  @line:82b
+       ao w30             ;  @line:82c
+w30:   ca 0               ; default operand;  @line:82d
+       ts a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:82e
+       ca a9              ;  @line:82f
+       ts w31 + 1         ; ;old label: 1w31, new label: w31 + 1 @line:82g
+       ts w34 + 1         ; ;old label: 1w34, new label: w34 + 1 @line:82h
+       ad a9 + 3          ; ;old label: 3a9, new label: a9 + 3 @line:82i
+       ts w34 + 3         ; ;old label: 3w34, new label: w34 + 3 @line:82j
+       ts w37 + 1         ; ;old label: 1w37, new label: w37 + 1 @line:82k
+
+       ;CS-II Src: ts3w34	ad2a9	ts1w32	ts1w36	ts3w37	ad2a9	ts1w35	ts3w36	ad3a9	ts1w33	ts3w35
+       ts w34 + 3         ; ;old label: 3w34, new label: w34 + 3 @line:83a
+       ad a9 + 2          ; ;old label: 2a9, new label: a9 + 2 @line:83b
+       ts w32 + 1         ; ;old label: 1w32, new label: w32 + 1 @line:83c
+       ts w36 + 1         ; ;old label: 1w36, new label: w36 + 1 @line:83d
+       ts w37 + 3         ; ;old label: 3w37, new label: w37 + 3 @line:83e
+       ad a9 + 2          ; ;old label: 2a9, new label: a9 + 2 @line:83f
+       ts w35 + 1         ; ;old label: 1w35, new label: w35 + 1 @line:83g
+       ts w36 + 3         ; ;old label: 3w36, new label: w36 + 3 @line:83h
+       ad a9 + 3          ; ;old label: 3a9, new label: a9 + 3 @line:83i
+       ts w33 + 1         ; ;old label: 1w33, new label: w33 + 1 @line:83j
+       ts w35 + 3         ; ;old label: 3w35, new label: w35 + 3 @line:83k
+
+       ;CS-II Src: ca1a9	ts2w31	ts2w32	ts2w33	ad4a9	ts4w32	ts2w36	ts4w37	ad2a9	ts4w31	ts4w33
+       ca a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:84a
+       ts w31 + 2         ; ;old label: 2w31, new label: w31 + 2 @line:84b
+       ts w32 + 2         ; ;old label: 2w32, new label: w32 + 2 @line:84c
+       ts w33 + 2         ; ;old label: 2w33, new label: w33 + 2 @line:84d
+       ad a9 + 4          ; ;old label: 4a9, new label: a9 + 4 @line:84e
+       ts w32 + 4         ; ;old label: 4w32, new label: w32 + 4 @line:84f
+       ts w36 + 2         ; ;old label: 2w36, new label: w36 + 2 @line:84g
+       ts w37 + 4         ; ;old label: 4w37, new label: w37 + 4 @line:84h
+       ad a9 + 2          ; ;old label: 2a9, new label: a9 + 2 @line:84i
+       ts w31 + 4         ; ;old label: 4w31, new label: w31 + 4 @line:84j
+       ts w33 + 4         ; ;old label: 4w33, new label: w33 + 4 @line:84k
+
+       ;CS-II Src: ts2w34	ts2w35	ts4w36	ts2w37	w31,spz2	0	0	0	0	0	w32,spz2
+       ts w34 + 2         ; ;old label: 2w34, new label: w34 + 2 @line:85a
+       ts w35 + 2         ; ;old label: 2w35, new label: w35 + 2 @line:85b
+       ts w36 + 4         ; ;old label: 4w36, new label: w36 + 4 @line:85c
+       ts w37 + 2         ; ;old label: 2w37, new label: w37 + 2 @line:85d
+w31:   sp z2              ;  @line:85e
+       .word 0               ;  @line:85f
+       .word 0               ;  @line:85g
+       .word 0               ;  @line:85h
+       .word 0               ;  @line:85i
+       .word 0               ;  @line:85j
+w32:   sp z2              ;  @line:85k
+
+       ;CS-II Src: 0	0	0	0	0	w33,spz2	0	0	0	0	0
+       .word 0               ;  @line:86a
+       .word 0               ;  @line:86b
+       .word 0               ;  @line:86c
+       .word 0               ;  @line:86d
+       .word 0               ;  @line:86e
+w33:   sp z2              ;  @line:86f
+       .word 0               ;  @line:86g
+       .word 0               ;  @line:86h
+       .word 0               ;  @line:86i
+       .word 0               ;  @line:86j
+       .word 0               ;  @line:86k
+
+       ;CS-II Src: w34,spz2	0	0	0	0	0	w35,spz2	0	0	0	0
+w34:   sp z2              ;  @line:87a
+       .word 0               ;  @line:87b
+       .word 0               ;  @line:87c
+       .word 0               ;  @line:87d
+       .word 0               ;  @line:87e
+       .word 0               ;  @line:87f
+w35:   sp z2              ;  @line:87g
+       .word 0               ;  @line:87h
+       .word 0               ;  @line:87i
+       .word 0               ;  @line:87j
+       .word 0               ;  @line:87k
+
+       ;CS-II Src: 0	w36,spz2	0	0	0	0	0	w37,spz2	0	0	0
+       .word 0               ;  @line:88a
+w36:   sp z2              ;  @line:88b
+       .word 0               ;  @line:88c
+       .word 0               ;  @line:88d
+       .word 0               ;  @line:88e
+       .word 0               ;  @line:88f
+       .word 0               ;  @line:88g
+w37:   sp z2              ;  @line:88h
+       .word 0               ;  @line:88i
+       .word 0               ;  @line:88j
+       .word 0               ;  @line:88k
+
+       ;CS-II Src: 0	0.5	w38,spw76	w39,taw40	taw41	w40,ca	tsa9
+       .word 0               ;  @line:89a
+       .word +0.5             ;  @line:89b
+w38:   sp w76             ;  @line:89c
+w39:   ta w40             ;  @line:89d
+       ta w41             ;  @line:89e
+w40:   ca 0               ; default operand;  @line:89f
+       ts a9              ;  @line:89g
+
+       ;CS-II Src: aow41	w41,ca	ts1a9	caa9	ts1w44	ad3a9	ts1w42	ts1w43	ad5a9	ts3w42	ts3w44
+       ao w41             ;  @line:90a
+w41:   ca 0               ; default operand;  @line:90b
+       ts a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:90c
+       ca a9              ;  @line:90d
+       ts w44 + 1         ; ;old label: 1w44, new label: w44 + 1 @line:90e
+       ad a9 + 3          ; ;old label: 3a9, new label: a9 + 3 @line:90f
+       ts w42 + 1         ; ;old label: 1w42, new label: w42 + 1 @line:90g
+       ts w43 + 1         ; ;old label: 1w43, new label: w43 + 1 @line:90h
+       ad a9 + 5          ; ;old label: 5a9, new label: a9 + 5 @line:90i
+       ts w42 + 3         ; ;old label: 3w42, new label: w42 + 3 @line:90j
+       ts w44 + 3         ; ;old label: 3w44, new label: w44 + 3 @line:90k
+
+       ;CS-II Src: ca1a9	ts2w42	ts2w43	ad5a9	ts4w42	ts4w43	ts2w44	w42,spz2	0	0
+       ca a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:91a
+       ts w42 + 2         ; ;old label: 2w42, new label: w42 + 2 @line:91b
+       ts w43 + 2         ; ;old label: 2w43, new label: w43 + 2 @line:91c
+       ad a9 + 5          ; ;old label: 5a9, new label: a9 + 5 @line:91d
+       ts w42 + 4         ; ;old label: 4w42, new label: w42 + 4 @line:91e
+       ts w43 + 4         ; ;old label: 4w43, new label: w43 + 4 @line:91f
+       ts w44 + 2         ; ;old label: 2w44, new label: w44 + 2 @line:91g
+w42:   sp z2              ;  @line:91h
+       .word 0               ;  @line:91i
+       .word 0               ;  @line:91j
+
+       ;CS-II Src: 0	0	0	w43,spz2	0	0	0	0	0	w44,spz2
+       .word 0               ;  @line:92a
+       .word 0               ;  @line:92b
+       .word 0               ;  @line:92c
+w43:   sp z2              ;  @line:92d
+       .word 0               ;  @line:92e
+       .word 0               ;  @line:92f
+       .word 0               ;  @line:92g
+       .word 0               ;  @line:92h
+       .word 0               ;  @line:92i
+w44:   sp z2              ;  @line:92j
+
+       ;CS-II Src: 0	0	0	0	0	w45,spw76	w46,taw47	taw48
+       .word 0               ;  @line:93a
+       .word 0               ;  @line:93b
+       .word 0               ;  @line:93c
+       .word 0               ;  @line:93d
+       .word 0               ;  @line:93e
+w45:   sp w76             ;  @line:93f
+w46:   ta w47             ;  @line:93g
+       ta w48             ;  @line:93h
+
+       ;CS-II Src: w47,ca	tsa9	aow48	w48,ca	ts1a9	caa9	ts1w33	ts1w36	ad2a9	ts1w35
+w47:   ca 0               ; default operand;  @line:94a
+       ts a9              ;  @line:94b
+       ao w48             ;  @line:94c
+w48:   ca 0               ; default operand;  @line:94d
+       ts a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:94e
+       ca a9              ;  @line:94f
+       ts w33 + 1         ; ;old label: 1w33, new label: w33 + 1 @line:94g
+       ts w36 + 1         ; ;old label: 1w36, new label: w36 + 1 @line:94h
+       ad a9 + 2          ; ;old label: 2a9, new label: a9 + 2 @line:94i
+       ts w35 + 1         ; ;old label: 1w35, new label: w35 + 1 @line:94j
+
+       ;CS-II Src: ts3w36	ad3a9	ts3w35	ts1w37	ad2a9	ts1w34	ts1w32	ts3w37	ad3a9	ts3w34	ts1w31
+       ts w36 + 3         ; ;old label: 3w36, new label: w36 + 3 @line:95a
+       ad a9 + 3          ; ;old label: 3a9, new label: a9 + 3 @line:95b
+       ts w35 + 3         ; ;old label: 3w35, new label: w35 + 3 @line:95c
+       ts w37 + 1         ; ;old label: 1w37, new label: w37 + 1 @line:95d
+       ad a9 + 2          ; ;old label: 2a9, new label: a9 + 2 @line:95e
+       ts w34 + 1         ; ;old label: 1w34, new label: w34 + 1 @line:95f
+       ts w32 + 1         ; ;old label: 1w32, new label: w32 + 1 @line:95g
+       ts w37 + 3         ; ;old label: 3w37, new label: w37 + 3 @line:95h
+       ad a9 + 3          ; ;old label: 3a9, new label: a9 + 3 @line:95i
+       ts w34 + 3         ; ;old label: 3w34, new label: w34 + 3 @line:95j
+       ts w31 + 1         ; ;old label: 1w31, new label: w31 + 1 @line:95k
+
+       ;CS-II Src: ca1a9	ts2w34	ts2w31	ts2w32	ts2w33	ad4a9	ts4w32	ts4w33	ts2w36	ts4w37	ad2a9
+       ca a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:96a
+       ts w34 + 2         ; ;old label: 2w34, new label: w34 + 2 @line:96b
+       ts w31 + 2         ; ;old label: 2w31, new label: w31 + 2 @line:96c
+       ts w32 + 2         ; ;old label: 2w32, new label: w32 + 2 @line:96d
+       ts w33 + 2         ; ;old label: 2w33, new label: w33 + 2 @line:96e
+       ad a9 + 4          ; ;old label: 4a9, new label: a9 + 4 @line:96f
+       ts w32 + 4         ; ;old label: 4w32, new label: w32 + 4 @line:96g
+       ts w33 + 4         ; ;old label: 4w33, new label: w33 + 4 @line:96h
+       ts w36 + 2         ; ;old label: 2w36, new label: w36 + 2 @line:96i
+       ts w37 + 4         ; ;old label: 4w37, new label: w37 + 4 @line:96j
+       ad a9 + 2          ; ;old label: 2a9, new label: a9 + 2 @line:96k
+
+       ;CS-II Src: ts2w35	ts4w31	ts4w36	ts2w37	spw31	w49,taw50	taw51
+       ts w35 + 2         ; ;old label: 2w35, new label: w35 + 2 @line:97a
+       ts w31 + 4         ; ;old label: 4w31, new label: w31 + 4 @line:97b
+       ts w36 + 4         ; ;old label: 4w36, new label: w36 + 4 @line:97c
+       ts w37 + 2         ; ;old label: 2w37, new label: w37 + 2 @line:97d
+       sp w31             ;  @line:97e
+w49:   ta w50             ;  @line:97f
+       ta w51             ;  @line:97g
+
+       ;CS-II Src: w50,ca	tsa9	aow51	w51,ca	ts1a9	caa9	ts1w34	ts1w35	ts1w33	ad4a9	ts3w35
+w50:   ca 0               ; default operand;  @line:98a
+       ts a9              ;  @line:98b
+       ao w51             ;  @line:98c
+w51:   ca 0               ; default operand;  @line:98d
+       ts a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:98e
+       ca a9              ;  @line:98f
+       ts w34 + 1         ; ;old label: 1w34, new label: w34 + 1 @line:98g
+       ts w35 + 1         ; ;old label: 1w35, new label: w35 + 1 @line:98h
+       ts w33 + 1         ; ;old label: 1w33, new label: w33 + 1 @line:98i
+       ad a9 + 4          ; ;old label: 4a9, new label: a9 + 4 @line:98j
+       ts w35 + 3         ; ;old label: 3w35, new label: w35 + 3 @line:98k
+
+       ;CS-II Src: ts1w32	ad4a9	ts3w34	ts1w31	ca1a9	ts2w34	ts2w31	ts2w32	ts2w33	ad5a9	ts2w35
+       ts w32 + 1         ; ;old label: 1w32, new label: w32 + 1 @line:99a
+       ad a9 + 4          ; ;old label: 4a9, new label: a9 + 4 @line:99b
+       ts w34 + 3         ; ;old label: 3w34, new label: w34 + 3 @line:99c
+       ts w31 + 1         ; ;old label: 1w31, new label: w31 + 1 @line:99d
+       ca a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:99e
+       ts w34 + 2         ; ;old label: 2w34, new label: w34 + 2 @line:99f
+       ts w31 + 2         ; ;old label: 2w31, new label: w31 + 2 @line:99g
+       ts w32 + 2         ; ;old label: 2w32, new label: w32 + 2 @line:99h
+       ts w33 + 2         ; ;old label: 2w33, new label: w33 + 2 @line:99i
+       ad a9 + 5          ; ;old label: 5a9, new label: a9 + 5 @line:99j
+       ts w35 + 2         ; ;old label: 2w35, new label: w35 + 2 @line:99k
+
+       ;CS-II Src: ts4w31	ts4w32	ts4w33	ca0	ts1w36	ts2w36	ts3w36	ts4w36	ts1w37	ts2w37	ts3w37
+       ts w31 + 4         ; ;old label: 4w31, new label: w31 + 4 @line:100a
+       ts w32 + 4         ; ;old label: 4w32, new label: w32 + 4 @line:100b
+       ts w33 + 4         ; ;old label: 4w33, new label: w33 + 4 @line:100c
+       ca 0               ;  @line:100d
+       ts w36 + 1         ; ;old label: 1w36, new label: w36 + 1 @line:100e
+       ts w36 + 2         ; ;old label: 2w36, new label: w36 + 2 @line:100f
+       ts w36 + 3         ; ;old label: 3w36, new label: w36 + 3 @line:100g
+       ts w36 + 4         ; ;old label: 4w36, new label: w36 + 4 @line:100h
+       ts w37 + 1         ; ;old label: 1w37, new label: w37 + 1 @line:100i
+       ts w37 + 2         ; ;old label: 2w37, new label: w37 + 2 @line:100j
+       ts w37 + 3         ; ;old label: 3w37, new label: w37 + 3 @line:100k
+
+       ;CS-II Src: ts4w37	spw31	w52,taw53	taw54	w53,ca	tsa9	aow54
+       ts w37 + 4         ; ;old label: 4w37, new label: w37 + 4 @line:101a
+       sp w31             ;  @line:101b
+w52:   ta w53             ;  @line:101c
+       ta w54             ;  @line:101d
+w53:   ca 0               ; default operand;  @line:101e
+       ts a9              ;  @line:101f
+       ao w54             ;  @line:101g
+
+       ;CS-II Src: w54,ca	ts1a9	caa9	ts1w58	ad2a9	ts3w58	ts1w65	ad5a9	ts1w59	ts1w60	ts3w65
+w54:   ca 0               ; default operand;  @line:102a
+       ts a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:102b
+       ca a9              ;  @line:102c
+       ts w58 + 1         ; ;old label: 1w58, new label: w58 + 1 @line:102d
+       ad a9 + 2          ; ;old label: 2a9, new label: a9 + 2 @line:102e
+       ts w58 + 3         ; ;old label: 3w58, new label: w58 + 3 @line:102f
+       ts w65 + 1         ; ;old label: 1w65, new label: w65 + 1 @line:102g
+       ad a9 + 5          ; ;old label: 5a9, new label: a9 + 5 @line:102h
+       ts w59 + 1         ; ;old label: 1w59, new label: w59 + 1 @line:102i
+       ts w60 + 1         ; ;old label: 1w60, new label: w60 + 1 @line:102j
+       ts w65 + 3         ; ;old label: 3w65, new label: w65 + 3 @line:102k
+
+       ;CS-II Src: ad2a9	ts3w59	ts3w60	ts1w62	ca1a9	ts2w58	ts2w59	ts2w62	ts2w65	ad5a9	ts2w60
+       ad a9 + 2          ; ;old label: 2a9, new label: a9 + 2 @line:103a
+       ts w59 + 3         ; ;old label: 3w59, new label: w59 + 3 @line:103b
+       ts w60 + 3         ; ;old label: 3w60, new label: w60 + 3 @line:103c
+       ts w62 + 1         ; ;old label: 1w62, new label: w62 + 1 @line:103d
+       ca a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:103e
+       ts w58 + 2         ; ;old label: 2w58, new label: w58 + 2 @line:103f
+       ts w59 + 2         ; ;old label: 2w59, new label: w59 + 2 @line:103g
+       ts w62 + 2         ; ;old label: 2w62, new label: w62 + 2 @line:103h
+       ts w65 + 2         ; ;old label: 2w65, new label: w65 + 2 @line:103i
+       ad a9 + 5          ; ;old label: 5a9, new label: a9 + 5 @line:103j
+       ts w60 + 2         ; ;old label: 2w60, new label: w60 + 2 @line:103k
+
+       ;CS-II Src: ts4w62	ts4w65	ca0	ts1w61	ts2w61	ts3w61	ts1w63	ts2w63	ts4w63	ts1w64	ts2w64
+       ts w62 + 4         ; ;old label: 4w62, new label: w62 + 4 @line:104a
+       ts w65 + 4         ; ;old label: 4w65, new label: w65 + 4 @line:104b
+       ca 0               ;  @line:104c
+       ts w61 + 1         ; ;old label: 1w61, new label: w61 + 1 @line:104d
+       ts w61 + 2         ; ;old label: 2w61, new label: w61 + 2 @line:104e
+       ts w61 + 3         ; ;old label: 3w61, new label: w61 + 3 @line:104f
+       ts w63 + 1         ; ;old label: 1w63, new label: w63 + 1 @line:104g
+       ts w63 + 2         ; ;old label: 2w63, new label: w63 + 2 @line:104h
+       ts w63 + 4         ; ;old label: 4w63, new label: w63 + 4 @line:104i
+       ts w64 + 1         ; ;old label: 1w64, new label: w64 + 1 @line:104j
+       ts w64 + 2         ; ;old label: 2w64, new label: w64 + 2 @line:104k
+
+       ;CS-II Src: ts4w64	ts1w66	ts2w66	ts3w66	ts4w66	ts1w67	ts2w67	ts3w67	ts4w67	ts1w68	ts2w68
+       ts w64 + 4         ; ;old label: 4w64, new label: w64 + 4 @line:105a
+       ts w66 + 1         ; ;old label: 1w66, new label: w66 + 1 @line:105b
+       ts w66 + 2         ; ;old label: 2w66, new label: w66 + 2 @line:105c
+       ts w66 + 3         ; ;old label: 3w66, new label: w66 + 3 @line:105d
+       ts w66 + 4         ; ;old label: 4w66, new label: w66 + 4 @line:105e
+       ts w67 + 1         ; ;old label: 1w67, new label: w67 + 1 @line:105f
+       ts w67 + 2         ; ;old label: 2w67, new label: w67 + 2 @line:105g
+       ts w67 + 3         ; ;old label: 3w67, new label: w67 + 3 @line:105h
+       ts w67 + 4         ; ;old label: 4w67, new label: w67 + 4 @line:105i
+       ts w68 + 1         ; ;old label: 1w68, new label: w68 + 1 @line:105j
+       ts w68 + 2         ; ;old label: 2w68, new label: w68 + 2 @line:105k
+
+       ;CS-II Src: ts3w68	ts4w68	spw58	w55,taw56	taw57	w56,ca	tsa9
+       ts w68 + 3         ; ;old label: 3w68, new label: w68 + 3 @line:106a
+       ts w68 + 4         ; ;old label: 4w68, new label: w68 + 4 @line:106b
+       sp w58             ;  @line:106c
+w55:   ta w56             ;  @line:106d
+       ta w57             ;  @line:106e
+w56:   ca 0               ; default operand;  @line:106f
+       ts a9              ;  @line:106g
+
+       ;CS-II Src: aow57	w57,ca	ts1a9	caa9	ts1w58	ts1w60	ts1w64	ad3a9	ts3w58	ts3w60	ts1w65
+       ao w57             ;  @line:107a
+w57:   ca 0               ; default operand;  @line:107b
+       ts a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:107c
+       ca a9              ;  @line:107d
+       ts w58 + 1         ; ;old label: 1w58, new label: w58 + 1 @line:107e
+       ts w60 + 1         ; ;old label: 1w60, new label: w60 + 1 @line:107f
+       ts w64 + 1         ; ;old label: 1w64, new label: w64 + 1 @line:107g
+       ad a9 + 3          ; ;old label: 3a9, new label: a9 + 3 @line:107h
+       ts w58 + 3         ; ;old label: 3w58, new label: w58 + 3 @line:107i
+       ts w60 + 3         ; ;old label: 3w60, new label: w60 + 3 @line:107j
+       ts w65 + 1         ; ;old label: 1w65, new label: w65 + 1 @line:107k
+
+       ;CS-II Src: ts1w68	ad2a9	ts1w63	ts3w65	ts1w66	ts1w67	ts3w68	ad2a9	ts1w59	ts1w61	ts3w66
+       ts w68 + 1         ; ;old label: 1w68, new label: w68 + 1 @line:108a
+       ad a9 + 2          ; ;old label: 2a9, new label: a9 + 2 @line:108b
+       ts w63 + 1         ; ;old label: 1w63, new label: w63 + 1 @line:108c
+       ts w65 + 3         ; ;old label: 3w65, new label: w65 + 3 @line:108d
+       ts w66 + 1         ; ;old label: 1w66, new label: w66 + 1 @line:108e
+       ts w67 + 1         ; ;old label: 1w67, new label: w67 + 1 @line:108f
+       ts w68 + 3         ; ;old label: 3w68, new label: w68 + 3 @line:108g
+       ad a9 + 2          ; ;old label: 2a9, new label: a9 + 2 @line:108h
+       ts w59 + 1         ; ;old label: 1w59, new label: w59 + 1 @line:108i
+       ts w61 + 1         ; ;old label: 1w61, new label: w61 + 1 @line:108j
+       ts w66 + 3         ; ;old label: 3w66, new label: w66 + 3 @line:108k
+
+       ;CS-II Src: ts3w67	ad3a9	ts3w59	ts3w61	ts1w62	ca1a9	ts2w58	ts2w59	ts2w62	ts2w64	ts2w65
+       ts w67 + 3         ; ;old label: 3w67, new label: w67 + 3 @line:109a
+       ad a9 + 3          ; ;old label: 3a9, new label: a9 + 3 @line:109b
+       ts w59 + 3         ; ;old label: 3w59, new label: w59 + 3 @line:109c
+       ts w61 + 3         ; ;old label: 3w61, new label: w61 + 3 @line:109d
+       ts w62 + 1         ; ;old label: 1w62, new label: w62 + 1 @line:109e
+       ca a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:109f
+       ts w58 + 2         ; ;old label: 2w58, new label: w58 + 2 @line:109g
+       ts w59 + 2         ; ;old label: 2w59, new label: w59 + 2 @line:109h
+       ts w62 + 2         ; ;old label: 2w62, new label: w62 + 2 @line:109i
+       ts w64 + 2         ; ;old label: 2w64, new label: w64 + 2 @line:109j
+       ts w65 + 2         ; ;old label: 2w65, new label: w65 + 2 @line:109k
+
+       ;CS-II Src: ts4w67	ad2a9	ts2w63	ts4w65	ts2w67	ad3a9	ts4w63	ts2w66	ts4w68	ad2a9	ts2w60
+       ts w67 + 4         ; ;old label: 4w67, new label: w67 + 4 @line:110a
+       ad a9 + 2          ; ;old label: 2a9, new label: a9 + 2 @line:110b
+       ts w63 + 2         ; ;old label: 2w63, new label: w63 + 2 @line:110c
+       ts w65 + 4         ; ;old label: 4w65, new label: w65 + 4 @line:110d
+       ts w67 + 2         ; ;old label: 2w67, new label: w67 + 2 @line:110e
+       ad a9 + 3          ; ;old label: 3a9, new label: a9 + 3 @line:110f
+       ts w63 + 4         ; ;old label: 4w63, new label: w63 + 4 @line:110g
+       ts w66 + 2         ; ;old label: 2w66, new label: w66 + 2 @line:110h
+       ts w68 + 4         ; ;old label: 4w68, new label: w68 + 4 @line:110i
+       ad a9 + 2          ; ;old label: 2a9, new label: a9 + 2 @line:110j
+       ts w60 + 2         ; ;old label: 2w60, new label: w60 + 2 @line:110k
+
+       ;CS-II Src: ts2w61	ts4w62	ts4w64	ts4w66	ts2w68	w58,spz2	0	0	0	0	0
+       ts w61 + 2         ; ;old label: 2w61, new label: w61 + 2 @line:111a
+       ts w62 + 4         ; ;old label: 4w62, new label: w62 + 4 @line:111b
+       ts w64 + 4         ; ;old label: 4w64, new label: w64 + 4 @line:111c
+       ts w66 + 4         ; ;old label: 4w66, new label: w66 + 4 @line:111d
+       ts w68 + 2         ; ;old label: 2w68, new label: w68 + 2 @line:111e
+w58:   sp z2              ;  @line:111f
+       .word 0               ;  @line:111g
+       .word 0               ;  @line:111h
+       .word 0               ;  @line:111i
+       .word 0               ;  @line:111j
+       .word 0               ;  @line:111k
+
+       ;CS-II Src: w59,spz2	0	0	0	0	0	w60,spz2	0	0	0	0
+w59:   sp z2              ;  @line:112a
+       .word 0               ;  @line:112b
+       .word 0               ;  @line:112c
+       .word 0               ;  @line:112d
+       .word 0               ;  @line:112e
+       .word 0               ;  @line:112f
+w60:   sp z2              ;  @line:112g
+       .word 0               ;  @line:112h
+       .word 0               ;  @line:112i
+       .word 0               ;  @line:112j
+       .word 0               ;  @line:112k
+
+       ;CS-II Src: 0	w61,spz2	0	0	0	0	0	w62,spz2	0	0	0
+       .word 0               ;  @line:113a
+w61:   sp z2              ;  @line:113b
+       .word 0               ;  @line:113c
+       .word 0               ;  @line:113d
+       .word 0               ;  @line:113e
+       .word 0               ;  @line:113f
+       .word 0               ;  @line:113g
+w62:   sp z2              ;  @line:113h
+       .word 0               ;  @line:113i
+       .word 0               ;  @line:113j
+       .word 0               ;  @line:113k
+
+       ;CS-II Src: 0	0	w63,spz2	0	0	0	0	0	w64,spz2	0	0
+       .word 0               ;  @line:114a
+       .word 0               ;  @line:114b
+w63:   sp z2              ;  @line:114c
+       .word 0               ;  @line:114d
+       .word 0               ;  @line:114e
+       .word 0               ;  @line:114f
+       .word 0               ;  @line:114g
+       .word 0               ;  @line:114h
+w64:   sp z2              ;  @line:114i
+       .word 0               ;  @line:114j
+       .word 0               ;  @line:114k
+
+       ;CS-II Src: 0	0	0	w65,spz2	0	0	0	0	0	w66,spz2	0
+       .word 0               ;  @line:115a
+       .word 0               ;  @line:115b
+       .word 0               ;  @line:115c
+w65:   sp z2              ;  @line:115d
+       .word 0               ;  @line:115e
+       .word 0               ;  @line:115f
+       .word 0               ;  @line:115g
+       .word 0               ;  @line:115h
+       .word 0               ;  @line:115i
+w66:   sp z2              ;  @line:115j
+       .word 0               ;  @line:115k
+
+       ;CS-II Src: 0	0	0	0	w67,spz2	0	0	0	0	0.5	w68,spz2
+       .word 0               ;  @line:116a
+       .word 0               ;  @line:116b
+       .word 0               ;  @line:116c
+       .word 0               ;  @line:116d
+w67:   sp z2              ;  @line:116e
+       .word 0               ;  @line:116f
+       .word 0               ;  @line:116g
+       .word 0               ;  @line:116h
+       .word 0               ;  @line:116i
+       .word +0.5             ;  @line:116j
+w68:   sp z2              ;  @line:116k
+
+       ;CS-II Src: 0	0	0	0	0.5	w69,spw76	w70,taw71	taw72
+       .word 0               ;  @line:117a
+       .word 0               ;  @line:117b
+       .word 0               ;  @line:117c
+       .word 0               ;  @line:117d
+       .word +0.5             ;  @line:117e
+w69:   sp w76             ;  @line:117f
+w70:   ta w71             ;  @line:117g
+       ta w72             ;  @line:117h
+
+       ;CS-II Src: w71,ca	tsa9	aow72	w72,ca	ts1a9	caa9	ts1w35	ts1w33	ad4a9	ts1w34
+w71:   ca 0               ; default operand;  @line:118a
+       ts a9              ;  @line:118b
+       ao w72             ;  @line:118c
+w72:   ca 0               ; default operand;  @line:118d
+       ts a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:118e
+       ca a9              ;  @line:118f
+       ts w35 + 1         ; ;old label: 1w35, new label: w35 + 1 @line:118g
+       ts w33 + 1         ; ;old label: 1w33, new label: w33 + 1 @line:118h
+       ad a9 + 4          ; ;old label: 4a9, new label: a9 + 4 @line:118i
+       ts w34 + 1         ; ;old label: 1w34, new label: w34 + 1 @line:118j
+
+       ;CS-II Src: ts1w32	ad4a9	ts3w34	ts3w35	ts1w31	ca1a9	ts2w34	ts2w31	ts2w32	ts2w33	ad5a9
+       ts w32 + 1         ; ;old label: 1w32, new label: w32 + 1 @line:119a
+       ad a9 + 4          ; ;old label: 4a9, new label: a9 + 4 @line:119b
+       ts w34 + 3         ; ;old label: 3w34, new label: w34 + 3 @line:119c
+       ts w35 + 3         ; ;old label: 3w35, new label: w35 + 3 @line:119d
+       ts w31 + 1         ; ;old label: 1w31, new label: w31 + 1 @line:119e
+       ca a9 + 1          ; ;old label: 1a9, new label: a9 + 1 @line:119f
+       ts w34 + 2         ; ;old label: 2w34, new label: w34 + 2 @line:119g
+       ts w31 + 2         ; ;old label: 2w31, new label: w31 + 2 @line:119h
+       ts w32 + 2         ; ;old label: 2w32, new label: w32 + 2 @line:119i
+       ts w33 + 2         ; ;old label: 2w33, new label: w33 + 2 @line:119j
+       ad a9 + 5          ; ;old label: 5a9, new label: a9 + 5 @line:119k
+
+       ;CS-II Src: ts2w35	ts4w31	ts4w32	ts4w33	ca0	ts1w36	ts2w36	ts3w36	ts4w36	ts1w37	ts2w37
+       ts w35 + 2         ; ;old label: 2w35, new label: w35 + 2 @line:120a
+       ts w31 + 4         ; ;old label: 4w31, new label: w31 + 4 @line:120b
+       ts w32 + 4         ; ;old label: 4w32, new label: w32 + 4 @line:120c
+       ts w33 + 4         ; ;old label: 4w33, new label: w33 + 4 @line:120d
+       ca 0               ;  @line:120e
+       ts w36 + 1         ; ;old label: 1w36, new label: w36 + 1 @line:120f
+       ts w36 + 2         ; ;old label: 2w36, new label: w36 + 2 @line:120g
+       ts w36 + 3         ; ;old label: 3w36, new label: w36 + 3 @line:120h
+       ts w36 + 4         ; ;old label: 4w36, new label: w36 + 4 @line:120i
+       ts w37 + 1         ; ;old label: 1w37, new label: w37 + 1 @line:120j
+       ts w37 + 2         ; ;old label: 2w37, new label: w37 + 2 @line:120k
+
+       ;CS-II Src: ts3w37	ts4w37	spw31	w73,ca2a10	ts1z20	ts1z21	ts1z22	ts1z23	ts1z24	ts1z25
+       ts w37 + 3         ; ;old label: 3w37, new label: w37 + 3 @line:121a
+       ts w37 + 4         ; ;old label: 4w37, new label: w37 + 4 @line:121b
+       sp w31             ;  @line:121c
+w73:   ca a10 + 2         ; ;old label: 2a10, new label: a10 + 2 @line:121d
+       ts z20 + 1         ; ;old label: 1z20, new label: z20 + 1 @line:121e
+       ts z21 + 1         ; ;old label: 1z21, new label: z21 + 1 @line:121f
+       ts z22 + 1         ; ;old label: 1z22, new label: z22 + 1 @line:121g
+       ts z23 + 1         ; ;old label: 1z23, new label: z23 + 1 @line:121h
+       ts z24 + 1         ; ;old label: 1z24, new label: z24 + 1 @line:121i
+       ts z25 + 1         ; ;old label: 1z25, new label: z25 + 1 @line:121j
+
+       ;CS-II Src: ts1z26	ts1z27	ts1z28	ts1z29	w74,ca8a9	ts2z20	ts2z21	ts2z22	ts2z23	ts2z24
+       ts z26 + 1         ; ;old label: 1z26, new label: z26 + 1 @line:122a
+       ts z27 + 1         ; ;old label: 1z27, new label: z27 + 1 @line:122b
+       ts z28 + 1         ; ;old label: 1z28, new label: z28 + 1 @line:122c
+       ts z29 + 1         ; ;old label: 1z29, new label: z29 + 1 @line:122d
+w74:   ca a9 + 8          ; ;old label: 8a9, new label: a9 + 8 @line:122e
+       ts z20 + 2         ; ;old label: 2z20, new label: z20 + 2 @line:122f
+       ts z21 + 2         ; ;old label: 2z21, new label: z21 + 2 @line:122g
+       ts z22 + 2         ; ;old label: 2z22, new label: z22 + 2 @line:122h
+       ts z23 + 2         ; ;old label: 2z23, new label: z23 + 2 @line:122i
+       ts z24 + 2         ; ;old label: 2z24, new label: z24 + 2 @line:122j
+
+       ;CS-II Src: ts2z25	ts2z26	ts2z27	ts2z28	ts2z29	w75,cab8	su0	cpy2	su1a2	cpz21
+       ts z25 + 2         ; ;old label: 2z25, new label: z25 + 2 @line:123a
+       ts z26 + 2         ; ;old label: 2z26, new label: z26 + 2 @line:123b
+       ts z27 + 2         ; ;old label: 2z27, new label: z27 + 2 @line:123c
+       ts z28 + 2         ; ;old label: 2z28, new label: z28 + 2 @line:123d
+       ts z29 + 2         ; ;old label: 2z29, new label: z29 + 2 @line:123e
+w75:   ca b8              ;  @line:123f
+       su 0               ;  @line:123g
+       cp y2              ;  @line:123h
+       su a2 + 1          ; ;old label: 1a2, new label: a2 + 1 @line:123i
+       cp z21             ;  @line:123j
+
+       ;CS-II Src: su1a2	cpz22	su1a2	cpz23	su1a2	cpz24	su1a2	cpz25	su1a2	cpz26	su1a2
+       su a2 + 1          ; ;old label: 1a2, new label: a2 + 1 @line:124a
+       cp z22             ;  @line:124b
+       su a2 + 1          ; ;old label: 1a2, new label: a2 + 1 @line:124c
+       cp z23             ;  @line:124d
+       su a2 + 1          ; ;old label: 1a2, new label: a2 + 1 @line:124e
+       cp z24             ;  @line:124f
+       su a2 + 1          ; ;old label: 1a2, new label: a2 + 1 @line:124g
+       cp z25             ;  @line:124h
+       su a2 + 1          ; ;old label: 1a2, new label: a2 + 1 @line:124i
+       cp z26             ;  @line:124j
+       su a2 + 1          ; ;old label: 1a2, new label: a2 + 1 @line:124k
+
+       ;CS-II Src: cpz27	su1a2	cpz28	spz29	w76,aow73	aow75	ao2a1	ca2a1	su6a1	cpw77
+       cp z27             ;  @line:125a
+       su a2 + 1          ; ;old label: 1a2, new label: a2 + 1 @line:125b
+       cp z28             ;  @line:125c
+       sp z29             ;  @line:125d
+w76:   ao w73             ;  @line:125e
+       ao w75             ;  @line:125f
+       ao a1 + 2          ; ;old label: 2a1, new label: a1 + 2 @line:125g
+       ca a1 + 2          ; ;old label: 2a1, new label: a1 + 2 @line:125h
+       su a1 + 6          ; ;old label: 6a1, new label: a1 + 6 @line:125i
+       cp w77             ;  @line:125j
+
+       ;CS-II Src: ca0	ts2a1	ca7a10	tdw73	aow74	aow74	ao4a2	ca7a1	su4a2	cpw78	w77,spw73
+       ca 0               ;  @line:126a
+       ts a1 + 2          ; ;old label: 2a1, new label: a1 + 2 @line:126b
+       ca a10 + 7         ; ;old label: 7a10, new label: a10 + 7 @line:126c
+       td w73             ;  @line:126d
+       ao w74             ;  @line:126e
+       ao w74             ;  @line:126f
+       ao a2 + 4          ; ;old label: 4a2, new label: a2 + 4 @line:126g
+       ca a1 + 7          ; ;old label: 7a1, new label: a1 + 7 @line:126h
+       su a2 + 4          ; ;old label: 4a2, new label: a2 + 4 @line:126i
+       cp w78             ;  @line:126j
+w77:   sp w73             ;  @line:126k
+
+       ;CS-II Src: w78,ca0	ts4a2	ca0	ts2a1	ca7a10	tdw73	ca8a10	tdw74	ao5a2	ca7a1	su5a2
+w78:   ca 0               ;  @line:127a
+       ts a2 + 4          ; ;old label: 4a2, new label: a2 + 4 @line:127b
+       ca 0               ;  @line:127c
+       ts a1 + 2          ; ;old label: 2a1, new label: a1 + 2 @line:127d
+       ca a10 + 7         ; ;old label: 7a10, new label: a10 + 7 @line:127e
+       td w73             ;  @line:127f
+       ca a10 + 8         ; ;old label: 8a10, new label: a10 + 8 @line:127g
+       td w74             ;  @line:127h
+       ao a2 + 5          ; ;old label: 5a2, new label: a2 + 5 @line:127i
+       ca a1 + 7          ; ;old label: 7a1, new label: a1 + 7 @line:127j
+       su a2 + 5          ; ;old label: 5a2, new label: a2 + 5 @line:127k
+
+       ;CS-II Src: cpw79	spw73	w79,ca0	ts2a1	ts4a2	ts5a2	ca7a10	tdw73	ca9a10	tdw74	caa11
+       cp w79             ;  @line:128a
+       sp w73             ;  @line:128b
+w79:   ca 0               ;  @line:128c
+       ts a1 + 2          ; ;old label: 2a1, new label: a1 + 2 @line:128d
+       ts a2 + 4          ; ;old label: 4a2, new label: a2 + 4 @line:128e
+       ts a2 + 5          ; ;old label: 5a2, new label: a2 + 5 @line:128f
+       ca a10 + 7         ; ;old label: 7a10, new label: a10 + 7 @line:128g
+       td w73             ;  @line:128h
+       ca a10 + 9         ; ;old label: 9a10, new label: a10 + 9 @line:128i
+       td w74             ;  @line:128j
+       ca a11             ;  @line:128k
+
+       ;CS-II Src: tdw75	spf1	x1,ta3x1	sps1	a6	sp	y1,sps1	a5	ao4a7	spw1	y2,ca2z20	cpy3
+       td w75             ;  @line:129a
+       sp f1              ;  @line:129b
+x1:    ta x1 + 3          ; ;old label: 3x1, new label: x1 + 3 @line:129c
+       sp s1              ;  @line:129d
+       .word a6              ;  @line:129e
+       sp 0               ; default operand;  @line:129f
+y1:    sp s1              ;  @line:129g
+       .word a5              ;  @line:129h
+       ao a7 + 4          ; ;old label: 4a7, new label: a7 + 4 @line:129i
+       sp w1              ;  @line:129j
+y2:    ca z20 + 2         ; ;old label: 2z20, new label: z20 + 2 @line:129k
+       cp y3              ;  @line:129l
+
+       ;CS-II Src: sua10	cpw76	spz20	y3,ca2z20	ada10	cpw76	spz20	z1,sps1	a4
+       su a10             ;  @line:130a
+       cp w76             ;  @line:130b
+       sp z20             ;  @line:130c
+y3:    ca z20 + 2         ; ;old label: 2z20, new label: z20 + 2 @line:130d
+       ad a10             ;  @line:130e
+       cp w76             ;  @line:130f
+       sp z20             ;  @line:130g
+z1:    sp s1              ;  @line:130h
+       .word a4              ;  @line:130i
+
+       ;CS-II Src: ao4a7	spw1	z2,taz3	taz4	taz5	taz6	taz13	taz7	z3,ca	ts5a7	aoz4
+       ao a7 + 4          ; ;old label: 4a7, new label: a7 + 4 @line:131a
+       sp w1              ;  @line:131b
+z2:    ta z3              ;  @line:131c
+       ta z4              ;  @line:131d
+       ta z5              ;  @line:131e
+       ta z6              ;  @line:131f
+       ta z13             ;  @line:131g
+       ta z7              ;  @line:131h
+z3:    ca 0               ; default operand;  @line:131i
+       ts a7 + 5          ; ;old label: 5a7, new label: a7 + 5 @line:131j
+       ao z4              ;  @line:131k
+
+       ;CS-II Src: z4,ca	tsa8	aoz5	aoz5	z5,ca	ts1a8	aoz6	aoz6	aoz6	z6,ca	ts2a8
+z4:    ca 0               ; default operand;  @line:132a
+       ts a8              ;  @line:132b
+       ao z5              ;  @line:132c
+       ao z5              ;  @line:132d
+z5:    ca 0               ; default operand;  @line:132e
+       ts a8 + 1          ; ;old label: 1a8, new label: a8 + 1 @line:132f
+       ao z6              ;  @line:132g
+       ao z6              ;  @line:132h
+       ao z6              ;  @line:132i
+z6:    ca 0               ; default operand;  @line:132j
+       ts a8 + 2          ; ;old label: 2a8, new label: a8 + 2 @line:132k
+
+       ;CS-II Src: aoz7	aoz7	aoz7	aoz7	z7,ca	ts5a8	aoz13	aoz13	aoz13	aoz13	aoz13
+       ao z7              ;  @line:133a
+       ao z7              ;  @line:133b
+       ao z7              ;  @line:133c
+       ao z7              ;  @line:133d
+z7:    ca 0               ; default operand;  @line:133e
+       ts a8 + 5          ; ;old label: 5a8, new label: a8 + 5 @line:133f
+       ao z13             ;  @line:133g
+       ao z13             ;  @line:133h
+       ao z13             ;  @line:133i
+       ao z13             ;  @line:133j
+       ao z13             ;  @line:133k
+
+       ;CS-II Src: z8,ca5a7	si384	caa8	rc	cm1a8	su0	cpz9	cm2a8	su0	cpz10	cm5a8
+z8:    ca a7 + 5          ; ;old label: 5a7, new label: a7 + 5 @line:134a
+       si 384             ;  @line:134b
+       ca a8              ;  @line:134c
+       rc 0               ; default operand;  @line:134d
+       cm a8 + 1          ; ;old label: 1a8, new label: a8 + 1 @line:134e
+       su 0               ;  @line:134f
+       cp z9              ;  @line:134g
+       cm a8 + 2          ; ;old label: 2a8, new label: a8 + 2 @line:134h
+       su 0               ;  @line:134i
+       cp z10             ;  @line:134j
+       cm a8 + 5          ; ;old label: 5a8, new label: a8 + 5 @line:134k
+
+       ;CS-II Src: su0	cpz11	spz12	z9,caa8	ad3a8	tsa8	su2a8	cpz8	spz13	z10,ca5a7
+       su 0               ;  @line:135a
+       cp z11             ;  @line:135b
+       sp z12             ;  @line:135c
+z9:    ca a8              ;  @line:135d
+       ad a8 + 3          ; ;old label: 3a8, new label: a8 + 3 @line:135e
+       ts a8              ;  @line:135f
+       su a8 + 2          ; ;old label: 2a8, new label: a8 + 2 @line:135g
+       cp z8              ;  @line:135h
+       sp z13             ;  @line:135i
+z10:   ca a7 + 5          ; ;old label: 5a7, new label: a7 + 5 @line:135j
+
+       ;CS-II Src: ad3a8	ts5a7	su1a8	cpz8	spz13	z11,caa8	ad3a8	tsa8	ca5a7	ad3a8
+       ad a8 + 3          ; ;old label: 3a8, new label: a8 + 3 @line:136a
+       ts a7 + 5          ; ;old label: 5a7, new label: a7 + 5 @line:136b
+       su a8 + 1          ; ;old label: 1a8, new label: a8 + 1 @line:136c
+       cp z8              ;  @line:136d
+       sp z13             ;  @line:136e
+z11:   ca a8              ;  @line:136f
+       ad a8 + 3          ; ;old label: 3a8, new label: a8 + 3 @line:136g
+       ts a8              ;  @line:136h
+       ca a7 + 5          ; ;old label: 5a7, new label: a7 + 5 @line:136i
+       ad a8 + 3          ; ;old label: 3a8, new label: a8 + 3 @line:136j
+
+       ;CS-II Src: ts5a7	su1a8	cpz8	spz13	z12,ca5a7	ad3a8	ts5a7	caa8	su3a8	tsa8
+       ts a7 + 5          ; ;old label: 5a7, new label: a7 + 5 @line:137a
+       su a8 + 1          ; ;old label: 1a8, new label: a8 + 1 @line:137b
+       cp z8              ;  @line:137c
+       sp z13             ;  @line:137d
+z12:   ca a7 + 5          ; ;old label: 5a7, new label: a7 + 5 @line:137e
+       ad a8 + 3          ; ;old label: 3a8, new label: a8 + 3 @line:137f
+       ts a7 + 5          ; ;old label: 5a7, new label: a7 + 5 @line:137g
+       ca a8              ;  @line:137h
+       su a8 + 3          ; ;old label: 3a8, new label: a8 + 3 @line:137i
+       ts a8              ;  @line:137j
+
+       ;CS-II Src: ca5a7	su1a8	cpz8	spz13	z13,sp	z20,spw4	0	0	z21,spw12	0
+       ca a7 + 5          ; ;old label: 5a7, new label: a7 + 5 @line:138a
+       su a8 + 1          ; ;old label: 1a8, new label: a8 + 1 @line:138b
+       cp z8              ;  @line:138c
+       sp z13             ;  @line:138d
+z13:   sp 0               ; default operand;  @line:138e
+z20:   sp w4              ;  @line:138f
+       .word 0               ;  @line:138g
+       .word 0               ;  @line:138h
+z21:   sp w12             ;  @line:138i
+       .word 0               ;  @line:138j
+
+       ;CS-II Src: 0	z22,spw19	0	0
+       .word 0               ;  @line:139a
+z22:   sp w19             ;  @line:139b
+       .word 0               ;  @line:139c
+       .word 0               ;  @line:139d
+
+       ;CS-II Src: z23,spw28	0	0	z24,spw39	0
+z23:   sp w28             ;  @line:140a
+       .word 0               ;  @line:140b
+       .word 0               ;  @line:140c
+z24:   sp w39             ;  @line:140d
+       .word 0               ;  @line:140e
+
+       ;CS-II Src: 0	z25,spw46	0	0	z26,spw49
+       .word 0               ;  @line:141a
+z25:   sp w46             ;  @line:141b
+       .word 0               ;  @line:141c
+       .word 0               ;  @line:141d
+z26:   sp w49             ;  @line:141e
+
+       ;CS-II Src: 0	0	z27,spw52	0	0	z28,spw55	0	0	z29,spw70
+       .word 0               ;  @line:142a
+       .word 0               ;  @line:142b
+z27:   sp w52             ;  @line:142c
+       .word 0               ;  @line:142d
+       .word 0               ;  @line:142e
+z28:   sp w55             ;  @line:142f
+       .word 0               ;  @line:142g
+       .word 0               ;  @line:142h
+z29:   sp w70             ;  @line:142i
+
+       ;CS-II Src: 0	0	
+       .word 0               ;  @line:143a
+       .word 0               ;  @line:143b
+                        ;  @line:143c
+       .jumpto w1 ; START AT w1 @line:144a
+                        ;  @line:145a

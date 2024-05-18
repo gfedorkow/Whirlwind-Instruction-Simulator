@@ -31,8 +31,6 @@
 @S0212: Vxdt
 @S0213: Xul
 @S0214: Yha
-@E0022: print: "LAS WW1 %o %o and %ad", Xi, Yi
-@E0030: exec: wwlog ("LAS WW2")
 @N0001: Initialize X axis
 @N0003: initialize Y axis
 @N0005: Initialize Y Velocity    ;; guy: this was the designated loop return in the exemplar, but that's clearly wrong

@@ -1,0 +1,8 @@
+
+  Odds and ends, Mar 25, 2024
+
+check that --Auto works with Nim [fixed]
+in Single Step mode, update the display on each instruction cycle
+Don't exit on accesses to FF Reg's not present on the display panel
+why does Vibrating String use FF5 & 6?  Six is supposed to be read-only anyway...
+

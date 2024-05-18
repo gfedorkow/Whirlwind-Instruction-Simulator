@@ -1,12 +1,12 @@
 
- *** Core Image ***
+; *** Core Image ***
 %File: 102766755_fb131-97-6_patterson-t4.7ch
 %TapeID: fc TAPE 131-97-56 PATTERSON
 %JumpTo 0o170
 %Switch: LeftInterventionReg 0o100
 %Switch: RightInterventionReg 0o40000
-%Switch: FlipFlopPreset00 0o10
-%Switch: FlipFlopPreset01 0o70000
+%Switch: FlipFlopPreset02 0o10
+%Switch: FlipFlopPreset03 0o70000
 @C0000: 0000000 0000001 0000010 0070000  None    None    None    None   
 @C0040: 0000336 0000336 0014000 0040142 0100142 0114001 0114001 0040143 
 @C0050: 0100142 0164000 0050060 0040150 0130060 0130060 0100147 0150150 
@@ -52,7 +52,6 @@
 @S0152: x_start
 @S0153: x_axis
 @S0620: r1
-@S0170: 0r
 @S0224: loop
 @S0230: lpstor1
 @S0231: lpstor2

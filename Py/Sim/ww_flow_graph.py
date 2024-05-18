@@ -648,7 +648,10 @@ def output_block_list(cb, blocklist, core, title, output_file, block_info_len, c
         notation = "Octal"
     title_box = title + '\\nNotation: ' + notation
     fout.write('digraph flowchart {\n')
-    fout.write('  size="15, 15";\n')   # ultimately this sets the pixel size for a png output file
+    fout.write('  size="50, 50";\n')   # Size of Canvas: ultimately this sets the pixel size for a png output file
+        # I changed the size above from 15 to 50 Mar 8, 2024 to make it act like it was printing on a bigger sheet
+        # of "paper" so that when viewed as an SVG with Firefox, it wouldn't need so much magnification to be visible.
+        # All the browsers I tried won't zoom beyond 500%...
     fout.write(' t0 [label="%s"; shape=folder];\n' % title_box)
     for b in blocklist:
         graph_label = format_one_block(b, block_info_len, cpu)

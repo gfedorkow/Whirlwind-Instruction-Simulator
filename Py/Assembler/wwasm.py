@@ -87,6 +87,38 @@ def strip_space(s1):
     s3 = re.sub("[ \t]*$", '', s2)
     return s3
 
+def split_comment(in_str):
+  paren_depth = 0
+  in_quotes = False
+  in_comment = False
+  out_operands = ''
+  out_comment = ''
+  i = 0
+
+  for c in in_str:
+    i += 1
+    if c == '(':
+      paren_depth += 1
+    if c == ')':
+      paren_depth -= 1
+    if c == '"':
+      in_quotes = ~in_quotes
+
+    if re.match("@@",in_str[i:] ) and (in_quotes == False) and (paren_depth == 0):
+      break
+
+    if (c == ';')  and (in_quotes == False) and (paren_depth == 0) and not in_comment:
+      in_comment = True
+      continue
+
+    if in_comment:
+      out_comment += c
+    else:
+      out_operands += c
+
+  return (strip_space(out_operands), strip_space(out_comment))
+
+
 
 # Source line Lexer; break the components of a single line into constituent components
 # Modified Jan 10 2020 to add .w, .fl, .fh directives
@@ -119,6 +151,8 @@ def lex_line(line, line_number):
     if LexDebug:
         print(line_number, "Line=", line)
 
+    """
+    # old comment-stripper; delete this commented code
     # strip auto-comment
     r1 = re.sub(" *@@.*", '', line)
     if LexDebug:
@@ -132,6 +166,9 @@ def lex_line(line, line_number):
     if len(rl2) > 1:
         comment = strip_space(rl2[1])
         r2 = strip_space(rl2[0])
+    """
+
+    (r2, comment) = split_comment(line)
 
     # Special Case for .exec directive
     # I'm adding directives to the assembler to:
@@ -197,6 +234,7 @@ def lex_line(line, line_number):
     if len(rl5) > 1:
         operand = strip_space(rl5[1])
         op = strip_space(rl5[0])
+        op = op.lower()
         if Legacy_Numbers:   # guy's "legacy numbers" were purely and totally octal; the asm is now more flexible.
             if operand.isnumeric():
                 operand = "0o" + operand
@@ -261,14 +299,15 @@ def ww_int_csii(nstr, line_number, relative_base=None):
     except ValueError:
         pass
 
-    # there's a case I can't figure out how to categorize: "0.0" could be either decimal
-    # or Octal, but it seems to come closer to matching the Octal pattern.
+    # there's a case I can't figure out how to categorize: "0.0" or "0.00" could be either decimal
+    # or Octal, but it seems to come closer to matching the Octal pattern.  Obviously the answer is
+    # zero in either case.
     # In general, I think this routine is more conservative about number types than the real assembler,
     # but I don't know what rules they actually used.
     if re.match('0\\.|1\\.', nstr):  # try Whirlwind fixed-point octal conversion, e.g. n.nnnnn
         octal_str = nstr.replace('.', '')
         if re.search('^[01][0-7][0-7][0-7][0-7][0-7]$', octal_str) is None and \
-            re.search('^0.0$', nstr) is None:
+            re.search('^0.00*$', nstr) is None:
             print("Line %d: Expecting n.nnnnn octal number; got %s" % (line_number, nstr))
             return None
         return int(octal_str, 8)
@@ -438,7 +477,7 @@ def dot_switch_op(srcline, _binary_opcode, _operand_mask):
     global SwitchTab
     global cb
 
-    sw_class = wwinfra.WWSwitchClass()
+    sw_class = wwinfra.WWSwitchClass(cb)
     ret = 0
     # put a try/except around this conversion
     tokens = re.split("[ \t]", srcline.operand)
@@ -471,7 +510,7 @@ def dot_switch_op(srcline, _binary_opcode, _operand_mask):
 # This same routine handles .flexh and .flexl for inserting words that
 # correspond to Flexowriter characters.
 def dot_word_op(src_line, _binary_opcode, _operand_mask):
-    global NextCoreAddress, CurrentRelativeBase
+    global NextCoreAddress, CurrentRelativeBase, cb
 
     ret = 0
     # op-code contains the type of .word directive
@@ -480,8 +519,10 @@ def dot_word_op(src_line, _binary_opcode, _operand_mask):
     # regular number or label
     if re.match("\\.flexh|\\.flexl", src_line.operator) and re.match("\"|\\'.\"|\\'", src_line.operand):
             # The argument should be a valid flexo character
-            fc = wwinfra.FlexoClass(None)
+            fc = wwinfra.FlexoClass(cb)
             flexo_char = fc.ascii_to_flexo(src_line.operand[1])
+            if flexo_char is None:
+                cb.log.fatal (src_line.linenumber, "Can't convert ASCII character to Flexo")
             if re.match("\\.flexh", src_line.operator):
                 flexo_char <<= 10  # if it's "high", shift the six-bit code to WW bits 0..5
             # convert the result back into a string and replace the incoming Operand with the new one
@@ -967,6 +1008,8 @@ def label_lookup_and_eval(label_with_expr: str, srcline):
 # this routine looks up an operand to resolve a label or convert a number
 # Return one for an error, zero for no error.
 def resolve_labels_gen_instr(srcline) -> int:
+    global Annotate_IO_Arg
+
     if srcline.binary_opcode is None:
         # this used to be an error, but cs_ii introduced labels on a line by themselves
         # print("no op code: %s" % srcline.operator)
@@ -992,6 +1035,10 @@ def resolve_labels_gen_instr(srcline) -> int:
         return 1
     binary_operand &= srcline.operand_mask
     srcline.binary_instruction_word = binary_operand | srcline.binary_opcode
+
+    if (srcline.operator == "si") and Annotate_IO_Arg:
+        srcline.comment += "; Auto-Annotate I/O: %s" % cb.Decode_IO(binary_operand)
+
     if Debug:
         print("  binary_instruction_word %06oo" % srcline.binary_instruction_word)
     CoreMem[srcline.instruction_address] = srcline.binary_instruction_word
@@ -1221,11 +1268,15 @@ CoreReferredToByJump = [[] for _ in range(CORE_SIZE)]
 CoreReadBy = [[] for _ in range(CORE_SIZE)]
 CoreWrittenBy = [[] for _ in range(CORE_SIZE)]
 
-NextCoreAddress = 0  # # an int that keeps track of where to put the next instruction
+
+# I think the CSII assembler defaults to starting to load instructions at 0o40, the
+# first word of writable core.  Of course a .org can change that before loading the
+# first word of the program.
+NextCoreAddress = 0o40  # # an int that keeps track of where to put the next instruction
 # WW Subroutines use "relative" addresses, that is, labels which are relative to the start
 # of the routine.  A label "0r" resets the base address, as (I think) does any assignment
 # of a physical address, i.e., a ".org xx" in the source
-CurrentRelativeBase = 0  # an int that keeps track of the offset from the last relative base
+CurrentRelativeBase = 0o40  # an int that keeps track of the offset from the last relative base
 
 WW_Filename = None
 WW_TapeID = None
@@ -1246,6 +1297,9 @@ def main():
     global ISA_1950
     global cb
     global CurrentRelativeBase
+    global Annotate_IO_Arg
+
+
 
     OutputCoreFileExtension = '.acore'  # 'assembler core', not the same as 'tape core'
     OutputListingFileExtension = '.lst'
@@ -1257,6 +1311,7 @@ def main():
     parser.add_argument("inputfile", help="file name of ww asm source file")
     parser.add_argument("--Verbose", '-v',  help="print progress messages", action="store_true")
     parser.add_argument("--Debug", '-d', help="Print lotsa debug info", action="store_true")
+    parser.add_argument("--Annotate_IO_Names", help="Auto-add comments to identify SI device names", action="store_true")
     parser.add_argument("--Legacy_Numbers", help="guy-legacy - Assume numeric strings are Octal", action="store_true")
     parser.add_argument("-D", "--DecimalAddresses", help="Display traec information in decimal (default is octal)",
                         action="store_true")
@@ -1286,6 +1341,7 @@ def main():
     if args.ISA_1950:
         op_code = change_isa(op_code_1950)
     WW_Filename = input_file_name   # WW_filename will be overwritten if there's a directive in the source
+    Annotate_IO_Arg = args.Annotate_IO_Names
 
     # # on the first pass, read in the program, do lexical analysis to find
     # labels, operators and operands.

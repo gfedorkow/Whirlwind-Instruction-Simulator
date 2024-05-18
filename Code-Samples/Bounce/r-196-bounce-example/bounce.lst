@@ -38,7 +38,6 @@
 
                         ; do a bounce by multiplying by the loss factor, reversing the velocity, and setting the
                         ; Y position to equal the axis.
-                        .print "LAS WW1 %o %o and %ad", Xi, Yi  ;  
 @0022:100203    bounce: ca   Vy        ; @203 ; fetch Y velocity 
 @0023:140204            mr   R         ; @204 ; multiply by bounce loss and reverse the sign 
 @0024:040203            ts   Vy        ; @203 ; store the result in Y Velocity 
@@ -47,7 +46,6 @@
 @0026:040202            ts   Yi        ;  
 @0027:074033            sp   continue  ; skip the step adding negative gravitation acceleration 
 
-                        .exec wwlog ("LAS WW2")  ;  
 @0030:100203  nobounce: ca   Vy        ; for no bounce, fetch the current velocity @@JumpedToBy a0017 a0021 
 @0031:114205            su   Gdt       ; subtract gravitational constant 
 @0032:040203            ts   Vy        ; store the result in Y Velocity 

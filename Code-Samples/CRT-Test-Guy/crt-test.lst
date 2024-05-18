@@ -5,15 +5,15 @@
                         ; g fedorkow, dec 13, 2023
 
 
-@0000:000000      zero: .word 0         ;  @@JumpedToBy cd_ret cl_ret ms_ret si_ret lg_ret cg_ret ReadBy cl_index_y cl_index_x a0175 a0314 
-@0001:000001       one: .word 1         ;  @@ReadBy a0106 a0110 a0264 
+@0040:000000      zero: .word 0         ;  
+@0041:000001       one: .word 1         ;  @@JumpedToBy main a0046 ReadBy a0106 a0110 a0264 
 
 
                         .org 0o40      ;  
 @0040:074041      main: sp   main_loop  ;  
 
 @0041:        main_loop:                ;  
-@0041:074057            sp   corner_dots  ;  @@JumpedToBy main a0046 
+@0041:074057            sp   corner_dots  ;  @@JumpedToBy main a0046 ReadBy a0106 a0110 a0264 
 @0042:074101            sp   corner_lines  ;  
 @0043:074170            sp   multi_segments  ;  
 @0044:074312            sp   char_gen_test  ;  
@@ -43,7 +43,7 @@
 
 
 @0057:        corner_dots:                ;  
-@0057:050100            ta   cd_ret    ;  @@JumpedToBy a0041 
+@0057:050100            ta   cd_ret    ;  @@JumpedToBy one 
 
 @0060:100047            ca   max_pos_coord  ; pick up Y value 
 @0061:000677            si   0o677     ; select all the scopes; set Y value from the AC 
@@ -76,9 +76,9 @@
 @0103:040132            ts   cl_count  ;  
 @0104:100133            ca   corner_list_ptr  ;  
 @0105:044117            td   cl_index_x  ;  
-@0106:110001            ad   one       ; add one to the address 
+@0106:110041            ad   one       ; add one to the address 
 @0107:044112            td   cl_index_y  ;  
-@0110:110001            ad   one       ; add one to the address 
+@0110:110041            ad   one       ; add one to the address 
 @0111:044120            td   cl_index_d  ;  
 
 @0112:100000  cl_index_y: ca   0         ;  @@JumpedToBy a0130 WrittenBy a0107 a0116 ReadBy a0114 
@@ -250,7 +250,7 @@
 @0261:050306            ta   lg_ret    ;  @@JumpedToBy a0255 
 @0262:040311            ts   lg_tmp_acc  ;  
 @0263:100344            ca   char_tab_ptr  ;  
-@0264:110001            ad   one       ;  
+@0264:110041            ad   one       ;  
 @0265:044304            td   lg_rc_inst  ;  
 @0266:100340            ca   cg_x_delta  ;  
 @0267:074300            sp   lg_hit_gun  ;  
