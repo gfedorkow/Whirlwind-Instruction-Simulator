@@ -1805,7 +1805,9 @@ def main_run_sim(args, cb):
     if cpu.isa_1950 == False and args.Radar:
         cb.log.fatal("Radar device can only be used with 1950 ISA")
 
-    flowgraph = ww_flow_graph.FlowGraph (args.FlowGraph, args.FlowGraphOutFile, args.FlowGraphOutDir, cb)
+    if args.FlowGraph:
+        flowgraph = ww_flow_graph.FlowGraph (args.FlowGraph, args.FlowGraphOutFile, args.FlowGraphOutDir, cb)
+        cb.tracelog = flowgraph.init_log()
 
     if args.Radar:
                                         # heading is given as degrees from North, counting up clockwise
@@ -2091,8 +2093,6 @@ def main():
         cb.TraceALU = True
     if args.TraceCoreLocation:
         cb.TraceCoreLocation = int(args.TraceCoreLocation, 8)
-    if args.FlowGraph:
-        cb.tracelog = ww_flow_graph.init_log_from_sim()
     cb.decimal_addresses = args.DecimalAddresses  # if set, trace output is expressed in Decimal to suit 1950's chic
     cb.no_toggle_switch_warn = args.NoToggleSwitchWarning
 
