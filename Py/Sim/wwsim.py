@@ -1748,10 +1748,6 @@ def poll_sim_io(cpu, cb):
 def main_run_sim(args, cb):
     global CoreMem, CommentTab   # should have put this in the CPU Class...
 
-    cb.CoreFileName = args.corefile
-
-    cb.log = wwinfra.LogFactory().getLog (quiet=args.Quiet)
-
     if args.CrtFadeDelay:
         cb.crt_fade_delay_param = args.CrtFadeDelay
         cb.log.info("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
@@ -2056,8 +2052,10 @@ def main():
     args = parser.parse_args()
 
     # instantiate the class full of constants
-    cb = wwinfra.ConstWWbitClass (get_screen_size = True, args = args)
+    cb = wwinfra.ConstWWbitClass (corefile=args.corefile, get_screen_size = True, args = args)
     wwinfra.theConstWWbitClass = cb
+    cb.log = wwinfra.LogFactory().getLog (quiet=args.Quiet)
+
 
     # Many args are just slightly transformed and stored in the Universal Bit Bucket 'cb'
 
