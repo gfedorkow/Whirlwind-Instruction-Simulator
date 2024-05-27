@@ -5,6 +5,7 @@
 # revised Apr 30, 2018 to decode three tapes Al Kossow read at CHM several years ago
 #
 # Disassemble Whirlwind Core File
+import os
 import sys
 import argparse
 import re
@@ -486,7 +487,7 @@ CoreWrittenBy = [[] for _ in range(CORE_SIZE)]  # type: List[List[Any]]
 
 def main():
     global cb
-    parser = argparse.ArgumentParser(description='Disassemble a Whirlwind Core File.')
+    parser = wwinfra.StdArgs().getParser ("Disassemble a Whirlwind Core File.")
     parser.add_argument("inputfile", help="file name of ww input core file")
     parser.add_argument('--outputfile', '-o', type=str, help="output file name ('-'=stdout)")
     parser.add_argument('--use_default_tsr', '-u',
@@ -495,7 +496,6 @@ def main():
     parser.add_argument("--Debug", '-d', help="Print lotsa debug info", action="store_true")
 
     args = parser.parse_args()
-    print(args)
 
     input_file_name = args.inputfile
     base_filename = re.sub('\\..*core$', '', input_file_name)
@@ -505,7 +505,8 @@ def main():
         wwdisasm_output_filename = args.outputfile
 
     # instantiate the class full of constants
-    cb = wwinfra.ConstWWbitClass()
+    cb = wwinfra.ConstWWbitClass (corefile=os.path.basename(base_filename), args = args)
+    wwinfra.theConstWWbitClass = cb
     cpu = WWCpuClass(cb)
 
     #  oops, this got a bit twisted...  use_default_tsr is intended simply to copy the default contents of
@@ -519,7 +520,7 @@ def main():
         use_default_tsr = args.use_default_tsr
     print("use_default_tsr=%d" % args.use_default_tsr)
     coremem = wwinfra.CorememClass(cb, use_default_tsr=use_default_tsr)
-    cb.log = wwinfra.LogClass(sys.argv[0], debug=args.Debug)
+    cb.log = wwinfra.LogFactory().getLog (debug=args.Debug)
 
     AutoSymTab = [None] * CORE_SIZE  # automatically-generated labels for instructions that need them
 

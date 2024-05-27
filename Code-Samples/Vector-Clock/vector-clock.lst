@@ -107,7 +107,7 @@
 @0103:100000            ca   0         ;  
 @0104:040111            ts   time_hours  ;  
 @0105:         upt_ret:                ;  
-@0105:074000            sp   0-0       ;  @@JumpedToBy a0054 a0057 a0063 a0070 a0075 a0102 WrittenBy a0051 a0060 
+@0105:074000            sp   0         ;  @@JumpedToBy a0054 a0057 a0063 a0070 a0075 a0102 WrittenBy a0051 a0060 
 @0106:000000  time_sub: .word 0         ;  @@WrittenBy a0052 a0056 a0061 a0065 ReadBy a0052 a0061 
 @0107:000021  time_seconds: .word 17        ;  @@WrittenBy a0066 a0072 ReadBy a0066 a0272 
 @0110:000070  time_minutes: .word 56        ;  @@WrittenBy a0073 a0077 ReadBy a0073 a0311 a0334 
@@ -247,7 +247,7 @@
 @0241:104267            cs   lkup_y    ;  
 @0242:024000            rc   0         ;  
 @0243:        d60d_ret:                ;  
-@0243:074000            sp   0-0       ;  @@WrittenBy a0176 
+@0243:074000            sp   0         ;  @@WrittenBy a0176 
 
 @0244:000073    drt_60: .word 59        ;  @@ReadBy a0135 
 @0245:000005     drt_5: .word 5         ;  @@ReadBy a0133 
@@ -264,11 +264,11 @@
 @0253:154001            slr  1         ;  
 @0254:110416            ad   minutes_ring_pointer  ;  
 @0255:044256            td   lkup1     ;  
-@0256:100000     lkup1: ca   0-0       ;  @@WrittenBy a0255 a0260 ReadBy a0260 
+@0256:100000     lkup1: ca   0         ;  @@WrittenBy a0255 a0260 ReadBy a0260 
 @0257:040266            ts   lkup_x    ;  
 @0260:130256            ao   lkup1     ;  
 @0261:044262            td   lkup2     ;  
-@0262:100000     lkup2: ca   0-0       ;  @@WrittenBy a0261 
+@0262:100000     lkup2: ca   0         ;  @@WrittenBy a0261 
 @0263:040267            ts   lkup_y    ;  
 @0264:        lkup_ret:                ;  
 @0264:074000            sp   0         ;  @@WrittenBy a0251 
@@ -372,7 +372,7 @@
 @0361:074372            sp   dsh_plot  ;  
 @0362:074372            sp   dsh_plot  ;  
 
-@0363:074000   dsh_ret: sp   0-0       ;  @@WrittenBy a0271 a0310 a0327 
+@0363:074000   dsh_ret: sp   0         ;  @@WrittenBy a0271 a0310 a0327 
 @0364:000000     dsh_x: .word 0         ;  @@WrittenBy a0304 a0323 a0350 a0411 ReadBy a0405 a0407 
 @0365:000000     dsh_y: .word 0         ;  @@WrittenBy a0305 a0324 a0351 a0414 ReadBy a0373 a0412 
 @0366:000000    dsh_dx: .word 0         ;  @@WrittenBy a0277 a0316 a0343 ReadBy a0375 a0410 
@@ -405,7 +405,7 @@
 @0413:110367            ad   dsh_dy    ;  
 @0414:040365            ts   dsh_y     ;  
 @0415:        dsh_plot_ret:                ;  
-@0415:074000            sp   0-0       ;  @@WrittenBy a0372 
+@0415:074000            sp   0         ;  @@WrittenBy a0372 
 
 
 @0416:000417  minutes_ring_pointer: .word minutes_ring  ;  @@ReadBy a0254 

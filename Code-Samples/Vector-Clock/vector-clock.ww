@@ -107,7 +107,7 @@ debug_update_time:
         ca  0
         ts  time_hours
 upt_ret:
-        sp  0-0
+        sp  0
 time_sub:     .word 0
 time_seconds: .word 17
 time_minutes: .word 56
@@ -247,7 +247,7 @@ d60_draw:
         cs  lkup_y
         rc  0
 d60d_ret:
-        sp  0-0
+        sp  0
  
 drt_60: .word 59
 drt_5:  .word 5
@@ -264,11 +264,11 @@ lookup:
         slr 1           
         ad  minutes_ring_pointer
         td  lkup1
-lkup1:  ca  0-0
+lkup1:  ca  0
         ts  lkup_x
         ao  lkup1
         td  lkup2
-lkup2:  ca  0-0
+lkup2:  ca  0
         ts  lkup_y
 lkup_ret:
         sp  0
@@ -372,7 +372,7 @@ dsh_do5:
         sp  dsh_plot
         sp  dsh_plot
         
-dsh_ret: sp 0-0
+dsh_ret: sp 0
 dsh_x:  .word 0
 dsh_y:  .word 0
 dsh_dx: .word 0
@@ -405,7 +405,7 @@ dsh_plot:
         ad  dsh_dy
         ts  dsh_y
 dsh_plot_ret:
-        sp  0-0
+        sp  0
  
 
 minutes_ring_pointer:    .word minutes_ring
