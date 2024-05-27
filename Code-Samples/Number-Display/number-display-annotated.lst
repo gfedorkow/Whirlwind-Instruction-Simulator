@@ -1,16 +1,16 @@
 
 
-                        ;  Annotated "Number Display" paper tape
-                        ;  g fedorkow, Sep 2023
-                        ;  This program must have been a demo, or someone showing off...  It displays a number in four formats, using
-                        ;  3x5 dot-matrix characters, on the main CRT
-                        ;  First line is binary, second is octal, third is decimal and fourth is sort-of Hex, but with an unusual letter
-                        ;  sequence instead of A-F for 10-15
-                        ;  The number to be displayed is found in
+                        ; Annotated "Number Display" paper tape
+                        ; g fedorkow, Sep 2023
+                        ; This program must have been a demo, or someone showing off...  It displays a number in four formats, using
+                        ; 3x5 dot-matrix characters, on the main CRT
+                        ; First line is binary, second is octal, third is decimal and fourth is sort-of Hex, but with an unusual letter
+                        ; sequence instead of A-F for 10-15
+                        ; The number to be displayed is found in
 
 
                         .dbwgt number_to_display  ; show the starting number for the display loop 
-                        .dbwgt .CORE_SIZE  ; test for python-labels  ; Delete Me 
+                        ; .dbwgt .CORE_SIZE  ; test for python-labels  ; Delete Me
 
                         .org 0o0000    ;  
 @0000:000000     w0000: .word 0         ;  @@WrittenBy i0067 ReadBy a0050 a0063 i0067 print_line a0110 w0125 a0162 i0254 a0257 r0610 
@@ -36,7 +36,7 @@
 
                         ; ************* Start of Update the message on the screen loop (I think)
 @0054:104600     i0054: cs   u0600     ; clear and subtract @@JumpedToBy a0166 a0170 
-                        ; .print "calc_ Draw Screen u0600=%o, u0601=%o, u0602=%o disp_num=%o u0502=%o u0503=%o screen_rep_cnt=%o w0003=%o", u0600, u0601, u0602, disp_num, u0502, u0503, screen_rep_cnt, w0003  ;
+                        .print "calc_ Draw Screen u0600=%o, u0601=%o, u0602=%o disp_num=%o u0502=%o u0503=%o screen_rep_cnt=%o w0003=%o", u0600, u0601, u0602, disp_num, u0502, u0503, screen_rep_cnt, w0003  ;  
 @0055:040504            ts   screen_rep_cnt  ; transfer to storage 
 
                         ; ************* Start of Draw One Screen loop ******************
@@ -92,7 +92,7 @@
                         ; The disp_num is shifted right at least once for each character printed, e.g. 0o12->5->2->1->0
                         ; "Divide by 1/2 is multiply by two", i.e., 0o040000 = 1/2
 
-                        ; .print "calc_char input: acc=%ao disp_num=%o w0114=%o u0500=%o", disp_num, w0114, u0500  ;
+                        .print "calc_char input: acc=%ao disp_num=%o w0114=%o u0500=%o", disp_num, w0114, u0500  ;  
 @0112:150500  calc_char: dv   u0500     ; start the calc to find next char (u0500 is always 0o050000 or 0o040000) 
 @0113:154017            slr  0o017     ; shift left and roundoff; this puts the multiplied-by-two-but-truncated result in the AC 
 @0114:161000     w0114: srh  00000     ; shift right and hold, i.e., divide by two @@WrittenBy a0077 
@@ -104,7 +104,7 @@
 @0121:064501            ex   disp_num  ; exchange; adjust the 'remaining' character count 
 @0122:114502            su   u0502     ; subtract x from AC, i.e. the AC figured two-instructions-ago from the current AC; this must be the character offset in the chr table 
                         ; the next three instructions effectively index into the character table and find the bitmap for the character
-                        ; .print "calc_char output offset=%ad (d)"  ;
+                        .print "calc_char output offset=%ad (d)"  ;  
 @0123:110206            ad   chr_tab   ; add the start address of the character table 
 @0124:044125            td   w0125     ; transfer digits ; overwrite the next instruction with an addresss into the char table 
 @0125:100000     w0125: ca   w0000     ; load next char to draw into AC @@WrittenBy a0124 
@@ -215,7 +215,7 @@
 @0227:074444     chr_L: .word 0o074444  ; Bitmap for character 'L' 
 @0230:055755     chr_H: .word 0o055755  ; Bitmap for character 'H' 
 @0231:044747    chr_xx: .word 0o044747  ; Bitmap for character ? 
-@0232:074447     chr_E: .word 0o074447  ;  
+@0232:074447    xchr_E: .word 0o074447  ; ???? 
 @0233:055757     chr_A: .word 0o055757  ;  
 @0234:056656     chr_R: .word 0o056656  ; Bitmap for character 'R' 
 @0235:072227     chr_I: .word 0o072227  ;  

@@ -1,9 +1,9 @@
-                        ;  bouncing ball demo
-                        ;  guy fedorkow, Jan 2019
-                        ;  copied from http://bitsavers.informatik.uni-stuttgart.de/pdf/mit/whirlwind/R-series/R-196_Programming_for_Whirlwind_I_Jun51.pdf
-                        ;  pdf page 62
-                        ;  translated into assembler with labels for variables and addresses
-                        ;  updated to use the 1954 I/O instruction set for display
+                        ; bouncing ball demo
+                        ; guy fedorkow, Jan 2019
+                        ; copied from http://bitsavers.informatik.uni-stuttgart.de/pdf/mit/whirlwind/R-series/R-196_Programming_for_Whirlwind_I_Jun51.pdf
+                        ; pdf page 62
+                        ; translated into assembler with labels for variables and addresses
+                        ; updated to use the 1954 I/O instruction set for display
 
                         .dbwgt Vy        ;  
                         .dbwgt R 0o200   ;  
@@ -11,7 +11,7 @@
                         .dbwgt Yi 	0o100  ;  
 
                         .jumpto main      ;  
-                        .ORG 1         ;  
+                        .org 1         ;  
 @0001:100207      main: ca   XI        ; Initialize X axis @@JumpedToBy a0044 
 @0002:040201            ts   Xi        ;  
 @0003:100210            ca   YI        ; initialize Y axis 
@@ -21,11 +21,11 @@
 
 @0007:100201      loop: ca   Xi        ; fetch current X value @@JumpedToBy a0043 
 @0010:110212            ad   Vxdt      ; add the velocity increment 
-                        ;        Qh Xi   ; @201 ; output x axis
+                        ; Qh Xi   ; @201 ; output x axis
 @0011:040201            ts   Xi        ; store the next X back to Xi 
 
 @0012:100214            ca   Yha       ; fetch the y (horizontal) axis line 
-                        ;        Qd Yha  ; @212 ; output the y axis point
+                        ; Qd Yha  ; @212 ; output the y axis point
 @0013:000600            si   0o600     ; select point; the Y deflection is Yha, picked up from ACC 
 @0014:100201            ca   Xi        ; put x in ACC 
 @0015:024000            rc   0         ; output a point to the display 
@@ -36,8 +36,8 @@
 @0020:104203            cs   Vy        ; fetch velocity to see if we're already starting to bounce 
 @0021:070030            cp   nobounce  ; branch if velocity is already positive [instruction added by guy] 
 
-                        ;  do a bounce by multiplying by the loss factor, reversing the velocity, and setting the
-                        ;  Y position to equal the axis.
+                        ; do a bounce by multiplying by the loss factor, reversing the velocity, and setting the
+                        ; Y position to equal the axis.
 @0022:100203    bounce: ca   Vy        ; @203 ; fetch Y velocity 
 @0023:140204            mr   R         ; @204 ; multiply by bounce loss and reverse the sign 
 @0024:040203            ts   Vy        ; @203 ; store the result in Y Velocity 
@@ -51,7 +51,7 @@
 @0032:040203            ts   Vy        ; store the result in Y Velocity 
 @0033:140206  continue: mr   dt        ; multiply velocity by time increment @@JumpedToBy a0027 
 @0034:110202            ad   Yi        ; add the incremental distance to the current Y value 
-                        ;        qd Yi   ; @202 ; output the Y value for the ball (same X as last time)
+                        ; qd Yi   ; @202 ; output the Y value for the ball (same X as last time)
 @0035:040202            ts   Yi        ; @202  ;guy: emulate store that was part of qd 
 @0036:000600            si   0o600     ; new-style i/o instruction; set the Y coord now in the ACC 
 @0037:100201            ca   Xi        ; put X coord in ACC 
@@ -62,7 +62,7 @@
 @0043:070007            cp   loop      ; @5   ; branch to next iteration 
 @0044:074001            sp   main      ; @1   ; start all over to refresh the display 
 
-                        .ORG 0o201     ;  
+                        .org 0o201     ;  
 @0201:000000        Xi: .word 0         ; current i'th value of x @@WrittenBy a0002 a0011 ReadBy loop a0014 a0037 a0041 
 @0202:000000        Yi: .word 0         ; current i'th value of y @@WrittenBy a0004 a0026 a0035 ReadBy a0016 a0034 
 @0203:000000        Vy: .word 0         ; current i'th value of velocity of y @@WrittenBy a0006 a0024 a0032 ReadBy a0020 bounce nobounce 

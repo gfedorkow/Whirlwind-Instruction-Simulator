@@ -4,7 +4,6 @@
 %TapeID: fbl3l-0-2692
 %JumpTo 0o40
 %DbWgt:  0o002  0o01 %o
-%DbWgt:  .CORE_SIZE  0o01 %o
 @C0000: 0000000 0000001 0000000 0000000  None    None    None    None   
 @C0040: 0100200 0040002 0100201 0040003 0100202 0040600 0100203 0040601 
 @C0050: 0100000 0040602 0104601 0040505 0104600 0040504 0100003 0040503 
@@ -76,10 +75,11 @@
 @S0223: chr_8
 @S0224: chr_9
 @S0225: chr_T
-@S0232: chr_E
+@S0226: chr_E
 @S0227: chr_L
 @S0230: chr_H
 @S0231: chr_xx
+@S0232: xchr_E
 @S0233: chr_A
 @S0234: chr_R
 @S0235: chr_I
@@ -107,6 +107,9 @@
 @S0601: u0601
 @S0602: u0602
 @S0610: r0610
+@E0055: print: "calc_ Draw Screen u0600=%o, u0601=%o, u0602=%o disp_num=%o u0502=%o u0503=%o screen_rep_cnt=%o w0003=%o", u0600, u0601, u0602, disp_num, u0502, u0503, screen_rep_cnt, w0003
+@E0112: print: "calc_char input: acc=%ao disp_num=%o w0114=%o u0500=%o", disp_num, w0114, u0500
+@E0123: print: "calc_char output offset=%ad (d)"
 @N0040: load constant 0o12 into AC
 @N0041: Store it in a FF Reg
 @N0042: load constant 0o140510 into AC
@@ -219,6 +222,7 @@
 @N0227: Bitmap for character 'L'
 @N0230: Bitmap for character 'H'
 @N0231: Bitmap for character ?
+@N0232: ????
 @N0234: Bitmap for character 'R'
 @N0241: sub-program
 @N0242: exchange

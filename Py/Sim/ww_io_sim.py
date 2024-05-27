@@ -21,6 +21,12 @@
 import wwinfra
 import re
 
+iolog = None
+def getiolog ():
+    global iolog
+    if iolog is None:
+        iolog = wwinfra.LogFactory().getLog()
+    return iolog
 
 # this class is a template for new I/O devices
 #  Add a new device to this file, plus put its name in IODeviceList in wwsim.py,
@@ -41,11 +47,11 @@ class DummyIoClass:
             return None
 
     def si(self, device, acc, _cm):
-        print("SI: configured device ; decode more params")
+        getiolog().info("SI: configured device ; decode more params")
         return self.cb.NO_ALARM
 
     def rc(self, unused, acc):  # "record", i.e. output instruction to device
-        print("unimplemented %s Record" % self.name)
+        getiolog().info("unimplemented %s Record" % self.name)
         return self.cb.UNIMPLEMENTED_ALARM, 0
 
 
@@ -66,11 +72,11 @@ class CameraClass:
             return None
 
     def si(self, device, acc, _cm):
-        print("SI: Index Camera to next frame")
+        getiolog().info("SI: Index Camera to next frame")
         return self.cb.NO_ALARM
 
     def rc(self, unused, acc):  # "record", i.e. output instruction to device
-        print("unimplemented %s Record" % self.name)
+        getiolog().info("unimplemented %s Record" % self.name)
         return self.cb.UNIMPLEMENTED_ALARM, 0
 
 
@@ -137,31 +143,31 @@ class PhotoElectricTapeReaderClass:
             try:
                 self.PETR_fd[self.PETR_device] = open(filename, "r")
                 fd = self.PETR_fd[self.PETR_device]
-                print("Using file %s for PETR %s" % (filename, self.PETR_device))
+                getiolog().info("Using file %s for PETR %s" % (filename, self.PETR_device))
             except:
-                print("Can't open paper tape file %s" % filename)
+                getiolog().info("Can't open paper tape file %s" % filename)
                 exit(1)
             self.PETR_tape_image[self.PETR_device] = self.read_tape_file(fd, filename)
             fd.close()
 
-        print("SI: PhotoElectricTapeReader %s initialized in %s mode " % (self.PETR_device, self.PETR_mode))
+        getiolog().info("SI: PhotoElectricTapeReader %s initialized in %s mode " % (self.PETR_device, self.PETR_mode))
         return self.cb.NO_ALARM
 
     def rc(self, unused, acc):  # "record"
-        print("unimplemented rc: Punch to PhotoElectric Reader")
+        getiolog().info("unimplemented rc: Punch to PhotoElectric Reader")
         return self.cb.UNIMPLEMENTED_ALARM, 0
 
     def rd(self, code, acc):  # "read"
         if self.PETR_mode == "Char":
             offset = self.PETR_read_offset[self.PETR_device]
             if offset >= len(self.PETR_tape_image[self.PETR_device]):
-                print('PETR Overrun at Offset %d' % offset)
+                getiolog().info('PETR Overrun at Offset %d' % offset)
                 return self.cb.IO_ERROR_ALARM, 0
             ret = self.PETR_tape_image[self.PETR_device][offset]
             self.PETR_read_offset[self.PETR_device] += 1
-            print("RD: PhotoElectricTapeReader %s read character 0o%o " % (self.PETR_device, ret))
+            getiolog().info("RD: PhotoElectricTapeReader %s read character 0o%o " % (self.PETR_device, ret))
             return self.cb.NO_ALARM, ret
-        print("unimplemented rd: PhotoElectric Read from file %s, mode %s" % (self.PETR_device, self.PETR_mode))
+        getiolog().info("unimplemented rd: PhotoElectric Read from file %s, mode %s" % (self.PETR_device, self.PETR_mode))
         return self.cb.UNIMPLEMENTED_ALARM, 0
 
     def bi(self, address, acc, cm):  # "block transfer in"
@@ -173,10 +179,10 @@ class PhotoElectricTapeReaderClass:
             same as the total time required to perform the rd instructions it replaces. Any
             sequence of rd and bi instructions may follow a single si.
         """
-        print("block transfer PETR: start address 0o%o, length 0o%o Unimplemented" % (address, acc))
+        getiolog().info("block transfer PETR: start address 0o%o, length 0o%o Unimplemented" % (address, acc))
         return self.cb.UNIMPLEMENTED_ALARM
 #        if address + acc > self.cb.WW_ADDR_MASK:
-#            print "block transfer in PETR out of range"
+#            getiolog().info "block transfer in PETR out of range"
 #            return self.cb.QUIT_ALARM
 #        for m in range(address, (address + acc)):
 #            w = 0
@@ -212,9 +218,9 @@ class PhotoElectricTapeReaderClass:
                 continue   # skip the name directives
             if re.match("^@T", input_minus_comment):  # read a line of tape bytes
                 tokens = re.split("[: \t][ \t]*", input_minus_comment)
-                # print "tokens:", tokens
+                # getiolog().info "tokens:", tokens
                 if len(tokens[0]) == 0:
-                    print("parse error, read_tape @C: tokens=", tokens)
+                    getiolog().info("parse error, read_tape @C: tokens=", tokens)
                     continue
                 offset = int(tokens[0][2:], 8)
                 for token in tokens[1:]:
@@ -223,9 +229,9 @@ class PhotoElectricTapeReaderClass:
                     offset += 1
 
             else:
-                print("unexpected line '%s' in %s, Line %d" % (line, filename, LineNumber))
+                getiolog().info("unexpected line '%s' in %s, Line %d" % (line, filename, LineNumber))
 
-        print("read Tape File %s, length=%d characters (%3.1f words)" % (filename, offset, float(offset)/3.0))
+        getiolog().info("read Tape File %s, length=%d characters (%3.1f words)" % (filename, offset, float(offset)/3.0))
         return tape_image
 
 
@@ -255,15 +261,15 @@ class CoreClearIoClass:
             return None
 
     def si(self, device, acc, _cm):
-        print("SI: 'Clear Memory' device initialized ")
+        getiolog().info("SI: 'Clear Memory' device initialized ")
         return self.cb.NO_ALARM
 
     def rc(self, unused, acc):  # "record"
-        print("unimplemented rc: Core Clear Record")
+        getiolog().info("unimplemented rc: Core Clear Record")
         return self.cb.UNIMPLEMENTED_ALARM, 0
 
     def rd(self, code, acc):  # "read"
-        print("unimplemented rd: Core Clear Read")
+        getiolog().info("unimplemented rd: Core Clear Read")
         return 0
 
     def bi(self, address, acc, cm):  # "block transfer in"
@@ -272,9 +278,9 @@ class CoreClearIoClass:
             acc: contents of accumulator (the word count)
             cm: core memory instance
         """
-        print("block transfer Clear Memory: start address 0o%o, length 0o%o" % (address, acc))
+        getiolog().info("block transfer Clear Memory: start address 0o%o, length 0o%o" % (address, acc))
         if address + acc > self.cb.WW_ADDR_MASK:
-            print("block transfer in Clear Mem out of range")
+            getiolog().info("block transfer in Clear Mem out of range")
             return self.cb.QUIT_ALARM
         for m in range(address, (address + acc)):
             cm.wr(m, 0)  # write zero
@@ -295,22 +301,24 @@ class FFResetIoClass:
             return None
 
     def si(self, device, acc, cm):
-        self.cb.log.info("SI: Select Flip-Flop Storage Reset ")
+        # self.cb.log.info("SI: Select Flip-Flop Storage Reset ")       # LAS
+        io_print_log("SI: Select Flip-Flop Storage Reset ")
         self.cm = cm
         self.cm.reset_ff(self.cb.cpu)  # it seems that just 'selecting' the FF Register Reset makes it happen
         return self.cb.NO_ALARM
 
     def rc(self, unused, acc):  # "record"   Not sure this case can ever happen
-        self.cb.log.info("RC: Activate Flip-Flop Storage Reset ")
+        # self.cb.log.info("RC: Activate Flip-Flop Storage Reset ")                 # LAS
+        getiolog().info("RC: Activate Flip-Flop Storage Reset ")
         self.cm.reset_ff(self.cb.cpu)
         return self.cb.NO_ALARM, 0
 
     def rd(self, code, acc):  # "read"
-        print("unimplemented rd: FF Reset")
+        getiolog().info("unimplemented rd: FF Reset")
         return 0
 
     def bi(self, address, acc, cm):  # "block transfer in"
-        print("unimplemented rd: FF Reset")
+        getiolog().info("unimplemented rd: FF Reset")
         return self.cb.NO_ALARM
 
 
@@ -434,7 +442,7 @@ class DrumClass:
             else:
                 new_field = 'A'
             self.buffer_drum_field = new_field
-            self.cb.log.fatal("haven't implemented SI: switch Buffer Drum Field %s to %s" % (old_field, new_field))
+            self.cb.log.fatal("haven't implemented SI: switch Buffer Drum Field %s to %s" % (old_field, new_field))     # LAS
             return self.cb.NO_ALARM
 
         # the 'normal' drum addressing comes in here...
@@ -454,8 +462,8 @@ class DrumClass:
 #        elif (device & self.DRUM_SI_BUFFERDRUM == 0) & (acc & self.cb.WWBIT0 == 0):
 #            self.drum_unit = 1
 #        else:
-#            print "Ambiguous Drum Unit Number: acc = 0o%o, Device = 0o%o" % (acc, device)
-        print("SI: configured %s drum; Group (track)=0o%o, DrumWordAddress=0o%o" %
+#            getiolog().info "Ambiguous Drum Unit Number: acc = 0o%o, Device = 0o%o" % (acc, device)
+        getiolog().info("SI: configured %s drum; Group (track)=0o%o, DrumWordAddress=0o%o" %
               (self.drum_name, self.group_address, self.word_address))
         return self.cb.NO_ALARM
 
@@ -517,7 +525,7 @@ class DrumClass:
         """
         cb = self.cb
         bo_len = acc & self.cb.WW_ADDR_MASK
-        print("BO: block transfer Write to %s Drum: Field=%s, DrumGroup=0o%o, DrumAddr=0o%o, start at CoreAddr=0o%o, length=0o%o" %
+        getiolog().info("BO: block transfer Write to %s Drum: Field=%s, DrumGroup=0o%o, DrumAddr=0o%o, start at CoreAddr=0o%o, length=0o%o" %
               (self.drum_name, self.buffer_drum_field, self.group_address, self.word_address, address, bo_len))
         if address + bo_len > self.cb.WW_ADDR_MASK:
             cb.log.warn("block-transfer-out Drum address out of range")
@@ -528,7 +536,7 @@ class DrumClass:
             self.dirty = True   # we changed the state of the drum; needs to be saved on exit
             self.word_address += 1
             if self.word_address > self.DRUM_NUM_WORDS:
-                print("Haven't implemented Drum Address Wrap")
+                getiolog().info("Haven't implemented Drum Address Wrap")
                 return self.cb.UNIMPLEMENTED_ALARM, 0
         return self.cb.NO_ALARM
 
@@ -682,7 +690,7 @@ class DisplayScopeClass:
         # I checked "underflow" in the graphics value, but I don't think WW programmers cared.  It underflows
         #  All The Time...
         # if extra_deflection_bits != 0:
-        #     print("Warning:  bits lost in scope deflection; AC=0o%o" % ac)
+        #     getiolog().info("Warning:  bits lost in scope deflection; AC=0o%o" % ac)
         return ret
 
     # ...vector starting at the point whose coordinates have just been
@@ -724,7 +732,7 @@ class DisplayScopeClass:
             # See 2M-0277 Page 63; not clear exactly how this Expand thing works!
             expand_op = io_address  # o14=Expand, o15=UnExpand
             if self.cb.TraceQuiet is False:
-                print("DisplayScope SI: Display Expand Operand set to 0o%o; Expand=0o14, UnExpand=0o15" % expand_op)
+                getiolog().info("DisplayScope SI: Display Expand Operand set to 0o%o; Expand=0o14, UnExpand=0o15" % expand_op)
             if expand_op == 0o14:
                 self.scope_expand = 2.0
             else:
@@ -737,14 +745,14 @@ class DisplayScopeClass:
             self.scope_mode = self.DISPLAY_MODE_VECTORS
         elif (io_address & self.cb.DISPLAY_CHARACTERS_ADDR_MASK) == self.cb.DISPLAY_CHARACTERS_BASE_ADDRESS:
             if io_address & 0o01000 and self.cb.TraceQuiet is False:
-                print("DisplayScope SI: set scope selection to 0o%o; ignoring ioaddr bit 001000..." % io_address)
+                getiolog().info("DisplayScope SI: set scope selection to 0o%o; ignoring ioaddr bit 001000..." % io_address)
             self.scope_mode = self.DISPLAY_MODE_CHARACTERS
 
         self.scope_select = ~self.cb.DISPLAY_POINTS_ADDR_MASK & io_address
         self.scope_vertical = self.convert_scope_coord(acc)
 
         if self.cb.TraceQuiet is False:
-            print("DisplayScope SI: configured display mode %s, scope 0o%o, vertical=0o%o" %
+            getiolog().info("DisplayScope SI: configured display mode %s, scope 0o%o, vertical=0o%o" %
                   (self.ModeNames[self.scope_mode], self.scope_select, self.scope_vertical))
         return self.cb.NO_ALARM
 
@@ -760,14 +768,14 @@ class DisplayScopeClass:
             # add each new character to a Pending list; draw them when the program asks for light gun input
             mask = (operand >> 8) & 0o177  # it's a seven-bit quantity to turn on character segments
             if not self.cb.TraceQuiet:
-                print("DisplayScope RC: record to scope 0o%o, mode=Character, x=0o%o, y=0o%o, char-code=0o%o" %
+                getiolog().info("DisplayScope RC: record to scope 0o%o, mode=Character, x=0o%o, y=0o%o, char-code=0o%o" %
                       (self.scope_select, self.scope_horizontal, self.scope_vertical, mask))
             self.crt.ww_draw_char(self.scope_horizontal, self.scope_vertical,
                                   mask, self.scope_expand, scope=self.scope_select)
 
         elif self.scope_mode == self.DISPLAY_MODE_POINTS:
             if not self.cb.TraceQuiet:
-                print("DisplayScope RC: record to scope 0o%o, mode=Point, x=0o%o, y=0o%o" %
+                getiolog().info("DisplayScope RC: record to scope 0o%o, mode=Point, x=0o%o, y=0o%o" %
                       (self.scope_select, self.scope_horizontal, self.scope_vertical))
             self.crt.ww_draw_point(self.scope_horizontal, self.scope_vertical,
                                    scope=self.scope_select, light_gun=True)
@@ -777,7 +785,7 @@ class DisplayScopeClass:
             ww_xd, ww_yd = self.convert_delta_scope_coord(operand)
 
             if self.cb.TraceQuiet is False:
-                print("DisplayScope RC: record to scope 0o%o, mode=Vector, x=0o%o, y=0o%o, xd=0o%o, yd=0o%o" %
+                getiolog().info("DisplayScope RC: record to scope 0o%o, mode=Vector, x=0o%o, y=0o%o, xd=0o%o, yd=0o%o" %
                   (self.scope_select, self.scope_horizontal, self.scope_vertical, ww_xd, ww_yd))
             self.crt.ww_draw_line(self.scope_horizontal, self.scope_vertical, ww_xd, ww_yd, scope=self.scope_select)
 
@@ -808,7 +816,7 @@ class DisplayScopeClass:
             # _where_ the hit happened, while the light gun is about _when_, i.e., what point was
             # just drawn most recently
             if pt is not None:   # don't care where it is, just not None
-                print("**Light Gun Hit, button=%d" % button)
+                getiolog().info("**Light Gun Hit, button=%d" % button)
                 self.crt.last_mouse = pt
                 self.crt.last_button = button
                 if self.crt.last_button == 3:   # I'm returning 0o1000000 for Button Three on the mouse
@@ -827,7 +835,7 @@ class DisplayScopeClass:
             if self.crt.last_mouse is not None and (
                     abs(self.crt.last_pen_point.x0 - self.crt.last_mouse.getX()) < self.crt.WIN_MOUSE_BOX) & \
                     (abs(self.crt.last_pen_point.y0 - self.crt.last_mouse.getY()) < self.crt.WIN_MOUSE_BOX):
-                print("**Hit at x=0d%d, y=0d%d**" %(self.crt.last_pen_point.x0, self.crt.last_pen_point.y0))
+                getiolog().info("**Hit at x=0d%d, y=0d%d**" %(self.crt.last_pen_point.x0, self.crt.last_pen_point.y0))
                 if self.crt.last_button == 3:   # I'm returning 0o1000000 for Button Three on the mouse
                     val = 0o120000              #  ... added specifically for radar tracking
                 else:                           # changed Dec 30, 2023; see note above
@@ -861,7 +869,7 @@ class DisplayScopeClass:
         self.scope_horizontal = self.convert_scope_coord(acc)
 
         if self.cb.TraceQuiet is False:
-            print("DisplayScope QH: configured display mode %s, scope 0o%o, horizontal=0o%o" %
+            getiolog().info("DisplayScope QH: configured display mode %s, scope 0o%o, horizontal=0o%o" %
                   (self.ModeNames[self.scope_mode], self.scope_select, self.scope_horizontal))
         return self.cb.NO_ALARM
 
@@ -878,7 +886,7 @@ class DisplayScopeClass:
             color=(0.0, 1.0, 0.0)  # default to green
         self.scope_vertical = self.convert_scope_coord(acc)
         if not self.cb.TraceQuiet:
-            print("DisplayScope QD/QF: record to scope, mode=Point, x=0o%o, y=0o%o" %
+            getiolog().info("DisplayScope QD/QF: record to scope, mode=Point, x=0o%o, y=0o%o" %
                   (self.scope_horizontal, self.scope_vertical))
         self.crt.ww_draw_point(self.scope_horizontal, self.scope_vertical, color=color, scope=scope, light_gun=True)
         return self.cb.NO_ALARM
@@ -917,9 +925,8 @@ class InterventionAndActivateClass:
 
         device = device & ~self.cb.INTERVENTION_ADDR_MASK
         if (device == 0) | (device == 1):  # i.e., if the device is #0 or #1, it's an Activate register
-            self.activate_reg = device
-            if self.cb.TraceQuiet is False:
-                print("SI: configured Activate device %o" % self.activate_reg)
+            self.acvtivate_reg = device
+            getiolog().info("SI: configured Activate device %o" % self.acvtivate_reg)
             return self.cb.NO_ALARM
         else:  # i.e., if the device is #2 to #32d, it's an Activate register
             self.intervention_reg = device
@@ -927,12 +934,11 @@ class InterventionAndActivateClass:
                 name = self.intervention_reg_name[device]
             else:
                 name = "Switch-%d" % device
-            if self.cb.TraceQuiet is False:
-                print("SI: configured Intervention device 0o%o  %s" % (self.intervention_reg, name))
+            getiolog().info("SI: configured Intervention device 0o%o  %s" % (self.intervention_reg, name))
             return self.cb.NO_ALARM
 
     def rc(self, _operand, _acc):  # "record", i.e. output instruction to device
-        print("unimplemented %s Record" % self.name)
+        getiolog().info("unimplemented %s Record" % self.name)
         return self.cb.UNIMPLEMENTED_ALARM, 0
 
     # Read from the switches should return something
@@ -947,7 +953,7 @@ class InterventionAndActivateClass:
         if reg in self.intervention_reg_name:
             ret = self.cpu_class.cpu_switches.read_switch(self.intervention_reg_name[reg])
         else:
-            print("unimplemented Intervention Register %s Read; return Zero" % self.name)
+            getiolog().info("unimplemented Intervention Register %s Read; return Zero" % self.name)
         return self.cb.NO_ALARM, ret
 
 
@@ -967,17 +973,17 @@ class IndicatorLightRegistersClass:
     def si(self, device, acc, _cm):
         device = device & ~self.cb.INDICATOR_LIGHT_ADDR_MASK
         self.indicator_reg = device
-        print("SI: configured Indicator device %o" % self.indicatator_reg)
+        getiolog().info("SI: configured Indicator device %o" % self.indicatator_reg)
         return self.cb.NO_ALARM
 
     def rc(self, operand, acc):  # "record", i.e. output instruction to device
-        print("unimplemented %s Record to Indicator Lights" % self.name)
+        getiolog().info("unimplemented %s Record to Indicator Lights" % self.name)
         return self.cb.UNIMPLEMENTED_ALARM, 0
 
     # Read from the switches should return something
     # This stub simply returns zero for all Activate and Intervention registers
     def rd(self, operand, acc):  # "read", i.e. input instruction from device
-        print("unimplemented %s Read; return Zero" % self.name)
+        getiolog().info("unimplemented %s Read; return Zero" % self.name)
         return self.cb.NO_ALARM, 0
 
 
@@ -997,15 +1003,15 @@ class InOutCheckRegistersClass:
     def si(self, device, acc, _cm):
         device = device & ~self.cb.IN_OUT_CHECK_ADDR_MASK
         self.in_out_check_reg = device
-        print("SI: configured In-Out Check device %o" % self.in_out_check_reg)
+        getiolog().info("SI: configured In-Out Check device %o" % self.in_out_check_reg)
         return self.cb.NO_ALARM
 
     def rc(self, operand, acc):  # "record", i.e. output instruction to device
-        print("unimplemented %s Record" % self.name)
+        getiolog().info("unimplemented %s Record" % self.name)
         return self.cb.UNIMPLEMENTED_ALARM, 0
 
     # Read from the switches should return something
     # This stub simply returns zero for all Activate and Intervention registers
     def rd(self, operand, acc):  # "read", i.e. input instruction from device
-        print("unimplemented %s Read; return Zero" % self.name)
+        getiolog().info("unimplemented %s Read; return Zero" % self.name)
         return self.cb.NO_ALARM, 0
