@@ -4,15 +4,15 @@
 ; page 23
 
        .jumpto main
-       .ORG 0o040
+       .org 0o040
 main:  ca a             ; a -> AC
        ad b             ; a + b -> AC
        ad c             ; a + b + c -> AC
        ts res           ; a + b + c -> res
-       .exec print(f"### result: {py_int(cm.rd(rl('res')))} ###")
+       .exec wwlog(f"### result: {py_int(cm.rd(rl('res')))} ###")
        si 0             ; halt
 
-       .ORG 0o200
+       .org 0o200
 a:     .word 0.00004
 b:     .word 0.00003
 c:     .word 0.00001

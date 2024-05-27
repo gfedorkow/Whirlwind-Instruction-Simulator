@@ -1,0 +1,7 @@
+# This runs the AllTest subclass which in turn invokes all the other
+#  tests in Tests/. It's minimal but we could I suppose have a special
+#  all-tests log so more may be added.
+
+testType: All
+baseName: All
+

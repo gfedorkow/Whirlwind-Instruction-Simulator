@@ -1,6 +1,6 @@
 
 ; *** Core Image ***
-%File: ../Code-Samples/Addition/addition-without-scaling.ww
+%File: addition-without-scaling.ww
 %TapeID: None
 %JumpTo 0o40
 @C0040: 0100200 0110201 0110202 0040203 0000000  None    None    None   
@@ -10,7 +10,7 @@
 @S0201: b
 @S0202: c
 @S0203: res
-@E0044: print(f"### result: {py_int(cm.rd(rl('res')))} ###")
+@E0044: exec: wwlog(f"### result: {py_int(cm.rd(rl('res')))} ###")
 @N0040: a -> AC
 @N0041: a + b -> AC
 @N0042: a + b + c -> AC

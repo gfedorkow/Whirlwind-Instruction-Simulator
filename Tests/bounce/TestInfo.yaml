@@ -1,0 +1,13 @@
+
+testType: AsmSim
+baseName: bounce
+asmOptions:
+simOptions: --CycleLimit 7700 --NoStdErr
+coreOptions:
+verify:
+  - log:
+      name: wwsim
+      filter: ww_draw_point
+  - log:
+      name: wwasm
+      filter: Warning|Error

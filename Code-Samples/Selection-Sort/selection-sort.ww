@@ -29,7 +29,7 @@ endif: ao if            ; increment xj address
        ao xj            ; increment xj address
        ao count2        ; increment inner loop counter
        cp if            ; continue inner loop if counter hasn't expired
-       .exec print(f"### max: {py_int(cm.rd(rl('max')))} ###")
+       .exec wwlog(f"### max: {py_int(cm.rd(rl('max')))} ###")
 load2: ca data          ; load value to swap
 swap1: ts 0             ; write value to address of max
        ca max           ; load value to swap
