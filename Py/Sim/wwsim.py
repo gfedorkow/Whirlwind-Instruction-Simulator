@@ -1748,10 +1748,6 @@ def poll_sim_io(cpu, cb):
 def main_run_sim(args, cb):
     global CoreMem, CommentTab   # should have put this in the CPU Class...
 
-    cb.CoreFileName = args.corefile
-
-    cb.log = wwinfra.LogFactory().getLog (quiet=args.Quiet)
-
     if args.CrtFadeDelay:
         cb.crt_fade_delay_param = args.CrtFadeDelay
         cb.log.info("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
@@ -2056,8 +2052,10 @@ def main():
     args = parser.parse_args()
 
     # instantiate the class full of constants
-    cb = wwinfra.ConstWWbitClass (get_screen_size = True, args = args)
+    cb = wwinfra.ConstWWbitClass (corefile=args.corefile, get_screen_size = True, args = args)
     wwinfra.theConstWWbitClass = cb
+    cb.log = wwinfra.LogFactory().getLog (quiet=args.Quiet)
+
 
     # Many args are just slightly transformed and stored in the Universal Bit Bucket 'cb'
 
@@ -2085,6 +2083,18 @@ def main():
     if args.NoXWin:
         cb.use_x_win = False
 
+    if args.CrtFadeDelay:
+        cb.crt_fade_delay_param = args.CrtFadeDelay
+        cb.log.info("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
+
+    if args.Quiet:
+        cb.TraceQuiet = True
+        cb.log.info("TraceQuiet turned on")
+    if args.NoZeroOneTSR:
+        cb.NoZeroOneTSR = True
+    else:
+        cb.log.info("Automatically return 0 and 1 from locations 0 and 1")
+
     if args.TracePC:
         cb.TracePC = -1
     cb.LongTraceFormat = args.LongTraceFormat
@@ -2092,6 +2102,8 @@ def main():
         cb.TraceALU = True
     if args.TraceCoreLocation:
         cb.TraceCoreLocation = int(args.TraceCoreLocation, 8)
+    if args.FlowGraph:
+        cb.tracelog = ww_flow_graph.init_log_from_sim()
     cb.decimal_addresses = args.DecimalAddresses  # if set, trace output is expressed in Decimal to suit 1950's chic
     cb.no_toggle_switch_warn = args.NoToggleSwitchWarning
 

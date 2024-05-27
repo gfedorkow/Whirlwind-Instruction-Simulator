@@ -302,7 +302,8 @@ class FFResetIoClass:
 
     def si(self, device, acc, cm):
         # self.cb.log.info("SI: Select Flip-Flop Storage Reset ")       # LAS
-        io_print_log("SI: Select Flip-Flop Storage Reset ")
+        # Larry had: io_print_log("SI: Select Flip-Flop Storage Reset ")
+        getiolog().info("SI: Select Flip-Flop Storage Reset ")
         self.cm = cm
         self.cm.reset_ff(self.cb.cpu)  # it seems that just 'selecting' the FF Register Reset makes it happen
         return self.cb.NO_ALARM
