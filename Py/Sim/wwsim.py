@@ -1768,7 +1768,6 @@ def main_run_sim(args, cb):
     cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
     cb.cpu = cpu
     cpu.cpu_switches = wwinfra.WWSwitchClass(cb)
-
     cb.dbwgt = wwinfra.ScreenDebugWidgetClass(cb, CoreMem, args.AnalogScope)
 
     cycle_limit = 0  # default limit for number of sim cycles to run; 'zero' means 'forever'
@@ -2060,7 +2059,7 @@ def main():
     cb = wwinfra.ConstWWbitClass (get_screen_size = True, args = args)
     wwinfra.theConstWWbitClass = cb
 
-    # Many args are just transformed a bit and stored in the Universal Bit Bucket 'cb'
+    # Many args are just slightly transformed and stored in the Universal Bit Bucket 'cb'
 
     if args.AutoClick:
         cb.argAutoClick = True
