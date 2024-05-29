@@ -1,0 +1,212 @@
+<h1 data-number="1" id="how-to-start-learning-whirlwind"><span
+class="header-section-number">1</span> How to Start Learning
+Whirlwind</h1>
+<p>g fedorkow, Mar 15, 2024</p>
+<p>This note outlines resources for anyone wishing to learn about
+software restoration of code for the Whirlwind computer, built at MIT in
+1949, active there until 1959. The material starts with background
+reading, then covers how to run the simulation, and from there, how to
+learn to read and even write Whirlwind programs.</p>
+<p>Format this document with: &gt; $ pandoc –number-sections -f markdown
+-t pdf How-to-Start-on-Whirlwind.md -o How-to-Start-on-Whirlwind.pdf</p>
+<h2 data-number="1.1" id="reading-material"><span
+class="header-section-number">1.1</span> Reading Material</h2>
+<p>For a summary of the Whirlwind project, the book <em>Project
+Whirlwind: The History of a Pioneer Computer</em> by Redmond and Smith
+is a good starting point. This book primarily focuses on the travails of
+the Whirlwind team in obtaining and maintaining funding in a fluid
+post-war environment, as DoD priorities were making a rapid pivot from
+World World-War-II <a href="#fn1" class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a> demobilization to the new Cold War
+threat.</p>
+<p>The work outlined in the document you’re now reading is more focused
+on the technology of Whirlwind software and programming.<br />
+A recent summary of the machine’s capabilities and the current
+restoration project can be found in guy’s IEEE paper on WW.</p>
+<blockquote>
+<p><a
+href="https://www.historia-mollimercium.com/whirlwind/Whirlwind-Software-Recovery-Project-v6d.pdf"
+class="uri">https://www.historia-mollimercium.com/whirlwind/Whirlwind-Software-Recovery-Project-v6d.pdf</a></p>
+</blockquote>
+<p>(See IEEE Explore for the published version)</p>
+<p>The starting point for Whirlwind programmers became a document with
+the identification number 2M-0277<a href="#fn2" class="footnote-ref"
+id="fnref2" role="doc-noteref"><sup>2</sup></a>, <em>Whirlwind
+Programming Manual</em>, which effectively defines the architecture and
+instruction set.</p>
+<blockquote>
+<p><a
+href="http://www.bitsavers.org/pdf/mit/whirlwind/M-series/2M-0277_Whirlwind_Programming_Manual_Oct58.pdf"
+class="uri">http://www.bitsavers.org/pdf/mit/whirlwind/M-series/2M-0277_Whirlwind_Programming_Manual_Oct58.pdf</a></p>
+</blockquote>
+<p>You can see other background material, including blog postings, on
+Guy’s web site</p>
+<blockquote>
+<p><a href="https://www.historia-mollimercium.com/whirlwind/ww.html"
+class="uri">https://www.historia-mollimercium.com/whirlwind/ww.html</a></p>
+</blockquote>
+<p>For more of a look into how the Whirlwind programming system evolved,
+see the Comprehensive System document M-2539-2</p>
+<blockquote>
+<p><a
+href="http://www.bitsavers.org/pdf/mit/whirlwind/M-series/M-2539-2_Comprehensive_System_Manual_Dec55.pdf"
+class="uri">http://www.bitsavers.org/pdf/mit/whirlwind/M-series/M-2539-2_Comprehensive_System_Manual_Dec55.pdf</a></p>
+</blockquote>
+<p>To get a sense for the scope of material available from the Whirlwind
+project, you can browse Bitsavers and the MIT Dome online archive</p>
+<blockquote>
+<p><a href="http://www.bitsavers.org/pdf/mit/whirlwind/"
+class="uri">http://www.bitsavers.org/pdf/mit/whirlwind/</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://dome.mit.edu/handle/1721.3/37456"
+class="uri">https://dome.mit.edu/handle/1721.3/37456</a></p>
+</blockquote>
+<p>You can see all the raw bits that have been recovered<a href="#fn3"
+class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>
+from Whirlwind paper and magnetic tapes at this link:</p>
+<blockquote>
+<p><a href="http://www.bitsavers.org/bits/MIT/whirlwind/"
+class="uri">http://www.bitsavers.org/bits/MIT/whirlwind/</a></p>
+</blockquote>
+<p>(I have an ad-hoc tape catalog from the bit-level recovery done by
+CHM, but haven’t figured out how to post it yet)</p>
+<h2 data-number="1.2" id="running-the-simulator"><span
+class="header-section-number">1.2</span> Running the Simulator</h2>
+<p>(We probably need short outline of the WW simulator tool set,
+including a note somewhere on file naming conventions in the
+simulator)</p>
+<h3 data-number="1.2.1" id="pre-compiled-simulator"><span
+class="header-section-number">1.2.1</span> Pre-Compiled Simulator</h3>
+<p>You can download the pre-packaged Windows or Mac binaries on GitHub
+&gt; <a
+href="https://github.com/gfedorkow/Whirlwind-Instruction-Simulator"
+class="uri">https://github.com/gfedorkow/Whirlwind-Instruction-Simulator</a></p>
+<p>Then download and run core files from Code Samples.</p>
+<ul>
+<li>For Blackjack, you can read the blog article</li>
+</ul>
+<blockquote>
+<p><a
+href="https://computerhistory.org/blog/gambling-on-whirlwind-how-the-us-navy-spent-3-million-and-got-a-computer-game/"
+class="uri">https://computerhistory.org/blog/gambling-on-whirlwind-how-the-us-navy-spent-3-million-and-got-a-computer-game/</a></p>
+</blockquote>
+<h3 data-number="1.2.2" id="running-the-native-python-simulator"><span
+class="header-section-number">1.2.2</span> Running the Native Python
+Simulator</h3>
+<p>You can also download the source for the simulator and run it on
+Windows, Mac or Linux.</p>
+<ul>
+<li>Install Python 3.10 or 3.11</li>
+<li>Install a few extra packages:
+<ul>
+<li>Numpy</li>
+<li>screeninfo</li>
+</ul></li>
+<li>Set the Python search path environment var to pick up the Common
+directory.</li>
+</ul>
+<p>Clone the source from: &gt; <a
+href="https://github.com/gfedorkow/Whirlwind-Instruction-Simulator"
+class="uri">https://github.com/gfedorkow/Whirlwind-Instruction-Simulator</a></p>
+<h2 data-number="1.3" id="examining-a-simple-ww-program"><span
+class="header-section-number">1.3</span> Examining a Simple WW
+program</h2>
+<p>A good way to learn a bit of how the instruction set actually works
+is to examine existing code. Here are some examples.</p>
+<ul>
+<li>examine the Whirlwind doc R-196 (link below), with the bouncing ball
+example on page 53. Note that this code (and document) was written very
+early in the WW project, prior to the introduction of the redesigned I/O
+system described in 2M-0277.</li>
+</ul>
+<blockquote>
+<p><a
+href="http://www.bitsavers.org/pdf/mit/whirlwind/R-series/R-196_Programming_for_Whirlwind_I_Jun51.pdf"
+class="uri">http://www.bitsavers.org/pdf/mit/whirlwind/R-series/R-196_Programming_for_Whirlwind_I_Jun51.pdf</a></p>
+</blockquote>
+<ul>
+<li>examine Rainer’s Vector Clock. This is a time-of-day clock which
+displays using the CRT and vector instructions. The program was written
+from scratch by Guy &amp; Rainer in a slightly-more-modular style than
+the WW programmers would have used (i.e., it’s not a historical artifact
+in any way)</li>
+</ul>
+<blockquote>
+<p><a
+href="https://github.com/gfedorkow/Whirlwind-Instruction-Simulator/blob/master/Code-Samples/Vector-Clock/vector-clock.ww"
+class="uri">https://github.com/gfedorkow/Whirlwind-Instruction-Simulator/blob/master/Code-Samples/Vector-Clock/vector-clock.ww</a></p>
+</blockquote>
+<ul>
+<li>examine (what other samples would be good?)</li>
+</ul>
+<h2 data-number="1.4" id="writing-a-ww-program"><span
+class="header-section-number">1.4</span> Writing a WW program</h2>
+<ul>
+<li>install the simulator (see above)</li>
+<li>read the Assembler notes (written, but not yet posted) (and there
+are enough options and knobs on the simulator that it probably needs a
+doc too)</li>
+<li>Start simple, for example, revise the R-196 Bounce program for R
+&gt; 1</li>
+<li>Write Your Own Digital Clock (I’ll provide underlying time-keeping
+in the sim)</li>
+</ul>
+<h2 data-number="1.5" id="decoding-a-ww-program"><span
+class="header-section-number">1.5</span> Decoding a WW program</h2>
+<p>(Guy should provide a note on how to use the simulator flow graph
+extractor; that’s proving to be increasingly valuable in understanding
+how codes work.)</p>
+<p>Starter projects:</p>
+<ul>
+<li>comment the larger Bouncing Ball program</li>
+<li>comment blackjack</li>
+</ul>
+<h2 data-number="1.6" id="advance-class-in-understanding-ww-code"><span
+class="header-section-number">1.6</span> Advance Class in understanding
+WW code</h2>
+<ul>
+<li>read M-1343 air defense</li>
+<li>why aren’t the resulting tracks Optimal in the simulation?</li>
+</ul>
+<h2 data-number="1.7"
+id="advanced-class-in-restoration---new-work"><span
+class="header-section-number">1.7</span> Advanced Class in restoration -
+New work</h2>
+<ul>
+<li><p>get a native assembler to work. (look for codes with “Basic
+Converter” in the name)</p></li>
+<li><p>Get Charles Adams’ thesis code working (“Intact Ship Stability”).
+This is not likely to be easy – it was written as part of his thesis
+project, but completed before there was enough functional Whirlwind to
+actually run it, i.e., it’s 1,000 lines of very carefully reviewed but
+untested code.</p></li>
+</ul>
+<h2 data-number="1.8" id="software-tools"><span
+class="header-section-number">1.8</span> Software Tools</h2>
+<p>(to be written)</p>
+<h2 data-number="1.9" id="footnotes"><span
+class="header-section-number">1.9</span> Footnotes</h2>
+<section id="footnotes" class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Most readers will think that WW-I happened during years
+1914-1918, and WW-II was 1936-1942. In actual fact, WW-I (Whirlwind-I)
+was first operational in 1949, and WW-II, while planned, was never
+completed as such, but was re-oriented to the SAGE prototype XD-1 in
+(1955?).<a href="#fnref1" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Whirlwind documents are all identified as with a couple
+letters to identify the Series, then sequential numbers within the
+series.<br />
+Commonly used series are ‘M’ for Memos, ‘R’ for reports, ‘L’ for
+administrative notes and meeting minutes, ‘DCL’ for Digital Computer
+Lab. The system fractured a bit as Lincoln Labs grew, i.e., ‘2M’
+probably indicates a memo from Lincoln Division Two.<a href="#fnref2"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Thanks to Al Kossow and Len Shustek for tons of work
+actually reading the bits off the tapes!<a href="#fnref3"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
