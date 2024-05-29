@@ -70,7 +70,8 @@ You can download the pre-packaged Windows or Mac binaries on GitHub
 
 > <https://github.com/gfedorkow/Whirlwind-Instruction-Simulator>
 
-Then download and run core files from Code Samples.  
+Then download and run core files from Code Samples. 
+There's no automated build of the pre-compiled versions, so they won't be "the newest". 
 
 ### Running the Native Python Simulator
 You can also download the source for the simulator and run it on Windows, Mac or Linux.
@@ -135,7 +136,11 @@ very carefully reviewed but untested code.
   
 ## <a name="tools"></a>Software Tools
 
-(to be written)
+There's a 'user-guide' doc with the tools on Github:
+
+> <https://github.com/gfedorkow/Whirlwind-Instruction-Simulator/blob/guy-dev/Documentation/Whirlwind-Development-Environment.pdf>
+
+This doc describes the modern assembler-language format, as well as the numerous optional arguments for running the simulator.
 
 ## Footnotes
 
