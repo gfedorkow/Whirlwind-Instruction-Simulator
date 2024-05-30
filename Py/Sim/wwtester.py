@@ -9,16 +9,29 @@ import shutil
 from wwinfra import ArgsTokenizer
 
 
+# On cygwin-on-Windows, there's an unhappy mixture of Windows-style file paths
+# and Linux-style filepaths.
+# On cygwin, a rooted file on the C drive is /cygdrive/c/rest-of-path
+# This routine checks for that pattern, and changes it to c:/rest-of-path.
+# "os.path normalization" takes care of forward and backward slashes.
+def cyg_to_win(cygpath):
+    m = re.match("/cygdrive/(.)/", cygpath)
+    if m:
+        npath = re.sub("/cygdrive/./", m.group(1) + ":/", cygpath)
+        return npath
+    return cygpath
+
+
 class Test:
     def __init__ (self, testName, cmdArgs):
         self.testName = testName
         # Bail if path not specified
-        if "PYTHONPATH" not in list (os.environ):
-            sys.stdout.write ("PYTHONPATH not found.")
+        if "WWROOT" not in list (os.environ):
+            sys.stdout.write ("WWROOT not found.")
             sys.stdout.flush()
             sys.exit (True)
-        self.commonDir = os.environ["PYTHONPATH"]
-        self.testsDir = os.path.normpath (self.commonDir + "/../../Tests")
+        self.commonDir = cyg_to_win(os.environ["WWROOT"])
+        self.testsDir = os.path.normpath (self.commonDir + "/Tests")
         self.testDir = os.path.normpath (self.testsDir + "/" + self.testName)
         self.dryRun = cmdArgs.DryRun
         self.testType = ""
@@ -30,9 +43,9 @@ class Test:
         self.testRefsDir = os.path.normpath (self.testDir + "/TestRefs")
         self.testResultsDir = os.path.normpath (self.testDir + "/TestResults")
         self.readTestInfoFile()
-        self.asmPyProg = os.path.normpath (self.commonDir + "/../Assembler/wwasm.py")
-        self.disasmPyProg = os.path.normpath (self.commonDir + "/../Disassembler/wwdisasm.py")
-        self.simPyProg = os.path.normpath (self.commonDir + "/../Sim/wwsim.py")
+        self.asmPyProg = os.path.normpath (self.commonDir + "/Py/Assembler/wwasm.py")
+        self.disasmPyProg = os.path.normpath (self.commonDir + "/Py/Disassembler/wwdisasm.py")
+        self.simPyProg = os.path.normpath (self.commonDir + "/Py/Sim/wwsim.py")
         self.wwFile = os.path.normpath (self.testDir + "/" + self.testBaseName + ".ww")
         self.coreFileBase = os.path.normpath (self.testResultsDir + "/" + self.testBaseName)
         self.coreFile = self.coreFileBase + ".acore"
