@@ -54,6 +54,10 @@ class DisplayPoints():
         return self.scrambled_list
 
 
+    def build_display_list(self, points):
+        self.list = []
+        return self.list
+
 
     def show_display_list(self, disp_list):
         return
