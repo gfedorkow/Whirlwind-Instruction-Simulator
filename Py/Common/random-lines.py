@@ -1,0 +1,96 @@
+
+
+# Draw a grid of boxes using short vectors.
+# But draw the vectors in random order
+
+# G Fedorkow, May 26, 2024; Jun 13, 2024
+
+import sys
+import time
+import random
+import os
+import analog_scope
+try:
+    import RPi.GPIO as gpio
+    import spidev
+except ImportError:
+    pass
+
+
+# Take one entry out of a list
+# I'm sure there's a builtin function for this, but there's no wifi on this airplane to look it up!
+def delete_entry(list, offset):
+    n = len(list)
+    newlist = []
+    for i in range(0, n):
+        if i != offset:
+            newlist.append(list[i])
+    return(newlist)
+
+class DisplayPoints():
+    def __init__(self, dimension):
+        self.dimension = dimension
+        self.scrambled_list = []
+        
+        self.ordered_list = []
+        for x in range(0, self.dimension):
+            for y in range(0, self.dimension):
+                if x != self.dimension - 1:
+                    self.ordered_list.append([x, y, 'h'])
+                if y != self.dimension - 1:
+                    self.ordered_list.append([x, y, 'v'])
+
+    def scramble_display_list(self):
+        still_to_go = []
+
+        n = len(self.ordered_list)
+        # I just need a separate copy of the ordered list, but I can't recall how to do
+        # that so it makes a copy, not an alias
+        for i in range(0,n):
+            still_to_go.append(self.ordered_list[i])
+        for i in range(0,n):
+            n_left = len(still_to_go)
+            next_rand_entry = random.randrange(n_left)
+            # print("place n=%d, still_to_go len %d, rand_entry %d" % (i, n_left, next_rand_entry))
+            self.scrambled_list.append(still_to_go[next_rand_entry])
+            still_to_go = delete_entry(still_to_go, next_rand_entry)
+        
+        return self.scrambled_list
+
+
+    def build_display_list(self, points):
+        self.list = []
+        return self.list
+
+
+    def show_display_list(self, disp_list):
+        return
+
+def main():
+    host_os = os.getenv("OS")
+    dimension = 4
+
+    cb = ConstantsClass()
+    ana_scope = analog_scope.AnaScope(host_os, cb)
+
+    dpc = DisplayPoints(dimension)
+    dpc.scramble_display_list()
+    dp = dpc.scrambled_list
+
+    for p in dp:
+        print("pt: %d %d %s" % (p[0], p[1], p[2]))
+        ana_scope.drawVector(p[0], p[1], 1, 1)
+
+
+if __name__ == "__main__":
+    class LogClass:
+        def __init__(self):
+            pass
+
+    class ConstantsClass:
+        def __init__(self):
+            self.SCOPE_MAIN = 1
+            
+
+
+main()
