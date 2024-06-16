@@ -16,6 +16,10 @@ try:
 except ImportError:
     pass
 
+def nsec_delay(duration):
+    stop = time.perf_counter_ns() + int(duration)
+    while time.perf_counter_ns() < stop:
+        pass
 
 # Take one entry out of a list
 # I'm sure there's a builtin function for this, but there's no wifi on this airplane to look it up!
@@ -58,17 +62,30 @@ class DisplayPoints():
         return self.scrambled_list
 
 
-    def build_display_list(self, points):
-        self.list = []
-        return self.list
+    def render_scrambled_list(self, ana_scope, delay = 0):
+        center = self.dimension / 2
+        scale = 200
+        short_vec = 31
 
-
-    def show_display_list(self, disp_list):
+        dp = self.scrambled_list
+        for p in dp:
+            x = scale * (p[0] - center)
+            y = scale * (p[1] - center)
+            if p[2] == 'v':
+                dx = 0
+                dy = short_vec
+            else:
+                dx = short_vec
+                dy = 0
+            ana_scope.drawVector(x, y, dx, dy)
+            if delay:
+                nsec_delay(delay)
         return
+
 
 def main():
     host_os = os.getenv("OS")
-    dimension = 4
+    dimension = 8
 
     cb = ConstantsClass()
     ana_scope = analog_scope.AnaScope(host_os, cb)
@@ -77,9 +94,13 @@ def main():
     dpc.scramble_display_list()
     dp = dpc.scrambled_list
 
-    for p in dp:
-        print("pt: %d %d %s" % (p[0], p[1], p[2]))
-        ana_scope.drawVector(p[0], p[1], 1, 1)
+    #for p in dp:
+        # print("pt: %d %d %s" % (p[0], p[1], p[2]))
+    while True:
+        for i in range(0,100):
+            dpc.render_scrambled_list(ana_scope, delay = 0)
+        for d in range(1,100):
+            dpc.render_scrambled_list(ana_scope, delay = ((d * 0.8) ** 2) * 1000 )
 
 
 if __name__ == "__main__":
@@ -90,7 +111,7 @@ if __name__ == "__main__":
     class ConstantsClass:
         def __init__(self):
             self.SCOPE_MAIN = 1
-            
+            self.SCOPE_AUX = 2
 
 
 main()

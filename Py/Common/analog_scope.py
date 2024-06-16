@@ -27,7 +27,7 @@
 # g fedorkow, July 7, 2023
 
 
-DebugAnaScope = True
+DebugAnaScope = False
 DebugGun = True
 
 import time
