@@ -42,7 +42,7 @@ import re
 import wwinfra
 from typing import List, Dict, Tuple, Sequence, Union, Any
 
-cb = wwinfra.ConstWWbitClass(get_screen_size = False)
+cb = None
 
 def breakp():
     print("breakpoint")
@@ -384,15 +384,16 @@ def read_fc(cb, filename:str, cs_ii_pgm):
 # Pythonic entry point
 def main():
     global cb
-    parser = argparse.ArgumentParser(description='Convert a Whirlwind FC tape to wwasm format.')
+    parser = wwinfra.StdArgs().getParser('Convert a Whirlwind FC tape to wwasm format.')
     parser.add_argument("fc_file", help="file name of tape image in .fc format")
     parser.add_argument("-o", "--OutputFile", type=str, help="Base name for output core file(s)")
     parser.add_argument("-q", "--Quiet", help="Suppress run-time message", action="store_true")
 
     args = parser.parse_args()
 
-    log = wwinfra.LogClass(sys.argv[0], quiet=args.Quiet)
-    cb.log = log
+    cb = wwinfra.ConstWWbitClass(get_screen_size=False, args=args)
+    wwinfra.theConstWWbitClass = cb
+    cb.log = wwinfra.LogFactory().getLog (quiet=args.Quiet, logname="csii-log")
 
     if args.OutputFile:
         output_filename = args.OutputFile
