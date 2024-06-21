@@ -1795,11 +1795,12 @@ def main_run_sim(args, cb):
         cb.crt_fade_delay_param = ns.crt_fade_delay
 
     (cpu.SymTab, JumpTo, WWfile, WWtapeID, dbwgt_list) = \
-        CoreMem.read_core(args.corefile, cpu, cb)
+        CoreMem.read_core(cb.CoreFileName, cpu, cb)
     cpu.set_isa(CoreMem.metadata["isa"])
     if cpu.isa_1950 == False and args.Radar:
         cb.log.fatal("Radar device can only be used with 1950 ISA")
 
+    flowgraph = None
     if args.FlowGraph:
         flowgraph = ww_flow_graph.FlowGraph (args.FlowGraph, args.FlowGraphOutFile, args.FlowGraphOutDir, cb)
         cb.tracelog = flowgraph.init_log()
@@ -1865,9 +1866,9 @@ def main_run_sim(args, cb):
             # When the simulation is not stopped, we do this check below ever n-hundred cycles to keep the
             #  panel overhead in check.
             if cb.sim_state == cb.SIM_STATE_STOP and cb.panel:
-                if cb.panel.update_panel(cb, 0) == False:  # watch for mouse clicks on the panel
+                if cb.panel.update_panel(cb, 0) == False:  # just idle here, watching for mouse clicks on the panel
                     alarm_state = cb.QUIT_ALARM
-                    break  # bail out of the While True loop if display update says to stop
+                    break  # bail out of the While True loop if display update says to stop due to Red-X hit
                 time.sleep(0.1)
                 continue
 
@@ -1885,6 +1886,10 @@ def main_run_sim(args, cb):
                 if cb.panel:
                     if cb.panel.update_panel(cb, 0) == False:  # watch for mouse clicks on the panel
                         exit_alarm = cb.QUIT_ALARM
+                    if cb.sim_state == cb.SIM_STATE_READIN:
+                        alarm_state = cb.READIN_ALARM
+                        break
+
                 exit_alarm |= poll_sim_io(cpu, cb)
                 if exit_alarm != cb.NO_ALARM:
                     alarm_state = exit_alarm
@@ -1920,7 +1925,8 @@ def main_run_sim(args, cb):
                     break
                 # the normal case is to stop on an alarm; if the command line flag says not to, we'll try to keep going
                 # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
-                if not args.NoAlarmStop or alarm_state == cb.QUIT_ALARM  or alarm_state == cb.HALT_ALARM:
+                if not args.NoAlarmStop or \
+                        alarm_state == cb.QUIT_ALARM  or alarm_state == cb.HALT_ALARM or alarm_state == cb.READIN_ALARM:
                     break
             sim_cycle += 1
             if sim_cycle % 400000 == 0 or alarm_state == cb.QUIT_ALARM:
@@ -1947,11 +1953,12 @@ def main_run_sim(args, cb):
         # Here Ends The Main Loop
     except KeyboardInterrupt:
         print("Keyboard Interrupt: Cleanup and exit")
+        alarm_state = cb.QUIT_ALARM
 
     end_time = time.time()
     wall_clock_time = end_time - start_time  # time in units of floating point seconds
     if wall_clock_time > 2.0 and sim_cycle > 10:  # don't do the timing calculation if the run was really short
-        sys.stderr.write("Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec" %
+        sys.stderr.write("Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec\n" %
                 (sim_cycle, cpu.PC, wall_clock_time, 1000000.0 * float(wall_clock_time) / float(sim_cycle)))
         if args.Radar:
             print("    elapsed radar time = %4.1f minutes (%4.1f revolutions)" %
@@ -2055,7 +2062,6 @@ def main():
     cb = wwinfra.ConstWWbitClass (corefile=args.corefile, get_screen_size = True, args = args)
     wwinfra.theConstWWbitClass = cb
     cb.log = wwinfra.LogFactory().getLog (quiet=args.Quiet)
-
 
     # Many args are just slightly transformed and stored in the Universal Bit Bucket 'cb'
 

@@ -544,6 +544,7 @@ class CPUControlClass:
             # self.dispatch["Stop"].lamp_object.set_lamp(True)
             # self.dispatch["Start at 40"].lamp_object.set_lamp(False)
             return
+
         if sw == "Restart":   # don't mess with the PC, just pick up from the last address
             cb.sim_state = cb.SIM_STATE_RUN
             return
@@ -569,8 +570,16 @@ class CPUControlClass:
             cb.cpu.cm.rd(addr)   # simply reading the register has the side effect of updating MAR and PAR/MDR
             return
 
-        print("Unhandled Button %s" % sw)
+        if sw == "Read In":  # Start all over again from reading in the "tape"
+            cb.sim_state = cb.SIM_STATE_READIN
+            popup = DialogPopup()
+            filename = popup.get_text_entry("Filename: ", "foo.acore")
+            print("filename:%s" % filename)
+            cb.CoreFileName = filename
+            return
 
+        print("Unhandled Button %s" % sw)
+        return
 
     def set_cpu_state_lamps(self, cb, sim_state, alarm_state):
         run = sim_state != cb.SIM_STATE_STOP
@@ -787,11 +796,50 @@ def compensate_justification(txt, font=9):
     offset = count * (font / 3)
     return offset
 
+
+# ########################## Dialog Popup ########################
+# This small class makes a popup window to collect a filename for the ReadIn button
+# The get_text_entry will block until it gets a mouse click
+class DialogPopup():
+    def __init__(self):
+        self.popup_win = GraphWin("ReadIn Filename Popup", 350, 100)
+        self.popup_win.setBackground("Gray10")
+
+    # This method posts a dialog box in the window, along with a
+    # prompt for what we want the user to enter, and default text to
+    # initialize the text box.
+    # The routine closes the window when the box is clicked, and returns
+    # the string as collected.
+    def get_text_entry(self, prompt, default_filename):
+        inputBox = Entry(Point(150, 20), 25)
+        inputBox.setText(default_filename)
+        inputBox.setTextColor("white")
+        inputBox.draw(self.popup_win)
+        promptText = Text(Point(30, 20), prompt)
+        promptText.setTextColor("white")
+        promptText.draw(self.popup_win)
+        exitText = Text(Point(100, 50), 'Click to continue')
+        exitText.setTextColor("white")
+        exitText.draw(self.popup_win)
+
+        self.popup_win.getMouse()
+
+        inputStr = inputBox.getText()
+
+        self.popup_win.close()
+        return inputStr
+
+
 # ########################## Framework ###########################
 def main():
+    popup = DialogPopup()
+    filename = popup.get_text_entry("Filename: ", "foo.acore")
+    print("filename:%s" % filename)
+
+    exit(0)
+
     crt_win = GraphWin("Control Panel Layout", 512, 512)
     crt_win.setBackground("Gray10")
-
 
     x = 30
     y = 100
@@ -851,7 +899,7 @@ def main():
                 break
 
         # second
-        if panel.update_panel(None, None, None, None, standalone=True) == False: # watch for mouse clicks on the panel
+        if panel.update_panel(None, None, standalone=True) == False: # watch for mouse clicks on the panel
             break
 
         #  not sure how to regulate which window gets the key clicks, but in this case, it's the Panel

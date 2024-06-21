@@ -324,6 +324,7 @@ class ConstWWbitClass:
         self.SIM_STATE_STOP = 0
         self.SIM_STATE_RUN = 1
         self.SIM_STATE_SINGLE_STEP = 2
+        self.SIM_STATE_READIN = 3
         self.sim_state = self.SIM_STATE_STOP
         # Caution -- Whirlwind puts bit 0 to the left (Big Endian, no?)
         self.WWBIT0 = 0o100000
@@ -370,6 +371,7 @@ class ConstWWbitClass:
         self.QUIT_ALARM = 7                # synthetic alarm to stop the sim
         self.IO_ERROR_ALARM = 8  # guy's alarm for an instruction that tries to read beyond the end of tape media
         self.DIVIDE_ALARM = 9    # a real alarm for an overflow in Divide
+        self.READIN_ALARM = 10   # synthetic alarm to return to ReadIn state due to control panel button
 
         self.AlarmMessage = {self.NO_ALARM: "No Alarm",
                              self.OVERFLOW_ALARM: "Overflow Alarm",
@@ -381,6 +383,7 @@ class ConstWWbitClass:
                              self.QUIT_ALARM: "Quit Simulation",
                              self.IO_ERROR_ALARM: "I/O Error Alarm",
                              self.DIVIDE_ALARM: "Divide Error Alarm",
+                             self.READIN_ALARM: "Return-to-Readin Alarm",
                              }
 
         self.COLOR_BR = "\033[93m"  # Yellow color code for Branch Instructions in console trace if color_trace is True
