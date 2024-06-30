@@ -96,25 +96,29 @@ def main():
 
     #for p in dp:
         # print("pt: %d %d %s" % (p[0], p[1], p[2]))
-    up = True
     while True:
-        if up:
-            for i in range(0,100):
-                dpc.render_scrambled_list(ana_scope, delay = 0)
-        if up:
-            d = 1
-        for i in range(1,90):
-            if 1 < 20:
-                m = 1.1
+        for i in range(0,100):
+            dpc.render_scrambled_list(ana_scope, delay = 0)
+
+        incr = 1
+        d = 1
+        i = 1
+        while True:
+            if i < 55:
+                m = 1.15
             else:
                 m = 1.5
-            if not up:
+            if incr < 0:
                 m = 1/m
             dpc.render_scrambled_list(ana_scope, delay = d * 1000 )
             d = d * m
-            if i > 15 and (i % 10 == 0):
-               print("Delay = %d usec, i = %d, up = %d" % (d, i, up))
-        up = not up
+            if i > 30 and (i % 5 == 0):
+               print("Delay = %d usec, i = %d, incr = %d" % (d, i, incr))
+            i += incr
+            if incr > 0 and i == 60:
+                incr = -incr
+            if incr < 0 and i == 0:
+                break
 
 if __name__ == "__main__":
     class LogClass:
