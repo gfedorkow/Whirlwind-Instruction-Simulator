@@ -19,6 +19,7 @@
 
 # updated to Python 3 April 2020
 
+BlinkenLights = False
 
 import sys
 import os
@@ -36,6 +37,12 @@ import re
 import museum_mode_params as mm
 import csv
 import control_panel
+try:
+    import blinkenlights
+    BlinkenLights = True
+except ImportError:
+    pass
+
 
 # There can be a source file that contains subroutines that might be called by exec statements specific
 #   to the particular project under simulation.  If the file exists in the current working dir, import it.
