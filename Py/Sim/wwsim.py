@@ -19,7 +19,7 @@
 
 # updated to Python 3 April 2020
 
-BlinkenLights = False
+BlinkenLightsModule = False
 
 import sys
 import os
@@ -39,7 +39,7 @@ import csv
 import control_panel
 try:
     import blinkenlights
-    BlinkenLights = True
+    BlinkenLightsModule = True
 except ImportError:
     pass
 
@@ -1896,6 +1896,8 @@ def main_run_sim(args, cb):
                     if cb.sim_state == cb.SIM_STATE_READIN:
                         alarm_state = cb.READIN_ALARM
                         break
+                if (cb.blinkenlights):
+                    cb.blinkenlights.update_panel(cb, 0)
 
                 exit_alarm |= poll_sim_io(cpu, cb)
                 if exit_alarm != cb.NO_ALARM:
@@ -2045,7 +2047,9 @@ def main():
     parser.add_argument("--NoAlarmStop", help="Don't stop on alarms", action="store_true")
     parser.add_argument("-n", "--NoCloseOnStop", help="Don't close the display on halt", action="store_true")
     parser.add_argument("-p", "--Panel",
-                        help="Pop up a Whirlwind Manual Intervention Panel", action="store_true")
+                        help="Pop up a Whirlwind Manual Intervention Panel window", action="store_true")
+    parser.add_argument("-b", "--BlinkenLights",
+                        help="Activate a physical Whirlwind Manual Intervention Panel", action="store_true")
     parser.add_argument("--NoZeroOneTSR",
                         help="Don't automatically return 0 and 1 for locations 0 and 1", action="store_true")
     parser.add_argument("--SynchronousVideo",
@@ -2077,6 +2081,11 @@ def main():
 
     if args.Panel:
         cb.panel = control_panel.PanelClass()
+    if args.BlinkenLights:
+        if BlinkenLightsModule:
+            cb.blinkenlights = blinkenlights.BlinkenLights()
+        else:
+            cb.log.fatal("No BlinkenLights Hardware available")
 
     # WW programs may read paper tape.  If the simulator is invoked specifically with a
     # name for the file containing paper tape bytes, use it.  If not, try taking the name

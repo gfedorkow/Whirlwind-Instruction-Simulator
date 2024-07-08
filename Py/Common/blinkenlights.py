@@ -1,44 +1,69 @@
 
-# =Test program to run IS31FL3731 LED Multiplexer
-# Derived from Adafruit 
+
+# Classes to run the hardware I/O devices to make up the Micro-Whirlwind
+
 # Guy Fedorkow, Jun 2024
 
 # https://pypi.org/project/smbus2/
-import smbus2
+import smbus2  # also contains i2c support
 import time
+
 
 IS31_1_ADDR = 0x74
 
-# converted from Adafruit library
-ISSI_REG_CONFIG = 0x00
-ISSI_REG_CONFIG_PICTUREMODE = 0x00
-ISSI_REG_CONFIG_AUTOPLAYMODE = 0x08
-ISSI_REG_CONFIG_AUDIOPLAYMODE = 0x18
-ISSI_CONF_PICTUREMODE = 0x00
-ISSI_CONF_AUTOFRAMEMODE = 0x04
-ISSI_CONF_AUDIOMODE = 0x08
-ISSI_REG_PICTUREFRAME = 0x01
-ISSI_REG_SHUTDOWN = 0x0A
-ISSI_REG_AUDIOSYNC = 0x06
-ISSI_COMMANDREGISTER = 0xFD
-ISSI_BANK_FUNCTIONREG = 0x0B  # helpfully called 'page nine'
+class BlinkenLights:
+    def __init__(self):
+        print("I2C init: ")
+        # bus = I2Cclass(channel = 1)
+        self.i2c_bus = smbus2.SMBus(1)
+        print("  done")
 
+        self.is31_1 = IS31FL3731(self.i2c_bus, IS31_1_ADDR)
+        print("I2C Test")
+        # is31.i2c_reg_test()
+        self.is31_1.init_IS31()
+        print("  IS31 init done")
+
+    def update_panel(self, cb, bank, alarm_state=0, standalone=False, init_PC=None):
+        cpu = cb.cpu
+        lights = []
+        lights.append(cpu._PC)
+        lights.append(cpu._AC)
+        lights.append(cpu._BR)
+        self.is31_1.write_16bit_led_rows(0, lights)
+
+
+# This class was derived from an Adafruit example
 class IS31FL3731:
-    def __init__(self, bus):
+    def __init__(self, bus, i2c_addr):
         self.bus = bus
+        self.i2c_addr = i2c_addr
+        # converted from Adafruit library
+        self.ISSI_REG_CONFIG = 0x00
+        self.ISSI_REG_CONFIG_PICTUREMODE = 0x00
+        self.ISSI_REG_CONFIG_AUTOPLAYMODE = 0x08
+        self.ISSI_REG_CONFIG_AUDIOPLAYMODE = 0x18
+        self.ISSI_CONF_PICTUREMODE = 0x00
+        self.ISSI_CONF_AUTOFRAMEMODE = 0x04
+        self.ISSI_CONF_AUDIOMODE = 0x08
+        self.ISSI_REG_PICTUREFRAME = 0x01
+        self.ISSI_REG_SHUTDOWN = 0x0A
+        self.ISSI_REG_AUDIOSYNC = 0x06
+        self.ISSI_COMMANDREGISTER = 0xFD
+        self.ISSI_BANK_FUNCTIONREG = 0x0B  # helpfully called 'page nine'
 
     # this routine is used to transmit an easy-to-recognize pattern on
     # the I2C bus, for watching with a logic analyzer.  It doesn't make
     # the display do anything...
     def i2c_bus_test(self):
         msg = [2]
-        self.bus.write_i2c_block_data(IS31_1_ADDR, 1, msg)
+        self.bus.write_i2c_block_data(self.i2c_addr, 1, msg)
         msg = [4]
-        self.bus.write_i2c_block_data(IS31_1_ADDR, 3, msg)
+        self.bus.write_i2c_block_data(self.i2c_addr, 3, msg)
         msg = [6, 7]
-        self.bus.write_i2c_block_data(IS31_1_ADDR, 5, msg)
+        self.bus.write_i2c_block_data(self.i2c_addr, 5, msg)
         msg = [0xa, 0xb, 0xc]
-        self.bus.write_i2c_block_data(IS31_1_ADDR, 9, msg)
+        self.bus.write_i2c_block_data(self.i2c_addr, 9, msg)
 
 
     # write an IS31 control register.  Start by selecting "Page 9", the one that
@@ -46,27 +71,27 @@ class IS31FL3731:
     def writeRegister8(self, register, command, val=None):
         print("writeRegister: reg=%x, cmd=%x " % (register, command), "val=", val)
         msg = [register]
-        self.bus.write_i2c_block_data(IS31_1_ADDR, ISSI_COMMANDREGISTER, msg)
+        self.bus.write_i2c_block_data(self.i2c_addr, self.ISSI_COMMANDREGISTER, msg)
 
         if val is not None:
             msg = [val]
         else:
             msg = []
-        self.bus.write_i2c_block_data(IS31_1_ADDR, command, msg)
+        self.bus.write_i2c_block_data(self.i2c_addr, command, msg)
 
 
     def writeMultiRegister(self, register, val_list):
         #print("writeMultiRegister: reg=%x, " % (register), "val=", val_list)
-        self.bus.write_i2c_block_data(IS31_1_ADDR, ISSI_COMMANDREGISTER, [0])
-        self.bus.write_i2c_block_data(IS31_1_ADDR, register, val_list)
+        self.bus.write_i2c_block_data(self.i2c_addr, self.ISSI_COMMANDREGISTER, [0])
+        self.bus.write_i2c_block_data(self.i2c_addr, register, val_list)
 
 
     def selectFrame(self, frame):
         msg = [frame]
-        self.bus.write_i2c_block_data(IS31_1_ADDR, ISSI_COMMANDREGISTER, msg)
+        self.bus.write_i2c_block_data(self.i2c_addr, self.ISSI_COMMANDREGISTER, msg)
 
     def displayFrame(self, frame):
-        self.writeRegister8(ISSI_BANK_FUNCTIONREG, ISSI_REG_PICTUREFRAME, val=frame);
+        self.writeRegister8(self.ISSI_BANK_FUNCTIONREG, self.ISSI_REG_PICTUREFRAME, val=frame);
 
     def set_brightness(self, bright):
         #for (uint8_t i = 0; i < 6; i++) {
@@ -91,36 +116,34 @@ class IS31FL3731:
             byte_list.append(val & 0xff)
             byte_list.append(val >> 8)
         #self.writeMultiRegister(row * 2, byte_list)   # 16 bits in two bytes
-        self.bus.write_i2c_block_data(IS31_1_ADDR, row, byte_list)
+        self.bus.write_i2c_block_data(self.i2c_addr, row, byte_list)
 
 
-    def init(self):
-        _frame = 0;
+    def init_IS31(self):
+        _frame = 0
         # shutdown
         print("Shutdown")
-        self.writeRegister8(ISSI_BANK_FUNCTIONREG, ISSI_REG_SHUTDOWN, val=0x00);
-        time.sleep(0.01);
+        self.writeRegister8(self.ISSI_BANK_FUNCTIONREG, self.ISSI_REG_SHUTDOWN, val=0x00)
+        time.sleep(0.01)
 
         # out of shutdown
         print("unShutdown")
-        self.writeRegister8(ISSI_BANK_FUNCTIONREG, ISSI_REG_SHUTDOWN, val=0x01);
+        self.writeRegister8(self.ISSI_BANK_FUNCTIONREG, self.ISSI_REG_SHUTDOWN, val=0x01)
         #time.sleep(1)
 
         # picture mode
         print("picture mode")
-        self.writeRegister8(ISSI_BANK_FUNCTIONREG, ISSI_REG_CONFIG,
-                 val=ISSI_REG_CONFIG_PICTUREMODE);
+        self.writeRegister8(self.ISSI_BANK_FUNCTIONREG, self.ISSI_REG_CONFIG,
+                 val=self.ISSI_REG_CONFIG_PICTUREMODE)
 
         #time.sleep(1)
         print("display frame")
-        self.displayFrame(_frame);
+        self.displayFrame(_frame)
 
         #time.sleep(1)
         print("set brightness")
         # all LEDs to the same brightness, and turn them all off
         self.set_brightness(0x16)
-
-
 
 
 #class I2Cclass:
@@ -132,8 +155,10 @@ class IS31FL3731:
         # bus.setSpeed(400000)
 
 # --------------------
+# the remainder of this file gives a standalone test program that exercises
+# the hardware (currently the IS31 LED driver)
+# July 7, 2024
 
-_NPONGS = 9
 class PingPongStruct():
     def __init__(self, i):
         print("pong_struct preset = ", i)
@@ -162,6 +187,8 @@ class PingPongStruct():
 
         return((1 << self.val) ^ self.invert)
 
+
+_NPONGS = 9
 def _init_pongs():
     pp = []
     for i in range(0, _NPONGS):
@@ -176,10 +203,10 @@ def main():
     bus = smbus2.SMBus(1)
     print("  done")
 
-    is31 = IS31FL3731(bus)
+    is31 = IS31FL3731(bus, IS31_1_ADDR)
     print("I2C Test")
     # is31.i2c_reg_test()
-    is31.init()
+    is31.init_IS31()
     print("  IS31 init done")
 
     pp = _init_pongs()
@@ -192,7 +219,7 @@ def main():
         time.sleep(.03)
 
     input("CR to Shutdown")
-    is31.writeRegister8(ISSI_BANK_FUNCTIONREG, ISSI_REG_SHUTDOWN, val=0x00);
+    is31.writeRegister8(ISSI_BANK_FUNCTIONREG, ISSI_REG_SHUTDOWN, val=0x00)
     time.sleep(1)
 
 
