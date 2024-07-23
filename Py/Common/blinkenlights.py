@@ -10,6 +10,8 @@ import time
 
 
 IS31_1_ADDR = 0x74
+TCA8414_1_ADDR = 0x34
+Debug_I2C = False
 
 class BlinkenLights:
     def __init__(self):
@@ -26,14 +28,257 @@ class BlinkenLights:
 
     def update_panel(self, cb, bank, alarm_state=0, standalone=False, init_PC=None):
         cpu = cb.cpu
-        lights = []
-        lights.append(cpu._PC)
-        lights.append(cpu._AC)
-        lights.append(cpu._BR)
+        lights = [] * 9
+        lights[0] = ~cpu.PC
+        lights[1] = cpu.PC
+        lights[2] = ~cpu._AC
+        lights[3] = cpu._AC
+        lights[4] = cpu._BReg
+        lights[5] = cpu._AReg
+        lights[6] = cpu.cm.mem_addr_reg
+        par = cpu.cm.mem_data_reg
+        if par:  # make sure we're not sending None to the PAR lights register
+            lights[7] = par
+        else:
+            lights[7] = 0
+
         self.is31_1.write_16bit_led_rows(0, lights)
 
 
-# This class was derived from an Adafruit example
+# =============== TCA8414 Keypad Scanner ==================================
+
+class TCA8414:
+    def __init__(self, bus, i2c_addr):
+        self.bus = bus
+        self.i2c_addr = i2c_addr
+        self.TCA8418_REG_CFG = 0x01  # < Configuration register
+        self.TCA8418_REG_INT_STAT = 0x02  # < Interrupt status
+        self.TCA8418_REG_KEY_LCK_EC = 0x03  # < Key lock and event counter
+        self.TCA8418_REG_KEY_EVENT_A = 0x04  # < Key event register A
+        self.TCA8418_REG_KEY_EVENT_B = 0x05  # < Key event register B
+        self.TCA8418_REG_KEY_EVENT_C = 0x06  # < Key event register C
+        self.TCA8418_REG_KEY_EVENT_D = 0x07  # < Key event register D
+        self.TCA8418_REG_KEY_EVENT_E = 0x08  # < Key event register E
+        self.TCA8418_REG_KEY_EVENT_F = 0x09  # < Key event register F
+        self.TCA8418_REG_KEY_EVENT_G = 0x0A  # < Key event register G
+        self.TCA8418_REG_KEY_EVENT_H = 0x0B  # < Key event register H
+        self.TCA8418_REG_KEY_EVENT_I = 0x0C  # < Key event register I
+        self.TCA8418_REG_KEY_EVENT_J = 0x0D  # < Key event register J
+        self.TCA8418_REG_KP_LCK_TIMER = 0x0E  # < Keypad lock1 to lock2 timer
+        self.TCA8418_REG_UNLOCK_1 = 0x0F  # < Unlock register 1
+        self.TCA8418_REG_UNLOCK_2 = 0x10  # < Unlock register 2
+        self.TCA8418_REG_GPIO_INT_STAT_1 = 0x11  # < GPIO interrupt status 1
+        self.TCA8418_REG_GPIO_INT_STAT_2 = 0x12  # < GPIO interrupt status 2
+        self.TCA8418_REG_GPIO_INT_STAT_3 = 0x13  # < GPIO interrupt status 3
+        self.TCA8418_REG_GPIO_DAT_STAT_1 = 0x14  # < GPIO data status 1
+        self.TCA8418_REG_GPIO_DAT_STAT_2 = 0x15  # < GPIO data status 2
+        self.TCA8418_REG_GPIO_DAT_STAT_3 = 0x16  # < GPIO data status 3
+        self.TCA8418_REG_GPIO_DAT_OUT_1 = 0x17  # < GPIO data out 1
+        self.TCA8418_REG_GPIO_DAT_OUT_2 = 0x18  # < GPIO data out 2
+        self.TCA8418_REG_GPIO_DAT_OUT_3 = 0x19  # < GPIO data out 3
+        self.TCA8418_REG_GPIO_INT_EN_1 = 0x1A  # < GPIO interrupt enable 1
+        self.TCA8418_REG_GPIO_INT_EN_2 = 0x1B  # < GPIO interrupt enable 2
+        self.TCA8418_REG_GPIO_INT_EN_3 = 0x1C  # < GPIO interrupt enable 3
+        self.TCA8418_REG_KP_GPIO_1 = 0x1D  # < Keypad/GPIO select 1
+        self.TCA8418_REG_KP_GPIO_2 = 0x1E  # < Keypad/GPIO select 2
+        self.TCA8418_REG_KP_GPIO_3 = 0x1F  # < Keypad/GPIO select 3
+        self.TCA8418_REG_GPI_EM_1 = 0x20  # < GPI event mode 1
+        self.TCA8418_REG_GPI_EM_2 = 0x21  # < GPI event mode 2
+        self.TCA8418_REG_GPI_EM_3 = 0x22  # < GPI event mode 3
+        self.TCA8418_REG_GPIO_DIR_1 = 0x23  # < GPIO data direction 1
+        self.TCA8418_REG_GPIO_DIR_2 = 0x24  # < GPIO data direction 2
+        self.TCA8418_REG_GPIO_DIR_3 = 0x25  # < GPIO data direction 3
+        self.TCA8418_REG_GPIO_INT_LVL_1 = 0x26  # < GPIO edge/level detect 1
+        self.TCA8418_REG_GPIO_INT_LVL_2 = 0x27  # < GPIO edge/level detect 2
+        self.TCA8418_REG_GPIO_INT_LVL_3 = 0x28  # < GPIO edge/level detect 3
+        self.TCA8418_REG_DEBOUNCE_DIS_1 = 0x29  # < Debounce disable 1
+        self.TCA8418_REG_DEBOUNCE_DIS_2 = 0x2A  # < Debounce disable 2
+        self.TCA8418_REG_DEBOUNCE_DIS_3 = 0x2B  # < Debounce disable 3
+        self.TCA8418_REG_GPIO_PULL_1 = 0x2C  # < GPIO pull-up disable 1
+        self.TCA8418_REG_GPIO_PULL_2 = 0x2D  # < GPIO pull-up disable 2
+        self.TCA8418_REG_GPIO_PULL_3 = 0x2E  # < GPIO pull-up disable 3
+        # #define TCA8418_REG_RESERVED          0x2F
+
+        # FIELDS CONFIG REGISTER  1
+
+        self.TCA8418_REG_CFG_AI = 0x80  # < Auto-increment for read/write
+        self.TCA8418_REG_CFG_GPI_E_CGF = 0x40  # < Event mode config
+        self.TCA8418_REG_CFG_OVR_FLOW_M = 0x20  # < Overflow mode enable
+        self.TCA8418_REG_CFG_INT_CFG = 0x10  # < Interrupt config
+        self.TCA8418_REG_CFG_OVR_FLOW_IEN = 0x08  # < Overflow interrupt enable
+        self.TCA8418_REG_CFG_K_LCK_IEN = 0x04  # < Keypad lock interrupt enable
+        self.TCA8418_REG_CFG_GPI_IEN = 0x02  # < GPI interrupt enable
+        self.TCA8418_REG_CFG_KE_IEN = 0x01  # < Key events interrupt enable
+
+        # FIELDS INT_STAT REGISTER  2
+        self.TCA8418_REG_STAT_CAD_INT = 0x10  # < Ctrl-alt-del seq status
+        self.TCA8418_REG_STAT_OVR_FLOW_INT = 0x08  # < Overflow interrupt status
+        self.TCA8418_REG_STAT_K_LCK_INT = 0x04  # < Key lock interrupt status
+        self.TCA8418_REG_STAT_GPI_INT = 0x02  # < GPI interrupt status
+        self.TCA8418_REG_STAT_K_INT = 0x01  # < Key events interrupt status
+
+        # FIELDS  KEY_LCK_EC REGISTER 3
+        self.TCA8418_REG_LCK_EC_K_LCK_EN = 0x40  # < Key lock enable
+        self.TCA8418_REG_LCK_EC_LCK_2 = 0x20  # < Keypad lock status 2
+        self.TCA8418_REG_LCK_EC_LCK_1 = 0x10  # < Keypad lock status 1
+        self.TCA8418_REG_LCK_EC_KLEC_3 = 0x08  # < Key event count bit 3
+        self.TCA8418_REG_LCK_EC_KLEC_2 = 0x04  # < Key event count bit 2
+        self.TCA8418_REG_LCK_EC_KLEC_1 = 0x02  # < Key event count bit 1
+        self.TCA8418_REG_LCK_EC_KLEC_0 = 0x01  # < Key event count bit 0
+
+    def writeRegister(self, command, val):
+        if Debug_I2C: print("writeRegister: cmd=%x val=%x" % (command, val))
+        self.bus.write_byte_data(self.i2c_addr, command, val)
+
+    def readRegister(self, command):
+        val = self.bus.read_byte_data(self.i2c_addr, command)
+        if Debug_I2C: print("readRegister: cmd=%x val=%x" % (command, val))
+        return val
+
+    def i2c_reg_test(self):
+        val = 0x55
+        self.writeRegister(self.TCA8418_REG_GPIO_DIR_1, val)
+        nval = self.readRegister(self.TCA8418_REG_GPIO_DIR_1)
+        print(" Reg %x: val=%x, read=%x" % (self.TCA8418_REG_GPIO_DIR_1, val, nval))
+
+    def init_tca8414(self, rows, columns):
+
+        #  GPIO
+        #  set default all GIO pins to INPUT
+        self.writeRegister(self.TCA8418_REG_GPIO_DIR_1, 0x00)
+        self.writeRegister(self.TCA8418_REG_GPIO_DIR_2, 0x00)
+        self.writeRegister(self.TCA8418_REG_GPIO_DIR_3, 0x00)
+
+        #  add all pins to key events
+        self.writeRegister(self.TCA8418_REG_GPI_EM_1, 0xFF)
+        self.writeRegister(self.TCA8418_REG_GPI_EM_2, 0xFF)
+        self.writeRegister(self.TCA8418_REG_GPI_EM_3, 0x00)
+
+        #  set all pins to FALLING interrupts
+        self.writeRegister(self.TCA8418_REG_GPIO_INT_LVL_1, 0x00)
+        self.writeRegister(self.TCA8418_REG_GPIO_INT_LVL_2, 0x00)
+        self.writeRegister(self.TCA8418_REG_GPIO_INT_LVL_3, 0x00)
+
+        #  add all pins to interrupts
+        self.writeRegister(self.TCA8418_REG_GPIO_INT_EN_1, 0xFF)
+        self.writeRegister(self.TCA8418_REG_GPIO_INT_EN_2, 0xFF)
+        self.writeRegister(self.TCA8418_REG_GPIO_INT_EN_3, 0xFF)
+
+        self.matrix(rows, columns)
+
+    """ from: /**
+     *  @file Adafruit_TCA8418.cpp
+     *
+     * 	I2C Driver for the Adafruit TCA8418 Keypad Matrix / GPIO Expander Breakout
+     *
+     * 	This is a library for the Adafruit TCA8418 breakout:
+     * 	https://www.adafruit.com/product/XXXX
+     *
+
+    /**
+     * @brief configures the size of the keypad matrix.
+     *
+     * @param [in] rows    number of rows, should be <= 8
+     * @param [in] columns number of columns, should be <= 10
+     * @return true is rows and columns have valid values.
+     *
+     * @details will always use the lowest pins for rows and columns.
+     *          0..rows-1  and  0..columns-1
+     */
+    """
+
+    def matrix(self, rows, columns):
+        if (rows > 8) or (columns > 10):
+            return False
+
+        # skip zero size matrix
+        if (rows != 0) and (columns != 0):
+            # setup the keypad matrix.
+            mask = 0x00
+            for r in range(0, rows):
+                mask <<= 1
+                mask |= 1
+            self.writeRegister(self.TCA8418_REG_KP_GPIO_1, mask)
+
+            mask = 0x00
+            for c in range(0, 8):  # (int c = 0; c < columns && c < 8; c++) {
+                if c >= columns:
+                    mask <<= 1
+                    mask |= 1
+            self.writeRegister(self.TCA8418_REG_KP_GPIO_2, mask)
+
+            mask = 0
+            if columns > 8:
+                if columns == 9:
+                    mask = 0x01;
+                else:
+                    mask = 0x03;
+            self.writeRegister(self.TCA8418_REG_KP_GPIO_3, mask);
+        return True
+
+    # hack -- config two pins as output to blink an LED
+    def init_gp_out(self):
+        # column 8 and 9 pins
+        self.writeRegister(self.TCA8418_REG_GPIO_DIR_3, 0x3)
+
+    def set_gp_out(self, val):
+        self.writeRegister(self.TCA8418_REG_GPIO_DAT_OUT_3, val)
+
+    """ ... from Adafruit
+    /**
+     * @brief flushes the internal buffer of key events
+     *        and cleans the GPIO status registers.
+     *
+     * @return number of keys flushed.
+     */    """
+
+    def flush(self):
+        count = 0
+        while self.getEvent() != 0:
+            count += 1
+        #  flush gpio events
+        self.readRegister(self.TCA8418_REG_GPIO_INT_STAT_1)
+        self.readRegister(self.TCA8418_REG_GPIO_INT_STAT_2)
+        self.readRegister(self.TCA8418_REG_GPIO_INT_STAT_3)
+        #  //  clear INT_STAT register
+        self.writeRegister(self.TCA8418_REG_INT_STAT, 3)
+        return count
+
+    """
+    /**
+     * @brief gets first event from the internal buffer
+     *
+     * @return key event or 0 if none available
+     *
+     * @details
+     *     key event 0x00        no event
+     *               0x01..0x50  key  press
+     *               0x81..0xD0  key  release
+     *               0x5B..0x72  GPIO press
+     *               0xDB..0xF2  GPIO release
+     */
+    """
+
+    def getEvent(self):
+        return self.readRegister(self.TCA8418_REG_KEY_EVENT_A)
+
+    """
+    /**
+     * @brief checks if key events are available in the internal buffer
+     *
+     * @return number of key events in the buffer
+     */
+    """
+
+    def available(self):
+        eventCount = self.readRegister(self.TCA8418_REG_KEY_LCK_EC)
+        eventCount &= 0x0F  # //  lower 4 bits only
+        return eventCount
+
+
+
+# =============== IS31FL3731 LED Mux ==================================
+    # This class was derived from an Adafruit example
 class IS31FL3731:
     def __init__(self, bus, i2c_addr):
         self.bus = bus
@@ -209,6 +454,16 @@ def main():
     is31.init_IS31()
     print("  IS31 init done")
 
+    tca84 = TCA8414(bus, TCA8414_1_ADDR)
+    print("TCA8414 Test")
+    tca84.i2c_reg_test()
+    tca84.init_tca8414(3, 2)  # scan 3 rows, 2 columns
+    tca84.init_gp_out()
+    # flush the internal buffer
+    tca84.flush()
+
+    print("  TCA8414 init done")
+
     pp = _init_pongs()
     int_val = [0] * _NPONGS
     is31.selectFrame(0)   # do this once, so it doesn't have to be done with each write of the LEDs
@@ -221,6 +476,22 @@ def main():
     input("CR to Shutdown")
     is31.writeRegister8(ISSI_BANK_FUNCTIONREG, ISSI_REG_SHUTDOWN, val=0x00)
     time.sleep(1)
+
+    for i in range(0, 10000):
+        tca84.set_gp_out(i & 0x3)
+        if tca84.available() > 0:
+            key = tca84.getEvent()
+            pressed = key & 0x80
+            key &= 0x7F
+            key -= 1
+            row = key // 10
+            col = key % 10
+            push_str = "Released"
+            if pressed:
+                push_str = "Pressed "
+            print("%s: row=%d, col=%d" % (push_str, row, col))
+
+        time.sleep(0.3)
 
 
 if __name__ == "__main__":

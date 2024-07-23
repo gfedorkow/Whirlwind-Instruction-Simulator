@@ -204,8 +204,9 @@ class Tokenizer:
             else:
                 c = self.endOfString
             # print (c, self.state, self.pos, token) # LAS
-            match self.state:
-                case 0:
+            # This section is indented to allow for a Case statement;  but that's only in Python 3.10+
+            # And, as of yet, the RasPi is still on 3.7
+            if self.state == 0:
                     if self.isWhitespace (c):
                         self.pos += 1
                     elif c == '"':
@@ -215,7 +216,7 @@ class Tokenizer:
                         self.state = 3
                         token = token + c
                         self.pos += 1
-                case 1:
+            elif self.state == 1:
                     if c == '\\':
                         self.state = 2
                         self.pos += 1
@@ -230,11 +231,12 @@ class Tokenizer:
                     else:
                         token = token + c
                         self.pos += 1
-                case 2:
+
+            elif self.state == 2:
                     token = token + c
                     self.state = 1
                     self.pos += 1
-                case 3:
+            elif self.state == 3:
                     if c == self.delimiter:
                         self.state = 0
                         self.pos += 1
@@ -249,7 +251,7 @@ class Tokenizer:
                     else:
                         token = token + c
                         self.pos += 1
-                case 4:
+            elif self.state == 4:
                     if c == self.delimiter:
                         self.state = 0
                         self.pos += 1
@@ -259,7 +261,7 @@ class Tokenizer:
                         self.pos += 1
                         print ("error 2")   # error -- Tokens are separated by whitespace but not comma, eg ``"xxx" abc, def'' # LAS
                         return self.endOfString
-                case 5:
+            elif self.state == 5:
                     if (c == 'a' or c == 'b'):
                         self.state = 6
                         self.pos += 1
@@ -269,18 +271,21 @@ class Tokenizer:
                         self.pos += 1
                         token = '%' + token + c
                         return token
-                case 6:
+            elif self.state == 6:
                     if (c == 'd' or c == 'o'):
                         self.state = 1
                         self.pos += 1
                         token = '%' + token + c
                         return token
-                case 7:
+            elif self.state == 7:
                         self.state = 4
                         return self.endOfFmt
-                case 8:
+            elif self.state == 8:
                         self.state = 0
                         return self.endOfString
+            else:
+                        print("Unexpected state %d in Tokenizer" % self.state)
+                        exit(1)
         return self.endOfString
 
 class WwPrintTokenizer (Tokenizer):
