@@ -28,7 +28,7 @@ class BlinkenLights:
 
     def update_panel(self, cb, bank, alarm_state=0, standalone=False, init_PC=None):
         cpu = cb.cpu
-        lights = [] * 9
+        lights = [None] * 9
         lights[0] = ~cpu.PC
         lights[1] = cpu.PC
         lights[2] = ~cpu._AC
