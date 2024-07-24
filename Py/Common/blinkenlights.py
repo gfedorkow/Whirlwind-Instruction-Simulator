@@ -14,17 +14,52 @@ TCA8414_1_ADDR = 0x34
 Debug_I2C = False
 
 class BlinkenLights:
-    def __init__(self):
+    def __init__(self, sim_state_machine_arg=None):
+        self.sim_state_machine = sim_state_machine_arg
         print("I2C init: ")
         # bus = I2Cclass(channel = 1)
         self.i2c_bus = smbus2.SMBus(1)
         print("  done")
 
         self.is31_1 = IS31FL3731(self.i2c_bus, IS31_1_ADDR)
-        print("I2C Test")
-        # is31.i2c_reg_test()
         self.is31_1.init_IS31()
         print("  IS31 init done")
+
+        self.tca84 = TCA8414(self.i2c_bus, TCA8414_1_ADDR)
+        self.tca84.init_tca8414(3, 2)  # scan 3 rows, 2 columns
+        self.tca84.init_gp_out()
+        # flush the internal buffer
+        self.tca84.flush()
+        print("  TCA8414 init done")
+
+
+    def check_buttons(self):
+        # Official Button Names, as per Python-based Control Panel
+        #buttons_def =  ["Clear Alarm", "Stop", "Start Over", "Restart", "Start at 40", "Order-by-Order", "Examine",
+        #                                                                                                    "Read In"]
+        buttons_def = [["Restart", "Start Over", "Examine"], ["Stop", "Single", "Clear"]]
+        button_press = None
+        if self.tca84.available() > 0:
+            key = self.tca84.getEvent()
+            pressed = key & 0x80
+            if pressed:     # I'm ignoring "released" events
+                key &= 0x7F
+                key -= 1
+                row = key // 10
+                col = key % 10
+                button_press = buttons_def[row][col]
+                print("Pressed %s: row=%d, col=%d" % (button_press, row, col))
+        return button_press
+
+    def set_cpu_state_lamps(self, cb, sim_state, alarm_state):
+        # ad-hoc; key scan GPIO-3 has two bits driving LEDs, for Run and Alarm
+        leds = 0
+        if sim_state != cb.SIM_STATE_STOP:
+            leds |= 1   # green
+        if alarm_state:     # Zero is No Alarm
+            leds |= 2   # red
+        self.tca84.set_gp_out(leds)
+
 
     def update_panel(self, cb, bank, alarm_state=0, standalone=False, init_PC=None):
         cpu = cb.cpu
@@ -36,13 +71,20 @@ class BlinkenLights:
         lights[4] = cpu._BReg
         lights[5] = cpu._AReg
         lights[6] = cpu.cm.mem_addr_reg
+        lights[7] = cpu.cm.rd(0x02, skip_mar=True)   # Fixed to FF2 for now; 'skip_mar' says to _not_ update the MAR/PAR with this read
+
         par = cpu.cm.mem_data_reg
         if par:  # make sure we're not sending None to the PAR lights register
             lights[7] = par
         else:
             lights[7] = 0
-
         self.is31_1.write_16bit_led_rows(0, lights)
+
+        if not standalone:
+            self.set_cpu_state_lamps(cb, cb.sim_state, alarm_state)
+            bn = self.check_buttons()
+            if bn:
+                self.sim_state_machine(bn, cb)
 
 
 # =============== TCA8414 Keypad Scanner ==================================
