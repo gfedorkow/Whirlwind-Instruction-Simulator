@@ -49,6 +49,8 @@ class CpuClass:
         self.CommentTab = [None] * 2048
         self.cm = core_mem
 
+
+
 class LogSeqno:
     def __init__ (self):
         self.seqno = 0
@@ -295,6 +297,7 @@ class ArgsTokenizer (Tokenizer):
     def __init__ (self, str):
         super().__init__ (str)
         self.delimiter = ' '
+
 
 # simple routine to print an octal number that might be 'None'
 def octal_or_none(number):

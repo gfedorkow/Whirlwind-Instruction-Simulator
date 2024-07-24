@@ -1720,6 +1720,53 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
 #
 # ############# Main #############
 
+# This state machine is used to control the flow of execution for the simulator
+# It's called by either the xwin graphical control panel or by the buttons-and-lights panel
+def sim_state_machine(switch_name, cb):
+    sw = switch_name
+    if sw == "Stop":
+        cb.sim_state = cb.SIM_STATE_STOP
+        # self.dispatch["Stop"].lamp_object.set_lamp(True)
+        # self.dispatch["Start at 40"].lamp_object.set_lamp(False)
+        return
+
+    if sw == "Restart":   # don't mess with the PC, just pick up from the last address
+        cb.sim_state = cb.SIM_STATE_RUN
+        return
+
+    if sw == "Start at 40":
+        cb.sim_state = cb.SIM_STATE_RUN
+        cb.cpu.PC = 0o40
+        return
+
+    if sw == "Start Over":  # start executing at the address in the PC switch register
+        cb.sim_state = cb.SIM_STATE_RUN
+        cb.cpu.PC = cb.panel.pc_toggle_sw.read_button_vector()
+        return
+
+    if sw == "Order-by-Order":  # don't mess with the PC, just pick up from the last address
+        cb.sim_state = cb.SIM_STATE_SINGLE_STEP
+        return
+
+    if sw == "Examine":  # don't mess with the PC, just pick up from the last address
+        if cb.sim_state == cb.SIM_STATE_RUN:
+            cb.log.warn("Examine button may only be used when the machine is stopped")
+        addr = cb.panel.pc_toggle_sw.read_button_vector()
+        cb.cpu.cm.rd(addr)   # simply reading the register has the side effect of updating MAR and PAR/MDR
+        return
+
+    if sw == "Read In":  # Start all over again from reading in the "tape"
+        cb.sim_state = cb.SIM_STATE_READIN
+        popup = control_panel.DialogPopup()
+        filename = popup.get_text_entry("Filename: ", "foo.acore")
+        print("filename:%s" % filename)
+        cb.CoreFileName = filename
+        return
+
+    print("Unhandled Button %s" % sw)
+    return
+
+
 def poll_sim_io(cpu, cb):
     ret = cb.NO_ALARM
     # if the analog scope interface is in use, there's a physical button which signals Stop 
@@ -2080,10 +2127,10 @@ def main():
         cb.argAutoClick = True
 
     if args.Panel:
-        cb.panel = control_panel.PanelClass()
+        cb.panel = control_panel.PanelClass(sim_state_machine_arg=sim_state_machine)
     if args.BlinkenLights:
         if BlinkenLightsModule:
-            cb.blinkenlights = blinkenlights.BlinkenLights()
+            cb.blinkenlights = blinkenlights.BlinkenLights(sim_state_machine_arg=sim_state_machine)
         else:
             cb.log.fatal("No BlinkenLights Hardware available")
 

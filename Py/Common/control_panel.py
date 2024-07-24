@@ -499,7 +499,9 @@ class ControlButtonAndLight:
 #  Alarm
 
 class CPUControlClass:
-    def __init__(self, panel, x=0, y=0, x_step=20, y_step=20):
+    def __init__(self, panel, x=0, y=0, x_step=20, y_step=20, sim_state_machine_arg=None):
+        self.sim_state_machine = sim_state_machine_arg  # function name passed in from main sim init
+
         toggle_sw_def = ["Stop on Addr", "Stop on CK", "Stop on SI-1"]
         lights_def =   ["Alarm",        "Stop",  None,        "Run",      None,          None,             None, None]
         buttons_def =  ["Clear Alarm", "Stop", "Start Over", "Restart", "Start at 40", "Order-by-Order", "Examine",
@@ -526,7 +528,7 @@ class CPUControlClass:
             if hit:
                 # print("Hit switch %s" % cbl.switch_name)
                 self.local_state_machine(cbl)
-                self.sim_state_machine(cbl, cb)
+                self.sim_state_machine(cbl.switch_name, cb)
 
     # this small routine manages local interactions in the buttons and lights
     def local_state_machine(self, cbl):
@@ -537,8 +539,8 @@ class CPUControlClass:
             return
 
     # This state machine is used to control the flow of execution for the simulator
-    def sim_state_machine(self, cbl, cb):
-        sw = cbl.switch_name
+    def former_sim_state_machine(self, switch_name, cb):
+        sw = switch_name
         if sw == "Stop":
             cb.sim_state = cb.SIM_STATE_STOP
             # self.dispatch["Stop"].lamp_object.set_lamp(True)
@@ -589,7 +591,8 @@ class CPUControlClass:
         self.dispatch["Stop"].lamp_object.set_lamp(~run)
 
 class PanelClass:
-    def __init__(self, left_init=0, right_init=0):
+    def __init__(self, left_init=0, right_init=0, sim_state_machine_arg=None):
+        self.sim_state_machine = sim_state_machine_arg  # function name passed in from main sim init
         self.scale = 1.0
         self.PANEL_X_SIZE = 512
         self.PANEL_Y_SIZE = 800
@@ -656,7 +659,8 @@ class PanelClass:
                                               radio=False, toggle=True, initial_value=0o1234)
         row += 2
 
-        self.cpu_control = CPUControlClass(self, x=30, y=y_start+row*self.y_step, x_step=self.x_step, y_step=self.y_step)
+        self.cpu_control = CPUControlClass(self, x=30, y=y_start+row*self.y_step, x_step=self.x_step,
+                                           y_step=self.y_step, sim_state_machine_arg=self.sim_state_machine)
 
         # the first element in the dict is the switch Read entry point, the second is the one to set the switches
         self.dispatch = {"LMIR":[self.dual_ir.read_left_register, self.dual_ir.set_left_register],
