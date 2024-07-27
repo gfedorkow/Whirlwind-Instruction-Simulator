@@ -7,6 +7,7 @@
 # https://pypi.org/project/smbus2/
 # import smbus2  # also contains i2c support
 import time
+import re
 
 BlinkenLightsModule = False
 try:  # this import will fail if there's no I2C bus available
@@ -46,13 +47,14 @@ class BlinkenLightsClass:
         # flush the internal buffer
         self.tca84.flush()
         print("  TCA8414 init done")
+        self.switches = {}   # a dictionary for holding switch register settings
 
 
     def check_buttons(self):
         # Official Button Names, as per Python-based Control Panel
         #buttons_def =  ["Clear Alarm", "Stop", "Start Over", "Restart", "Start at 40", "Order-by-Order", "Examine",
         #                                                                                                    "Read In"]
-        buttons_def = [["Restart", "Start Over", "Examine"], ["Stop", "Single", "Clear"]]
+        buttons_def = [["Restart", "Start Over", "Examine"], ["Stop", "Order-by-Order", "Clear"]]
         button_press = None
         if self.tca84.available() > 0:
             key = self.tca84.getEvent()
@@ -86,7 +88,7 @@ class BlinkenLightsClass:
         lights[4] = cpu._BReg
         lights[5] = cpu._AReg
         lights[6] = cpu.cm.mem_addr_reg
-        lights[7] = cpu.cm.rd(0x02, skip_mar=True)   # Fixed to FF2 for now; 'skip_mar' says to _not_ update the MAR/PAR with this read
+        lights[8] = cpu.cm.rd(0x02, skip_mar=True)   # Fixed to FF2 for now; 'skip_mar' says to _not_ update the MAR/PAR with this read
 
         par = cpu.cm.mem_data_reg
         if par:  # make sure we're not sending None to the PAR lights register
@@ -105,17 +107,28 @@ class BlinkenLightsClass:
     # It would normally be called with a string giving the name.  Inside the simulator
     # sometimes it's easier to find a number for the flip-flop registers
     def read_register(self, which_one):
-        self.cb.log.warn("no read_registers")
-        return 0
+        self.cb.log.warn("read_registers: reg %s, val 0o%o: " % (which_one, self.switches[which_one]))
+        return self.switches[which_one]
 
     # write a register to the switches and lights panel.
     # It would normally be called with a string giving the name.  Inside the simulator
     # sometimes it's easier to find a number for the flip-flop registers
     def write_register(self, which_one, value):
-        self.cb.log.warn("no write_register")
+        self.cb.log.warn("write_register: reg %s = 0o%o" % (which_one, value))
+        self.switches[which_one] = value
 
     def reset_ff_registers(self, function, log=None, info_str=''):
         self.cb.log.warn("no reset_ff_registers")
+        for sw in self.switches:
+            m = re.match("FF([0-9][0-9])Sw", sw)
+            if m:
+                print("copy 0o%o into %s: %d" % (self.switches[sw], sw, int(m.group(1))))
+                val = self.switches[sw]
+                addr = int(m.group(1))
+                # self.lamp_vector.set_lamp_register(val)
+                function(addr, val)  # calls Coremem.write_ff_reg()
+                if log:
+                    log.info(info_str % (addr, addr, val))
 
 
 # =============== TCA8414 Keypad Scanner ==================================
