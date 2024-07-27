@@ -37,11 +37,6 @@ import re
 import museum_mode_params as mm
 import csv
 import control_panel
-try:
-    import blinkenlights
-    BlinkenLightsModule = True
-except ImportError:
-    pass
 
 
 # There can be a source file that contains subroutines that might be called by exec statements specific
@@ -1722,7 +1717,7 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
 
 # This state machine is used to control the flow of execution for the simulator
 # It's called by either the xwin graphical control panel or by the buttons-and-lights panel
-def sim_state_machine(switch_name, cb):
+def moved_to_Panel_sim_state_machine(switch_name, cb):
     sw = switch_name
     if sw == "Stop":
         cb.sim_state = cb.SIM_STATE_STOP
@@ -1943,8 +1938,6 @@ def main_run_sim(args, cb):
                     if cb.sim_state == cb.SIM_STATE_READIN:
                         alarm_state = cb.READIN_ALARM
                         break
-                if (cb.blinkenlights):
-                    cb.blinkenlights.update_panel(cb, 0)
 
                 exit_alarm |= poll_sim_io(cpu, cb)
                 if exit_alarm != cb.NO_ALARM:
@@ -2065,6 +2058,7 @@ def main_run_sim(args, cb):
 
 
 def main():
+    global BlinkenLightsModule
     parser = wwinfra.StdArgs().getParser ("Run a Whirlwind Simulation.")
     parser.add_argument("corefile", help="file name of simulation core file")
     parser.add_argument("-t", "--TracePC", help="Trace PC for each instruction", action="store_true")
@@ -2126,13 +2120,11 @@ def main():
     if args.AutoClick:
         cb.argAutoClick = True
 
-    if args.Panel:
-        cb.panel = control_panel.PanelClass(sim_state_machine_arg=sim_state_machine)
-    if args.BlinkenLights:
-        if BlinkenLightsModule:
-            cb.blinkenlights = blinkenlights.BlinkenLights(sim_state_machine_arg=sim_state_machine)
-        else:
-            cb.log.fatal("No BlinkenLights Hardware available")
+    if args.BlinkenLights and BlinkenLightsModule == False:
+        cb.log.warn("No BlinkenLights Hardware available")
+
+    if args.Panel or args.BlinkenLights:
+        cb.panel = control_panel.PanelClass(cb, args.Panel, args.BlinkenLights)
 
     # WW programs may read paper tape.  If the simulator is invoked specifically with a
     # name for the file containing paper tape bytes, use it.  If not, try taking the name

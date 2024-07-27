@@ -5,17 +5,32 @@
 # Guy Fedorkow, Jun 2024
 
 # https://pypi.org/project/smbus2/
-import smbus2  # also contains i2c support
+# import smbus2  # also contains i2c support
 import time
+
+BlinkenLightsModule = False
+try:  # this import will fail if there's no I2C bus available
+    import smbus2
+    BlinkenLightsModule = True
+
+except ImportError:
+    pass
+
 
 
 IS31_1_ADDR = 0x74
 TCA8414_1_ADDR = 0x34
 Debug_I2C = False
 
-class BlinkenLights:
-    def __init__(self, sim_state_machine_arg=None):
+class BlinkenLightsClass:
+    def __init__(self, cb, sim_state_machine_arg=None, left_init=0, right_init=0):
+        self.cb = cb
         self.sim_state_machine = sim_state_machine_arg
+        if not BlinkenLightsModule:
+            self.i2c_bus = None
+            self.is31_1 = None
+            self.tca84 = None
+            return
         print("I2C init: ")
         # bus = I2Cclass(channel = 1)
         self.i2c_bus = smbus2.SMBus(1)
@@ -84,7 +99,23 @@ class BlinkenLights:
             self.set_cpu_state_lamps(cb, cb.sim_state, alarm_state)
             bn = self.check_buttons()
             if bn:
-                self.sim_state_machine(bn, cb)
+                self.sim_state_machine(bn, cb, 0o40) # the third arg should be the PC Preset switch register
+
+   # read a register from the switches and lights panel.
+    # It would normally be called with a string giving the name.  Inside the simulator
+    # sometimes it's easier to find a number for the flip-flop registers
+    def read_register(self, which_one):
+        self.cb.log.warn("no read_registers")
+        return 0
+
+    # write a register to the switches and lights panel.
+    # It would normally be called with a string giving the name.  Inside the simulator
+    # sometimes it's easier to find a number for the flip-flop registers
+    def write_register(self, which_one, value):
+        self.cb.log.warn("no write_register")
+
+    def reset_ff_registers(self, function, log=None, info_str=''):
+        self.cb.log.warn("no reset_ff_registers")
 
 
 # =============== TCA8414 Keypad Scanner ==================================

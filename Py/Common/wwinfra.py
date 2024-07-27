@@ -413,8 +413,7 @@ class ConstWWbitClass:
         # These two will be set by prog that needs them. Looks like only wwsim at this point. LAS 5/17/24
         self.argAutoClick = False
         self.panel = None
-        self.blinkenlights = None
-        
+
         # use these vars to control how much Helpful Stuff emerges from the sim
         self.color_trace = True
         self.museum_mode = None  # command line switch to enable a repeating demo mode.
