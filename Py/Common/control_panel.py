@@ -503,8 +503,8 @@ class CPUControlClass:
     def __init__(self, panel, sim_state_machine_arg=None, x=0, y=0, x_step=20, y_step=20):
         self.sim_state_machine = sim_state_machine_arg
         toggle_sw_def = ["Stop on Addr", "Stop on CK", "Stop on SI-1"]
-        lights_def =   ["Alarm",        "Stop",  None,        "Run",      None,          None,             None, None]
-        buttons_def =  ["Clear Alarm", "Stop", "Start Over", "Restart", "Start at 40", "Order-by-Order", "Examine",
+        lights_def =   ["Alarm",        "Stop",  "Run",        None,      None,          None,             None, None]
+        buttons_def =  ["Clear Alarm", "Stop", "Restart", "Start Over", "Start at 40", "Order-by-Order", "Examine",
                                                                                                             "Read In"]
         self.control = []   # list of control panel objects indexed by x axis location
         self.dispatch = {}  # list of control panel objects indexed by switch name

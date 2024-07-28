@@ -926,8 +926,8 @@ class InterventionAndActivateClass:
 
         device = device & ~self.cb.INTERVENTION_ADDR_MASK
         if (device == 0) | (device == 1):  # i.e., if the device is #0 or #1, it's an Activate register
-            self.acvtivate_reg = device
-            getiolog().info("SI: configured Activate device %o" % self.acvtivate_reg)
+            self.activate_reg = device
+            getiolog().info("SI: configured Activate device %o" % self.activate_reg)
             return self.cb.NO_ALARM
         else:  # i.e., if the device is #2 to #32d, it's an Activate register
             self.intervention_reg = device
