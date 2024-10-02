@@ -1086,7 +1086,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             continue
         if len(line) and line[0] == ';':  # skip comment lines
             continue
-        input_minus_comment = line
+        input_minus_comment = re.sub(";.*", "", line).rstrip()
         if not re.match("^@N|^@C|^@T|^@S|^@E|^%[a-zA-Z]", input_minus_comment):
             cb.log.warn("ignoring line %d: %s" % (line_number, line))
             continue     # ignore anything that doesn't start with:
@@ -1107,7 +1107,10 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
                 address = int(tokens[0][2:], 8)
             for token in tokens[1:]:
                 if token != "None":
-                    cm.wr(address, int(token, 8), force=True, track=blocknum)
+                    try:
+                        cm.wr(address, int(token, 8), force=True, track=blocknum)
+                    except ValueError:
+                        cb.log.fatal(" invalid number '%s' in line %d: \"%s\"" % (token, line_number, line))
                     core_word_count += 1
                 address += 1
         elif re.match("^@S", input_minus_comment):  # read a line with a single symbol

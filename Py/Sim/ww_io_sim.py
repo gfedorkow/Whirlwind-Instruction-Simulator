@@ -145,8 +145,7 @@ class PhotoElectricTapeReaderClass:
                 fd = self.PETR_fd[self.PETR_device]
                 getiolog().info("Using file %s for PETR %s" % (filename, self.PETR_device))
             except:
-                getiolog().info("Can't open paper tape file %s" % filename)
-                exit(1)
+                getiolog().fatal("Can't open paper tape file %s" % filename)
             self.PETR_tape_image[self.PETR_device] = self.read_tape_file(fd, filename)
             fd.close()
 
