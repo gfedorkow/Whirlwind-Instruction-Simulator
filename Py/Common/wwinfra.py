@@ -75,9 +75,9 @@ class LogFactory:
             # print ("LAS1", self.logs, self.cb.CoreFileName, self.cb.command_name, baseCoreFile, baseCommandName)
             return newlog
 
-LogMsgType = Enum ("LogMsgType", ["Log", "Debug", "Debug7ch", "Debug556", "DebugLoader", "DebugTap"])
+LogMsgType = Enum ("LogMsgType", ["Raw", "Log", "Debug", "Debug7ch", "Debug556", "DebugLoader", "DebugTap"])
 
-LogMsgSeverity = Enum ("LogMsgType", ["Error", "Info", "Warning", "Fatal"])
+LogMsgSeverity = Enum ("LogMsgSeverity", ["Error", "Info", "Warning", "Fatal"])
 
 class LogClass:
     def __init__(self, corefile, quiet: bool = None, debug556: bool = None, debugtap: bool = None,
@@ -98,20 +98,33 @@ class LogClass:
     # Private
         
     def writeLog (self, logMsgType: LogMsgType, logMsgSev: LogMsgSeverity, message, lineNo = None):
-        msgStr = "%d " % self.factory.logSeqno.seqno if False else ""       # Activate this for seqnos in the log(s)
-        msgTypeName = " " + logMsgType.name + ":" if logMsgType != LogMsgType.Log else ""
-        msgStr = "%s: %s%s%s\n" % (
-            logMsgSev.name,
-            msgTypeName,
-            "Line %d: " % lineNo if lineNo is not None else "",
-            message
-            )
+        msgTypeName = (" " + logMsgType.name + ":") if logMsgType != LogMsgType.Log else ""
+        msgstr = ""
+        if logMsgType == LogMsgType.Raw:
+            msgStr = message + "\n"
+        else:
+            msgStr = "%s: %s%s%s\n" % (
+                logMsgSev.name,
+                msgTypeName,
+                "Line %d: " % lineNo if lineNo is not None else "",
+                message
+                )
+        if logMsgSev == LogMsgSeverity.Fatal:
+            self.logout.flush()
         self.logout.write (msgStr)
         if self.factory.cb.logToStderr and logMsgSev in [LogMsgSeverity.Error, LogMsgSeverity.Warning, LogMsgSeverity.Fatal]:
+            if logMsgSev == LogMsgSeverity.Fatal:
+                sys.stderr.flush()
+                sys.stdout.flush()
             sys.stderr.write (msgStr)
+        if self.factory.cb.logToStdout and logMsgSev in [LogMsgSeverity.Info]:
+            sys.stdout.write (msgStr)
         self.factory.logSeqno.seqno += 1
 
     # Public
+
+    def raw(self, message):  # unconditionally log a message, with no adronment
+        self.writeLog (LogMsgType.Raw, LogMsgSeverity.Info, message)
 
     def log(self, message):  # unconditionally log a message
         self.writeLog (LogMsgType.Log, LogMsgSeverity.Info, message)
@@ -194,8 +207,14 @@ class Tokenizer:
         self.str = str
         self.slen = len (str)
         self.delimiter = ','
+        self.cb = theConstWWbitClass
     def isWhitespace (self, c) -> bool:
         return c == ' ' or c == '\t'
+    def caratString (self, str, pos) -> str:
+        s = ""
+        for i in range (1, pos):
+            s = s+ " "
+        return ":\n" + str + "\n" + s + "^\n"
     def getToken (self) -> str:
         token = ""
         while self.pos <= self.slen:
@@ -243,8 +262,9 @@ class Tokenizer:
                         self.state = 8
                         return token
                     elif self.isWhitespace (c):
+                        self.cb.log.fatal ("Comma expected in at char pos %d in %s" % (self.pos, self.str) +
+                                           self.caratString (self.str, self.pos))
                         self.pos += 1
-                        print ("error 1")  # error -- Tokens are separated by whitespace but not comma, eg ``abc def'' # LAS
                         return self.endOfString
                     else:
                         token = token + c
@@ -256,8 +276,9 @@ class Tokenizer:
                     elif c == self.endOfString:
                         return self.endOfString
                     else:
+                        self.cb.log.fatal ("Comma expected at char pos %d in %s" % (self.pos, self.str) +
+                                           self.caratString (self.str, self.pos))
                         self.pos += 1
-                        print ("error 2")   # error -- Tokens are separated by whitespace but not comma, eg ``"xxx" abc, def'' # LAS
                         return self.endOfString
                 case 5:
                     if (c == 'a' or c == 'b'):
@@ -269,12 +290,22 @@ class Tokenizer:
                         self.pos += 1
                         token = '%' + token + c
                         return token
+                    else:
+                        self.cb.log.fatal ("Illegal format directive at char pos %d in %s" % (self.pos, self.str) +
+                                           self.caratString (self.str, self.pos))
+                        self.pos += 1
+                        return self.endOfString
                 case 6:
                     if (c == 'd' or c == 'o'):
                         self.state = 1
                         self.pos += 1
                         token = '%' + token + c
                         return token
+                    else:
+                        self.cb.log.fatal ("Illegal format directive at char pos %d in %s" % (self.pos, self.str) +
+                                           self.caratString (self.str, self.pos))
+                        self.pos += 1
+                        return self.endOfString
                 case 7:
                         self.state = 4
                         return self.endOfFmt
@@ -314,6 +345,9 @@ class StdArgs:
                             help="Directory into which to store logs. Default is current wd.", type=str)
         parser.add_argument("--NoStdErr",
                             help="Normally warnings, errors, and fatals are written to stderr in addition to being logged. " \
+                            "With this option only the log is written.", action="store_true")
+        parser.add_argument("--NoStdOut",
+                            help="Normally, severity \"info\" is written to stdout in addition to being logged. " \
                             "With this option only the log is written.", action="store_true")
         return parser
 
@@ -429,6 +463,7 @@ class ConstWWbitClass:
         self.CoreFileName = corefile # Name of ww core file
         self.log = None
         self.logToStderr = not args.NoStdErr # Default is to write to stderr all warnings, errors, and fatals.
+        self.logToStdout = not args.NoStdOut # Default is to write to stdout info level severity
         self.logDirSpecified = True if args.LogDir is not None else False
         self.logDir = args.LogDir if self.logDirSpecified else "./"
 
@@ -910,7 +945,7 @@ class CorememClass:
         self.mem_addr_reg = addr
         self.mem_data_reg = val
         if self.cb.TraceCoreLocation == addr:  # (I bet this var should be stored locally for faster access)
-            self.cb.log.log("Write to core memory; addr=0o%05o, value=0o%05o" % (addr, val))
+            self.cb.log.info("Write to core memory; addr=0o%05o, value=0o%05o" % (addr, val))
         if (addr & ~self._toggle_switch_mask) == 0 and self.use_default_tsr:   # toggle_switch_mask is a constant 0o37
             if self.tsr_callback[addr] is not None:
                 self.tsr_callback[addr](addr, val)  # calling the callback with a non-null value causes a 'write'
@@ -956,7 +991,7 @@ class CorememClass:
             self.cb.log.warn("Reading Uninitialized Memory at location 0o%o, bank %o" % (addr, bank))
             ret = 0
         if self.cb.TraceCoreLocation == addr:
-            self.cb.log.log("Read from core memory; addr=0o%05o, value=%s" % (addr, octal_or_none(ret)))
+            self.cb.log.info("Read from core memory; addr=0o%05o, value=%s" % (addr, octal_or_none(ret)))
         if not skip_mar:
             self.mem_addr_reg = addr    # save the results for blinkenlights
             self.mem_data_reg = ret     # But _don't_ save when the rd() is from the control panel reading FF reg!
@@ -2050,7 +2085,7 @@ class XwinCrt:
             if (pt is not None) and (button == 1):
                 if (self.WIN_MAX_COORD - pt.getX() < self.WIN_MOUSE_BOX) and \
                         (pt.getY() < self.WIN_MOUSE_BOX):
-                    self.cb.log.log("** Quit due to Red-X Click **")
+                    self.cb.log.info("** Quit due to Red-X Click **")
                     return self.cb.QUIT_ALARM
 
         # fixed a big memory leak here in Nov 2020, where I was continuously drawing

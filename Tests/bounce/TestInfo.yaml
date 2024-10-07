@@ -2,7 +2,7 @@
 testType: AsmSim
 baseName: bounce
 asmOptions:
-simOptions: --CycleLimit 7700 --NoStdErr
+simOptions: --CycleLimit 7700 --NoStdErr --NoStdOut
 coreOptions:
 verify:
   - log:

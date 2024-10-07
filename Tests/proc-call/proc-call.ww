@@ -1,0 +1,57 @@
+
+
+	   .jumpto main
+       .org 0o100
+
+main:	sp subr
+		.print "***2"
+		si 0
+
+;;
+;; Proc entry
+;;
+subr:	ta gaddr
+		ao stackp
+		ca stackp
+		ta push
+		ca gaddr
+push:	ts 0
+
+;;
+;; Proc code
+;;
+		.print "***1 %o %o %o %o %o", stackp, stack0, stack1, gaddr, level
+		ca level
+		su one
+		ts level
+		cp end
+		sp subr
+
+;;
+;; Proc exit
+;;
+end:	ca stackp
+		ts gaddr
+		su one
+		ts stackp
+		ca gaddr
+		ta pop
+pop:	ca 0
+		ta rtn
+rtn:	sp 0
+
+		.org 0o200
+gaddr:	.word 0
+stackp:	.word stackp
+stack0:	.word 0
+stack1:	.word 0
+stack2:	.word 0
+stack3:	.word 0
+stack4:	.word 0
+stack5:	.word 0
+stack6:	.word 0
+stack7:	.word 0
+stack8:	.word 0
+stack9:	.word 0
+one:	.word 0o1
+level:	.word 0o5

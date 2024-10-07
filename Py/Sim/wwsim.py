@@ -454,6 +454,7 @@ class CpuClass:
 
     # Bug Alert - I don't think I'm handling an unrecognized variable name properly; it
     # should at least print as <none> or something...
+
     def old_wwprint(self, format_and_args):
         # quoted_args = format_and_args.split(',')  # this doesn't handle splitting '"a", "b", "c,d,e"' properly
         quoted_args = ['{}'.format(x) for x in list(csv.reader([format_and_args], delimiter=',', quotechar='"'))[0]]
@@ -566,7 +567,7 @@ class CpuClass:
         if argList != []:
             print ("LAS ", "wwprint: too many args for ", fmtList, argList)
             return None
-        self.ww_exec_log.info (output_str)
+        self.ww_exec_log.raw (output_str)
 
     def run_cycle(self):
         global CoreMem

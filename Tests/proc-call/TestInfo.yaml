@@ -1,0 +1,10 @@
+
+testType: AsmSim
+baseName: proc-call
+asmOptions:
+simOptions: --CycleLimit 7700 --NoStdErr
+coreOptions:
+verify:
+  - log:
+      name: wwasm
+      filter: Warning|Error
