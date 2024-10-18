@@ -3,8 +3,10 @@
 	   .jumpto main
        .org 0o100
 
-main:	sp subr
-		.print "***2"
+main:	ca 0		; nop
+		.print "proc-call-test 1"
+		sp subr
+		.print "proc-call-test 3"
 		si 0
 
 ;;
@@ -20,7 +22,7 @@ push:	ts 0
 ;;
 ;; Proc code
 ;;
-		.print "***1 %o %o %o %o %o", stackp, stack0, stack1, gaddr, level
+		.print "proc-call-test 2 %o %o %o %o %o", stackp, stack0, stack1, gaddr, level
 		ca level
 		su one
 		ts level

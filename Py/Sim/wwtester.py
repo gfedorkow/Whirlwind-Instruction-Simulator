@@ -21,7 +21,6 @@ def cyg_to_win(cygpath):
         return npath
     return cygpath
 
-
 class Test:
     def __init__ (self, testName, cmdArgs):
         self.testName = testName
@@ -44,8 +43,11 @@ class Test:
         self.testResultsDir = os.path.normpath (self.testDir + "/TestResults")
         self.readTestInfoFile()
         self.asmPyProg = os.path.normpath (self.commonDir + "/Py/Assembler/wwasm.py")
+        self.asmLogFileName = os.path.normpath (self.testResultsDir + "/" + self.testName + "." + "xwwasm")
         self.disasmPyProg = os.path.normpath (self.commonDir + "/Py/Disassembler/wwdisasm.py")
+        self.disasmLogFileName = os.path.normpath (self.testResultsDir + "/" + self.testName + "." + "xwwdisasm")
         self.simPyProg = os.path.normpath (self.commonDir + "/Py/Sim/wwsim.py")
+        self.simLogFileName = os.path.normpath (self.testResultsDir + "/" + self.testName + "." + "xwwsim")
         self.wwFile = os.path.normpath (self.testDir + "/" + self.testBaseName + ".ww")
         self.coreFileBase = os.path.normpath (self.testResultsDir + "/" + self.testBaseName)
         self.coreFile = self.coreFileBase + ".acore"
@@ -143,13 +145,18 @@ class Test:
                 s += " %s" % x
         return s
 
-    def runSubprocess (self, cmd):
+    def runSubprocess (self, cmd, logFileName):
         if self.dryRun:
             print ("Dry run: " + self.cmdListToString (cmd))
         else:
-            print ("*** wwtester running command: ", self.cmdListToString (cmd))
             sys.stdout.flush()
-            return subprocess.run (cmd)
+            logFile = open (logFileName, "wb")  # Binary mode to avoid adding cr to lines
+            # newStdOut = Tee (sys.stdout, logFile)
+            print ("*** wwtester running command: ", self.cmdListToString (cmd))
+            proc = subprocess.Popen (cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            for line in proc.stdout:
+                print (line.decode(), end="")       # Print to stdout
+                logFile.write(line)                 # Write to file
 
     def report (self):
         sys.stdout.write ("*** wwtester checking test results...\n")
@@ -214,31 +221,6 @@ class FileFilter:
         else:
             sys.stdout.write ("Dry Run: NO RESULT\n")
 
-            import sys
-
-class Tee:
-    def __init__(self, _fd1, _fd2):
-        self.fd1 = _fd1
-        self.fd2 = _fd2
-    def __del__(self):
-        if self.fd1 != sys.stdout and self.fd1 != sys.stderr:
-            self.fd1.close()
-        if self.fd2 != sys.stdout and self.fd2 != sys.stderr:
-            self.fd2.close()
-    def write(self, text):
-        self.fd1.write(text)
-        self.fd2.write(text)
-    def flush(self):
-        self.fd1.flush()
-        self.fd2.flush()
-
-"""
-stderrsav = sys.stderr
-outputlog = open(logfilename, "w")
-sys.stderr = tee(stderrsav, outputlog)
-"""
-
-
 
 # The log name is the command name used, the middle piece of a log file name
 # consisting of <core-file-base>.<command-name>.log, e.g., bounce.wwsim.log.
@@ -262,8 +244,8 @@ class AsmSimTest (Test):
         super().__init__ (testName, cmdArgs)
     def run (self):
         super().run()
-        self.runSubprocess (self.asmCmd)
-        self.runSubprocess (self.simCmd)
+        self.runSubprocess (self.asmCmd, self.asmLogFileName)
+        self.runSubprocess (self.simCmd, self.simLogFileName)
         self.report()
 
 # Disassamble a core file. 
@@ -273,7 +255,7 @@ class DisasmTest (Test):
         super().__init__ (testName, cmdArgs)
     def run (self):
         super().run()
-        self.runSubprocess (self.disasmCmd)
+        self.runSubprocess (self.disasmCmd, self.disasmLogFileName)
         self.report()
 
 # All is a special test type -- but has a dir!

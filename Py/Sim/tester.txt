@@ -304,7 +304,7 @@ LogMsgSeverity = Enum ("LogMsgType", ["Error", "Info", "Warning", "Fatal"])
 - Clear or rm dest log files before run -- caution!
 
 
-
+- !!! Each dir should have a run-test.sh which will "do everything"
 
 
 
@@ -347,16 +347,81 @@ dir_fd (optional): A file descriptor referring to a directory. The default value
 
 
 
+Here is the status of some of the things we went over the other day. 
 
+Tokenizer
+=========
 
+The syntax errors in format strings now cause fatal errors, as we discussed.
 
-Procedure Call
-==============
+Logging
+=======
 
-The attached program shows a main prog and a routine called "subr",
-which calls itself after decrementing a global "level". It returns
-when level hits zero. The print below shows a run with level initially
-set to 5. Running it without -q will show some more detail.
+Yes, I see issues with the logging, and in particular it seems correct
+that .print should just print verbatim on stdout, like python print.
+
+Also, the test philosophy should be less intrusive. I see I've been
+trying to impose too many changes on the system proper. There are log
+design issues such as using python print for tracing rather than
+logging to a file. However the test system should ideally impose few
+constraints on the program to be tested and should try to capture
+existing output. So that's where I'd like to head with the test
+system. Right now it doesn't capture stdout or stderr, but I'll add
+that capability. We can then scan this output with the test filters.
+
+To the test system, stdout and stderr thus become "logs" themselves.
+
+The logging system we have now is pretty flexible and allows the
+creation of various kinds of special-purpose logs. For instance you
+might want a trace log or other analysis log. But this means the calls
+to "print" would have to be changed. But it does not seem productive
+to try to change so many things at once, and a test system should test
+a system as-is if possible.
+
+But I believe where we go off course a bit is in trying to have logs
+to files that also do "console" output, i.e., to stdout or stderr.
+The console output should be primary; it's the semantics of that
+output that needs handling, such as error, warning, etc. And capture
+of that for testing should be done external to the program.
+
+So I propose:
+
+1. Eliminate the current logs created per-program. Instead the main
+   program "logs" will just be stdout and stderr. We'll use the same
+   log calls to get there, so we get "warning", "error", etc. But
+   these will no longer go to a file. We'll capture them to a file in
+   the test system, but that's external to the program.
+
+   BTW right now log calls for Error, Warning, or Fatal get printed to
+   stderr. Log calls for Info get printed on stdout. This would remain
+   so in the new proposal.
+
+2. The logging system (via LogFactory) can be used to create
+   special-purpose logs that go to particular files, e.g., one or more
+   trace logs. These would just be to files, and for whatever purpose
+   is deemed necessary. It's just another way to get an output file,
+   and there is capability for bells and whistles if desired, such as
+   a seqno on each message.
+
+3. .print should just print unadorned output to the console
+
+4. In the last round I added the fcn wwlog so that it may be called
+   from ww via .exec, e.g. .exec wwlog ("message..."). This causes an
+   Info-tagged message to be logged. I changed a set of .ww programs
+   to call wwlog instead of print. This can remain but in the new
+   proposal but it won't go to a file, and I won't push to change the
+   code.
+
+Procedure Call and Recursion
+============================
+
+I did a little hacking with ww after our talk about recursion. 
+
+The attached program proc-call.ww shows a main prog and a routine
+called "subr", which calls itself after decrementing a global
+"level". It returns when level hits zero. The print below shows a run
+with level initially set to 5. Running it without -q will show some
+more detail.
 
 The stack is 10 words, and grows upward. I didn't know how to denote a
 block of words, hence stack0, stack1, etc. The push does a
@@ -370,11 +435,13 @@ are printed and the level var is decremented and tested.
 
 If we do any kind of compilation we'll need a procedure protocol like
 this, plus additional protocol for arg passing. The overhead is fairly
-high. While what I have can probably be optimized a bit more, it does
-not look possible to make it much more compact. 
+high. Although what I have can probably be optimized a bit more, it
+does not look possible to make it much more compact.
 
 But anyway it's the basis of recursion and if some arg-passing format
 is devised can be used to do say recursive mini-max.
+
+Here is a dump of a run:
 
 $ 
 $ python c:/Users/lstabile/whirlwind/InstructionSimulator/Py/Assembler/wwasm.py proc-call.ww -o proc-call

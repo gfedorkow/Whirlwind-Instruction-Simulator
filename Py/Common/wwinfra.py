@@ -123,7 +123,7 @@ class LogClass:
 
     # Public
 
-    def raw(self, message):  # unconditionally log a message, with no adronment
+    def raw(self, message):  # unconditionally log a message, with no adornment
         self.writeLog (LogMsgType.Raw, LogMsgSeverity.Info, message)
 
     def log(self, message):  # unconditionally log a message
