@@ -2057,7 +2057,6 @@ def main():
     wwinfra.theConstWWbitClass = cb
     cb.log = wwinfra.LogFactory().getLog (quiet=args.Quiet)
 
-
     # Many args are just slightly transformed and stored in the Universal Bit Bucket 'cb'
 
     if args.AutoClick:

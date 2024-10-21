@@ -2,7 +2,7 @@
 testType: AsmSim
 baseName: proc-call
 asmOptions:
-simOptions: -q --CycleLimit 7700 --NoStdErr
+simOptions: -q --CycleLimit 7700
 coreOptions:
 verify:
   - log:

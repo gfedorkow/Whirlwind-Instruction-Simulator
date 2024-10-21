@@ -3,7 +3,7 @@ testType: Disasm
 baseName: quickbrn
 asmOptions:
 coreOptions:
-disasmOptions: --NoStdErr
+disasmOptions:
 verify:
   - log:
       name: wwdisasm

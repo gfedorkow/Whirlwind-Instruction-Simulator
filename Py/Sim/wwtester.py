@@ -33,6 +33,7 @@ class Test:
         self.testsDir = os.path.normpath (self.commonDir + "/Tests")
         self.testDir = os.path.normpath (self.testsDir + "/" + self.testName)
         self.dryRun = cmdArgs.DryRun
+        self.quiet = cmdArgs.Quiet
         self.testType = ""
         self.simArgs = []
         self.asmArgs = []
@@ -43,11 +44,11 @@ class Test:
         self.testResultsDir = os.path.normpath (self.testDir + "/TestResults")
         self.readTestInfoFile()
         self.asmPyProg = os.path.normpath (self.commonDir + "/Py/Assembler/wwasm.py")
-        self.asmLogFileName = os.path.normpath (self.testResultsDir + "/" + self.testName + "." + "xwwasm")
+        self.asmLogFileName = os.path.normpath (self.testResultsDir + "/" + self.testBaseName + "." + "wwasm" + ".log")
         self.disasmPyProg = os.path.normpath (self.commonDir + "/Py/Disassembler/wwdisasm.py")
-        self.disasmLogFileName = os.path.normpath (self.testResultsDir + "/" + self.testName + "." + "xwwdisasm")
+        self.disasmLogFileName = os.path.normpath (self.testResultsDir + "/" + self.testBaseName + "." + "wwdisasm" + ".log")
         self.simPyProg = os.path.normpath (self.commonDir + "/Py/Sim/wwsim.py")
-        self.simLogFileName = os.path.normpath (self.testResultsDir + "/" + self.testName + "." + "xwwsim")
+        self.simLogFileName = os.path.normpath (self.testResultsDir + "/" + self.testBaseName + "." + "wwsim" + ".log")
         self.wwFile = os.path.normpath (self.testDir + "/" + self.testBaseName + ".ww")
         self.coreFileBase = os.path.normpath (self.testResultsDir + "/" + self.testBaseName)
         self.coreFile = self.coreFileBase + ".acore"
@@ -151,12 +152,12 @@ class Test:
         else:
             sys.stdout.flush()
             logFile = open (logFileName, "wb")  # Binary mode to avoid adding cr to lines
-            # newStdOut = Tee (sys.stdout, logFile)
             print ("*** wwtester running command: ", self.cmdListToString (cmd))
             proc = subprocess.Popen (cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             for line in proc.stdout:
-                print (line.decode(), end="")       # Print to stdout
-                logFile.write(line)                 # Write to file
+                if not self.quiet:
+                    print (line.decode(), end="")       # Print to stdout
+                logFile.write(line)                     # Write to file
 
     def report (self):
         sys.stdout.write ("*** wwtester checking test results...\n")
@@ -282,6 +283,7 @@ def main():
     parser.add_argument ("testName", help="Test name, a directry under the Tests directory. Specify \"All\" to run all tests.")
     parser.add_argument ("--TestsDir", help="Dir where to find tests. Default $PYTHONPATH/../../Tests.", type=str)
     parser.add_argument ("--DryRun", help="Print out commands to be run, but don't run them.", action="store_true")
+    parser.add_argument("-q", "--Quiet", help="Suppress stdout and stderr output from program under test", action="store_true")
     cmdArgs = parser.parse_args()
     # Instantiate a direct instance of Test just so we can read test info to find what subclass to instantiate
     testClassName = Test(cmdArgs.testName, cmdArgs).readTestInfoFile().testType + "Test"

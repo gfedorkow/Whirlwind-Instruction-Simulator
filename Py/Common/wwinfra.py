@@ -57,23 +57,31 @@ class LogFactory:
     logs = {}                           # class var -- dictionary of LogClass instances keyed by log name
     cb = None                           # class var -- only one instance of the "constants"
     logSeqno = LogSeqno()               # class var -- global log entry seqno
+    stdLog = None                       # class var -- Holds cached LogClass instance for stdoout/stderr output
+    # logname is either an absolute path or the leaf of a file name to go under LogDir
+    # logname of None means use stdout and stderr as the sole output streams.
     def getLog (self, logname=None, isAsmLog=False, **kwargs):
         if self.cb is None:
             self.cb = theConstWWbitClass
-        if logname is None:
-            baseCoreFile = re.sub ("\\.acore$", "", os.path.basename (self.cb.CoreFileName))
-            baseCommandName = re.sub ("\\.py$", "", os.path.basename (self.cb.command_name))
-            logname = baseCoreFile + "." + baseCommandName
-        if logname in self.logs:
-            return self.logs[logname]
+        if logname is None and self.stdLog is not None:
+            return self.stdLog
         else:
-            if isAsmLog:
-                newlog = AsmLogClass ("", logfile = self.cb.logDir + "/" + logname + ".log", factory = self, **kwargs)
-            else:
-                newlog = LogClass ("", logfile = self.cb.logDir + "/" + logname + ".log", factory = self, **kwargs)
-            self.logs[logname] = newlog
-            # print ("LAS1", self.logs, self.cb.CoreFileName, self.cb.command_name, baseCoreFile, baseCommandName)
-            return newlog
+            if logname is not None and logname in self.logs:
+                return self.logs[logname]
+        if logname is None:
+            logfile = None
+        else:
+            logfile = os.path.normpath (self.cb.logDir + "/" + logname if not os.path.isabs (logname) else logname)
+        if isAsmLog:
+            newLog = AsmLogClass ("", logfile = logfile, factory = self, **kwargs)
+        else:
+            newLog = LogClass ("", logfile = logfile, factory = self, **kwargs)
+        if logfile is None:
+            self.stdLog = newLog
+        else:
+            self.logs[logname] = newLog
+        # print ("LAS1", self.logs)
+        return newLog
 
 LogMsgType = Enum ("LogMsgType", ["Raw", "Log", "Debug", "Debug7ch", "Debug556", "DebugLoader", "DebugTap"])
 
@@ -92,14 +100,14 @@ class LogClass:
         self.corefile = corefile
         self.error_count = 0
         self.factory = factory
-        self.logfile = logfile if logfile is not None else None # LAS Clarify this i.e. what to check and if any default is reasonable
-        self.logout = open (self.logfile, "wt")
+        self.logfile = logfile
+        self.logout = open (self.logfile, "wt") if self.logfile != None else None
 
     # Private
         
     def writeLog (self, logMsgType: LogMsgType, logMsgSev: LogMsgSeverity, message, lineNo = None):
+        msgStr = "%d " % self.factory.logSeqno.seqno if False else ""       # Activate this for seqnos in the log(s)
         msgTypeName = (" " + logMsgType.name + ":") if logMsgType != LogMsgType.Log else ""
-        msgstr = ""
         if logMsgType == LogMsgType.Raw:
             msgStr = message + "\n"
         else:
@@ -109,16 +117,13 @@ class LogClass:
                 "Line %d: " % lineNo if lineNo is not None else "",
                 message
                 )
-        if logMsgSev == LogMsgSeverity.Fatal:
-            self.logout.flush()
-        self.logout.write (msgStr)
-        if self.factory.cb.logToStderr and logMsgSev in [LogMsgSeverity.Error, LogMsgSeverity.Warning, LogMsgSeverity.Fatal]:
-            if logMsgSev == LogMsgSeverity.Fatal:
-                sys.stderr.flush()
-                sys.stdout.flush()
-            sys.stderr.write (msgStr)
-        if self.factory.cb.logToStdout and logMsgSev in [LogMsgSeverity.Info]:
-            sys.stdout.write (msgStr)
+        localStdOut = sys.stdout if self.logout is None else self.logout
+        localStdErr = sys.stderr if self.logout is None else self.logout
+        if logMsgSev in [LogMsgSeverity.Error, LogMsgSeverity.Warning, LogMsgSeverity.Fatal]:
+            localStdErr.write (msgStr)
+        else:
+            # LogMsgSeverity.Info
+            localStdOut.write (msgStr)
         self.factory.logSeqno.seqno += 1
 
     # Public
@@ -262,7 +267,7 @@ class Tokenizer:
                         self.state = 8
                         return token
                     elif self.isWhitespace (c):
-                        self.cb.log.fatal ("Comma expected in at char pos %d in %s" % (self.pos, self.str) +
+                        self.cb.log.fatal ("Comma expected at char pos %d in %s" % (self.pos, self.str) +
                                            self.caratString (self.str, self.pos))
                         self.pos += 1
                         return self.endOfString
@@ -343,12 +348,6 @@ class StdArgs:
         parser = argparse.ArgumentParser (description)
         parser.add_argument("--LogDir",
                             help="Directory into which to store logs. Default is current wd.", type=str)
-        parser.add_argument("--NoStdErr",
-                            help="Normally warnings, errors, and fatals are written to stderr in addition to being logged. " \
-                            "With this option only the log is written.", action="store_true")
-        parser.add_argument("--NoStdOut",
-                            help="Normally, severity \"info\" is written to stdout in addition to being logged. " \
-                            "With this option only the log is written.", action="store_true")
         return parser
 
 class ConstWWbitClass:
@@ -462,8 +461,6 @@ class ConstWWbitClass:
         self.command_name = sys.argv[0] # Leaf name of command running this code, i.e., argv[0]
         self.CoreFileName = corefile # Name of ww core file
         self.log = None
-        self.logToStderr = not args.NoStdErr # Default is to write to stderr all warnings, errors, and fatals.
-        self.logToStdout = not args.NoStdOut # Default is to write to stdout info level severity
         self.logDirSpecified = True if args.LogDir is not None else False
         self.logDir = args.LogDir if self.logDirSpecified else "./"
 
