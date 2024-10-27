@@ -49,6 +49,8 @@ class CpuClass:
         self.CommentTab = [None] * 2048
         self.cm = core_mem
 
+
+
 class LogSeqno:
     def __init__ (self):
         self.seqno = 0
@@ -204,8 +206,9 @@ class Tokenizer:
             else:
                 c = self.endOfString
             # print (c, self.state, self.pos, token) # LAS
-            match self.state:
-                case 0:
+            # This section is indented to allow for a Case statement;  but that's only in Python 3.10+
+            # And, as of yet, the RasPi is still on 3.7
+            if self.state == 0:
                     if self.isWhitespace (c):
                         self.pos += 1
                     elif c == '"':
@@ -215,7 +218,7 @@ class Tokenizer:
                         self.state = 3
                         token = token + c
                         self.pos += 1
-                case 1:
+            elif self.state == 1:
                     if c == '\\':
                         self.state = 2
                         self.pos += 1
@@ -230,11 +233,12 @@ class Tokenizer:
                     else:
                         token = token + c
                         self.pos += 1
-                case 2:
+
+            elif self.state == 2:
                     token = token + c
                     self.state = 1
                     self.pos += 1
-                case 3:
+            elif self.state == 3:
                     if c == self.delimiter:
                         self.state = 0
                         self.pos += 1
@@ -249,7 +253,7 @@ class Tokenizer:
                     else:
                         token = token + c
                         self.pos += 1
-                case 4:
+            elif self.state == 4:
                     if c == self.delimiter:
                         self.state = 0
                         self.pos += 1
@@ -259,7 +263,7 @@ class Tokenizer:
                         self.pos += 1
                         print ("error 2")   # error -- Tokens are separated by whitespace but not comma, eg ``"xxx" abc, def'' # LAS
                         return self.endOfString
-                case 5:
+            elif self.state == 5:
                     if (c == 'a' or c == 'b'):
                         self.state = 6
                         self.pos += 1
@@ -269,18 +273,21 @@ class Tokenizer:
                         self.pos += 1
                         token = '%' + token + c
                         return token
-                case 6:
+            elif self.state == 6:
                     if (c == 'd' or c == 'o'):
                         self.state = 1
                         self.pos += 1
                         token = '%' + token + c
                         return token
-                case 7:
+            elif self.state == 7:
                         self.state = 4
                         return self.endOfFmt
-                case 8:
+            elif self.state == 8:
                         self.state = 0
                         return self.endOfString
+            else:
+                        print("Unexpected state %d in Tokenizer" % self.state)
+                        exit(1)
         return self.endOfString
 
 class WwPrintTokenizer (Tokenizer):
@@ -290,6 +297,7 @@ class ArgsTokenizer (Tokenizer):
     def __init__ (self, str):
         super().__init__ (str)
         self.delimiter = ' '
+
 
 # simple routine to print an octal number that might be 'None'
 def octal_or_none(number):
@@ -324,6 +332,7 @@ class ConstWWbitClass:
         self.SIM_STATE_STOP = 0
         self.SIM_STATE_RUN = 1
         self.SIM_STATE_SINGLE_STEP = 2
+        self.SIM_STATE_READIN = 3
         self.sim_state = self.SIM_STATE_STOP
         # Caution -- Whirlwind puts bit 0 to the left (Big Endian, no?)
         self.WWBIT0 = 0o100000
@@ -370,6 +379,7 @@ class ConstWWbitClass:
         self.QUIT_ALARM = 7                # synthetic alarm to stop the sim
         self.IO_ERROR_ALARM = 8  # guy's alarm for an instruction that tries to read beyond the end of tape media
         self.DIVIDE_ALARM = 9    # a real alarm for an overflow in Divide
+        self.READIN_ALARM = 10   # synthetic alarm to return to ReadIn state due to control panel button
 
         self.AlarmMessage = {self.NO_ALARM: "No Alarm",
                              self.OVERFLOW_ALARM: "Overflow Alarm",
@@ -381,6 +391,7 @@ class ConstWWbitClass:
                              self.QUIT_ALARM: "Quit Simulation",
                              self.IO_ERROR_ALARM: "I/O Error Alarm",
                              self.DIVIDE_ALARM: "Divide Error Alarm",
+                             self.READIN_ALARM: "Return-to-Readin Alarm",
                              }
 
         self.COLOR_BR = "\033[93m"  # Yellow color code for Branch Instructions in console trace if color_trace is True
@@ -402,7 +413,7 @@ class ConstWWbitClass:
         # These two will be set by prog that needs them. Looks like only wwsim at this point. LAS 5/17/24
         self.argAutoClick = False
         self.panel = None
-        
+
         # use these vars to control how much Helpful Stuff emerges from the sim
         self.color_trace = True
         self.museum_mode = None  # command line switch to enable a repeating demo mode.
@@ -1075,7 +1086,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             continue
         if len(line) and line[0] == ';':  # skip comment lines
             continue
-        input_minus_comment = line
+        input_minus_comment = re.sub(";.*", "", line).rstrip()
         if not re.match("^@N|^@C|^@T|^@S|^@E|^%[a-zA-Z]", input_minus_comment):
             cb.log.warn("ignoring line %d: %s" % (line_number, line))
             continue     # ignore anything that doesn't start with:
@@ -1096,7 +1107,10 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
                 address = int(tokens[0][2:], 8)
             for token in tokens[1:]:
                 if token != "None":
-                    cm.wr(address, int(token, 8), force=True, track=blocknum)
+                    try:
+                        cm.wr(address, int(token, 8), force=True, track=blocknum)
+                    except ValueError:
+                        cb.log.fatal(" invalid number '%s' in line %d: \"%s\"" % (token, line_number, line))
                     core_word_count += 1
                 address += 1
         elif re.match("^@S", input_minus_comment):  # read a line with a single symbol

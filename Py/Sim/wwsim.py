@@ -19,6 +19,7 @@
 
 # updated to Python 3 April 2020
 
+BlinkenLightsModule = False
 
 import sys
 import os
@@ -36,6 +37,7 @@ import re
 import museum_mode_params as mm
 import csv
 import control_panel
+
 
 # There can be a source file that contains subroutines that might be called by exec statements specific
 #   to the particular project under simulation.  If the file exists in the current working dir, import it.
@@ -567,6 +569,14 @@ class CpuClass:
             print ("LAS ", "wwprint: too many args for ", fmtList, argList)
             return None
         self.ww_exec_log.info (output_str)
+
+        # guy added the print-to-console back on Aug 18. 2024
+        # This needs a bit more thought -- the .print statements in WW programs are there 'cause the WW programmer
+        # wanted them, and probably wanted them in sync with the trace stream.
+        # I think saving them in the log is good for regression testing, but putting them on the console is
+        # good for debug.
+        #  Maybe we should think of a better way to control which messages go where...
+        print(output_str)
 
     def run_cycle(self):
         global CoreMem
@@ -1713,6 +1723,53 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
 #
 # ############# Main #############
 
+# This state machine is used to control the flow of execution for the simulator
+# It's called by either the xwin graphical control panel or by the buttons-and-lights panel
+def moved_to_Panel_sim_state_machine(switch_name, cb):
+    sw = switch_name
+    if sw == "Stop":
+        cb.sim_state = cb.SIM_STATE_STOP
+        # self.dispatch["Stop"].lamp_object.set_lamp(True)
+        # self.dispatch["Start at 40"].lamp_object.set_lamp(False)
+        return
+
+    if sw == "Restart":   # don't mess with the PC, just pick up from the last address
+        cb.sim_state = cb.SIM_STATE_RUN
+        return
+
+    if sw == "Start at 40":
+        cb.sim_state = cb.SIM_STATE_RUN
+        cb.cpu.PC = 0o40
+        return
+
+    if sw == "Start Over":  # start executing at the address in the PC switch register
+        cb.sim_state = cb.SIM_STATE_RUN
+        cb.cpu.PC = cb.panel.pc_toggle_sw.read_button_vector()
+        return
+
+    if sw == "Order-by-Order":  # don't mess with the PC, just pick up from the last address
+        cb.sim_state = cb.SIM_STATE_SINGLE_STEP
+        return
+
+    if sw == "Examine":  # don't mess with the PC, just pick up from the last address
+        if cb.sim_state == cb.SIM_STATE_RUN:
+            cb.log.warn("Examine button may only be used when the machine is stopped")
+        addr = cb.panel.pc_toggle_sw.read_button_vector()
+        cb.cpu.cm.rd(addr)   # simply reading the register has the side effect of updating MAR and PAR/MDR
+        return
+
+    if sw == "Read In":  # Start all over again from reading in the "tape"
+        cb.sim_state = cb.SIM_STATE_READIN
+        popup = control_panel.DialogPopup()
+        filename = popup.get_text_entry("Filename: ", "foo.acore")
+        print("filename:%s" % filename)
+        cb.CoreFileName = filename
+        return
+
+    print("Unhandled Button %s" % sw)
+    return
+
+
 def poll_sim_io(cpu, cb):
     ret = cb.NO_ALARM
     # if the analog scope interface is in use, there's a physical button which signals Stop 
@@ -1795,11 +1852,12 @@ def main_run_sim(args, cb):
         cb.crt_fade_delay_param = ns.crt_fade_delay
 
     (cpu.SymTab, JumpTo, WWfile, WWtapeID, dbwgt_list) = \
-        CoreMem.read_core(args.corefile, cpu, cb)
+        CoreMem.read_core(cb.CoreFileName, cpu, cb)
     cpu.set_isa(CoreMem.metadata["isa"])
     if cpu.isa_1950 == False and args.Radar:
         cb.log.fatal("Radar device can only be used with 1950 ISA")
 
+    flowgraph = None
     if args.FlowGraph:
         flowgraph = ww_flow_graph.FlowGraph (args.FlowGraph, args.FlowGraphOutFile, args.FlowGraphOutDir, cb)
         cb.tracelog = flowgraph.init_log()
@@ -1865,9 +1923,9 @@ def main_run_sim(args, cb):
             # When the simulation is not stopped, we do this check below ever n-hundred cycles to keep the
             #  panel overhead in check.
             if cb.sim_state == cb.SIM_STATE_STOP and cb.panel:
-                if cb.panel.update_panel(cb, 0) == False:  # watch for mouse clicks on the panel
+                if cb.panel.update_panel(cb, 0) == False:  # just idle here, watching for mouse clicks on the panel
                     alarm_state = cb.QUIT_ALARM
-                    break  # bail out of the While True loop if display update says to stop
+                    break  # bail out of the While True loop if display update says to stop due to Red-X hit
                 time.sleep(0.1)
                 continue
 
@@ -1885,6 +1943,10 @@ def main_run_sim(args, cb):
                 if cb.panel:
                     if cb.panel.update_panel(cb, 0) == False:  # watch for mouse clicks on the panel
                         exit_alarm = cb.QUIT_ALARM
+                    if cb.sim_state == cb.SIM_STATE_READIN:
+                        alarm_state = cb.READIN_ALARM
+                        break
+
                 exit_alarm |= poll_sim_io(cpu, cb)
                 if exit_alarm != cb.NO_ALARM:
                     alarm_state = exit_alarm
@@ -1920,7 +1982,8 @@ def main_run_sim(args, cb):
                     break
                 # the normal case is to stop on an alarm; if the command line flag says not to, we'll try to keep going
                 # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
-                if not args.NoAlarmStop or alarm_state == cb.QUIT_ALARM  or alarm_state == cb.HALT_ALARM:
+                if not args.NoAlarmStop or \
+                        alarm_state == cb.QUIT_ALARM  or alarm_state == cb.HALT_ALARM or alarm_state == cb.READIN_ALARM:
                     break
             sim_cycle += 1
             if sim_cycle % 400000 == 0 or alarm_state == cb.QUIT_ALARM:
@@ -1947,11 +2010,12 @@ def main_run_sim(args, cb):
         # Here Ends The Main Loop
     except KeyboardInterrupt:
         print("Keyboard Interrupt: Cleanup and exit")
+        alarm_state = cb.QUIT_ALARM
 
     end_time = time.time()
     wall_clock_time = end_time - start_time  # time in units of floating point seconds
     if wall_clock_time > 2.0 and sim_cycle > 10:  # don't do the timing calculation if the run was really short
-        sys.stderr.write("Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec" %
+        sys.stderr.write("Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec\n" %
                 (sim_cycle, cpu.PC, wall_clock_time, 1000000.0 * float(wall_clock_time) / float(sim_cycle)))
         if args.Radar:
             print("    elapsed radar time = %4.1f minutes (%4.1f revolutions)" %
@@ -2002,6 +2066,7 @@ def main_run_sim(args, cb):
 
 
 def main():
+    global BlinkenLightsModule
     parser = wwinfra.StdArgs().getParser ("Run a Whirlwind Simulation.")
     parser.add_argument("corefile", help="file name of simulation core file")
     parser.add_argument("-t", "--TracePC", help="Trace PC for each instruction", action="store_true")
@@ -2031,7 +2096,9 @@ def main():
     parser.add_argument("--NoAlarmStop", help="Don't stop on alarms", action="store_true")
     parser.add_argument("-n", "--NoCloseOnStop", help="Don't close the display on halt", action="store_true")
     parser.add_argument("-p", "--Panel",
-                        help="Pop up a Whirlwind Manual Intervention Panel", action="store_true")
+                        help="Pop up a Whirlwind Manual Intervention Panel window", action="store_true")
+    parser.add_argument("-b", "--BlinkenLights",
+                        help="Activate a physical Whirlwind Manual Intervention Panel", action="store_true")
     parser.add_argument("--NoZeroOneTSR",
                         help="Don't automatically return 0 and 1 for locations 0 and 1", action="store_true")
     parser.add_argument("--SynchronousVideo",
@@ -2056,14 +2123,16 @@ def main():
     wwinfra.theConstWWbitClass = cb
     cb.log = wwinfra.LogFactory().getLog (quiet=args.Quiet)
 
-
     # Many args are just slightly transformed and stored in the Universal Bit Bucket 'cb'
 
     if args.AutoClick:
         cb.argAutoClick = True
 
-    if args.Panel:
-        cb.panel = control_panel.PanelClass()
+    if args.BlinkenLights and BlinkenLightsModule == False:
+        cb.log.warn("No BlinkenLights Hardware available")
+
+    if args.Panel or args.BlinkenLights:
+        cb.panel = control_panel.PanelClass(cb, args.Panel, args.BlinkenLights)
 
     # WW programs may read paper tape.  If the simulator is invoked specifically with a
     # name for the file containing paper tape bytes, use it.  If not, try taking the name

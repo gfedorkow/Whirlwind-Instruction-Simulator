@@ -3,6 +3,10 @@
 %File: bounce1954.ww
 %TapeID: None
 %JumpTo 0o1
+%Switch: FlipFlopPreset02 0o40201
+%Switch: FlipFlopPreset03 0o100210
+%Switch: FlipFlopPreset05 0o100211
+%Switch: FlipFlopPreset06 0o40203
 %DbWgt:  0o203  0o01 %o
 %DbWgt:  0o204  0o200 %o
 %DbWgt:  0o201  0o400 %o

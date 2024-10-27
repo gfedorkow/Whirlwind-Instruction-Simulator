@@ -177,8 +177,9 @@ class AnaScope:
         """
         if DebugAnaScope: print("    drawSmallVector: posx=%d, posy=%d, speedx=%d, speedy=%d" % \
                                 (posx, posy, speedx, speedy))
-        self._movePoint(posx, posy)
-        self._drawSegment(speedx, speedy, scope)
+        if not self.PCDebug:
+            self._movePoint(posx, posy)
+            self._drawSegment(speedx, speedy, scope)
         
 
     def drawPoint(self, posx, posy, scope=None):

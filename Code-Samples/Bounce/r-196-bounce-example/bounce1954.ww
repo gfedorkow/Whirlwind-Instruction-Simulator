@@ -5,6 +5,13 @@
 ; translated into assembler with labels for variables and addresses
 ; updated to use the 1954 I/O instruction set for display
 
+
+     .switch FlipFlopPreset02 0.40201  ;
+     .switch FlipFlopPreset03 1.00210  ;
+     .switch FlipFlopPreset05 1.00211  ;
+     .switch FlipFlopPreset06 0.40203  ;
+
+
 	   .dbwgt Vy
 	   .dbwgt R 0o200
 	   .dbwgt Xi  0o400
