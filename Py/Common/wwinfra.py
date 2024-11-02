@@ -120,9 +120,11 @@ class LogClass:
         localStdOut = sys.stdout if self.logout is None else self.logout
         localStdErr = sys.stderr if self.logout is None else self.logout
         if logMsgSev in [LogMsgSeverity.Error, LogMsgSeverity.Warning, LogMsgSeverity.Fatal]:
+            localStdOut.flush()
             localStdErr.write (msgStr)
         else:
             # LogMsgSeverity.Info
+            localStdErr.flush()
             localStdOut.write (msgStr)
         self.factory.logSeqno.seqno += 1
 
@@ -216,9 +218,7 @@ class Tokenizer:
     def isWhitespace (self, c) -> bool:
         return c == ' ' or c == '\t'
     def caratString (self, str, pos) -> str:
-        s = ""
-        for i in range (1, pos):
-            s = s+ " "
+        s = " " * pos
         return ":\n" + str + "\n" + s + "^\n"
     def getToken (self) -> str:
         token = ""
