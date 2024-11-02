@@ -248,7 +248,7 @@ def lex_line(line, line_number):
 def ww_int(nstr, line_number, relative_base=None):
     global Legacy_Numbers
     if Legacy_Numbers:
-        return ww_int_adhoc(nstr)
+        return ww_int_adhoc(line_number, nstr)
     return ww_int_csii(nstr, line_number, relative_base)
 
 
@@ -256,11 +256,11 @@ def ww_int(nstr, line_number, relative_base=None):
 #   In Whirlwind-speak, constants were viewed as fractional, i.e. 0 <= n < 1.0
 # and expressed as o.ooooo  - a sign bit followed by 5 octal digits
 # This routing accepts either ordinary octal ints, or WW fractional format.
-def ww_int_adhoc(nstr):
+def ww_int_adhoc(line_number, nstr):
     if re.match('0o', nstr):  # try Pythonic octal conversion
         octal_str = nstr[2:]
         if re.search('^[0-7][0-7]*$', octal_str) is None:
-            print("Expecting 0onnnnn octal number; got %s" % nstr)
+            cb.log.error(line_number, "Expecting 0onnnnn octal number; got %s" % nstr)
             return None
         return int(octal_str, 8)
 
@@ -268,10 +268,10 @@ def ww_int_adhoc(nstr):
         return int(nstr, 8)
     else:
         if (nstr[1] != '.') & (len(nstr) != 7):
-            print("format problem in WW Number %s" % nstr)
+            cb.log.error(line_number, "format problem in WW Number %s" % nstr)
         j = int(nstr.replace('.', ''), 8)
         if Debug:
-            print("ww number %s = %6oo" % (nstr, j))
+            cb.log.error(line_number, "ww number %s = %6oo" % (nstr, j))
         return j
 
 
@@ -308,21 +308,21 @@ def ww_int_csii(nstr, line_number, relative_base=None):
         octal_str = nstr.replace('.', '')
         if re.search('^[01][0-7][0-7][0-7][0-7][0-7]$', octal_str) is None and \
             re.search('^0.00*$', nstr) is None:
-            print("Line %d: Expecting n.nnnnn octal number; got %s" % (line_number, nstr))
+            cb.log.error(line_number, "Line %d: Expecting n.nnnnn octal number; got %s" % (line_number, nstr))
             return None
         return int(octal_str, 8)
     if re.match('0o', nstr):  # try Pythonic octal conversion
         octal_str = nstr[2:]
         if re.search('^[0-7][0-7]*$', octal_str) is None:
-            print("Line %d: Expecting 0onnnnn octal number; got %s" % (line_number, nstr))
+            cb.log.error(line_number, "Line %d: Expecting 0onnnnn octal number; got %s" % (line_number, nstr))
             return None
         return int(octal_str, 8)
     if re.match('^[1-9][0-9]*r$', nstr):  # Try a Whirlwind relative base-10 label, eg "65r"
         if relative_base is None:
-            print("Line %d: assertion failure: relative_base is None; continue with Zero" % line_number)
+            cb.log.error(line_number, "assertion failure: relative_base is None; continue with Zero")
             relative_base = 0
         offset = int(nstr[0:-1])  # I don't think this can fail, as we only get here unless it's all digits
-        print("relative label %s: %d + %d" % (nstr, offset, relative_base))
+        cb.log.warn(line_number, "relative label %s: evaluated as %d + %d" % (nstr, offset, relative_base))
         return offset + relative_base
 
     if re.match('\\+|-|[1-9]|0$', nstr):  # Try Decimal conversion
@@ -389,7 +389,7 @@ def dot_org_op(srcline, _binary_opcode, _operand_mask):
     # put a try/except around this conversion
     next_add = ww_int_csii(srcline.operand, srcline.linenumber, relative_base=CurrentRelativeBase)
     if next_add is None:
-        print("Line %d: can't parse number in .org" % srcline.linenumber)
+        cb.log.error(srcline.linenumber, "Line %d: can't parse number in .org" % srcline.linenumber)
         return 1
     NextCoreAddress = next_add
     CurrentRelativeBase = next_add  # <--- This is an important assumption!!
@@ -926,6 +926,9 @@ def label_lookup_and_eval(label_with_expr: str, srcline):
     # if there's an expression, split it into tokens
     tokens = label_with_expr.split()
 
+    if len(tokens) == 0:
+        return None
+
     # CS-II has this weird label format with an offset prepended to a label value, e.g. "19r6"
     # Separate the offset and the label and turn the offset into an explicit Add, i.e., "r6+19"
     #   The syntax 19r6 means r6+19.  But I can only assume pp1-19r6 means pp1-(r6 + 19) = pp1 - r6 - 19
@@ -984,8 +987,9 @@ def label_lookup_and_eval(label_with_expr: str, srcline):
     result = vals[0]
     for i in range(1, len(tokens), 2):
         eval_op = tokens[i]
-        if len(tokens) < (i + 1):   # this test should never fail...
+        if len(tokens) <= (i + 1):   # this test should never fail...
             cb.log.error(srcline.linenumber, "Missing operand after eval_operator '%s'" % eval_op)
+            return result
         if eval_op == '+':
             result += vals[i + 1]
         elif eval_op == '-':

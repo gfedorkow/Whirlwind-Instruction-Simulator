@@ -145,8 +145,7 @@ class PhotoElectricTapeReaderClass:
                 fd = self.PETR_fd[self.PETR_device]
                 getiolog().info("Using file %s for PETR %s" % (filename, self.PETR_device))
             except:
-                getiolog().info("Can't open paper tape file %s" % filename)
-                exit(1)
+                getiolog().fatal("Can't open paper tape file %s" % filename)
             self.PETR_tape_image[self.PETR_device] = self.read_tape_file(fd, filename)
             fd.close()
 
@@ -926,8 +925,8 @@ class InterventionAndActivateClass:
 
         device = device & ~self.cb.INTERVENTION_ADDR_MASK
         if (device == 0) | (device == 1):  # i.e., if the device is #0 or #1, it's an Activate register
-            self.acvtivate_reg = device
-            getiolog().info("SI: configured Activate device %o" % self.acvtivate_reg)
+            self.activate_reg = device
+            getiolog().info("SI: configured Activate device %o" % self.activate_reg)
             return self.cb.NO_ALARM
         else:  # i.e., if the device is #2 to #32d, it's an Activate register
             self.intervention_reg = device

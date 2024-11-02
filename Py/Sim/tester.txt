@@ -461,3 +461,113 @@ Halt Instruction!  (Code=0) at pc=0101
 Alarm 'Program Halt' (5) at PC=0o101 (0d65)
 Ran 100 cycles; Used mem=48MB
 $ 
+
+
+
+
+Assembler grammar
+-----------------
+
+Informal grammar of single line, showing what's optional:
+<line> = [@ <oct> [. <dec>] : <oct> <sp>] [<label> : <sp>] [<op> <sp> <expr> [<sp>]] [<comment>] [<auto-comment>]
+
+More formal version, with optionality omitted:
+<line> = <prefix-addr> <sep> <label> <sep> <instruction> <sep> <comment> <auto-comment>
+
+Clauses for the the components:
+<prefix-addr> = <oct> . <dec> : <oct>
+<label> = <identifier> :
+<instruction> = <op> <whitespace>+ <expr>
+<op> = <ww-op>|<pseudo-op>
+<ww-op> = ta|ao|...
+<pseudo-op> = .word|.org|...
+<expr> = additive_expression
+<oct> = <digit-seq>		Digits 0-7 allowed
+<dec> = <digit-seq>		Digits 0-9 alowed
+<number> = <oct-num> | <dec-num>
+<oct-num> = 0o<oct> | {0|1}.{0-7}^5
+<dec-num> = {+|-}{0|1}.<dec> | <dec>
+
+Tokens (lexical level):
+
+<sep> = <separator> = <whitespace>+ | <operator>
+<operator> = + | - | * | @ |  @@ | : | . | ; | 0o
+<identifier> = <extended-alpha-char><extended-alphanumeric-char>*
+<digit-seq> = {0-9}+
+<comment> = ; <any-char-but-not-@@>>*
+<auto-comment> = @@  <any-char>*
+<extended-alpha-char> = <alpha> | _
+<extended-alphanumeric-char> = <extended-alpha-char> | <numeric-char>
+
+A (hacked) piece of a C yacc grammar used as a guide for
+expressions. Highest-level entry point is additive_expression.  Based
+on https://www.lysator.liu.se/c/ANSI-C-grammar-y.html
+
+primary_expression
+	: <identifier>
+	| <digit-seq>
+	| <string>
+	| '(' additive_expression ')'
+	;
+
+unary_expression
+	: primary_expression
+	| unary_operator unary_expression
+	;
+
+unary_operator
+	: '+'
+	| '-'
+	| '0o'
+	;
+
+dotted_expression
+	: unary_expression
+	| dotted_expression '.' unary_expression
+	;
+
+multiplicative_expression
+	: dotted_expression
+	| multiplicative_expression '*' dotted_expression
+	;
+
+additive_expression
+	: multiplicative_expression
+	| additive_expression '+' multiplicative_expression
+	| additive_expression '-' multiplicative_expression
+	;
+
+Note +0.11111 not the same as 0.11111, e.g.:
+
++0.11111 + -0.234 + 0o123
+
+0.11111 + +0.123 + 0x123
+
+Based on a comment in wwasm.py, we'll have identifiers case-sensitive
+
+Identifiers will be used generally as variables bound to addresses,
+but literal values are ok too if the asm adopts syntax to deal with
+them.
+
+# sample line:
+# @0061.49:140001     w0061: mr   0001      ; multiply and roundoff @@WrittenBy a0045 a0101 ReadBy a0101
+
+
+
+Eval
+====
+
+Arith binary ops should be straightforward (?)
+
+unary-{+,-} (binarydot (literal-{0,1}, literal-digit-seq))
+binarydot (literal-{0,1}, literal-5-oct-digit-seq)
+unary-0o (literal-oct-digit-seq)
+literal-digit-seq
+
+
+
+
+ 0.12345
++0.12345
+
+
