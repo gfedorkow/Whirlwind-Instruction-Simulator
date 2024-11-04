@@ -1,39 +1,14 @@
 Info: Automatically return 0 and 1 from locations 0 and 1
 Info: Automatically return 0 and 1 from locations 0 and 1
 Info: CycleLimit set to 7700
-Info: core file c:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Tests\bounce\TestResults\bounce.acore
-Info: Whirlwind tape file name: c:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Tests\bounce\bounce.ww
+Info: core file c:\Users\lstab\whirlwind\Whirlwind-Instruction-Simulator\Tests\bounce\TestResults\bounce.acore
+Info: Whirlwind tape file name: c:\Users\lstab\whirlwind\Whirlwind-Instruction-Simulator\Tests\bounce\bounce.ww
 Info: Whirlwind tape identifier: None
 Info: corefile JumpTo address = 01o
-Warning: Overwriting a read-only toggle switch at addr=0o1, was 0o1, is 0o100207
-Warning: Overwriting a read-only toggle switch at addr=0o4, was 0o100065, is 0o40202
-Warning: Overwriting a read-only toggle switch at addr=0o6, was 0o14174, is 0o40203
-Warning: Overwriting a read-only toggle switch at addr=0o10, was 0o130007, is 0o110212
-Warning: Overwriting a read-only toggle switch at addr=0o11, was 0o130003, is 0o40201
-Warning: Overwriting a read-only toggle switch at addr=0o12, was 0o150006, is 0o100214
-Warning: Overwriting a read-only toggle switch at addr=0o13, was 0o40024, is 0o600
-Warning: Overwriting a read-only toggle switch at addr=0o14, was 0o50002, is 0o100201
-Warning: Overwriting a read-only toggle switch at addr=0o15, was 0o130024, is 0o24000
-Warning: Overwriting a read-only toggle switch at addr=0o16, was 0o337, is 0o104202
-Warning: Overwriting a read-only toggle switch at addr=0o17, was 0o14000, is 0o70030
-Warning: Overwriting a read-only toggle switch at addr=0o20, was 0o134003, is 0o104203
-Warning: Overwriting a read-only toggle switch at addr=0o21, was 0o70001, is 0o70030
-Warning: Overwriting a read-only toggle switch at addr=0o22, was 0o74002, is 0o100203
-Warning: Overwriting a read-only toggle switch at addr=0o23, was 0o40024, is 0o140204
-Warning: Overwriting a read-only toggle switch at addr=0o25, was 0o74007, is 0o100214
-Warning: Overwriting a read-only toggle switch at addr=0o26, was 0o144036, is 0o40202
-Warning: Overwriting a read-only toggle switch at addr=0o27, was 0o104023, is 0o74033
-Warning: Overwriting a read-only toggle switch at addr=0o30, was 0o74036, is 0o100203
-Warning: Overwriting a read-only toggle switch at addr=0o31, was 0o50003, is 0o114205
-Warning: Overwriting a read-only toggle switch at addr=0o32, was 0o100032, is 0o40203
-Warning: Overwriting a read-only toggle switch at addr=0o33, was 0o707, is 0o140206
-Warning: Overwriting a read-only toggle switch at addr=0o34, was 0o20032, is 0o110202
-Warning: Overwriting a read-only toggle switch at addr=0o35, was 0o110026, is 0o40202
-Warning: Overwriting a read-only toggle switch at addr=0o36, was 0o703, is 0o600
-Warning: Overwriting a read-only toggle switch at addr=0o37, was 0o10036, is 0o100201
 Info: ExecAddr=0o22: Python Exec Statement: print: "LAS WW1 %o %o and %ad", Xi, Yi
 Info: ExecAddr=0o30: Python Exec Statement: exec: wwlog ("LAS WW2")
 Info: Switch CheckAlarmSpecial=0
+start at 0o1
 Info: opening XwinCrt
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-1364, y=0o0
@@ -193,7 +168,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-1114, y=0o0
 Info: ww_draw_point: x=-588, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0133177o, (0) Sub-Address 00000o
-Info: LAS WW1 0o133177 0o173377 and 7168
+LAS WW1 0o133177 0o173377 and 7168
+LAS WW1 0o133177 0o173377 and 7168
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-1114, y=0o0
@@ -468,7 +444,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-440, y=0o0
 Info: ww_draw_point: x=-288, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0155777o, (0) Sub-Address 00000o
-Info: LAS WW1 0o155777 0o174777 and 6016
+LAS WW1 0o155777 0o174777 and 6016
+LAS WW1 0o155777 0o174777 and 6016
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-440, y=0o0
@@ -699,7 +676,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-44, y=0o0
 Info: ww_draw_point: x=-36, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0175577o, (0) Sub-Address 00000o
-Info: LAS WW1 0o175577 0o175637 and 4976
+LAS WW1 0o175577 0o175637 and 4976
+LAS WW1 0o175577 0o175637 and 4976
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-44, y=0o0
@@ -897,7 +875,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o264, y=0o0
 Info: ww_draw_point: x=180, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0013200o, (0) Sub-Address 00000o
-Info: LAS WW1 0o13200 0o173620 and 4350
+LAS WW1 0o13200 0o173620 and 4350
+LAS WW1 0o13200 0o173620 and 4350
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o264, y=0o0
@@ -1062,7 +1041,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o550, y=0o0
 Info: ww_draw_point: x=360, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0026400o, (0) Sub-Address 00000o
-Info: LAS WW1 0o26400 0o177421 and 3362
+LAS WW1 0o26400 0o177421 and 3362
+LAS WW1 0o26400 0o177421 and 3362
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o550, y=0o0
@@ -1194,7 +1174,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o770, y=0o0
 Info: ww_draw_point: x=504, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0037400o, (0) Sub-Address 00000o
-Info: LAS WW1 0o37400 0o176457 and 2691
+LAS WW1 0o37400 0o176457 and 2691
+LAS WW1 0o37400 0o176457 and 2691
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o770, y=0o0
@@ -1304,7 +1285,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o1160, y=0o0
 Info: ww_draw_point: x=624, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0047000o, (0) Sub-Address 00000o
-Info: LAS WW1 0o47000 0o176140 and 2254
+LAS WW1 0o47000 0o176140 and 2254
+LAS WW1 0o47000 0o176140 and 2254
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o1160, y=0o0
@@ -1392,7 +1374,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o1320, y=0o0
 Info: ww_draw_point: x=720, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0055000o, (0) Sub-Address 00000o
-Info: LAS WW1 0o55000 0o177365 and 1612
+LAS WW1 0o55000 0o177365 and 1612
+LAS WW1 0o55000 0o177365 and 1612
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o1320, y=0o0
@@ -1612,7 +1595,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-1114, y=0o0
 Info: ww_draw_point: x=-588, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0133177o, (0) Sub-Address 00000o
-Info: LAS WW1 0o133177 0o173377 and 7168
+LAS WW1 0o133177 0o173377 and 7168
+LAS WW1 0o133177 0o173377 and 7168
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-1114, y=0o0
@@ -1887,7 +1871,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-440, y=0o0
 Info: ww_draw_point: x=-288, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0155777o, (0) Sub-Address 00000o
-Info: LAS WW1 0o155777 0o174777 and 6016
+LAS WW1 0o155777 0o174777 and 6016
+LAS WW1 0o155777 0o174777 and 6016
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-440, y=0o0
@@ -2118,7 +2103,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-44, y=0o0
 Info: ww_draw_point: x=-36, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0175577o, (0) Sub-Address 00000o
-Info: LAS WW1 0o175577 0o175637 and 4976
+LAS WW1 0o175577 0o175637 and 4976
+LAS WW1 0o175577 0o175637 and 4976
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-44, y=0o0
@@ -2316,7 +2302,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o264, y=0o0
 Info: ww_draw_point: x=180, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0013200o, (0) Sub-Address 00000o
-Info: LAS WW1 0o13200 0o173620 and 4350
+LAS WW1 0o13200 0o173620 and 4350
+LAS WW1 0o13200 0o173620 and 4350
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o264, y=0o0
@@ -2481,7 +2468,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o550, y=0o0
 Info: ww_draw_point: x=360, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0026400o, (0) Sub-Address 00000o
-Info: LAS WW1 0o26400 0o177421 and 3362
+LAS WW1 0o26400 0o177421 and 3362
+LAS WW1 0o26400 0o177421 and 3362
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o550, y=0o0
@@ -2613,7 +2601,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o770, y=0o0
 Info: ww_draw_point: x=504, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0037400o, (0) Sub-Address 00000o
-Info: LAS WW1 0o37400 0o176457 and 2691
+LAS WW1 0o37400 0o176457 and 2691
+LAS WW1 0o37400 0o176457 and 2691
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o770, y=0o0
@@ -2723,7 +2712,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o1160, y=0o0
 Info: ww_draw_point: x=624, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0047000o, (0) Sub-Address 00000o
-Info: LAS WW1 0o47000 0o176140 and 2254
+LAS WW1 0o47000 0o176140 and 2254
+LAS WW1 0o47000 0o176140 and 2254
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o1160, y=0o0
@@ -2811,7 +2801,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o1320, y=0o0
 Info: ww_draw_point: x=720, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0055000o, (0) Sub-Address 00000o
-Info: LAS WW1 0o55000 0o177365 and 1612
+LAS WW1 0o55000 0o177365 and 1612
+LAS WW1 0o55000 0o177365 and 1612
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o1320, y=0o0
@@ -3031,7 +3022,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-1114, y=0o0
 Info: ww_draw_point: x=-588, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0133177o, (0) Sub-Address 00000o
-Info: LAS WW1 0o133177 0o173377 and 7168
+LAS WW1 0o133177 0o173377 and 7168
+LAS WW1 0o133177 0o173377 and 7168
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-1114, y=0o0
@@ -3306,7 +3298,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-440, y=0o0
 Info: ww_draw_point: x=-288, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0155777o, (0) Sub-Address 00000o
-Info: LAS WW1 0o155777 0o174777 and 6016
+LAS WW1 0o155777 0o174777 and 6016
+LAS WW1 0o155777 0o174777 and 6016
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-440, y=0o0
@@ -3537,7 +3530,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-44, y=0o0
 Info: ww_draw_point: x=-36, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0175577o, (0) Sub-Address 00000o
-Info: LAS WW1 0o175577 0o175637 and 4976
+LAS WW1 0o175577 0o175637 and 4976
+LAS WW1 0o175577 0o175637 and 4976
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o-44, y=0o0
@@ -3735,7 +3729,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o264, y=0o0
 Info: ww_draw_point: x=180, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0013200o, (0) Sub-Address 00000o
-Info: LAS WW1 0o13200 0o173620 and 4350
+LAS WW1 0o13200 0o173620 and 4350
+LAS WW1 0o13200 0o173620 and 4350
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o264, y=0o0
@@ -3900,7 +3895,8 @@ Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o550, y=0o0
 Info: ww_draw_point: x=360, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0026400o, (0) Sub-Address 00000o
-Info: LAS WW1 0o26400 0o177421 and 3362
+LAS WW1 0o26400 0o177421 and 3362
+LAS WW1 0o26400 0o177421 and 3362
 Info: branch forwards from pc=0o0027 to 0o0033(continue)
 Info: DisplayScope SI: configured display mode Points, scope 0o0, vertical=0o0
 Info: DisplayScope RC: record to scope 0o0, mode=Point, x=0o550, y=0o0
@@ -4001,4 +3997,5 @@ Info: ww_draw_point: x=468, y=0, scope=0, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0600o, Output Word=0035200o, (0) Sub-Address 00000o
 Info: branch forwards from pc=0o0017 to 0o0030(nobounce)
 Info: LAS WW2
-Warning: Cycle Count Exceeded
+close display...
+Ran 7700 cycles; Used mem=49MB

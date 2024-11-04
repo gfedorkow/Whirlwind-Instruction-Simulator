@@ -456,6 +456,7 @@ class CpuClass:
 
     # Bug Alert - I don't think I'm handling an unrecognized variable name properly; it
     # should at least print as <none> or something...
+
     def old_wwprint(self, format_and_args):
         # quoted_args = format_and_args.split(',')  # this doesn't handle splitting '"a", "b", "c,d,e"' properly
         quoted_args = ['{}'.format(x) for x in list(csv.reader([format_and_args], delimiter=',', quotechar='"'))[0]]
@@ -568,15 +569,18 @@ class CpuClass:
         if argList != []:
             print ("LAS ", "wwprint: too many args for ", fmtList, argList)
             return None
-        self.ww_exec_log.info (output_str)
+        self.ww_exec_log.raw (output_str)
 
+        # LAS 11/2/24: Commented-out this print as it is no longer needed since
+        # log.raw was added, and the default is to stdout/stderr.
+        #
         # guy added the print-to-console back on Aug 18. 2024
         # This needs a bit more thought -- the .print statements in WW programs are there 'cause the WW programmer
         # wanted them, and probably wanted them in sync with the trace stream.
         # I think saving them in the log is good for regression testing, but putting them on the console is
         # good for debug.
         #  Maybe we should think of a better way to control which messages go where...
-        print(output_str)
+        # print(output_str)
 
     def run_cycle(self):
         global CoreMem

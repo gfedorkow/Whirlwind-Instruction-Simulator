@@ -59,27 +59,35 @@ class LogFactory:
     logs = {}                           # class var -- dictionary of LogClass instances keyed by log name
     cb = None                           # class var -- only one instance of the "constants"
     logSeqno = LogSeqno()               # class var -- global log entry seqno
+    stdLog = None                       # class var -- Holds cached LogClass instance for stdoout/stderr output
+    # logname is either an absolute path or the leaf of a file name to go under LogDir
+    # logname of None means use stdout and stderr as the sole output streams.
     def getLog (self, logname=None, isAsmLog=False, **kwargs):
         if self.cb is None:
             self.cb = theConstWWbitClass
-        if logname is None:
-            baseCoreFile = re.sub ("\\.acore$", "", os.path.basename (self.cb.CoreFileName))
-            baseCommandName = re.sub ("\\.py$", "", os.path.basename (self.cb.command_name))
-            logname = baseCoreFile + "." + baseCommandName
-        if logname in self.logs:
-            return self.logs[logname]
+        if logname is None and self.stdLog is not None:
+            return self.stdLog
         else:
-            if isAsmLog:
-                newlog = AsmLogClass ("", logfile = self.cb.logDir + "/" + logname + ".log", factory = self, **kwargs)
-            else:
-                newlog = LogClass ("", logfile = self.cb.logDir + "/" + logname + ".log", factory = self, **kwargs)
-            self.logs[logname] = newlog
-            # print ("LAS1", self.logs, self.cb.CoreFileName, self.cb.command_name, baseCoreFile, baseCommandName)
-            return newlog
+            if logname is not None and logname in self.logs:
+                return self.logs[logname]
+        if logname is None:
+            logfile = None
+        else:
+            logfile = os.path.normpath (self.cb.logDir + "/" + logname if not os.path.isabs (logname) else logname)
+        if isAsmLog:
+            newLog = AsmLogClass ("", logfile = logfile, factory = self, **kwargs)
+        else:
+            newLog = LogClass ("", logfile = logfile, factory = self, **kwargs)
+        if logfile is None:
+            self.stdLog = newLog
+        else:
+            self.logs[logname] = newLog
+        # print ("LAS1", self.logs)
+        return newLog
 
-LogMsgType = Enum ("LogMsgType", ["Log", "Debug", "Debug7ch", "Debug556", "DebugLoader", "DebugTap"])
+LogMsgType = Enum ("LogMsgType", ["Raw", "Log", "Debug", "Debug7ch", "Debug556", "DebugLoader", "DebugTap"])
 
-LogMsgSeverity = Enum ("LogMsgType", ["Error", "Info", "Warning", "Fatal"])
+LogMsgSeverity = Enum ("LogMsgSeverity", ["Error", "Info", "Warning", "Fatal"])
 
 class LogClass:
     def __init__(self, corefile, quiet: bool = None, debug556: bool = None, debugtap: bool = None,
@@ -94,26 +102,38 @@ class LogClass:
         self.corefile = corefile
         self.error_count = 0
         self.factory = factory
-        self.logfile = logfile if logfile is not None else None # LAS Clarify this i.e. what to check and if any default is reasonable
-        self.logout = open (self.logfile, "wt")
+        self.logfile = logfile
+        self.logout = open (self.logfile, "wt") if self.logfile != None else None
 
     # Private
         
     def writeLog (self, logMsgType: LogMsgType, logMsgSev: LogMsgSeverity, message, lineNo = None):
         msgStr = "%d " % self.factory.logSeqno.seqno if False else ""       # Activate this for seqnos in the log(s)
-        msgTypeName = " " + logMsgType.name + ":" if logMsgType != LogMsgType.Log else ""
-        msgStr = "%s: %s%s%s\n" % (
-            logMsgSev.name,
-            msgTypeName,
-            "Line %d: " % lineNo if lineNo is not None else "",
-            message
-            )
-        self.logout.write (msgStr)
-        if self.factory.cb.logToStderr and logMsgSev in [LogMsgSeverity.Error, LogMsgSeverity.Warning, LogMsgSeverity.Fatal]:
-            sys.stderr.write (msgStr)
+        msgTypeName = (" " + logMsgType.name + ":") if logMsgType != LogMsgType.Log else ""
+        if logMsgType == LogMsgType.Raw:
+            msgStr = message + "\n"
+        else:
+            msgStr = "%s: %s%s%s\n" % (
+                logMsgSev.name,
+                msgTypeName,
+                "Line %d: " % lineNo if lineNo is not None else "",
+                message
+                )
+        localStdOut = sys.stdout if self.logout is None else self.logout
+        localStdErr = sys.stderr if self.logout is None else self.logout
+        if logMsgSev in [LogMsgSeverity.Error, LogMsgSeverity.Warning, LogMsgSeverity.Fatal]:
+            localStdOut.flush()
+            localStdErr.write (msgStr)
+        else:
+            # LogMsgSeverity.Info
+            localStdErr.flush()
+            localStdOut.write (msgStr)
         self.factory.logSeqno.seqno += 1
 
     # Public
+
+    def raw(self, message):  # unconditionally log a message, with no adornment
+        self.writeLog (LogMsgType.Raw, LogMsgSeverity.Info, message)
 
     def log(self, message):  # unconditionally log a message
         self.writeLog (LogMsgType.Log, LogMsgSeverity.Info, message)
@@ -196,8 +216,12 @@ class Tokenizer:
         self.str = str
         self.slen = len (str)
         self.delimiter = ','
+        self.cb = theConstWWbitClass
     def isWhitespace (self, c) -> bool:
         return c == ' ' or c == '\t'
+    def caratString (self, str, pos) -> str:
+        s = " " * pos
+        return ":\n" + str + "\n" + s + "^\n"
     def getToken (self) -> str:
         token = ""
         while self.pos <= self.slen:
@@ -206,88 +230,99 @@ class Tokenizer:
             else:
                 c = self.endOfString
             # print (c, self.state, self.pos, token) # LAS
-            # This section is indented to allow for a Case statement;  but that's only in Python 3.10+
+            # This section used to be a Case statement;  but that's only in Python 3.10+
             # And, as of yet, the RasPi is still on 3.7
             if self.state == 0:
-                    if self.isWhitespace (c):
-                        self.pos += 1
-                    elif c == '"':
-                        self.state = 1
-                        self.pos += 1
-                    else:
-                        self.state = 3
-                        token = token + c
-                        self.pos += 1
+                if self.isWhitespace (c):
+                    self.pos += 1
+                elif c == '"':
+                    self.state = 1
+                    self.pos += 1
+                else:
+                    self.state = 3
+                    token = token + c
+                    self.pos += 1
             elif self.state == 1:
-                    if c == '\\':
-                        self.state = 2
-                        self.pos += 1
-                    elif c == '"':
-                        self.state = 7
-                        self.pos += 1
-                        return token
-                    elif c == '%':
-                        self.state = 5
-                        self.pos += 1
-                        return token
-                    else:
-                        token = token + c
-                        self.pos += 1
-
+                if c == '\\':
+                    self.state = 2
+                    self.pos += 1
+                elif c == '"':
+                    self.state = 7
+                    self.pos += 1
+                    return token
+                elif c == '%':
+                    self.state = 5
+                    self.pos += 1
+                    return token
+                else:
+                    token = token + c
+                    self.pos += 1
             elif self.state == 2:
                     token = token + c
                     self.state = 1
                     self.pos += 1
             elif self.state == 3:
-                    if c == self.delimiter:
-                        self.state = 0
-                        self.pos += 1
-                        return token
-                    elif c == self.endOfString:
-                        self.state = 8
-                        return token
-                    elif self.isWhitespace (c):
-                        self.pos += 1
-                        print ("error 1")  # error -- Tokens are separated by whitespace but not comma, eg ``abc def'' # LAS
-                        return self.endOfString
-                    else:
-                        token = token + c
-                        self.pos += 1
+                if c == self.delimiter:
+                    self.state = 0
+                    self.pos += 1
+                    return token
+                elif c == self.endOfString:
+                    self.state = 8
+                    return token
+                elif self.isWhitespace (c):
+                    self.cb.log.fatal ("Comma expected at char pos %d in %s" % (self.pos, self.str) +
+                                       self.caratString (self.str, self.pos))
+                    self.pos += 1
+                    return self.endOfString
+                else:
+                    token = token + c
+                    self.pos += 1
             elif self.state == 4:
-                    if c == self.delimiter:
-                        self.state = 0
-                        self.pos += 1
-                    elif c == self.endOfString:
-                        return self.endOfString
-                    else:
-                        self.pos += 1
-                        print ("error 2")   # error -- Tokens are separated by whitespace but not comma, eg ``"xxx" abc, def'' # LAS
-                        return self.endOfString
+                if c == self.delimiter:
+                    self.state = 0
+                    self.pos += 1
+                elif c == self.endOfString:
+                    return self.endOfString
+                else:
+                    self.cb.log.fatal ("Comma expected at char pos %d in %s" % (self.pos, self.str) +
+                                       self.caratString (self.str, self.pos))
+                    self.pos += 1
+                    return self.endOfString
             elif self.state == 5:
-                    if (c == 'a' or c == 'b'):
-                        self.state = 6
-                        self.pos += 1
-                        token = token + c
-                    elif (c == 'd' or c == 'o'):
-                        self.state = 1
-                        self.pos += 1
-                        token = '%' + token + c
-                        return token
+                if (c == 'a' or c == 'b'):
+                    self.state = 6
+                    self.pos += 1
+                    token = token + c
+                elif (c == 'd' or c == 'o'):
+                    self.state = 1
+                    self.pos += 1
+                    token = '%' + token + c
+                    return token
+                else:
+                    self.cb.log.fatal ("Illegal format directive at char pos %d in %s" % (self.pos, self.str) +
+                                       self.caratString (self.str, self.pos))
+                    self.pos += 1
+                    return self.endOfString
             elif self.state == 6:
-                    if (c == 'd' or c == 'o'):
-                        self.state = 1
-                        self.pos += 1
-                        token = '%' + token + c
-                        return token
+                if (c == 'd' or c == 'o'):
+                    self.state = 1
+                    self.pos += 1
+                    token = '%' + token + c
+                    return token
+                else:
+                    self.cb.log.fatal ("Illegal format directive at char pos %d in %s" % (self.pos, self.str) +
+                                       self.caratString (self.str, self.pos))
+                    self.pos += 1
+                    return self.endOfString
             elif self.state == 7:
-                        self.state = 4
-                        return self.endOfFmt
+                self.state = 4
+                return self.endOfFmt
             elif self.state == 8:
-                        self.state = 0
-                        return self.endOfString
+                self.state = 0
+                return self.endOfString
             else:
-                        print("Unexpected state %d in Tokenizer" % self.state)
-                        exit(1)
+                print("Unexpected state %d in Tokenizer" % self.state)
+                exit(1)
         return self.endOfString
 
 class WwPrintTokenizer (Tokenizer):
@@ -320,9 +355,6 @@ class StdArgs:
         parser = argparse.ArgumentParser (description)
         parser.add_argument("--LogDir",
                             help="Directory into which to store logs. Default is current wd.", type=str)
-        parser.add_argument("--NoStdErr",
-                            help="Normally warnings, errors, and fatals are written to stderr in addition to being logged. " \
-                            "With this option only the log is written.", action="store_true")
         return parser
 
 class ConstWWbitClass:
@@ -439,7 +471,6 @@ class ConstWWbitClass:
         self.command_name = sys.argv[0] # Leaf name of command running this code, i.e., argv[0]
         self.CoreFileName = corefile # Name of ww core file
         self.log = None
-        self.logToStderr = not args.NoStdErr # Default is to write to stderr all warnings, errors, and fatals.
         self.logDirSpecified = True if args.LogDir is not None else False
         self.logDir = args.LogDir if self.logDirSpecified else "./"
 
@@ -921,7 +952,7 @@ class CorememClass:
         self.mem_addr_reg = addr
         self.mem_data_reg = val
         if self.cb.TraceCoreLocation == addr:  # (I bet this var should be stored locally for faster access)
-            self.cb.log.log("Write to core memory; addr=0o%05o, value=0o%05o" % (addr, val))
+            self.cb.log.info("Write to core memory; addr=0o%05o, value=0o%05o" % (addr, val))
         if (addr & ~self._toggle_switch_mask) == 0 and self.use_default_tsr:   # toggle_switch_mask is a constant 0o37
             if self.tsr_callback[addr] is not None:
                 self.tsr_callback[addr](addr, val)  # calling the callback with a non-null value causes a 'write'
@@ -967,7 +998,7 @@ class CorememClass:
             self.cb.log.warn("Reading Uninitialized Memory at location 0o%o, bank %o" % (addr, bank))
             ret = 0
         if self.cb.TraceCoreLocation == addr:
-            self.cb.log.log("Read from core memory; addr=0o%05o, value=%s" % (addr, octal_or_none(ret)))
+            self.cb.log.info("Read from core memory; addr=0o%05o, value=%s" % (addr, octal_or_none(ret)))
         if not skip_mar:
             self.mem_addr_reg = addr    # save the results for blinkenlights
             self.mem_data_reg = ret     # But _don't_ save when the rd() is from the control panel reading FF reg!
@@ -2064,7 +2095,7 @@ class XwinCrt:
             if (pt is not None) and (button == 1):
                 if (self.WIN_MAX_COORD - pt.getX() < self.WIN_MOUSE_BOX) and \
                         (pt.getY() < self.WIN_MOUSE_BOX):
-                    self.cb.log.log("** Quit due to Red-X Click **")
+                    self.cb.log.info("** Quit due to Red-X Click **")
                     return self.cb.QUIT_ALARM
 
         # fixed a big memory leak here in Nov 2020, where I was continuously drawing

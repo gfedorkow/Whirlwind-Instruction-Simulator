@@ -21,7 +21,6 @@ def cyg_to_win(cygpath):
         return npath
     return cygpath
 
-
 class Test:
     def __init__ (self, testName, cmdArgs):
         self.testName = testName
@@ -34,6 +33,7 @@ class Test:
         self.testsDir = os.path.normpath (self.commonDir + "/Tests")
         self.testDir = os.path.normpath (self.testsDir + "/" + self.testName)
         self.dryRun = cmdArgs.DryRun
+        self.quiet = cmdArgs.Quiet
         self.testType = ""
         self.simArgs = []
         self.asmArgs = []
@@ -44,8 +44,11 @@ class Test:
         self.testResultsDir = os.path.normpath (self.testDir + "/TestResults")
         self.readTestInfoFile()
         self.asmPyProg = os.path.normpath (self.commonDir + "/Py/Assembler/wwasm.py")
+        self.asmLogFileName = os.path.normpath (self.testResultsDir + "/" + self.testBaseName + "." + "wwasm" + ".log")
         self.disasmPyProg = os.path.normpath (self.commonDir + "/Py/Disassembler/wwdisasm.py")
+        self.disasmLogFileName = os.path.normpath (self.testResultsDir + "/" + self.testBaseName + "." + "wwdisasm" + ".log")
         self.simPyProg = os.path.normpath (self.commonDir + "/Py/Sim/wwsim.py")
+        self.simLogFileName = os.path.normpath (self.testResultsDir + "/" + self.testBaseName + "." + "wwsim" + ".log")
         self.wwFile = os.path.normpath (self.testDir + "/" + self.testBaseName + ".ww")
         self.coreFileBase = os.path.normpath (self.testResultsDir + "/" + self.testBaseName)
         self.coreFile = self.coreFileBase + ".acore"
@@ -143,13 +146,18 @@ class Test:
                 s += " %s" % x
         return s
 
-    def runSubprocess (self, cmd):
+    def runSubprocess (self, cmd, logFileName):
         if self.dryRun:
             print ("Dry run: " + self.cmdListToString (cmd))
         else:
-            print ("*** wwtester running command: ", self.cmdListToString (cmd))
             sys.stdout.flush()
-            return subprocess.run (cmd)
+            logFile = open (logFileName, "wb")  # Binary mode to avoid adding cr to lines
+            print ("*** wwtester running command: ", self.cmdListToString (cmd))
+            proc = subprocess.Popen (cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            for line in proc.stdout:
+                if not self.quiet:
+                    print (line.decode(), end="")       # Print to stdout
+                logFile.write(line)                     # Write to file
 
     def report (self):
         sys.stdout.write ("*** wwtester checking test results...\n")
@@ -214,6 +222,7 @@ class FileFilter:
         else:
             sys.stdout.write ("Dry Run: NO RESULT\n")
 
+
 # The log name is the command name used, the middle piece of a log file name
 # consisting of <core-file-base>.<command-name>.log, e.g., bounce.wwsim.log.
 # Filter is a regexp and denotes line of the file which should remain in the
@@ -236,8 +245,8 @@ class AsmSimTest (Test):
         super().__init__ (testName, cmdArgs)
     def run (self):
         super().run()
-        self.runSubprocess (self.asmCmd)
-        self.runSubprocess (self.simCmd)
+        self.runSubprocess (self.asmCmd, self.asmLogFileName)
+        self.runSubprocess (self.simCmd, self.simLogFileName)
         self.report()
 
 # Disassamble a core file. 
@@ -247,7 +256,7 @@ class DisasmTest (Test):
         super().__init__ (testName, cmdArgs)
     def run (self):
         super().run()
-        self.runSubprocess (self.disasmCmd)
+        self.runSubprocess (self.disasmCmd, self.disasmLogFileName)
         self.report()
 
 # All is a special test type -- but has a dir!
@@ -274,6 +283,7 @@ def main():
     parser.add_argument ("testName", help="Test name, a directry under the Tests directory. Specify \"All\" to run all tests.")
     parser.add_argument ("--TestsDir", help="Dir where to find tests. Default $PYTHONPATH/../../Tests.", type=str)
     parser.add_argument ("--DryRun", help="Print out commands to be run, but don't run them.", action="store_true")
+    parser.add_argument("-q", "--Quiet", help="Suppress stdout and stderr output from program under test", action="store_true")
     cmdArgs = parser.parse_args()
     # Instantiate a direct instance of Test just so we can read test info to find what subclass to instantiate
     testClassName = Test(cmdArgs.testName, cmdArgs).readTestInfoFile().testType + "Test"

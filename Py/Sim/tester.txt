@@ -1,0 +1,573 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class Test
+   Invoke wwsim (args)
+   Args are among Test attrs
+   Run to screen or to file
+   Run a ww program for a given number of iterations
+    Can pass number of instruction cycles
+        May need this per-program
+   Need to call flow graph code
+   Invoke programs from Python
+        import subprocess
+        subprocess.run(['ls','-l'],capture_output=True) -> CompletedProcess object, with output
+        eg:
+        x = subprocess.run(["ls"],capture_output=True).stdout
+        print (x)
+        b'#las-shell.sh#\n2023.8.29 - Resume - Paula Stabile
+        Las_files\n303\n411778264_10100389568284058_5593284145154837017_n.jpg\n422
+        301469_10101323996068120_8316015041851166550_n.jpg\n6G\nAILG\nAppData\nApplication...
+    Should be able to run small pieces of code in-memory and check results
+        No -- everything via running a ww prog, as far as possible!
+    Should strive for human- *and* machine-readable logs
+        Eg, we might establish that "# " or something preceding a line
+            means it's just for humans, or a prfefix that can mean the
+            other way.
+        Start with current logs in some way, replace over time with
+            true test logs, which record invariants of the run.
+        Possible invariants:
+            Instruction sequences or subsequences
+            Register contents
+            Data answers delivered to output -- e.g., numeric sequences for running a scope
+    Would be nice to have a ww exit instruction or something else which can indicate done.
+        But that looks hard. Some programs like bounce return to a top
+        loop, but some will only exit on an interactive event.
+        So cycle limits will do for now.
+    Run all current programs
+    Want to be able to do something like:
+        Run all tests
+        Set result as new reference
+        Leave bells and whistles for later
+        With limits to #cycles, should be able to run all progs in a minute or so (?)
+    Presumption of determinism
+
+Test run could be
+
+WwTest/Test.<date-time>/<logs, etc>
+
+Could specify a dir to use as a reference, with a default of one of a given (fixed) name.
+
+**** prints in flow code!
+
+Canonical file names
+
+.ww -> asm -> .acore -> wwsim -> interactive i/o
+           -> .lst            -> .flow.gv -> dot -> .flow.svg
+                              -> .flow.log  ???
+                              -> > (stdout) tracelog        [not read! just had Debug on]
+                              -> .log                       [need this -- separate log file]
+
+Principle should be that output files always go the the wd or the absolute path spec'ed as output (when we can so specify).
+
+wwsim bounce.acore  -->  bounce.log			General log
+						 bounce.flow.gv		Flowgraph
+						 bounce.trace.log	WW program trace
+
+
+Log formatting and conventions
+	Seqno across all logs
+	info, warning, error (etc?)
+	Option (default?) for warning and error to go to stderr too.
+		For asm, disasm, should be default, -q suppresses
+		For sim, quiet would be default, and verbose brings out warning and error
+
+!!! In wwsim.py:
+# There can be a source file that contains subroutines that might be called by exec statements specific
+#   to the particular project under simulation.  If the file exists in the current working dir, import it.
+if os.path.exists("project_exec.py"):
+    sys.path.append('.')
+    from project_exec import *
+    print("imported project_exec.py")
+
+  Must be in wd!
+
+
+
+
+
+
+wwasm
+disasm
+	Default: errors, warnings, fatals, and info all go to asm/disasm log
+			 errors, warnings, and fatals also printed to stderr
+	-v errors, warnings, fatals, and info also printed to stderr
+	-q Only errors and fatals are also printed to stderr
+	asm/disam log files are only suppressed via the log-suppression options
+	Other logs which may be created underneath are files only (no stdout
+		or stderr), and may be suppressed via the log-suppression options
+
+wwsim
+	Default: errors, warnings, fatals, and info all go to wwsim log
+			 errors, warnings, and fatals  also printed to stderr
+			 Output from .print and exec(wwlog) goes to wwsim log and stderr
+	-v
+	-q Only errors and fatals go to stderr
+	Other logs which may be created underneath are files only (no stdout
+		or stderr), and may be suppressed via the log-suppression options
+
+StdArgs:
+
+--Verbose -v ? Only makes sense if default is to print Info
+	Propose: Default is to show info, -q turns it off.
+
+	Should verbose be available as a flag for any general printing? 
+
+--Quiet -q Suppresses Info severity
+
+--LogDir  Directory into which to store logs. Default is current wd.
+
+--NoStdErr Normally warnings, errors, and fatals are written to stderr
+		   in addition to being logged. With this option only the log
+		   is written.
+
+
+
+Log Names, <base>.<logname>.log, e.g., bounce.wwsim.log:
+	wwasm
+	disasm
+	radar
+	wwexec
+	gen
+	wwio
+
+
+
+
+
+wwsim  [-flowgraph]
+wwasm
+wwdisasm
+	wwutd
+	wwdiff
+
+
+
+
+
+
+python wwasm.py xxx.py
+python wwsim.py -x -y xxx.acore -z -t
+python wwtester --filter xxx.wwsim.log "ww_draw_point" xxx.wwsim.filtered.log
+python wwtester --verify xxx.wwsim.filtered.log Code-Samples/xxx/xxx.wwsim.filtered.reference.log
+
+
+
+
+reference.log
+     At top is the filter used to create and test against it
+	 XML or JSON or some crap?
+		reference.log.json
+
+test.info.json
+	Whole script, basically
+	Perhaps some way to generate, but at first can just hand-edit
+
+self-contained in code-samples dir
+
+
+Or python?
+
+./Py/Assembler/wwasm.py:    parser.add_argument("inputfile", help="file name of ww asm source file")
+./Py/Assembler/wwasm.py:    parser.add_argument("--Verbose", '-v',  help="print progress messages", action="store_true")
+./Py/Assembler/wwasm.py:    parser.add_argument("--Debug", '-d', help="Print lotsa debug info", action="store_true")
+./Py/Assembler/wwasm.py:    parser.add_argument("--Legacy_Numbers", help="guy-legacy - Assume numeric strings are Octal", action="store_true")
+./Py/Assembler/wwasm.py:    parser.add_argument("-D", "--DecimalAddresses", help="Display traec information in decimal (default is octal)",
+./Py/Assembler/wwasm.py:    parser.add_argument("--ISA_1950", help="Use the 1950 version of the instruction set",
+./Py/Assembler/wwasm.py:    parser.add_argument('--outputfilebase', '-o', type=str, help='base name for output file')
+
+./Py/Disassembler/wwdisasm.py:    parser.add_argument("inputfile", help="file name of ww input core file")
+./Py/Disassembler/wwdisasm.py:    parser.add_argument('--outputfile', '-o', type=str, help="output file name ('-'=stdout)")
+./Py/Disassembler/wwdisasm.py:    parser.add_argument('--use_default_tsr', '-u',
+./Py/Disassembler/wwdisasm.py:    parser.add_argument("--DefZeroOne", '-z', help="Define core[0,1] as 0 and 1", action="store_true")
+./Py/Disassembler/wwdisasm.py:    parser.add_argument("--Debug", '-d', help="Print lotsa debug info", action="store_true")
+
+./Py/Sim/wwsim.py:    parser.add_argument("corefile", help="file name of simulation core file")
+./Py/Sim/wwsim.py:    parser.add_argument("-t", "--TracePC", help="Trace PC for each instruction", action="store_true")
+./Py/Sim/wwsim.py:    parser.add_argument("-a", "--TraceALU", help="Trace ALU for each instruction", action="store_true")
+./Py/Sim/wwsim.py:    parser.add_argument("-f", "--FlowGraph", help="Collect data to make a flow graph. Default output file <corefile-base-name>.flow.gv", action="store_true")
+./Py/Sim/wwsim.py:    parser.add_argument("-fo", "--FlowGraphOutFile", help="Specify flow graph output file. Implies -f", type=str)
+./Py/Sim/wwsim.py:    parser.add_argument("-j", "--JumpTo", type=str, help="Sim Start Address in octal")
+./Py/Sim/wwsim.py:    parser.add_argument("-q", "--Quiet" , help="Suppress run-time message", action="store_true")
+./Py/Sim/wwsim.py:    parser.add_argument("-D", "--DecimalAddresses", help="Display trace information in decimal (default is octal)",
+./Py/Sim/wwsim.py:    parser.add_argument("-c", "--CycleLimit", help="Specify how many instructions to run (zero->'forever')", type=int)
+./Py/Sim/wwsim.py:    parser.add_argument("--CycleDelayTime", help="Specify how many msec delay to insert after each instruction", type=int)
+./Py/Sim/wwsim.py:    parser.add_argument("-r", "--Radar", help="Incorporate Radar Data Source", action="store_true")
+./Py/Sim/wwsim.py:    parser.add_argument("--AutoClick", help="Execute pre-programmed mouse clicks during simulation", action="store_true")
+./Py/Sim/wwsim.py:    parser.add_argument("--AnalogScope", help="Display graphical output on an analog CRT", action="store_true")
+./Py/Sim/wwsim.py:    parser.add_argument("--NoXWin", help="Don't open any x-windows", action="store_true")
+./Py/Sim/wwsim.py:    parser.add_argument("--NoToggleSwitchWarning", help="Suppress warning if WW code writes a read-only toggle switch",
+./Py/Sim/wwsim.py:    parser.add_argument("--LongTraceFormat", help="print all the cpu registers in TracePC",
+./Py/Sim/wwsim.py:    parser.add_argument("--TraceCoreLocation", help="Trace references to Core Memory Location <n> octal", type=str)
+./Py/Sim/wwsim.py:    parser.add_argument("--PETRAfile", type=str,
+./Py/Sim/wwsim.py:    parser.add_argument("--PETRBfile", type=str,
+./Py/Sim/wwsim.py:    parser.add_argument("--NoAlarmStop", help="Don't stop on alarms", action="store_true")
+./Py/Sim/wwsim.py:    parser.add_argument("-n", "--NoCloseOnStop", help="Don't close the display on halt", action="store_true")
+./Py/Sim/wwsim.py:    parser.add_argument("--NoZeroOneTSR",
+./Py/Sim/wwsim.py:    parser.add_argument("--SynchronousVideo",
+./Py/Sim/wwsim.py:    parser.add_argument("--CrtFadeDelay",
+./Py/Sim/wwsim.py:    parser.add_argument("--DumpCoreToFile",
+./Py/Sim/wwsim.py:    parser.add_argument("--RestoreCoreFromFile",
+./Py/Sim/wwsim.py:    parser.add_argument("--DrumStateFile",
+./Py/Sim/wwsim.py:    parser.add_argument("--MuseumMode",
+./Py/Sim/wwsim.py:    parser.add_argument("--MidnightRestart",
+./Py/Sim/wwsim.py:    parser.add_argument("--LogDir",
+./Py/Sim/wwsim.py:    parser.add_argument("--NoStdErr",
+
+./Py/Sim/wwtester.py:    parser.add_argument ("testBaseName", help="base name of test")
+./Py/Sim/wwtester.py:    parser.add_argument ("--srcDir", help="Dir of source ww code, reference logs, etc.", type=str)
+./Py/Sim/wwtester.py:    parser.add_argument ("--dstDir", help="Dir where to deposit logs and other files from the test run.", type=str)
+
+./Py/Tape-Decode/wwutd.py:    parser.add_argument("tape_file", help="file name of tape image in .tap or .7ch format")
+./Py/Tape-Decode/wwutd.py:    parser.add_argument("--Ch7Format", help="interpret the file as .7ch paper tape", action="store_true")
+./Py/Tape-Decode/wwutd.py:    parser.add_argument("--TapFormat", help="interpret the file as .tap magnetic tape", action="store_true")
+./Py/Tape-Decode/wwutd.py:    parser.add_argument("-F", "--FlexoForce", help="treat the file as Flex Characters", action="store_true")
+./Py/Tape-Decode/wwutd.py:    parser.add_argument("-o", "--OutputFile", type=str, help="Base name for output core file(s)")
+./Py/Tape-Decode/wwutd.py:    parser.add_argument("-q", "--Quiet", help="Suppress run-time message", action="store_true")
+./Py/Tape-Decode/wwutd.py:    parser.add_argument("-T", "--DebugTAP", help="TAP record debug info", action="store_true")
+./Py/Tape-Decode/wwutd.py:    parser.add_argument("-5", "--Debug556", help="WW 556 block debug info", action="store_true")
+./Py/Tape-Decode/wwutd.py:    parser.add_argument("-7", "--Debug7ch", help="WW paper tape code debug info", action="store_true")
+./Py/Tape-Decode/wwutd.py:    parser.add_argument("-C", "--DebugCore", help="WW corefile debug info", action="store_true")
+./Py/Tape-Decode/wwutd.py:    parser.add_argument("-X", "--DebugXsum", help="556 checksum debug", action="store_true")
+./Py/Tape-Decode/wwutd.py:    parser.add_argument("-d", "--DumpOctalBlocks", help="Dump out unknown octal tape blocks", action="store_true")
+./Py/Tape-Decode/wwutd.py:    parser.add_argument("--No556Header", help="Don't decode the 556 state machine; just assemble 556 words from bytes",
+./Py/Tape-Decode/wwutd.py:    parser.add_argument("-P", "--NoReadPastEOF", help="Stop reading at mag-tape double-tape-mark", action="store_true")
+./Py/Tape-Decode/wwutd.py:    parser.add_argument("-B", "--BlockErrorStop", help="Stop reading at TAP Block Error", action="store_true")
+./Py/Tape-Decode/wwutd.py:    parser.add_argument("-g", "--GlobalHistogram", help="Compute a baseline opcode histogram across all files",
+./Py/Tape-Decode/wwutd.py:    parser.add_argument("-m", "--MinFileSize", type=int, help="Ignore objects smaller than MinFileSize words")
+./Py/Tape-Decode/wwutd.py:    parser.add_argument("-a", "--ASCIIonly", help="Suppress unprintable characters in FC conversion",
+
+./Py/Tools/wwdiff.py:    parser.add_argument("diff_file_a", help="first .core file")
+./Py/Tools/wwdiff.py:    parser.add_argument("diff_file_b", help="second .core file")
+./Py/Tools/wwdiff.py:    parser.add_argument("-q", "--Quiet", help="Suppress run-time message", action="store_true")
+./Py/Tools/wwdiff.py:    parser.add_argument("-5", "--Debug556", help="WW 556 block debug info", action="store_true")
+
+
+--Quiet
+
+--Debug
+--Verbose
+
+
+--LogDir
+--NoStdErr
+
+--OutputFile
+--InputFile
+
+
+logFilters = [LogFilter ("wwsim", "Warning|Error"),
+              LogFilter ("wwasm", "Error:")]
+
+
+LogMsgType = Enum ("LogMsgType", ["Log", "Debug", "Debug7ch", "Debug556",
+                                  "DebugLoader", "DebugTap"])
+
+LogMsgSeverity = Enum ("LogMsgType", ["Error", "Info", "Warning", "Fatal"])
+
+
+
+- TesInfo.yaml => TestSpec.yaml
+- Tokenizer tighten for testspec args
+- Clear or rm dest log files before run -- caution!
+
+
+- !!! Each dir should have a run-test.sh which will "do everything"
+
+
+
+whirlwind/
+	Code-Samples/
+	LICENSE/
+	MacOS-Binary/
+	Py/
+	README.md/
+	Win-Binary/
+	Tests/
+		Bounce/
+			TestSpec.yaml
+			bounce.ww
+			TestRefs/
+			TestResults/
+		Arith/
+			TestSpec.yaml
+			arith-test.ww
+			TestRefs/
+			TestResults/
+
+Options:
+	Don't remove results dir; explicitly delete each result file
+		Issue: can be hard to know what all the files are
+	Rename results dir x.old after deleting whole dir x.old, then create new results dir
+		Can check that contents of x.old looks "whirlwindy," ie contains ww-ish files. If not, ask for confirmation
+
+			
+os.rename (src, dst) -- rename file or dir
+
+Syntax: os.remove(path, *, dir_fd = None) 
+Parameter: path: A path-like object representing a file path. A path-like object is either a string or bytes object representing a path. 
+dir_fd (optional): A file descriptor referring to a directory. The default value of this parameter is None. If the specified path is absolute then dir_fd is ignored.
+
+Syntax: os.rmdir(path, *, dir_fd = None) 
+Parameter: 
+path: A path-like object representing a file path. A path-like object is either a string or bytes object representing a path. 
+dir_fd (optional): A file descriptor referring to a directory. The default value of this parameter is None. If the specified path is absolute then dir_fd is ignored. 
+
+
+
+Here is the status of some of the things we went over the other day. 
+
+Tokenizer
+=========
+
+The syntax errors in format strings now cause fatal errors, as we discussed.
+
+Logging
+=======
+
+Yes, I see issues with the logging, and in particular it seems correct
+that .print should just print verbatim on stdout, like python print.
+
+Also, the test philosophy should be less intrusive. I see I've been
+trying to impose too many changes on the system proper. There are log
+design issues such as using python print for tracing rather than
+logging to a file. However the test system should ideally impose few
+constraints on the program to be tested and should try to capture
+existing output. So that's where I'd like to head with the test
+system. Right now it doesn't capture stdout or stderr, but I'll add
+that capability. We can then scan this output with the test filters.
+
+To the test system, stdout and stderr thus become "logs" themselves.
+
+The logging system we have now is pretty flexible and allows the
+creation of various kinds of special-purpose logs. For instance you
+might want a trace log or other analysis log. But this means the calls
+to "print" would have to be changed. But it does not seem productive
+to try to change so many things at once, and a test system should test
+a system as-is if possible.
+
+But I believe where we go off course a bit is in trying to have logs
+to files that also do "console" output, i.e., to stdout or stderr.
+The console output should be primary; it's the semantics of that
+output that needs handling, such as error, warning, etc. And capture
+of that for testing should be done external to the program.
+
+So I propose:
+
+1. Eliminate the current logs created per-program. Instead the main
+   program "logs" will just be stdout and stderr. We'll use the same
+   log calls to get there, so we get "warning", "error", etc. But
+   these will no longer go to a file. We'll capture them to a file in
+   the test system, but that's external to the program.
+
+   BTW right now log calls for Error, Warning, or Fatal get printed to
+   stderr. Log calls for Info get printed on stdout. This would remain
+   so in the new proposal.
+
+2. The logging system (via LogFactory) can be used to create
+   special-purpose logs that go to particular files, e.g., one or more
+   trace logs. These would just be to files, and for whatever purpose
+   is deemed necessary. It's just another way to get an output file,
+   and there is capability for bells and whistles if desired, such as
+   a seqno on each message.
+
+3. .print should just print unadorned output to the console
+
+4. In the last round I added the fcn wwlog so that it may be called
+   from ww via .exec, e.g. .exec wwlog ("message..."). This causes an
+   Info-tagged message to be logged. I changed a set of .ww programs
+   to call wwlog instead of print. This can remain but in the new
+   proposal but it won't go to a file, and I won't push to change the
+   code.
+
+Procedure Call and Recursion
+============================
+
+I did a little hacking with ww after our talk about recursion. 
+
+The attached program proc-call.ww shows a main prog and a routine
+called "subr", which calls itself after decrementing a global
+"level". It returns when level hits zero. The print below shows a run
+with level initially set to 5. Running it without -q will show some
+more detail.
+
+The stack is 10 words, and grows upward. I didn't know how to denote a
+block of words, hence stack0, stack1, etc. The push does a
+pre-increment, so I start the stack pointer stackp one below
+stack0. For a "real" stack we probably want to grow downwards. Anyway
+it's odd there is an add-one (ao) to a loc but not sub-one.
+
+You can see there are procedure entry and exit blocks marked in the
+code, and in between code for the proc body. In this case some items
+are printed and the level var is decremented and tested.
+
+If we do any kind of compilation we'll need a procedure protocol like
+this, plus additional protocol for arg passing. The overhead is fairly
+high. Although what I have can probably be optimized a bit more, it
+does not look possible to make it much more compact.
+
+But anyway it's the basis of recursion and if some arg-passing format
+is devised can be used to do say recursive mini-max.
+
+Here is a dump of a run:
+
+$ 
+$ python c:/Users/lstabile/whirlwind/InstructionSimulator/Py/Assembler/wwasm.py proc-call.ww -o proc-call
+c:\Users\lstabile\whirlwind\InstructionSimulator\Py\Assembler\wwasm.py:105: DeprecationWarning: Bitwise inversion '~' on bool is deprecated. This returns the bitwise inversion of the underlying int object and is usually not what you expect from negating a bool. Use the 'not' operator for boolean negation or ~int(x) if you really want the bitwise inversion of the underlying int.
+  in_quotes = ~in_quotes
+Listing output to file proc-call.lst
+Corefile output to file proc-call.acore
+$ python c:/Users/lstabile/whirlwind/InstructionSimulator/Py/Sim/wwsim.py -q proc-call.acore 
+start at 0o100
+***1 0o202 0o101 0o0 0o101 0o5
+***1 0o203 0o101 0o115 0o115 0o4
+***1 0o204 0o101 0o115 0o115 0o3
+***1 0o205 0o101 0o115 0o115 0o2
+***1 0o206 0o101 0o115 0o115 0o1
+***2
+Halt Instruction!  (Code=0) at pc=0101
+Alarm 'Program Halt' (5) at PC=0o101 (0d65)
+Ran 100 cycles; Used mem=48MB
+$ 
+
+
+
+
+Assembler grammar
+-----------------
+
+Informal grammar of single line, showing what's optional:
+<line> = [@ <oct> [. <dec>] : <oct> <sp>] [<label> : <sp>] [<op> <sp> <expr> [<sp>]] [<comment>] [<auto-comment>]
+
+More formal version, with optionality omitted:
+<line> = <prefix-addr> <sep> <label> <sep> <instruction> <sep> <comment> <auto-comment>
+
+Clauses for the the components:
+<prefix-addr> = <oct> . <dec> : <oct>
+<label> = <identifier> :
+<instruction> = <op> <whitespace>+ <expr>
+<op> = <ww-op>|<pseudo-op>
+<ww-op> = ta|ao|...
+<pseudo-op> = .word|.org|...
+<expr> = additive_expression
+<oct> = <digit-seq>		Digits 0-7 allowed
+<dec> = <digit-seq>		Digits 0-9 alowed
+<number> = <oct-num> | <dec-num>
+<oct-num> = 0o<oct> | {0|1}.{0-7}^5
+<dec-num> = {+|-}{0|1}.<dec> | <dec>
+
+Tokens (lexical level):
+
+<sep> = <separator> = <whitespace>+ | <operator>
+<operator> = + | - | * | @ |  @@ | : | . | ; | 0o
+<identifier> = <extended-alpha-char><extended-alphanumeric-char>*
+<digit-seq> = {0-9}+
+<comment> = ; <any-char-but-not-@@>>*
+<auto-comment> = @@  <any-char>*
+<extended-alpha-char> = <alpha> | _
+<extended-alphanumeric-char> = <extended-alpha-char> | <numeric-char>
+
+A (hacked) piece of a C yacc grammar used as a guide for
+expressions. Highest-level entry point is additive_expression.  Based
+on https://www.lysator.liu.se/c/ANSI-C-grammar-y.html
+
+primary_expression
+	: <identifier>
+	| <digit-seq>
+	| <string>
+	| '(' additive_expression ')'
+	;
+
+unary_expression
+	: primary_expression
+	| unary_operator unary_expression
+	;
+
+unary_operator
+	: '+'
+	| '-'
+	| '0o'
+	;
+
+dotted_expression
+	: unary_expression
+	| dotted_expression '.' unary_expression
+	;
+
+multiplicative_expression
+	: dotted_expression
+	| multiplicative_expression '*' dotted_expression
+	;
+
+additive_expression
+	: multiplicative_expression
+	| additive_expression '+' multiplicative_expression
+	| additive_expression '-' multiplicative_expression
+	;
+
+Note +0.11111 not the same as 0.11111, e.g.:
+
++0.11111 + -0.234 + 0o123
+
+0.11111 + +0.123 + 0x123
+
+Based on a comment in wwasm.py, we'll have identifiers case-sensitive
+
+Identifiers will be used generally as variables bound to addresses,
+but literal values are ok too if the asm adopts syntax to deal with
+them.
+
+# sample line:
+# @0061.49:140001     w0061: mr   0001      ; multiply and roundoff @@WrittenBy a0045 a0101 ReadBy a0101
+
+
+
+Eval
+====
+
+Arith binary ops should be straightforward (?)
+
+unary-{+,-} (binarydot (literal-{0,1}, literal-digit-seq))
+binarydot (literal-{0,1}, literal-5-oct-digit-seq)
+unary-0o (literal-oct-digit-seq)
+literal-digit-seq
+
+
+
+
+ 0.12345
++0.12345
+
+
