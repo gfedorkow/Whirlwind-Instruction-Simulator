@@ -223,7 +223,7 @@ class PhotoElectricTapeReaderClass:
                     continue
                 offset = int(tokens[0][2:], 8)
                 for token in tokens[1:]:
-                    if token != "None":
+                    if token != "None" and len(token):
                         tape_image.append(int(token, 8))
                     offset += 1
 
