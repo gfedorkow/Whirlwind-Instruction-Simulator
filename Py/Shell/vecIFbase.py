@@ -22,7 +22,7 @@ pin_isKey = 27
 pin_isGun1 = 25
 pin_isGun2 = 24
 pin_isGun1on = 4
-pin_isGun2on = 7
+pin_isGun2on = 12 # was 7
 pin_LED1 = 5
 pin_LED2 = 6
 pin_LED3 = 20
@@ -360,6 +360,7 @@ def vecIFopen():
     spi.max_speed_hz = 4000000
     print ("Initialised gpio and spi")
 spi = spidev.SpiDev()
+vecIFopen()
 
 def vecIFclose():
     gpio.cleanup()

@@ -60,7 +60,7 @@ class AnaScope:
         self.pin_isKey = 27 # used as the Stop signal
         self.pin_isGun1 = 24
         self.pin_isGun2 = 25
-        self.pin_isGun1on = 7
+        self.pin_isGun1on = 12 # was 7
         self.pin_isGun2on = 4
         self.pin_TargetLED = 5
         self.pin_InterceptorLED = 6
