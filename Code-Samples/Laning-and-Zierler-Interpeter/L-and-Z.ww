@@ -21,7 +21,17 @@
 
                         ; Also in comments, square brackets indicate modern interpolations of any sort
 
+                 ; tool set corrections to be made, Nov 13, 2024
+                    ; wwsim
+                      ; needs a mode to do Trace in Decimal
+                      ; PETR RD instruction should display the character read in ASCII
+                      ; somehow comments that look like "; a ; b" are losing the 'b' part in the sim trace
+                    ; wwasm
+                      ; the assembler seemed fine with overwriting a word it had just assembled
+                          ; seems like a warning would be good :-)
+                          
 
+                  ; Code Transcription Follows
                         ; [Transcribed by Larry Stabile, 10/13/24]
                         ; [Transcription notes and questions in square brackets]
                         ; [Meaning of double-bars?]
@@ -50,36 +60,50 @@
 @0050.040:100000            ca   0         ; r8 ;"from: (4r)" @@WrittenBy a0044 
 @0051.041:114145            su   a3 + 4    ; r9 ; " -| Is symbol [or]" 
 @0052.042:070054            cp   a1 + 12   ; r10 ;" -| a number? 
+
                         ; was        sp (38a4/58a4)  ; r11
 @0053.043:074307            sp   a4 + 38   ; r11 @@WrittenBy a0055 a0334 
+
                         ; was        ca (33a3/31a3)  ; r12  "31a3 is the normal mode"   ;"from: 10r"
 @0054.044:100202            ca   a3 + 33   ; r12    "31a3 is the normal mode"   ;"from: 10r" @@JumpedToBy a0052 WrittenBy a0543 a0550 
 @0055.045:044053            td   a1 + 11   ; r13 
 @0056.046:100000            ca   0         ; r14 ;"from: (6r)" @@WrittenBy a0046 
 @0057.047:114000            su   0         ; r15    "(Is symbol a period?)" 
 @0060.048:070041            cp   a1 + 1    ; r16 
-@0061.049:114227            su   a3 + 54   ; r17 ;- l.c. no.[?] or 
+
+                        ; [guy] Remember in Flexo code, an "upper case number" is the same number, but
+                        ; printed as a superscript, which Laning uses to show Exponent...
+                        ; Laning's comment says "Lower-Case Number, or Exponent?; Set to 
+                        ;   interpret digit as an exponent"
+@0061.049:114227            su   a3 + 54   ; r17 ;- l.c. no.[?] or [subtract flexo for '9']
 @0062.050:070316            cp   a4 + 45   ; r18 ;- exponent? 
 @0063.051:100214            ca   a3 + 43   ; r19 ;- set to interpret 
 @0064.052:044335            td   a4 + 60   ; r20 ; digit as an 
 @0065.053:104337            cs   a4 + 62   ; r21 ;- exponent 
 @0066.054:110000            ad   0         ; r22 ;from: 48a4 (7r) @@JumpedToBy a0321 WrittenBy a0047 
 @0067.055:070107            cp   a1 + 39   ; r23 ;if digit is zero 
-@0070.056:164224            sf   a3 + 51   ; r24 ;- 
-@0071.057:040113            ts   a1 + 43   ; r25 ; Form [?] (24,6) version @@ReadBy a0076 
-@0072.058:100254            ca   a4 + 11   ; r26 ; of digit as an 
-@0073.059:114224            su   a3 + 51   ; r27 ; integer in (43r, 44r 
+
+                        ; [guy] Watch out for off-by-one with the sf instruction!  I _think_ it's correct!
+                        ; But I don't have test cases!
+                        ; a=0o04000 should result in n=0
+                        ; a=0o00001 should result in n=14 decimal, i.e., 0o16 -- I Think!
+                        ; The comment in r25-r27 says that we're going to store the incoming number 
+                        ; as a (24,6) float in a1+43 and a1+42
+@0070.056:164224            sf   a3 + 51   ; r24 ;-| 
+@0071.057:040113            ts   a1 + 43   ; r25 ; |"Form (24,6) version" @@ReadBy a0076 
+@0072.058:100254            ca   a4 + 11   ; r26 ; |"of digit as an" 
+@0073.059:114224            su   a3 + 51   ; r27 ; |"integer in (43r, 44r)" 
                         ; was        sl 9            ; r28 ;
-@0074.060:154011            slr  9         ; r28 ; 
-@0075.061:040114            ts   a1 + 44   ; r29 ;- 
+@0074.060:154011            slr  9         ; r28 ; |
+@0075.061:040114            ts   a1 + 44   ; r29 ;-| 
 @0076.062:100071            ca   a1 + 25   ; r30 
 @0077.063:044102            td   a1 + 34   ; r31 
 
                         ; Sheet 2/20
                         ; a1
-@0100.064:075524            sp   852       ; r32    (programmed arithmetic) @@JumpedToBy a0112 
-@0101.065:140761            mr   497       ; r33    (i.e., by 10) 
-@0102.066:110000            ad   0         ; r34  ; from (31r, 41r) @@WrittenBy a0077 a0111 
+@0100.064:075524            sp   852       ; r32    "(programmed arithmetic)" @@JumpedToBy a0112 
+@0101.065:140761            mr   497       ; r33    "(i.e., by 10)" 
+@0102.066:110000            ad   0         ; r34  ; "from (31r, 41r)" @@WrittenBy a0077 a0111 
 @0103.067:075524            sp   852       ; r35 
 @0104.068:130105            ao   a1 + 37   ; r36  ; (reset to a1 + 38)    ;from: (1r) @@WrittenBy a0041 a0404 ReadBy a0041 
 @0105.069:074042            sp   a1 + 2    ; r37 @@WrittenBy a0104 ReadBy a0104 
@@ -88,6 +112,7 @@
 @0110.072:100376            ca   a6 + 10   ; r40 ;from: 23r 
 @0111.073:044102            td   a1 + 34   ; r41 
 @0112.074:074100            sp   a1 + 32   ; r42 
+
 @0113.075:000000            .word 0         ; r43 ;- Temporary storage for @@WrittenBy a0071 
 @0114.076:000000            .word 0         ; r44 ;- integer during read-in @@WrittenBy a0075 
 
@@ -120,6 +145,10 @@
                         ; Sheet 4/20
                         ; a3 (Lower case symbols)
                         ; Symbol
+                        ; [This page is partly a table of flexo codes, but there's random bits of executable code interleaved
+                        ; among the unused flexo entries.  Almost all Flexo characters can be typed; surely that means that symbols
+                        ; that "shouldn't" be used can cause some mighty weird crashes...]
+                        
 @0141.097:000141        a3: .word a3        ; r0 @@ReadBy a0043 a4 a1004 
 @0142.098:000241            .word a4        ; r1 
 @0143.099:074323            sp   a4 + 50   ; r2   'e' 
@@ -128,7 +157,9 @@
 @0146.102:000000            .word 0         ; r5; [This is the flexo code for ';', but the original doesn't have a dispatch address at all] 
 @0147.103:074323            sp   a4 + 50   ; r6   'a' 
 @0150.104:000004            .word 4         ; r7   '3' 
-@0151.105:074042            sp   a1 + 2    ; r8   space @@JumpedToBy a0131 
+
+@0151.105:074042            sp   a1 + 2    ; r8   "space" [if we hit this, we're discarding a space character in the input stream] @@JumpedToBy a0131 
+
 @0152.106:074523            sp   a10 + 10  ; r9   '=' 
 @0153.107:074323            sp   a4 + 50   ; r10  's' 
 @0154.108:000005            .word 5         ; r11  '4' 
@@ -174,11 +205,15 @@
 @0221.145:074323            sp   a4 + 50   ; r48  'o' (letter) 
 @0222.146:074042            sp   a1 + 2    ; r49  stop 
 @0223.147:074323            sp   a4 + 50   ; r50  'b' 
+
+                        ; [guy] The number written here is a "number of bits to shift" from an SF instruction,
+                        ; and should be 0-32
 @0224.148:000000            .word 0         ; r51 @@WrittenBy a0070 a0370 ReadBy a0073 a0371 
+
 @0225.149:074323            sp   a4 + 50   ; r52  'g' 
 @0226.150:000142            .word a3 + 1    ; r53 @@ReadBy a0313 
 @0227.151:000012            .word 10        ; r54  '9' @@ReadBy a0061 
-@0230.152:140000            mr   0         ; r55 @@ReadBy a14 a0766 
+@0230.152:140000            mr   0         ; r55 ; [this is probably a constant, not an op-code] @@ReadBy a14 a0766 
 @0231.153:074323            sp   a4 + 50   ; r56  'm' 
 @0232.154:074313            sp   a4 + 42   ; r57 shift to u.c. 
 @0233.155:074323            sp   a4 + 50   ; r58  'x' 
@@ -245,14 +280,17 @@
 @0314.204:074242            sp   a4 + 1    ; r43 
                         ; was       (sp a2/sp a2 + 2)      ; r44    'P'
 @0315.205:074115            sp   a2        ; r44    'P' @@WrittenBy a1023 ReadBy a1023 
+
+                        ; [guy] I think we come here when we're reading a digit from the input stream
 @0316.206:100210            ca   a3 + 39   ; r45 ;from: 17a1 @@JumpedToBy a0062 
 @0317.207:044335            td   a4 + 60   ; r46    'Q' (not used) @@ReadBy a0730 
 @0320.208:104237            cs   a3 + 62   ; r47 
 @0321.209:074066            sp   a1 + 22   ; r48    'O' (letter) (not used) 
+
 @0322.210:074042            sp   a1 + 2    ; r49    stop @@ReadBy a0752 
 @0323.211:110230       a14: ad   a3 + 55   ; r50    'B' (not used)  ;from: () @@JumpedToBy a0143 a0147 a0153 a0155 a0157 a0163 a0167 a0171 a0173 a0175 a0177 a0201 a0203 a0205 a0207 a0211 a0213 a0215 a0217 a0221 a0223 a0225 a0231 a0233 a0235 a0575 a0601 a0602 WrittenBy a0450 a0477 a0506 ReadBy a0352 a0450 a0506 a0637 a0710 
                         ; was     sp (28a10/33r)         ; r51
-@0324.212:074545            sp   a10 + 28  ; r51 @@WrittenBy a0541 a0542 a0546 
+@0324.212:074545            sp   a4 + 33  ; r51 ; "33r -> normal mode"  @@WrittenBy a0541 a0542 a0546 
 @0325.213:074277            sp   a4 + 30   ; r52    'G' (not used)  ;from: 13a3 @@JumpedToBy a0156 
 @0326.214:074725            sp   a13 + 5   ; r53 || 
 @0327.215:000024            .word 20        ; r54    '9' (exp.) @@ReadBy a0564 

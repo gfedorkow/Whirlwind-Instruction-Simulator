@@ -21,7 +21,17 @@
 
                         ; Also in comments, square brackets indicate modern interpolations of any sort
 
+                        ; tool set corrections to be made, Nov 13, 2024
+                        ; wwsim
+                        ; needs a mode to do Trace in Decimal
+                        ; PETR RD instruction should display the character read in ASCII
+                        ; somehow comments that look like "; a ; b" are losing the 'b' part in the sim trace
+                        ; wwasm
+                        ; the assembler seemed fine with overwriting a word it had just assembled
+                        ; seems like a warning would be good :-)
 
+
+                        ; Code Transcription Follows
                         ; [Transcribed by Larry Stabile, 10/13/24]
                         ; [Transcription notes and questions in square brackets]
                         ; [Meaning of double-bars?]
@@ -50,8 +60,10 @@
 @0050.040:100000            ca   0         ; r8 ;"from: (4r)" @@WrittenBy a0044 
 @0051.041:114145            su   a3 + 4    ; r9 ; " -| Is symbol [or]" 
 @0052.042:070054            cp   a1 + 12   ; r10 ;" -| a number? 
+
                         ; was        sp (38a4/58a4)  ; r11
 @0053.043:074307            sp   a4 + 38   ; r11 @@WrittenBy a0055 a0334 
+
                         ; was        ca (33a3/31a3)  ; r12  "31a3 is the normal mode"   ;"from: 10r"
 @0054.044:100202            ca   a3 + 33   ; r12    "31a3 is the normal mode"   ;"from: 10r" @@JumpedToBy a0052 WrittenBy a0543 a0550 
 @0055.045:044053            td   a1 + 11   ; r13 
@@ -77,9 +89,9 @@
 
                         ; Sheet 2/20
                         ; a1
-@0100.064:075524            sp   852       ; r32    (programmed arithmetic) @@JumpedToBy a0112 
-@0101.065:140761            mr   497       ; r33    (i.e., by 10) 
-@0102.066:110000            ad   0         ; r34  ; from (31r, 41r) @@WrittenBy a0077 a0111 
+@0100.064:075524            sp   852       ; r32    "(programmed arithmetic)" @@JumpedToBy a0112 
+@0101.065:140761            mr   497       ; r33    "(i.e., by 10)" 
+@0102.066:110000            ad   0         ; r34  ; "from (31r, 41r)" @@WrittenBy a0077 a0111 
 @0103.067:075524            sp   852       ; r35 
 @0104.068:130105            ao   a1 + 37   ; r36  ; (reset to a1 + 38)    ;from: (1r) @@WrittenBy a0041 a0404 ReadBy a0041 
 @0105.069:074042            sp   a1 + 2    ; r37 @@WrittenBy a0104 ReadBy a0104 
@@ -178,7 +190,7 @@
 @0225.149:074323            sp   a4 + 50   ; r52  'g' 
 @0226.150:000142            .word a3 + 1    ; r53 @@ReadBy a0313 
 @0227.151:000012            .word 10        ; r54  '9' @@ReadBy a0061 
-@0230.152:140000            mr   0         ; r55 @@ReadBy a14 a0766 
+@0230.152:140000            mr   0         ; r55 ; [this is probably a constant, not an op-code] @@ReadBy a14 a0766 
 @0231.153:074323            sp   a4 + 50   ; r56  'm' 
 @0232.154:074313            sp   a4 + 42   ; r57 shift to u.c. 
 @0233.155:074323            sp   a4 + 50   ; r58  'x' 
@@ -232,7 +244,7 @@
 @0277.191:050301            ta   a4 + 32   ; r30    'K' (not used)   ;from: 52r, 552 @@JumpedToBy a0325 a0330 
 @0300.192:074471            sp   a9 + 18   ; r31 
 @0301.193:100000            ca   0         ; r32    'T' (not used)  ;from: (30r) @@WrittenBy a0277 
-@0302.194:074435            sp   a8 + 9    ; r33        ;from: 51r 
+@0302.194:074435            sp   a8 + 9    ; r33        ;from: 51r @@JumpedToBy a0324 
 @0303.195:074042            sp   a1 + 2    ; r34    'Z' (not used) 
 @0304.196:074042            sp   a1 + 2    ; r35    back space 
 @0305.197:101526            ca   ax + 2    ; r36 || 'L' (not used) @@ReadBy a0472 
@@ -252,7 +264,7 @@
 @0322.210:074042            sp   a1 + 2    ; r49    stop @@ReadBy a0752 
 @0323.211:110230       a14: ad   a3 + 55   ; r50    'B' (not used)  ;from: () @@JumpedToBy a0143 a0147 a0153 a0155 a0157 a0163 a0167 a0171 a0173 a0175 a0177 a0201 a0203 a0205 a0207 a0211 a0213 a0215 a0217 a0221 a0223 a0225 a0231 a0233 a0235 a0575 a0601 a0602 WrittenBy a0450 a0477 a0506 ReadBy a0352 a0450 a0506 a0637 a0710 
                         ; was     sp (28a10/33r)         ; r51
-@0324.212:074545            sp   a10 + 28  ; r51 @@WrittenBy a0541 a0542 a0546 
+@0324.212:074302            sp   a4 + 33   ; r51 ; "33r -> normal mode" @@WrittenBy a0541 a0542 a0546 
 @0325.213:074277            sp   a4 + 30   ; r52    'G' (not used)  ;from: 13a3 @@JumpedToBy a0156 
 @0326.214:074725            sp   a13 + 5   ; r53 || 
 @0327.215:000024            .word 20        ; r54    '9' (exp.) @@ReadBy a0564 
@@ -429,7 +441,7 @@
 @0543.355:044054            td   a1 + 12   ; r26 
                         ; was        sp (2a1/49r)  ; r27
 @0544.356:074042            sp   a1 + 2    ; r27 
-@0545.357:100604            ca   a10 + 59  ; r28 ;from: 51a4 @@JumpedToBy a0116 a0324 
+@0545.357:100604            ca   a10 + 59  ; r28 ;from: 51a4 @@JumpedToBy a0116 
 @0546.358:044324            td   a4 + 51   ; r29 
 @0547.359:100605            ca   a10 + 60  ; r30 
 @0550.360:044054            td   a1 + 12   ; r31 
