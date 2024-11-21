@@ -1,0 +1,8 @@
+
+nobounce:   ca Vy + Vx - (q * (p  + 53)) + -42 + 017 + Vg*Vx*+0.888 - (-0.76589 --Vz) + -57 + +0.9999 + 0o177 + 0.12345 + x * (y + z) ; for no bounce, fetch the current velocity
+@017.39:157 rc 0            ; output a point to the display
+;           ca x+y + * z          ; uncomment this line to generate a syntax error
+           .print "LAS WW1 %o %o and %ad", Xi, Yi
+           .exec wwlog ("LAS WW2")
+;          .word a+!0o4242        ; uncomment this line to generate a syntax error (illegal char)
+           .word 0o4200

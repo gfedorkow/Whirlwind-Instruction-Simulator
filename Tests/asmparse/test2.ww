@@ -1,0 +1,9 @@
+
+nobounce:  sp x+57
+		   .word 0o4270
+		   .word -0.56789
+		   ta x+y*(z + 99)
+		   .print "This is a message %s", 42
+		   ts -0
+		   sp x+-37
+		   

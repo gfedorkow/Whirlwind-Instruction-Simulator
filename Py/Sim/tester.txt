@@ -557,14 +557,12 @@ them.
 Eval
 ====
 
-Arith binary ops should be straightforward (?)
+Arith binary ops:
 
-unary-{+,-} (binarydot (literal-{0,1}, literal-digit-seq))
-binarydot (literal-{0,1}, literal-5-oct-digit-seq)
-unary-0o (literal-oct-digit-seq)
-literal-digit-seq
-
-
+binarydot (unary-{+,-} (literal-{0,1}), literal-digit-seq)		Decimal fraction
+binarydot (literal-{0,1}, literal-5-oct-digit-seq)				Octal integer
+unary-0o (literal-oct-digit-seq)								Octal integer
+literal-digit-seq												Decimal inreger
 
 
  0.12345

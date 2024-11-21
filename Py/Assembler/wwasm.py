@@ -47,7 +47,6 @@ import sys
 import re
 import argparse
 import wwinfra
-import wwasmparser
 
 breakpoint_trigger = False
 def breakp(log):
@@ -103,7 +102,7 @@ def split_comment(in_str):
     if c == ')':
       paren_depth -= 1
     if c == '"':
-      in_quotes = ~in_quotes
+      in_quotes = not in_quotes
 
     if re.match("@@",in_str[i:] ) and (in_quotes == False) and (paren_depth == 0):
       break
@@ -134,15 +133,6 @@ def split_comment(in_str):
 # ;look up op and operand
 def lex_line(line, line_number):
     global Legacy_Numbers
-
-    # LAS temporary test area
-    # """
-    t = wwasmparser.AsmTokenizer (line)
-    # t.printTokens (t.getTokens())
-    l = wwasmparser.AsmParsedLine (line, line_number)
-    l.parseLine()
-    l.print()
-    # """
 
     comment = ''
     label = ''
