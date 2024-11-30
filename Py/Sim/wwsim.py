@@ -611,6 +611,12 @@ class CpuClass:
             description = oplist[2]
         self.print_cpu_state(current_pc, opcode, oplist[1], description, address)
 
+#        if self.cb.panel.panel_blinken:
+#            if self._AC & 0o4:   # Bit 13 of the WW Accumulator
+#                print(self.cb.panel.panel_blinken) 
+#            else:
+#                print("no click")
+
         if current_pc in Breakpoints:
             Breakpoints[current_pc](self)
         return ret
