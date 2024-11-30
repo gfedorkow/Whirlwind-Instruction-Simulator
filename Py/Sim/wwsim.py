@@ -26,7 +26,7 @@ import os
 import psutil
 # sys.path.append('K:\\guy\\History-of-Computing\\Whirlwind\\Py\\Common')
 # sys.path.append('C:\\Users\\lstabile\\whirlwind\\InstructionSimulator\\Py\\Common')
-import argparse
+# import argparse # it's now in wwinfra log package
 import wwinfra
 import ww_io_sim
 import ww_flow_graph
@@ -611,11 +611,12 @@ class CpuClass:
             description = oplist[2]
         self.print_cpu_state(current_pc, opcode, oplist[1], description, address)
 
-#        if self.cb.panel.panel_blinken:
-#            if self._AC & 0o4:   # Bit 13 of the WW Accumulator
-#                print(self.cb.panel.panel_blinken) 
-#            else:
-#                print("no click")
+        if self.cb.ana_scope:
+            self.cb.ana_scope.set_audio_click(self._AC)
+            if self._AC & 0o4:   # Bit 13 of the WW Accumulator
+                print("click")
+            else:
+                print("no click")
 
         if current_pc in Breakpoints:
             Breakpoints[current_pc](self)
