@@ -108,6 +108,7 @@ class PhotoElectricTapeReaderClass:
         global petrAfile
         global petrBfile
         self.cb = cb
+        self.flexo = wwinfra.FlexoClass(cb)
 
         self.name = "PhotoElectricTapeReader"
         self.PETR_device = 'A'
@@ -164,7 +165,9 @@ class PhotoElectricTapeReaderClass:
                 return self.cb.IO_ERROR_ALARM, 0
             ret = self.PETR_tape_image[self.PETR_device][offset]
             self.PETR_read_offset[self.PETR_device] += 1
-            getiolog().info("RD: PhotoElectricTapeReader %s read character 0o%o " % (self.PETR_device, ret))
+            getiolog().info("RD: PhotoElectricTapeReader %s read character 0o%o (ascii '%s') " %
+                            (self.PETR_device, ret, self.flexo.code_to_letter(ret, show_unprintable=True)
+))
             return self.cb.NO_ALARM, ret
         getiolog().info("unimplemented rd: PhotoElectric Read from file %s, mode %s" % (self.PETR_device, self.PETR_mode))
         return self.cb.UNIMPLEMENTED_ALARM, 0
@@ -223,7 +226,7 @@ class PhotoElectricTapeReaderClass:
                     continue
                 offset = int(tokens[0][2:], 8)
                 for token in tokens[1:]:
-                    if token != "None":
+                    if token != "None" and len(token):
                         tape_image.append(int(token, 8))
                     offset += 1
 
