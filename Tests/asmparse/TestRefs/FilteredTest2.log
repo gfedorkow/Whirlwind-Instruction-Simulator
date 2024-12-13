@@ -1,0 +1,229 @@
+
+AsmParsedLine:
+    line=            .dbwgt Vy 
+    prefixAddr= {} 
+    label=  
+    opname= dbwgt 
+    comment=  
+    auto-comment= 
+   Variable Vy
+Eval:
+    AsmExprValueType.Integer 42
+
+
+AsmParsedLine:
+    line=            .dbwgt R, 0o200 
+    prefixAddr= {} 
+    label=  
+    opname= dbwgt 
+    comment=  
+    auto-comment= 
+   BinaryComma
+      Variable R
+      UnaryZeroOh
+         LiteralDigits 200
+Eval:
+    AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 128']
+
+
+AsmParsedLine:
+    line=            .dbwgt Xi, 0o400 
+    prefixAddr= {} 
+    label=  
+    opname= dbwgt 
+    comment=  
+    auto-comment= 
+   BinaryComma
+      Variable Xi
+      UnaryZeroOh
+         LiteralDigits 400
+Eval:
+    AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 256']
+
+
+AsmParsedLine:
+    line=            .dbwgt Yi, 0o100 
+    prefixAddr= {} 
+    label=  
+    opname= dbwgt 
+    comment=  
+    auto-comment= 
+   BinaryComma
+      Variable Yi
+      UnaryZeroOh
+         LiteralDigits 100
+Eval:
+    AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 64']
+
+
+AsmParsedLine:
+    line= nobounce:  sp x+57 
+    prefixAddr= {} 
+    label= nobounce 
+    opname= sp 
+    comment=  
+    auto-comment= 
+   BinaryPlus
+      Variable x
+      LiteralDigits 57
+Eval:
+    AsmExprValueType.Integer 99
+
+
+AsmParsedLine:
+    line=            .word 0o4270 
+    prefixAddr= {} 
+    label=  
+    opname= word 
+    comment=  
+    auto-comment= 
+   UnaryZeroOh
+      LiteralDigits 4270
+Eval:
+    AsmExprValueType.Integer 2232
+
+
+AsmParsedLine:
+    line=            .word -0.56789 
+    prefixAddr= {} 
+    label=  
+    opname= word 
+    comment=  
+    auto-comment= 
+   BinaryDot
+      UnaryMinus
+         LiteralDigits 0
+      LiteralDigits 56789
+Eval:
+    AsmExprValueType.Fraction -18609
+
+
+AsmParsedLine:
+    line=            .print "This is a message %s", 42 
+    prefixAddr= {} 
+    label=  
+    opname= print 
+    comment=  
+    auto-comment= 
+   LiteralString "This is a message %s", 42
+
+Eval:
+    AsmExprValueType.String "This is a message %s", 42
+
+
+
+AsmParsedLine:
+    line=            ts -0 
+    prefixAddr= {} 
+    label=  
+    opname= ts 
+    comment=  
+    auto-comment= 
+   UnaryMinus
+      LiteralDigits 0
+Eval:
+    AsmExprValueType.NegativeZero 0
+
+
+AsmParsedLine:
+    line=            sp x+-37 
+    prefixAddr= {} 
+    label=  
+    opname= sp 
+    comment=  
+    auto-comment= 
+   BinaryPlus
+      Variable x
+      UnaryMinus
+         LiteralDigits 37
+Eval:
+    AsmExprValueType.Integer 5
+
+
+AsmParsedLine:
+    line=            sp 0o12345 
+    prefixAddr= {} 
+    label=  
+    opname= sp 
+    comment=  
+    auto-comment= 
+   UnaryZeroOh
+      LiteralDigits 12345
+Eval:
+    AsmExprValueType.Integer 5349
+
+
+AsmParsedLine:
+    line= 		   sp xyz, 0o12345 
+    prefixAddr= {} 
+    label=  
+    opname= sp 
+    comment=  
+    auto-comment= 
+   BinaryComma
+      Variable xyz
+      UnaryZeroOh
+         LiteralDigits 12345
+Eval:
+    AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 5349']
+
+
+AsmParsedLine:
+    line= 		   sp abc, 0o12345, +0.98765, 9800 ; Hi there! 
+    prefixAddr= {} 
+    label=  
+    opname= sp 
+    comment=  Hi there!
+ 
+    auto-comment= 
+   BinaryComma
+      BinaryComma
+         BinaryComma
+            Variable abc
+            UnaryZeroOh
+               LiteralDigits 12345
+         BinaryDot
+            UnaryPlus
+               LiteralDigits 0
+            LiteralDigits 98765
+      LiteralDigits 9800
+Eval:
+    AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 5349', 'AsmExprValueType.Fraction 32363', 'AsmExprValueType.Integer 9800']
+
+
+AsmParsedLine:
+    line= 		   ca qwert & (poiuyt + 2) | 57 
+    prefixAddr= {} 
+    label=  
+    opname= ca 
+    comment=  
+    auto-comment= 
+   BinaryBitAnd
+      Variable qwert
+      BinaryBitOr
+         BinaryPlus
+            Variable poiuyt
+            LiteralDigits 2
+         LiteralDigits 57
+Eval:
+    AsmExprValueType.Integer 40
+
+
+AsmParsedLine:
+    line= 		   sp 0o177 & 0o077 | 0o1000 
+    prefixAddr= {} 
+    label=  
+    opname= sp 
+    comment=  
+    auto-comment= 
+   BinaryBitAnd
+      UnaryZeroOh
+         LiteralDigits 177
+      BinaryBitOr
+         UnaryZeroOh
+            LiteralDigits 077
+         UnaryZeroOh
+            LiteralDigits 1000
+Eval:
+    AsmExprValueType.Integer 63
+

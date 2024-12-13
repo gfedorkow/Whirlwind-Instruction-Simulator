@@ -35,7 +35,8 @@ class Test:
         self.dryRun = cmdArgs.DryRun
         self.quiet = cmdArgs.Quiet
         self.accept = cmdArgs.Accept
-        self.testType = ""
+        self.testType = None
+        self.testBaseName = ""
         self.simArgs = []
         self.asmArgs = []
         self.coreArgs = []
@@ -90,13 +91,19 @@ class Test:
         os.mkdir (self.testResultsDir)
 
     def readTestInfoFile (self):
-        s = open (self.testDir + "/" + "TestInfo.yaml", "r")
-        # LAS check error
+        try:
+            s = open (self.testDir + "/" + "TestInfo.yaml", "r")
+        except FileNotFoundError as e:
+            return self
         y = yaml.Loader (s)
         d = y.get_data()
         self.testType = d["testType"]
         self.testBaseName = d["baseName"]
         keys = list (d)
+        if "cmd" in keys:
+            self.asmArgs += (self.parseOptions (d["cmd"]))
+        if "cmdOptions" in keys:
+            self.asmArgs += (self.parseOptions (d["cmdOptions"]))
         if "asmOptions" in keys:
             self.asmArgs += (self.parseOptions (d["asmOptions"]))
         if "simOptions" in keys:
@@ -268,7 +275,7 @@ class AsmSimTest (Test):
         self.runSubprocess (self.simCmd, self.simLogFileName)
         self.report()
 
-# Disassamble a core file. 
+# Disassamble a core file.
 
 class DisasmTest (Test):
     def __init__ (self, testName, cmdArgs):
@@ -276,6 +283,16 @@ class DisasmTest (Test):
     def run (self):
         super().run()
         self.runSubprocess (self.disasmCmd, self.disasmLogFileName)
+        self.report()
+
+# Run an arbitrary command
+
+class CommandTest (Test):
+    def __init__ (self, testName, testerCmdArgs):
+        super().__init__ (testName, testerCmdArgs)
+    def run (self):
+        super().run()
+        self.runSubprocess (self.cmd, self.cmdOptions)
         self.report()
 
 # All is a special test type -- but has a dir!
@@ -289,9 +306,11 @@ class AllTest (Test):
         for testName in testNames:
             if testName != "All":
                 sys.stdout.write ("\n*** wwtester running test: %s\n" % (testName))
-                testClassName = Test(testName, self.cmdArgs).readTestInfoFile().testType + "Test"
-                test = globals()[testClassName](testName, self.cmdArgs)
-                test.run()
+                testType = Test(testName, self.cmdArgs).readTestInfoFile().testType
+                if testType is not None:
+                    testClassName = testType + "Test"
+                    test = globals()[testClassName](testName, self.cmdArgs)
+                    test.run()
            
 #
 # End Test Types
@@ -306,13 +325,15 @@ def main():
     parser.add_argument("--Accept", help="Copy all files in TestResults to TestRefs, replacing files therein", action="store_true")
     cmdArgs = parser.parse_args()
     # Instantiate a direct instance of Test just so we can read test info to find what subclass to instantiate
-    testClassName = Test(cmdArgs.testName, cmdArgs).readTestInfoFile().testType + "Test"
-    # Now make the real test subclass using the metasystem
-    test = globals()[testClassName](cmdArgs.testName, cmdArgs)
-    if test.accept:
-        test.acceptResults()
-    else:
-        test.run()
+    testType = Test(cmdArgs.testName, cmdArgs).readTestInfoFile().testType
+    if testType is not None:
+        testClassName = testType + "Test"
+        # Now make the real test subclass using the metasystem
+        test = globals()[testClassName](cmdArgs.testName, cmdArgs)
+        if test.accept:
+            test.acceptResults()
+        else:
+            test.run()
 
 if __name__ == "__main__":
     main()

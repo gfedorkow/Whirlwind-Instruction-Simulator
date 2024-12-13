@@ -306,6 +306,79 @@ LogMsgSeverity = Enum ("LogMsgType", ["Error", "Info", "Warning", "Fatal"])
 
 - !!! Each dir should have a run-test.sh which will "do everything"
 
+11/24/24 Alternative ideas
+
+Script-based, wwtester acts more like a shell. Provides environment eg
+extends PATH to get automatically commands and files in the ww dirs.
+Provides commands, which can be regular shell or python commands in the
+usual code dirs, but tailored to our testing use, e.g, wwdiff which
+accepts a filter, etc.
+
+
+wd = Tests/xyz
+Tester runs commands with an extended PATH so that most names are auotmatically picked up
+Tester knows what has been generated -- accept-test copies just the generated stuff into the refs dir
+Use yaml file as state file, not config file. Make it .TestState.yaml.
+
+Problem: wwtester right now nicely tee's and can hide or show the output. With scripts we don't get that.
+
+Tests/test-name/runtest.sh
+
+runtest.sh --Accept -> Arg detect ed in script to copy files. Any good command tools we can add to help?
+
+
+PATH=$PATH:/cygdrive/c/Users/lstabile/whirlwind/InstructionSimulator/Win-Binary
+cp $PYTHONPATH/../../Py/Assembler/wwasmparser.py .
+python wwasmparser.py ErrorTest.ww >&ErrorTest.log
+python wwasmparser.py test2.ww >&test2.log
+# wwdiff --Filter "Warning|Error" ErrorTest.log TestRefs/ErrorTest.log
+# wwdiff --Filter "Warning|Error" test2.log TestRefs/test2.log
+diff ErrorTest.log TestRefs/ErrorTest.log
+diff test2.log TestRefs/test2.log
+
+
+
+
+
+ww-start-test
+rm xyz.acore wwasm.log wwsim.log
+python wwasm.py xyz.ww -o xyz.acore  >wwasm.log
+python wwsim -q xyz.acore >wwsim.log
+wwdiff -filter "Warning|Error" wwasm.log TestRefs/wwasm.log
+ww-end-test
+
+
+
+python wwasmaarser.py ErrorTest.ww >&ErrorTest.log
+python wwasmaarser.py test2.ww >&test2.log
+wwdiff --Filter "Warning|Error" ErrorTest.log TestRefs/ErrorTest.log
+wwdiff --Filter "Warning|Error" test2.log TestRefs/test2.log
+
+wwsh -- pushes exec dir like Win-Binary on PATH and cd's to Test area. 
+
+
+
+
+xyz/
+	xyz.ww
+	.TestInfo.yaml/       -- Testing state, e.g., what files were gen'ed verus static
+	-> xyz.acore
+	-> xyz.wwsim.log
+	-> xyz.wwasm/log
+xyz/TestRefs/
+	xyz.acore
+	xyz.wwsim.log
+	xyz.wwasm.log
+
+OR -- diff from last git version? I.e., do a "git diff"
+
+
+
+
+
+
+
+
 
 
 whirlwind/
@@ -569,3 +642,36 @@ literal-digit-seq												Decimal inreger
 +0.12345
 
 
+
+M-2539-2 Comprehensive System manual
+====================================
+
+Section														Pdf page
+-------														--------
+
+introduction													5
+
+part i. intro to programming and coding							10
+
+chapter i the cs computer -- simplified version					11
+chapter ii transfer of control -- counting						19
+chapter iii cycle counters -- modification of addresses			27
+chapter iv floating addresses									35
+chapter v input and output										43
+chapter vi errors and post-mortems								60
+chapter vii subroutines											65
+				preset parameters								74
+chapter viii review												79
+
+part ii. advanced coding techniques								90
+
+chapter ix some more fundamentials								91
+chapter x number systems										96
+chapter x1 the whirlwind [i] computer							107
+chapter xii auxiliary storage and in-out equipment				132
+chapter xiii programmed arithmetic								148
+chapter xiv the conversion program								167
+				ditto											194
+chapter xv the utility control program							202
+chapter xvi automatic input-output requests [output]			224
+chapter xvii generalized post-mortems							241
