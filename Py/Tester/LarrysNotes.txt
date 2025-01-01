@@ -1,34 +1,8 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+This is a collection of notes and scratchings on Larry's efforts in
+the Whirlwind project. It started as a doc dump for the tester, b ut
+has expanded into assembler and other areas.
+----------------------------------------------------------------------
 
 
 
@@ -632,7 +606,7 @@ Eval
 
 Arith binary ops:
 
-binarydot (unary-{+,-} (literal-{0,1}), literal-digit-seq)		Decimal fraction
+binarydot (unary-{+,-}, (literal-{0,1}), literal-digit-seq)		Decimal fraction
 binarydot (literal-{0,1}, literal-5-oct-digit-seq)				Octal integer
 unary-0o (literal-oct-digit-seq)								Octal integer
 literal-digit-seq												Decimal inreger
@@ -640,6 +614,58 @@ literal-digit-seq												Decimal inreger
 
  0.12345
 +0.12345
+
+12/23/24 todo assembler and further
+	* auto-comment
+	- comment space, alignment -- provide options?
+	* write listing
+	* Button up file handling
+		- Except: Default output for core as stdout?
+	- Parens in expr print
+	* Quotes in strings
+	* .exec doesn't list properly -- strings in this case don't want quotes
+	- flexo translation
+	- "See .dbwgt for more discussion"
+	* Assure all wwasm args are handled in some way
+		Yes, with some debate ahead
+	* Verbosity and Debuggery
+		Doesn't seem to be a need for either in new asm right now, but the flags are available in AsmProgram
+	* Bail on "too many" errors
+		Let everything run, suppress output files on any errors
+	- Hacked wwasm.py to accept comma in .dbwgt
+	- Case-sensitive? Right now new asm is not at all
+	- Check range on nextcoreaddress since can overflow 2K as in all1.ww. Right now croaks.
+	- Mod and test disasm
+	* asm: no-prefx-addr option, to get a prety-printed source file
+	- --Legacy_Numbers: should go away? Rightnow .org has a mix in the
+          code; it's clear some .org numbers are meant to be octal,
+          even though they have no 0o prefix. Really should conform to
+          std rules and the code with unadorned octal should change.
+
+		  Default octal in Mad-Game? Looks like only for non-address
+		  operands (e.g., si). All addresses use symbolic
+		  labels. Modified mad-game by copying to .n version and using
+		  explicit designators for all octal numbers. Got same results
+		  as asm.
+
+		  So right now I favor a bit of extra editing versus reading options
+
+	- annotate io dev: no reason it shouldn't be default, no option, with auto-comment?
+	- .wwfile really wants quoted strings -- i.e., expect a var
+	- Can probably be more elegant in AsmLabelTab by subclassing dict.
+	- Why does core file have 7-oct width?
+
+	- Get "everything" into git: tape images, images on code, etc.
+	- LAS: work on L&Z? Maybe just use new translator and asm?
+	- LAS: disasm, C-ish compiler, ...? Where are we wrt to "musesum-ness"
+		- One goal is historical research and perhaps a paper on the
+		  code we've found and resurrected.
+		- Another may be museum exhibits -- esp. hardware currently under dev.
+	
+
+
+
+
 
 
 

@@ -14,7 +14,7 @@ class AsmExprEvalError (Exception):
 
 AsmTokenType = Enum ("AsmTokenType", ["Operator", "Comment", "AutoComment",
                                       "DigitString", "Identifier", "DotPrint", "DotExec",
-                                      "EndOfString", "Null"])
+                                      "String", "EndOfString", "Null"])
 
 class AsmToken:
     def __init__(self, tokenType: AsmTokenType, tokenStr: str):
@@ -76,9 +76,9 @@ class AsmTokenizer:
             token1 = self.getRawToken()
             if token1.tokenType == AsmTokenType.Operator and token1.tokenStr == '.':
                 token2 = self.getRawToken()
-                if token2.tokenType == AsmTokenType.Identifier and token2.tokenStr in ["print", "exec"]:
+                if token2.tokenType == AsmTokenType.Identifier and token2.tokenStr in ["exec"]:  # ["print", "exec]"
                     tokType = AsmTokenType.DotPrint if token2.tokenStr == "print" else AsmTokenType.DotExec
-                    restOfString = self.str[self.pos:self.slen]
+                    restOfString = self.str[self.pos:self.slen].rstrip ("\r\n")
                     self.tokenBuf = AsmToken (AsmTokenType.EndOfString, "")
                     return AsmToken (tokType, restOfString)
                 else:
@@ -118,6 +118,9 @@ class AsmTokenizer:
                         self.state = 3
                         self.pos += 1
                         self.push (c)
+                    elif c == '"':
+                        self.state = 9
+                        self.pos += 1
                     elif self.isExtAlphaChar (c):
                         self.state = 4
                         self.pos += 1
@@ -134,7 +137,7 @@ class AsmTokenizer:
                 case 2:
                     if c == self.endOfString:
                         self.state = 0
-                        return AsmToken (AsmTokenType.AutoCommment, self.pop())
+                        return AsmToken (AsmTokenType.AutoComment, self.pop())
                     else:
                         self.state = 2
                         self.pos += 1
@@ -194,6 +197,7 @@ class AsmTokenizer:
                         self.pos += 1
                         return AsmToken (AsmTokenType.Comment, self.pop())
                     else:
+                        self.push ('@')     # We want the previous atsign
                         self.state = 5
                 case 7:
                     if c == self.endOfString:
@@ -230,6 +234,15 @@ class AsmTokenizer:
                         self.state = 4
                     else:
                         self.illegalChar (c, self.pos, self.str, self.state)
+                case 9:
+                    if c == '"':
+                        self.state = 0
+                        self.pos += 1
+                        return AsmToken (AsmTokenType.String, self.pop())
+                    else:
+                        self.state = 9
+                        self.pos += 1
+                        self.push (c)
         return AsmToken()
 
 
@@ -254,7 +267,7 @@ AsmExprType = Enum ("AsmExprType", ["BinaryPlus", "BinaryMinus",
 # arithmetic on fractions at the assembly-lang level, and negative zero is only
 # relevant on one's-complement machines.  Assembly-language integers are
 # represented by the integer type of the host language. Negative zero does not
-# appear as a distinct value in any modern languages. For storing in ww memory
+# appear as a distinct value in any modern languages. For storing in ww memory,
 # values are converted to one's complement. Addresses should not need
 # conversion (i.e., conversion in this domain is the identity fcn) as they
 # can't go negative (should be an error to get a negative number for final
@@ -263,14 +276,17 @@ AsmExprType = Enum ("AsmExprType", ["BinaryPlus", "BinaryMinus",
 #
 # Numeric values in AsmExprValue are always signed integers. Fractions are
 # computed by converting the digit string to a signed floating point number,
-# and multiplying that by 2^15 and rounding to the nearest int.
+# multiplying that by 2^15 and rounding to the nearest int.
 #
 # Signed integer values in the host language are converted to 16-bit
-# one's-complement signed integers. Positive integers greater than 2^15 - 1
-# will be stored as unsigned 16 bit values. This then easily supports 0o, for
-# example.
+# one's-complement signed integers. Positive integers in the host language
+# greater than 2^15 - 1 will be stored as unsigned 16 bit values. This then
+# easily supports 0o, for example.
+#
+# Unbound variables in eval return the Undefined value.
 
-AsmExprValueType = Enum ("AsmExprValueType", ["Integer", "NegativeZero", "Fraction", "String", "List"])
+AsmExprValueType = Enum ("AsmExprValueType", ["Integer", "NegativeZero", "Fraction",
+                                              "String", "List", "Undefined"])
 
 class AsmExprValue:
     def __init__ (self, exprValueType: AsmExprValueType, value):
@@ -283,23 +299,25 @@ class AsmExprValue:
             return str (self.type) + " " + str (self.value)
 
 # We use a generic function here so that an eval may be done from contexts
-# outside the parser module, without requirng the parses module to import all
+# outside the parser module, without requirng the parser module to import all
 # sorts of extra stuff. This maintains modularity and also helps avoid circular
-# refs, which python really seems to hate, So e.g., in wwasm.py tables are
+# refs, which python really seems to hate. So e.g., in wwasm.mew.py tables are
 # built for labels and other vars and we can just pass in the function that
-# access those.
+# accesses those.
 
 class AsmExprEnv:
-    def __init__ (self, lookupFcn = lambda x: AsmExprValue (AsmExprValueType.Integer, 42)):
-        self.lookupFcn = lookupFcn
+    def __init__ (self):
+        pass
+    # Overridden by subclasses
     def lookup (self, var: str) -> AsmExprValue:
-        return self.lookupFcn (var)
+        # If we're just testing the parser we'll return 42 for everything
+        return AsmExprValue (AsmExprValueType.Integer, 42)
 
 class AsmExpr:
     def __init__ (self, exprType: AsmExprType, exprData: str):
         self.cb = wwinfra.theConstWWbitClass
         self.exprType = exprType
-        self.exprData = exprData            # variable or literal
+        self.exprData = exprData            # variable, literal, or oper name
         self.leftSubExpr: AsmExpr = None
         self.rightSubExpr: AsmExpr = None
     def print (self, indent = 3):           # Debug fcn
@@ -322,7 +340,22 @@ class AsmExpr:
             self.leftSubExpr.print (indent = indent + 3)
         elif t in [AsmExprType.Variable, AsmExprType.LiteralString, AsmExprType.LiteralDigits]:
             print (" " * indent + t.name, self.exprData)
-    def getIdStr (self):
+    # This does not yet handle parenthesized exprs correctly
+    def listingString (self, quoteStrings: bool = True):
+        if self.exprType in [AsmExprType.BinaryPlus, AsmExprType.BinaryMinus,
+                             AsmExprType.BinaryMult, AsmExprType.BinaryBitAnd,
+                             AsmExprType.BinaryBitOr]:
+            return self.leftSubExpr.listingString() + " " + self.exprData + " " + self.rightSubExpr.listingString()
+        elif self.exprType in [AsmExprType.BinaryDot, AsmExprType.BinaryComma]:
+            opStr = "." if self.exprType == AsmExprType.BinaryDot else ", "
+            return self.leftSubExpr.listingString() + opStr + self.rightSubExpr.listingString()
+        elif self.exprType in [AsmExprType.UnaryPlus, AsmExprType.UnaryMinus, AsmExprType.UnaryZeroOh]:
+            return self.exprData + self.leftSubExpr.listingString()
+        elif self.exprType in [AsmExprType.LiteralString]:
+            return "\"" + self.exprData + "\"" if quoteStrings else self.exprData
+        else:
+            return self.exprData
+    def getIdStr (self):    # Just for test/debug print
         return "AsmExpr-" + str (id (self))
     def evalError (self, msg: str):
         raise AsmExprEvalError (msg)
@@ -341,9 +374,10 @@ class AsmExpr:
     #
     # Entry point for eval, with error-catching wrapper.
     #
-    # Hokey python! We want to declare parsedLine below as AsmParsedLine, but
-    # it looks like an explicit fwd decl is needed. The solution for now is
-    # just don't declare it!
+    # Hokey python, Batman! We want to declare parsedLine below as
+    # AsmParsedLine, but it looks like an explicit fwd decl is needed. The
+    # solution for now is just don't declare it!
+    #
     def evalMain (self, env: AsmExprEnv, parsedLine) -> AsmExprValue:
         try:
             return self.eval (env)
@@ -354,7 +388,7 @@ class AsmExpr:
             p.cb.log.error (p.lineNo,
                             "Char pos %d: %s%s" %
                             (p.tokenizer.pos, e, p.tokenizer.caratString (p.lineStr, p.tokenizer.pos - 1)))
-            return None
+            return AsmExprValue (AsmExprValueType.Undefined, "")
     def eval (self, env: AsmExprEnv) -> AsmExprValue:
         if self.exprType in [AsmExprType.BinaryPlus,
                              AsmExprType.BinaryMinus,
@@ -391,12 +425,14 @@ class AsmExpr:
             v = round (float (s) * 2**15)
             return AsmExprValue (AsmExprValueType.Fraction, v)
         elif self.exprType == AsmExprType.BinaryDot:
-            #  It's a literal octal number
+            # It's a literal octal number, of the form (0|1).xxxxx
+            # Essentially, assure xxxxx is 5 octal digits, cut out the dot, and convert unsigned
             l = self
             if l.leftSubExpr.exprType == AsmExprType.LiteralDigits and \
                l.rightSubExpr.exprType == AsmExprType.LiteralDigits and \
-               l.leftSubExpr.exprData in ["0", "1"]:
-                v = (-1 if l.leftSubExpr.exprData == "0" else 1) * self.OctalDigitStringToInt (l.rightSubExpr.exprData)
+               l.leftSubExpr.exprData in ["0", "1"] and \
+               len (l.rightSubExpr.exprData) == 5:
+                v = self.OctalDigitStringToInt (l.leftSubExpr.exprData + l.rightSubExpr.exprData)
                 return AsmExprValue (AsmExprValueType.Integer, v)
             else:
                 self.evalError ("Improperly formatted octal number")
@@ -427,16 +463,20 @@ class AsmExpr:
             return AsmExprValue (AsmExprValueType.String, l.exprData)
         elif self.exprType == AsmExprType.Variable:
             # Variable
-            return env.lookup (self.exprData)
+            r = env.lookup (self.exprData)
+            if r is not None:
+                return r
+            else:
+                self.evalError ("Unbound variable %s" % self.exprData)
         elif self.exprType == AsmExprType.BinaryComma:
             x = self.leftSubExpr.eval (env)
             y = self.rightSubExpr.eval (env)
-            if x.type == AsmExprValueType.List:
-                if x.value is not None:
-                    x.value.append (y)
-                    return AsmExprValue (AsmExprValueType.List, x.value)
+            if y.type == AsmExprValueType.List:
+                if y.value is not None:
+                    y.value.insert (0, x)
+                    return AsmExprValue (AsmExprValueType.List, y.value)
                 else:
-                    return AsmExprValue (AsmExprValueType.List, [y])
+                    return AsmExprValue (AsmExprValueType.List, [x])
             else:
                 return AsmExprValue (AsmExprValueType.List, [x, y])
         else:
@@ -446,7 +486,7 @@ class AsmParsedLine:
     def __init__ (self, str, lineNo: int, verbose = False):
         self.cb = wwinfra.theConstWWbitClass
         self.verbose = verbose  # Passed in potentially on the test (main) command line; key on this for debug output
-        self.lineStr = str
+        self.lineStr = str.rstrip ("\r\n")
         self.lineNo = lineNo
         self.tokenizer = AsmTokenizer (str)
         self.tokenBuf = []
@@ -465,12 +505,14 @@ class AsmParsedLine:
     def ptok (self, tok):
         self.tokenBuf.append (tok)
     def error (self, msg: str):
+        # sys.stdout.flush()
+        # sys.stderr.flush()
         # traceback.print_stack()
         raise AsmParseSyntaxError (msg)
     def print (self):   # Debug fcn
         s = " "*3
         print ("\nAsmParsedLine:\n",
-               s + "line=", self.lineStr.rstrip ("\r\n"), "\n",
+               s + "line=", self.lineStr, "\n",
                s + "prefixAddr=", self.prefixAddr, "\n",
                s + "label=", self.label, "\n",
                s + "opname=", self.opname, "\n",
@@ -519,11 +561,10 @@ class AsmParsedLine:
                     else:
                         self.error (errMsg)
                 else:
-                    tok = self.gtok()
                     if tok.tokenType == AsmTokenType.Operator and tok.tokenStr == ":":
                         tok = self.gtok()
                         if tok.tokenType == AsmTokenType.DigitString:
-                            addrPart3 = tok.tokenStr
+                            self.prefixAddr[2] = tok.tokenStr
                             return True
                         else:
                             self.error (errMsg)
@@ -576,7 +617,7 @@ class AsmParsedLine:
     def parseComment (self) -> bool:
         tok = self.gtok()
         if tok.tokenType == AsmTokenType.Comment:
-            self.comment = tok.tokenStr
+            self.comment = tok.tokenStr.rstrip ("\r\n \t").lstrip()
             return True
         else:
             self.ptok (tok)
@@ -596,7 +637,7 @@ class AsmParsedLine:
                 negate = tok.tokenStr == "-"
                 # This is really groovy python syntax...
                 exprType = {"-":AsmExprType.UnaryMinus,"+":AsmExprType.UnaryPlus,"0o":AsmExprType.UnaryZeroOh}[tok.tokenStr]
-                e1 = AsmExpr (exprType, "")
+                e1 = AsmExpr (exprType, tok.tokenStr)
             else:
                 self.ptok (tok)
                 return self.parseAtom()
@@ -610,30 +651,29 @@ class AsmParsedLine:
             self.ptok (tok)
             return self.parseAtom()
         
-    # LAS 12/7/24 The binary op parsers (parseCommaOper though ParseDotOper)
+    # LAS 12/7/24 The binary op parsers (parseCommaOper through ParseDotOper)
     # are essentialy clones, and I haven't found a good way yet to refactor
     # them.
 
+    # With that said, the comma operator is the only one that's not quite a
+    # clone, since it's right-associative, and everything else is
+    # left-associative.
     def parseCommaOper (self, leftExpr: AsmExpr = None) -> AsmExpr:
         e1 = self.parseAdditiveOper()
         if e1 is not None:
-            if leftExpr is not None:
-                leftExpr.rightSubExpr = e1
             tok = self.gtok()
             if tok.tokenType == AsmTokenType.Operator and tok.tokenStr == ",":
-                e = AsmExpr (AsmExprType.BinaryComma, "")
-                if leftExpr is not None:
-                    e.leftSubExpr = leftExpr
-                else:
+                e2 = self.parseCommaOper()
+                if e2 is not None:
+                    e = AsmExpr (AsmExprType.BinaryComma, tok.tokenStr)
                     e.leftSubExpr = e1
-                e2 = self.parseCommaOper (leftExpr = e)
-                return e2
-            else:
-                self.ptok (tok)
-                if leftExpr is not None:
-                    return leftExpr
+                    e.rightSubExpr = e2
+                    return e
                 else:
                     return e1
+            else:
+                self.ptok (tok)
+                return e1
         else:
             self.error ("Comma operator syntax error")
     def parseAdditiveOper (self, leftExpr: AsmExpr = None) -> AsmExpr:
@@ -643,7 +683,7 @@ class AsmParsedLine:
                 leftExpr.rightSubExpr = e1
             tok = self.gtok()
             if tok.tokenType == AsmTokenType.Operator and tok.tokenStr in ["+", "-"]:
-                e = AsmExpr (AsmExprType.BinaryPlus if tok.tokenStr == '+' else AsmExprType.BinaryMinus, "")
+                e = AsmExpr (AsmExprType.BinaryPlus if tok.tokenStr == '+' else AsmExprType.BinaryMinus, tok.tokenStr)
                 if leftExpr is not None:
                     e.leftSubExpr = leftExpr
                 else:
@@ -665,7 +705,7 @@ class AsmParsedLine:
                 leftExpr.rightSubExpr = e1
             tok = self.gtok()
             if tok.tokenType == AsmTokenType.Operator and tok.tokenStr in ["*"]:
-                e = AsmExpr (AsmExprType.BinaryMult, "")
+                e = AsmExpr (AsmExprType.BinaryMult, tok.tokenStr)
                 if leftExpr is not None:
                     e.leftSubExpr = leftExpr
                 else:
@@ -687,7 +727,7 @@ class AsmParsedLine:
                 leftExpr.rightSubExpr = e1
             tok = self.gtok()
             if tok.tokenType == AsmTokenType.Operator and tok.tokenStr in ["&"]:
-                e = AsmExpr (AsmExprType.BinaryBitAnd, "")
+                e = AsmExpr (AsmExprType.BinaryBitAnd, tok.tokenStr)
                 if leftExpr is not None:
                     e.leftSubExpr = leftExpr
                 else:
@@ -702,7 +742,6 @@ class AsmParsedLine:
                     return e1
         else:
             self.error ("Bitwise-and operator syntax error")
-
     def parseBitOrOper (self, leftExpr: AsmExpr = None) -> AsmExpr:
         e1 = self.parseDotOper()
         if e1 is not None:
@@ -710,7 +749,7 @@ class AsmParsedLine:
                 leftExpr.rightSubExpr = e1
             tok = self.gtok()
             if tok.tokenType == AsmTokenType.Operator and tok.tokenStr in ["|"]:
-                e = AsmExpr (AsmExprType.BinaryBitOr, "")
+                e = AsmExpr (AsmExprType.BinaryBitOr, tok.tokenStr)
                 if leftExpr is not None:
                     e.leftSubExpr = leftExpr
                 else:
@@ -725,8 +764,6 @@ class AsmParsedLine:
                     return e1
         else:
             self.error ("Bitwise-or operator syntax error")
-
-            
     def parseDotOper (self, leftExpr: AsmExpr = None) -> AsmExpr:
         e1 = self.parseUnaryOper()
         if e1 is not None:
@@ -734,7 +771,7 @@ class AsmParsedLine:
                 leftExpr.rightSubExpr = e1
             tok = self.gtok()
             if tok.tokenType == AsmTokenType.Operator and tok.tokenStr in ["."]:
-                e = AsmExpr (AsmExprType.BinaryDot, "")
+                e = AsmExpr (AsmExprType.BinaryDot, tok.tokenStr)
                 if leftExpr is not None:
                     e.leftSubExpr = leftExpr
                 else:
@@ -751,9 +788,13 @@ class AsmParsedLine:
             self.error ("Dot operator syntax error")
     def parseAtom (self) -> AsmExpr:
         tok = self.gtok()
-        if tok.tokenType in [AsmTokenType.DigitString, AsmTokenType.Identifier]:
-            return AsmExpr (AsmExprType.Variable if tok.tokenType == AsmTokenType.Identifier else AsmExprType.LiteralDigits,
-                            tok.tokenStr)
+        tokTypeDict = {
+            AsmTokenType.DigitString: AsmExprType.LiteralDigits,
+            AsmTokenType.Identifier: AsmExprType.Variable,
+            AsmTokenType.String: AsmExprType.LiteralString
+            }
+        if tok.tokenType in tokTypeDict:
+            return AsmExpr (tokTypeDict[tok.tokenType], tok.tokenStr)
         elif tok.tokenType == AsmTokenType.Operator and tok.tokenStr == "(":
             # Open the trap door to the wormhole to another dimension...
             e = self.parseExpr()
@@ -797,7 +838,11 @@ class AsmParseTest:
             if c == '.':
                 return inFileName[0:j] + ".ww"
         return inFileName + ".ww"
+    def flush (self):
+        sys.stdout.flush()
+        sys.stderr.flush()
     def parseLines (self):
+        verbose = self.cmdArgs.Verbose
         lineNo = 1
         s = open (self.cmdArgs.inFileName, "r")
         while True:
@@ -807,17 +852,23 @@ class AsmParseTest:
             else:
                 l = AsmParsedLine (line, lineNo, verbose = self.verbose)
                 l.parseLine()
-                l.print()
+                if verbose:
+                    l.print()
+                    self.flush()
                 self.parsedLines.append (l)
                 lineNo += 1
                 if l.operand is not None:
                     env = AsmExprEnv()
-                    print ("Eval:")
-                    print (" "*2 + l.operand.getIdStr())
+                    if verbose:
+                        print ("Eval:")
+                        print (" "*2 + l.operand.getIdStr())
                     v = l.operand.evalMain (env, l)
                     if v is not None:
-                        print (" "*4 + v.asString())
-                        print ("")
+                        if verbose:
+                            print (" "*4 + v.asString())
+                            print ("")
+                    if verbose:
+                        self.flush()
 
 # The main program is used for test and debug. Prints produced via the
 # AsmParseTest class write logs which are then compared the test scripts, so
@@ -829,7 +880,7 @@ def main():
     parser = wwinfra.StdArgs().getParser (".")
     parser.add_argument ("inFileName", help="")
     # parser.add_argument ("-o", "--OutFile", help="File to write (default basename(inputFileName).ww)", type=str)
-    parser.add_argument ("-v", "--Verbose", help="Generate extra debug output", action="store_true")
+    parser.add_argument ("-v", "--Verbose", help="Print parse tree and eval result", action="store_true")
     cmdArgs = parser.parse_args()
     cb = wwinfra.ConstWWbitClass (args = cmdArgs)
     wwinfra.theConstWWbitClass = cb

@@ -12,7 +12,7 @@ Eval:
 
 
 AsmParsedLine:
-    line=            .dbwgt R, 0o200 
+    line=            .dbwgt R, 0o200, "%d" 
     prefixAddr= {} 
     label=  
     opname= dbwgt 
@@ -20,10 +20,12 @@ AsmParsedLine:
     auto-comment= 
    BinaryComma
       Variable R
-      UnaryZeroOh
-         LiteralDigits 200
+      BinaryComma
+         UnaryZeroOh
+            LiteralDigits 200
+         LiteralString %d
 Eval:
-    AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 128']
+    AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 128', 'AsmExprValueType.String %d']
 
 
 AsmParsedLine:
@@ -99,17 +101,19 @@ Eval:
 
 
 AsmParsedLine:
-    line=            .print "This is a message %s", 42 
+    line=            .print "This is a message %s", 42, xyz 
     prefixAddr= {} 
     label=  
     opname= print 
     comment=  
     auto-comment= 
-   LiteralString "This is a message %s", 42
-
+   BinaryComma
+      LiteralString This is a message %s
+      BinaryComma
+         LiteralDigits 42
+         Variable xyz
 Eval:
-    AsmExprValueType.String "This is a message %s", 42
-
+    AsmExprValueType.List ['AsmExprValueType.String This is a message %s', 'AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 42']
 
 
 AsmParsedLine:
@@ -138,6 +142,18 @@ AsmParsedLine:
          LiteralDigits 37
 Eval:
     AsmExprValueType.Integer 5
+
+
+AsmParsedLine:
+    line=            .exec for i in range(0, 10): print(f"### data[{i}] = {py_int(cm.rd(rl('data') + i))} ###") 
+    prefixAddr= {} 
+    label=  
+    opname= exec 
+    comment=  
+    auto-comment= 
+   LiteralString for i in range(0, 10): print(f"### data[{i}] = {py_int(cm.rd(rl('data') + i))} ###")
+Eval:
+    AsmExprValueType.String for i in range(0, 10): print(f"### data[{i}] = {py_int(cm.rd(rl('data') + i))} ###")
 
 
 AsmParsedLine:
@@ -173,20 +189,19 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= sp 
-    comment=  Hi there!
- 
+    comment= Hi there! 
     auto-comment= 
    BinaryComma
+      Variable abc
       BinaryComma
+         UnaryZeroOh
+            LiteralDigits 12345
          BinaryComma
-            Variable abc
-            UnaryZeroOh
-               LiteralDigits 12345
-         BinaryDot
-            UnaryPlus
-               LiteralDigits 0
-            LiteralDigits 98765
-      LiteralDigits 9800
+            BinaryDot
+               UnaryPlus
+                  LiteralDigits 0
+               LiteralDigits 98765
+            LiteralDigits 9800
 Eval:
     AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 5349', 'AsmExprValueType.Fraction 32363', 'AsmExprValueType.Integer 9800']
 
@@ -227,3 +242,26 @@ AsmParsedLine:
 Eval:
     AsmExprValueType.Integer 63
 
+
+AsmParsedLine:
+    line= 		   sp 1.07777 
+    prefixAddr= {} 
+    label=  
+    opname= sp 
+    comment=  
+    auto-comment= 
+   BinaryDot
+      LiteralDigits 1
+      LiteralDigits 07777
+Eval:
+    AsmExprValueType.Integer 36863
+
+
+AsmParsedLine:
+    line=  
+    prefixAddr= {} 
+    label=  
+    opname=  
+    operand= None 
+    comment=  
+    auto-comment= 

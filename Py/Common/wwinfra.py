@@ -704,7 +704,7 @@ class WWSwitchClass:
     # writing the parser twice...  If this works, it might be possible to share more stuff.
     # So the routine returns an array of True/False for the sim, and a cleaned and validated
     # arg list for the assembler
-    def parse_ff_reg_assignment(self, name, args):
+    def parse_ff_reg_assignment(self, cb, name, args):
         ffreg_str = ''
         validated_str = ''
         for arg in args:
