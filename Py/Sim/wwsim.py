@@ -50,6 +50,9 @@ from typing import List, Dict, Tuple, Sequence, Union, Any
 
 TTYoutput = []
 Debug = False
+# Jan 2, 2025 -- I've added this knob to revert to "standard" shift instruction behavior; take this all out once
+# the Shift Mystery is resolved!
+LnZ = False
 
 flowgraph = None
 
@@ -1282,14 +1285,21 @@ class CpuClass:
     # of the address) of the instruction srh n must be a one to distinguish srh n
     # from srr n described above. SAM is cleared.
 
-    # [guy says] note that the B register is always considered 'positive'...  i.e.
-    # all operations involving B first do a step of converting A to positive, then do the operation,
-    # then convert A back to negative if needed.
+    # Dec 23, 2024:  This note appears to be wrong...  it is what 2m0277 says, but
+    # the result of shifting a negative number right yields a mix-up result in B, with
+    # part of the inverted A with zeros shifted in.
+        # [guy says] note that the B register is always considered 'positive'...  i.e.
+        # all operations involving B first do a step of converting A to positive, then do the operation,
+        # then convert A back to negative if needed.
+    # e.g., try "srh 27" on 0o140761; I think the result should be 0o177770 in B
+    # I'm changing it to invert A _and_ B if A is negative.
     def ww_shift(self, a, b, n, shift_dir, hold):
+        global LnZ      # take this out once the Shift Mystery is Solved
         # shift on negative numbers works by complementing negative input, shifting and then re-complementing
         negative = (a & self.cb.WWBIT0)  # sign bit == 1 means Negative
         if negative:  # sign bit == 1 means Negative, so we turn it positive
             a = self.ww_negate(a)
+            if LnZ: b = self.ww_negate(b)   # changed Dec 23, 2024; see note above
 
         # having eliminated the sign bit, combine a and b into a single 32-bit native python number, then shift
         shift_val = a << 16 | b
@@ -1323,7 +1333,7 @@ class CpuClass:
 
         if negative:
             reg_a = ~reg_a & self.cb.WWBIT0_15
-            # leave the B Register "positive"
+            if LnZ: reg_b = self.ww_negate(reg_b)   # changed Dec 23, 2024; see note above
 
         dir_str = {self.cb.SHIFT_RIGHT: "Right", self.cb.SHIFT_LEFT: "Left"}
         hold_str = {0: "Round", 1: " Hold"}
@@ -1336,6 +1346,8 @@ class CpuClass:
 
     # this op code does the two Shift Right instructions
     def sr_inst(self, _pc, address, _opcode, _op_description):
+        # if _pc == 0o1615:
+        #     breakp("shift-right-breakpoint")
         operand = address & 0o37  # the rule book says Mod 32
         hold = False
         if self.cb.WWBIT6 & address and not self.isa_1950:  # the original instruction set only did 'round', not 'hold':
