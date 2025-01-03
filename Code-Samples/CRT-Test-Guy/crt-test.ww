@@ -4,9 +4,16 @@
 ; Diagnostic test for Whirlwind CRT emulation
 ; g fedorkow, dec 13, 2023
 
+; Bug fix: Jan 2, 2025:  [guy] The asm used to start packing instructions at address zero by
+;  default; I changed that to the conventional 0o40 a while back, but forgot to update
+;  this code to get the default labels Zero and One located correctly.
+; The simulator sets addresses zero and one to zero and one by default, in line with WW
+;  convention, so these two definitions in the ASM serve only as documentation (or sources
+;  of bugs when mis-used!)
 
-zero:   .word 0
-one:    .word 1
+          .org 0    ; added Jan 2, 2025
+zero:     .word 0
+one:      .word 1
 
 
           .org 0o40
