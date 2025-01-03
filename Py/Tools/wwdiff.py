@@ -167,7 +167,10 @@ def measure_similarity(core_a, core_b, core_b_offset, cb):
 
 # Pythonic entry point
 def main():
-    parser = argparse.ArgumentParser(description='Compare a Whirlwind tape image.')
+
+    # instantiate the class full of constants
+    parser = wwinfra.StdArgs().getParser ('Compare a Whirlwind tape image.')
+
     parser.add_argument("inputfiles", nargs='*', help=".core file(s)")
     # parser.add_argument("diff_file_b", help="second .core file")
     parser.add_argument("-o", "--outputfile", help="Merged file output", type=str)
@@ -178,12 +181,15 @@ def main():
 
     args = parser.parse_args()
 
-    cb = wwinfra.ConstWWbitClass()
+    cb = wwinfra.ConstWWbitClass(get_screen_size=False, args=args)
+    wwinfra.theConstWWbitClass = cb
+    cb.log = wwinfra.LogFactory().getLog(quiet=args.Quiet)
+
     cpu = CpuClass(cb)
     cb.cpu = cpu
     cpu.cpu_switches = wwinfra.WWSwitchClass(cb)
-    log = wwinfra.LogClass(sys.argv[0], quiet=args.Quiet, debug556=args.Debug556)
-    cb.log = log
+#    log = wwinfra.LogClass(sys.argv[0], quiet=args.Quiet, debug556=args.Debug556)
+#    cb.log = log
 
     if args.Merge and args.outputfile is None:
         cb.log.fatal("%s requires an output file (-o) for Merge mode" % sys.argv[0])
