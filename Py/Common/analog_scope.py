@@ -55,16 +55,18 @@ class AnaScope:
         # pin definitions in BCM numbering
         self.pin_doMove = 17
         self.pin_doDraw = 22
-        self.pin_enZ1 = 23  # not yet used
-        self.pin_enZ2 = 18  # not yet used
+        self.pin_enZ1 = 23
+        self.pin_enZ2 = 18
         self.pin_isKey = 27 # used as the Stop signal
         self.pin_isGun1 = 24
         self.pin_isGun2 = 25
-        self.pin_isGun1on = 7
+        self.pin_isGun1on = 26  # could be 12, # was 7
         self.pin_isGun2on = 4
         self.pin_TargetLED = 5
         self.pin_InterceptorLED = 6
         self.pin_isIntercept = 21  # used to indicate Target or Intercept to air-defense sim
+
+        self.pin_audio_click = 12  # experiment
 
         # SPI pins are defined by SPI interface
 
@@ -351,7 +353,14 @@ class AnaScope:
             return False
         return(gpio.input(self.pin_isKey) == 0)
 
-#
+
+    def set_audio_click(self, acc):
+        if gpio is None:
+            return False
+        val = (acc & 0o4) != 0
+        gpio.output(self.pin_audio_click, val)
+
+    #
 #### next functions for stand alone test only
 #
 

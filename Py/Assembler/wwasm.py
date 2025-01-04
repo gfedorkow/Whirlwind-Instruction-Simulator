@@ -1162,7 +1162,11 @@ class LexedLine:
         if self.binary_instruction_word is not None:
             wrd = "%06o" % self.binary_instruction_word
         else:
-            wrd = "      "
+            if self.instruction_address is not None:
+                wrd = "0     "  # put something in the field that should show memory contents,
+                                # even if there's no instruction.  This case covers lone labels in the source file
+            else:
+                wrd = "      "
 
         auto_label, auto_comment = self._auto_label()
 

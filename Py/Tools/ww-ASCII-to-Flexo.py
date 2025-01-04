@@ -45,6 +45,24 @@ def convert_ascii(cb, input_string):
             flexo_codes.append(upper_dict[c])
     return flexo_codes
 
+def format_tcodes(input_string, flexo_codes):
+    output_str = "; ascii string converted to flexo code:\n; "
+    for offset in range(0, len(input_string)):
+        s = input_string[offset]
+        output_str += s
+        if  s == '\n' and offset < len(input_string):
+            output_str += "; "
+    output_str += "\n"
+
+    addr = 0
+    output_str += '@T000: '
+    for f in flexo_codes:
+        output_str += "%06o  " % f
+        addr += 1
+        if addr % 8 == 0:
+            output_str += '\n@T%03o: ' % addr
+    return output_str
+
 def main():
     # global theConstWWbitClass
 
@@ -59,7 +77,7 @@ def main():
 
     cb = wwinfra.ConstWWbitClass(corefile='help-me', args = args)
     wwinfra.theConstWWbitClass = cb
-    cb.log = wwinfra.LogFactory().getLog(cb=cb, logname='help-me', quiet=args.Quiet)
+    cb.log = wwinfra.LogFactory().getLog(logname='help-me', quiet=args.Quiet)
 #    core = wwinfra.CorememClass(cb)
 
     input_string = args.ascii_string
@@ -98,10 +116,7 @@ def main():
             else:
                 sys.stdout.write(b)
     else:
-        output_str = "; ascii string '%s' converted to flexo code\n" % input_string
-        output_str +='@T000: '
-        for f in flexo_codes:
-            output_str += "%06o  " % f
+        output_str = format_tcodes(input_string, flexo_codes)
 
         if out_fd:
             out_fd.write(output_str)

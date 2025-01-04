@@ -31,11 +31,12 @@ Debug556 = False
 DebugXsum = False
 # DrumOffset = 0o40    # optional argument for (I think) loading 'drum dump' tapes
 DrumOffset = 0o00    # optional argument for (I think) loading 'drum dump' tapes
-cb = wwinfra.ConstWWbitClass()
+#cb = wwinfra.ConstWWbitClass()
+cb = None
 flexo = wwinfra.FlexoClass(cb)
 
-hist = wwinfra.OpCodeHistogram(cb)
-
+#hist = wwinfra.OpCodeHistogram(cb)
+hist = None
 
 def breakp(why: str):
     print("breakpoint: %s" % why)
@@ -1074,7 +1075,10 @@ def read_7ch(cb, filename:str):
 def main():
     global DebugTAP, Debug556, hist
     global cb
-    parser = argparse.ArgumentParser(description='Decode a Whirlwind tape image.')
+
+    # instantiate the class full of constants
+    parser = wwinfra.StdArgs().getParser ('Decode a Whirlwind tape image.')
+
     parser.add_argument("tape_file", help="file name of tape image in .tap or .7ch format")
     parser.add_argument("--Ch7Format", help="interpret the file as .7ch paper tape", action="store_true")
     parser.add_argument("--TapFormat", help="interpret the file as .tap magnetic tape", action="store_true")
@@ -1098,6 +1102,12 @@ def main():
                         action="store_true")
 
     args = parser.parse_args()
+
+    cb = wwinfra.ConstWWbitClass(get_screen_size=True, args=args)
+    wwinfra.theConstWWbitClass = cb
+    cb.log = wwinfra.LogFactory().getLog(quiet=args.Quiet)
+    hist = wwinfra.OpCodeHistogram(cb)
+
     if args.DebugTAP:
         DebugTAP = True
     if args.Debug556:
@@ -1106,7 +1116,7 @@ def main():
         DebugXsum = True
     read_past_eof = not args.NoReadPastEOF
 
-    log = wwinfra.LogClass(sys.argv[0], quiet=args.Quiet, debug556=args.Debug556, debug7ch=args.Debug7ch)
+    log = wwinfra.LogClass(sys.argv[0], factory=cb.log.factory, quiet=args.Quiet, debug556=args.Debug556, debug7ch=args.Debug7ch)
     cb.log = log
 
     file_type = None
