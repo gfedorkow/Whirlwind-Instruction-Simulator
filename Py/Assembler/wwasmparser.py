@@ -248,7 +248,8 @@ class AsmTokenizer:
 
 AsmExprType = Enum ("AsmExprType", ["BinaryPlus", "BinaryMinus",
                                     "UnaryPlus", "UnaryMinus", "UnaryZeroOh",
-                                    "BinaryMult", "BinaryDot", "BinaryComma",
+                                    "BinaryMult", "BinaryDiv",
+                                    "BinaryDot", "BinaryComma",
                                     "BinaryBitAnd", "BinaryBitOr",
                                     "Variable", "LiteralString", "LiteralDigits"])
 
@@ -323,7 +324,7 @@ class AsmExpr:
     def print (self, indent = 3):           # Debug fcn
         t = self.exprType
         if t in [AsmExprType.BinaryPlus, AsmExprType.BinaryMinus,
-                 AsmExprType.BinaryMult, AsmExprType.BinaryDot,
+                 AsmExprType.BinaryMult, AsmExprType.BinaryDiv, AsmExprType.BinaryDot,
                  AsmExprType.BinaryBitAnd, AsmExprType.BinaryBitOr,
                  AsmExprType.BinaryComma]:
             print (" " * indent + t.name)
@@ -343,7 +344,7 @@ class AsmExpr:
     # This does not yet handle parenthesized exprs correctly
     def listingString (self, quoteStrings: bool = True):
         if self.exprType in [AsmExprType.BinaryPlus, AsmExprType.BinaryMinus,
-                             AsmExprType.BinaryMult, AsmExprType.BinaryBitAnd,
+                             AsmExprType.BinaryMult, AsmExprType.BinaryDiv, AsmExprType.BinaryBitAnd,
                              AsmExprType.BinaryBitOr]:
             return self.leftSubExpr.listingString() + " " + self.exprData + " " + self.rightSubExpr.listingString()
         elif self.exprType in [AsmExprType.BinaryDot, AsmExprType.BinaryComma]:
@@ -393,6 +394,7 @@ class AsmExpr:
         if self.exprType in [AsmExprType.BinaryPlus,
                              AsmExprType.BinaryMinus,
                              AsmExprType.BinaryMult,
+                             AsmExprType.BinaryDiv,
                              AsmExprType.BinaryBitAnd,
                              AsmExprType.BinaryBitOr]:
             x = self.leftSubExpr.eval (env)
@@ -408,6 +410,7 @@ class AsmExpr:
                         AsmExprType.BinaryPlus:   lambda x, y: x + y,
                         AsmExprType.BinaryMinus:  lambda x, y: x - y,
                         AsmExprType.BinaryMult:   lambda x, y: x * y,
+                        AsmExprType.BinaryDiv:    lambda x, y: x // y,
                         AsmExprType.BinaryBitAnd: lambda x, y: x & y,
                         AsmExprType.BinaryBitOr:  lambda x, y: x | y
                         }[self.exprType]
@@ -704,8 +707,9 @@ class AsmParsedLine:
             if leftExpr is not None:
                 leftExpr.rightSubExpr = e1
             tok = self.gtok()
-            if tok.tokenType == AsmTokenType.Operator and tok.tokenStr in ["*"]:
-                e = AsmExpr (AsmExprType.BinaryMult, tok.tokenStr)
+            if tok.tokenType == AsmTokenType.Operator and tok.tokenStr in ["*", "/"]:
+                d = {"*": AsmExprType.BinaryMult, "/": AsmExprType.BinaryDiv}
+                e = AsmExpr (d[tok.tokenStr], tok.tokenStr)
                 if leftExpr is not None:
                     e.leftSubExpr = leftExpr
                 else:

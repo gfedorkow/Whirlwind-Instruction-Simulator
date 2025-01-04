@@ -282,7 +282,7 @@ class AsmInst:
         s2 = s1 + inst
         sp2 = sp*(50 - len (s2)) if p.label != "" or p.opname != "" else ""
         s3 = (sp2 + "; " + comment + " " + autoComment) if comment + autoComment != "" else ""
-        return s2 + s3
+        return (s2 + s3).rstrip (" ")
 
 class AsmWwOpInst (AsmInst):
     def __init__ (self, *args):
@@ -341,13 +341,13 @@ class AsmWwSiOpInst (AsmWwOpInst):
         super().__init__ (*args)
     def passTwoOp (self):
         super().passTwoOp()
-        if self.prog.annotateIoNames:
-            val = self.operandVal
-            if val.type == AsmExprValueType.Integer:
-                d: str = self.cb.Decode_IO (val.value)
-                self.xrefs.annotateIoStr = "; Auto-Annotate I/O: %s" % d
-            else:
-                self.operandTypeError (val)
+        val = self.operandVal
+        if val.type == AsmExprValueType.Integer:
+            d: str = "; Auto-Annotate I/O: %s" % self.cb.Decode_IO (val.value)
+            if d not in self.parsedLine.comment:
+                self.xrefs.annotateIoStr = d
+        else:
+            self.operandTypeError (val)
 
 class AsmPseudoOpInst (AsmInst):
     def __init__ (self, *args):
@@ -373,12 +373,6 @@ class AsmUnknownInst (AsmPseudoOpInst):
         pass
     def passTwoOp (self):
         pass
-
-# LAS 12/8/24 Issue: The original calls ww_int_csii, a digit parser which
-# should not be needed under the new grammar. However I see in .ww files that
-# .org seems to accept only octal, regardless of the usual numeric parsing
-# format. Here I'm assuming standard format, so e.g. ".ORG 00040" will be taken
-# as decimal.
 
 class AsmDotOrgInst (AsmPseudoOpInst):
     def __init__ (self, *args):
@@ -781,7 +775,7 @@ class AsmProgram:
     def __init__ (self,
                   inFilename, inStream,
                   coreOutFilename, listingOutFilename,
-                  verbose, debug, minimalListing, annotateIoNames, isa1950):
+                  verbose, debug, minimalListing, isa1950):
         #
         # The "fundamental constants" of the machine. Masks, which can hide
         # bugs, are not used. Ranges of fields are checked.
@@ -818,10 +812,8 @@ class AsmProgram:
         self.wwTapeId: str = ""
         self.wwJumpToAddress: int = None     # Initial program addr
         self.minimalListing = minimalListing
-        self.legacyNumbers: bool = False
         self.opCodeTable: list = []
         self.isa1950: bool = False
-        self.annotateIoNames: bool = annotateIoNames
 
         self.insts: [AsmInst] = []
 
@@ -837,9 +829,9 @@ class AsmProgram:
         self.execTab = {}                             # Dictionary of Python Exec statements, indexed by core mem address
         self.switchTab = {}
         
-        self.coreMem = [None]*self.coreSize           # An image of the final core memory.
+        self.coreMem = [None]*self.coreSize           # An image of the final core memory. Maps int -> int. Type ([int]*self.coreSize)[int]
 
-        self.coreToInst = [None]*self.coreSize        # An array mapping an address to an AsmInst -- for xref
+        self.coreToInst = [None]*self.coreSize        # An array mapping an address to an AsmInst -- for xref. Type ([AsmInst]*self.coreSize)[Address: int]
 
         self.wwFilename = inFilename                  # wwFilename will be overwritten if there's a directive in the source
         self.inStream = inStream
@@ -970,16 +962,19 @@ class AsmProgram:
 def main():
     parser = wwinfra.StdArgs().getParser ("Assemble a Whirlwind Program.")
     parser.add_argument("inputfile", help="file name of ww asm source file")
+    parser.add_argument('--outputfilebase', '-o', type=str, help='base name for output file')
     parser.add_argument("--Verbose", '-v',  help="print progress messages", action="store_true")
     parser.add_argument("--Debug", '-d', help="Print lotsa debug info", action="store_true")
     parser.add_argument("--MinimalListing", help="Do not include prefix address and auto-comments in listing", action="store_true")
-    parser.add_argument("--Annotate_IO_Names", help="Auto-add comments to identify SI device names", action="store_true")
-    parser.add_argument("--Legacy_Numbers", help="guy-legacy - Assume numeric strings are Octal", action="store_true")
-    parser.add_argument("-D", "--DecimalAddresses", help="Display traec information in decimal (default is octal)",
-                        action="store_true")
-    parser.add_argument("--ISA_1950", help="Use the 1950 version of the instruction set",
-                        action="store_true")
-    parser.add_argument('--outputfilebase', '-o', type=str, help='base name for output file')
+    parser.add_argument("-D", "--DecimalAddresses", help="Display listing addresses in decimal as well as octal", action="store_true")
+    parser.add_argument("--ISA_1950", help="Use the 1950 version of the instruction set", action="store_true")
+
+    # We decided to keep this always-on
+    # parser.add_argument("--Annotate_IO_Names", help="Auto-add comments to identify SI device names", action="store_true")
+    
+    # No longer supported, in favor of editing the code. Thus bare digits are always decimal.
+    # Parser.add_argument("--Legacy_Numbers", help="guy-legacy - Assume numeric strings are Octal", action="store_true")
+
     args = parser.parse_args()
     cb = wwinfra.ConstWWbitClass (args = args)
     wwinfra.theConstWWbitClass = cb
@@ -988,8 +983,6 @@ def main():
     debug = args.Debug
     verbose = args.Verbose
     minimalListing = args.MinimalListing
-    legacyNumbers = args.Legacy_Numbers
-    annotateIoNames = args.Annotate_IO_Names
     isa1950 = args.ISA_1950
     inFilename = args.inputfile
     outFileBaseName = re.sub("\\.ww$", '', inFilename)
@@ -1002,7 +995,7 @@ def main():
     prog = AsmProgram (
         inFilename, inStream,
         coreOutFilename, listingOutFilename,
-        verbose, debug, minimalListing, annotateIoNames, isa1950)
+        verbose, debug, minimalListing, isa1950)
     prog.assemble()
 
 main()

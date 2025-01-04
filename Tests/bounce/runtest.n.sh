@@ -1,3 +1,6 @@
+# cd to the dir with this file, to facilitate external control
+thisfile=$0
+cd ${thisfile%/*}/
 
 echo "Bounce Test:"
 if [ "$1" == "--Accept" ];

@@ -2,7 +2,7 @@
 thisfile=$0
 cd ${thisfile%/*}/
 
-echo "Bounce Test:"
+echo "CRT Test:"
 if [ "$1" == "--Accept" ];
 then
 	echo "Accepting..."
@@ -10,11 +10,11 @@ then
 	mkdir TestRefs
 	cp wwasm.log wwsim.log TestRefs/
 else
-	asm="$PYTHONPATH/../../Py/Assembler/wwasm.py"		# Use quotes since can't resolve backslash yet -- it's needed for file name translation
+	asm="$PYTHONPATH/../../Py/Assembler/wwasm.new.py"		# Use quotes since can't resolve backslash yet -- it's needed for file name translation
 	sim="$PYTHONPATH/../../Py/Sim/wwsim.py"
-	rm -f bounce.acore wwsim.log wwasm.log tmp-wwasm.log tmp-ref-wwasm.log tmp-wwsim.log tmp-ref-wwsim.log
-	python $asm bounce.ww -o bounce >&wwasm.log
-	python $sim --CycleLimit 7700 bounce.acore >&wwsim.log
+	rm -f crt-test.n.ncore crt-test.n.nlst wwsim.log wwasm.log tmp-wwsim.log tmp-ref-wwsim.log 
+	python $asm crt-test.n.ww >&wwasm.log
+	python $sim --CycleLimit 5000 crt-test.n.ncore >&wwsim.log
 	egrep "Warning|Error" wwasm.log >&tmp-wwasm.log
 	egrep "Warning|Error" TestRefs/wwasm.log >&tmp-ref-wwasm.log
 	grep ww_draw_point wwsim.log >&tmp-wwsim.log

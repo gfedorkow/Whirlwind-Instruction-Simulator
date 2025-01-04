@@ -7,10 +7,6 @@ import wwinfra
 from enum import Enum
 import argparse
 
-def p (*args):
-    # print (*args)
-    pass
-
 AsmTokenType = Enum ("AsmTokenType", ["Operator", "Comment", "AutoComment",
                                       "DigitString", "Identifier", "DotPrint", "DotExec",
                                       "RecordSep", # A distinct record separator -- tab is the only one so far
@@ -72,7 +68,6 @@ class AsmTokenizer:
         while self.pos <= self.slen:
             if self.pos < self.slen:
                 c = self.str[self.pos]
-                p ("LAS57", c)
                 if c == '\t':
                     return AsmToken (AsmTokenType.Comment, self.pop())
                 else:
@@ -87,7 +82,6 @@ class AsmTokenizer:
                 c = self.str[self.pos]
             else:
                 c = self.endOfString
-            p ("LAS42", self.state, c, ord (c) if len(c) == 1 else 0)
             match self.state:
                 case 0:
                     if c == self.endOfString:
@@ -315,9 +309,7 @@ class AsmParsedLine:
     # public
     def parseLine (self) -> bool:
         try:
-            p ("LAS1")
             self.parsePrefixComment()
-            p ("LAS2", self.parseRecordSep())
             if self.parseSectionOffset():
                 self.parseRecordSep()
                 self.parseInst()
@@ -340,7 +332,6 @@ class AsmParsedLine:
         return True;
     def parsePostfixComment (self) -> bool:
         tok = self.tokenizer.getCommentToken() # Must be of type AsmTokenType.Comment
-        p ("LAS86", tok.tokenType, tok.tokenStr)
         self.postfixComment = tok.tokenStr.rstrip ("\r\n")
         return True;
     def parseSectionOffset (self) -> bool:
@@ -379,14 +370,10 @@ class AsmParsedLine:
         return self.parseAdditiveOper()
     def parseUnaryOper (self) -> AsmExpr:
         tok = self.gtok()
-        p ("LAS5", tok.tokenType, tok.tokenStr)
         if tok.tokenType == AsmTokenType.Operator:
             if tok.tokenStr == "-":     # Lookahead for the idiom "(-)"
-                p ("LAS3")
                 tok1 = self.gtok()
-                p ("LAS4", tok1.tokenType, tok1.tokenStr)
                 if tok1.tokenType == AsmTokenType.Operator and tok1.tokenStr == ")":
-                    p ("LAS6")
                     self.ptok (tok1)
                     return AsmExpr (AsmExprType.Literal, "0")
                 else:
@@ -476,7 +463,6 @@ class AsmParsedLine:
             self.error()
     def parseAtom (self) -> AsmExpr:
         tok = self.gtok()
-        p ("LAS7", tok.tokenType, tok.tokenStr)
         if tok.tokenType in [AsmTokenType.DigitString, AsmTokenType.Identifier]:
             return AsmExpr (AsmExprType.Variable if tok.tokenType == AsmTokenType.Identifier else AsmExprType.Literal,
                             tok.tokenStr)
