@@ -9,9 +9,9 @@ main:	ca 0		; nop
 		.print "proc-call-test 3"
 		si 0
 
-;;
-;; Proc entry
-;;
+		;
+		; Proc entry
+		;
 subr:	ta gaddr
 		ao stackp
 		ca stackp
@@ -19,9 +19,9 @@ subr:	ta gaddr
 		ca gaddr
 push:	ts 0
 
-;;
-;; Proc code
-;;
+		;
+		; Proc code
+		;
 		.print "proc-call-test 2 %o %o %o %o %o", stackp, stack0, stack1, gaddr, level
 		ca level
 		su one
@@ -29,9 +29,9 @@ push:	ts 0
 		cp end
 		sp subr
 
-;;
-;; Proc exit
-;;
+		;
+		; Proc exit
+		;
 end:	ca stackp
 		ts gaddr
 		su one

@@ -1,0 +1,199 @@
+                        ; Vibrating String Demo
+						; Whirlwind source code, converted by g fedorkow, Nov 2020
+
+                        ; this file is the "input tape" for fb131-97, a program to display
+                        ; the path of a vibrating string, as decribed in DCL-090
+
+                        ; the input tape sets up the initial conditions for a string
+                        ; The initial shape is computed here, but four parameters are read
+                        ; from switches (two Intervention Registers and two initialized Flip Flop
+                        ; registers
+
+                        ; The program runs in two steps; the Input Tape is read first, to configure
+                        ; initial conditions, then the Operating Tape actually runs the simulation
+
+                        ; I've merged the two in this file.  The Input tape starts at 0o170, then
+                        ; starts the Operating Tape at 0o40
+
+                        ; Prepare for perpetual confusion between decimal and octal  numbers.  The WW
+                        ; source code was mostly in decimal, but of course debugging happens in octal.
+                        ; Nov 12, 2020
+						
+						; DCL-090 says:
+						; The reproduction of such a familiar physical motion as the
+						; vibrations in a piece of string is done by a continuous iteration, or
+						; the solution in real time, of a linear hyperbolic partial derivative
+						; function:
+						;   guy says 'yeah, right'
+
+; ** Conversion bugs to be Fixed
+; my assembler parser for Switches chokes on multiple spaces or tabs between name and value
+; I should name the flip-flop presets according to which address the line up with.  Or else figure out 
+;    how the WW control panel mapping worked.  Or add a directive to identify the addresses of the five FF Regs
+; 400|r1, +0  appears to reference location 401  (Or does it?  Maybe not!)
+;    check lines that say things like "r25," to see if they fall on the right offset
+; Issue a Relative Address Reset when there's a "0r"  (it's already implied by a .org)
+; Finish the "SI 4" clear-the-indicators I/O instruction
+; why does @0203 sf 118 seem to write to the wrong place>
+; Where's this come from? "Warning: Reading Uninitialized Memory at location 0o720, bank 0"
+; Profile Python -- it's acting like there's a memory leak; the footprint just keeps getting bigger as it runs
+
+                        .ww_file "102663451_fc131-97-56-t2.7ch"  ;  
+                        ; initial conditions from DCL-090
+                        .switch LeftInterventionReg, 0.00100  ; number of points; i/o address 0o336, 0d222 ; was 0o0400
+                        .switch RightInterventionReg, 0.40000  ; i/o address 0o337 
+                        .switch FlipFlopPreset02, 0.00010  ;  FF#2 Scope Amplitude Adjustment
+                        .switch FlipFlopPreset03, 0.70000  ;  FF#3 Elasticity Factor
+                        .org 0         ;  
+@0000:000000            .word 0         ;  @@WrittenBy a0051 a10 a11 ReadBy a2 a3 a4 a5 a6 a7 a8 a9 
+@0001:000001            .word 1         ;  @@ReadBy a0045 a0046 a1 a0077 a0106 a0135 a0177 a0200 
+@0002:000010 scope_amp: .word 0.00010   ; Flip Flop 2 @@ReadBy a0125 
+@0003:070000  elastic:  .word 0.70000   ; Flip Flop 3 @@ReadBy a0120 
+
+                        .ww_file "102766755_fb131-97-6_patterson-t4.7ch"  ;  
+                        .org 32        ;  
+@0040:000336        c1: si   222       ; Red ; was FOUR; si 4 clears indicator-light-panel four @@JumpedToBy a0236 
+@0041:000336            si   222       ;  @@JumpedToBy a0237 
+@0042:014000            rd   0         ; read number of points - 0o400 
+@0043:040142            ts   t1        ;  
+@0044:100142            ca   t1        ;  
+@0045:114001            su   1         ;  
+@0046:114001            su   1         ;  
+@0047:040143            ts   t2        ; store n_pts -2 in T2 
+@0050:100142            ca   t1        ; re-fetch n_pts 
+@0051:164000            sf   0         ; normalize n_pts 
+@0052:050060            ta   d1        ; and save the shift count in the *Instruction* at D1 
+@0053:040150            ts   s2        ; save normalized n_pts in S2 
+@0054:130060            ao   d1        ; increment the shift count *instruction* of n_pts by two 
+@0055:130060            ao   d1        ; with the effect of dividing the number by four 
+@0056:100147            ca   s1        ; fetch constant S2 = 0.37760 
+@0057:150150            dv   s2        ; divide contents of AC by npts_norm, result in BR; 0.37760 / 0.4 = almost 1.0 
+@0060:154000        d1: slr  0         ; Red ;Shift by eight bits *and round off* --> 0o400 @@WrittenBy a0052 a0054 a0055 ReadBy a0054 a0055 
+@0061:040151            ts   s3        ;  
+@0062:100001     oloop: ca   1         ; Red; Outer display loop;  Fetch a One  @@JumpedToBy a0141 
+@0063:040144            ts loop_cnt      ;  T2+1 must contain a loop counter; initialize it to One
+@0064:000010            si   8         ; Reset Flip Flop Registers to default from switches
+@0065:100152            ca   x_start   ; fetch constant 1.00037
+@0066:040153            ts   x_axis    ;   and initialize x_axis (was label s5)
+
+@0067:100145     dloop: ca   t3        ; Red; Inner Display Loop; pick up addr of start of Data segment 0o621  @@JumpedToBy a0140 
+@0070:110144            ad loop_cnt      ; add the loop counter 
+@0071:044130            td   a9        ; overwrite the address in @0o130 CA instruction 
+@0072:044115            td   a3        ;     and the @0o115 SU instruction
+@0073:044116            td   a4        ;     and the @0o116 SU instruction
+@0074:044122            td   a7        ;     and the @0o122 AD instruction
+@0075:044123            td   a8        ;     and the @0o123 AD instruction
+@0076:044133            td   a11       ;     and the @0o133 TS instruction
+@0077:110001            ad   1         ;  Move the address pointer to the next word
+@0100:044117            td   a5        ;     and overwrite the @0o117 AD instruction
+@0101:100145            ca   t3        ;  pick up addr of start of Data segment 0o621 (again)
+@0102:110142            ad   t1        ;  add the number of points, i.e. compute the start of the second copy of the data seg
+@0103:110144            ad loop_cnt      ;  add the loop counter
+@0104:044121            td   a6        ;    Overwrite the address of @0o121 SU
+@0105:044131            td   a10       ;    and @0o131 TS
+@0106:114001            su   1         ;  Move to address pointer to the previous point in the second copy of the data seg
+@0107:044114            td   a2        ;    Overwrite @0o114 CA
+@0110:100153            ca   x_axis    ;  pick up the recent copy of what started as 1.00037 = -0.77740, i.e., left edge of screen
+									   ;  
+									   ;  on the first point, this resets the FF Reg, subsequently it displays points, since the SI 384 is below
+@0111:024000            rc   0         ;    Display to Scope: the horizontal axis setting is in AC[0:9]
+@0112:110151            ad   s3        ;  add 0o400; I think we're stepping across the screen's x-axis
+@0113:040153            ts   x_axis    ;  update the new x-axis
+@0114:100000        a2: ca   0         ; previous point on second data array (x-1, current) @@WrittenBy a0107 
+@0115:114000        a3: su   0         ; Subtract Twice: current word in first data array @@WrittenBy a0072 
+@0116:114000        a4: su   0         ;                 current word in first data array @@WrittenBy a0073 
+@0117:110000        a5: ad   0         ; Add the next word in the first data array (x+1, current) @@WrittenBy a0100 
+@0120:144003            mh   elastic   ; Reduce the sum a bit Elasticity Factor; default 0.70000
+@0121:114000        a6: su   0         ; subtract the current word in the second data array (x, old) @@WrittenBy a0104 
+@0122:110000        a7: ad   0         ; add current  @@WrittenBy a0074 
+@0123:110000        a8: ad   0         ; add current  @@WrittenBy a0075 
+@0124:040146            ts   t6        ; save the result in temp t6 
+@0125:144002            mh   scope_amp ;  Scope Amplitude, default 0o10
+@0126:154014            slr  12        ; 
+@0127:000600            si   384       ; Select Display Points ; the vertical axis setting is in AC[0:9]
+@0130:100000        a9: ca   0         ; Fetch current point in first data array @@WrittenBy a0071 
+@0131:040000       a10: ts   0         ; Save it on the current point of the second array @@WrittenBy a0105 
+@0132:100146            ca   t6        ; retrieve the current point from T6 
+@0133:040000       a11: ts   0         ; Store the new value in the current point of the first array @@WrittenBy a0076 
+@0134:100144            ca loop_cnt    ; Increment the loop counter 
+@0135:110001            ad   1         ;  
+@0136:040144            ts loop_cnt    ;     and save it back  
+@0137:114143            su   t2        ; subtract the total number of points from the current count to test for end of loop 
+@0140:070067            cp   dloop     ;  
+@0141:074062            sp   oloop     ;  
+@0142:000400        t1: .word +256      ;  @@WrittenBy a0043 ReadBy a0044 a0050 a0102 
+@0143:000000        t2: .word +0        ;  @@WrittenBy a0047 ReadBy a0137 
+@0144:000000    loop_cnt: .word +0        ;  @@WrittenBy a0063 a0136 ReadBy a0070 a0103 a0134 
+@0145:000621        t3: .word r1        ;  @@ReadBy dloop a0101 
+@0146:000000        t6: .word +0        ;  @@WrittenBy a0124 ReadBy a0132 
+@0147:037760        s1: .word 0.37760   ;  @@ReadBy a0056 
+@0150:000000        s2: .word 0         ;  @@WrittenBy a0053 ReadBy a0057 
+@0151:000000        s3: .word 0         ;  @@WrittenBy a0061 ReadBy a0112 
+@0152:100037   x_start: .word 1.00037   ; way on the left edge of the screen @@ReadBy a0065 
+@0153:100037    x_axis: .word 1.00037   ;  @@WrittenBy a0066 a0113 ReadBy a0110 
+                        .org 400       ; start of the data segment
+@0621:000000        r1: .word +0        ; so is this supposed to be 400 or 401??  @@WrittenBy lpstor1 data_strt 
+                        ;                         .jumpto c1        ;
+                        .ww_tapeid "fc TAPE 131-97-6 PATTERSON"  ;  
+
+
+
+
+                        ;  this code initializes the data area for vibrating string.
+                        ;  The result appears to be two identical arrays of integers, each one equal in length to the total number of points
+                        ;  to be simulated.
+                        ;  The var I've labeled incr ultimately is the amount added to the added to the string displacement on each
+                        ;  pass through the loop, but it seems to be used for a few things along the way
+                        .org 120       ;  
+@0170:000336        0r: si   222       ;  
+@0171:014000            rd   0         ; fetch the number of points 
+@0172:040240            ts   incr      ;  
+@0173:100243            ca   data_strt  ; load a ts instruction pointing to the data area 
+@0174:040230            ts   lpstor1   ; store in the loop 
+@0175:110240            ad   incr      ; @5r add the number of points to the data area pointer 
+@0176:040231            ts   lpstor2   ; AC now contains a pointer to the start of the second data area 
+@0177:114001            su   1         ;  
+@0200:114001            su   1         ; subtract two from the address 
+@0201:040244            ts   data_end  ;  
+@0202:100240            ca   incr      ; 10r re-fetch the number of points in the sim. 
+@0203:164166            sf   138       ; WAS 118; Change to 138 ;this SF appears to write its result to unused location 118; AC=0.40000 and AR=6 
+@0204:040241            ts   npts_norm  ; Here's the number of points, normalized to 1.0 > x > 0.4 octal 
+@0205:000337            si   223       ; select intervention register 
+@0206:014000            rd   0         ; fetch the magnitude of string displacement 0.40000 from switches 
+@0207:160001            srr  1         ; @15r  divide by two, -> 0.20000 
+                        ; in the following, we're dividing half the string displacement by the normalized
+                        ; number of points.  But we seem to have lost the number of points scale factor...
+@0210:150241            dv   npts_norm  ; divide contents of AC by npts_norm, result in BR; 
+                        ; i.e., 0.2 / 0.4  -> 0.4 octal, in the B Reg
+@0211:155001            slh  1         ; - puts 0o01 in AC 
+@0212:155006            slh  0         ; ?? what's with this??  (WAS ZERO) 
+@0213:064240            ex   incr      ; this puts 1 in the incr location, and 400 in the AC 
+@0214:144240            mh   incr      ; 20r ; multiply 0.00001 times 0.00400 = 0.00000 0.01000 
+@0215:155017            slh  15        ; AC=0o400 
+@0216:040241            ts   npts_norm  ;  
+@0217:100240            ca   incr      ;  
+@0220:155001            slh  1         ; double the increment value; now it's TWO 
+@0221:040240            ts   incr      ; @25r ; save the increment step size 
+@0222:104241            cs   npts_norm  ;  
+@0223:040242            ts   y_offset  ; initialize the y-offset to the negative of the number of points = -0o400 
+
+@0224:100242      loop: ca   y_offset  ; fetch the last y-axis offset @@JumpedToBy a0235 
+@0225:110240            ad   incr      ; add the increment 
+@0226:040242            ts   y_offset  ; @30r  ; save the result for next loop 
+@0227:134241            dm   npts_norm  ; |AC| - |x|, i.e., |yoffset| - |npts_norm| 
+@0230:040621   lpstor1: ts   401       ;  @@WrittenBy a0174 a0233 ReadBy a0233 
+@0231:040711   lpstor2: ts   457       ;  @@WrittenBy a0176 a0232 ReadBy a0232 
+@0232:130231            ao   lpstor2   ;  
+@0233:130230            ao   lpstor1   ; @35r 
+@0234:114244            su   data_end  ;  
+@0235:070224            cp   loop      ;  
+
+@0236:074040            sp   0o40      ; spliced by guy 
+@0237:074041            sp   33        ;  
+@0240:000000      incr: .word +0        ; @40r @@WrittenBy a0172 a0213 a0221 ReadBy a0175 a0202 a0213 a0214 a0217 a0225 
+@0241:000000  npts_norm: .word +0        ;  @@WrittenBy a0204 a0216 ReadBy a0210 a0222 a0227 
+@0242:000000  y_offset: .word +0        ;  @@WrittenBy a0223 a0226 ReadBy loop 
+@0243:040621  data_strt: ts   401       ;  @@ReadBy a0173 
+@0244:040707  data_end: ts   455       ;  @@WrittenBy a0201 ReadBy a0234 
+                        .jumpto 120       ;  
+                        .ww_tapeid "fc TAPE 131-97-56 PATTERSON"  ;  

@@ -556,7 +556,8 @@ class CpuClass:
                         output_str += "0o"
                     elif fmt == "%d":
                         register, sign = self.wwint_to_py (register)
-                    output_str += sign + fmt % register
+                    # output_str += sign + fmt % register
+                    output_str += fmt % register            # Don't want sign here since wwint_to_py returns a signed number
                 else:
                     register = None
                     if fmt[1] == 'a':
@@ -566,7 +567,8 @@ class CpuClass:
                     number_format = "%%%s" % fmt[2]
                     if fmt[2] == 'd':
                         register, sign = self.wwint_to_py (register)
-                    output_str += sign + number_format % register
+                    # output_str += sign + number_format % register
+                    output_str += number_format % register            # Don't want sign here since wwint_to_py returns a signed number
             else:
                 output_str += fmt
         if argList != []:

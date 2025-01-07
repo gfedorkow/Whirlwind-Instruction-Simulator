@@ -1,9 +1,15 @@
 Info: Automatically return 0 and 1 from locations 0 and 1
 Info: Automatically return 0 and 1 from locations 0 and 1
+<<<<<<< HEAD
+Info: CycleLimit set to 5000
+Info: core file crt-test.n.ncore
+Info: Whirlwind tape file name: crt-test.n.ww
+=======
 Info: CycleLimit set to 7700
 Info: core file crt-test.acore
 Info: Whirlwind tape file name: crt-test.ww
 Info: Whirlwind tape identifier: None
+>>>>>>> upstream/master
 Info: Switch CheckAlarmSpecial=0
 start at 0o40
 Info: branch forwards from pc=0o0040(main) to 0o0041(main_loop)
@@ -71,6 +77,14 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o-
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1741, y=0o-1741, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-993,-993) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0101737o, (0) Sub-Address 00166o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0130 to 0o0112(cl_index_y)
+Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1204
+Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1, y=0o1204, xd=0o-174, yd=0o-154
+Info: ww_draw_line: pt=(-1,644) len=(-124,-108), scope=63
+Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0177766o, (0) Sub-Address 00171o
+=======
+>>>>>>> upstream/master
 Info: branch backwards from pc=0o0131(cl_ret) to 0o0043
 Info: branch forwards from pc=0o0043 to 0o0170(multi_segments)
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1200
@@ -81,7 +95,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1741, y=0o1200, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-993,640) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0101737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1220
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1541, y=0o1220
 Info: ww_draw_point: x=-865, y=656, scope=63, gun_enable=1
@@ -90,7 +108,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1541, y=0o1220, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-865,656) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0111737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1240
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1341, y=0o1240
 Info: ww_draw_point: x=-737, y=672, scope=63, gun_enable=1
@@ -99,7 +121,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1341, y=0o1240, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-737,672) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0121737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1260
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1141, y=0o1260
 Info: ww_draw_point: x=-609, y=688, scope=63, gun_enable=1
@@ -108,7 +134,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1141, y=0o1260, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-609,688) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0131737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1300
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-741, y=0o1300
 Info: ww_draw_point: x=-481, y=704, scope=63, gun_enable=1
@@ -117,7 +147,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-741, y=0o1300, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-481,704) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0141737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1320
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-541, y=0o1320
 Info: ww_draw_point: x=-353, y=720, scope=63, gun_enable=1
@@ -126,7 +160,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-541, y=0o1320, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-353,720) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0151737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1340
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-341, y=0o1340
 Info: ww_draw_point: x=-225, y=736, scope=63, gun_enable=1
@@ -135,7 +173,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-341, y=0o1340, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-225,736) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0161737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1360
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-141, y=0o1360
 Info: ww_draw_point: x=-97, y=752, scope=63, gun_enable=1
@@ -144,7 +186,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-141, y=0o1360, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-97,752) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0171737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1400
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o37, y=0o1400
 Info: ww_draw_point: x=31, y=768, scope=63, gun_enable=1
@@ -153,7 +199,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o37, y=0o1400, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(31,768) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0001740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1420
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o237, y=0o1420
 Info: ww_draw_point: x=159, y=784, scope=63, gun_enable=1
@@ -162,7 +212,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o237, y=0o1420, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(159,784) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0011740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1440
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o437, y=0o1440
 Info: ww_draw_point: x=287, y=800, scope=63, gun_enable=1
@@ -171,7 +225,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o437, y=0o1440, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(287,800) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0021740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1460
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o637, y=0o1460
 Info: ww_draw_point: x=415, y=816, scope=63, gun_enable=1
@@ -180,7 +238,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o637, y=0o1460, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(415,816) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0031740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1037, y=0o1500
 Info: ww_draw_point: x=543, y=832, scope=63, gun_enable=1
@@ -189,7 +251,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o1037, y=0o1500, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(543,832) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0041740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1520
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1237, y=0o1520
 Info: ww_draw_point: x=671, y=848, scope=63, gun_enable=1
@@ -198,7 +264,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o1237, y=0o1520, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(671,848) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0051740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1540
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1437, y=0o1540
 Info: ww_draw_point: x=799, y=864, scope=63, gun_enable=1
@@ -212,6 +282,57 @@ Info: branch forwards from pc=0o0044 to 0o0312(char_gen_test)
 Info: DisplayScope SI: Display Expand Operand set to 0o14; Expand=0o14, UnExpand=0o15
 Info: DisplayScope SI: configured display mode Characters, scope 0o77, vertical=0o1000
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-500, y=0o1000, char-code=0o100
+<<<<<<< HEAD
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0153777o, (0) Sub-Address 00345o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-400, y=0o1000, char-code=0o40
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0157777o, (0) Sub-Address 00346o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-300, y=0o1000, char-code=0o20
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0163777o, (0) Sub-Address 00347o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-200, y=0o1000, char-code=0o10
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0167777o, (0) Sub-Address 00350o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-100, y=0o1000, char-code=0o4
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0173777o, (0) Sub-Address 00351o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o0, y=0o1000, char-code=0o2
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0177777o, (0) Sub-Address 00352o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o100, y=0o1000, char-code=0o1
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0004000o, (0) Sub-Address 00353o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o200, y=0o1000, char-code=0o167
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0010000o, (0) Sub-Address 00354o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o300, y=0o1000, char-code=0o21
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0014000o, (0) Sub-Address 00355o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o400, y=0o1000, char-code=0o153
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0020000o, (0) Sub-Address 00356o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o500, y=0o1000, char-code=0o73
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0024000o, (0) Sub-Address 00357o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o600, y=0o1000, char-code=0o35
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0030000o, (0) Sub-Address 00360o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o700, y=0o1000, char-code=0o76
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0034000o, (0) Sub-Address 00361o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1000, y=0o1000, char-code=0o174
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0040000o, (0) Sub-Address 00362o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1100, y=0o1000, char-code=0o23
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0044000o, (0) Sub-Address 00363o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1200, y=0o1000, char-code=0o177
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0050000o, (0) Sub-Address 00364o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1300, y=0o1000, char-code=0o37
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0054000o, (0) Sub-Address 00365o
+=======
 Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0154000o, (0) Sub-Address 00345o
 Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-400, y=0o1000, char-code=0o40
@@ -261,11 +382,22 @@ Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0050001o, (0) S
 Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1300, y=0o1000, char-code=0o37
 Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0054001o, (0) Sub-Address 00365o
+>>>>>>> upstream/master
 Info: branch backwards from pc=0o0334(cg_ret) to 0o0045
 Info: branch forwards from pc=0o0045 to 0o0231(scope_identify)
 Info: DisplayScope SI: Display Expand Operand set to 0o14; Expand=0o14, UnExpand=0o15
 Info: DisplayScope SI: configured display mode Characters, scope 0o1, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o1, mode=Character, x=0o-1200, y=0o1500, char-code=0o21
+<<<<<<< HEAD
+Info: RC: Record to Device DisplayScope: Dev=02601o, Output Word=0127777o, (0) Sub-Address 00355o
+Info: DisplayScope SI: configured display mode Characters, scope 0o2, vertical=0o1500
+Info: DisplayScope RC: record to scope 0o2, mode=Character, x=0o-1100, y=0o1500, char-code=0o153
+Info: RC: Record to Device DisplayScope: Dev=02602o, Output Word=0133777o, (0) Sub-Address 00356o
+Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1600
+Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1200, y=0o1600
+Info: ww_draw_point: x=-640, y=896, scope=63, gun_enable=1
+Info: RC: Record to Device DisplayScope: Dev=0677o, Output Word=0127777o, (0) Sub-Address 00000o
+=======
 Info: RC: Record to Device DisplayScope: Dev=02601o, Output Word=0130000o, (0) Sub-Address 00355o
 Info: DisplayScope SI: configured display mode Characters, scope 0o2, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o2, mode=Character, x=0o-1100, y=0o1500, char-code=0o153
@@ -274,6 +406,7 @@ Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o16
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1200, y=0o1600
 Info: ww_draw_point: x=-640, y=896, scope=63, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0677o, Output Word=0130000o, (0) Sub-Address 00000o
+>>>>>>> upstream/master
 Info: ww_check_light_gun
 Info: branch forwards from pc=0o0253 to 0o0260(si_ret)
 Info: branch backwards from pc=0o0260(si_ret) to 0o0046
@@ -341,6 +474,14 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o-
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1741, y=0o-1741, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-993,-993) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0101737o, (0) Sub-Address 00166o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0130 to 0o0112(cl_index_y)
+Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1204
+Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1, y=0o1204, xd=0o-174, yd=0o-154
+Info: ww_draw_line: pt=(-1,644) len=(-124,-108), scope=63
+Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0177766o, (0) Sub-Address 00171o
+=======
+>>>>>>> upstream/master
 Info: branch backwards from pc=0o0131(cl_ret) to 0o0043
 Info: branch forwards from pc=0o0043 to 0o0170(multi_segments)
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1200
@@ -351,7 +492,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1741, y=0o1200, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-993,640) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0101737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1220
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1541, y=0o1220
 Info: ww_draw_point: x=-865, y=656, scope=63, gun_enable=1
@@ -360,7 +505,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1541, y=0o1220, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-865,656) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0111737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1240
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1341, y=0o1240
 Info: ww_draw_point: x=-737, y=672, scope=63, gun_enable=1
@@ -369,7 +518,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1341, y=0o1240, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-737,672) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0121737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1260
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1141, y=0o1260
 Info: ww_draw_point: x=-609, y=688, scope=63, gun_enable=1
@@ -378,7 +531,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1141, y=0o1260, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-609,688) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0131737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1300
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-741, y=0o1300
 Info: ww_draw_point: x=-481, y=704, scope=63, gun_enable=1
@@ -387,7 +544,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-741, y=0o1300, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-481,704) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0141737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1320
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-541, y=0o1320
 Info: ww_draw_point: x=-353, y=720, scope=63, gun_enable=1
@@ -396,7 +557,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-541, y=0o1320, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-353,720) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0151737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1340
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-341, y=0o1340
 Info: ww_draw_point: x=-225, y=736, scope=63, gun_enable=1
@@ -405,7 +570,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-341, y=0o1340, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-225,736) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0161737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1360
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-141, y=0o1360
 Info: ww_draw_point: x=-97, y=752, scope=63, gun_enable=1
@@ -414,7 +583,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-141, y=0o1360, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-97,752) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0171737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1400
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o37, y=0o1400
 Info: ww_draw_point: x=31, y=768, scope=63, gun_enable=1
@@ -423,7 +596,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o37, y=0o1400, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(31,768) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0001740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1420
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o237, y=0o1420
 Info: ww_draw_point: x=159, y=784, scope=63, gun_enable=1
@@ -432,7 +609,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o237, y=0o1420, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(159,784) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0011740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1440
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o437, y=0o1440
 Info: ww_draw_point: x=287, y=800, scope=63, gun_enable=1
@@ -441,7 +622,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o437, y=0o1440, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(287,800) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0021740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1460
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o637, y=0o1460
 Info: ww_draw_point: x=415, y=816, scope=63, gun_enable=1
@@ -450,7 +635,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o637, y=0o1460, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(415,816) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0031740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1037, y=0o1500
 Info: ww_draw_point: x=543, y=832, scope=63, gun_enable=1
@@ -459,7 +648,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o1037, y=0o1500, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(543,832) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0041740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1520
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1237, y=0o1520
 Info: ww_draw_point: x=671, y=848, scope=63, gun_enable=1
@@ -468,7 +661,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o1237, y=0o1520, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(671,848) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0051740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1540
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1437, y=0o1540
 Info: ww_draw_point: x=799, y=864, scope=63, gun_enable=1
@@ -482,6 +679,57 @@ Info: branch forwards from pc=0o0044 to 0o0312(char_gen_test)
 Info: DisplayScope SI: Display Expand Operand set to 0o14; Expand=0o14, UnExpand=0o15
 Info: DisplayScope SI: configured display mode Characters, scope 0o77, vertical=0o1000
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-500, y=0o1000, char-code=0o100
+<<<<<<< HEAD
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0153777o, (0) Sub-Address 00345o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-400, y=0o1000, char-code=0o40
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0157777o, (0) Sub-Address 00346o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-300, y=0o1000, char-code=0o20
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0163777o, (0) Sub-Address 00347o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-200, y=0o1000, char-code=0o10
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0167777o, (0) Sub-Address 00350o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-100, y=0o1000, char-code=0o4
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0173777o, (0) Sub-Address 00351o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o0, y=0o1000, char-code=0o2
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0177777o, (0) Sub-Address 00352o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o100, y=0o1000, char-code=0o1
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0004000o, (0) Sub-Address 00353o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o200, y=0o1000, char-code=0o167
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0010000o, (0) Sub-Address 00354o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o300, y=0o1000, char-code=0o21
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0014000o, (0) Sub-Address 00355o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o400, y=0o1000, char-code=0o153
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0020000o, (0) Sub-Address 00356o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o500, y=0o1000, char-code=0o73
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0024000o, (0) Sub-Address 00357o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o600, y=0o1000, char-code=0o35
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0030000o, (0) Sub-Address 00360o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o700, y=0o1000, char-code=0o76
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0034000o, (0) Sub-Address 00361o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1000, y=0o1000, char-code=0o174
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0040000o, (0) Sub-Address 00362o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1100, y=0o1000, char-code=0o23
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0044000o, (0) Sub-Address 00363o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1200, y=0o1000, char-code=0o177
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0050000o, (0) Sub-Address 00364o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1300, y=0o1000, char-code=0o37
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0054000o, (0) Sub-Address 00365o
+=======
 Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0154000o, (0) Sub-Address 00345o
 Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-400, y=0o1000, char-code=0o40
@@ -531,11 +779,22 @@ Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0050001o, (0) S
 Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1300, y=0o1000, char-code=0o37
 Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0054001o, (0) Sub-Address 00365o
+>>>>>>> upstream/master
 Info: branch backwards from pc=0o0334(cg_ret) to 0o0045
 Info: branch forwards from pc=0o0045 to 0o0231(scope_identify)
 Info: DisplayScope SI: Display Expand Operand set to 0o14; Expand=0o14, UnExpand=0o15
 Info: DisplayScope SI: configured display mode Characters, scope 0o1, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o1, mode=Character, x=0o-1200, y=0o1500, char-code=0o21
+<<<<<<< HEAD
+Info: RC: Record to Device DisplayScope: Dev=02601o, Output Word=0127777o, (0) Sub-Address 00355o
+Info: DisplayScope SI: configured display mode Characters, scope 0o2, vertical=0o1500
+Info: DisplayScope RC: record to scope 0o2, mode=Character, x=0o-1100, y=0o1500, char-code=0o153
+Info: RC: Record to Device DisplayScope: Dev=02602o, Output Word=0133777o, (0) Sub-Address 00356o
+Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1600
+Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1200, y=0o1600
+Info: ww_draw_point: x=-640, y=896, scope=63, gun_enable=1
+Info: RC: Record to Device DisplayScope: Dev=0677o, Output Word=0127777o, (0) Sub-Address 00000o
+=======
 Info: RC: Record to Device DisplayScope: Dev=02601o, Output Word=0130000o, (0) Sub-Address 00355o
 Info: DisplayScope SI: configured display mode Characters, scope 0o2, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o2, mode=Character, x=0o-1100, y=0o1500, char-code=0o153
@@ -544,6 +803,7 @@ Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o16
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1200, y=0o1600
 Info: ww_draw_point: x=-640, y=896, scope=63, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0677o, Output Word=0130000o, (0) Sub-Address 00000o
+>>>>>>> upstream/master
 Info: ww_check_light_gun
 Info: branch forwards from pc=0o0253 to 0o0260(si_ret)
 Info: branch backwards from pc=0o0260(si_ret) to 0o0046
@@ -611,6 +871,14 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o-
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1741, y=0o-1741, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-993,-993) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0101737o, (0) Sub-Address 00166o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0130 to 0o0112(cl_index_y)
+Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1204
+Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1, y=0o1204, xd=0o-174, yd=0o-154
+Info: ww_draw_line: pt=(-1,644) len=(-124,-108), scope=63
+Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0177766o, (0) Sub-Address 00171o
+=======
+>>>>>>> upstream/master
 Info: branch backwards from pc=0o0131(cl_ret) to 0o0043
 Info: branch forwards from pc=0o0043 to 0o0170(multi_segments)
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1200
@@ -621,7 +889,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1741, y=0o1200, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-993,640) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0101737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1220
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1541, y=0o1220
 Info: ww_draw_point: x=-865, y=656, scope=63, gun_enable=1
@@ -630,7 +902,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1541, y=0o1220, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-865,656) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0111737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1240
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1341, y=0o1240
 Info: ww_draw_point: x=-737, y=672, scope=63, gun_enable=1
@@ -639,7 +915,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1341, y=0o1240, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-737,672) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0121737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1260
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1141, y=0o1260
 Info: ww_draw_point: x=-609, y=688, scope=63, gun_enable=1
@@ -648,7 +928,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1141, y=0o1260, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-609,688) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0131737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1300
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-741, y=0o1300
 Info: ww_draw_point: x=-481, y=704, scope=63, gun_enable=1
@@ -657,7 +941,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-741, y=0o1300, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-481,704) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0141737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1320
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-541, y=0o1320
 Info: ww_draw_point: x=-353, y=720, scope=63, gun_enable=1
@@ -666,7 +954,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-541, y=0o1320, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-353,720) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0151737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1340
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-341, y=0o1340
 Info: ww_draw_point: x=-225, y=736, scope=63, gun_enable=1
@@ -675,7 +967,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-341, y=0o1340, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-225,736) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0161737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1360
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-141, y=0o1360
 Info: ww_draw_point: x=-97, y=752, scope=63, gun_enable=1
@@ -684,7 +980,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-141, y=0o1360, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-97,752) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0171737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1400
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o37, y=0o1400
 Info: ww_draw_point: x=31, y=768, scope=63, gun_enable=1
@@ -693,7 +993,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o37, y=0o1400, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(31,768) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0001740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1420
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o237, y=0o1420
 Info: ww_draw_point: x=159, y=784, scope=63, gun_enable=1
@@ -702,7 +1006,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o237, y=0o1420, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(159,784) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0011740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1440
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o437, y=0o1440
 Info: ww_draw_point: x=287, y=800, scope=63, gun_enable=1
@@ -711,7 +1019,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o437, y=0o1440, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(287,800) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0021740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1460
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o637, y=0o1460
 Info: ww_draw_point: x=415, y=816, scope=63, gun_enable=1
@@ -720,7 +1032,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o637, y=0o1460, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(415,816) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0031740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1037, y=0o1500
 Info: ww_draw_point: x=543, y=832, scope=63, gun_enable=1
@@ -729,7 +1045,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o1037, y=0o1500, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(543,832) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0041740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1520
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1237, y=0o1520
 Info: ww_draw_point: x=671, y=848, scope=63, gun_enable=1
@@ -738,7 +1058,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o1237, y=0o1520, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(671,848) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0051740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1540
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1437, y=0o1540
 Info: ww_draw_point: x=799, y=864, scope=63, gun_enable=1
@@ -752,6 +1076,57 @@ Info: branch forwards from pc=0o0044 to 0o0312(char_gen_test)
 Info: DisplayScope SI: Display Expand Operand set to 0o14; Expand=0o14, UnExpand=0o15
 Info: DisplayScope SI: configured display mode Characters, scope 0o77, vertical=0o1000
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-500, y=0o1000, char-code=0o100
+<<<<<<< HEAD
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0153777o, (0) Sub-Address 00345o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-400, y=0o1000, char-code=0o40
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0157777o, (0) Sub-Address 00346o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-300, y=0o1000, char-code=0o20
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0163777o, (0) Sub-Address 00347o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-200, y=0o1000, char-code=0o10
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0167777o, (0) Sub-Address 00350o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-100, y=0o1000, char-code=0o4
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0173777o, (0) Sub-Address 00351o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o0, y=0o1000, char-code=0o2
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0177777o, (0) Sub-Address 00352o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o100, y=0o1000, char-code=0o1
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0004000o, (0) Sub-Address 00353o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o200, y=0o1000, char-code=0o167
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0010000o, (0) Sub-Address 00354o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o300, y=0o1000, char-code=0o21
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0014000o, (0) Sub-Address 00355o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o400, y=0o1000, char-code=0o153
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0020000o, (0) Sub-Address 00356o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o500, y=0o1000, char-code=0o73
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0024000o, (0) Sub-Address 00357o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o600, y=0o1000, char-code=0o35
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0030000o, (0) Sub-Address 00360o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o700, y=0o1000, char-code=0o76
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0034000o, (0) Sub-Address 00361o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1000, y=0o1000, char-code=0o174
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0040000o, (0) Sub-Address 00362o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1100, y=0o1000, char-code=0o23
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0044000o, (0) Sub-Address 00363o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1200, y=0o1000, char-code=0o177
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0050000o, (0) Sub-Address 00364o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1300, y=0o1000, char-code=0o37
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0054000o, (0) Sub-Address 00365o
+=======
 Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0154000o, (0) Sub-Address 00345o
 Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-400, y=0o1000, char-code=0o40
@@ -801,11 +1176,22 @@ Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0050001o, (0) S
 Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1300, y=0o1000, char-code=0o37
 Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0054001o, (0) Sub-Address 00365o
+>>>>>>> upstream/master
 Info: branch backwards from pc=0o0334(cg_ret) to 0o0045
 Info: branch forwards from pc=0o0045 to 0o0231(scope_identify)
 Info: DisplayScope SI: Display Expand Operand set to 0o14; Expand=0o14, UnExpand=0o15
 Info: DisplayScope SI: configured display mode Characters, scope 0o1, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o1, mode=Character, x=0o-1200, y=0o1500, char-code=0o21
+<<<<<<< HEAD
+Info: RC: Record to Device DisplayScope: Dev=02601o, Output Word=0127777o, (0) Sub-Address 00355o
+Info: DisplayScope SI: configured display mode Characters, scope 0o2, vertical=0o1500
+Info: DisplayScope RC: record to scope 0o2, mode=Character, x=0o-1100, y=0o1500, char-code=0o153
+Info: RC: Record to Device DisplayScope: Dev=02602o, Output Word=0133777o, (0) Sub-Address 00356o
+Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1600
+Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1200, y=0o1600
+Info: ww_draw_point: x=-640, y=896, scope=63, gun_enable=1
+Info: RC: Record to Device DisplayScope: Dev=0677o, Output Word=0127777o, (0) Sub-Address 00000o
+=======
 Info: RC: Record to Device DisplayScope: Dev=02601o, Output Word=0130000o, (0) Sub-Address 00355o
 Info: DisplayScope SI: configured display mode Characters, scope 0o2, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o2, mode=Character, x=0o-1100, y=0o1500, char-code=0o153
@@ -814,6 +1200,7 @@ Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o16
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1200, y=0o1600
 Info: ww_draw_point: x=-640, y=896, scope=63, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0677o, Output Word=0130000o, (0) Sub-Address 00000o
+>>>>>>> upstream/master
 Info: ww_check_light_gun
 Info: branch forwards from pc=0o0253 to 0o0260(si_ret)
 Info: branch backwards from pc=0o0260(si_ret) to 0o0046
@@ -881,6 +1268,14 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o-
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1741, y=0o-1741, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-993,-993) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0101737o, (0) Sub-Address 00166o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0130 to 0o0112(cl_index_y)
+Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1204
+Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1, y=0o1204, xd=0o-174, yd=0o-154
+Info: ww_draw_line: pt=(-1,644) len=(-124,-108), scope=63
+Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0177766o, (0) Sub-Address 00171o
+=======
+>>>>>>> upstream/master
 Info: branch backwards from pc=0o0131(cl_ret) to 0o0043
 Info: branch forwards from pc=0o0043 to 0o0170(multi_segments)
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1200
@@ -891,7 +1286,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1741, y=0o1200, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-993,640) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0101737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1220
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1541, y=0o1220
 Info: ww_draw_point: x=-865, y=656, scope=63, gun_enable=1
@@ -900,7 +1299,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1541, y=0o1220, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-865,656) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0111737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1240
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1341, y=0o1240
 Info: ww_draw_point: x=-737, y=672, scope=63, gun_enable=1
@@ -909,7 +1312,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1341, y=0o1240, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-737,672) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0121737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1260
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1141, y=0o1260
 Info: ww_draw_point: x=-609, y=688, scope=63, gun_enable=1
@@ -918,7 +1325,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1141, y=0o1260, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-609,688) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0131737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1300
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-741, y=0o1300
 Info: ww_draw_point: x=-481, y=704, scope=63, gun_enable=1
@@ -927,7 +1338,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-741, y=0o1300, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-481,704) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0141737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1320
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-541, y=0o1320
 Info: ww_draw_point: x=-353, y=720, scope=63, gun_enable=1
@@ -936,7 +1351,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-541, y=0o1320, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-353,720) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0151737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1340
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-341, y=0o1340
 Info: ww_draw_point: x=-225, y=736, scope=63, gun_enable=1
@@ -945,7 +1364,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-341, y=0o1340, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-225,736) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0161737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1360
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-141, y=0o1360
 Info: ww_draw_point: x=-97, y=752, scope=63, gun_enable=1
@@ -954,7 +1377,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-141, y=0o1360, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-97,752) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0171737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1400
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o37, y=0o1400
 Info: ww_draw_point: x=31, y=768, scope=63, gun_enable=1
@@ -963,7 +1390,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o37, y=0o1400, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(31,768) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0001740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1420
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o237, y=0o1420
 Info: ww_draw_point: x=159, y=784, scope=63, gun_enable=1
@@ -972,7 +1403,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o237, y=0o1420, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(159,784) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0011740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1440
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o437, y=0o1440
 Info: ww_draw_point: x=287, y=800, scope=63, gun_enable=1
@@ -981,7 +1416,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o437, y=0o1440, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(287,800) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0021740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1460
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o637, y=0o1460
 Info: ww_draw_point: x=415, y=816, scope=63, gun_enable=1
@@ -990,7 +1429,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o637, y=0o1460, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(415,816) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0031740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1037, y=0o1500
 Info: ww_draw_point: x=543, y=832, scope=63, gun_enable=1
@@ -999,7 +1442,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o1037, y=0o1500, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(543,832) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0041740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1520
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1237, y=0o1520
 Info: ww_draw_point: x=671, y=848, scope=63, gun_enable=1
@@ -1008,7 +1455,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o1237, y=0o1520, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(671,848) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0051740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1540
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1437, y=0o1540
 Info: ww_draw_point: x=799, y=864, scope=63, gun_enable=1
@@ -1022,6 +1473,57 @@ Info: branch forwards from pc=0o0044 to 0o0312(char_gen_test)
 Info: DisplayScope SI: Display Expand Operand set to 0o14; Expand=0o14, UnExpand=0o15
 Info: DisplayScope SI: configured display mode Characters, scope 0o77, vertical=0o1000
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-500, y=0o1000, char-code=0o100
+<<<<<<< HEAD
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0153777o, (0) Sub-Address 00345o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-400, y=0o1000, char-code=0o40
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0157777o, (0) Sub-Address 00346o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-300, y=0o1000, char-code=0o20
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0163777o, (0) Sub-Address 00347o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-200, y=0o1000, char-code=0o10
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0167777o, (0) Sub-Address 00350o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-100, y=0o1000, char-code=0o4
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0173777o, (0) Sub-Address 00351o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o0, y=0o1000, char-code=0o2
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0177777o, (0) Sub-Address 00352o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o100, y=0o1000, char-code=0o1
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0004000o, (0) Sub-Address 00353o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o200, y=0o1000, char-code=0o167
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0010000o, (0) Sub-Address 00354o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o300, y=0o1000, char-code=0o21
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0014000o, (0) Sub-Address 00355o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o400, y=0o1000, char-code=0o153
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0020000o, (0) Sub-Address 00356o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o500, y=0o1000, char-code=0o73
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0024000o, (0) Sub-Address 00357o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o600, y=0o1000, char-code=0o35
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0030000o, (0) Sub-Address 00360o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o700, y=0o1000, char-code=0o76
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0034000o, (0) Sub-Address 00361o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1000, y=0o1000, char-code=0o174
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0040000o, (0) Sub-Address 00362o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1100, y=0o1000, char-code=0o23
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0044000o, (0) Sub-Address 00363o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1200, y=0o1000, char-code=0o177
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0050000o, (0) Sub-Address 00364o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1300, y=0o1000, char-code=0o37
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0054000o, (0) Sub-Address 00365o
+=======
 Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0154000o, (0) Sub-Address 00345o
 Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-400, y=0o1000, char-code=0o40
@@ -1071,11 +1573,22 @@ Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0050001o, (0) S
 Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1300, y=0o1000, char-code=0o37
 Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0054001o, (0) Sub-Address 00365o
+>>>>>>> upstream/master
 Info: branch backwards from pc=0o0334(cg_ret) to 0o0045
 Info: branch forwards from pc=0o0045 to 0o0231(scope_identify)
 Info: DisplayScope SI: Display Expand Operand set to 0o14; Expand=0o14, UnExpand=0o15
 Info: DisplayScope SI: configured display mode Characters, scope 0o1, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o1, mode=Character, x=0o-1200, y=0o1500, char-code=0o21
+<<<<<<< HEAD
+Info: RC: Record to Device DisplayScope: Dev=02601o, Output Word=0127777o, (0) Sub-Address 00355o
+Info: DisplayScope SI: configured display mode Characters, scope 0o2, vertical=0o1500
+Info: DisplayScope RC: record to scope 0o2, mode=Character, x=0o-1100, y=0o1500, char-code=0o153
+Info: RC: Record to Device DisplayScope: Dev=02602o, Output Word=0133777o, (0) Sub-Address 00356o
+Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1600
+Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1200, y=0o1600
+Info: ww_draw_point: x=-640, y=896, scope=63, gun_enable=1
+Info: RC: Record to Device DisplayScope: Dev=0677o, Output Word=0127777o, (0) Sub-Address 00000o
+=======
 Info: RC: Record to Device DisplayScope: Dev=02601o, Output Word=0130000o, (0) Sub-Address 00355o
 Info: DisplayScope SI: configured display mode Characters, scope 0o2, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o2, mode=Character, x=0o-1100, y=0o1500, char-code=0o153
@@ -1084,6 +1597,7 @@ Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o16
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1200, y=0o1600
 Info: ww_draw_point: x=-640, y=896, scope=63, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0677o, Output Word=0130000o, (0) Sub-Address 00000o
+>>>>>>> upstream/master
 Info: ww_check_light_gun
 Info: branch forwards from pc=0o0253 to 0o0260(si_ret)
 Info: branch backwards from pc=0o0260(si_ret) to 0o0046
@@ -1151,6 +1665,14 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o-
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1741, y=0o-1741, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-993,-993) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0101737o, (0) Sub-Address 00166o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0130 to 0o0112(cl_index_y)
+Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1204
+Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1, y=0o1204, xd=0o-174, yd=0o-154
+Info: ww_draw_line: pt=(-1,644) len=(-124,-108), scope=63
+Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0177766o, (0) Sub-Address 00171o
+=======
+>>>>>>> upstream/master
 Info: branch backwards from pc=0o0131(cl_ret) to 0o0043
 Info: branch forwards from pc=0o0043 to 0o0170(multi_segments)
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1200
@@ -1161,7 +1683,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1741, y=0o1200, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-993,640) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0101737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1220
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1541, y=0o1220
 Info: ww_draw_point: x=-865, y=656, scope=63, gun_enable=1
@@ -1170,7 +1696,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1541, y=0o1220, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-865,656) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0111737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1240
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1341, y=0o1240
 Info: ww_draw_point: x=-737, y=672, scope=63, gun_enable=1
@@ -1179,7 +1709,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1341, y=0o1240, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-737,672) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0121737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1260
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1141, y=0o1260
 Info: ww_draw_point: x=-609, y=688, scope=63, gun_enable=1
@@ -1188,7 +1722,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1141, y=0o1260, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-609,688) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0131737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1300
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-741, y=0o1300
 Info: ww_draw_point: x=-481, y=704, scope=63, gun_enable=1
@@ -1197,7 +1735,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-741, y=0o1300, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-481,704) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0141737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1320
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-541, y=0o1320
 Info: ww_draw_point: x=-353, y=720, scope=63, gun_enable=1
@@ -1206,7 +1748,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-541, y=0o1320, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-353,720) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0151737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1340
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-341, y=0o1340
 Info: ww_draw_point: x=-225, y=736, scope=63, gun_enable=1
@@ -1215,7 +1761,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-341, y=0o1340, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-225,736) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0161737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1360
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-141, y=0o1360
 Info: ww_draw_point: x=-97, y=752, scope=63, gun_enable=1
@@ -1224,7 +1774,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-141, y=0o1360, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-97,752) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0171737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1400
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o37, y=0o1400
 Info: ww_draw_point: x=31, y=768, scope=63, gun_enable=1
@@ -1233,7 +1787,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o37, y=0o1400, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(31,768) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0001740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1420
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o237, y=0o1420
 Info: ww_draw_point: x=159, y=784, scope=63, gun_enable=1
@@ -1242,7 +1800,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o237, y=0o1420, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(159,784) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0011740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1440
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o437, y=0o1440
 Info: ww_draw_point: x=287, y=800, scope=63, gun_enable=1
@@ -1251,7 +1813,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o437, y=0o1440, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(287,800) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0021740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1460
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o637, y=0o1460
 Info: ww_draw_point: x=415, y=816, scope=63, gun_enable=1
@@ -1260,7 +1826,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o637, y=0o1460, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(415,816) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0031740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1037, y=0o1500
 Info: ww_draw_point: x=543, y=832, scope=63, gun_enable=1
@@ -1269,7 +1839,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o1037, y=0o1500, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(543,832) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0041740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1520
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1237, y=0o1520
 Info: ww_draw_point: x=671, y=848, scope=63, gun_enable=1
@@ -1278,7 +1852,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o1237, y=0o1520, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(671,848) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0051740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1540
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1437, y=0o1540
 Info: ww_draw_point: x=799, y=864, scope=63, gun_enable=1
@@ -1292,6 +1870,57 @@ Info: branch forwards from pc=0o0044 to 0o0312(char_gen_test)
 Info: DisplayScope SI: Display Expand Operand set to 0o14; Expand=0o14, UnExpand=0o15
 Info: DisplayScope SI: configured display mode Characters, scope 0o77, vertical=0o1000
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-500, y=0o1000, char-code=0o100
+<<<<<<< HEAD
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0153777o, (0) Sub-Address 00345o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-400, y=0o1000, char-code=0o40
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0157777o, (0) Sub-Address 00346o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-300, y=0o1000, char-code=0o20
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0163777o, (0) Sub-Address 00347o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-200, y=0o1000, char-code=0o10
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0167777o, (0) Sub-Address 00350o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-100, y=0o1000, char-code=0o4
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0173777o, (0) Sub-Address 00351o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o0, y=0o1000, char-code=0o2
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0177777o, (0) Sub-Address 00352o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o100, y=0o1000, char-code=0o1
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0004000o, (0) Sub-Address 00353o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o200, y=0o1000, char-code=0o167
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0010000o, (0) Sub-Address 00354o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o300, y=0o1000, char-code=0o21
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0014000o, (0) Sub-Address 00355o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o400, y=0o1000, char-code=0o153
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0020000o, (0) Sub-Address 00356o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o500, y=0o1000, char-code=0o73
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0024000o, (0) Sub-Address 00357o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o600, y=0o1000, char-code=0o35
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0030000o, (0) Sub-Address 00360o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o700, y=0o1000, char-code=0o76
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0034000o, (0) Sub-Address 00361o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1000, y=0o1000, char-code=0o174
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0040000o, (0) Sub-Address 00362o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1100, y=0o1000, char-code=0o23
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0044000o, (0) Sub-Address 00363o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1200, y=0o1000, char-code=0o177
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0050000o, (0) Sub-Address 00364o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1300, y=0o1000, char-code=0o37
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0054000o, (0) Sub-Address 00365o
+=======
 Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0154000o, (0) Sub-Address 00345o
 Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-400, y=0o1000, char-code=0o40
@@ -1341,11 +1970,22 @@ Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0050001o, (0) S
 Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1300, y=0o1000, char-code=0o37
 Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0054001o, (0) Sub-Address 00365o
+>>>>>>> upstream/master
 Info: branch backwards from pc=0o0334(cg_ret) to 0o0045
 Info: branch forwards from pc=0o0045 to 0o0231(scope_identify)
 Info: DisplayScope SI: Display Expand Operand set to 0o14; Expand=0o14, UnExpand=0o15
 Info: DisplayScope SI: configured display mode Characters, scope 0o1, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o1, mode=Character, x=0o-1200, y=0o1500, char-code=0o21
+<<<<<<< HEAD
+Info: RC: Record to Device DisplayScope: Dev=02601o, Output Word=0127777o, (0) Sub-Address 00355o
+Info: DisplayScope SI: configured display mode Characters, scope 0o2, vertical=0o1500
+Info: DisplayScope RC: record to scope 0o2, mode=Character, x=0o-1100, y=0o1500, char-code=0o153
+Info: RC: Record to Device DisplayScope: Dev=02602o, Output Word=0133777o, (0) Sub-Address 00356o
+Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1600
+Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1200, y=0o1600
+Info: ww_draw_point: x=-640, y=896, scope=63, gun_enable=1
+Info: RC: Record to Device DisplayScope: Dev=0677o, Output Word=0127777o, (0) Sub-Address 00000o
+=======
 Info: RC: Record to Device DisplayScope: Dev=02601o, Output Word=0130000o, (0) Sub-Address 00355o
 Info: DisplayScope SI: configured display mode Characters, scope 0o2, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o2, mode=Character, x=0o-1100, y=0o1500, char-code=0o153
@@ -1354,6 +1994,7 @@ Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o16
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1200, y=0o1600
 Info: ww_draw_point: x=-640, y=896, scope=63, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0677o, Output Word=0130000o, (0) Sub-Address 00000o
+>>>>>>> upstream/master
 Info: ww_check_light_gun
 Info: branch forwards from pc=0o0253 to 0o0260(si_ret)
 Info: branch backwards from pc=0o0260(si_ret) to 0o0046
@@ -1421,6 +2062,14 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o-
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1741, y=0o-1741, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-993,-993) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0101737o, (0) Sub-Address 00166o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0130 to 0o0112(cl_index_y)
+Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1204
+Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1, y=0o1204, xd=0o-174, yd=0o-154
+Info: ww_draw_line: pt=(-1,644) len=(-124,-108), scope=63
+Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0177766o, (0) Sub-Address 00171o
+=======
+>>>>>>> upstream/master
 Info: branch backwards from pc=0o0131(cl_ret) to 0o0043
 Info: branch forwards from pc=0o0043 to 0o0170(multi_segments)
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1200
@@ -1431,7 +2080,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1741, y=0o1200, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-993,640) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0101737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1220
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1541, y=0o1220
 Info: ww_draw_point: x=-865, y=656, scope=63, gun_enable=1
@@ -1440,7 +2093,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1541, y=0o1220, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-865,656) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0111737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1240
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1341, y=0o1240
 Info: ww_draw_point: x=-737, y=672, scope=63, gun_enable=1
@@ -1449,7 +2106,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1341, y=0o1240, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-737,672) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0121737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1260
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1141, y=0o1260
 Info: ww_draw_point: x=-609, y=688, scope=63, gun_enable=1
@@ -1458,7 +2119,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1141, y=0o1260, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-609,688) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0131737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1300
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-741, y=0o1300
 Info: ww_draw_point: x=-481, y=704, scope=63, gun_enable=1
@@ -1467,7 +2132,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-741, y=0o1300, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-481,704) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0141737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1320
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-541, y=0o1320
 Info: ww_draw_point: x=-353, y=720, scope=63, gun_enable=1
@@ -1476,7 +2145,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-541, y=0o1320, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-353,720) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0151737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1340
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-341, y=0o1340
 Info: ww_draw_point: x=-225, y=736, scope=63, gun_enable=1
@@ -1485,7 +2158,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-341, y=0o1340, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-225,736) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0161737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1360
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-141, y=0o1360
 Info: ww_draw_point: x=-97, y=752, scope=63, gun_enable=1
@@ -1494,7 +2171,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-141, y=0o1360, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-97,752) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0171737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1400
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o37, y=0o1400
 Info: ww_draw_point: x=31, y=768, scope=63, gun_enable=1
@@ -1503,7 +2184,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o37, y=0o1400, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(31,768) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0001740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1420
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o237, y=0o1420
 Info: ww_draw_point: x=159, y=784, scope=63, gun_enable=1
@@ -1512,7 +2197,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o237, y=0o1420, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(159,784) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0011740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1440
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o437, y=0o1440
 Info: ww_draw_point: x=287, y=800, scope=63, gun_enable=1
@@ -1521,7 +2210,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o437, y=0o1440, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(287,800) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0021740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1460
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o637, y=0o1460
 Info: ww_draw_point: x=415, y=816, scope=63, gun_enable=1
@@ -1530,7 +2223,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o637, y=0o1460, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(415,816) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0031740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1037, y=0o1500
 Info: ww_draw_point: x=543, y=832, scope=63, gun_enable=1
@@ -1539,7 +2236,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o1037, y=0o1500, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(543,832) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0041740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1520
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1237, y=0o1520
 Info: ww_draw_point: x=671, y=848, scope=63, gun_enable=1
@@ -1548,7 +2249,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o1237, y=0o1520, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(671,848) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0051740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1540
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1437, y=0o1540
 Info: ww_draw_point: x=799, y=864, scope=63, gun_enable=1
@@ -1562,6 +2267,57 @@ Info: branch forwards from pc=0o0044 to 0o0312(char_gen_test)
 Info: DisplayScope SI: Display Expand Operand set to 0o14; Expand=0o14, UnExpand=0o15
 Info: DisplayScope SI: configured display mode Characters, scope 0o77, vertical=0o1000
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-500, y=0o1000, char-code=0o100
+<<<<<<< HEAD
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0153777o, (0) Sub-Address 00345o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-400, y=0o1000, char-code=0o40
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0157777o, (0) Sub-Address 00346o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-300, y=0o1000, char-code=0o20
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0163777o, (0) Sub-Address 00347o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-200, y=0o1000, char-code=0o10
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0167777o, (0) Sub-Address 00350o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-100, y=0o1000, char-code=0o4
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0173777o, (0) Sub-Address 00351o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o0, y=0o1000, char-code=0o2
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0177777o, (0) Sub-Address 00352o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o100, y=0o1000, char-code=0o1
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0004000o, (0) Sub-Address 00353o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o200, y=0o1000, char-code=0o167
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0010000o, (0) Sub-Address 00354o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o300, y=0o1000, char-code=0o21
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0014000o, (0) Sub-Address 00355o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o400, y=0o1000, char-code=0o153
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0020000o, (0) Sub-Address 00356o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o500, y=0o1000, char-code=0o73
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0024000o, (0) Sub-Address 00357o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o600, y=0o1000, char-code=0o35
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0030000o, (0) Sub-Address 00360o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o700, y=0o1000, char-code=0o76
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0034000o, (0) Sub-Address 00361o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1000, y=0o1000, char-code=0o174
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0040000o, (0) Sub-Address 00362o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1100, y=0o1000, char-code=0o23
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0044000o, (0) Sub-Address 00363o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1200, y=0o1000, char-code=0o177
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0050000o, (0) Sub-Address 00364o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1300, y=0o1000, char-code=0o37
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0054000o, (0) Sub-Address 00365o
+=======
 Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0154000o, (0) Sub-Address 00345o
 Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-400, y=0o1000, char-code=0o40
@@ -1611,11 +2367,22 @@ Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0050001o, (0) S
 Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1300, y=0o1000, char-code=0o37
 Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0054001o, (0) Sub-Address 00365o
+>>>>>>> upstream/master
 Info: branch backwards from pc=0o0334(cg_ret) to 0o0045
 Info: branch forwards from pc=0o0045 to 0o0231(scope_identify)
 Info: DisplayScope SI: Display Expand Operand set to 0o14; Expand=0o14, UnExpand=0o15
 Info: DisplayScope SI: configured display mode Characters, scope 0o1, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o1, mode=Character, x=0o-1200, y=0o1500, char-code=0o21
+<<<<<<< HEAD
+Info: RC: Record to Device DisplayScope: Dev=02601o, Output Word=0127777o, (0) Sub-Address 00355o
+Info: DisplayScope SI: configured display mode Characters, scope 0o2, vertical=0o1500
+Info: DisplayScope RC: record to scope 0o2, mode=Character, x=0o-1100, y=0o1500, char-code=0o153
+Info: RC: Record to Device DisplayScope: Dev=02602o, Output Word=0133777o, (0) Sub-Address 00356o
+Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1600
+Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1200, y=0o1600
+Info: ww_draw_point: x=-640, y=896, scope=63, gun_enable=1
+Info: RC: Record to Device DisplayScope: Dev=0677o, Output Word=0127777o, (0) Sub-Address 00000o
+=======
 Info: RC: Record to Device DisplayScope: Dev=02601o, Output Word=0130000o, (0) Sub-Address 00355o
 Info: DisplayScope SI: configured display mode Characters, scope 0o2, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o2, mode=Character, x=0o-1100, y=0o1500, char-code=0o153
@@ -1624,6 +2391,7 @@ Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o16
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1200, y=0o1600
 Info: ww_draw_point: x=-640, y=896, scope=63, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0677o, Output Word=0130000o, (0) Sub-Address 00000o
+>>>>>>> upstream/master
 Info: ww_check_light_gun
 Info: branch forwards from pc=0o0253 to 0o0260(si_ret)
 Info: branch backwards from pc=0o0260(si_ret) to 0o0046
@@ -1691,6 +2459,14 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o-
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1741, y=0o-1741, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-993,-993) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0101737o, (0) Sub-Address 00166o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0130 to 0o0112(cl_index_y)
+Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1204
+Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1, y=0o1204, xd=0o-174, yd=0o-154
+Info: ww_draw_line: pt=(-1,644) len=(-124,-108), scope=63
+Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0177766o, (0) Sub-Address 00171o
+=======
+>>>>>>> upstream/master
 Info: branch backwards from pc=0o0131(cl_ret) to 0o0043
 Info: branch forwards from pc=0o0043 to 0o0170(multi_segments)
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1200
@@ -1701,7 +2477,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1741, y=0o1200, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-993,640) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0101737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1220
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1541, y=0o1220
 Info: ww_draw_point: x=-865, y=656, scope=63, gun_enable=1
@@ -1710,7 +2490,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1541, y=0o1220, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-865,656) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0111737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1240
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1341, y=0o1240
 Info: ww_draw_point: x=-737, y=672, scope=63, gun_enable=1
@@ -1719,7 +2503,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1341, y=0o1240, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-737,672) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0121737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1260
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1141, y=0o1260
 Info: ww_draw_point: x=-609, y=688, scope=63, gun_enable=1
@@ -1728,7 +2516,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1141, y=0o1260, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-609,688) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0131737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1300
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-741, y=0o1300
 Info: ww_draw_point: x=-481, y=704, scope=63, gun_enable=1
@@ -1737,7 +2529,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-741, y=0o1300, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-481,704) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0141737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1320
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-541, y=0o1320
 Info: ww_draw_point: x=-353, y=720, scope=63, gun_enable=1
@@ -1746,7 +2542,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-541, y=0o1320, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-353,720) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0151737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1340
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-341, y=0o1340
 Info: ww_draw_point: x=-225, y=736, scope=63, gun_enable=1
@@ -1755,7 +2555,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-341, y=0o1340, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-225,736) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0161737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1360
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-141, y=0o1360
 Info: ww_draw_point: x=-97, y=752, scope=63, gun_enable=1
@@ -1764,7 +2568,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-141, y=0o1360, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-97,752) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0171737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1400
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o37, y=0o1400
 Info: ww_draw_point: x=31, y=768, scope=63, gun_enable=1
@@ -1773,7 +2581,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o37, y=0o1400, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(31,768) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0001740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1420
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o237, y=0o1420
 Info: ww_draw_point: x=159, y=784, scope=63, gun_enable=1
@@ -1782,7 +2594,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o237, y=0o1420, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(159,784) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0011740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1440
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o437, y=0o1440
 Info: ww_draw_point: x=287, y=800, scope=63, gun_enable=1
@@ -1791,7 +2607,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o437, y=0o1440, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(287,800) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0021740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1460
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o637, y=0o1460
 Info: ww_draw_point: x=415, y=816, scope=63, gun_enable=1
@@ -1800,7 +2620,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o637, y=0o1460, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(415,816) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0031740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1037, y=0o1500
 Info: ww_draw_point: x=543, y=832, scope=63, gun_enable=1
@@ -1809,7 +2633,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o1037, y=0o1500, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(543,832) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0041740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1520
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1237, y=0o1520
 Info: ww_draw_point: x=671, y=848, scope=63, gun_enable=1
@@ -1818,7 +2646,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o1237, y=0o1520, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(671,848) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0051740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1540
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1437, y=0o1540
 Info: ww_draw_point: x=799, y=864, scope=63, gun_enable=1
@@ -1832,6 +2664,57 @@ Info: branch forwards from pc=0o0044 to 0o0312(char_gen_test)
 Info: DisplayScope SI: Display Expand Operand set to 0o14; Expand=0o14, UnExpand=0o15
 Info: DisplayScope SI: configured display mode Characters, scope 0o77, vertical=0o1000
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-500, y=0o1000, char-code=0o100
+<<<<<<< HEAD
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0153777o, (0) Sub-Address 00345o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-400, y=0o1000, char-code=0o40
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0157777o, (0) Sub-Address 00346o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-300, y=0o1000, char-code=0o20
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0163777o, (0) Sub-Address 00347o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-200, y=0o1000, char-code=0o10
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0167777o, (0) Sub-Address 00350o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-100, y=0o1000, char-code=0o4
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0173777o, (0) Sub-Address 00351o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o0, y=0o1000, char-code=0o2
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0177777o, (0) Sub-Address 00352o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o100, y=0o1000, char-code=0o1
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0004000o, (0) Sub-Address 00353o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o200, y=0o1000, char-code=0o167
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0010000o, (0) Sub-Address 00354o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o300, y=0o1000, char-code=0o21
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0014000o, (0) Sub-Address 00355o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o400, y=0o1000, char-code=0o153
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0020000o, (0) Sub-Address 00356o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o500, y=0o1000, char-code=0o73
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0024000o, (0) Sub-Address 00357o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o600, y=0o1000, char-code=0o35
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0030000o, (0) Sub-Address 00360o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o700, y=0o1000, char-code=0o76
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0034000o, (0) Sub-Address 00361o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1000, y=0o1000, char-code=0o174
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0040000o, (0) Sub-Address 00362o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1100, y=0o1000, char-code=0o23
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0044000o, (0) Sub-Address 00363o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1200, y=0o1000, char-code=0o177
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0050000o, (0) Sub-Address 00364o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1300, y=0o1000, char-code=0o37
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0054000o, (0) Sub-Address 00365o
+=======
 Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0154000o, (0) Sub-Address 00345o
 Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-400, y=0o1000, char-code=0o40
@@ -1881,11 +2764,22 @@ Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0050001o, (0) S
 Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1300, y=0o1000, char-code=0o37
 Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0054001o, (0) Sub-Address 00365o
+>>>>>>> upstream/master
 Info: branch backwards from pc=0o0334(cg_ret) to 0o0045
 Info: branch forwards from pc=0o0045 to 0o0231(scope_identify)
 Info: DisplayScope SI: Display Expand Operand set to 0o14; Expand=0o14, UnExpand=0o15
 Info: DisplayScope SI: configured display mode Characters, scope 0o1, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o1, mode=Character, x=0o-1200, y=0o1500, char-code=0o21
+<<<<<<< HEAD
+Info: RC: Record to Device DisplayScope: Dev=02601o, Output Word=0127777o, (0) Sub-Address 00355o
+Info: DisplayScope SI: configured display mode Characters, scope 0o2, vertical=0o1500
+Info: DisplayScope RC: record to scope 0o2, mode=Character, x=0o-1100, y=0o1500, char-code=0o153
+Info: RC: Record to Device DisplayScope: Dev=02602o, Output Word=0133777o, (0) Sub-Address 00356o
+Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1600
+Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1200, y=0o1600
+Info: ww_draw_point: x=-640, y=896, scope=63, gun_enable=1
+Info: RC: Record to Device DisplayScope: Dev=0677o, Output Word=0127777o, (0) Sub-Address 00000o
+=======
 Info: RC: Record to Device DisplayScope: Dev=02601o, Output Word=0130000o, (0) Sub-Address 00355o
 Info: DisplayScope SI: configured display mode Characters, scope 0o2, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o2, mode=Character, x=0o-1100, y=0o1500, char-code=0o153
@@ -1894,6 +2788,7 @@ Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o16
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1200, y=0o1600
 Info: ww_draw_point: x=-640, y=896, scope=63, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0677o, Output Word=0130000o, (0) Sub-Address 00000o
+>>>>>>> upstream/master
 Info: ww_check_light_gun
 Info: branch forwards from pc=0o0253 to 0o0260(si_ret)
 Info: branch backwards from pc=0o0260(si_ret) to 0o0046
@@ -1961,6 +2856,14 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o-
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1741, y=0o-1741, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-993,-993) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0101737o, (0) Sub-Address 00166o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0130 to 0o0112(cl_index_y)
+Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1204
+Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1, y=0o1204, xd=0o-174, yd=0o-154
+Info: ww_draw_line: pt=(-1,644) len=(-124,-108), scope=63
+Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0177766o, (0) Sub-Address 00171o
+=======
+>>>>>>> upstream/master
 Info: branch backwards from pc=0o0131(cl_ret) to 0o0043
 Info: branch forwards from pc=0o0043 to 0o0170(multi_segments)
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1200
@@ -1971,7 +2874,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1741, y=0o1200, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-993,640) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0101737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1220
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1541, y=0o1220
 Info: ww_draw_point: x=-865, y=656, scope=63, gun_enable=1
@@ -1980,7 +2887,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1541, y=0o1220, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-865,656) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0111737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1240
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1341, y=0o1240
 Info: ww_draw_point: x=-737, y=672, scope=63, gun_enable=1
@@ -1989,7 +2900,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1341, y=0o1240, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-737,672) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0121737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1260
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1141, y=0o1260
 Info: ww_draw_point: x=-609, y=688, scope=63, gun_enable=1
@@ -1998,7 +2913,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1141, y=0o1260, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-609,688) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0131737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1300
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-741, y=0o1300
 Info: ww_draw_point: x=-481, y=704, scope=63, gun_enable=1
@@ -2007,7 +2926,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-741, y=0o1300, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-481,704) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0141737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1320
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-541, y=0o1320
 Info: ww_draw_point: x=-353, y=720, scope=63, gun_enable=1
@@ -2016,7 +2939,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-541, y=0o1320, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-353,720) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0151737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1340
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-341, y=0o1340
 Info: ww_draw_point: x=-225, y=736, scope=63, gun_enable=1
@@ -2025,7 +2952,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-341, y=0o1340, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-225,736) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0161737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1360
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-141, y=0o1360
 Info: ww_draw_point: x=-97, y=752, scope=63, gun_enable=1
@@ -2034,7 +2965,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-141, y=0o1360, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-97,752) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0171737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1400
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o37, y=0o1400
 Info: ww_draw_point: x=31, y=768, scope=63, gun_enable=1
@@ -2043,7 +2978,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o37, y=0o1400, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(31,768) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0001740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1420
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o237, y=0o1420
 Info: ww_draw_point: x=159, y=784, scope=63, gun_enable=1
@@ -2052,7 +2991,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o237, y=0o1420, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(159,784) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0011740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1440
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o437, y=0o1440
 Info: ww_draw_point: x=287, y=800, scope=63, gun_enable=1
@@ -2061,7 +3004,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o437, y=0o1440, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(287,800) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0021740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1460
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o637, y=0o1460
 Info: ww_draw_point: x=415, y=816, scope=63, gun_enable=1
@@ -2070,7 +3017,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o637, y=0o1460, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(415,816) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0031740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1037, y=0o1500
 Info: ww_draw_point: x=543, y=832, scope=63, gun_enable=1
@@ -2079,7 +3030,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o1037, y=0o1500, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(543,832) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0041740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1520
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1237, y=0o1520
 Info: ww_draw_point: x=671, y=848, scope=63, gun_enable=1
@@ -2088,7 +3043,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o1237, y=0o1520, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(671,848) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0051740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1540
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o1437, y=0o1540
 Info: ww_draw_point: x=799, y=864, scope=63, gun_enable=1
@@ -2102,6 +3061,57 @@ Info: branch forwards from pc=0o0044 to 0o0312(char_gen_test)
 Info: DisplayScope SI: Display Expand Operand set to 0o14; Expand=0o14, UnExpand=0o15
 Info: DisplayScope SI: configured display mode Characters, scope 0o77, vertical=0o1000
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-500, y=0o1000, char-code=0o100
+<<<<<<< HEAD
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0153777o, (0) Sub-Address 00345o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-400, y=0o1000, char-code=0o40
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0157777o, (0) Sub-Address 00346o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-300, y=0o1000, char-code=0o20
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0163777o, (0) Sub-Address 00347o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-200, y=0o1000, char-code=0o10
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0167777o, (0) Sub-Address 00350o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-100, y=0o1000, char-code=0o4
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0173777o, (0) Sub-Address 00351o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o0, y=0o1000, char-code=0o2
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0177777o, (0) Sub-Address 00352o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o100, y=0o1000, char-code=0o1
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0004000o, (0) Sub-Address 00353o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o200, y=0o1000, char-code=0o167
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0010000o, (0) Sub-Address 00354o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o300, y=0o1000, char-code=0o21
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0014000o, (0) Sub-Address 00355o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o400, y=0o1000, char-code=0o153
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0020000o, (0) Sub-Address 00356o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o500, y=0o1000, char-code=0o73
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0024000o, (0) Sub-Address 00357o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o600, y=0o1000, char-code=0o35
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0030000o, (0) Sub-Address 00360o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o700, y=0o1000, char-code=0o76
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0034000o, (0) Sub-Address 00361o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1000, y=0o1000, char-code=0o174
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0040000o, (0) Sub-Address 00362o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1100, y=0o1000, char-code=0o23
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0044000o, (0) Sub-Address 00363o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1200, y=0o1000, char-code=0o177
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0050000o, (0) Sub-Address 00364o
+Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
+Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1300, y=0o1000, char-code=0o37
+Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0054000o, (0) Sub-Address 00365o
+=======
 Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0154000o, (0) Sub-Address 00345o
 Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o-400, y=0o1000, char-code=0o40
@@ -2151,11 +3161,22 @@ Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0050001o, (0) S
 Info: branch backwards from pc=0o0333 to 0o0325(cg_loop)
 Info: DisplayScope RC: record to scope 0o77, mode=Character, x=0o1300, y=0o1000, char-code=0o37
 Info: RC: Record to Device DisplayScope: Dev=02677o, Output Word=0054001o, (0) Sub-Address 00365o
+>>>>>>> upstream/master
 Info: branch backwards from pc=0o0334(cg_ret) to 0o0045
 Info: branch forwards from pc=0o0045 to 0o0231(scope_identify)
 Info: DisplayScope SI: Display Expand Operand set to 0o14; Expand=0o14, UnExpand=0o15
 Info: DisplayScope SI: configured display mode Characters, scope 0o1, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o1, mode=Character, x=0o-1200, y=0o1500, char-code=0o21
+<<<<<<< HEAD
+Info: RC: Record to Device DisplayScope: Dev=02601o, Output Word=0127777o, (0) Sub-Address 00355o
+Info: DisplayScope SI: configured display mode Characters, scope 0o2, vertical=0o1500
+Info: DisplayScope RC: record to scope 0o2, mode=Character, x=0o-1100, y=0o1500, char-code=0o153
+Info: RC: Record to Device DisplayScope: Dev=02602o, Output Word=0133777o, (0) Sub-Address 00356o
+Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1600
+Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1200, y=0o1600
+Info: ww_draw_point: x=-640, y=896, scope=63, gun_enable=1
+Info: RC: Record to Device DisplayScope: Dev=0677o, Output Word=0127777o, (0) Sub-Address 00000o
+=======
 Info: RC: Record to Device DisplayScope: Dev=02601o, Output Word=0130000o, (0) Sub-Address 00355o
 Info: DisplayScope SI: configured display mode Characters, scope 0o2, vertical=0o1500
 Info: DisplayScope RC: record to scope 0o2, mode=Character, x=0o-1100, y=0o1500, char-code=0o153
@@ -2164,6 +3185,7 @@ Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o16
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1200, y=0o1600
 Info: ww_draw_point: x=-640, y=896, scope=63, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0677o, Output Word=0130000o, (0) Sub-Address 00000o
+>>>>>>> upstream/master
 Info: ww_check_light_gun
 Info: branch forwards from pc=0o0253 to 0o0260(si_ret)
 Info: branch backwards from pc=0o0260(si_ret) to 0o0046
@@ -2231,6 +3253,14 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o-
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1741, y=0o-1741, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-993,-993) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0101737o, (0) Sub-Address 00166o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0130 to 0o0112(cl_index_y)
+Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1204
+Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1, y=0o1204, xd=0o-174, yd=0o-154
+Info: ww_draw_line: pt=(-1,644) len=(-124,-108), scope=63
+Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0177766o, (0) Sub-Address 00171o
+=======
+>>>>>>> upstream/master
 Info: branch backwards from pc=0o0131(cl_ret) to 0o0043
 Info: branch forwards from pc=0o0043 to 0o0170(multi_segments)
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1200
@@ -2241,7 +3271,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1741, y=0o1200, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-993,640) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0101737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1220
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1541, y=0o1220
 Info: ww_draw_point: x=-865, y=656, scope=63, gun_enable=1
@@ -2250,7 +3284,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1541, y=0o1220, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-865,656) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0111737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1240
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1341, y=0o1240
 Info: ww_draw_point: x=-737, y=672, scope=63, gun_enable=1
@@ -2259,7 +3297,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1341, y=0o1240, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-737,672) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0121737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1260
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-1141, y=0o1260
 Info: ww_draw_point: x=-609, y=688, scope=63, gun_enable=1
@@ -2268,7 +3310,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-1141, y=0o1260, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-609,688) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0131737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1300
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-741, y=0o1300
 Info: ww_draw_point: x=-481, y=704, scope=63, gun_enable=1
@@ -2277,7 +3323,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-741, y=0o1300, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-481,704) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0141737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1320
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-541, y=0o1320
 Info: ww_draw_point: x=-353, y=720, scope=63, gun_enable=1
@@ -2286,7 +3336,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-541, y=0o1320, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-353,720) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0151737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1340
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-341, y=0o1340
 Info: ww_draw_point: x=-225, y=736, scope=63, gun_enable=1
@@ -2295,7 +3349,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-341, y=0o1340, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-225,736) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0161737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1360
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o-141, y=0o1360
 Info: ww_draw_point: x=-97, y=752, scope=63, gun_enable=1
@@ -2304,7 +3362,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o-141, y=0o1360, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(-97,752) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0171737o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Info: branch backwards from pc=0o0217 to 0o0200(MAX_NEG_Y_DELTA)
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
+>>>>>>> upstream/master
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1400
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o37, y=0o1400
 Info: ww_draw_point: x=31, y=768, scope=63, gun_enable=1
@@ -2313,6 +3375,11 @@ Info: DisplayScope SI: configured display mode Vectors, scope 0o77, vertical=0o1
 Info: DisplayScope RC: record to scope 0o77, mode=Vector, x=0o37, y=0o1400, xd=0o174, yd=0o0
 Info: ww_draw_line: pt=(31,768) len=(124,0), scope=63
 Info: RC: Record to Device DisplayScope: Dev=01677o, Output Word=0001740o, (0) Sub-Address 00051o
+<<<<<<< HEAD
+Warning: Cycle Count Exceeded
+close display...
+Ran 5000 cycles; Used mem=53MB
+=======
 Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
 Info: DisplayScope SI: configured display mode Points, scope 0o77, vertical=0o1420
 Info: DisplayScope RC: record to scope 0o77, mode=Point, x=0o237, y=0o1420
@@ -3658,3 +4725,4 @@ Info: branch backwards from pc=0o0217 to 0o0200(ms_loop)
 Warning: Cycle Count Exceeded
 close display...
 Ran 7700 cycles; Used mem=58MB
+>>>>>>> upstream/master

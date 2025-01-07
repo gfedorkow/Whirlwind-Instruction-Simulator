@@ -25,76 +25,62 @@
 
 
 
+This is a collection of notes and scratchings on Larry's efforts in
+the Whirlwind project. It started as a doc dump for the tester, but
+has expanded into assembler and other areas.
+----------------------------------------------------------------------
+
+Testing system
+==============
+
+LAS 1/1/25: Note this now represents the latest attempt at testing,
+which largely discards the first idea, using yaml, etc. So those notes
+are gone and are available via a previous git version. Some of the
+rationale for the change is below in a note to Guy dated Nov 2024.
+
+The main thing new is that we're script-based, and use basic scripting
+to run tests and do diffs. It's based on bolier-plate scripting which
+is copied an modified to make a new test. The convenience and
+flexibility of such script developement outweighs the "badness" of the
+redundancy, and if needed we can develop mass-editing tools to help us
+if an across-the-board change is needed.
+
+We also get free of having to provide tests only in a special "test"
+area. Though we'll have one of those, tests can be anywhere in the dev
+tree.
+
+Tests are denoted by the existence of a script in a dir called
+runtest.sh. This conains the info needed to run the test, filter and
+compare files, announce passage or failure, and accept a test once
+blessed.
+
+To serve as a test, we need test references, so another assumption is
+the existence of a TestRefs dir, probably, but not required to be,
+co-resident in the dir with runtest.sh, and by convention called
+TestRefs, but not required.
+
+Each runtest.sh must have a --Accept option, which copies a set of log
+or output files to the test refs area.
+
+Each runtest.sh also has a standard cd to its own location (i.e., the
+dir of arg $0), to allow it to be run more easily from an external
+program. In particular, ro run all tests,
+
+   cd <whirlwind-simulator-top-level-dir>
+   find . -name runtest*.sh -print -exec {} \;
+
+While I have considered making the wwtester.py code be a more
+comprehensive test tool, as I did at first, I don't see the need, and
+I'll archive this program in some way. Some of the techniques for
+subprocess management and other items may be useful for something. But
+overall my goal is to use scripts as much as possible for driving the
+tests.
+
+----------------------------------------------------------------------
 
 
 
 
-
-
-
-
-class Test
-   Invoke wwsim (args)
-   Args are among Test attrs
-   Run to screen or to file
-   Run a ww program for a given number of iterations
-    Can pass number of instruction cycles
-        May need this per-program
-   Need to call flow graph code
-   Invoke programs from Python
-        import subprocess
-        subprocess.run(['ls','-l'],capture_output=True) -> CompletedProcess object, with output
-        eg:
-        x = subprocess.run(["ls"],capture_output=True).stdout
-        print (x)
-        b'#las-shell.sh#\n2023.8.29 - Resume - Paula Stabile
-        Las_files\n303\n411778264_10100389568284058_5593284145154837017_n.jpg\n422
-        301469_10101323996068120_8316015041851166550_n.jpg\n6G\nAILG\nAppData\nApplication...
-    Should be able to run small pieces of code in-memory and check results
-        No -- everything via running a ww prog, as far as possible!
-    Should strive for human- *and* machine-readable logs
-        Eg, we might establish that "# " or something preceding a line
-            means it's just for humans, or a prfefix that can mean the
-            other way.
-        Start with current logs in some way, replace over time with
-            true test logs, which record invariants of the run.
-        Possible invariants:
-            Instruction sequences or subsequences
-            Register contents
-            Data answers delivered to output -- e.g., numeric sequences for running a scope
-    Would be nice to have a ww exit instruction or something else which can indicate done.
-        But that looks hard. Some programs like bounce return to a top
-        loop, but some will only exit on an interactive event.
-        So cycle limits will do for now.
-    Run all current programs
-    Want to be able to do something like:
-        Run all tests
-        Set result as new reference
-        Leave bells and whistles for later
-        With limits to #cycles, should be able to run all progs in a minute or so (?)
-    Presumption of determinism
-
-Test run could be
-
-WwTest/Test.<date-time>/<logs, etc>
-
-Could specify a dir to use as a reference, with a default of one of a given (fixed) name.
-
-**** prints in flow code!
-
-Canonical file names
-
-.ww -> asm -> .acore -> wwsim -> interactive i/o
-           -> .lst            -> .flow.gv -> dot -> .flow.svg
-                              -> .flow.log  ???
-                              -> > (stdout) tracelog        [not read! just had Debug on]
-                              -> .log                       [need this -- separate log file]
-
-Principle should be that output files always go the the wd or the absolute path spec'ed as output (when we can so specify).
-
-wwsim bounce.acore  -->  bounce.log			General log
-						 bounce.flow.gv		Flowgraph
-						 bounce.trace.log	WW program trace
 
 
 Log formatting and conventions
@@ -304,7 +290,10 @@ LogMsgSeverity = Enum ("LogMsgType", ["Error", "Info", "Warning", "Fatal"])
 - Clear or rm dest log files before run -- caution!
 
 
-- !!! Each dir should have a run-test.sh which will "do everything"
+
+
+
+
 
 
 
@@ -346,6 +335,7 @@ path: A path-like object representing a file path. A path-like object is either 
 dir_fd (optional): A file descriptor referring to a directory. The default value of this parameter is None. If the specified path is absolute then dir_fd is ignored. 
 
 
+Nov 2024 Alternative ideas
 
 Here is the status of some of the things we went over the other day. 
 
@@ -541,7 +531,7 @@ Note +0.11111 not the same as 0.11111, e.g.:
 
 +0.11111 + -0.234 + 0o123
 
-0.11111 + +0.123 + 0x123
+0.11111 + +0.123 + 0o123
 
 Based on a comment in wwasm.py, we'll have identifiers case-sensitive
 
@@ -557,17 +547,136 @@ them.
 Eval
 ====
 
-Arith binary ops should be straightforward (?)
+Arith binary ops:
 
-unary-{+,-} (binarydot (literal-{0,1}, literal-digit-seq))
-binarydot (literal-{0,1}, literal-5-oct-digit-seq)
-unary-0o (literal-oct-digit-seq)
-literal-digit-seq
-
-
+binarydot (unary-{+,-}, (literal-{0,1}), literal-digit-seq)		Decimal fraction
+binarydot (literal-{0,1}, literal-5-oct-digit-seq)				Octal integer
+unary-0o (literal-oct-digit-seq)								Octal integer
+literal-digit-seq												Decimal inreger
 
 
  0.12345
 +0.12345
 
+12/23/24 todo assembler and further
+	* auto-comment
+	- comment space, alignment -- provide options?
+	* write listing
+	* Button up file handling
+		- Except: Default output for core as stdout?
+	- Parens in expr print
+			Actually needed! crt-test.ww has (a-b)/3. (was a-b/3 and old asm did not follow std precedence.
+	- Related to last comment looks like bug in old asm forming one's-comp negative numbers. See crt-test.acore versus crt-test.n.ncore
+	* Quotes in strings
+	* .exec doesn't list properly -- strings in this case don't want quotes
+	- flexo translation
+		Not sure I have it all right
+	- "See .dbwgt for more discussion"
+	* Assure all wwasm args are handled in some way
+		Yes, with some debate ahead
+	* Verbosity and Debuggery
+		Doesn't seem to be a need for either in new asm right now, but the flags are available in AsmProgram
+	* Bail on "too many" errors
+		Let everything run, suppress output files on any errors
+	x Hacked wwasm.py to accept comma in .dbwgt
+		Backed-out; not needed
+	- Case-sensitive? Right now new asm is not at all
+		We want case-insens ops and case-sens labels and vars
+	- Check range on nextcoreaddress since can overflow 2K as in all1.ww. Right now croaks.
+	- Mod and test disasm
+	* asm: no-prefx-addr option, to get a prety-printed source file
+		Changed to --MinimalListing
+	- --Legacy_Numbers: should go away? Rightnow .org has a mix in the
+          code; it's clear some .org numbers are meant to be octal,
+          even though they have no 0o prefix. Really should conform to
+          std rules and the code with unadorned octal should change.
 
+		  Default octal in Mad-Game? Looks like only for non-address
+		  operands (e.g., si). All addresses use symbolic
+		  labels. Modified mad-game by copying to .n version and using
+		  explicit designators for all octal numbers. Got same results
+		  as asm.
+
+		  So right now I favor a bit of extra editing versus reading
+	  options.
+
+	- annotate io dev: no reason it shouldn't be default, no option, with auto-comment?
+	- .wwfile really wants quoted strings -- i.e., expect a var
+		All Code-Samples modified thus in .n.ww versions
+	- Can probably be more elegant in AsmLabelTab by subclassing dict.
+	* Why does core file have 7-oct width?
+		Guy thinks becuase he first wanted to encode the memory bank.
+	- Note crt-test has runtest.n.sh, but the drawing output has not
+	  been validated against fixes Guy will be supplying.
+	- I'l take on a task of updating the asm manual.
+
+	- Get "everything" into git: tape images, images on code, etc.
+	- LAS: work on L&Z? Maybe just use new translator and asm?
+	- LAS: disasm, C-ish compiler, ...? Where are we wrt to "musesum-ness"
+		- One goal is historical research and perhaps a paper on the
+		  code we've found and resurrected.
+		- Another may be museum exhibits -- esp. hardware currently under dev.
+	
+
+
+----------------------------------------------------------------------
+1/1/25
+pwd
+/cygdrive/g/.shortcut-targets-by-id/1-7fYz-kOky_lqe_lvHZ0YBBHz-ikIffj/Whirlwind
+du -s -k -h *
+42M	Catalogues-and-Indices
+73M	Code-Samples-Local
+311K	Dave-Walden-WW-Report-R221.pdf
+258M	GitHub
+18M	HNF-Git
+93M	Hardware
+1.0K	How-to-Make-a-Release.txt
+9.5M	Images
+219K	JavaSim
+232M	Mag-Tapes
+70M	Paper-Tapes
+2.4M	Papertape-Decitek-Reader-Punch
+923K	Partners
+1.1G	Photos
+277M	Py-Local
+1.5G	Scanned-Docs
+56M	SimH
+9.1G	Static-Document-Files
+2.1M	Whirlwind-Python-Guy-Oct01-18.zipx
+14K	Whirlwind-Q-tmp-Oct12-17.docx
+366M	guy
+1.0K	rsync-to-pi.sh
+1.0K	rsync-to-pi.sh~
+
+M-2539-2 Comprehensive System manual
+====================================
+
+Section														Pdf page
+-------														--------
+
+introduction													5
+
+part i. intro to programming and coding							10
+
+chapter i the cs computer -- simplified version					11
+chapter ii transfer of control -- counting						19
+chapter iii cycle counters -- modification of addresses			27
+chapter iv floating addresses									35
+chapter v input and output										43
+chapter vi errors and post-mortems								60
+chapter vii subroutines											65
+				preset parameters								74
+chapter viii review												79
+
+part ii. advanced coding techniques								90
+
+chapter ix some more fundamentials								91
+chapter x number systems										96
+chapter x1 the whirlwind [i] computer							107
+chapter xii auxiliary storage and in-out equipment				132
+chapter xiii programmed arithmetic								148
+chapter xiv the conversion program								167
+				ditto											194
+chapter xv the utility control program							202
+chapter xvi automatic input-output requests [output]			224
+chapter xvii generalized post-mortems							241
