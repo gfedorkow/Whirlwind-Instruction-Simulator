@@ -1,0 +1,18 @@
+           .dbwgt Vy
+           .dbwgt R, 0o200, "%d"
+           .dbwgt Xi, 0o400
+           .dbwgt Yi, 0o100
+nobounce:  sp x+57
+           .word 0o4270
+           .word -0.56789
+           .print "This is a message %s", 42, xyz
+           ts -0
+           sp x+-37
+           .exec for i in range(0, 10): print(f"### data[{i}] = {py_int(cm.rd(rl('data') + i))} ###")
+           sp 0o12345
+		   sp xyz, 0o12345
+		   sp abc, 0o12345, +0.98765, 9800 ; Hi there!
+		   ca qwert & (poiuyt + 2) | 57
+		   sp 0o177 & 0o077 | 0o1000
+		   sp 1.07777
+

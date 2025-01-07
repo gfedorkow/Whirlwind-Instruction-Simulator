@@ -1,0 +1,21 @@
+    ta x+*y*(z + 99)
+    ta x[10]+y*(z + 99)
+    sp 0o177789
+    sp 0o177777
+    sp 0o177
+    sp xyz + 42
+    sp "abc"
+    .org 0o177777
+    .org "xyz"
+    .flexl "a"
+    .flexh "pqr"
+    .dbwgt x, "blah"
+x:  .word 42
+    .isa 1950
+    .isa 1945
+    .isa 1832
+    .isa 1066
+    .isa 4000
+    .word 4242
+    .word 70000
+    .word -40000

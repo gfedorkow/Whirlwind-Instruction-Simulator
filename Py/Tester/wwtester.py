@@ -34,7 +34,9 @@ class Test:
         self.testDir = os.path.normpath (self.testsDir + "/" + self.testName)
         self.dryRun = cmdArgs.DryRun
         self.quiet = cmdArgs.Quiet
-        self.testType = ""
+        self.accept = cmdArgs.Accept
+        self.testType = None
+        self.testBaseName = ""
         self.simArgs = []
         self.asmArgs = []
         self.coreArgs = []
@@ -53,12 +55,6 @@ class Test:
         self.coreFileBase = os.path.normpath (self.testResultsDir + "/" + self.testBaseName)
         self.coreFile = self.coreFileBase + ".acore"
         self.coreFileAsSrc = os.path.normpath (self.testDir + "/" + self.testBaseName + ".acore")
-
-    def spaces (self, n):
-        r = ""
-        for i in range (0, n):
-            r += " "
-        return r
 
     def parseOptions (self, str):
         if str is None:
@@ -95,13 +91,19 @@ class Test:
         os.mkdir (self.testResultsDir)
 
     def readTestInfoFile (self):
-        s = open (self.testDir + "/" + "TestInfo.yaml", "r")
-        # LAS check error
+        try:
+            s = open (self.testDir + "/" + "TestInfo.yaml", "r")
+        except FileNotFoundError as e:
+            return self
         y = yaml.Loader (s)
         d = y.get_data()
         self.testType = d["testType"]
         self.testBaseName = d["baseName"]
         keys = list (d)
+        if "cmd" in keys:
+            self.asmArgs += (self.parseOptions (d["cmd"]))
+        if "cmdOptions" in keys:
+            self.asmArgs += (self.parseOptions (d["cmdOptions"]))
         if "asmOptions" in keys:
             self.asmArgs += (self.parseOptions (d["asmOptions"]))
         if "simOptions" in keys:
@@ -153,17 +155,41 @@ class Test:
             sys.stdout.flush()
             logFile = open (logFileName, "wb")  # Binary mode to avoid adding cr to lines
             print ("*** wwtester running command: ", self.cmdListToString (cmd))
+            # This is probably not the best way to combine stdout and stderr.
+            # Should try to find a better way. See net search for "python popen combine stdout stderr".
             proc = subprocess.Popen (cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             for line in proc.stdout:
                 if not self.quiet:
-                    print (line.decode(), end="")       # Print to stdout
-                logFile.write(line)                     # Write to file
+                    print (line.decode(), end="", file=sys.stdout)      # Print to stdout
+                logFile.write(line)                                     # Write to file
+            for line in proc.stderr:
+                if not self.quiet:
+                    print (line.decode(), end="", file=sys.stderr)      # Print to stderr
+                logFile.write(line)                                     # Write to file
+            sys.stdout.flush()
+            sys.stderr.flush()
+            logFile.flush()
+            logFile.close()
 
     def report (self):
         sys.stdout.write ("*** wwtester checking test results...\n")
         for fileFilter in self.fileFilters:
             fileFilter.report()
         sys.stdout.write ("*** wwtester test complete\n")
+
+    def acceptResults (self):
+        # rm testRefs and mv testResults to testRefs
+        self.testResultsDir
+        self.testRefsDir
+        testRefsDirBaseName = os.path.basename (self.testRefsDir)
+        if os.path.exists (self.testRefsDir):
+            if testRefsDirBaseName == "TestRefs":
+                shutil.rmtree (self.testRefsDir)
+            else:
+                print ("Error: Incorrect TestRefs directory: ", self.testRefsDir)
+                sys.exit (True)
+        if os.path.exists (self.testResultsDir):
+            os.rename (self.testResultsDir, self.testRefsDir)
 
 class LineStream:
     def __init__ (self, file):
@@ -249,7 +275,7 @@ class AsmSimTest (Test):
         self.runSubprocess (self.simCmd, self.simLogFileName)
         self.report()
 
-# Disassamble a core file. 
+# Disassamble a core file.
 
 class DisasmTest (Test):
     def __init__ (self, testName, cmdArgs):
@@ -257,6 +283,16 @@ class DisasmTest (Test):
     def run (self):
         super().run()
         self.runSubprocess (self.disasmCmd, self.disasmLogFileName)
+        self.report()
+
+# Run an arbitrary command
+
+class CommandTest (Test):
+    def __init__ (self, testName, testerCmdArgs):
+        super().__init__ (testName, testerCmdArgs)
+    def run (self):
+        super().run()
+        self.runSubprocess (self.cmd, self.cmdOptions)
         self.report()
 
 # All is a special test type -- but has a dir!
@@ -270,9 +306,11 @@ class AllTest (Test):
         for testName in testNames:
             if testName != "All":
                 sys.stdout.write ("\n*** wwtester running test: %s\n" % (testName))
-                testClassName = Test(testName, self.cmdArgs).readTestInfoFile().testType + "Test"
-                test = globals()[testClassName](testName, self.cmdArgs)
-                test.run()
+                testType = Test(testName, self.cmdArgs).readTestInfoFile().testType
+                if testType is not None:
+                    testClassName = testType + "Test"
+                    test = globals()[testClassName](testName, self.cmdArgs)
+                    test.run()
            
 #
 # End Test Types
@@ -284,12 +322,18 @@ def main():
     parser.add_argument ("--TestsDir", help="Dir where to find tests. Default $PYTHONPATH/../../Tests.", type=str)
     parser.add_argument ("--DryRun", help="Print out commands to be run, but don't run them.", action="store_true")
     parser.add_argument("-q", "--Quiet", help="Suppress stdout and stderr output from program under test", action="store_true")
+    parser.add_argument("--Accept", help="Copy all files in TestResults to TestRefs, replacing files therein", action="store_true")
     cmdArgs = parser.parse_args()
     # Instantiate a direct instance of Test just so we can read test info to find what subclass to instantiate
-    testClassName = Test(cmdArgs.testName, cmdArgs).readTestInfoFile().testType + "Test"
-    # Now make the real test subclass using the metasystem
-    test = globals()[testClassName](cmdArgs.testName, cmdArgs)
-    test.run()
+    testType = Test(cmdArgs.testName, cmdArgs).readTestInfoFile().testType
+    if testType is not None:
+        testClassName = testType + "Test"
+        # Now make the real test subclass using the metasystem
+        test = globals()[testClassName](cmdArgs.testName, cmdArgs)
+        if test.accept:
+            test.acceptResults()
+        else:
+            test.run()
 
 if __name__ == "__main__":
     main()

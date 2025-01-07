@@ -6,8 +6,8 @@ simOptions: --CycleLimit 7700
 coreOptions:
 verify:
   - log:
-      name: wwsim
-      filter: ww_draw_point
-  - log:
       name: wwasm
       filter: Warning|Error
+  - log:
+      name: wwsim
+      filter: ww_draw_point

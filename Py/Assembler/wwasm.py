@@ -102,7 +102,7 @@ def split_comment(in_str):
     if c == ')':
       paren_depth -= 1
     if c == '"':
-      in_quotes = ~in_quotes
+      in_quotes = not in_quotes
 
     if re.match("@@",in_str[i:] ) and (in_quotes == False) and (paren_depth == 0):
       break
@@ -1037,6 +1037,11 @@ def resolve_labels_gen_instr(srcline) -> int:
     if binary_operand is None:
         print("no operand found when resolving label %s in line %d" % (srcline.operand, srcline.linenumber))
         return 1
+
+    # LAS Bug: When doing subtract this results in incorrect ww negative
+    # numbers, too great by one. binary_operand for some reason in that case
+    # has not been converted yet to one's complement.
+    
     binary_operand &= srcline.operand_mask
     srcline.binary_instruction_word = binary_operand | srcline.binary_opcode
 
