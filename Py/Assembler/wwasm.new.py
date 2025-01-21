@@ -268,20 +268,55 @@ class AsmInst:
             return (" "*5 + " "*len (daStr) + " "*7)
     def opnamePrefix (self):
         return ""
-    def listingString (self, quoteStrings: bool = True, minimalListing: bool = False) -> str:
+    # Look for semicolons and justify
+    def formatComment (self, comment: str) -> str:
+        cw = self.prog.commentWidth
+        if cw == 0:
+            r = comment
+        else:
+            cc = self.prog.labelTab.maxLabelLen + self.prog.commentColumn
+            l = len(comment)
+            s = ""
+            r = ""
+            for i in range (0, l):
+                if comment[i] == ';':
+                    s = s.rstrip (" ")
+                    n = cw - len (s)
+                    if n < 0:
+                        n = 1
+                    r += s + " "*n + ";"
+                    s = ""
+                elif i == l - 1:
+                    s += comment[i]
+                    r += s
+                else:
+                    s += comment[i]
+        return r
+
+    def listingString (self,
+                       quoteStrings: bool = True,
+                       minimalListing: bool = False,
+                       omitUnrefedLabels: bool = False,
+                       omitAutoComment: bool = False) -> str:
         p = self.parsedLine
         prefixAddr = self.prefixAddrStr() if not minimalListing else ""
-        autoComment = self.xrefs.listingString() if not minimalListing else ""
+        autoComment = self.xrefs.listingString() if not minimalListing and not omitAutoComment else ""
         maxLabelLen = self.prog.labelTab.maxLabelLen
+        commentWidth = self.prog.commentWidth
+        if omitUnrefedLabels and p.label not in self.prog.labelRef:
+            plabel = ""
+        else:
+            plabel = p.label
         sp = " "
-        sp1 = sp*(maxLabelLen - len (p.label))
-        label = "%s%s" % (sp1, p.label) + (":" if p.label != "" else sp)
+        sp1 = sp*(maxLabelLen - len (plabel))
+        label = "%s%s" % (sp1, plabel) + (":" if plabel != "" else sp)
         inst = self.opnamePrefix() + p.opname + (sp + p.operand.listingString (quoteStrings = quoteStrings)) if p.operand is not None else ""
-        comment = p.comment
+        comment = self.formatComment (p.comment)
         s1 = prefixAddr + sp + label + sp 
         s2 = s1 + inst
-        sp2 = sp*(50 - len (s2)) if p.label != "" or p.opname != "" else ""
-        s3 = (sp2 + "; " + comment + " " + autoComment) if comment + autoComment != "" else ""
+        commentColumn = len (s1) + self.prog.commentColumn
+        sp2 = sp*(commentColumn - len (s2)) if p.label != "" or p.opname != "" else ""
+        s3 = (sp2 + ";" + comment + " " + autoComment) if comment + autoComment != "" else ""
         return (s2 + s3).rstrip (" ")
 
 class AsmWwOpInst (AsmInst):
@@ -559,8 +594,18 @@ class AsmDotDbwgtInst (AsmPseudoOpInst):
 class AsmDotExecInst (AsmPseudoOpInst):
     def __init__ (self, *args):
         super().__init__ (*args)
-    def listingString (self, minimalListing: bool = False) -> str:
-        return super().listingString (quoteStrings = False, minimalListing = minimalListing)
+    def listingString (self,
+                       quoteStrings: bool = True,
+                       minimalListing: bool = False,
+                       omitUnrefedLabels: bool = False,
+                       omitAutoComment: bool = False) -> str:
+        p = self.parsedLine
+        prefixAddr = self.prefixAddrStr() if not minimalListing else ""
+        autoComment = self.xrefs.listingString
+        return super().listingString (quoteStrings = False,
+                                      minimalListing = minimalListing,
+                                      omitUnrefedLabels = omitUnrefedLabels,
+                                      omitAutoComment = omitAutoComment)
     def passOneOp (self):
         pass
     def passTwoOp (self):
@@ -636,7 +681,10 @@ class AsmDotPpInst (AsmPseudoOpInst):
             if varExpr.exprType == AsmExprType.Variable:
                 val: AsmExprValue = valExpr.evalMain (self.prog.env, self.parsedLine)
                 if val.type in [AsmExprValueType.Integer, AsmExprValueType.Fraction, AsmExprValueType.NegativeZero]:
-                    self.prog.presetTab[varExpr.exprData] = val
+                    if varExpr.exprData in self.prog.presetTab:
+                        self.error ("Preset variable %s already defined" % varExpr.exprData)
+                    else:
+                        self.prog.presetTab[varExpr.exprData] = val
                 else:
                     aelf.operandTypeError (val)
             else:
@@ -757,12 +805,16 @@ class AsmProgramEnv (AsmExprEnv):
 # keep track of max label length. Hardly seems worth it.
 
 class AsmLabelTab:
-    def __init__ (self):
+    def __init__ (self, prog):       # prog: AsmProgram
+        self.prog = prog
         self.labelToInst: dict = {}  # Label: Variable: str -> AsmInst      A Label is a Variable but not all Variables must be labels.
         self.maxLabelLen = 0
     def insert (self, label: str, inst: AsmInst):
-        self.labelToInst[label] = inst
-        self.maxLabelLen = max (self.maxLabelLen, len (label))
+        if label in self.labelToInst:
+            self.prog.error ("Label %s already defined" % label)
+        else:
+            self.labelToInst[label] = inst
+            self.maxLabelLen = max (self.maxLabelLen, len (label))
     def lookup (self, label: str):
         if label in self.labelToInst:
             return self.labelToInst[label]
@@ -775,7 +827,8 @@ class AsmProgram:
     def __init__ (self,
                   inFilename, inStream,
                   coreOutFilename, listingOutFilename,
-                  verbose, debug, minimalListing, isa1950):
+                  verbose, debug, minimalListing, isa1950,
+                  reformat, omitUnrefedLabels, commentColumn, commentWidth,omitAutoComment):
         #
         # The "fundamental constants" of the machine. Masks, which can hide
         # bugs, are not used. Ranges of fields are checked.
@@ -812,6 +865,11 @@ class AsmProgram:
         self.wwTapeId: str = ""
         self.wwJumpToAddress: int = None     # Initial program addr
         self.minimalListing = minimalListing
+        self.reformat = reformat
+        self.omitUnrefedLabels = omitUnrefedLabels
+        self.commentColumn = commentColumn if commentColumn is not None else 25
+        self.commentWidth = commentWidth if commentWidth is not None else 0
+        self.omitAutoComment = omitAutoComment
         self.opCodeTable: list = []
         self.isa1950: bool = False
 
@@ -819,10 +877,10 @@ class AsmProgram:
 
         # These two tables constitute the evaluation environment for
         # AsmExpr.eval(), via AsmProgram.envLookup(), which feeds AsmProgramEnv
-        self.labelTab = AsmLabelTab()                 # Label: Variable: str -> AsmInst
+        self.labelTab = AsmLabelTab (self)            # Label: Variable: str -> AsmInst
         self.presetTab = {}                           # Variable: str -> AsmExprValue        Defined via .pp
 
-        self.env = AsmProgramEnv (self)               # The evaluation environment
+        self.env = AsmProgramEnv (self)               # The evaluation environment itself
 
         self.commentTab = [""]*self.coreSize          # An array of comments found in the source, indexed by address
         self.dbwgtTab = []                            # An array [list?] to hold directives to add Debug Widgets to the screen
@@ -831,7 +889,10 @@ class AsmProgram:
         
         self.coreMem = [None]*self.coreSize           # An image of the final core memory. Maps int -> int. Type ([int]*self.coreSize)[int]
 
+        self.parsedLine: AsmParsedLine = None
+
         self.coreToInst = [None]*self.coreSize        # An array mapping an address to an AsmInst -- for xref. Type ([AsmInst]*self.coreSize)[Address: int]
+        self.labelRef = {}                            # Map Label: str -> True. Just need to know label has been ref'd
 
         self.wwFilename = inFilename                  # wwFilename will be overwritten if there's a directive in the source
         self.inStream = inStream
@@ -843,7 +904,7 @@ class AsmProgram:
         self.verbose = verbose
         self.debug = debug
 
-    def error (msg: str):
+    def error (self, msg: str):
         sys.stdout.flush()
         self.cb.log.error (self.parsedLine.lineNo, "%s in %s" % (msg, self.parsedLine.lineStr))
     #
@@ -855,6 +916,7 @@ class AsmProgram:
     def envLookup (self, var: str) -> AsmExprValue:
         inst = self.labelTab.lookup (var)
         if inst is not None:
+            self.labelRef[var] = True
             return AsmExprValue (AsmExprValueType.Integer, inst.address)
         elif var in self.presetTab:
             return self.presetTab[var]
@@ -879,6 +941,7 @@ class AsmProgram:
             else:
                 line = AsmParsedLine (lineStr, lineNo, verbose = self.verbose)
                 line.parseLine()
+                self.parsedLine = line      # Current line available for error messages
                 # All lines result in an instruction class instance of some kind
                 opname = line.opname.lower()
                 if opname in self.metaOpcode:
@@ -946,7 +1009,9 @@ class AsmProgram:
         listingOutStream = open (self.listingOutFilename, 'wt')
         print ("Listing output to file %s" % self.listingOutFilename)
         for inst in self.insts:
-            listingOutStream.write (inst.listingString (minimalListing = self.minimalListing) + "\n")
+            listingOutStream.write (inst.listingString (minimalListing = self.minimalListing,
+                                                        omitUnrefedLabels = self.omitUnrefedLabels,
+                                                        omitAutoComment = self.omitAutoComment) + "\n")
         listingOutStream.close()
 
     def assemble (self):
@@ -956,6 +1021,8 @@ class AsmProgram:
         if errorCount != 0:  # Don't write files if picked up errors
             print ("Error Count = %d; output files suppressed" % errorCount)
         else:
+            if self.reformat:
+                pass
             self.writeCore()
             self.writeListing()
 
@@ -968,6 +1035,12 @@ def main():
     parser.add_argument("--MinimalListing", help="Do not include prefix address and auto-comments in listing", action="store_true")
     parser.add_argument("-D", "--DecimalAddresses", help="Display listing addresses in decimal as well as octal", action="store_true")
     parser.add_argument("--ISA_1950", help="Use the 1950 version of the instruction set", action="store_true")
+    parser.add_argument("--Reformat", help="Prettify the source .ww file and move the original to .ww.bak", action="store_true")
+    parser.add_argument("--OmitUnrefedLabels", help="Don't put unreferenced labels in the listing", action="store_true")
+    # Suggested for CommentColumn is 25 for CommentWidth 50
+    parser.add_argument("--CommentColumn", type=int, help="Column after labels for comments in listing. Default 25")
+    parser.add_argument("--CommentWidth", type=int, help="Space to allocste to each comment field in listing. If not specified or zero, no field detection")
+    parser.add_argument("--OmitAutoComment", help="Omit the auto-comment xref in listing", action="store_true")
 
     # We decided to keep this always-on
     # parser.add_argument("--Annotate_IO_Names", help="Auto-add comments to identify SI device names", action="store_true")
@@ -984,6 +1057,11 @@ def main():
     verbose = args.Verbose
     minimalListing = args.MinimalListing
     isa1950 = args.ISA_1950
+    reformat = args.Reformat
+    omitUnrefedLabels = args.OmitUnrefedLabels
+    commentColumn = args.CommentColumn
+    commentWidth = args.CommentWidth
+    omitAutoComment = args.OmitAutoComment
     inFilename = args.inputfile
     outFileBaseName = re.sub("\\.ww$", '', inFilename)
     if args.outputfilebase is not None:
@@ -995,7 +1073,8 @@ def main():
     prog = AsmProgram (
         inFilename, inStream,
         coreOutFilename, listingOutFilename,
-        verbose, debug, minimalListing, isa1950)
+        verbose, debug, minimalListing, isa1950,
+        reformat, omitUnrefedLabels, commentColumn, commentWidth, omitAutoComment)
     prog.assemble()
 
 main()
