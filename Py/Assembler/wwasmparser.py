@@ -620,7 +620,7 @@ class AsmParsedLine:
     def parseComment (self) -> bool:
         tok = self.gtok()
         if tok.tokenType == AsmTokenType.Comment:
-            self.comment = tok.tokenStr.rstrip ("\r\n \t").lstrip()
+            self.comment = tok.tokenStr.rstrip ("\r\n \t")
             return True
         else:
             self.ptok (tok)
@@ -649,7 +649,7 @@ class AsmParsedLine:
                 e1.leftSubExpr = e2
                 return e1
             else:
-                self.error ("Unary operator sytnax error")
+                self.error ("Unary operator syntax error")
         else:
             self.ptok (tok)
             return self.parseAtom()
