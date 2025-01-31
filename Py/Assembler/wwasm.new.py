@@ -1,6 +1,7 @@
 import os
 import sys
 import re
+import math
 import traceback
 import argparse
 import wwinfra
@@ -159,6 +160,8 @@ class OpCodeTables:
         "daorg": AsmDotDaOrgInst,       # Drum Address Origin -- generates warning, don't know what to do yet
          "base": AsmDotBaseInst,        # Deprecated -- will generate warning
          "word": AsmDotWordInst,
+        "words": AsmDotWordsInst,
+        "float": AsmDotFloatInst,
         "flexl": AsmDotFlexlhInst,
         "flexh": AsmDotFlexlhInst,
        "switch": AsmDotSwitchInst,
@@ -169,7 +172,8 @@ class OpCodeTables:
           "isa": AsmDotIsaInst,         # Directive to switch to the older 1950 instruction set
          "exec": AsmDotExecInst,
         "print": AsmDotPrintInst,
-           "pp": AsmDotPpInst
+           "pp": AsmDotPpInst,
+      "include": AsmDotIncludeInst      # Include the text of another ww file
             }
 
 class AsmXrefEntry:
@@ -245,6 +249,21 @@ class AsmInst:
             return x
         else:
             self.error ("Unsigned integer conversion of %d (= 0o%o) is out of 16-bit unsigned range" % (x, x))
+    #
+    # Convert host int x to one's complement given the total bit size (i.e., including sign) nbits
+    #
+    def intToSignedOnesCompInt (self, x: int, nbits: int) -> int:
+        maxmag = 2**(nbits-1)
+        if x >= -maxmag and x <= maxmag:
+            if x < 0:
+                r = 2**nbits - 1 + x  # One's-complement representation
+            else:
+                r = x
+            return r
+        else:
+            self.error ("Signed integer conversion of %d is out of %d-bit one's-complement range" % (x, nbits))
+            return 0
+
     def error (self, msg: str):
         sys.stdout.flush()
         """
@@ -391,6 +410,32 @@ class AsmPseudoOpInst (AsmInst):
         return self.fmtPrefixAddrStr (self.address)
     def opnamePrefix (self):
         return "."
+    def wwWord (self, val: AsmExprValue) -> int:
+        inst = 0
+        if val.type == AsmExprValueType.Integer:
+
+            # This integer handling illustrates why we really could use more
+            # data types, esp. an Address type, so that we can clearly deal
+            # with range and sign. Here we check sign only to call the standard
+            # converters, which also check sign.
+            
+            if val.value >= 0:
+                # If positive, treat effectively as unsigned for the 16-bit range
+                inst = self.intToUnsignedWwInt (val.value)
+            else:
+                # Value negative -- store one's complement
+                inst = self.intToSignedWwInt (val.value)
+        elif val.type == AsmExprValueType.NegativeZero:
+            # Negative zero is its own type
+            inst = self.prog.maxUnsignedWord
+        elif val.type == AsmExprValueType.Fraction:
+            # Fractions need to stay in signed 16-bit one's complement range
+            # self.instruction = self.intToSignedWwInt (val.value)
+            # inst = self.intToSignedWwInt (int (round (val.value * 2**15)))  # LAS
+            inst = self.intToSignedWwInt (int (round (val.value * 2**(self.prog.wordWidth - 1))))  # LAS
+        else:
+            self.operandTypeError (val)
+        return inst
 
 class AsmNullInst (AsmPseudoOpInst):
     def __init__ (self, *args):
@@ -465,28 +510,94 @@ class AsmDotWordInst (AsmPseudoOpInst):
         self.prog.nextCoreAddress += 1
     def passTwoOp (self):
         val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
-        if val.type == AsmExprValueType.Integer:
+        self.instruction = self.wwWord (val)
+        self.prog.coreMem[self.address] = self.instruction
 
-            # This integer handling illustrates why we really could use more
-            # data types, esp. an Address type, so that we can clearly deal
-            # with range and sign. Here we check sign only to call the standard
-            # converters, which also check sign.
-            
-            if val.value >= 0:
-                # If positive, treat effectively as unsigned for the 16-bit range
-                self.instruction = self.intToUnsignedWwInt (val.value)
+class AsmDotWordsInst (AsmDotWordInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+        self.block = {}
+        self.fillInst = 0
+    def listingString (self,
+                       minimalListing: bool = False,
+                       **kwargs) -> str:
+        s = super().listingString (minimalListing = minimalListing, **kwargs)
+        if minimalListing:
+            return s
+        for i in range (1, len (self.block)):
+            s += "\n" + self.fmtPrefixAddrStr (self.address + i, contents = self.block[i])
+        return s
+    def passOneOp (self):
+        # Need to eval in pass one since this determines next addr. So all vars
+        # must have been defined previoiusly in the file.
+        val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
+        if val.type != AsmExprValueType.List:
+            valList = [val, AsmExprValue (AsmExprValueType.Integer, 0)]
+        else:
+            valList = val.value
+        if len (valList) == 2:
+            lenVal = valList[0]
+            if lenVal.type == AsmExprValueType.Integer:
+                fillLen = lenVal.value
+                fillVal = valList[1]
+                self.fillInst = self.wwWord (fillVal)
+                for i in range (0, fillLen):
+                    self.block[i] = self.fillInst
+                self.prog.nextCoreAddress += fillLen
             else:
-                # Value negative -- store one's complement
-                self.instruction = self.intToSignedWwInt (val.value)
-        elif val.type == AsmExprValueType.NegativeZero:
-            # Negative zero is its own type
-            self.instruction = self.prog.maxUnsignedWord
-        elif val.type == AsmExprValueType.Fraction:
-            # Fractions need to stay in signed 16-bit one's complement range
-            self.instruction = self.intToSignedWwInt (val.value)
+                self.operandTypeError (lenVal)
+        else:
+            self.error ("Incorrect number of operands")
+    def passTwoOp (self):
+        self.instruction = self.fillInst
+        for i in range (0, len (self.block)):
+            self.prog.coreMem[self.address+i] = self.block[i]
+
+class AsmDotFloatInst (AsmDotWordsInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def passOneOp (self):
+        self.prog.nextCoreAddress += 2
+    def passTwoOp (self):
+        val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
+        if val.type == AsmExprValueType.List:
+            if len (val.value) == 2:
+                val1: AsmExprValue = val.value[0]
+                val2: AsmExprValue = val.value[1]
+                if val1.type == AsmExprValueType.Fraction:
+                    decMant = val.value[0].value  
+                elif val1.type == AsmExprValueType.Integer:
+                    decMant = val.value[0].value
+                else:
+                    self.operandTypeError (val1)
+                if val2.type == AsmExprValueType.Integer:
+                    decExp = val.value[1].value
+                    v: float = decMant*10**decExp
+                    exp: int = 0 if v == 0 else math.ceil (math.log (abs(v), 2)) # Signed, mag 6 bit range, host rep
+                    fracMant: float = v/2**exp
+                    if fracMant >= 1.0:
+                        exp += 1
+                        fracMant: float = v/2**exp
+                    mant = int (round (fracMant * 2**24)) # Mag is full 24-bit resolution, host rep
+                    wwExp = self.intToSignedOnesCompInt (exp, 7) 
+                    wwMant = self.intToSignedOnesCompInt (mant, 25)
+                    wwMantHiMask = 0o177777000
+                    wwMantHi = (wwMant & wwMantHiMask) >> 9
+                    print ("LAS86", "0o%o" % wwMant, "0o%o" % wwMantHi, v, fracMant, mant, decMant, decExp)
+                    wwMantLo = wwMant & ~wwMantHiMask
+                    wwHiWord = wwMantHi
+                    wwLoWord =  (wwExp << 9) | wwMantLo
+                    self.instruction = wwHiWord
+                    self.block[0] = wwHiWord
+                    self.block[1] = wwLoWord
+                else:
+                    self.operandTypeError (val2)
+            else:
+                self.error (".float takes two operands")
         else:
             self.operandTypeError (val)
-        self.prog.coreMem[self.address] = self.instruction
+        self.prog.coreMem[self.address] = self.block[0]
+        self.prog.coreMem[self.address+1] = self.block[1]
 
 # .flexl and .flexh each store a word (as in .word), representing a character
 # as translated to the Flexowriter character code. .flexl stores in the low
@@ -597,15 +708,13 @@ class AsmDotExecInst (AsmPseudoOpInst):
     def listingString (self,
                        quoteStrings: bool = True,
                        minimalListing: bool = False,
-                       omitUnrefedLabels: bool = False,
-                       omitAutoComment: bool = False) -> str:
+                       **kwargs) -> str:
         p = self.parsedLine
         prefixAddr = self.prefixAddrStr() if not minimalListing else ""
         autoComment = self.xrefs.listingString
         return super().listingString (quoteStrings = False,
                                       minimalListing = minimalListing,
-                                      omitUnrefedLabels = omitUnrefedLabels,
-                                      omitAutoComment = omitAutoComment)
+                                      **kwargs)
     def passOneOp (self):
         pass
     def passTwoOp (self):
@@ -664,7 +773,7 @@ class AsmDotPrintInst (AsmPseudoOpInst):
                 else:
                     self.operandTypeError (val)
             if self.address in self.prog.execTab:
-                self.prog.execTab[self.address] += " \\n " + execCmd
+                self.prog.execTab[self.address] += " \n " + execCmd
             else:
                 self.prog.execTab[self.address] = execCmd
 
@@ -691,6 +800,49 @@ class AsmDotPpInst (AsmPseudoOpInst):
                 self.error ("Binding target (first operand) of a preset must be a variable")
         else:
             self.error (".pp requires comma operator")
+
+class AsmDotIncludeInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def listingString (self, minimalListing: bool = False, **kwargs) -> str:
+        if self.prog.reformat:
+            return super().listingString (minimalListing = minimalListing, **kwargs)
+        else:
+            p = self.parsedLine
+            prefixAddr = self.prefixAddrStr() if not minimalListing else ""
+            maxLabelLen = self.prog.labelTab.maxLabelLen
+            sp = " "
+            spaces = " "*maxLabelLen
+            return prefixAddr + spaces + "   ; " + self.opnamePrefix() + p.opname + " " + p.operand.listingString()
+    def passOneOp (self):
+        if not self.prog.reformat:
+            # Must be evaluated in pass one, so the operand needs to be a literal
+            val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
+            if val.type == AsmExprValueType.String:
+                inFilename = val.value
+                inStream = open (inFilename, "r")
+                self.prog.pushStream (inStream, inFilename)
+            else:
+                self.operandTypeError (val)
+    def passTwoOp (self):
+        pass
+
+# An Inst just so we can mark the end of an included file. Works ok, but feels
+# a little greasy, maybe even slimy.
+
+class AsmEndDotIncludeInst (AsmDotIncludeInst):     # Specifically to support .include
+    def __init__ (self, inFilename: str, prog):
+        self.inFilename = inFilename
+        self.parsedLine = AsmParsedLine ("", 0)
+        self.parsedLine.opname = "include"
+        self.parsedLine.operand = AsmExpr (AsmExprType.LiteralString, self.inFilename)
+        super().__init__ (self.parsedLine, prog)
+    def opnamePrefix (self) -> str:
+        return "end ."
+    def passOneOp (self):
+        pass
+    def passTwoOp (self):
+        pass
 
 class AsmDotWwFilenameInst (AsmPseudoOpInst):
     def __init__ (self, *args):
@@ -860,8 +1012,6 @@ class AsmProgram:
         self.nextCoreAddress: int = 0o40     # Where to put the next instruction.
         
         self.currentRelativeBase: int = 0o40 # Base of NNr style address refs.
-        self.inputFile: str = ""             # Input file name, as given on the cmd line.
-        self.wwFilename: str = ""
         self.wwTapeId: str = ""
         self.wwJumpToAddress: int = None     # Initial program addr
         self.minimalListing = minimalListing
@@ -894,10 +1044,14 @@ class AsmProgram:
         self.coreToInst = [None]*self.coreSize        # An array mapping an address to an AsmInst -- for xref. Type ([AsmInst]*self.coreSize)[Address: int]
         self.labelRef = {}                            # Map Label: str -> True. Just need to know label has been ref'd
 
-        self.wwFilename = inFilename                  # wwFilename will be overwritten if there's a directive in the source
+        self.inFilename = inFilename
+        self.wwFilename = self.inFilename             # wwFilename will be overwritten if there's a directive in the source
         self.inStream = inStream
         self.coreOutFilename = coreOutFilename
         self.listingOutFilename = listingOutFilename
+
+        self.inFilenameStack: [str] = []
+        self.inStreamStack: [] = []
 
         # LAS 12/27/24 As of now these options are detected on the cmd line but
         # there are no statements using them in the code
@@ -907,6 +1061,21 @@ class AsmProgram:
     def error (self, msg: str):
         sys.stdout.flush()
         self.cb.log.error (self.parsedLine.lineNo, "%s in %s" % (msg, self.parsedLine.lineStr))
+
+    def copyWwFileToBak (self) -> bool:
+        bakFile = self.inFilename + ".bak"
+        sout = open (bakFile, "wt")
+        sin = open (self.inFilename, "r")
+        while True:
+            l = sin.readline()
+            if l == "":
+                break
+            else:
+                sout.write (l)
+        sin.close()
+        sout.close()
+        return True
+        
     #
     # Used in AsmProgramEnv
     #
@@ -923,6 +1092,23 @@ class AsmProgram:
         else:
             return None
 
+    # Support for .include
+
+    def pushStream (self, inStream, inFilename):
+        self.inStreamStack.append (self.inStream)
+        self.inFilenameStack.append (self.inFilename)
+        self.inStream = inStream
+        self.inFilename = inFilename
+
+    def popStream (self) -> bool:
+        if self.inStreamStack == []:
+            return False
+        else:
+            self.inStream.close()
+            self.inStream = self.inStreamStack.pop()
+            self.inFilename = self.inFilenameStack.pop()
+            return True
+
     def passOne (self):
         #
         # Resolve as much as possible in the first pass, such as ww opcodes,
@@ -937,7 +1123,14 @@ class AsmProgram:
             lineStr = self.inStream.readline()
             lineNo += 1
             if lineStr == "":
-                break
+                curInfile = self.inFilename
+                if self.popStream():
+                    inst = AsmEndDotIncludeInst (curInfile, self)
+                    self.insts.append (inst)
+                    continue
+                else:
+                    self.inStream.close()
+                    break
             else:
                 line = AsmParsedLine (lineStr, lineNo, verbose = self.verbose)
                 line.parseLine()
@@ -1022,9 +1215,15 @@ class AsmProgram:
             print ("Error Count = %d; output files suppressed" % errorCount)
         else:
             if self.reformat:
-                pass
-            self.writeCore()
-            self.writeListing()
+                status: bool = self.copyWwFileToBak()
+                if status:
+                    self.listingOutFilename = self.inFilename
+                    self.writeListing()
+                else:
+                    error()
+            else:
+                self.writeCore()
+                self.writeListing()
 
 def main():
     parser = wwinfra.StdArgs().getParser ("Assemble a Whirlwind Program.")

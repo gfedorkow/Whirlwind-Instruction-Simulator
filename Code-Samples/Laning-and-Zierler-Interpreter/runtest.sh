@@ -4,22 +4,32 @@
 # In this test we don't run any sims, just generate and compare. The
 # parsing test compares parse trees.
 
-echo "Assembler Test:"
-
 # cd to the dir with this file, to facilitate external control
 thisfile=$0
 cd ${thisfile%/*}/
 
+sim="$PYTHONPATH/../../Py/Sim/wwsim.py"
+asm="$PYTHONPATH/../../Py/Assembler/wwasm.py"
+asmp="$PYTHONPATH/../../Py/Assembler/wwasmparser.py"	   
+asmn="$PYTHONPATH/../../Py/Assembler/wwasm.new.py"
+asml="$PYTHONPATH/../../Py/Assembler/wwlzparser.py"
+asmc="$PYTHONPATH/../../Py/Assembler/cwparser.py"
+
 if [ "$1" == "--Accept" ];
 then
-	echo "Accepting..."
+	echo "Accepting L&Z Tests..."
 	rm -rf TestRefs/
 	mkdir TestRefs
-	cp ErrorTest.log FilteredTest1.log FilteredTest2.log inc1.nlst TestRefs/
+	cp ErrorTest.log FilteredTest1.log FilteredTest2.log TestRefs/
+elif [ "$1" == "--Build" ];
+then
+ 	 echo "Building L&Z ww..."
+	 python $asml L-and-Z-Transcript-With-Repairs-Tab.txt -o las-l-and-z.ww
 else
-	asmp="$PYTHONPATH/../../Py/Assembler/wwasmparser.py"		# Use quotes since can't resolve backslash yet -- it's needed for file name translation
-	asmn="$PYTHONPATH/../../Py/Assembler/wwasm.new.py"
 
+	# python $sim -q --PETRAfile L-and-Z.petrA las-l-and-z.ncore
+	# python $asmn --CommentColumn 25 --CommentWidth 50 --OmitAutoComment --DecimalAddresses las-l-and-z.ww
+	
 	# Test parsing and some eval-ing, only
 	echo "Test Parsing..."
 	python $asmp -v test1.ww >&test1.log		# Should produce an eval error and that's ok so it's in the log
@@ -70,21 +80,7 @@ else
 		echo "Test FAILED"
 	fi
 
-	# .include test
-	echo "Test .include..."
-	rm -f inc1.ncore inc1.lst includetest.log
-	python $asmn --OmitAutoComment inc1.ww >&includetest.log
-   	diff -s inc1.nlst TestRefs/inc1.nlst
-	status5=$?
-
-	if [ "$status5" == "0" ];
-	then
-		echo "Test PASSED"
-	else
-		echo "Test FAILED"
-	fi
-	
-	status=$(($status1 + $status2 + $status3 + $status4 + $status5))
+	status=$(($status1 + $status2 + $status3 + $status4))
 	if [ "$status" == "0" ];
 	then
 		echo "Assembler Test PASSED"

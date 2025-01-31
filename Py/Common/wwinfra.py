@@ -298,6 +298,10 @@ class Tokenizer:
                     self.pos += 1
                     token = '%' + token + c
                     return token
+                elif (c == 'f'):
+                    self.state = 9
+                    self.pos += 1
+                    token = token + c
                 else:
                     self.cb.log.fatal ("Illegal format directive at char pos %d in %s" % (self.pos, self.str) +
                                        self.caratString (self.str, self.pos))
@@ -320,6 +324,15 @@ class Tokenizer:
             elif self.state == 8:
                 self.state = 0
                 return self.endOfString
+            elif self.state == 9:
+                if (c == 'l' or c == 'r'):
+                    self.state = 1
+                    self.pos += 1
+                    token = '%' + token + c
+                    return token
+                else:
+                    self.cb.log.fatal ("Illegal format directive at char pos %d in %s" % (self.pos, self.str) +
+                                       self.caratString (self.str, self.pos))
             else:
                 print("Unexpected state %d in Tokenizer" % self.state)
                 exit(1)

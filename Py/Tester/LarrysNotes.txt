@@ -458,36 +458,55 @@ $
 Assembler grammar
 -----------------
 
+The tokenizer and parser in wwasmparser.py follow this grammar fairly well, but there are probably a few spots where it doesn't line up. The code version wins unless it's shown to be some kind of error. Something not captured well here is some special casing needed for .exec.
+
+Note that the grammar tries to capture the nuances of nunmber denotation, but in the code we use dot (".") as an operator and distinguish the number types in eval. This frees us from having to add lexical knowledge of those number forms.
+
 Informal grammar of single line, showing what's optional:
-<line> = [@ <oct> [. <dec>] : <oct> <sp>] [<label> : <sp>] [<op> <sp> <expr> [<sp>]] [<comment>] [<auto-comment>]
+<line> = [@ <oct> [. <dec>] : <oct> <sp>] [<label> : <sp>] [<op> <sp> <operand>[, ..., <operand>] [<sp>]] [<comment>] [<auto-comment>]
 
 More formal version, with optionality omitted:
 <line> = <prefix-addr> <sep> <label> <sep> <instruction> <sep> <comment> <auto-comment>
 
 Clauses for the the components:
+
 <prefix-addr> = <oct> . <dec> : <oct>
-<label> = <identifier> :
+<label>       = <identifier> :
 <instruction> = <op> <whitespace>+ <expr>
-<op> = <ww-op>|<pseudo-op>
-<ww-op> = ta|ao|...
-<pseudo-op> = .word|.org|...
-<expr> = additive_expression
-<oct> = <digit-seq>		Digits 0-7 allowed
-<dec> = <digit-seq>		Digits 0-9 alowed
-<number> = <oct-num> | <dec-num>
-<oct-num> = 0o<oct> | {0|1}.{0-7}^5
-<dec-num> = {+|-}{0|1}.<dec> | <dec>
+<op>          = <ww-op>|<pseudo-op>
+<ww-op>       = ta|ao|...
+<pseudo-op>   = .word|.org|...
+<operand>     = <comma-expr>
+<expr>        = <comma-expr>
+<oct>         = <digit-seq>		Digits 0-7 allowed
+<dec>         = <digit-seq>		Digits 0-9 alowed
+<number>      = <oct-num> | <dec-num>
+<oct-num>     = 0o<oct> | {0|1}.{0-7}^5
+<dec-num>     = {+|-}{0|1}.<dec> | <dec>
 
 Tokens (lexical level):
 
-<sep> = <separator> = <whitespace>+ | <operator>
-<operator> = + | - | * | @ |  @@ | : | . | ; | 0o
-<identifier> = <extended-alpha-char><extended-alphanumeric-char>*
-<digit-seq> = {0-9}+
-<comment> = ; <any-char-but-not-@@>>*
-<auto-comment> = @@  <any-char>*
-<extended-alpha-char> = <alpha> | _
+<sep>                        = <separator> = <whitespace>+ | <operator>
+<operator>                   = + | - | * | / | @ |  @@ | : | . | ; | , | 0o
+<identifier>                 = <extended-alpha-char><extended-alphanumeric-char>*
+<digit-seq>                  = {0-9}+
+<comment>                    = ; <any-char-but-not-@@>>*
+<auto-comment>               = @@  <any-char>*
+<extended-alpha-char>        = <alpha> | _
 <extended-alphanumeric-char> = <extended-alpha-char> | <numeric-char>
+<string>                     = " <any-char>* "
+
+Expressions:
+
+<comma-expr>          = <additive-expr> | <additive-expr> , <comma-expr>
+<additive-expr>       = <multiplicative-expr> | <multiplicative-expr> {+ | -}  <additive-expr>
+<multiplicative-expr> = <bit-or-expr>  | <bit-or-expr> {* | /}  <multiplicative-expr>
+<bit-or-expr>         = <bit-and-expr> | <bit-and-expr> '|' <bit-or-expr>
+<bit-and-expr>        = <dotted-expr> | <dotted-expr> & <bit-and-expr>
+<dotted-expr>         = <unary-expr> |  <unary-expr> . <dotted-expr>
+<unary-expr>          = <atomic-expr> | {+ | - | 0o} <unary-expr>
+<atomic-expr>         =  <identifier> | <digit-seq>  |  <string> | ( <expr> )
+
 
 A (hacked) piece of a C yacc grammar used as a guide for
 expressions. Highest-level entry point is additive_expression.  Based
@@ -497,7 +516,7 @@ primary_expression
 	: <identifier>
 	| <digit-seq>
 	| <string>
-	| '(' additive_expression ')'
+	| '(' primary_expression ')'
 	;
 
 unary_expression
@@ -580,13 +599,13 @@ literal-digit-seq												Decimal inreger
 		Let everything run, suppress output files on any errors
 	x Hacked wwasm.py to accept comma in .dbwgt
 		Backed-out; not needed
-	- Case-sensitive? Right now new asm is not at all
+	* Case-sensitive? Right now new asm is not at all
 		We want case-insens ops and case-sens labels and vars
 	- Check range on nextcoreaddress since can overflow 2K as in all1.ww. Right now croaks.
 	- Mod and test disasm
 	* asm: no-prefx-addr option, to get a prety-printed source file
 		Changed to --MinimalListing
-	- --Legacy_Numbers: should go away? Rightnow .org has a mix in the
+	* --Legacy_Numbers: should go away? Rightnow .org has a mix in the
           code; it's clear some .org numbers are meant to be octal,
           even though they have no 0o prefix. Really should conform to
           std rules and the code with unadorned octal should change.
@@ -598,17 +617,84 @@ literal-digit-seq												Decimal inreger
 		  as asm.
 
 		  So right now I favor a bit of extra editing versus reading
-	  options.
+		  options.
 
-	- annotate io dev: no reason it shouldn't be default, no option, with auto-comment?
-	- .wwfile really wants quoted strings -- i.e., expect a var
+		  [Yes we agreed it should go]
+
+    * annotate io dev: no reason it shouldn't be default, no option, with auto-comment?
+		Done, but it broke idempotency! Fixed that.
+	* .wwfile really wants quoted strings -- i.e., expect a var
 		All Code-Samples modified thus in .n.ww versions
 	- Can probably be more elegant in AsmLabelTab by subclassing dict.
 	* Why does core file have 7-oct width?
-		Guy thinks becuase he first wanted to encode the memory bank.
+		Guy thinks because he first wanted to encode the memory bank.
 	- Note crt-test has runtest.n.sh, but the drawing output has not
-	  been validated against fixes Guy will be supplying.
-	- I'l take on a task of updating the asm manual.
+		  been validated against fixes Guy will be supplying.
+	* I'l take on a task of updating the asm manual.
+		Should be good for now
+	- Get rid of yaml files
+	- Assure all TestResults* dirs out of git -- ok git in web diff says deleted?
+	- Do we need to handle anything special for "overflow" numbers?
+      E.g., +1.001. Is there a need to handle this in some way in the
+      asm lang?
+	- .isa needs prescan? Doc 2.8.3
+	- "Preset Params are meant (I think) for doing address assignments
+      and calculations, so the values associated with a PP are
+      restricted to 0-2047."  This is in asm doc; I currently don't have this restriction.
+	- --Logdir -- still active?
+	- Clarify C std vis-a-via octal and other number syntax.
+	* Issues with inheritance and *args? See listingString()
+		Looks ok -- needed to learn more about *args vs **kwargs
+	- Two .print insts in a row cause a comma-expected syntax bug (in sim)
+	- Unterminated string seems to crash asm tokenizer
+	- Rename new asm to be current; appropriate rename old prog and stuff if desired.
+	- C-ish
+	- How does float dv work? Can't find anything that matches this
+	  algorithm. The fixed-point-30 lib does not implement dv.
+	- Shifts in lz
+
+    - Summary of the new asm:
+    
+        - The new asm is called Py/Assembler/wwasm.new.py
+
+        - The new asm parser is a separate module,
+              Py/Assembler/wwasmparser.py. It can be invoked as a main
+              program for testing. Given -v and a .ww file, it will spit out a parse tree.
+
+        - The new asm produces core files called .ncore, and listing
+          files called .nlst. This is so we can run both asms and
+          compare results. When we're satisfied with the new asm, we
+          can rename.
+
+        - .ww files we have now will likely need modification, to conform to the new asm syntax. The changes are:
+
+              1. All ops accept operands in the same syntax, which is
+                 a comma-separated set of fields. Each field is an
+                 expression.  Ops needing change are .dbwgt, .switch, and .pp.
+
+              2. Strings passed to .ww_file and .ww_tapeid will need quotes
+
+              3. In expressions standard operator precedence (same as
+                 C) is used, so expressions like a-b/c will need to become
+                 (a-b)/c
+
+        - Other syntax notes:
+
+              1. Labels and preset (.pp) variables must be
+                 alphanumeric but can start with a digit. This allows
+                 more freedom in translating code like L&Z.
+
+              2. All ops are case-insenstive; all variables (labels
+                 and presets) are case-sensitive.
+
+        - In the Tests dir, I have a dir there now called asm, which
+          contains a test script for the new asm.
+
+        - In Code-Samples and Tests, I have in most cases copied
+          <file>.ww to <file>.n.ww, to indicate that the code needs
+          mod for the new asm. I think they all work, except maybe
+          radar. I have added for some a runtest.sh file, or that and
+          runtest.n.sh to keep old versus new for now.
 
 	- Get "everything" into git: tape images, images on code, etc.
 	- LAS: work on L&Z? Maybe just use new translator and asm?
@@ -616,7 +702,44 @@ literal-digit-seq												Decimal inreger
 		- One goal is historical research and perhaps a paper on the
 		  code we've found and resurrected.
 		- Another may be museum exhibits -- esp. hardware currently under dev.
-	
+
+
+
+1/12/25
+Procedure call and other compilation notes
+==========================================
+
+- Stack starts at highest addr and grows down
+
+- Args are pushed on the stack
+
+- When entering a proc, a frame is pushed. Original stackp - n is the
+  nth arg (one-based). stackp + n (zero-based) is local var.
+
+- Consistency of td vs ta
+
+- Idiom: Establish an instruction like  ca <initial-addr>, then just ao
+  to that instruction to bump a table loc.
+
+- Did rel-addr lib, yproc-cell.ww. Complicated! Probably better is to save all writeable words on stack and restore on exit.
+
+- Could do k = *p++, where p is a ca instruction. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ----------------------------------------------------------------------
@@ -680,3 +803,5 @@ chapter xiv the conversion program								167
 chapter xv the utility control program							202
 chapter xvi automatic input-output requests [output]			224
 chapter xvii generalized post-mortems							241
+
+

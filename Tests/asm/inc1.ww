@@ -1,0 +1,10 @@
+    .org 0o40
+    ca x
+    ad y
+    ts z
+    si 0
+    .include "inc2.ww"
+ x: .word 42
+ y: .word +0.314159
+ z: .word 0o7777
+

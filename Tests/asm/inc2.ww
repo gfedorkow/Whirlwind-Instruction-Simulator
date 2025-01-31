@@ -1,0 +1,8 @@
+		  ca a
+		  ad b
+		  ts c
+		  si 0
+		  a: .word 57
+		  b: .word +0.271828
+		  c: .word 0o17777
+		  .include "inc3.ww"

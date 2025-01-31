@@ -292,7 +292,7 @@ AsmExprValueType = Enum ("AsmExprValueType", ["Integer", "NegativeZero", "Fracti
 class AsmExprValue:
     def __init__ (self, exprValueType: AsmExprValueType, value):
         self.type = exprValueType
-        self.value = value  # int or str or list
+        self.value = value  # int or float or str or list
     def asString (self) -> str:
         if self.type == AsmExprValueType.List:
             return str (self.type) + " " + str ([v.asString() for v in self.value])
@@ -302,7 +302,7 @@ class AsmExprValue:
 # We use a generic function here so that an eval may be done from contexts
 # outside the parser module, without requirng the parser module to import all
 # sorts of extra stuff. This maintains modularity and also helps avoid circular
-# refs, which python really seems to hate. So e.g., in wwasm.mew.py tables are
+# refs, which python really seems to hate. So e.g., in wwasm.new.py tables are
 # built for labels and other vars and we can just pass in the function that
 # accesses those.
 
@@ -425,7 +425,8 @@ class AsmExpr:
                 "+" if self.leftSubExpr.exprType == AsmExprType.UnaryPlus else "-",
                 self.leftSubExpr.leftSubExpr.exprData,
                 self.rightSubExpr.exprData)
-            v = round (float (s) * 2**15)
+            # v = round (float (s) * 2**15)
+            v = float (s)     # LAS
             return AsmExprValue (AsmExprValueType.Fraction, v)
         elif self.exprType == AsmExprType.BinaryDot:
             # It's a literal octal number, of the form (0|1).xxxxx

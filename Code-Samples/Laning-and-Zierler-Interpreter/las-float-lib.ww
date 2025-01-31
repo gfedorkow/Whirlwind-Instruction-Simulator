@@ -1,0 +1,357 @@
+
+
+             ; 24,6 float format:
+             ;  hi word      lo word
+             ;  1   15       1  6      9
+             ;  s frac-hi    s exp  frac-lo
+			 ;
+			 ;  frac is a signed 25-bit (including sign) one's-complement representation
+			 ;  exp is a signed 7-bit (including sign) one's-complement representation
+
+			 ; This first section is a test area and should not interfere with anything including the lib if there are no name conflicts.
+			 ;
+			 ; Note we don't set .org since this file can be included in others
+
+             .pp main_sep_param, 1
+
+             sp ax
+             ca a220
+             ts t
+             sp ax
+       loop:
+             ca loopcnt
+             su one
+             ts loopcnt
+             cp done
+             sp ax
+             ca t
+             mr semitone
+             ts t
+             sp ax
+             .print "xxxxxxxxxxxx %d %fl", loopcnt, t
+             sp loop
+       done:
+             ca 0
+             ;            .print "02 %o %o %o %o %o %o %o %o", u, u+1, v, v+1, z, z+1, t, t+1
+
+
+;			  sp ax
+;			  ca float1
+;			  dv z
+;			  ts t
+;			  sp ax
+;			  .print "%fl", t
+             si 0
+          x: .float +0.5,0
+          y: .float +0.25,0
+          z: .float +0.1416595, 1     ; This value breaks dv when divided into float1
+          t: .float 0, 0
+          u: .float +0.3141593, 1
+          v: .float +0.2718282, 1
+       a220: .float +0.220, 3
+       a440: .float +0.440, 3
+       a880: .float +0.880, 3
+   semitone: .float +0.1059463094, 1
+    loopcnt: .word 25
+        one: .word 1
+
+     float0: .float 0, 0
+   float1_2: .float +0.5, 0
+     float1: .float +0.1, 1
+     float2: .float +0.2, 1
+    float16: .float +0.16, 2
+ float_neg1:
+             .word 0o137777
+             .word 0o001777
+
+             ; --- Below here is the floating lib ---
+             ; -------------------------------------------------------------
+             ; DIGITAL COMPUTER LABORATORY
+             ; MASSACHUSETTS INSTITUTE OF TECHNOLOGY
+
+             ; Specifications of WHIRLWIND I LIBRARY SUBROUTINE Number PA 2 ,Z
+
+             ; Operations on Real (24,6, 0) Floating Point
+             ; Double Register Numbers (General Subroutine)
+
+             ; Source code contains two-letter shift ops, (sr, sl).  As far as I can tell,
+             ; the original instruction set did only "shift and round", so I've converted
+             ; them all to srr, slr.
+             ; The shift value is often preceded by a '*', which appears to mean "don't clear
+             ; the B Register".  See QTR Report #26, 1951
+
+             ; Preset Parameters {to be typed in program titie)
+
+             ; vx2/pk: k = separation in storage of two registers of number
+             ; vx/pN: N = address in storare of initial register of this subroutine
+
+             .org 852
+
+         ax: ta exec_inst             ; Set address of 1st instruction to be interpreted ; from Enter
+             sp exec_inst
+
+             ; words r02, r03, and r04 represent the double precision accumulator
+        mra:
+		2ax:
+        r02: .word 0                  ; x1  -|
+        r03: .word 0                  ; x1'  |- Multiple register accumulator
+		4ax:                          ;      |
+        r04: .word 0                  ; y1  -|
+        r05: srh 30                   ; "ca"                                             ; from 196r-->
+        r06: ca ax
+        r07: ca r191                  ; "cs"                                             ; from l3r,196r
+             sp r95
+             sp r129                  ; "ad"                                             ; from 196r-->
+        r10: .word 29
+             ts r97                   ; "su"                                             ; from 196r-->
+             sp r126
+             sp r07                   ; "cm"                                             ; from 196r-->
+        r14: .word 0                  ;  Temporary digits storage                        ; (170r)
+
+             .print "5 r03=%o AC=0o%ao", r03
+        r15: sa r03                   ; -|- Add two minor products                       ; from 24r
+             ts r03                   ; -|
+             .print "6 r02=%o r03=%o", r02, r03
+
+        r17: ca 0                     ; -|- Store overflow
+             ex tmp                   ; -|
+
+             .print "8 r02=%o AC=0o%ao", r02
+             mh r02                   ; Form major product
+             .print "7 r02=%o AC=0o%ao BR=0o%bo", r02
+             sp r158
+             .print "1 r02=%o r03=%o AC=%ao", r02, r03
+        r21: mr r02                   ; "mr" Form two                                    ; from 49r9,196r
+             .print "4 AC=0o%ao"
+             ex r03                   ; minor products
+             mr tmp
+             .print "2 tmp=%o AC=0o%ao", tmp
+             sp r15
+             ex tmp                   ; "dv"                                             ; from 196r-->
+             ts r97
+             cs r102                  ; -|
+             ad r54                   ;  |- Form exponent of 2**-2/x2
+             ts r102                  ; -|
+
+             cs r97                   ; -|
+             mh r97                   ;  |
+             ex tmp                   ;  |- Form and store -(2**-2 * x2')/x2**2
+             srh 2                    ;  |
+             dv tmp                   ;  |
+        r35: slh 15                   ;  |
+             ts r151                  ; -|                                               ; [LAS was transcription error ta r151]
+
+             ca r72                   ; -| ; [LAS this sequence does not seem to store this formula, instead stores 2**-2/x2]
+             dv r97                   ;  |- Form and store 2**-2/x2**2
+             slh 15                   ;  |
+             ts tmp                   ; -|
+
+             mh r97                   ; -|
+             su r72                   ;  |
+             slh 15                   ;  |
+             su r17                   ;  |- Form (2**-2/x**2)' (Use Euclid's algorithm)
+             ad r50                   ;  |
+             dv r97                   ;  |
+             slh 15                   ; -|
+
+             ad r151                  ; -|- Add two minor parts of reciprocal
+             sp r21                   ; -|
+
+        r50: .word 1
+             sp r73                   ; "ts"
+        r52: ca r02                   ; -|- complement x1
+             sp r164                  ; -|
+        r54: .word 2
+             ca r201                  ; "ta" -|                                          ; from 196r-->
+        r56: td 0                     ;       |- Store digits in indicated address
+             sp next_inst             ;      -|
+
+        r58: ao r02                   ; -|- Increase xl by by 2**-15                     ; from 119r-->
+             sp r167                  ; -|
+
+        r60: sp r35
+             sp r73                   ; "ex"                                             ; from 196r-->
+        r62: .word 63
+             cs r02                   ; "cp" -|- Is x1 negative?                         ; from 196r-->
+             cp next_inst             ;      -|                                          ; [LAS was transcription error r188]
+             ao exec_inst             ; "sp" -|- Set Return address for sp ax            ; from 196r
+             td r201                  ;      -|
+             ca r189                  ; -|- Set pick up order for ordinary cp & sp       ; LAST DIGIT is a GUESS! [LAS not legible -- needed to dig into program to nail this down]
+             td exec_inst             ; -|
+
+             su r06                   ;                                                  ; PROBABLY an SU op code!
+
+             cp r199                  ; -|- Test to see whether instruction is sp ax
+             sp exec_inst             ; -|
+
+        r72: .word 0.20000            ;                                                  ; [LAS ]
+
+        r73: ca r03                   ; -|                                               ; from 51r,61r->
+             srr 6                    ;  |- Round off x1' and store x1' * 2**-6
+             ts r03                   ; -|
+
+             srh 9                    ; -|
+             sa r02                   ;  |- Add round-off carry into x1
+             ts r02                   ; -|
+
+             ca 0                     ; -|
+             cp r83                   ;  |- Is there an overflow?
+             su 0                     ;  |
+             cp r86                   ; -|
+
+        r83: slr 14                   ; -|                                               ; from  80r->
+             ts r02                   ;  |- Add overflow into x1 and x1'. Increase y1
+             ao r04                   ; -|
+
+        r86: cm r04                   ; -|                                               ; from  82r->
+             su r62                   ;  |- |y1| - 63 > 0?
+             cp r93                   ; -|                                               ; [LAS was transcription error sp r93]
+
+             cs r04                   ; -|- y <= 0? (i.e.  y1 < -63?)
+             cp r202                  ; -|
+
+             cs r62                   ; -|- Set y1 = -63
+             ts r04                   ; -|
+
+        r93: ca r97                   ; -|- ts n + k or ex n + k                         ; from 88r->
+             ad sep_param             ; -|
+
+        r95: ts r102                  ; Store ts, ex, ca, cs or cm n+k                   ; from 8r->
+
+             ca r02
+        r97: .word 0                  ; -|                                               ; from (180r)
+             ex r03                   ;  |
+             srh 9                    ;  |
+             ex r04                   ;  |
+             slh 9                    ;  |
+       r102: .word 0                  ;  |                                               ; (95r)
+             srh 9                    ;  |- Perform ts, ex, ca, cs or cm
+             ex r03                   ;  |
+             ts r02                   ;  |
+             slh 15                   ;  |
+             ex r03                   ;  |
+       r108: sp r177                  ; -|
+
+       r109: cm r02                   ; -|                                               ;  166r->
+             su 0                     ;  |- x1 != 0?
+             cp r52                   ; -|
+
+             cm r03                   ; -|
+             su 0                     ;  |- x1' != 0?
+             cp r122                  ; -|
+
+             su r50                   ; -|
+             ad r17                   ;  |- Form |x1'| - 1                               ; PROBABLY AD op code
+             ts r03                   ; -|
+
+             ca r02                   ; -|- x1 > 0?
+             cp r58                   ; -|
+
+             su r50                   ; -|- Form x1 - 2**-15
+             ts r02                   ; -|
+
+       r122: cs r03                   ; -|- Complement x1'                               ; [LAS was transcription error ca r03]             ;   114r->
+             ts r03                   ; -|
+
+             mr r02                   ; -|- Form x1*x1'
+             sp r166                  ; -|
+
+       r126: cs tmp                   ; -|                                               ; 12r->
+             ts tmp                   ;  |- Complement x2, x2'
+             cs r97                   ; -|
+
+       r129: ex r102                  ; -|                                               ; r9 ->
+             su r04                   ;  |- Form and store  y2 - yl
+             ts r97                   ; -|
+
+             cp r141                  ; y2 - y1 > 0?
+
+             ad r04                   ; -|
+             ts r04                   ;  |
+             ca r02                   ;  |
+             ex tmp                   ;  |- Interchange (x1, x1', y1) and (x2, x2', y2)
+             ts r02                   ;  |
+             ca r03                   ;  |
+             ex r102                  ;  |
+             ts r03                   ; -|
+
+       r141: cm r97                   ; -|                                               ; 132r->
+             su r10                   ;  |-  |y2 - y1| - 29 > 0?
+             cp r145                  ; -|
+
+             sp next_inst             ; No need for addition
+
+       r145: ad r05                   ; -|- Store  sr *1 +|y2 - y1|                      ; 143r->
+             ts r151                  ; -|
+
+             ca r50                   ; -|- Set y2 = l
+             ex r102                  ; -|
+
+             srh 15                   ; -|
+             ad tmp                   ;  |
+       r151: .word 0                  ;  |- Form and store (x2 + x2' * 2**-15) * 2**(-1 - |y2 - y1|) ; (146r)
+             ts tmp                   ;  |
+             slh 15                   ;  |
+             ex r03                   ; -|
+
+             srh 15                   ; -|
+             ad r02                   ;  |-    Form x1 + x1' * 2**-15) * 2**-l
+             srh 1                    ; -|
+
+       r158: ts r02                   ; Store x1                                         ;  20r->
+
+             slh 15                   ; -|
+             sa r03                   ;  |                                               ; [LAS was transcription error ts r03]
+             ts r03                   ;  |- Add x1, x1' and x2, x2'
+             ca tmp                   ;  |
+             ad r02                   ;  |
+       r164: ts r02                   ; -|                                               ; 53r->
+
+             mr r03                   ; Does sign x1 = sign x1'?
+       r166: cp r109                  ;                                                  ;  125r->
+
+       r167: ca r03                   ; -|                                               ; 59r->
+             srh 15                   ;  |
+             ad r02                   ;  |
+             sf r14                   ;  |- Scale factor and store x1, x1'
+             ts r02                   ;  |                                               ; [LAS was transcription error ta r02]
+             slh 15                   ;  |
+             ts r03                   ; -|                                               ; [LAS was transcription error ta r03]
+
+             cs r14                   ; -|
+             ad r102                  ;  |- Form exponent
+             ad r04                   ;  |
+       r177: ts r04                   ; -|                                               ; 108r->
+
+  next_inst: ao exec_inst             ; increase address                                 ; [LAS was transcription error ao r197]
+             .print "9 %o %o %o", r02, r03, r04
+  exec_inst: ca 0                     ; Pick up next instruction
+
+             ts r97                   ; -|
+             td r56                   ;  |
+             td r189                  ;  |- Store instruction and digits
+             ad sep_param             ;  |
+             td r191                  ; -|
+
+             srh 27                   ; -|
+             slh 17                   ;  |- Form sp to address for particular instruction
+             ad r60                   ;  |
+       r188: ts dispatch              ; -|
+       r189: ca 0                     ; -|                                               ; (182r)
+             ts r102                  ;  |
+       r191: ca 0                     ;  |                                               ; (181r)
+             srh 9                    ;  |- Pick up x2, x2' and y2. Store x2 in reg. 198, y2 in reg 102. Hold x2' in AC
+             ex r102                  ;  |
+             ts tmp                   ;  |
+             slh 15                   ; -|
+             .print "3 dis=%o tmp=x2=%o r102=y2=%o AC=x2'=0o%ao r02=x1=%o r03=x1'=%o r04=y1=%o", dispatch, tmp, r102, r02, r03, r04
+   dispatch: .word 0                  ; Go to part of I.S. for particular instruction    ; (188r)
+  sep_param: .word main_sep_param     ; Separation parameter                             ; what's this?? pe x2 ??
+        tmp: .word 0                  ; Temporary storage
+
+       r199: ad r50                   ;                                                  ; from 70r-->
+             cp exec_inst             ; Does address equal ax?
+       r201: sp 0                     ; Return to register following sp ax               ; (66r)
+
+       r202: ca r108                  ; -|- Produce overflow alarm                       ; from 90r
+             ad r108                  ; -|

@@ -52,7 +52,9 @@ TTYoutput = []
 Debug = False
 # Jan 2, 2025 -- I've added this knob to revert to "standard" shift instruction behavior; take this all out once
 # the Shift Mystery is resolved!
-LnZ = False
+# LnZ = False
+
+LnZ = True
 
 flowgraph = None
 
@@ -302,6 +304,21 @@ class CpuClass:
         else:
             return num, ''
 
+    def ww_24_6_float_to_py (self, hi_word: int, lo_word: int) -> float:
+        frac_bits = (hi_word << 9) | (lo_word & 0o777)
+        if frac_bits & 0o100000000 != 0:
+            frac_int = frac_bits - 2**25 + 1
+        else:
+            frac_int = frac_bits
+        exp_bits: int = lo_word >> 9
+        if exp_bits & 0o100 != 0:
+            exp_int = exp_bits - 2**7 + 1
+        else:
+            exp_int = exp_bits
+        exp_int -= 24
+        r: float = float (frac_int * 2**exp_int)
+        print ("LAS42 0o%o 0o%o 0o%o 0o%o %d %f %f" % (hi_word, lo_word, frac_bits, frac_int, exp_int, 2**exp_int, r))
+        return r
 
     # convert an address to a string, adding a label from the symbol table if there is one
     # "Label_Only" causes the routine to check the symbol table, and if there's a label, it returns
@@ -448,84 +465,6 @@ class CpuClass:
     # The command looks sort of like a printf, with %xx ops embedded in a control
     # string, followed by a series of names of memory addresses as arguments
 
-    # Bug Alert - the format and arg strings can be quoted, but I'm not handling
-    # the quotes properly; the Split() below will split on commas _inside_ the strings
-    # as well as commas between args.
-    # https://stackoverflow.com/questions/43067373/split-by-comma-and-how-to-exclude-comma-from-quotes-in-split
-    # https://stackoverflow.com/questions/21527057/python-parse-csv-ignoring-comma-with-double-quotes
-    # import csv
-    # cStr = '"aaaa","bbbb","ccc,ddd"'
-    # newStr = ['"{}"'.format(x) for x in list(csv.reader([cStr], delimiter=',', quotechar='"'))[0]]
-
-    # Bug Alert - I don't think I'm handling an unrecognized variable name properly; it
-    # should at least print as <none> or something...
-
-    def old_wwprint(self, format_and_args):
-        # quoted_args = format_and_args.split(',')  # this doesn't handle splitting '"a", "b", "c,d,e"' properly
-        quoted_args = ['{}'.format(x) for x in list(csv.reader([format_and_args], delimiter=',', quotechar='"'))[0]]
-        args = []
-        format_str = quoted_args.pop(0)
-        for a in quoted_args:
-            a = a.lstrip().rstrip()
-            a = re.sub('^["|\']', '', a)  # strip a leading quote, if any
-            a = re.sub('["|\']$', '', a)  # strip a trailing quote, if any
-            a = re.sub(' .*$', '', a)     # strip anything after a space (variable names can't have spaces)
-            args.append(a)
-
-        output_str = ''
-        fmt = format_str
-        while len(fmt):
-            if fmt[0] != '%':  # if it doesn't start with %, it's literal text
-                m = re.match("[^%]*", fmt)
-                txt = m.group(0)
-                fmt = fmt[len(txt):]  # drop the characters we've already matched
-                output_str += txt
-            else:  # otherwise, it must be a format command
-                sign = ''
-                # The first batch of fmt commands don't take an arg
-                m = re.match('%%', fmt)
-                if m:
-                    output_str += '%'
-                else:
-                    # this used to be 'elif m:= re.match', but I changed it to eliminate the walrus
-                    m = re.match("%ao|%ad|%bo|%bd", fmt)
-                    if m:
-                        register = None
-                        if fmt[1] == 'a':
-                            register = self._AC
-                        elif fmt[1] == 'b':
-                            register = self._BReg
-                        else:
-                            self.cb.log.warn("Unrecognized register name '%s'", fmt[1]);
-                        number_format = "%%%s" % fmt[2]
-                        if fmt[2] == 'd':
-                            register, sign = self.wwint_to_py(register)
-                        output_str += sign + number_format % register
-
-                    else:  # But the rest of them do need an arg
-                        if len(args) == 0:
-                            print("wwprint: missing arg for '%s'", format_str)
-                            return None
-                        m = re.match("%d|%o", fmt)
-                        if m:
-                            addr = self.rl(args.pop(0))
-                            register = self.cm.rd(addr)
-                            if m.group(0) == "%o":
-                                output_str += "0o"
-                            if m.group(0) == "%d":
-                                register, sign = self.wwint_to_py(register)
-                            output_str += sign + (m.group(0) % register)
-                        else:
-                            print("wwprint: unknown fmt cmd: %s" % fmt)
-                            return None
-
-                txt = m.group(0)  # strip whatever we matched from the start of the format string
-                fmt = re.sub(txt, '', fmt, count = 1)   #  but just the first instance! (not all of them!)
-        if len(args):
-            print("wwprint: too many args for '%s'" % format_str)
-            return None
-        self.ww_exec_log.info (output_str)
-
     # New version using tokenizer
 
     def wwprint (self, format_and_args):
@@ -569,6 +508,21 @@ class CpuClass:
                         register, sign = self.wwint_to_py (register)
                     # output_str += sign + number_format % register
                     output_str += number_format % register            # Don't want sign here since wwint_to_py returns a signed number
+            elif fmt == "%fl":
+                # A 24,6 float. Return a host float
+                addr = self.rl (argList.pop(0))
+                print ("LAS57 0o%o" % addr)
+                register_hi = self.cm.rd (addr)
+                register_lo = self.cm.rd (addr + 1)
+                r: float = self.ww_24_6_float_to_py (register_hi, register_lo)
+                output_str += "%f" % r
+            elif fmt == "%fr":
+                # Interpret the bits as a standard ww fraction and return a host float
+                addr = self.rl (argList.pop(0))
+                register = self.cm.rd (addr)
+                py_int, sign = self.wwint_to_py (register)
+                r: float = float(py_int)*2**-15
+                output_str += "%f" % r
             else:
                 output_str += fmt
         if argList != []:
@@ -1477,6 +1431,8 @@ class CpuClass:
         negative = (a & self.cb.WWBIT0)  # sign bit == 1 means Negative
         if negative:  # sign bit == 1 means Negative, so we turn it positive
             a = self.ww_negate(a)
+            # LAS
+            b = self.ww_negate(b)
 
         n = 0
         for n in range(0,32):
@@ -1487,6 +1443,8 @@ class CpuClass:
         if negative:
             a = self.ww_negate(a)
             # leave the B Register "positive"
+            # LAS
+            b = self.ww_negate(b)
 
         mask = self.cb.WW_ADDR_MASK
         # I can't[couldn't!] believe sf could do useful work on uninitialized storage

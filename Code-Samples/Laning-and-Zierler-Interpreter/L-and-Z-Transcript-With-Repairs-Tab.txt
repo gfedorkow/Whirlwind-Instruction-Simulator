@@ -17,7 +17,7 @@
 START           -->	0	si 128
 16r             -->	1	ao 36r
 NORMAL RE ENTRY -->	2	rd 2r
-              (1a4)	3	ad (a3/193)	(l.c. or u.c.)
+              (1a4)	3	ad a3	(l.c. or u.c.) ; [LAS waa ad (a3/193)]
 	4	td 8r
 	5	td 40a4
 	6	td 14r
@@ -25,8 +25,8 @@ NORMAL RE ENTRY -->	2	rd 2r
                (4r)	8	ca (-)
 	9	su 4a3	-| Is symbol
 	10	cp 12r	-| a number?
-	11	sp 38a4	[LAS was sp (38a4/58a4)]
-10r             -->	12	ca 33a3	31a3 is the normal mode [LAS was ca (33a3/31a3)]
+	11	sp 38a4	; [LAS was sp (38a4/58a4)]
+10r             -->	12	ca 33a3	31a3 is the normal mode ; [LAS was ca (33a3/31a3)]
 	13	td 11r
                (6r)	14	ca (-)
 	15	su 0	(Is symbol a period?)
@@ -49,12 +49,12 @@ NORMAL RE ENTRY -->	2	rd 2r
 | Sheet 2/20
 | a1
 	32	sp 852	(programmed arithmetic
-	33	mr 497	(i.e., by 10)
+	33	mr 4a7	(i.e., by 10) ; [LAS as "mr 497" -- transcription error]
          (31r, 41r)	34	ad (-)
 	35	sp 852
                (1r)	36	ao (37r)	(reset to 38r)
 	37	sp 2r
-	38	p 0	(counter for digits before decimal pt [LAS eliminated parens for opcode p or just data in this and following secitons]
+	38	p 0	(counter for digits before decimal pt ; [LAS eliminated parens for opcode p or just data in this and following sections]
 	39	p 0	(  "      "    "    after     "    ")
 23r             -->	40	ca 10a6
 	41	td 34r
@@ -66,7 +66,7 @@ NORMAL RE ENTRY -->	2	rd 2r
 | a2 (PRINT)
 |
 		section a2
-(p) 44a4        -->	0	sp a16	[LAS section offset was 0r]
+(p) 44a4        -->	0	sp a16	; [LAS section offset was 0r]
 	1	sp 28a10
 44a4            -->	2	ca 11a16	-| store "sp to print
 	3	sp 9a8	-| control"
@@ -78,7 +78,7 @@ NORMAL RE ENTRY -->	2	rd 2r
 after print instr.)	9	ts 13r	-|
 	10	sp a16
 	11	sp 23a10
-	12	sp 8r	[LAS was (sp 8r/p 0)]
+	12	sp 8r	; [LAS was (sp 8r/p 0)]
            (5r, 9r)	13	p -3	(counter)
 5310            -->	14	ao 25a3	-| part of SP routine
 	15	sp 19a6	 |
@@ -96,7 +96,7 @@ after print instr.)	9	ts 13r	-|
 	2	sp 50a4	e
 	3	p 9	8
 	4	sp 0
-	5	p 0	1 [LAS was blank]
+	5	p 0	1 ; [LAS was blank]
 	6	sp 50a4	a
 	7	p 4	3
 	8	sp 2a1	space
@@ -107,8 +107,8 @@ after print instr.)	9	ts 13r	-|
 	13	sp 52a4	+
 	14	sp 50a4	u
 	15	p 3	2
-	16	p 0	shift ribbon [LAS was blank]
-             (8a16)	17	(p 0/sp 8a2)	. [period]
+	16	p 0	shift ribbon ; [LAS was blank]
+             (8a16)	17	p 0	. [period] ; [LAS was "(p 0/sp 8a2)"]
 	18	sp 50a4	d
 	19	p 6	5
 	20	p 50a4	r
@@ -167,7 +167,7 @@ after print instr.)	9	ts 13r	-|
 	2	sp 2a1	E (not used)
 	3	p 19	8 (exp.)
 	4	p 55a3
-	5	0.22000	_ [LAS Did say + not _ and 0,22000 but looks like hand-written sheet is as shown here now. Transcription error.]
+	5	p 0.22000	_ ; [LAS Did say + not _ and 0,22000 but looks like hand-written sheet is as shown here now. Transcription error.]
 	6	p 59a3	A (not used)
 	7	p 14	3 (exp.)
 	8	sp 2a1	space
@@ -178,7 +178,7 @@ after print instr.)	9	ts 13r	-|
 	13	sp a9	/
 	14	p 14a9	U (not used)
 	15	p 13	2 (exp.)
-	16	p 0	shift ribbon [LAS was blank]
+	16	p 0	shift ribbon ; [LAS was blank]
 	17	sp a12	)
 	18	sp a13	D (not used)
 	19	p 16	5 (exp.)
@@ -186,9 +186,9 @@ after print instr.)	9	ts 13r	-|
 	21	p 12	1 (exp.)
 	22	ad 41a13	J (not used)
 	23	p 18	7 (exp.)
-	24	(cs 2ax/ca 2ax)	N (not used)
+	24	cs 2ax	N (not used) ; [LAS was (cs 2ax/ca 2ax)]
 	25	sp a11	(
-	26	p 0	F [LAS was blank]
+	26	p 0	F ; [LAS was blank]
 	27	p 17	6 (exp.)
 	28	sp 50a10	C
 	29	sp 10a9	- (exp.)
@@ -212,14 +212,14 @@ after print instr.)	9	ts 13r	-|
 	41	sp 2a1	carr. return
 57a3            -->	42	ca 53a3	Y (not used)
 	43	sp 1r
-	44	sp a2	P [LAS was (sp a2/sp a2 + 2)]
+	44	sp a2	P ; [LAS was (sp a2/sp a2 + 2)]
 17a1            -->	45	ca 39a3
 	46	td 60r	Q (not used)
 	47	cs 62a3
 	48	sp 23a1	O (letter) (not used)
 	49	sp 2a1	stop
-	50	ad 55a3	B (not used) [LAS was (55a3)]
-	51	sp 28a10	[LAS was sp (28a10/33r)]
+	50	ad 55a3	B (not used) ; [LAS was (55a3)]
+	51	sp 28a10	; [LAS was sp (28a10/33r)]
 13a3            -->	52	sp 30r	G (not used)
 	53	sp 5a13
 	54	p 20	9 (exp.)
@@ -278,13 +278,13 @@ after print instr.)	9	ts 13r	-|
 	14	ts 39a1	 |
 	15	ca 13r	 |
 	16	td 36a1	-|
-	17	sp (38a4/14a9)
+	17	sp 38a4	; [LAS was sp (38a4/14a9)]
 	18	sp 15a13	"sp exp"
 	19	td 25r
 	20	ca 4ax	-|
 	21	td 24r	 | Form [?] +- [?] n, where
-	22	ca 2ax	 | n is in MRA in [LAS was (ca 2ax/cs 2ax)]
-	23	sr 15	 | (24,6) form [LAS was sr*]
+	22	ca 2ax	 | n is in MRA in ; [LAS was (ca 2ax/cs 2ax)]
+	23	sr 15	 | (24,6) form ; [LAS was sr*]
 	24	sl (-)	-|
 	25	sp (-)
 |
@@ -292,7 +292,7 @@ after print instr.)	9	ts 13r	-|
 | a7 (Numerical storage)
 |
 		section a7
-	0	p 0.00000	-| 0 [LAS added p to this section]
+	0	p 0.00000	-| 0 ; [LAS added p to this section]
 	1	p 1.47777	-|
 	2	p 0.40000	-| 1
 	3	p 0.01000	-|
@@ -311,7 +311,7 @@ after print instr.)	9	ts 13r	-|
 	5	cp 15r	 |
 	6	ca 8r	 |
                (0r)	7	sp (-)	 |
-	8	+197	-| (last address used)
+	8	p 197	-| (last address used) ; [LAS was just "+197", no op or pseudo-op]
 various points  -->	9	ta 17r	-|
 	10	ts (32)	 | Store C(AC) in
 	11	ao 10r	 | next available
@@ -321,7 +321,7 @@ various points  -->	9	ta 17r	-|
 5r              -->	15	ck 0	 |
 14r             -->	16	ao 18r	 |
                (9r)	17	sp (-)	 |
-	18	(p 31)	-| (last occupied program address)
+	18	p 31	-| (last occupied program address) ; [LAS was "(p 31)"]
 |
 | Sheet 12/20
 | a9 (division, etc.)
@@ -331,7 +331,7 @@ various points  -->	9	ta 17r	-|
 	1	ex 50a4
 	2	ex 12a4
 	3	sp 5r
-	4	sp (2a1/14a10)	(the 14a10 mode is never used)
+	4	sp 2a1	(the 14a10 mode is never used) ; [LAS was sp (2a1/14a10)]
 3r,10r,14r,30r  -->	5	ta 9r
 	6	ca 22a6
 	7	ex 24a4
@@ -393,7 +393,7 @@ various points  -->	9	ta 17r	-|
 	24	td 51a4
 	25	td 51a4
 	26	td 12a1
-	27	sp (2a1/49r)
+	27	sp 2a1	; [LAS was sp (2a1/49r)]
 51a4            -->	28	ca 59r
 	29	td 51a4
 	30	ca 60r
@@ -424,9 +424,9 @@ various points  -->	9	ta 17r	-|
 25a3            -->	53	sp 14a2
 25a3            -->	54	ca 62r
 	55	sp 48r
-	56	sp a14	[LAS was (sp a14/cp a14)]
+	56	sp a14	; [LAS was (sp a14/cp a14)]
 	57	cp a14
-	58	p 28r	[LAS added p tp this section]
+	58	p 28r	; [LAS added p to this section]
 	59	p 33a4
 	60	p 31a3
 	61	p 53r
@@ -456,7 +456,7 @@ various points  -->	9	ta 17r	-|
 	2	ao 5a10
 	3	sp a10
 	4	sp a8
-	5	td (73a10)
+	5	td 73a10	; [LAS was "td (73a10)"]
 	6	ao 5r
 	7	ca 12a4
 	8	su 50a4
@@ -469,7 +469,7 @@ various points  -->	9	ta 17r	-|
 	15	ad 18r
               (13r)	16	ts (-)
 	17	sp 12a10
-	18	p 0.04000	[LAS added p]
+	18	p 0.04000	; [LAS added p]
 |
 | Sheet 16/20
 | a12 (Right parenthesis)
@@ -554,13 +554,13 @@ various points  -->	9	ta 17r	-|
 	31	sp ax
 	32	sp (-)
 	33	sp ax
-	34	mr (-)	[LAS was (mr (-)/dv (-))]
+	34	mr (-)	; [LAS was (mr (-)/dv (-))]
 	35	sp ax
 	36	sp 29r
 	37	ts 40r
 	38	ca 55a3
 	39	sp 27r
-	40	p 0	   -|n| counter [LAS added p to this section]
+	40	p 0	   -|n| counter ; [LAS added p to this section]
 	41	p 0	-| temporary sum storage for arithmetic
 	42	p 0	-|
 |
@@ -603,14 +603,32 @@ various points  -->	9	ta 17r	-|
 	9	ex 12a2	-|
 	10	sp (-)
 	11	sp a15
-	12	sp 2a2	[LAS was (sp 2a2/sp a2)]
+	12	sp 2a2	; [LAS was (sp 2a2/sp a2)]
+|
+| [LAS Added this section based on info below. Not clear how it can
+|  possibly work using this data in the middle of the program (i.e.,
+|  at 212), but it should be ok to allocate a separate space for it.]
+| a14
+		section a14	
+	0	p 0
+	1	p 0
+	2	p 0
+	3	p 0
+	5	p 0
+	6	p 0
+	7	p 0
+	8	p 0
+	9	p 0
+	10	p 0
+	11	p 0
+
 | 
 | Miscellaneous [Not sure about this section needs proofing]
 | 
 | 210 dv 0
 | 
 | 211 = 0a14 and also "1t" in print routine. Equations are not allowed
-|       0 as a number, thus 0a14is not used in a meaningful way.
+|       0 as a number, thus 0a14 is not used in a meaningful way.
 | 
 | 212-221 = a14 - 10a14: storage for sp orders to initial address of numbered equations (a
 |       maximum of 10 is allowed)
@@ -620,6 +638,13 @@ various points  -->	9	ta 17r	-|
 | 852 = "ax"  = (24,6) programmed arithmetic
 | 
 
+| [LAS dummy section]
+|		section ax
+	0	si 0
+	1	si 0
+	2	si 0
+	3	si 0
+	4	si 0
 
 ;; Local Variables:
 ;; eval: (setq-local default-tab-width 20)
