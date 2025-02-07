@@ -15,10 +15,10 @@ then
 	echo "Accepting..."
 	rm -rf TestRefs/
 	mkdir TestRefs
-	cp ErrorTest.log FilteredTest1.log FilteredTest2.log inc1.nlst TestRefs/
+	cp ErrorTest.log FilteredTest1.log FilteredTest2.log inc1.lst TestRefs/
 else
-	asmp="$PYTHONPATH/../../Py/Assembler/wwasmparser.py"		# Use quotes since can't resolve backslash yet -- it's needed for file name translation
-	asmn="$PYTHONPATH/../../Py/Assembler/wwasm.new.py"
+	asmp="$PYTHONPATH/../../Py/Common/wwasmparser.py"		# Use quotes since can't resolve backslash yet -- it's needed for file name translation
+	asm="$PYTHONPATH/../../Py/Assembler/wwasm.py"
 
 	# Test parsing and some eval-ing, only
 	echo "Test Parsing..."
@@ -43,11 +43,11 @@ else
 
 	# Idempotency
 	echo "Test idempotency: Run a listing back through asm and assure it produces the same listing..."
-	rm -f test3.nlst test3.nlst.nlst
-	python $asmn test3.ww >&test3.log
-	cp test3.nlst test3.nlst.ww
-	python $asmn test3.nlst.ww &>>test3.log
-	diff -s test3.nlst test3.nlst.nlst
+	rm -f test3.lst test3.lst.lst
+	python $asm test3.ww >&test3.log
+	cp test3.lst test3.lst.ww
+	python $asm test3.lst.ww &>>test3.log
+	diff -s test3.lst test3.lst.lst
 	status3=$?
 
 	if [ "$status3" == "0" ];
@@ -59,7 +59,7 @@ else
 
 	# Error message test.
 	echo "Test asm error messages. The ww program has an error in each line..."
-	python $asmn ErrorTest.ww >&ErrorTest.log
+	python $asm ErrorTest.ww >&ErrorTest.log
 	diff -s ErrorTest.log TestRefs/ErrorTest.log
 	status4=$?
 
@@ -72,9 +72,9 @@ else
 
 	# .include test
 	echo "Test .include..."
-	rm -f inc1.ncore inc1.lst includetest.log
-	python $asmn --OmitAutoComment inc1.ww >&includetest.log
-   	diff -s inc1.nlst TestRefs/inc1.nlst
+	rm -f inc1.acore inc1.lst includetest.log
+	python $asm --OmitAutoComment inc1.ww >&includetest.log
+   	diff -s inc1.lst TestRefs/inc1.lst
 	status5=$?
 
 	if [ "$status5" == "0" ];

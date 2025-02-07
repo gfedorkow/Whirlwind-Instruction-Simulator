@@ -704,1524 +704,1524 @@
 @S3574: w3574
 @S3575: i3575
 @S3576: w3576
-@E0351: exec: auto_config_switches(cb)
-@N0040: select I/O: unknown i/o device
-@N0041: select I/O: unknown i/o device
-@N0043: select I/O: unknown i/o device
-@N0044: select I/O: unknown i/o device
-@N0045: select I/O: unknown i/o device
-@N0046: select I/O: unknown i/o device
-@N0047: select I/O: unknown i/o device
-@N0050: select I/O: unknown i/o device
-@N0051: select I/O: Intervention and Activate Device
-@N0053: select I/O: Intervention and Activate Device
-@N0054: multiply digits no roundoff (AND)
-@N0057: select I/O: unknown i/o device
-@N0061: select I/O: Camera Index
-@N0064: transfer address
-@N0065: block transfer in
-@N0066: add B-Reg
-@N0067: record
-@N0070: block transfer out
-@N0071: conditional program
-@N0072: sub-program
-@N0073: select I/O: unknown i/o device
-@N0074: cf
-@N0075: conditional program
-@N0076: read
-@N0077: select I/O: unknown i/o device
-@N0100: block transfer in
-@N0102: block transfer in
-@N0103: add B-Reg
-@N0104: block transfer in
-@N0105: transfer address
-@N0106: block transfer in
-@N0110: select I/O: unknown i/o device
-@N0111: divide
-@N0112: transfer address
-@N0113: conditional program
-@N0114: sub-program
-@N0115: sum digits - XOR
-@N0116: record
-@N0117: transfer to storage
-@N0120: transfer digits
-@N0121: transfer to storage
-@N0122: add B-Reg
-@N0123: block transfer in
-@N0124: block transfer in
-@N0125: add B-Reg
-@N0126: block transfer in
-@N0130: select I/O: unknown i/o device
-@N0131: transfer digits
-@N0132: sum digits - XOR
-@N0133: transfer to storage
-@N0134: select I/O: unknown i/o device
-@N0135: exchange
-@N0136: conditional program
-@N0137: block transfer out
-@N0140: divide
-@N0141: transfer address
-@N0142: transfer address
-@N0143: add B-Reg
-@N0144: record
-@N0145: conditional program
-@N0146: sub-program
-@N0147: block transfer in
-@N0150: block transfer in
-@N0151: read
-@N0152: transfer digits
-@N0153: exchange
-@N0154: transfer digits
-@N0155: block transfer in
-@N0156: check
-@N0157: transfer digits
-@N0161: select I/O: unknown i/o device
-@N0162: transfer to storage
-@N0163: transfer address
-@N0165: add B-Reg
-@N0166: transfer address
-@N0167: record
-@N0170: conditional program
-@N0171: sub-program
-@N0172: clear and add magnitude
-@N0204: select I/O: unknown i/o device
-@N0205: select I/O: unknown i/o device
-@N0207: select I/O: unknown i/o device
-@N0210: select I/O: unknown i/o device
-@N0211: select I/O: Intervention and Activate Device
-@N0212: select I/O: Intervention and Activate Device
-@N0215: select I/O: unknown i/o device
-@N0217: block transfer in
-@N0220: read
-@N0221: block transfer out
-@N0222: block transfer out
-@N0223: add one
-@N0224: shift left and roundoff
-@N0225: sum digits - XOR
-@N0226: check
-@N0227: transfer digits
-@N0231: multiply and hold
-@N0232: clear and subtract
-@N0233: select I/O: unknown i/o device
-@N0234: select I/O: unknown i/o device
-@N0235: select I/O: unknown i/o device
-@N0236: select I/O: unknown i/o device
-@N0237: select I/O: Intervention and Activate Device
-@N0240: select I/O: Intervention and Activate Device
-@N0242: select I/O: unknown i/o device
-@N0243: select I/O: unknown i/o device
-@N0244: select I/O: Camera Index
-@N0350: select I/O: Intervention and Activate Device
-@N0351: read
-@N0352: conditional program
-@N0353: sub-program
-@N0354: clear and add
-@N0355: subtract
-@N0356: conditional program
-@N0357: add one
-@N0360: sub-program
-@N0361: clear and add
-@N0362: subtract
-@N0363: conditional program
-@N0364: sub-program
-@N0365: select I/O: unknown i/o device
-@N0366: clear and add
-@N0367: transfer to storage
-@N0370: add
-@N0371: transfer to storage
-@N0372: subtract
-@N0373: subtract
-@N0374: transfer to storage
-@N0375: clear and add
-@N0376: transfer to storage
-@N0377: add one
-@N0400: sub-program
-@N0401: add one
-@N0402: select I/O: Camera Index
-@N0403: clear and add
-@N0404: subtract
-@N0405: conditional program
-@N0406: sub-program
-@N0407: sub-program
-@N0410: select I/O: Intervention and Activate Device
-@N0411: read
-@N0412: transfer to storage
-@N0413: subtract
-@N0414: conditional program
-@N0415: sub-program
-@N0416: select I/O: Intervention and Activate Device
-@N0417: read
-@N0420: transfer to storage
-@N0421: shift right and roundoff
-@N0422: transfer to storage
-@N0423: subtract
-@N0424: conditional program
-@N0425: sub-program
-@N0426: clear and add
-@N0427: multiply and hold
-@N0430: shift left and hold
-@N0431: transfer to storage
-@N0432: clear and add
-@N0433: shift left and roundoff
-@N0434: shift right and roundoff
-@N0435: transfer to storage
-@N0436: subtract
-@N0437: conditional program
-@N0440: sub-program
-@N0441: clear and add
-@N0442: add
-@N0443: transfer to storage
-@N0444: clear and add
-@N0445: subtract
-@N0446: conditional program
-@N0447: clear and add
-@N0450: subtract
-@N0451: add
-@N0452: transfer digits
-@N0453: clear and add
-@N0454: transfer to storage
-@N0455: add one
-@N0456: subtract
-@N0457: conditional program
-@N0460: clear and add
-@N0461: transfer to storage
-@N0462: transfer to storage
-@N0463: transfer to storage
-@N0464: transfer to storage
-@N0465: transfer to storage
-@N0466: transfer to storage
-@N0467: sub-program
-@N0470: clear and add
-@N0471: add
-@N0472: transfer digits
-@N0473: transfer digits
-@N0474: transfer digits
-@N0475: clear and add
-@N0476: subtract
-@N0477: conditional program
-@N0500: sub-program
-@N0501: clear and add
-@N0502: transfer to storage
-@N0503: clear and add
-@N0504: add
-@N0505: transfer digits
-@N0506: transfer digits
-@N0507: clear and add
-@N0510: subtract
-@N0511: transfer to storage
-@N0512: sub-program
-@N0513: clear and add
-@N0514: subtract
-@N0515: conditional program
-@N0516: sub-program
-@N0517: transfer address
-@N0520: transfer address
-@N0521: transfer address
-@N0522: transfer address
-@N0523: transfer address
-@N0524: add one
-@N0525: add one
-@N0526: add one
-@N0527: add one
-@N0530: clear and add
-@N0531: transfer to storage
-@N0532: add one
-@N0533: clear and add
-@N0534: transfer digits
-@N0535: add one
-@N0536: add one
-@N0537: clear and add
-@N0540: transfer digits
-@N0541: transfer digits
-@N0542: transfer digits
-@N0543: transfer digits
-@N0544: transfer digits
-@N0545: transfer digits
-@N0546: transfer digits
-@N0547: add one
-@N0550: add one
-@N0551: add one
-@N0552: clear and add
-@N0553: transfer digits
-@N0554: transfer digits
-@N0555: clear and add
-@N0556: transfer to storage
-@N0557: clear and add
-@N0560: subtract
-@N0561: transfer to storage
-@N0562: conditional program
-@N0563: add one
-@N0564: sub-program
-@N0565: clear and add
-@N0566: add
-@N0567: transfer to storage
-@N0570: clear and add
-@N0571: subtract
-@N0572: conditional program
-@N0573: add one
-@N0574: add one
-@N0575: add one
-@N0576: add one
-@N0577: add one
-@N0600: add one
-@N0601: add one
-@N0602: add one
-@N0603: add one
-@N0604: add one
-@N0605: add one
-@N0606: clear and add
-@N0607: subtract
-@N0610: conditional program
-@N0611: clear and add
-@N0612: transfer to storage
-@N0613: sub-program
-@N0614: clear and add
-@N0615: transfer to storage
-@N0616: add one
-@N0617: sub-program
-@N0621: transfer address
-@N0622: transfer address
-@N0623: select I/O: Printer
-@N0624: clear and add
-@N0625: transfer digits
-@N0626: clear and add
-@N0627: cycle left and hold
-@N0630: record
-@N0631: cycle left and hold
-@N0632: record
-@N0633: cycle left and hold
-@N0634: conditional program
-@N0635: add one
-@N0636: sub-program
-@N0637: add one
-@N0640: sub-program
-@N0641: clear and add
-@N0642: transfer to storage
-@N0643: transfer to storage
-@N0644: transfer to storage
-@N0645: transfer to storage
-@N0646: transfer to storage
-@N0647: transfer to storage
-@N0650: transfer to storage
-@N0651: transfer to storage
-@N0652: sub-program
-@N0653: transfer address
-@N0654: clear and add
-@N0655: transfer to storage
-@N0656: transfer to storage
-@N0657: transfer to storage
-@N0660: transfer to storage
-@N0661: transfer to storage
-@N0662: transfer to storage
-@N0663: transfer to storage
-@N0664: transfer to storage
-@N0665: transfer to storage
-@N0666: transfer to storage
-@N0667: transfer to storage
-@N0670: transfer to storage
-@N0671: transfer to storage
-@N0672: sub-program
-@N0673: sub-program
-@N0674: clear and add
-@N0675: subtract
-@N0676: transfer to storage
-@N0677: clear and add
-@N0700: subtract
-@N0701: conditional program
-@N0702: subtract
-@N0703: transfer to storage
-@N0704: sub-program
-@N0705: sub-program
-@N0706: transfer digits
-@N0707: clear and subtract
-@N0710: conditional program
-@N0713: sub-program
-@N0714: conditional program
-@N0715: clear and subtract
-@N0717: clear and add magnitude
-@N0721: sub-program
-@N0722: check
-@N0723: clear and subtract
-@N0725: clear and add magnitude
-@N0727: sub-program
-@N0730: transfer digits
-@N0731: clear and add magnitude
-@N0732: conditional program
-@N0735: sub-program
-@N0737: clear and subtract
-@N0740: sum digits - XOR
-@N0743: sub-program
-@N0744: sum digits - XOR
-@N0745: clear and subtract
-@N0747: clear and add magnitude
-@N0751: sub-program
-@N0752: block transfer out
-@N0753: clear and subtract
-@N0755: clear and add magnitude
-@N0757: sub-program
-@N0761: clear and subtract
-@N0763: clear and add magnitude
-@N0765: sub-program
-@N0767: clear and add magnitude
-@N0770: read
-@N0773: sub-program
-@N0774: block transfer out
-@N0775: clear and add magnitude
-@N0776: sum digits - XOR
-@N1001: sub-program
-@N1002: block transfer out
-@N1003: clear and add magnitude
-@N1004: block transfer out
-@N1005: clear and add magnitude
-@N1007: sub-program
-@N1010: read
-@N1011: clear and add magnitude
-@N1012: block transfer out
-@N1013: clear and add magnitude
-@N1014: transfer to storage
-@N1015: sub-program
-@N1016: multiply and hold
-@N1017: clear and subtract
-@N1020: cycle left and hold
-@N1023: sub-program
-@N1024: cycle left and hold
-@N1025: clear and subtract
-@N1027: clear and add magnitude
-@N1031: sub-program
-@N1032: multiply and hold
-@N1033: clear and subtract
-@N1035: clear and add magnitude
-@N1037: sub-program
-@N1040: clear and subtract
-@N1041: clear and subtract
-@N1042: add one
-@N1045: sub-program
-@N1046: add
-@N1047: clear and add magnitude
-@N1050: special add
-@N1053: sub-program
-@N1054: add one
-@N1055: clear and subtract
-@N1057: clear and add magnitude
-@N1061: sub-program
-@N1062: clear and subtract
-@N1063: clear and subtract
-@N1065: clear and add magnitude
-@N1067: sub-program
-@N1070: clear and subtract
-@N1071: clear and add magnitude
-@N1072: add
-@N1073: clear and add magnitude
-@N1075: sub-program
-@N1076: special add
-@N1077: clear and add magnitude
-@N1100: add one
-@N1101: clear and add magnitude
-@N1102: transfer to storage
-@N1103: sub-program
-@N1104: transfer digits
-@N1106: conditional program
-@N1111: sub-program
-@N1112: conditional program
-@N1115: block transfer out
-@N1117: sub-program
-@N1120: check
-@N1123: block transfer out
-@N1125: sub-program
-@N1126: transfer digits
-@N1131: block transfer out
-@N1133: sub-program
-@N1136: sum digits - XOR
-@N1141: sub-program
-@N1142: sum digits - XOR
-@N1145: block transfer out
-@N1147: sub-program
-@N1150: block transfer out
-@N1153: block transfer out
-@N1155: sub-program
-@N1156: multiply and hold
-@N1160: cycle left and hold
-@N1163: sub-program
-@N1164: multiply and hold
-@N1165: block transfer out
-@N1171: sub-program
-@N1172: cycle left and hold
-@N1175: block transfer out
-@N1177: sub-program
-@N1201: read
-@N1203: block transfer out
-@N1205: sub-program
-@N1206: multiply and hold
-@N1211: block transfer out
-@N1213: sub-program
-@N1214: clear and subtract
-@N1216: add one
-@N1221: sub-program
-@N1222: clear and subtract
-@N1223: block transfer out
-@N1224: add one
-@N1227: sub-program
-@N1230: clear and add magnitude
-@N1233: block transfer out
-@N1235: clear and add
-@N1236: transfer to storage
-@N1237: sub-program
-@N1240: sub-program
-@N1242: select I/O: unknown i/o device
-@N1243: select I/O: Intervention and Activate Device
-@N1244: select I/O: Intervention and Activate Device
-@N1245: sub-program
-@N1246: transfer address
-@N1247: transfer address
-@N1250: clear and add
-@N1251: transfer to storage
-@N1252: add one
-@N1253: clear and add
-@N1254: transfer to storage
-@N1255: clear and add
-@N1256: transfer to storage
-@N1257: transfer to storage
-@N1260: transfer to storage
-@N1261: add
-@N1262: transfer to storage
-@N1263: transfer to storage
-@N1264: transfer to storage
-@N1265: clear and add
-@N1266: transfer to storage
-@N1267: transfer to storage
-@N1270: transfer to storage
-@N1271: add
-@N1272: transfer to storage
-@N1273: transfer to storage
-@N1274: transfer to storage
-@N1275: sub-program
-@N1303: sub-program
-@N1311: sub-program
-@N1317: sub-program
-@N1325: sub-program
-@N1326: transfer address
-@N1327: transfer address
-@N1330: clear and add
-@N1331: transfer to storage
-@N1332: add one
-@N1333: clear and add
-@N1334: transfer to storage
-@N1335: clear and add
-@N1336: transfer to storage
-@N1337: transfer to storage
-@N1340: add
-@N1341: transfer to storage
-@N1342: transfer to storage
-@N1343: subtract
-@N1344: transfer to storage
-@N1345: clear and add
-@N1346: add
-@N1347: transfer to storage
-@N1350: transfer to storage
-@N1351: add
-@N1352: transfer to storage
-@N1353: transfer to storage
-@N1354: add
-@N1355: transfer to storage
-@N1356: sub-program
-@N1364: sub-program
-@N1372: sub-program
-@N1400: sub-program
-@N1401: transfer address
-@N1402: transfer address
-@N1403: clear and add
-@N1404: transfer to storage
-@N1405: add one
-@N1406: clear and add
-@N1407: transfer to storage
-@N1410: clear and add
-@N1411: transfer to storage
-@N1412: transfer to storage
-@N1413: add
-@N1414: transfer to storage
-@N1415: transfer to storage
-@N1416: add
-@N1417: transfer to storage
-@N1420: add
-@N1421: transfer to storage
-@N1422: transfer to storage
-@N1423: transfer to storage
-@N1424: clear and add
-@N1425: transfer to storage
-@N1426: transfer to storage
-@N1427: transfer to storage
-@N1430: transfer to storage
-@N1431: add
-@N1432: transfer to storage
-@N1433: transfer to storage
-@N1434: transfer to storage
-@N1435: transfer to storage
-@N1436: sub-program
-@N1444: sub-program
-@N1452: sub-program
-@N1460: sub-program
-@N1466: sub-program
-@N1474: sub-program
-@N1475: transfer address
-@N1476: transfer address
-@N1477: clear and add
-@N1500: transfer to storage
-@N1501: add one
-@N1502: clear and add
-@N1503: transfer to storage
-@N1504: clear and add
-@N1505: transfer to storage
-@N1506: transfer to storage
-@N1507: add
-@N1510: transfer to storage
-@N1511: transfer to storage
-@N1512: transfer to storage
-@N1513: add
-@N1514: transfer to storage
-@N1515: transfer to storage
-@N1516: transfer to storage
-@N1517: add
-@N1520: transfer to storage
-@N1521: transfer to storage
-@N1522: add
-@N1523: transfer to storage
-@N1524: transfer to storage
-@N1525: clear and add
-@N1526: transfer to storage
-@N1527: transfer to storage
-@N1530: transfer to storage
-@N1531: add
-@N1532: transfer to storage
-@N1533: transfer to storage
-@N1534: transfer to storage
-@N1535: add
-@N1536: transfer to storage
-@N1537: transfer to storage
-@N1540: transfer to storage
-@N1541: transfer to storage
-@N1542: transfer to storage
-@N1543: transfer to storage
-@N1544: sub-program
-@N1552: sub-program
-@N1560: sub-program
-@N1566: sub-program
-@N1574: sub-program
-@N1602: sub-program
-@N1610: sub-program
-@N1615: select I/O: unknown i/o device
-@N1616: sub-program
-@N1617: transfer address
-@N1620: transfer address
-@N1621: clear and add
-@N1622: transfer to storage
-@N1623: add one
-@N1624: clear and add
-@N1625: transfer to storage
-@N1626: clear and add
-@N1627: transfer to storage
-@N1630: add
-@N1631: transfer to storage
-@N1632: transfer to storage
-@N1633: add
-@N1634: transfer to storage
-@N1635: transfer to storage
-@N1636: clear and add
-@N1637: transfer to storage
-@N1640: transfer to storage
-@N1641: add
-@N1642: transfer to storage
-@N1643: transfer to storage
-@N1644: transfer to storage
-@N1645: sub-program
-@N1653: sub-program
-@N1661: sub-program
-@N1667: sub-program
-@N1670: transfer address
-@N1671: transfer address
-@N1672: clear and add
-@N1673: transfer to storage
-@N1674: add one
-@N1675: clear and add
-@N1676: transfer to storage
-@N1677: clear and add
-@N1700: transfer to storage
-@N1701: transfer to storage
-@N1702: add
-@N1703: transfer to storage
-@N1704: transfer to storage
-@N1705: add
-@N1706: transfer to storage
-@N1707: transfer to storage
-@N1710: add
-@N1711: transfer to storage
-@N1712: transfer to storage
-@N1713: transfer to storage
-@N1714: add
-@N1715: transfer to storage
-@N1716: transfer to storage
-@N1717: clear and add
-@N1720: transfer to storage
-@N1721: transfer to storage
-@N1722: transfer to storage
-@N1723: transfer to storage
-@N1724: add
-@N1725: transfer to storage
-@N1726: transfer to storage
-@N1727: transfer to storage
-@N1730: transfer to storage
-@N1731: add
-@N1732: transfer to storage
-@N1733: transfer to storage
-@N1734: transfer to storage
-@N1735: transfer to storage
-@N1736: sub-program
-@N1737: transfer address
-@N1740: transfer address
-@N1741: clear and add
-@N1742: transfer to storage
-@N1743: add one
-@N1744: clear and add
-@N1745: transfer to storage
-@N1746: clear and add
-@N1747: transfer to storage
-@N1750: transfer to storage
-@N1751: transfer to storage
-@N1752: add
-@N1753: transfer to storage
-@N1754: transfer to storage
-@N1755: add
-@N1756: transfer to storage
-@N1757: transfer to storage
-@N1760: clear and add
-@N1761: transfer to storage
-@N1762: transfer to storage
-@N1763: transfer to storage
-@N1764: transfer to storage
-@N1765: add
-@N1766: transfer to storage
-@N1767: transfer to storage
-@N1770: transfer to storage
-@N1771: transfer to storage
-@N1772: clear and add
-@N1773: transfer to storage
-@N1774: transfer to storage
-@N1775: transfer to storage
-@N1776: transfer to storage
-@N1777: transfer to storage
-@N2000: transfer to storage
-@N2001: transfer to storage
-@N2002: transfer to storage
-@N2003: sub-program
-@N2004: transfer address
-@N2005: transfer address
-@N2006: clear and add
-@N2007: transfer to storage
-@N2010: add one
-@N2011: clear and add
-@N2012: transfer to storage
-@N2013: clear and add
-@N2014: transfer to storage
-@N2015: add
-@N2016: transfer to storage
-@N2017: transfer to storage
-@N2020: add
-@N2021: transfer to storage
-@N2022: transfer to storage
-@N2023: transfer to storage
-@N2024: add
-@N2025: transfer to storage
-@N2026: transfer to storage
-@N2027: transfer to storage
-@N2030: clear and add
-@N2031: transfer to storage
-@N2032: transfer to storage
-@N2033: transfer to storage
-@N2034: transfer to storage
-@N2035: add
-@N2036: transfer to storage
-@N2037: transfer to storage
-@N2040: transfer to storage
-@N2041: clear and add
-@N2042: transfer to storage
-@N2043: transfer to storage
-@N2044: transfer to storage
-@N2045: transfer to storage
-@N2046: transfer to storage
-@N2047: transfer to storage
-@N2050: transfer to storage
-@N2051: transfer to storage
-@N2052: transfer to storage
-@N2053: transfer to storage
-@N2054: transfer to storage
-@N2055: transfer to storage
-@N2056: transfer to storage
-@N2057: transfer to storage
-@N2060: transfer to storage
-@N2061: transfer to storage
-@N2062: transfer to storage
-@N2063: transfer to storage
-@N2064: transfer to storage
-@N2065: transfer to storage
-@N2066: transfer to storage
-@N2067: sub-program
-@N2070: transfer address
-@N2071: transfer address
-@N2072: clear and add
-@N2073: transfer to storage
-@N2074: add one
-@N2075: clear and add
-@N2076: transfer to storage
-@N2077: clear and add
-@N2100: transfer to storage
-@N2101: transfer to storage
-@N2102: transfer to storage
-@N2103: add
-@N2104: transfer to storage
-@N2105: transfer to storage
-@N2106: transfer to storage
-@N2107: transfer to storage
-@N2110: add
-@N2111: transfer to storage
-@N2112: transfer to storage
-@N2113: transfer to storage
-@N2114: transfer to storage
-@N2115: transfer to storage
-@N2116: add
-@N2117: transfer to storage
-@N2120: transfer to storage
-@N2121: transfer to storage
-@N2122: transfer to storage
-@N2123: add
-@N2124: transfer to storage
-@N2125: transfer to storage
-@N2126: transfer to storage
-@N2127: clear and add
-@N2130: transfer to storage
-@N2131: transfer to storage
-@N2132: transfer to storage
-@N2133: transfer to storage
-@N2134: transfer to storage
-@N2135: transfer to storage
-@N2136: add
-@N2137: transfer to storage
-@N2140: transfer to storage
-@N2141: transfer to storage
-@N2142: add
-@N2143: transfer to storage
-@N2144: transfer to storage
-@N2145: transfer to storage
-@N2146: add
-@N2147: transfer to storage
-@N2150: transfer to storage
-@N2151: transfer to storage
-@N2152: transfer to storage
-@N2153: transfer to storage
-@N2154: transfer to storage
-@N2155: sub-program
-@N2163: sub-program
-@N2171: sub-program
-@N2177: sub-program
-@N2205: sub-program
-@N2213: sub-program
-@N2221: sub-program
-@N2227: sub-program
-@N2235: sub-program
-@N2243: sub-program
-@N2250: select I/O: unknown i/o device
-@N2251: sub-program
-@N2256: select I/O: unknown i/o device
-@N2257: sub-program
-@N2260: transfer address
-@N2261: transfer address
-@N2262: clear and add
-@N2263: transfer to storage
-@N2264: add one
-@N2265: clear and add
-@N2266: transfer to storage
-@N2267: clear and add
-@N2270: transfer to storage
-@N2271: transfer to storage
-@N2272: add
-@N2273: transfer to storage
-@N2274: transfer to storage
-@N2275: add
-@N2276: transfer to storage
-@N2277: transfer to storage
-@N2300: transfer to storage
-@N2301: clear and add
-@N2302: transfer to storage
-@N2303: transfer to storage
-@N2304: transfer to storage
-@N2305: transfer to storage
-@N2306: add
-@N2307: transfer to storage
-@N2310: transfer to storage
-@N2311: transfer to storage
-@N2312: transfer to storage
-@N2313: clear and add
-@N2314: transfer to storage
-@N2315: transfer to storage
-@N2316: transfer to storage
-@N2317: transfer to storage
-@N2320: transfer to storage
-@N2321: transfer to storage
-@N2322: transfer to storage
-@N2323: transfer to storage
-@N2324: sub-program
-@N2325: clear and add
-@N2326: transfer to storage
-@N2327: transfer to storage
-@N2330: transfer to storage
-@N2331: transfer to storage
-@N2332: transfer to storage
-@N2333: transfer to storage
-@N2334: transfer to storage
-@N2335: transfer to storage
-@N2336: transfer to storage
-@N2337: transfer to storage
-@N2340: clear and add
-@N2341: transfer to storage
-@N2342: transfer to storage
-@N2343: transfer to storage
-@N2344: transfer to storage
-@N2345: transfer to storage
-@N2346: transfer to storage
-@N2347: transfer to storage
-@N2350: transfer to storage
-@N2351: transfer to storage
-@N2352: transfer to storage
-@N2353: clear and add
-@N2354: subtract
-@N2355: conditional program
-@N2356: subtract
-@N2357: conditional program
-@N2360: subtract
-@N2361: conditional program
-@N2362: subtract
-@N2363: conditional program
-@N2364: subtract
-@N2365: conditional program
-@N2366: subtract
-@N2367: conditional program
-@N2370: subtract
-@N2371: conditional program
-@N2372: subtract
-@N2373: conditional program
-@N2374: subtract
-@N2375: conditional program
-@N2376: sub-program
-@N2377: add one
-@N2400: add one
-@N2401: add one
-@N2402: clear and add
-@N2403: subtract
-@N2404: conditional program
-@N2405: clear and add
-@N2406: transfer to storage
-@N2407: clear and add
-@N2410: transfer digits
-@N2411: add one
-@N2412: add one
-@N2413: add one
-@N2414: clear and add
-@N2415: subtract
-@N2416: conditional program
-@N2417: sub-program
-@N2420: clear and add
-@N2421: transfer to storage
-@N2422: clear and add
-@N2423: transfer to storage
-@N2424: clear and add
-@N2425: transfer digits
-@N2426: clear and add
-@N2427: transfer digits
-@N2430: add one
-@N2431: clear and add
-@N2432: subtract
-@N2433: conditional program
-@N2434: sub-program
-@N2435: clear and add
-@N2436: transfer to storage
-@N2437: transfer to storage
-@N2440: transfer to storage
-@N2441: clear and add
-@N2442: transfer digits
-@N2443: clear and add
-@N2444: transfer digits
-@N2445: clear and add
-@N2446: transfer digits
-@N2447: sub-program
-@N2450: transfer address
-@N2451: sub-program
-@N2452: select I/O: Magnetic Tape
-@N2453: sub-program
-@N2454: sub-program
-@N2455: select I/O: Magnetic Tape
-@N2456: add one
-@N2457: sub-program
-@N2460: clear and add
-@N2461: conditional program
-@N2462: subtract
-@N2463: conditional program
-@N2464: sub-program
-@N2465: clear and add
-@N2466: add
-@N2467: conditional program
-@N2470: sub-program
-@N2471: sub-program
-@N2472: select I/O: unknown i/o device
-@N2473: add one
-@N2474: sub-program
-@N2475: transfer address
-@N2476: transfer address
-@N2477: transfer address
-@N2500: transfer address
-@N2501: transfer address
-@N2502: transfer address
-@N2503: clear and add
-@N2504: transfer to storage
-@N2505: add one
-@N2506: clear and add
-@N2507: transfer to storage
-@N2510: add one
-@N2511: add one
-@N2512: clear and add
-@N2513: transfer to storage
-@N2514: add one
-@N2515: add one
-@N2516: add one
-@N2517: clear and add
-@N2520: transfer to storage
-@N2521: add one
-@N2522: add one
-@N2523: add one
-@N2524: add one
-@N2525: clear and add
-@N2526: transfer to storage
-@N2527: add one
-@N2530: add one
-@N2531: add one
-@N2532: add one
-@N2533: add one
-@N2534: clear and add
-@N2535: select I/O: Display Points
-@N2536: clear and add
-@N2537: record
-@N2540: clear and add magnitude
-@N2541: subtract
-@N2542: conditional program
-@N2543: clear and add magnitude
-@N2544: subtract
-@N2545: conditional program
-@N2546: clear and add magnitude
-@N2547: subtract
-@N2550: conditional program
-@N2551: sub-program
-@N2552: clear and add
-@N2553: add
-@N2554: transfer to storage
-@N2555: subtract
-@N2556: conditional program
-@N2557: sub-program
-@N2560: clear and add
-@N2561: add
-@N2562: transfer to storage
-@N2563: subtract
-@N2564: conditional program
-@N2565: sub-program
-@N2566: clear and add
-@N2567: add
-@N2570: transfer to storage
-@N2571: clear and add
-@N2572: add
-@N2573: transfer to storage
-@N2574: subtract
-@N2575: conditional program
-@N2576: sub-program
-@N2577: clear and add
-@N2600: add
-@N2601: transfer to storage
-@N2602: clear and add
-@N2603: subtract
-@N2604: transfer to storage
-@N2605: clear and add
-@N2606: subtract
-@N2607: conditional program
-@N2610: sub-program
-@N2611: sub-program
-@N2612: sub-program
-@N2615: sub-program
-@N2620: sub-program
-@N2623: sub-program
-@N2626: sub-program
-@N2631: sub-program
-@N2634: sub-program
-@N2637: sub-program
-@N2642: sub-program
-@N2645: sub-program
-@N2650: sub-program
-@N2651: select I/O: unknown i/o device
-@N2652: sub-program
-@N2653: select I/O: unknown i/o device
-@N2654: sub-program
-@N2655: transfer address
-@N2656: transfer address
-@N2657: add one
-@N2660: clear and add
-@N2661: transfer digits
-@N2662: transfer digits
-@N2663: add one
-@N2664: clear and add
-@N2665: transfer to storage
-@N2666: clear and add
-@N2667: add
-@N2670: transfer to storage
-@N2671: add one
-@N2672: add one
-@N2673: subtract
-@N2674: conditional program
-@N2675: clear and add
-@N2676: transfer to storage
-@N2677: sub-program
-@N2700: clear and add
-@N2701: subtract
-@N2702: conditional program
-@N2703: clear and add
-@N2704: transfer to storage
-@N2705: transfer to storage
-@N2706: transfer to storage
-@N2707: transfer to storage
-@N2710: transfer to storage
-@N2711: transfer to storage
-@N2712: transfer to storage
-@N2713: transfer to storage
-@N2714: transfer to storage
-@N2715: clear and add
-@N2716: transfer to storage
-@N2717: sub-program
-@N2721: select I/O: unknown i/o device
-@N2722: select I/O: unknown i/o device
-@N2723: select I/O: Intervention and Activate Device
-@N2724: sub-program
-@N2725: select I/O: unknown i/o device
-@N2726: clear and add
-@N2727: transfer to storage
-@N2730: transfer to storage
-@N2731: clear and add
-@N2732: cycle left and clear
-@N2733: conditional program
-@N2734: add one
-@N2735: add one
-@N2736: subtract
-@N2737: conditional program
-@N2740: clear and add
-@N2741: transfer to storage
-@N2742: add one
-@N2743: add one
-@N2744: add one
-@N2745: clear and add
-@N2746: transfer digits
-@N2747: add one
-@N2750: subtract
-@N2751: conditional program
-@N2752: clear and add
-@N2753: transfer to storage
-@N2754: clear and add
-@N2755: transfer digits
-@N2756: transfer digits
-@N2757: clear and add
-@N2760: transfer digits
-@N2761: clear and add
-@N2762: transfer to storage
-@N2763: clear and add
-@N2764: add
-@N2765: transfer to storage
-@N2766: sub-program
-@N2767: add one
-@N2770: sub-program
-@N2771: sub-program
-@N2773: select I/O: unknown i/o device
-@N2774: select I/O: Intervention and Activate Device
-@N2775: select I/O: Intervention and Activate Device
-@N2776: sub-program
-@N2777: select I/O: Intervention and Activate Device
-@N3000: clear and add
-@N3001: transfer to storage
-@N3002: transfer to storage
-@N3003: transfer to storage
-@N3004: transfer to storage
-@N3005: transfer to storage
-@N3006: transfer to storage
-@N3007: transfer to storage
-@N3010: transfer to storage
-@N3011: transfer to storage
-@N3012: transfer to storage
-@N3013: transfer to storage
-@N3014: transfer to storage
-@N3015: transfer to storage
-@N3016: transfer to storage
-@N3017: transfer to storage
-@N3020: transfer to storage
-@N3021: transfer to storage
-@N3022: transfer to storage
-@N3023: sub-program
-@N3024: select I/O: Intervention and Activate Device
-@N3025: clear and add
-@N3026: subtract
-@N3027: conditional program
-@N3030: clear and add
-@N3031: subtract
-@N3032: conditional program
-@N3033: clear and add
-@N3034: transfer digits
-@N3035: add one
-@N3036: add one
-@N3037: add one
-@N3040: subtract
-@N3041: conditional program
-@N3042: clear and add
-@N3043: transfer to storage
-@N3044: clear and add
-@N3045: transfer digits
-@N3046: clear and add
-@N3047: clear and add
-@N3050: transfer digits
-@N3051: clear and add
-@N3052: subtract
-@N3053: add
-@N3054: transfer to storage
-@N3055: clear and add
-@N3056: transfer digits
-@N3057: clear and subtract
-@N3060: add
-@N3061: transfer to storage
-@N3062: sub-program
-@N3064: clear and add
-@N3065: subtract
-@N3066: conditional program
-@N3067: clear and add
-@N3070: transfer to storage
-@N3071: clear and add
-@N3072: transfer digits
-@N3073: transfer digits
-@N3074: clear and add
-@N3075: conditional program
-@N3076: add
-@N3077: transfer to storage
-@N3100: add one
-@N3101: add one
-@N3102: subtract
-@N3103: conditional program
-@N3104: clear and add
-@N3105: transfer digits
-@N3106: clear and add
-@N3107: transfer to storage
-@N3110: add one
-@N3111: add one
-@N3112: add one
-@N3113: sub-program
-@N3114: clear and add
-@N3115: transfer digits
-@N3116: transfer digits
-@N3117: add
-@N3120: transfer digits
-@N3121: clear and add
-@N3122: transfer digits
-@N3123: clear and add
-@N3124: transfer to storage
-@N3125: clear and add
-@N3126: conditional program
-@N3127: add one
-@N3130: add one
-@N3131: add one
-@N3132: subtract
-@N3133: conditional program
-@N3134: clear and add
-@N3135: transfer to storage
-@N3136: clear and add
-@N3137: transfer digits
-@N3140: transfer digits
-@N3141: sub-program
-@N3142: subtract
-@N3143: transfer to storage
-@N3144: sub-program
-@N3145: clear and add
-@N3146: transfer to storage
-@N3147: clear and add
-@N3150: subtract
-@N3151: add
-@N3152: transfer to storage
-@N3153: clear and subtract
-@N3154: add
-@N3155: transfer to storage
-@N3156: sub-program
-@N3160: add one
-@N3161: add one
-@N3162: clear and add
-@N3163: transfer digits
-@N3164: clear and add
-@N3165: subtract
-@N3166: conditional program
-@N3167: sub-program
-@N3170: clear and add
-@N3171: transfer digits
-@N3172: clear and add
-@N3173: transfer digits
-@N3174: clear and add
-@N3175: transfer digits
-@N3176: clear and add
-@N3177: subtract
-@N3200: conditional program
-@N3201: sub-program
-@N3202: sub-program
-@N3203: select I/O: unknown i/o device
-@N3204: add one
-@N3205: add one
-@N3206: clear and add
-@N3207: transfer digits
-@N3210: clear and add
-@N3211: subtract
-@N3212: conditional program
-@N3213: sub-program
-@N3214: clear and add
-@N3215: clear and add
-@N3216: transfer digits
-@N3217: add one
-@N3220: clear and add
-@N3221: transfer digits
-@N3222: clear and add
-@N3223: transfer digits
-@N3224: clear and subtract
-@N3225: add
-@N3226: transfer to storage
-@N3227: clear and add
-@N3230: transfer digits
-@N3231: clear and add
-@N3232: subtract
-@N3233: add
-@N3234: transfer to storage
-@N3235: sub-program
-@N3237: clear and add
-@N3240: clear and add
-@N3241: transfer digits
-@N3242: clear and add
-@N3243: subtract
-@N3244: transfer to storage
-@N3245: sub-program
-@N3246: clear and add
-@N3247: clear and add
-@N3250: transfer digits
-@N3251: clear and add
-@N3252: clear and add
-@N3253: transfer digits
-@N3254: add one
-@N3255: clear and add
-@N3256: transfer digits
-@N3257: clear and add
-@N3260: transfer digits
-@N3261: clear and subtract
-@N3262: add
-@N3263: transfer to storage
-@N3264: clear and add
-@N3265: transfer digits
-@N3266: clear and add
-@N3267: subtract
-@N3270: add
-@N3271: transfer to storage
-@N3272: sub-program
-@N3274: clear and add
-@N3275: transfer digits
-@N3276: clear and add
-@N3277: transfer digits
-@N3300: clear and add
-@N3301: subtract
-@N3302: transfer to storage
-@N3303: sub-program
-@N3304: clear and add
-@N3305: transfer digits
-@N3306: clear and add
-@N3307: transfer digits
-@N3310: clear and add
-@N3311: subtract
-@N3312: conditional program
-@N3313: sub-program
-@N3314: clear and add
-@N3315: subtract
-@N3316: transfer to storage
-@N3317: add one
-@N3320: add one
-@N3321: add one
-@N3322: add one
-@N3323: add one
-@N3324: subtract
-@N3325: conditional program
-@N3326: clear and add
-@N3327: transfer to storage
-@N3330: clear and add
-@N3331: transfer digits
-@N3332: transfer digits
-@N3333: clear and add
-@N3334: transfer digits
-@N3335: transfer digits
-@N3336: clear and add
-@N3337: transfer to storage
-@N3340: transfer to storage
-@N3341: transfer to storage
-@N3342: transfer to storage
-@N3343: transfer to storage
-@N3344: transfer to storage
-@N3345: transfer to storage
-@N3346: transfer to storage
-@N3347: sub-program
-@N3350: select I/O: unknown i/o device
-@N3351: clear and add
-@N3352: subtract
-@N3353: conditional program
-@N3354: sub-program
-@N3355: transfer address
-@N3356: transfer address
-@N3357: add one
-@N3360: clear and add
-@N3361: add
-@N3362: transfer digits
-@N3363: clear and add
-@N3364: cycle left and clear
-@N3365: conditional program
-@N3366: add one
-@N3367: add one
-@N3370: add one
-@N3371: subtract
-@N3372: conditional program
-@N3373: clear and add
-@N3374: transfer to storage
-@N3375: clear and add
-@N3376: transfer digits
-@N3377: transfer digits
-@N3400: sub-program
-@N3401: clear and add
-@N3402: conditional program
-@N3403: clear and add
-@N3404: transfer digits
-@N3405: add one
-@N3406: add one
-@N3407: conditional program
-@N3410: sub-program
-@N3411: transfer address
-@N3412: transfer address
-@N3413: add one
-@N3414: clear and add
-@N3415: add
-@N3416: transfer digits
-@N3417: clear and add
-@N3420: transfer digits
-@N3421: clear and add
-@N3422: cycle left and clear
-@N3423: conditional program
-@N3424: sub-program
-@N3425: add one
-@N3426: add one
-@N3427: clear and add
-@N3430: conditional program
-@N3431: clear and add
-@N3432: transfer digits
-@N3433: clear and add
-@N3434: transfer to storage
-@N3435: sub-program
-@N3436: clear and add
-@N3437: transfer digits
-@N3440: add one
-@N3441: sub-program
-@N3442: sub-program
-@N3443: clear and add
-@N3444: transfer digits
-@N3445: clear and subtract
-@N3446: add
-@N3447: add
-@N3450: transfer digits
-@N3451: clear and add
-@N3452: shift left and hold
-@N3453: shift right and roundoff
-@N3454: transfer to storage
-@N3455: clear and add
-@N3456: transfer digits
-@N3457: transfer digits
-@N3460: clear and add
-@N3461: subtract
-@N3462: transfer to storage
-@N3463: clear and add
-@N3464: subtract
-@N3465: add
-@N3466: transfer digits
-@N3467: transfer digits
-@N3470: clear and add
-@N3471: add
-@N3472: transfer to storage
-@N3473: clear and add
-@N3474: transfer to storage
-@N3475: sub-program
-@N3476: clear and add
-@N3477: transfer digits
-@N3500: clear and subtract
-@N3501: add
-@N3502: add
-@N3503: transfer digits
-@N3504: clear and add
-@N3505: shift left and hold
-@N3506: shift right and roundoff
-@N3507: transfer to storage
-@N3510: clear and add
-@N3511: transfer digits
-@N3512: transfer digits
-@N3513: clear and add
-@N3514: add
-@N3515: transfer to storage
-@N3516: clear and add
-@N3517: subtract
-@N3520: add
-@N3521: transfer digits
-@N3522: transfer digits
-@N3523: clear and add
-@N3524: subtract
-@N3525: transfer to storage
-@N3526: clear and add
-@N3527: transfer to storage
-@N3530: sub-program
-@N3531: clear and add
-@N3532: subtract
-@N3533: conditional program
-@N3534: subtract
-@N3535: transfer to storage
-@N3536: sub-program
-@N3537: add one
-@N3540: add one
-@N3541: add one
-@N3542: subtract
-@N3543: conditional program
-@N3544: clear and add
-@N3545: transfer to storage
-@N3546: clear and add
-@N3547: transfer digits
-@N3550: transfer digits
-@N3551: sub-program
-@N3552: transfer address
-@N3553: transfer address
-@N3554: add one
-@N3555: clear and add
-@N3556: transfer to storage
-@N3557: clear and add
-@N3560: transfer digits
-@N3561: transfer digits
-@N3562: clear and add
-@N3563: subtract
-@N3564: conditional program
-@N3565: add one
-@N3566: add one
-@N3567: add one
-@N3570: subtract
-@N3571: conditional program
-@N3572: clear and add
-@N3573: transfer to storage
-@N3574: sub-program
-@N3575: clear and add
-@N3576: transfer to storage
-@N3577: sub-program
+@E0351: exec: auto_config_switches(cb)  ;  
+@N0040:  select I/O: unknown i/o device
+@N0041:  select I/O: unknown i/o device
+@N0043:  select I/O: unknown i/o device
+@N0044:  select I/O: unknown i/o device
+@N0045:  select I/O: unknown i/o device
+@N0046:  select I/O: unknown i/o device
+@N0047:  select I/O: unknown i/o device
+@N0050:  select I/O: unknown i/o device
+@N0051:  select I/O: Intervention and Activate Device
+@N0053:  select I/O: Intervention and Activate Device
+@N0054:  multiply digits no roundoff (AND)
+@N0057:  select I/O: unknown i/o device
+@N0061:  select I/O: Camera Index
+@N0064:  transfer address
+@N0065:  block transfer in
+@N0066:  add B-Reg
+@N0067:  record
+@N0070:  block transfer out
+@N0071:  conditional program
+@N0072:  sub-program
+@N0073:  select I/O: unknown i/o device
+@N0074:  cf
+@N0075:  conditional program
+@N0076:  read
+@N0077:  select I/O: unknown i/o device
+@N0100:  block transfer in
+@N0102:  block transfer in
+@N0103:  add B-Reg
+@N0104:  block transfer in
+@N0105:  transfer address
+@N0106:  block transfer in
+@N0110:  select I/O: unknown i/o device
+@N0111:  divide
+@N0112:  transfer address
+@N0113:  conditional program
+@N0114:  sub-program
+@N0115:  sum digits - XOR
+@N0116:  record
+@N0117:  transfer to storage
+@N0120:  transfer digits
+@N0121:  transfer to storage
+@N0122:  add B-Reg
+@N0123:  block transfer in
+@N0124:  block transfer in
+@N0125:  add B-Reg
+@N0126:  block transfer in
+@N0130:  select I/O: unknown i/o device
+@N0131:  transfer digits
+@N0132:  sum digits - XOR
+@N0133:  transfer to storage
+@N0134:  select I/O: unknown i/o device
+@N0135:  exchange
+@N0136:  conditional program
+@N0137:  block transfer out
+@N0140:  divide
+@N0141:  transfer address
+@N0142:  transfer address
+@N0143:  add B-Reg
+@N0144:  record
+@N0145:  conditional program
+@N0146:  sub-program
+@N0147:  block transfer in
+@N0150:  block transfer in
+@N0151:  read
+@N0152:  transfer digits
+@N0153:  exchange
+@N0154:  transfer digits
+@N0155:  block transfer in
+@N0156:  check
+@N0157:  transfer digits
+@N0161:  select I/O: unknown i/o device
+@N0162:  transfer to storage
+@N0163:  transfer address
+@N0165:  add B-Reg
+@N0166:  transfer address
+@N0167:  record
+@N0170:  conditional program
+@N0171:  sub-program
+@N0172:  clear and add magnitude
+@N0204:  select I/O: unknown i/o device
+@N0205:  select I/O: unknown i/o device
+@N0207:  select I/O: unknown i/o device
+@N0210:  select I/O: unknown i/o device
+@N0211:  select I/O: Intervention and Activate Device
+@N0212:  select I/O: Intervention and Activate Device
+@N0215:  select I/O: unknown i/o device
+@N0217:  block transfer in
+@N0220:  read
+@N0221:  block transfer out
+@N0222:  block transfer out
+@N0223:  add one
+@N0224:  shift left and roundoff
+@N0225:  sum digits - XOR
+@N0226:  check
+@N0227:  transfer digits
+@N0231:  multiply and hold
+@N0232:  clear and subtract
+@N0233:  select I/O: unknown i/o device
+@N0234:  select I/O: unknown i/o device
+@N0235:  select I/O: unknown i/o device
+@N0236:  select I/O: unknown i/o device
+@N0237:  select I/O: Intervention and Activate Device
+@N0240:  select I/O: Intervention and Activate Device
+@N0242:  select I/O: unknown i/o device
+@N0243:  select I/O: unknown i/o device
+@N0244:  select I/O: Camera Index
+@N0350:  select I/O: Intervention and Activate Device
+@N0351:  read
+@N0352:  conditional program
+@N0353:  sub-program
+@N0354:  clear and add
+@N0355:  subtract
+@N0356:  conditional program
+@N0357:  add one
+@N0360:  sub-program
+@N0361:  clear and add
+@N0362:  subtract
+@N0363:  conditional program
+@N0364:  sub-program
+@N0365:  select I/O: unknown i/o device
+@N0366:  clear and add
+@N0367:  transfer to storage
+@N0370:  add
+@N0371:  transfer to storage
+@N0372:  subtract
+@N0373:  subtract
+@N0374:  transfer to storage
+@N0375:  clear and add
+@N0376:  transfer to storage
+@N0377:  add one
+@N0400:  sub-program
+@N0401:  add one
+@N0402:  select I/O: Camera Index
+@N0403:  clear and add
+@N0404:  subtract
+@N0405:  conditional program
+@N0406:  sub-program
+@N0407:  sub-program
+@N0410:  select I/O: Intervention and Activate Device
+@N0411:  read
+@N0412:  transfer to storage
+@N0413:  subtract
+@N0414:  conditional program
+@N0415:  sub-program
+@N0416:  select I/O: Intervention and Activate Device
+@N0417:  read
+@N0420:  transfer to storage
+@N0421:  shift right and roundoff
+@N0422:  transfer to storage
+@N0423:  subtract
+@N0424:  conditional program
+@N0425:  sub-program
+@N0426:  clear and add
+@N0427:  multiply and hold
+@N0430:  shift left and hold
+@N0431:  transfer to storage
+@N0432:  clear and add
+@N0433:  shift left and roundoff
+@N0434:  shift right and roundoff
+@N0435:  transfer to storage
+@N0436:  subtract
+@N0437:  conditional program
+@N0440:  sub-program
+@N0441:  clear and add
+@N0442:  add
+@N0443:  transfer to storage
+@N0444:  clear and add
+@N0445:  subtract
+@N0446:  conditional program
+@N0447:  clear and add
+@N0450:  subtract
+@N0451:  add
+@N0452:  transfer digits
+@N0453:  clear and add
+@N0454:  transfer to storage
+@N0455:  add one
+@N0456:  subtract
+@N0457:  conditional program
+@N0460:  clear and add
+@N0461:  transfer to storage
+@N0462:  transfer to storage
+@N0463:  transfer to storage
+@N0464:  transfer to storage
+@N0465:  transfer to storage
+@N0466:  transfer to storage
+@N0467:  sub-program
+@N0470:  clear and add
+@N0471:  add
+@N0472:  transfer digits
+@N0473:  transfer digits
+@N0474:  transfer digits
+@N0475:  clear and add
+@N0476:  subtract
+@N0477:  conditional program
+@N0500:  sub-program
+@N0501:  clear and add
+@N0502:  transfer to storage
+@N0503:  clear and add
+@N0504:  add
+@N0505:  transfer digits
+@N0506:  transfer digits
+@N0507:  clear and add
+@N0510:  subtract
+@N0511:  transfer to storage
+@N0512:  sub-program
+@N0513:  clear and add
+@N0514:  subtract
+@N0515:  conditional program
+@N0516:  sub-program
+@N0517:  transfer address
+@N0520:  transfer address
+@N0521:  transfer address
+@N0522:  transfer address
+@N0523:  transfer address
+@N0524:  add one
+@N0525:  add one
+@N0526:  add one
+@N0527:  add one
+@N0530:  clear and add
+@N0531:  transfer to storage
+@N0532:  add one
+@N0533:  clear and add
+@N0534:  transfer digits
+@N0535:  add one
+@N0536:  add one
+@N0537:  clear and add
+@N0540:  transfer digits
+@N0541:  transfer digits
+@N0542:  transfer digits
+@N0543:  transfer digits
+@N0544:  transfer digits
+@N0545:  transfer digits
+@N0546:  transfer digits
+@N0547:  add one
+@N0550:  add one
+@N0551:  add one
+@N0552:  clear and add
+@N0553:  transfer digits
+@N0554:  transfer digits
+@N0555:  clear and add
+@N0556:  transfer to storage
+@N0557:  clear and add
+@N0560:  subtract
+@N0561:  transfer to storage
+@N0562:  conditional program
+@N0563:  add one
+@N0564:  sub-program
+@N0565:  clear and add
+@N0566:  add
+@N0567:  transfer to storage
+@N0570:  clear and add
+@N0571:  subtract
+@N0572:  conditional program
+@N0573:  add one
+@N0574:  add one
+@N0575:  add one
+@N0576:  add one
+@N0577:  add one
+@N0600:  add one
+@N0601:  add one
+@N0602:  add one
+@N0603:  add one
+@N0604:  add one
+@N0605:  add one
+@N0606:  clear and add
+@N0607:  subtract
+@N0610:  conditional program
+@N0611:  clear and add
+@N0612:  transfer to storage
+@N0613:  sub-program
+@N0614:  clear and add
+@N0615:  transfer to storage
+@N0616:  add one
+@N0617:  sub-program
+@N0621:  transfer address
+@N0622:  transfer address
+@N0623:  select I/O: Printer
+@N0624:  clear and add
+@N0625:  transfer digits
+@N0626:  clear and add
+@N0627:  cycle left and hold
+@N0630:  record
+@N0631:  cycle left and hold
+@N0632:  record
+@N0633:  cycle left and hold
+@N0634:  conditional program
+@N0635:  add one
+@N0636:  sub-program
+@N0637:  add one
+@N0640:  sub-program
+@N0641:  clear and add
+@N0642:  transfer to storage
+@N0643:  transfer to storage
+@N0644:  transfer to storage
+@N0645:  transfer to storage
+@N0646:  transfer to storage
+@N0647:  transfer to storage
+@N0650:  transfer to storage
+@N0651:  transfer to storage
+@N0652:  sub-program
+@N0653:  transfer address
+@N0654:  clear and add
+@N0655:  transfer to storage
+@N0656:  transfer to storage
+@N0657:  transfer to storage
+@N0660:  transfer to storage
+@N0661:  transfer to storage
+@N0662:  transfer to storage
+@N0663:  transfer to storage
+@N0664:  transfer to storage
+@N0665:  transfer to storage
+@N0666:  transfer to storage
+@N0667:  transfer to storage
+@N0670:  transfer to storage
+@N0671:  transfer to storage
+@N0672:  sub-program
+@N0673:  sub-program
+@N0674:  clear and add
+@N0675:  subtract
+@N0676:  transfer to storage
+@N0677:  clear and add
+@N0700:  subtract
+@N0701:  conditional program
+@N0702:  subtract
+@N0703:  transfer to storage
+@N0704:  sub-program
+@N0705:  sub-program
+@N0706:  transfer digits
+@N0707:  clear and subtract
+@N0710:  conditional program
+@N0713:  sub-program
+@N0714:  conditional program
+@N0715:  clear and subtract
+@N0717:  clear and add magnitude
+@N0721:  sub-program
+@N0722:  check
+@N0723:  clear and subtract
+@N0725:  clear and add magnitude
+@N0727:  sub-program
+@N0730:  transfer digits
+@N0731:  clear and add magnitude
+@N0732:  conditional program
+@N0735:  sub-program
+@N0737:  clear and subtract
+@N0740:  sum digits - XOR
+@N0743:  sub-program
+@N0744:  sum digits - XOR
+@N0745:  clear and subtract
+@N0747:  clear and add magnitude
+@N0751:  sub-program
+@N0752:  block transfer out
+@N0753:  clear and subtract
+@N0755:  clear and add magnitude
+@N0757:  sub-program
+@N0761:  clear and subtract
+@N0763:  clear and add magnitude
+@N0765:  sub-program
+@N0767:  clear and add magnitude
+@N0770:  read
+@N0773:  sub-program
+@N0774:  block transfer out
+@N0775:  clear and add magnitude
+@N0776:  sum digits - XOR
+@N1001:  sub-program
+@N1002:  block transfer out
+@N1003:  clear and add magnitude
+@N1004:  block transfer out
+@N1005:  clear and add magnitude
+@N1007:  sub-program
+@N1010:  read
+@N1011:  clear and add magnitude
+@N1012:  block transfer out
+@N1013:  clear and add magnitude
+@N1014:  transfer to storage
+@N1015:  sub-program
+@N1016:  multiply and hold
+@N1017:  clear and subtract
+@N1020:  cycle left and hold
+@N1023:  sub-program
+@N1024:  cycle left and hold
+@N1025:  clear and subtract
+@N1027:  clear and add magnitude
+@N1031:  sub-program
+@N1032:  multiply and hold
+@N1033:  clear and subtract
+@N1035:  clear and add magnitude
+@N1037:  sub-program
+@N1040:  clear and subtract
+@N1041:  clear and subtract
+@N1042:  add one
+@N1045:  sub-program
+@N1046:  add
+@N1047:  clear and add magnitude
+@N1050:  special add
+@N1053:  sub-program
+@N1054:  add one
+@N1055:  clear and subtract
+@N1057:  clear and add magnitude
+@N1061:  sub-program
+@N1062:  clear and subtract
+@N1063:  clear and subtract
+@N1065:  clear and add magnitude
+@N1067:  sub-program
+@N1070:  clear and subtract
+@N1071:  clear and add magnitude
+@N1072:  add
+@N1073:  clear and add magnitude
+@N1075:  sub-program
+@N1076:  special add
+@N1077:  clear and add magnitude
+@N1100:  add one
+@N1101:  clear and add magnitude
+@N1102:  transfer to storage
+@N1103:  sub-program
+@N1104:  transfer digits
+@N1106:  conditional program
+@N1111:  sub-program
+@N1112:  conditional program
+@N1115:  block transfer out
+@N1117:  sub-program
+@N1120:  check
+@N1123:  block transfer out
+@N1125:  sub-program
+@N1126:  transfer digits
+@N1131:  block transfer out
+@N1133:  sub-program
+@N1136:  sum digits - XOR
+@N1141:  sub-program
+@N1142:  sum digits - XOR
+@N1145:  block transfer out
+@N1147:  sub-program
+@N1150:  block transfer out
+@N1153:  block transfer out
+@N1155:  sub-program
+@N1156:  multiply and hold
+@N1160:  cycle left and hold
+@N1163:  sub-program
+@N1164:  multiply and hold
+@N1165:  block transfer out
+@N1171:  sub-program
+@N1172:  cycle left and hold
+@N1175:  block transfer out
+@N1177:  sub-program
+@N1201:  read
+@N1203:  block transfer out
+@N1205:  sub-program
+@N1206:  multiply and hold
+@N1211:  block transfer out
+@N1213:  sub-program
+@N1214:  clear and subtract
+@N1216:  add one
+@N1221:  sub-program
+@N1222:  clear and subtract
+@N1223:  block transfer out
+@N1224:  add one
+@N1227:  sub-program
+@N1230:  clear and add magnitude
+@N1233:  block transfer out
+@N1235:  clear and add
+@N1236:  transfer to storage
+@N1237:  sub-program
+@N1240:  sub-program
+@N1242:  select I/O: unknown i/o device
+@N1243:  select I/O: Intervention and Activate Device
+@N1244:  select I/O: Intervention and Activate Device
+@N1245:  sub-program
+@N1246:  transfer address
+@N1247:  transfer address
+@N1250:  clear and add
+@N1251:  transfer to storage
+@N1252:  add one
+@N1253:  clear and add
+@N1254:  transfer to storage
+@N1255:  clear and add
+@N1256:  transfer to storage
+@N1257:  transfer to storage
+@N1260:  transfer to storage
+@N1261:  add
+@N1262:  transfer to storage
+@N1263:  transfer to storage
+@N1264:  transfer to storage
+@N1265:  clear and add
+@N1266:  transfer to storage
+@N1267:  transfer to storage
+@N1270:  transfer to storage
+@N1271:  add
+@N1272:  transfer to storage
+@N1273:  transfer to storage
+@N1274:  transfer to storage
+@N1275:  sub-program
+@N1303:  sub-program
+@N1311:  sub-program
+@N1317:  sub-program
+@N1325:  sub-program
+@N1326:  transfer address
+@N1327:  transfer address
+@N1330:  clear and add
+@N1331:  transfer to storage
+@N1332:  add one
+@N1333:  clear and add
+@N1334:  transfer to storage
+@N1335:  clear and add
+@N1336:  transfer to storage
+@N1337:  transfer to storage
+@N1340:  add
+@N1341:  transfer to storage
+@N1342:  transfer to storage
+@N1343:  subtract
+@N1344:  transfer to storage
+@N1345:  clear and add
+@N1346:  add
+@N1347:  transfer to storage
+@N1350:  transfer to storage
+@N1351:  add
+@N1352:  transfer to storage
+@N1353:  transfer to storage
+@N1354:  add
+@N1355:  transfer to storage
+@N1356:  sub-program
+@N1364:  sub-program
+@N1372:  sub-program
+@N1400:  sub-program
+@N1401:  transfer address
+@N1402:  transfer address
+@N1403:  clear and add
+@N1404:  transfer to storage
+@N1405:  add one
+@N1406:  clear and add
+@N1407:  transfer to storage
+@N1410:  clear and add
+@N1411:  transfer to storage
+@N1412:  transfer to storage
+@N1413:  add
+@N1414:  transfer to storage
+@N1415:  transfer to storage
+@N1416:  add
+@N1417:  transfer to storage
+@N1420:  add
+@N1421:  transfer to storage
+@N1422:  transfer to storage
+@N1423:  transfer to storage
+@N1424:  clear and add
+@N1425:  transfer to storage
+@N1426:  transfer to storage
+@N1427:  transfer to storage
+@N1430:  transfer to storage
+@N1431:  add
+@N1432:  transfer to storage
+@N1433:  transfer to storage
+@N1434:  transfer to storage
+@N1435:  transfer to storage
+@N1436:  sub-program
+@N1444:  sub-program
+@N1452:  sub-program
+@N1460:  sub-program
+@N1466:  sub-program
+@N1474:  sub-program
+@N1475:  transfer address
+@N1476:  transfer address
+@N1477:  clear and add
+@N1500:  transfer to storage
+@N1501:  add one
+@N1502:  clear and add
+@N1503:  transfer to storage
+@N1504:  clear and add
+@N1505:  transfer to storage
+@N1506:  transfer to storage
+@N1507:  add
+@N1510:  transfer to storage
+@N1511:  transfer to storage
+@N1512:  transfer to storage
+@N1513:  add
+@N1514:  transfer to storage
+@N1515:  transfer to storage
+@N1516:  transfer to storage
+@N1517:  add
+@N1520:  transfer to storage
+@N1521:  transfer to storage
+@N1522:  add
+@N1523:  transfer to storage
+@N1524:  transfer to storage
+@N1525:  clear and add
+@N1526:  transfer to storage
+@N1527:  transfer to storage
+@N1530:  transfer to storage
+@N1531:  add
+@N1532:  transfer to storage
+@N1533:  transfer to storage
+@N1534:  transfer to storage
+@N1535:  add
+@N1536:  transfer to storage
+@N1537:  transfer to storage
+@N1540:  transfer to storage
+@N1541:  transfer to storage
+@N1542:  transfer to storage
+@N1543:  transfer to storage
+@N1544:  sub-program
+@N1552:  sub-program
+@N1560:  sub-program
+@N1566:  sub-program
+@N1574:  sub-program
+@N1602:  sub-program
+@N1610:  sub-program
+@N1615:  select I/O: unknown i/o device
+@N1616:  sub-program
+@N1617:  transfer address
+@N1620:  transfer address
+@N1621:  clear and add
+@N1622:  transfer to storage
+@N1623:  add one
+@N1624:  clear and add
+@N1625:  transfer to storage
+@N1626:  clear and add
+@N1627:  transfer to storage
+@N1630:  add
+@N1631:  transfer to storage
+@N1632:  transfer to storage
+@N1633:  add
+@N1634:  transfer to storage
+@N1635:  transfer to storage
+@N1636:  clear and add
+@N1637:  transfer to storage
+@N1640:  transfer to storage
+@N1641:  add
+@N1642:  transfer to storage
+@N1643:  transfer to storage
+@N1644:  transfer to storage
+@N1645:  sub-program
+@N1653:  sub-program
+@N1661:  sub-program
+@N1667:  sub-program
+@N1670:  transfer address
+@N1671:  transfer address
+@N1672:  clear and add
+@N1673:  transfer to storage
+@N1674:  add one
+@N1675:  clear and add
+@N1676:  transfer to storage
+@N1677:  clear and add
+@N1700:  transfer to storage
+@N1701:  transfer to storage
+@N1702:  add
+@N1703:  transfer to storage
+@N1704:  transfer to storage
+@N1705:  add
+@N1706:  transfer to storage
+@N1707:  transfer to storage
+@N1710:  add
+@N1711:  transfer to storage
+@N1712:  transfer to storage
+@N1713:  transfer to storage
+@N1714:  add
+@N1715:  transfer to storage
+@N1716:  transfer to storage
+@N1717:  clear and add
+@N1720:  transfer to storage
+@N1721:  transfer to storage
+@N1722:  transfer to storage
+@N1723:  transfer to storage
+@N1724:  add
+@N1725:  transfer to storage
+@N1726:  transfer to storage
+@N1727:  transfer to storage
+@N1730:  transfer to storage
+@N1731:  add
+@N1732:  transfer to storage
+@N1733:  transfer to storage
+@N1734:  transfer to storage
+@N1735:  transfer to storage
+@N1736:  sub-program
+@N1737:  transfer address
+@N1740:  transfer address
+@N1741:  clear and add
+@N1742:  transfer to storage
+@N1743:  add one
+@N1744:  clear and add
+@N1745:  transfer to storage
+@N1746:  clear and add
+@N1747:  transfer to storage
+@N1750:  transfer to storage
+@N1751:  transfer to storage
+@N1752:  add
+@N1753:  transfer to storage
+@N1754:  transfer to storage
+@N1755:  add
+@N1756:  transfer to storage
+@N1757:  transfer to storage
+@N1760:  clear and add
+@N1761:  transfer to storage
+@N1762:  transfer to storage
+@N1763:  transfer to storage
+@N1764:  transfer to storage
+@N1765:  add
+@N1766:  transfer to storage
+@N1767:  transfer to storage
+@N1770:  transfer to storage
+@N1771:  transfer to storage
+@N1772:  clear and add
+@N1773:  transfer to storage
+@N1774:  transfer to storage
+@N1775:  transfer to storage
+@N1776:  transfer to storage
+@N1777:  transfer to storage
+@N2000:  transfer to storage
+@N2001:  transfer to storage
+@N2002:  transfer to storage
+@N2003:  sub-program
+@N2004:  transfer address
+@N2005:  transfer address
+@N2006:  clear and add
+@N2007:  transfer to storage
+@N2010:  add one
+@N2011:  clear and add
+@N2012:  transfer to storage
+@N2013:  clear and add
+@N2014:  transfer to storage
+@N2015:  add
+@N2016:  transfer to storage
+@N2017:  transfer to storage
+@N2020:  add
+@N2021:  transfer to storage
+@N2022:  transfer to storage
+@N2023:  transfer to storage
+@N2024:  add
+@N2025:  transfer to storage
+@N2026:  transfer to storage
+@N2027:  transfer to storage
+@N2030:  clear and add
+@N2031:  transfer to storage
+@N2032:  transfer to storage
+@N2033:  transfer to storage
+@N2034:  transfer to storage
+@N2035:  add
+@N2036:  transfer to storage
+@N2037:  transfer to storage
+@N2040:  transfer to storage
+@N2041:  clear and add
+@N2042:  transfer to storage
+@N2043:  transfer to storage
+@N2044:  transfer to storage
+@N2045:  transfer to storage
+@N2046:  transfer to storage
+@N2047:  transfer to storage
+@N2050:  transfer to storage
+@N2051:  transfer to storage
+@N2052:  transfer to storage
+@N2053:  transfer to storage
+@N2054:  transfer to storage
+@N2055:  transfer to storage
+@N2056:  transfer to storage
+@N2057:  transfer to storage
+@N2060:  transfer to storage
+@N2061:  transfer to storage
+@N2062:  transfer to storage
+@N2063:  transfer to storage
+@N2064:  transfer to storage
+@N2065:  transfer to storage
+@N2066:  transfer to storage
+@N2067:  sub-program
+@N2070:  transfer address
+@N2071:  transfer address
+@N2072:  clear and add
+@N2073:  transfer to storage
+@N2074:  add one
+@N2075:  clear and add
+@N2076:  transfer to storage
+@N2077:  clear and add
+@N2100:  transfer to storage
+@N2101:  transfer to storage
+@N2102:  transfer to storage
+@N2103:  add
+@N2104:  transfer to storage
+@N2105:  transfer to storage
+@N2106:  transfer to storage
+@N2107:  transfer to storage
+@N2110:  add
+@N2111:  transfer to storage
+@N2112:  transfer to storage
+@N2113:  transfer to storage
+@N2114:  transfer to storage
+@N2115:  transfer to storage
+@N2116:  add
+@N2117:  transfer to storage
+@N2120:  transfer to storage
+@N2121:  transfer to storage
+@N2122:  transfer to storage
+@N2123:  add
+@N2124:  transfer to storage
+@N2125:  transfer to storage
+@N2126:  transfer to storage
+@N2127:  clear and add
+@N2130:  transfer to storage
+@N2131:  transfer to storage
+@N2132:  transfer to storage
+@N2133:  transfer to storage
+@N2134:  transfer to storage
+@N2135:  transfer to storage
+@N2136:  add
+@N2137:  transfer to storage
+@N2140:  transfer to storage
+@N2141:  transfer to storage
+@N2142:  add
+@N2143:  transfer to storage
+@N2144:  transfer to storage
+@N2145:  transfer to storage
+@N2146:  add
+@N2147:  transfer to storage
+@N2150:  transfer to storage
+@N2151:  transfer to storage
+@N2152:  transfer to storage
+@N2153:  transfer to storage
+@N2154:  transfer to storage
+@N2155:  sub-program
+@N2163:  sub-program
+@N2171:  sub-program
+@N2177:  sub-program
+@N2205:  sub-program
+@N2213:  sub-program
+@N2221:  sub-program
+@N2227:  sub-program
+@N2235:  sub-program
+@N2243:  sub-program
+@N2250:  select I/O: unknown i/o device
+@N2251:  sub-program
+@N2256:  select I/O: unknown i/o device
+@N2257:  sub-program
+@N2260:  transfer address
+@N2261:  transfer address
+@N2262:  clear and add
+@N2263:  transfer to storage
+@N2264:  add one
+@N2265:  clear and add
+@N2266:  transfer to storage
+@N2267:  clear and add
+@N2270:  transfer to storage
+@N2271:  transfer to storage
+@N2272:  add
+@N2273:  transfer to storage
+@N2274:  transfer to storage
+@N2275:  add
+@N2276:  transfer to storage
+@N2277:  transfer to storage
+@N2300:  transfer to storage
+@N2301:  clear and add
+@N2302:  transfer to storage
+@N2303:  transfer to storage
+@N2304:  transfer to storage
+@N2305:  transfer to storage
+@N2306:  add
+@N2307:  transfer to storage
+@N2310:  transfer to storage
+@N2311:  transfer to storage
+@N2312:  transfer to storage
+@N2313:  clear and add
+@N2314:  transfer to storage
+@N2315:  transfer to storage
+@N2316:  transfer to storage
+@N2317:  transfer to storage
+@N2320:  transfer to storage
+@N2321:  transfer to storage
+@N2322:  transfer to storage
+@N2323:  transfer to storage
+@N2324:  sub-program
+@N2325:  clear and add
+@N2326:  transfer to storage
+@N2327:  transfer to storage
+@N2330:  transfer to storage
+@N2331:  transfer to storage
+@N2332:  transfer to storage
+@N2333:  transfer to storage
+@N2334:  transfer to storage
+@N2335:  transfer to storage
+@N2336:  transfer to storage
+@N2337:  transfer to storage
+@N2340:  clear and add
+@N2341:  transfer to storage
+@N2342:  transfer to storage
+@N2343:  transfer to storage
+@N2344:  transfer to storage
+@N2345:  transfer to storage
+@N2346:  transfer to storage
+@N2347:  transfer to storage
+@N2350:  transfer to storage
+@N2351:  transfer to storage
+@N2352:  transfer to storage
+@N2353:  clear and add
+@N2354:  subtract
+@N2355:  conditional program
+@N2356:  subtract
+@N2357:  conditional program
+@N2360:  subtract
+@N2361:  conditional program
+@N2362:  subtract
+@N2363:  conditional program
+@N2364:  subtract
+@N2365:  conditional program
+@N2366:  subtract
+@N2367:  conditional program
+@N2370:  subtract
+@N2371:  conditional program
+@N2372:  subtract
+@N2373:  conditional program
+@N2374:  subtract
+@N2375:  conditional program
+@N2376:  sub-program
+@N2377:  add one
+@N2400:  add one
+@N2401:  add one
+@N2402:  clear and add
+@N2403:  subtract
+@N2404:  conditional program
+@N2405:  clear and add
+@N2406:  transfer to storage
+@N2407:  clear and add
+@N2410:  transfer digits
+@N2411:  add one
+@N2412:  add one
+@N2413:  add one
+@N2414:  clear and add
+@N2415:  subtract
+@N2416:  conditional program
+@N2417:  sub-program
+@N2420:  clear and add
+@N2421:  transfer to storage
+@N2422:  clear and add
+@N2423:  transfer to storage
+@N2424:  clear and add
+@N2425:  transfer digits
+@N2426:  clear and add
+@N2427:  transfer digits
+@N2430:  add one
+@N2431:  clear and add
+@N2432:  subtract
+@N2433:  conditional program
+@N2434:  sub-program
+@N2435:  clear and add
+@N2436:  transfer to storage
+@N2437:  transfer to storage
+@N2440:  transfer to storage
+@N2441:  clear and add
+@N2442:  transfer digits
+@N2443:  clear and add
+@N2444:  transfer digits
+@N2445:  clear and add
+@N2446:  transfer digits
+@N2447:  sub-program
+@N2450:  transfer address
+@N2451:  sub-program
+@N2452:  select I/O: Magnetic Tape
+@N2453:  sub-program
+@N2454:  sub-program
+@N2455:  select I/O: Magnetic Tape
+@N2456:  add one
+@N2457:  sub-program
+@N2460:  clear and add
+@N2461:  conditional program
+@N2462:  subtract
+@N2463:  conditional program
+@N2464:  sub-program
+@N2465:  clear and add
+@N2466:  add
+@N2467:  conditional program
+@N2470:  sub-program
+@N2471:  sub-program
+@N2472:  select I/O: unknown i/o device
+@N2473:  add one
+@N2474:  sub-program
+@N2475:  transfer address
+@N2476:  transfer address
+@N2477:  transfer address
+@N2500:  transfer address
+@N2501:  transfer address
+@N2502:  transfer address
+@N2503:  clear and add
+@N2504:  transfer to storage
+@N2505:  add one
+@N2506:  clear and add
+@N2507:  transfer to storage
+@N2510:  add one
+@N2511:  add one
+@N2512:  clear and add
+@N2513:  transfer to storage
+@N2514:  add one
+@N2515:  add one
+@N2516:  add one
+@N2517:  clear and add
+@N2520:  transfer to storage
+@N2521:  add one
+@N2522:  add one
+@N2523:  add one
+@N2524:  add one
+@N2525:  clear and add
+@N2526:  transfer to storage
+@N2527:  add one
+@N2530:  add one
+@N2531:  add one
+@N2532:  add one
+@N2533:  add one
+@N2534:  clear and add
+@N2535:  select I/O: Display Points
+@N2536:  clear and add
+@N2537:  record
+@N2540:  clear and add magnitude
+@N2541:  subtract
+@N2542:  conditional program
+@N2543:  clear and add magnitude
+@N2544:  subtract
+@N2545:  conditional program
+@N2546:  clear and add magnitude
+@N2547:  subtract
+@N2550:  conditional program
+@N2551:  sub-program
+@N2552:  clear and add
+@N2553:  add
+@N2554:  transfer to storage
+@N2555:  subtract
+@N2556:  conditional program
+@N2557:  sub-program
+@N2560:  clear and add
+@N2561:  add
+@N2562:  transfer to storage
+@N2563:  subtract
+@N2564:  conditional program
+@N2565:  sub-program
+@N2566:  clear and add
+@N2567:  add
+@N2570:  transfer to storage
+@N2571:  clear and add
+@N2572:  add
+@N2573:  transfer to storage
+@N2574:  subtract
+@N2575:  conditional program
+@N2576:  sub-program
+@N2577:  clear and add
+@N2600:  add
+@N2601:  transfer to storage
+@N2602:  clear and add
+@N2603:  subtract
+@N2604:  transfer to storage
+@N2605:  clear and add
+@N2606:  subtract
+@N2607:  conditional program
+@N2610:  sub-program
+@N2611:  sub-program
+@N2612:  sub-program
+@N2615:  sub-program
+@N2620:  sub-program
+@N2623:  sub-program
+@N2626:  sub-program
+@N2631:  sub-program
+@N2634:  sub-program
+@N2637:  sub-program
+@N2642:  sub-program
+@N2645:  sub-program
+@N2650:  sub-program
+@N2651:  select I/O: unknown i/o device
+@N2652:  sub-program
+@N2653:  select I/O: unknown i/o device
+@N2654:  sub-program
+@N2655:  transfer address
+@N2656:  transfer address
+@N2657:  add one
+@N2660:  clear and add
+@N2661:  transfer digits
+@N2662:  transfer digits
+@N2663:  add one
+@N2664:  clear and add
+@N2665:  transfer to storage
+@N2666:  clear and add
+@N2667:  add
+@N2670:  transfer to storage
+@N2671:  add one
+@N2672:  add one
+@N2673:  subtract
+@N2674:  conditional program
+@N2675:  clear and add
+@N2676:  transfer to storage
+@N2677:  sub-program
+@N2700:  clear and add
+@N2701:  subtract
+@N2702:  conditional program
+@N2703:  clear and add
+@N2704:  transfer to storage
+@N2705:  transfer to storage
+@N2706:  transfer to storage
+@N2707:  transfer to storage
+@N2710:  transfer to storage
+@N2711:  transfer to storage
+@N2712:  transfer to storage
+@N2713:  transfer to storage
+@N2714:  transfer to storage
+@N2715:  clear and add
+@N2716:  transfer to storage
+@N2717:  sub-program
+@N2721:  select I/O: unknown i/o device
+@N2722:  select I/O: unknown i/o device
+@N2723:  select I/O: Intervention and Activate Device
+@N2724:  sub-program
+@N2725:  select I/O: unknown i/o device
+@N2726:  clear and add
+@N2727:  transfer to storage
+@N2730:  transfer to storage
+@N2731:  clear and add
+@N2732:  cycle left and clear
+@N2733:  conditional program
+@N2734:  add one
+@N2735:  add one
+@N2736:  subtract
+@N2737:  conditional program
+@N2740:  clear and add
+@N2741:  transfer to storage
+@N2742:  add one
+@N2743:  add one
+@N2744:  add one
+@N2745:  clear and add
+@N2746:  transfer digits
+@N2747:  add one
+@N2750:  subtract
+@N2751:  conditional program
+@N2752:  clear and add
+@N2753:  transfer to storage
+@N2754:  clear and add
+@N2755:  transfer digits
+@N2756:  transfer digits
+@N2757:  clear and add
+@N2760:  transfer digits
+@N2761:  clear and add
+@N2762:  transfer to storage
+@N2763:  clear and add
+@N2764:  add
+@N2765:  transfer to storage
+@N2766:  sub-program
+@N2767:  add one
+@N2770:  sub-program
+@N2771:  sub-program
+@N2773:  select I/O: unknown i/o device
+@N2774:  select I/O: Intervention and Activate Device
+@N2775:  select I/O: Intervention and Activate Device
+@N2776:  sub-program
+@N2777:  select I/O: Intervention and Activate Device
+@N3000:  clear and add
+@N3001:  transfer to storage
+@N3002:  transfer to storage
+@N3003:  transfer to storage
+@N3004:  transfer to storage
+@N3005:  transfer to storage
+@N3006:  transfer to storage
+@N3007:  transfer to storage
+@N3010:  transfer to storage
+@N3011:  transfer to storage
+@N3012:  transfer to storage
+@N3013:  transfer to storage
+@N3014:  transfer to storage
+@N3015:  transfer to storage
+@N3016:  transfer to storage
+@N3017:  transfer to storage
+@N3020:  transfer to storage
+@N3021:  transfer to storage
+@N3022:  transfer to storage
+@N3023:  sub-program
+@N3024:  select I/O: Intervention and Activate Device
+@N3025:  clear and add
+@N3026:  subtract
+@N3027:  conditional program
+@N3030:  clear and add
+@N3031:  subtract
+@N3032:  conditional program
+@N3033:  clear and add
+@N3034:  transfer digits
+@N3035:  add one
+@N3036:  add one
+@N3037:  add one
+@N3040:  subtract
+@N3041:  conditional program
+@N3042:  clear and add
+@N3043:  transfer to storage
+@N3044:  clear and add
+@N3045:  transfer digits
+@N3046:  clear and add
+@N3047:  clear and add
+@N3050:  transfer digits
+@N3051:  clear and add
+@N3052:  subtract
+@N3053:  add
+@N3054:  transfer to storage
+@N3055:  clear and add
+@N3056:  transfer digits
+@N3057:  clear and subtract
+@N3060:  add
+@N3061:  transfer to storage
+@N3062:  sub-program
+@N3064:  clear and add
+@N3065:  subtract
+@N3066:  conditional program
+@N3067:  clear and add
+@N3070:  transfer to storage
+@N3071:  clear and add
+@N3072:  transfer digits
+@N3073:  transfer digits
+@N3074:  clear and add
+@N3075:  conditional program
+@N3076:  add
+@N3077:  transfer to storage
+@N3100:  add one
+@N3101:  add one
+@N3102:  subtract
+@N3103:  conditional program
+@N3104:  clear and add
+@N3105:  transfer digits
+@N3106:  clear and add
+@N3107:  transfer to storage
+@N3110:  add one
+@N3111:  add one
+@N3112:  add one
+@N3113:  sub-program
+@N3114:  clear and add
+@N3115:  transfer digits
+@N3116:  transfer digits
+@N3117:  add
+@N3120:  transfer digits
+@N3121:  clear and add
+@N3122:  transfer digits
+@N3123:  clear and add
+@N3124:  transfer to storage
+@N3125:  clear and add
+@N3126:  conditional program
+@N3127:  add one
+@N3130:  add one
+@N3131:  add one
+@N3132:  subtract
+@N3133:  conditional program
+@N3134:  clear and add
+@N3135:  transfer to storage
+@N3136:  clear and add
+@N3137:  transfer digits
+@N3140:  transfer digits
+@N3141:  sub-program
+@N3142:  subtract
+@N3143:  transfer to storage
+@N3144:  sub-program
+@N3145:  clear and add
+@N3146:  transfer to storage
+@N3147:  clear and add
+@N3150:  subtract
+@N3151:  add
+@N3152:  transfer to storage
+@N3153:  clear and subtract
+@N3154:  add
+@N3155:  transfer to storage
+@N3156:  sub-program
+@N3160:  add one
+@N3161:  add one
+@N3162:  clear and add
+@N3163:  transfer digits
+@N3164:  clear and add
+@N3165:  subtract
+@N3166:  conditional program
+@N3167:  sub-program
+@N3170:  clear and add
+@N3171:  transfer digits
+@N3172:  clear and add
+@N3173:  transfer digits
+@N3174:  clear and add
+@N3175:  transfer digits
+@N3176:  clear and add
+@N3177:  subtract
+@N3200:  conditional program
+@N3201:  sub-program
+@N3202:  sub-program
+@N3203:  select I/O: unknown i/o device
+@N3204:  add one
+@N3205:  add one
+@N3206:  clear and add
+@N3207:  transfer digits
+@N3210:  clear and add
+@N3211:  subtract
+@N3212:  conditional program
+@N3213:  sub-program
+@N3214:  clear and add
+@N3215:  clear and add
+@N3216:  transfer digits
+@N3217:  add one
+@N3220:  clear and add
+@N3221:  transfer digits
+@N3222:  clear and add
+@N3223:  transfer digits
+@N3224:  clear and subtract
+@N3225:  add
+@N3226:  transfer to storage
+@N3227:  clear and add
+@N3230:  transfer digits
+@N3231:  clear and add
+@N3232:  subtract
+@N3233:  add
+@N3234:  transfer to storage
+@N3235:  sub-program
+@N3237:  clear and add
+@N3240:  clear and add
+@N3241:  transfer digits
+@N3242:  clear and add
+@N3243:  subtract
+@N3244:  transfer to storage
+@N3245:  sub-program
+@N3246:  clear and add
+@N3247:  clear and add
+@N3250:  transfer digits
+@N3251:  clear and add
+@N3252:  clear and add
+@N3253:  transfer digits
+@N3254:  add one
+@N3255:  clear and add
+@N3256:  transfer digits
+@N3257:  clear and add
+@N3260:  transfer digits
+@N3261:  clear and subtract
+@N3262:  add
+@N3263:  transfer to storage
+@N3264:  clear and add
+@N3265:  transfer digits
+@N3266:  clear and add
+@N3267:  subtract
+@N3270:  add
+@N3271:  transfer to storage
+@N3272:  sub-program
+@N3274:  clear and add
+@N3275:  transfer digits
+@N3276:  clear and add
+@N3277:  transfer digits
+@N3300:  clear and add
+@N3301:  subtract
+@N3302:  transfer to storage
+@N3303:  sub-program
+@N3304:  clear and add
+@N3305:  transfer digits
+@N3306:  clear and add
+@N3307:  transfer digits
+@N3310:  clear and add
+@N3311:  subtract
+@N3312:  conditional program
+@N3313:  sub-program
+@N3314:  clear and add
+@N3315:  subtract
+@N3316:  transfer to storage
+@N3317:  add one
+@N3320:  add one
+@N3321:  add one
+@N3322:  add one
+@N3323:  add one
+@N3324:  subtract
+@N3325:  conditional program
+@N3326:  clear and add
+@N3327:  transfer to storage
+@N3330:  clear and add
+@N3331:  transfer digits
+@N3332:  transfer digits
+@N3333:  clear and add
+@N3334:  transfer digits
+@N3335:  transfer digits
+@N3336:  clear and add
+@N3337:  transfer to storage
+@N3340:  transfer to storage
+@N3341:  transfer to storage
+@N3342:  transfer to storage
+@N3343:  transfer to storage
+@N3344:  transfer to storage
+@N3345:  transfer to storage
+@N3346:  transfer to storage
+@N3347:  sub-program
+@N3350:  select I/O: unknown i/o device
+@N3351:  clear and add
+@N3352:  subtract
+@N3353:  conditional program
+@N3354:  sub-program
+@N3355:  transfer address
+@N3356:  transfer address
+@N3357:  add one
+@N3360:  clear and add
+@N3361:  add
+@N3362:  transfer digits
+@N3363:  clear and add
+@N3364:  cycle left and clear
+@N3365:  conditional program
+@N3366:  add one
+@N3367:  add one
+@N3370:  add one
+@N3371:  subtract
+@N3372:  conditional program
+@N3373:  clear and add
+@N3374:  transfer to storage
+@N3375:  clear and add
+@N3376:  transfer digits
+@N3377:  transfer digits
+@N3400:  sub-program
+@N3401:  clear and add
+@N3402:  conditional program
+@N3403:  clear and add
+@N3404:  transfer digits
+@N3405:  add one
+@N3406:  add one
+@N3407:  conditional program
+@N3410:  sub-program
+@N3411:  transfer address
+@N3412:  transfer address
+@N3413:  add one
+@N3414:  clear and add
+@N3415:  add
+@N3416:  transfer digits
+@N3417:  clear and add
+@N3420:  transfer digits
+@N3421:  clear and add
+@N3422:  cycle left and clear
+@N3423:  conditional program
+@N3424:  sub-program
+@N3425:  add one
+@N3426:  add one
+@N3427:  clear and add
+@N3430:  conditional program
+@N3431:  clear and add
+@N3432:  transfer digits
+@N3433:  clear and add
+@N3434:  transfer to storage
+@N3435:  sub-program
+@N3436:  clear and add
+@N3437:  transfer digits
+@N3440:  add one
+@N3441:  sub-program
+@N3442:  sub-program
+@N3443:  clear and add
+@N3444:  transfer digits
+@N3445:  clear and subtract
+@N3446:  add
+@N3447:  add
+@N3450:  transfer digits
+@N3451:  clear and add
+@N3452:  shift left and hold
+@N3453:  shift right and roundoff
+@N3454:  transfer to storage
+@N3455:  clear and add
+@N3456:  transfer digits
+@N3457:  transfer digits
+@N3460:  clear and add
+@N3461:  subtract
+@N3462:  transfer to storage
+@N3463:  clear and add
+@N3464:  subtract
+@N3465:  add
+@N3466:  transfer digits
+@N3467:  transfer digits
+@N3470:  clear and add
+@N3471:  add
+@N3472:  transfer to storage
+@N3473:  clear and add
+@N3474:  transfer to storage
+@N3475:  sub-program
+@N3476:  clear and add
+@N3477:  transfer digits
+@N3500:  clear and subtract
+@N3501:  add
+@N3502:  add
+@N3503:  transfer digits
+@N3504:  clear and add
+@N3505:  shift left and hold
+@N3506:  shift right and roundoff
+@N3507:  transfer to storage
+@N3510:  clear and add
+@N3511:  transfer digits
+@N3512:  transfer digits
+@N3513:  clear and add
+@N3514:  add
+@N3515:  transfer to storage
+@N3516:  clear and add
+@N3517:  subtract
+@N3520:  add
+@N3521:  transfer digits
+@N3522:  transfer digits
+@N3523:  clear and add
+@N3524:  subtract
+@N3525:  transfer to storage
+@N3526:  clear and add
+@N3527:  transfer to storage
+@N3530:  sub-program
+@N3531:  clear and add
+@N3532:  subtract
+@N3533:  conditional program
+@N3534:  subtract
+@N3535:  transfer to storage
+@N3536:  sub-program
+@N3537:  add one
+@N3540:  add one
+@N3541:  add one
+@N3542:  subtract
+@N3543:  conditional program
+@N3544:  clear and add
+@N3545:  transfer to storage
+@N3546:  clear and add
+@N3547:  transfer digits
+@N3550:  transfer digits
+@N3551:  sub-program
+@N3552:  transfer address
+@N3553:  transfer address
+@N3554:  add one
+@N3555:  clear and add
+@N3556:  transfer to storage
+@N3557:  clear and add
+@N3560:  transfer digits
+@N3561:  transfer digits
+@N3562:  clear and add
+@N3563:  subtract
+@N3564:  conditional program
+@N3565:  add one
+@N3566:  add one
+@N3567:  add one
+@N3570:  subtract
+@N3571:  conditional program
+@N3572:  clear and add
+@N3573:  transfer to storage
+@N3574:  sub-program
+@N3575:  clear and add
+@N3576:  transfer to storage
+@N3577:  sub-program

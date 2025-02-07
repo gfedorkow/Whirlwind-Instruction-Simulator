@@ -4,16 +4,9 @@
 ; Diagnostic test for Whirlwind CRT emulation
 ; g fedorkow, dec 13, 2023
 
-; Bug fix: Jan 2, 2025:  [guy] The asm used to start packing instructions at address zero by
-;  default; I changed that to the conventional 0o40 a while back, but forgot to update
-;  this code to get the default labels Zero and One located correctly.
-; The simulator sets addresses zero and one to zero and one by default, in line with WW
-;  convention, so these two definitions in the ASM serve only as documentation (or sources
-;  of bugs when mis-used!)
-
-          .org 0    ; added Jan 2, 2025
-zero:     .word 0
-one:      .word 1
+        .org 0o0
+zero:   .word 0
+one:    .word 1
 
 
           .org 0o40
@@ -29,12 +22,12 @@ main_loop:
 
 
 
-          .pp MAX_POS_COORD=0o076040  ; should be 0o077740 to go right to the edge
-          .pp MAX_NEG_COORD=0o101737
-          .pp MAX_POS_X_DELTA=0o076000
-          .pp MAX_NEG_X_DELTA=0o101000
-          .pp MAX_POS_Y_DELTA=0o000174
-          .pp MAX_NEG_Y_DELTA=0o000200
+          .pp MAX_POS_COORD, 0o076040  ; should be 0o077740 to go right to the edge
+          .pp MAX_NEG_COORD, 0o101737
+          .pp MAX_POS_X_DELTA, 0o076000
+          .pp MAX_NEG_X_DELTA, 0o101000
+          .pp MAX_POS_Y_DELTA, 0o000174
+          .pp MAX_NEG_Y_DELTA, 0o000200
 
 max_pos_coord: .word MAX_POS_COORD       ; maximum deflection for X or Y coords
 max_neg_coord: .word MAX_NEG_COORD       ; maximum deflection for X or Y coords
@@ -162,7 +155,7 @@ corner_display_list:
 
 
 ;  cdl_len:  .word  0o177767 ; (corner_display_list - cdl_len)/3  ; compute negative of table length by subtracting start from finish
-cdl_len:  .word  corner_display_list - cdl_len / 3  ; compute negative of table length by subtracting start from finish
+cdl_len:  .word  (corner_display_list - cdl_len) / 3  ; compute negative of table length by subtracting start from finish
 
 ;;;;;;;;;;;;;  Multi-Segment Test ;;;;;;;;;;;
 ; This test draws a series of horizontal, max-length vectors across the screen, each offset upwards by a small amount,
@@ -337,13 +330,13 @@ char_seg_tab: .word 0o040000
 
 
 ; light segments corresponding to the digits 0 - 9
-          .pp B1=0o40000
-          .pp B2=0o20000
-          .pp B3=0o10000
-          .pp B4=0o04000
-          .pp B5=0o02000
-          .pp B6=0o01000
-          .pp B7=0o00400
+          .pp B1, 0o40000
+          .pp B2, 0o20000
+          .pp B3, 0o10000
+          .pp B4, 0o04000
+          .pp B5, 0o02000
+          .pp B6, 0o01000
+          .pp B7, 0o00400
           
 char_tab: .word B1 | B2 | B3 | B5 | B6 | B7       ; Zero
           .word B3 | B7                           ; One

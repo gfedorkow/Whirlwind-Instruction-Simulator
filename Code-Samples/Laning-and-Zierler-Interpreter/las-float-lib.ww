@@ -4,16 +4,19 @@
              ;  hi word      lo word
              ;  1   15       1  6      9
              ;  s frac-hi    s exp  frac-lo
-			 ;
-			 ;  frac is a signed 25-bit (including sign) one's-complement representation
-			 ;  exp is a signed 7-bit (including sign) one's-complement representation
 
-			 ; This first section is a test area and should not interfere with anything including the lib if there are no name conflicts.
-			 ;
-			 ; Note we don't set .org since this file can be included in others
+             ;  frac is a signed 25-bit (including sign) one's-complement representation
+             ;  exp is a signed 7-bit (including sign) one's-complement representation
+
+             ; This first section is a test area and should not interfere with anything including the lib if there are no name conflicts.
+
+             ; Note we don't set .org since this file can be included in others
 
              .pp main_sep_param, 1
 
+             sp notes
+
+      notes:
              sp ax
              ca a220
              ts t
@@ -31,19 +34,49 @@
              .print "xxxxxxxxxxxx %d %fl", loopcnt, t
              sp loop
        done:
+             sp exit
+
+      sqrt2:
+             sp ax
+             ca float1
+             ts t
+             sp ax
+      sloop:
+             ca sloopcnt
+             su one
+             ts sloopcnt
+             cp sdone
+             sp ax
+             ca float2
+             dv t
+             ad t
+             dv float2
+             ts t
+             sp ax
+             .print "xxxxxxxxxxxx %d %fl", sloopcnt, t
+ 			 ca 0
+             .print "------------ %fm", mra
+             sp sloop
+   sloopcnt: .word 10
+      sdone:
+             sp exit
+
+       test:
              ca 0
-             ;            .print "02 %o %o %o %o %o %o %o %o", u, u+1, v, v+1, z, z+1, t, t+1
-
-
-;			  sp ax
-;			  ca float1
-;			  dv z
-;			  ts t
-;			  sp ax
-;			  .print "%fl", t
+             ; .print "02 %o %o %o %o %o %o %o %o", u, u+1, v, v+1, z, z+1, t, t+1
+             sp ax
+             cs v
+             dv u
+             ts t
+			 cs t
+			 ts t
+             sp ax
+             .print "xxxxxxx  %fl %fm", t, mra
+             ca 0
+       exit:
              si 0
-          x: .float +0.5,0
-          y: .float +0.25,0
+          x: .float +0.5, 0
+          y: .float +0.25, 0
           z: .float +0.1416595, 1     ; This value breaks dv when divided into float1
           t: .float 0, 0
           u: .float +0.3141593, 1
@@ -54,6 +87,7 @@
    semitone: .float +0.1059463094, 1
     loopcnt: .word 25
         one: .word 1
+       zero: .word 0
 
      float0: .float 0, 0
    float1_2: .float +0.5, 0
@@ -63,6 +97,17 @@
  float_neg1:
              .word 0o137777
              .word 0o001777
+        max: .word 0o037777
+
+  floathack: ta fhrtn
+             ts ac_save
+             ca ac_save
+             ;				   su r17
+             .print "floathack %ao"
+			 ad max
+      fhrtn: sp 0
+    ac_save: .word 0
+
 
              ; --- Below here is the floating lib ---
              ; -------------------------------------------------------------
@@ -92,10 +137,10 @@
 
              ; words r02, r03, and r04 represent the double precision accumulator
         mra:
-		2ax:
+        2ax:
         r02: .word 0                  ; x1  -|
         r03: .word 0                  ; x1'  |- Multiple register accumulator
-		4ax:                          ;      |
+        4ax:                          ;      |
         r04: .word 0                  ; y1  -|
         r05: srh 30                   ; "ca"                                             ; from 196r-->
         r06: ca ax
@@ -141,15 +186,20 @@
         r35: slh 15                   ;  |
              ts r151                  ; -|                                               ; [LAS was transcription error ta r151]
 
-             ca r72                   ; -| ; [LAS this sequence does not seem to store this formula, instead stores 2**-2/x2]
+             ca r72                   ; -|                                               ; [LAS this sequence does not seem to store this formula, instead stores 2**-2/x2]
              dv r97                   ;  |- Form and store 2**-2/x2**2
              slh 15                   ;  |
              ts tmp                   ; -|
 
              mh r97                   ; -|
              su r72                   ;  |
+             .print "xxx 11 %ao %bo"
              slh 15                   ;  |
-             su r17                   ;  |- Form (2**-2/x**2)' (Use Euclid's algorithm)
+             .print "10 %ao %bo"
+                                      ;             su r17                               ;  |- Form (2**-2/x**2)' (Use Euclid's algorithm)  ; [LAS Looks like this should say (2**-2/x2)' -- Uses remainder arith, hence the Euclid
+                                      ;  |                                               ; ref, but broken. The use of r17 is highly suspicious, as it's the opcode of an instruction.]
+             sp floathack
+
              ad r50                   ;  |
              dv r97                   ;  |
              slh 15                   ; -|
@@ -289,13 +339,13 @@
 
              srh 15                   ; -|
              ad tmp                   ;  |
-       r151: .word 0                  ;  |- Form and store (x2 + x2' * 2**-15) * 2**(-1 - |y2 - y1|) ; (146r)
-             ts tmp                   ;  |
+       r151: .word 0                  ;  |- Form and store                               ; (146r)
+             ts tmp                   ;  |  (x2 + x2' * 2**-15) * 2**(-1 - |y2 - y1|)
              slh 15                   ;  |
              ex r03                   ; -|
 
              srh 15                   ; -|
-             ad r02                   ;  |-    Form x1 + x1' * 2**-15) * 2**-l
+             ad r02                   ;  |-    Form (x1 + x1' * 2**-15) * 2**-l
              srh 1                    ; -|
 
        r158: ts r02                   ; Store x1                                         ;  20r->
@@ -324,7 +374,7 @@
        r177: ts r04                   ; -|                                               ; 108r->
 
   next_inst: ao exec_inst             ; increase address                                 ; [LAS was transcription error ao r197]
-             .print "9 %o %o %o", r02, r03, r04
+             .print "mra intermediate------- %fm", mra
   exec_inst: ca 0                     ; Pick up next instruction
 
              ts r97                   ; -|
@@ -346,11 +396,14 @@
              slh 15                   ; -|
              .print "3 dis=%o tmp=x2=%o r102=y2=%o AC=x2'=0o%ao r02=x1=%o r03=x1'=%o r04=y1=%o", dispatch, tmp, r102, r02, r03, r04
    dispatch: .word 0                  ; Go to part of I.S. for particular instruction    ; (188r)
-  sep_param: .word main_sep_param     ; Separation parameter                             ; what's this?? pe x2 ??
-        tmp: .word 0                  ; Temporary storage
+   r197:
+  sep_param: .word main_sep_param     ; Separation parameter                             ; [LAS There is a note in Subroutines.pdf pdf-page 25 that says r197 is "pax2"
+  r198:
+  	tmp: .word 0                  ; Temporary storage
 
        r199: ad r50                   ;                                                  ; from 70r-->
              cp exec_inst             ; Does address equal ax?
+             .print "mra result------- %fm", mra			 
        r201: sp 0                     ; Return to register following sp ax               ; (66r)
 
        r202: ca r108                  ; -|- Produce overflow alarm                       ; from 90r

@@ -52,9 +52,7 @@ TTYoutput = []
 Debug = False
 # Jan 2, 2025 -- I've added this knob to revert to "standard" shift instruction behavior; take this all out once
 # the Shift Mystery is resolved!
-# LnZ = False
-
-LnZ = True
+LnZ = False
 
 flowgraph = None
 
@@ -259,6 +257,7 @@ class CpuClass:
 
         # putting this stuff here seems pretty darn hacky
         self.SymTab = {}
+        self.SymToAddr = {}
         self.ExecTab = {}   # this table is for holding Python Exec statements interleaved with the WW code.
         self.CommentTab = [None] * 2048
 
@@ -317,8 +316,25 @@ class CpuClass:
             exp_int = exp_bits
         exp_int -= 24
         r: float = float (frac_int * 2**exp_int)
-        print ("LAS42 0o%o 0o%o 0o%o 0o%o %d %f %f" % (hi_word, lo_word, frac_bits, frac_int, exp_int, 2**exp_int, r))
         return r
+
+    # This differs from the above 24,6 converter in that the mra (multiple
+    # register accumulator) uses 3 16-bits words, called x, x_prime (for the
+    # two-word mantissa) and y (for the exponent). This naming comes from the
+    # float lib. It is thus a (30,15,0) float rep.
+    #
+    # From the code it looks like both words of the mantissa are signed (hence
+    # it's not 31,15). It also looks like the numbers are not normalized until
+    # storage into 24,6 format.
+    #
+    # It appears we can do this using no bit twiddling and standard converters. 
+    
+    def ww_mra_float_to_py (self, ww_x: int, ww_x_prime: int, ww_y: int) -> float:
+        (x, s) = self.wwint_to_py (ww_x)
+        (x_prime, s) = self.wwint_to_py (ww_x_prime)
+        (y, s) = self.wwint_to_py (ww_y)
+        v = ((2**-15)*(x + (2**-15)*x_prime))*2**y
+        return v
 
     # convert an address to a string, adding a label from the symbol table if there is one
     # "Label_Only" causes the routine to check the symbol table, and if there's a label, it returns
@@ -511,7 +527,6 @@ class CpuClass:
             elif fmt == "%fl":
                 # A 24,6 float. Return a host float
                 addr = self.rl (argList.pop(0))
-                print ("LAS57 0o%o" % addr)
                 register_hi = self.cm.rd (addr)
                 register_lo = self.cm.rd (addr + 1)
                 r: float = self.ww_24_6_float_to_py (register_hi, register_lo)
@@ -522,6 +537,14 @@ class CpuClass:
                 register = self.cm.rd (addr)
                 py_int, sign = self.wwint_to_py (register)
                 r: float = float(py_int)*2**-15
+                output_str += "%f" % r
+            elif fmt == "%fm":
+                # MRA, the floating acc: 3 words. Return a host float.
+                addr = self.rl (argList.pop(0))
+                ww_x = self.cm.rd (addr)
+                ww_x_prime = self.cm.rd (addr + 1)
+                ww_y = self.cm.rd (addr + 2)
+                r = self.ww_mra_float_to_py (ww_x, ww_x_prime, ww_y)
                 output_str += "%f" % r
             else:
                 output_str += fmt
@@ -1431,8 +1454,6 @@ class CpuClass:
         negative = (a & self.cb.WWBIT0)  # sign bit == 1 means Negative
         if negative:  # sign bit == 1 means Negative, so we turn it positive
             a = self.ww_negate(a)
-            # LAS
-            b = self.ww_negate(b)
 
         n = 0
         for n in range(0,32):
@@ -1443,9 +1464,7 @@ class CpuClass:
         if negative:
             a = self.ww_negate(a)
             # leave the B Register "positive"
-            # LAS
-            b = self.ww_negate(b)
-
+        
         mask = self.cb.WW_ADDR_MASK
         # I can't[couldn't!] believe sf could do useful work on uninitialized storage
         # Turns out fb131-97-56 does exactly this; I assume it's because the instruction
@@ -1823,7 +1842,7 @@ def main_run_sim(args, cb):
         core_dump_file_name = args.DumpCoreToFile
 
     if args.RestoreCoreFromFile:
-        (a, b, c, d, dbwgt) = CoreMem.read_core(args.RestoreCoreFromFile, cpu, cb)
+        (a, b, c, d, e, dbwgt) = CoreMem.read_core(args.RestoreCoreFromFile, cpu, cb)
     if args.DrumStateFile:
         cpu.drum.restore_drum_state(args.DrumStateFile)
 
@@ -1834,7 +1853,7 @@ def main_run_sim(args, cb):
         CycleDelayTime = ns.instruction_cycle_delay
         cb.crt_fade_delay_param = ns.crt_fade_delay
 
-    (cpu.SymTab, JumpTo, WWfile, WWtapeID, dbwgt_list) = \
+    (cpu.SymTab, cpu.SymToAddrTab, JumpTo, WWfile, WWtapeID, dbwgt_list) = \
         CoreMem.read_core(cb.CoreFileName, cpu, cb)
     cpu.set_isa(CoreMem.metadata["isa"])
     if cpu.isa_1950 == False and args.Radar:

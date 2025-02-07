@@ -1,358 +1,351 @@
 
 
 
-                        ; Diagnostic test for Whirlwind CRT emulation
-                        ; g fedorkow, dec 13, 2023
-
-                        ; Bug fix: Jan 2, 2025:  [guy] The asm used to start packing instructions at address zero by
-                        ; default; I changed that to the conventional 0o40 a while back, but forgot to update
-                        ; this code to get the default labels Zero and One located correctly.
-                        ; The simulator sets addresses zero and one to zero and one by default, in line with WW
-                        ; convention, so these two definitions in the ASM serve only as documentation (or sources
-                        ; of bugs when mis-used!)
-
-                        .org 0         ; added Jan 2, 2025 
-@0000:000000      zero: .word 0         ;  @@JumpedToBy cd_ret cl_ret ms_ret si_ret lg_ret cg_ret ReadBy cl_index_y cl_index_x a0175 a0314 
-@0001:000001       one: .word 1         ;  @@ReadBy a0106 a0110 a0264 
-
-
-                        .org 0o40      ;  
-@0040:074041      main: sp   main_loop  ;  
-
-@0041:0       main_loop:                ;  
-@0041:074057            sp   corner_dots  ;  @@JumpedToBy main a0046 
-@0042:074101            sp   corner_lines  ;  
-@0043:074170            sp   multi_segments  ;  
-@0044:074312            sp   char_gen_test  ;  
-@0045:074231            sp   scope_identify  ;  
-@0046:074041            sp   main_loop  ;  
-
-
-
-@76040:0                 .pp  MAX_POS_COORD=0o076040  ; should be 0o077740 to go right to the edge 
-@101737:0                 .pp  MAX_NEG_COORD=0o101737  ;  
-@76000:0                 .pp  MAX_POS_X_DELTA=0o076000  ;  
-@101000:0                 .pp  MAX_NEG_X_DELTA=0o101000  ;  
-@0174:0                 .pp  MAX_POS_Y_DELTA=0o000174  ;  
-@0200:0                 .pp  MAX_NEG_Y_DELTA=0o000200  ;  
-
-@0047:076040  max_pos_coord: .word MAX_POS_COORD  ; maximum deflection for X or Y coords @@ReadBy a0060 a0062 a0070 a0076 
-@0050:101737  max_neg_coord: .word MAX_NEG_COORD  ; maximum deflection for X or Y coords @@ReadBy a0064 a0066 a0072 a0074 
-@0051:076000  max_pos_x_delta: .word MAX_POS_X_DELTA  ;  
-@0052:101000  max_neg_x_delta: .word MAX_NEG_X_DELTA  ;  
-@0053:000174  max_pos_y_delta: .word MAX_POS_Y_DELTA  ;  
-@0054:000200  max_neg_y_delta: .word MAX_NEG_Y_DELTA  ;  
-
-                        ; constants
-@0055:000002        c2: .word 2         ;  @@ReadBy a0273 
-@0056:000003        c3: .word 3         ;  @@ReadBy a0115 a0122 a0125 
-
-
-
-@0057:0       corner_dots:                ;  
-@0057:050100            ta   cd_ret    ;  @@JumpedToBy a0041 
-
-@0060:100047            ca   max_pos_coord  ; pick up Y value 
-@0061:000677            si   0o677     ; select all the scopes; set Y value from the AC 
-@0062:100047            ca   max_pos_coord  ; pick up X value 
-@0063:024000            rc   0         ; draw the point using X val from AC 
-
-@0064:100050            ca   max_neg_coord  ; pick up Y value 
-@0065:000677            si   0o677     ; select all the scopes; set Y value from the AC 
-@0066:100050            ca   max_neg_coord  ; pick up X value 
-@0067:024000            rc   0         ; draw the point using X val from AC 
-
-@0070:100047            ca   max_pos_coord  ; pick up Y value 
-@0071:000677            si   0o677     ; select all the scopes; set Y value from the AC 
-@0072:100050            ca   max_neg_coord  ; pick up X value 
-@0073:024000            rc   0         ; draw the point using X val from AC 
-
-@0074:100050            ca   max_neg_coord  ; pick up Y value 
-@0075:000677            si   0o677     ; select all the scopes; set Y value from the AC 
-@0076:100047            ca   max_pos_coord  ; pick up X value 
-@0077:024000            rc   0         ; draw the point using X val from AC 
-
-@0100:074000    cd_ret: sp   0         ;  @@WrittenBy a0057 
-
-
-                        ; draw a list of vectors from corner_list_ptr
-                        ; The list gives two vectors in each corner, plus a diagonal only in the top left
-@0101:0       corner_lines:                ;  
-@0101:050131            ta   cl_ret    ;  @@JumpedToBy a0042 
-@0102:100167            ca   cdl_len   ;  
-@0103:040132            ts   cl_count  ;  
-@0104:100133            ca   corner_list_ptr  ;  
-@0105:044117            td   cl_index_x  ;  
-@0106:110001            ad   one       ; add one to the address 
-@0107:044112            td   cl_index_y  ;  
-@0110:110001            ad   one       ; add one to the address 
-@0111:044120            td   cl_index_d  ;  
-
-@0112:100000  cl_index_y: ca   0         ;  @@JumpedToBy a0130 WrittenBy a0107 a0116 ReadBy a0114 
-@0113:001677            si   0o1677    ; select all the scopes; set Y value from the AC 
-@0114:100112            ca   cl_index_y  ;  
-@0115:110056            ad   c3        ;  
-@0116:044112            td   cl_index_y  ;  
-@0117:100000  cl_index_x: ca   0         ; put the X value in AC @@WrittenBy a0105 a0126 ReadBy a0124 
-@0120:024000  cl_index_d: rc   0         ; pick up the Delta vector @@WrittenBy a0111 a0123 ReadBy a0121 
-
-@0121:100120            ca   cl_index_d  ; move pointer to next delta 
-@0122:110056            ad   c3        ;  
-@0123:040120            ts   cl_index_d  ;  
-
-@0124:100117            ca   cl_index_x  ; move pointer to next X value 
-@0125:110056            ad   c3        ;  
-@0126:044117            td   cl_index_x  ;  
-
-@0127:130132            ao   cl_count  ;  
-@0130:070112            cp   cl_index_y  ;  
-
-@0131:074000    cl_ret: sp   0         ;  @@WrittenBy a0101 
-                        ; local variable
-@0132:000000  cl_count: .word 0         ;  @@WrittenBy a0103 a0127 ReadBy a0127 
-
-
-                        ; ;;;;;;;;  Corner Vector Test ;;;;;;;;;;;;
-                        ; This test draws short vectors in each of the four corners of the screen, with an extra
-                        ; diagnoal to mark the top left corner.
-                        ; The test is based on a list of display segments, expressed as native Whirlwind 'short' vectors.
-                        ; WW can draw lines using a full-resolution X & Y starting point, and then a DX and DY
-                        ; offset to define the end point.
-                        ; In this table, coordinates are given in the same units as the actual display command.
-                        ; The screen coords in pixels are shifted to the top part of a 16-bit word.
-                        ; The Delta offsets are shorter fields, stored in two eigh-bit halves of one word.  The native
-                        ; vector instruction is +/- 32 units, where each unit is four screen pixels (I think!!).
-@0133:000134  corner_list_ptr: .word corner_display_list  ;  @@ReadBy a0104 
-@0134:0       corner_display_list:                ;  
-@0134:101737            .word MAX_NEG_COORD  ; X coord  ; top left corner 
-@0135:076040            .word MAX_POS_COORD  ; Y coord 
-@0136:076200            .word MAX_NEG_Y_DELTA | MAX_POS_X_DELTA  ; Y-/X+ diagonal line 
-
-@0137:101737            .word MAX_NEG_COORD  ; X coord  ; top left corner 
-@0140:076040            .word MAX_POS_COORD  ; Y coord 
-@0141:000200            .word MAX_NEG_Y_DELTA  ; Y- downward line 
-
-@0142:101737            .word MAX_NEG_COORD  ; X coord  ; top left corner 
-@0143:076040            .word MAX_POS_COORD  ; Y coord 
-@0144:076000            .word MAX_POS_X_DELTA  ; X+ rightward line 
-
-@0145:076040            .word MAX_POS_COORD  ; X coord  ; top right corner 
-@0146:076040            .word MAX_POS_COORD  ; Y coord 
-@0147:000200            .word MAX_NEG_Y_DELTA  ; Y- downward line 
-
-@0150:076040            .word MAX_POS_COORD  ; X coord  ; top right corner 
-@0151:076040            .word MAX_POS_COORD  ; Y coord 
-@0152:101000            .word MAX_NEG_X_DELTA  ; X+ leftward line 
-
-@0153:076040            .word MAX_POS_COORD  ; X coord  ; Bottom right corner 
-@0154:101737            .word MAX_NEG_COORD  ; Y coord 
-@0155:000174            .word MAX_POS_Y_DELTA  ; Y+ downward line 
-
-@0156:076040            .word MAX_POS_COORD  ; X coord  ; bottom right corner 
-@0157:101737            .word MAX_NEG_COORD  ; Y coord 
-@0160:101000            .word MAX_NEG_X_DELTA  ; X- leftward line 
-
-@0161:101737            .word MAX_NEG_COORD  ; X coord  ; Bottom left corner 
-@0162:101737            .word MAX_NEG_COORD  ; Y coord 
-@0163:000174            .word MAX_POS_Y_DELTA  ; Y+ upward line 
-
-@0164:101737            .word MAX_NEG_COORD  ; X coord  ; bottom left corner 
-@0165:101737            .word MAX_NEG_COORD  ; Y coord 
-@0166:076000            .word MAX_POS_X_DELTA  ; X+ uptward line 
-
-
-                        ; cdl_len:  .word  0o177767 ; (corner_display_list - cdl_len)/3  ; compute negative of table length by subtracting start from finish
-@0167:177767   cdl_len: .word corner_display_list - cdl_len / 3  ; compute negative of table length by subtracting start from finish @@ReadBy a0102 
-
-                        ; ;;;;;;;;;;;;  Multi-Segment Test ;;;;;;;;;;;
-                        ; This test draws a series of horizontal, max-length vectors across the screen, each offset upwards by a small amount,
-                        ; to get a stair-step pattern.
-@0170:0       multi_segments:                ;  
-@0170:050220            ta   ms_ret    ;  @@JumpedToBy a0043 
-@0171:100223            ca   ms_x_start  ;  
-@0172:040227            ts   ms_x      ;  
-@0173:100224            ca   ms_y_start  ;  
-@0174:040230            ts   ms_y      ;  
-@0175:100000            ca   0         ;  
-@0176:114221            su   ms_segs   ;  
-@0177:040222            ts   ms_count  ;  
-
-@0200:0        ms_loop:                ;  
-                        ; draw a dot at the beginning of each segment
-@0200:100230            ca   ms_y      ; pick up Y value @@JumpedToBy a0217 
-@0201:000677            si   0o677     ; select all the scopes; set Y value from the AC 
-@0202:100227            ca   ms_x      ; pick up X value 
-@0203:024000            rc   0         ; draw the point using X val from AC 
-
-@0204:100230            ca   ms_y      ; pick up Y value 
-@0205:001677            si   0o1677    ; select all the scopes; set Y value from the AC 
-@0206:100227            ca   ms_x      ; pick up X value 
-@0207:024051            rc   max_pos_x_delta  ; draw the line using X val from AC 
-
-@0210:100230            ca   ms_y      ; pick up Y value 
-@0211:110226            ad   ms_y_delta  ;  
-@0212:040230            ts   ms_y      ;  
-@0213:100227            ca   ms_x      ; pick up X value 
-@0214:110225            ad   ms_x_delta  ;  
-@0215:040227            ts   ms_x      ;  
-
-@0216:130222            ao   ms_count  ;  
-@0217:070200            cp   ms_loop   ;  
-
-@0220:074000    ms_ret: sp   0         ;  @@WrittenBy a0170 
-
-@0221:000016   ms_segs: .word 14        ; draws fifteen segments @@ReadBy a0176 
-@0222:000000  ms_count: .word 0         ;  @@WrittenBy a0177 a0216 ReadBy a0216 
-@0223:101737  ms_x_start: .word MAX_NEG_COORD  ;  @@ReadBy a0171 
-@0224:050000  ms_y_start: .word 0o50000   ;  @@ReadBy a0173 
-@0225:010000  ms_x_delta: .word 0o10000   ;  @@ReadBy a0214 
-@0226:001000  ms_y_delta: .word 0o01000   ;  @@ReadBy a0211 
-@0227:000000      ms_x: .word 0         ;  @@WrittenBy a0172 a0215 ReadBy a0202 a0206 a0213 
-@0230:000000      ms_y: .word 0         ;  @@WrittenBy a0174 a0212 ReadBy a0200 a0204 a0210 
-
-
-                        ; ;;;;;;;;;;;  Scope Identification
-                        ; show the digit 1 on scope-bit-0, 2 on scope-bit-1
-
-@0231:0       scope_identify:                ;  
-@0231:050260            ta   si_ret    ;  @@JumpedToBy a0045 
-@0232:000014            si   0o14      ; turn on Expand Mode for characters 
-
-                        ; mark the first scope
-@0233:100307            ca   si_y      ; pick up Y value 
-@0234:002601            si   0o2601    ; select the first scope; set Y value from the AC 
-@0235:100310            ca   si_x      ;  
-@0236:024355            rc   char_tab + 1  ;  
-
-                        ; mark the second scope
-@0237:100307            ca   si_y      ; pick up Y value 
-@0240:002602            si   0o2602    ; select the second scope; set Y value from the AC 
-@0241:100310            ca   si_x      ;  
-@0242:110340            ad   cg_x_delta  ; move right a bit 
-@0243:024356            rc   char_tab + 2  ;  
-
-@0244:0       light_gun_check:                ;  
-                        ; test the light gun by illuminating a point on both displays and
-                        ; seeing which gun hits it.
-@0244:100307            ca   si_y      ;  
-@0245:110340            ad   cg_x_delta  ; yeah, ok, I'm using the same delta offset for x and y 
-@0246:000677            si   0o677     ; select all the scopes; set Y value from the AC 
-@0247:100310            ca   si_x      ; pick up X value 
-@0250:024000            rc   0         ; draw the point using X val from AC 
-
-@0251:014000            rd   0         ; read the light gun register 
-@0252:070254            cp   lg_hit    ;  
-@0253:074260            sp   si_ret    ;  
-
-@0254:170001    lg_hit: clc  1         ; test the first gun @@JumpedToBy a0252 
-@0255:070261            cp   lg_hit_gun1  ;  
-@0256:170001            clc  1         ; test the second gun 
-@0257:070270            cp   lg_hit_gun2  ;  
-
-@0260:074000    si_ret: sp   0         ;  @@JumpedToBy a0253 WrittenBy a0231 
-
-
-                        ; two subroutine entry points with one return point...
-@0261:0       lg_hit_gun1:                ; mark the first gun 
-@0261:050306            ta   lg_ret    ;  @@JumpedToBy a0255 
-@0262:040311            ts   lg_tmp_acc  ;  
-@0263:100344            ca   char_tab_ptr  ;  
-@0264:110001            ad   one       ;  
-@0265:044304            td   lg_rc_inst  ;  
-@0266:100340            ca   cg_x_delta  ;  
-@0267:074300            sp   lg_hit_gun  ;  
-
-@0270:0       lg_hit_gun2:                ; mark the second gun 
-@0270:050306            ta   lg_ret    ;  @@JumpedToBy a0257 
-@0271:040311            ts   lg_tmp_acc  ;  
-@0272:100344            ca   char_tab_ptr  ;  
-@0273:110055            ad   c2        ;  
-@0274:044304            td   lg_rc_inst  ;  
-@0275:100340            ca   cg_x_delta  ;  
-@0276:110340            ad   cg_x_delta  ; 2x delta for second gun 
-@0277:074300            sp   lg_hit_gun  ;  
-
-@0300:0       lg_hit_gun:                ;  
-@0300:110307            ad   si_y      ; pick up Y value @@JumpedToBy a0267 a0277 
-@0301:002677            si   0o2677    ; set Y value from the AC 
-@0302:100310            ca   si_x      ;  
-@0303:110340            ad   cg_x_delta  ;  
-@0304:024000  lg_rc_inst: rc   0         ;  @@WrittenBy a0265 a0274 
-
-@0305:100311            ca   lg_tmp_acc  ;  
-@0306:074000    lg_ret: sp   0         ;  @@WrittenBy a0261 a0270 
-
-
-@0307:064000      si_y: .word 0o64000   ;  @@ReadBy a0233 a0237 a0244 a0300 
-@0310:130000      si_x: .word 0 - 0o50000  ;  @@ReadBy a0235 a0241 a0247 a0302 
-@0311:000000  lg_tmp_acc: .word 0         ; a place to stash the AC @@WrittenBy a0262 a0271 ReadBy a0305 
-
-
-                        ; ;;;;;;;;;;;  Character Generator Test
-
-@0312:0       char_gen_test:                ;  
-@0312:050334            ta   cg_ret    ;  @@JumpedToBy a0044 
-@0313:000014            si   0o14      ; turn on Expand Mode for characters 
-@0314:100000            ca   0         ;  
-@0315:114335            su   cg_segs   ;  
-@0316:040336            ts   cg_count  ;  
-@0317:100343            ca   char_seg_tab_ptr  ;  
-@0320:044326            td   cg_index  ;  
-@0321:100337            ca   cg_x_start  ;  
-@0322:040341            ts   cg_x      ;  
-@0323:100342            ca   cg_y      ; pick up Y value 
-@0324:002677            si   0o2677    ; select all the scopes; set Y value from the AC 
-
-@0325:0        cg_loop:                ;  
-@0325:100341            ca   cg_x      ; fetch the new x position @@JumpedToBy a0333 
-
-@0326:024000  cg_index: rc   0         ; operand address over-written in startup segment @@WrittenBy a0320 a0331 ReadBy a0331 
-@0327:110340            ad   cg_x_delta  ; current x pos'n still in AC; add the delta to it 
-@0330:040341            ts   cg_x      ;  
-@0331:130326            ao   cg_index  ; advance the pointer in the char tab 
-
-@0332:130336            ao   cg_count  ; advance the loop counter 
-@0333:070325            cp   cg_loop   ; ... and loop again if negative 
-
-@0334:074000    cg_ret: sp   0         ;  @@WrittenBy a0312 
-
-
-@0335:000020   cg_segs: .word 7 + 10 - 1  ;  @@ReadBy a0315 
-@0336:000000  cg_count: .word 0         ;  @@WrittenBy a0316 a0332 ReadBy a0332 
-@0337:154000  cg_x_start: .word 0 - 0o24000  ;  @@ReadBy a0321 
-@0340:004000  cg_x_delta: .word 0o4000    ;  @@ReadBy a0242 a0245 a0266 a0275 a0276 a0303 a0327 
-@0341:000000      cg_x: .word 0         ;  @@WrittenBy a0322 a0330 ReadBy a0325 
-@0342:040000      cg_y: .word 0o40000   ;  @@ReadBy a0323 
-@0343:000345  char_seg_tab_ptr: .word char_seg_tab  ;  @@ReadBy a0317 
-@0344:000354  char_tab_ptr: .word char_tab  ;  @@ReadBy a0263 a0272 
-
-                        ; light each segment one at a time
-@0345:040000  char_seg_tab: .word 0o040000  ;  
-@0346:020000            .word 0o020000  ;  
-@0347:010000            .word 0o010000  ;  
-@0350:004000            .word 0o004000  ;  
-@0351:002000            .word 0o002000  ;  
-@0352:001000            .word 0o001000  ;  
-@0353:000400            .word 0o000400  ;  
-
-
-                        ; light segments corresponding to the digits 0 - 9
-@40000:0                 .pp  B1=0o40000  ;  
-@20000:0                 .pp  B2=0o20000  ;  
-@10000:0                 .pp  B3=0o10000  ;  
-@4000:0                 .pp  B4=0o04000  ;  
-@2000:0                 .pp  B5=0o02000  ;  
-@1000:0                 .pp  B6=0o01000  ;  
-@0400:0                 .pp  B7=0o00400  ;  
-
-@0354:073400  char_tab: .word B1 | B2 | B3 | B5 | B6 | B7  ; Zero 
-@0355:010400            .word B3 | B7   ; One 
-@0356:065400            .word B1 | B2 | B4 | B6 | B7  ; Two 
-@0357:035400            .word B2 | B3 | B4 | B6 | B7  ; Three 
-@0360:016400            .word B3 | B4 | B5 | B7  ; Four 
-@0361:037000            .word B2 | B3 | B4 | B5 | B6  ; Five 
-@0362:076000            .word B1 | B2 | B3 | B4 | B5  ; Six 
-@0363:011400            .word B3 | B6 | B7  ; Seven 
-@0364:077400            .word B1 | B2 | B3 | B4 | B5 | B6 | B7  ; Eight 
-@0365:017400            .word B3 | B4 | B5 | B6 | B7  ; Nine 
+                                  ; Diagnostic test for Whirlwind CRT emulation
+                                  ; g fedorkow, dec 13, 2023
+
+                                  .org 0o0
+@0000:000000                zero: .word 0                  ; @@ReadBy cl_index_y cl_index_x a0175 a0314 JumpedToBy cd_ret cl_ret ms_ret si_ret lg_ret cg_ret
+@0001:000001                 one: .word 1                  ; @@ReadBy a0106 a0110 a0264
+
+
+                                  .org 0o40
+@0040:074041                main: sp main_loop
+
+                       main_loop:
+@0041:074057                      sp corner_dots           ; @@JumpedToBy main a0046
+@0042:074101                      sp corner_lines
+@0043:074170                      sp multi_segments
+@0044:074312                      sp char_gen_test
+@0045:074231                      sp scope_identify
+@0046:074041                      sp main_loop
+
+
+
+                                  .pp MAX_POS_COORD, 0o076040; should be 0o077740 to go right to the edge
+                                  .pp MAX_NEG_COORD, 0o101737
+                                  .pp MAX_POS_X_DELTA, 0o076000
+                                  .pp MAX_NEG_X_DELTA, 0o101000
+                                  .pp MAX_POS_Y_DELTA, 0o000174
+                                  .pp MAX_NEG_Y_DELTA, 0o000200
+
+@0047:076040       max_pos_coord: .word MAX_POS_COORD      ; maximum deflection for X or Y coords @@ReadBy a0060 a0062 a0070 a0076
+@0050:101737       max_neg_coord: .word MAX_NEG_COORD      ; maximum deflection for X or Y coords @@ReadBy a0064 a0066 a0072 a0074
+@0051:076000     max_pos_x_delta: .word MAX_POS_X_DELTA
+@0052:101000     max_neg_x_delta: .word MAX_NEG_X_DELTA
+@0053:000174     max_pos_y_delta: .word MAX_POS_Y_DELTA
+@0054:000200     max_neg_y_delta: .word MAX_NEG_Y_DELTA
+
+                                  ; constants
+@0055:000002                  c2: .word 2                  ; @@ReadBy a0273
+@0056:000003                  c3: .word 3                  ; @@ReadBy a0115 a0122 a0125
+
+
+
+                     corner_dots:
+@0057:050100                      ta cd_ret                ; @@JumpedToBy a0041
+
+@0060:100047                      ca max_pos_coord         ; pick up Y value
+@0061:000677                      si 0o677                 ; select all the scopes; set Y value from the AC ; Auto-Annotate I/O: Display Points
+@0062:100047                      ca max_pos_coord         ; pick up X value
+@0063:024000                      rc 0                     ; draw the point using X val from AC
+
+@0064:100050                      ca max_neg_coord         ; pick up Y value
+@0065:000677                      si 0o677                 ; select all the scopes; set Y value from the AC ; Auto-Annotate I/O: Display Points
+@0066:100050                      ca max_neg_coord         ; pick up X value
+@0067:024000                      rc 0                     ; draw the point using X val from AC
+
+@0070:100047                      ca max_pos_coord         ; pick up Y value
+@0071:000677                      si 0o677                 ; select all the scopes; set Y value from the AC ; Auto-Annotate I/O: Display Points
+@0072:100050                      ca max_neg_coord         ; pick up X value
+@0073:024000                      rc 0                     ; draw the point using X val from AC
+
+@0074:100050                      ca max_neg_coord         ; pick up Y value
+@0075:000677                      si 0o677                 ; select all the scopes; set Y value from the AC ; Auto-Annotate I/O: Display Points
+@0076:100047                      ca max_pos_coord         ; pick up X value
+@0077:024000                      rc 0                     ; draw the point using X val from AC
+
+@0100:074000              cd_ret: sp 0                     ; @@WrittenBy a0057
+
+
+                                  ; draw a list of vectors from corner_list_ptr
+                                  ; The list gives two vectors in each corner, plus a diagonal only in the top left
+                    corner_lines:
+@0101:050131                      ta cl_ret                ; @@JumpedToBy a0042
+@0102:100167                      ca cdl_len
+@0103:040132                      ts cl_count
+@0104:100133                      ca corner_list_ptr
+@0105:044117                      td cl_index_x
+@0106:110001                      ad one                   ; add one to the address
+@0107:044112                      td cl_index_y
+@0110:110001                      ad one                   ; add one to the address
+@0111:044120                      td cl_index_d
+
+@0112:100000          cl_index_y: ca 0                     ; @@WrittenBy a0107 a0116 ReadBy a0114 JumpedToBy a0130
+@0113:001677                      si 0o1677                ; select all the scopes; set Y value from the AC ; Auto-Annotate I/O: Display Vectors
+@0114:100112                      ca cl_index_y
+@0115:110056                      ad c3
+@0116:044112                      td cl_index_y
+@0117:100000          cl_index_x: ca 0                     ; put the X value in AC @@WrittenBy a0105 a0126 ReadBy a0124
+@0120:024000          cl_index_d: rc 0                     ; pick up the Delta vector @@WrittenBy a0111 a0123 ReadBy a0121
+
+@0121:100120                      ca cl_index_d            ; move pointer to next delta
+@0122:110056                      ad c3
+@0123:040120                      ts cl_index_d
+
+@0124:100117                      ca cl_index_x            ; move pointer to next X value
+@0125:110056                      ad c3
+@0126:044117                      td cl_index_x
+
+@0127:130132                      ao cl_count
+@0130:070112                      cp cl_index_y
+
+@0131:074000              cl_ret: sp 0                     ; @@WrittenBy a0101
+                                  ; local variable
+@0132:000000            cl_count: .word 0                  ; @@WrittenBy a0103 a0127 ReadBy a0127
+
+
+                                  ;;;;;;;;;  Corner Vector Test ;;;;;;;;;;;;
+                                  ; This test draws short vectors in each of the four corners of the screen, with an extra
+                                  ; diagnoal to mark the top left corner.
+                                  ;    The test is based on a list of display segments, expressed as native Whirlwind 'short' vectors.
+                                  ; WW can draw lines using a full-resolution X & Y starting point, and then a DX and DY
+                                  ; offset to define the end point.
+                                  ;    In this table, coordinates are given in the same units as the actual display command.
+                                  ; The screen coords in pixels are shifted to the top part of a 16-bit word.
+                                  ; The Delta offsets are shorter fields, stored in two eigh-bit halves of one word.  The native
+                                  ; vector instruction is +/- 32 units, where each unit is four screen pixels (I think!!).
+@0133:000134     corner_list_ptr: .word corner_display_list; @@ReadBy a0104
+             corner_display_list:
+@0134:101737                      .word MAX_NEG_COORD      ; X coord  ; top left corner
+@0135:076040                      .word MAX_POS_COORD      ; Y coord
+@0136:076200                      .word MAX_NEG_Y_DELTA | MAX_POS_X_DELTA; Y-/X+ diagonal line
+
+@0137:101737                      .word MAX_NEG_COORD      ; X coord  ; top left corner
+@0140:076040                      .word MAX_POS_COORD      ; Y coord
+@0141:000200                      .word MAX_NEG_Y_DELTA    ; Y- downward line
+
+@0142:101737                      .word MAX_NEG_COORD      ; X coord  ; top left corner
+@0143:076040                      .word MAX_POS_COORD      ; Y coord
+@0144:076000                      .word MAX_POS_X_DELTA    ; X+ rightward line
+
+@0145:076040                      .word MAX_POS_COORD      ; X coord  ; top right corner
+@0146:076040                      .word MAX_POS_COORD      ; Y coord
+@0147:000200                      .word MAX_NEG_Y_DELTA    ; Y- downward line
+
+@0150:076040                      .word MAX_POS_COORD      ; X coord  ; top right corner
+@0151:076040                      .word MAX_POS_COORD      ; Y coord
+@0152:101000                      .word MAX_NEG_X_DELTA    ; X+ leftward line
+
+@0153:076040                      .word MAX_POS_COORD      ; X coord  ; Bottom right corner
+@0154:101737                      .word MAX_NEG_COORD      ; Y coord
+@0155:000174                      .word MAX_POS_Y_DELTA    ; Y+ downward line
+
+@0156:076040                      .word MAX_POS_COORD      ; X coord  ; bottom right corner
+@0157:101737                      .word MAX_NEG_COORD      ; Y coord
+@0160:101000                      .word MAX_NEG_X_DELTA    ; X- leftward line
+
+@0161:101737                      .word MAX_NEG_COORD      ; X coord  ; Bottom left corner
+@0162:101737                      .word MAX_NEG_COORD      ; Y coord
+@0163:000174                      .word MAX_POS_Y_DELTA    ; Y+ upward line
+
+@0164:101737                      .word MAX_NEG_COORD      ; X coord  ; bottom left corner
+@0165:101737                      .word MAX_NEG_COORD      ; Y coord
+@0166:076000                      .word MAX_POS_X_DELTA    ; X+ uptward line
+
+
+                                  ;  cdl_len:  .word  0o177767 ; (corner_display_list - cdl_len)/3  ; compute negative of table length by subtracting start from finish
+@0167:177766             cdl_len: .word corner_display_list - cdl_len / 3; compute negative of table length by subtracting start from finish @@ReadBy a0102
+
+                                  ;;;;;;;;;;;;;  Multi-Segment Test ;;;;;;;;;;;
+                                  ; This test draws a series of horizontal, max-length vectors across the screen, each offset upwards by a small amount,
+                                  ; to get a stair-step pattern.
+                  multi_segments:
+@0170:050220                      ta ms_ret                ; @@JumpedToBy a0043
+@0171:100223                      ca ms_x_start
+@0172:040227                      ts ms_x
+@0173:100224                      ca ms_y_start
+@0174:040230                      ts ms_y
+@0175:100000                      ca 0
+@0176:114221                      su ms_segs
+@0177:040222                      ts ms_count
+
+                         ms_loop:
+                                  ; draw a dot at the beginning of each segment
+@0200:100230                      ca ms_y                  ; pick up Y value @@JumpedToBy a0217
+@0201:000677                      si 0o677                 ; select all the scopes; set Y value from the AC ; Auto-Annotate I/O: Display Points
+@0202:100227                      ca ms_x                  ; pick up X value
+@0203:024000                      rc 0                     ; draw the point using X val from AC
+
+@0204:100230                      ca ms_y                  ; pick up Y value
+@0205:001677                      si 0o1677                ; select all the scopes; set Y value from the AC ; Auto-Annotate I/O: Display Vectors
+@0206:100227                      ca ms_x                  ; pick up X value
+@0207:024051                      rc max_pos_x_delta       ; draw the line using X val from AC
+
+@0210:100230                      ca ms_y                  ; pick up Y value
+@0211:110226                      ad ms_y_delta
+@0212:040230                      ts ms_y
+@0213:100227                      ca ms_x                  ; pick up X value
+@0214:110225                      ad ms_x_delta
+@0215:040227                      ts ms_x
+
+@0216:130222                      ao ms_count
+@0217:070200                      cp ms_loop
+
+@0220:074000              ms_ret: sp 0                     ; @@WrittenBy a0170
+
+@0221:000016             ms_segs: .word 14                 ; draws fifteen segments @@ReadBy a0176
+@0222:000000            ms_count: .word 0                  ; @@WrittenBy a0177 a0216 ReadBy a0216
+@0223:101737          ms_x_start: .word MAX_NEG_COORD      ; @@ReadBy a0171
+@0224:050000          ms_y_start: .word 0o50000            ; @@ReadBy a0173
+@0225:010000          ms_x_delta: .word 0o10000            ; @@ReadBy a0214
+@0226:001000          ms_y_delta: .word 0o01000            ; @@ReadBy a0211
+@0227:000000                ms_x: .word 0                  ; @@WrittenBy a0172 a0215 ReadBy a0202 a0206 a0213
+@0230:000000                ms_y: .word 0                  ; @@WrittenBy a0174 a0212 ReadBy a0200 a0204 a0210
+
+
+                                  ;;;;;;;;;;;;  Scope Identification
+                                  ; show the digit 1 on scope-bit-0, 2 on scope-bit-1
+
+                  scope_identify:
+@0231:050260                      ta si_ret                ; @@JumpedToBy a0045
+@0232:000014                      si 0o14                  ; turn on Expand Mode for characters ; Auto-Annotate I/O: Expand Display
+
+                                  ; mark the first scope
+@0233:100307                      ca si_y                  ; pick up Y value
+@0234:002601                      si 0o2601                ; select the first scope; set Y value from the AC ; Auto-Annotate I/O: Display Characters
+@0235:100310                      ca si_x
+@0236:024355                      rc char_tab + 1
+
+                                  ; mark the second scope
+@0237:100307                      ca si_y                  ; pick up Y value
+@0240:002602                      si 0o2602                ; select the second scope; set Y value from the AC ; Auto-Annotate I/O: Display Characters
+@0241:100310                      ca si_x
+@0242:110340                      ad cg_x_delta            ; move right a bit
+@0243:024356                      rc char_tab + 2
+
+                 light_gun_check:
+                                  ; test the light gun by illuminating a point on both displays and
+                                  ; seeing which gun hits it.
+@0244:100307                      ca si_y
+@0245:110340                      ad cg_x_delta            ; yeah, ok, I'm using the same delta offset for x and y
+@0246:000677                      si 0o677                 ; select all the scopes; set Y value from the AC ; Auto-Annotate I/O: Display Points
+@0247:100310                      ca si_x                  ; pick up X value
+@0250:024000                      rc 0                     ; draw the point using X val from AC
+
+@0251:014000                      rd 0                     ; read the light gun register
+@0252:070254                      cp lg_hit
+@0253:074260                      sp si_ret
+
+@0254:170001              lg_hit: clc 1                    ; test the first gun @@JumpedToBy a0252
+@0255:070261                      cp lg_hit_gun1
+@0256:170001                      clc 1                    ; test the second gun
+@0257:070270                      cp lg_hit_gun2
+
+@0260:074000              si_ret: sp 0                     ; @@WrittenBy a0231 JumpedToBy a0253
+
+
+                                  ; two subroutine entry points with one return point...
+                     lg_hit_gun1:                          ; mark the first gun
+@0261:050306                      ta lg_ret                ; @@JumpedToBy a0255
+@0262:040311                      ts lg_tmp_acc
+@0263:100344                      ca char_tab_ptr
+@0264:110001                      ad one
+@0265:044304                      td lg_rc_inst
+@0266:100340                      ca cg_x_delta
+@0267:074300                      sp lg_hit_gun
+
+                     lg_hit_gun2:                          ; mark the second gun
+@0270:050306                      ta lg_ret                ; @@JumpedToBy a0257
+@0271:040311                      ts lg_tmp_acc
+@0272:100344                      ca char_tab_ptr
+@0273:110055                      ad c2
+@0274:044304                      td lg_rc_inst
+@0275:100340                      ca cg_x_delta
+@0276:110340                      ad cg_x_delta            ; 2x delta for second gun
+@0277:074300                      sp lg_hit_gun
+
+                      lg_hit_gun:
+@0300:110307                      ad si_y                  ; pick up Y value @@JumpedToBy a0267 a0277
+@0301:002677                      si 0o2677                ; set Y value from the AC ; Auto-Annotate I/O: Display Characters
+@0302:100310                      ca si_x
+@0303:110340                      ad cg_x_delta
+@0304:024000          lg_rc_inst: rc 0                     ; @@WrittenBy a0265 a0274
+
+@0305:100311                      ca lg_tmp_acc
+@0306:074000              lg_ret: sp 0                     ; @@WrittenBy a0261 a0270
+
+
+@0307:064000                si_y: .word 0o64000            ; @@ReadBy a0233 a0237 a0244 a0300
+@0310:127777                si_x: .word 0 - 0o50000        ; @@ReadBy a0235 a0241 a0247 a0302
+@0311:000000          lg_tmp_acc: .word 0                  ; a place to stash the AC @@WrittenBy a0262 a0271 ReadBy a0305
+
+
+                                  ;;;;;;;;;;;;  Character Generator Test
+
+                   char_gen_test:
+@0312:050334                      ta cg_ret                ; @@JumpedToBy a0044
+@0313:000014                      si 0o14                  ; turn on Expand Mode for characters ; Auto-Annotate I/O: Expand Display
+@0314:100000                      ca 0
+@0315:114335                      su cg_segs
+@0316:040336                      ts cg_count
+@0317:100343                      ca char_seg_tab_ptr
+@0320:044326                      td cg_index
+@0321:100337                      ca cg_x_start
+@0322:040341                      ts cg_x
+@0323:100342                      ca cg_y                  ; pick up Y value
+@0324:002677                      si 0o2677                ; select all the scopes; set Y value from the AC ; Auto-Annotate I/O: Display Characters
+
+                         cg_loop:
+@0325:100341                      ca cg_x                  ; fetch the new x position @@JumpedToBy a0333
+
+@0326:024000            cg_index: rc 0                     ;  operand address over-written in startup segment @@WrittenBy a0320 a0331 ReadBy a0331
+@0327:110340                      ad cg_x_delta            ; current x pos'n still in AC; add the delta to it
+@0330:040341                      ts cg_x
+@0331:130326                      ao cg_index              ; advance the pointer in the char tab
+
+@0332:130336                      ao cg_count              ; advance the loop counter
+@0333:070325                      cp cg_loop               ;  ... and loop again if negative
+
+@0334:074000              cg_ret: sp 0                     ; @@WrittenBy a0312
+
+
+@0335:000020             cg_segs: .word 7 + 10 - 1         ; @@ReadBy a0315
+@0336:000000            cg_count: .word 0                  ; @@WrittenBy a0316 a0332 ReadBy a0332
+@0337:153777          cg_x_start: .word 0 - 0o24000        ; @@ReadBy a0321
+@0340:004000          cg_x_delta: .word 0o4000             ; @@ReadBy a0242 a0245 a0266 a0275 a0276 a0303 a0327
+@0341:000000                cg_x: .word 0                  ; @@WrittenBy a0322 a0330 ReadBy a0325
+@0342:040000                cg_y: .word 0o40000            ; @@ReadBy a0323
+@0343:000345    char_seg_tab_ptr: .word char_seg_tab       ; @@ReadBy a0317
+@0344:000354        char_tab_ptr: .word char_tab           ; @@ReadBy a0263 a0272
+
+                                  ; light each segment one at a time
+@0345:040000        char_seg_tab: .word 0o040000
+@0346:020000                      .word 0o020000
+@0347:010000                      .word 0o010000
+@0350:004000                      .word 0o004000
+@0351:002000                      .word 0o002000
+@0352:001000                      .word 0o001000
+@0353:000400                      .word 0o000400
+
+
+                                  ; light segments corresponding to the digits 0 - 9
+                                  .pp B1, 0o40000
+                                  .pp B2, 0o20000
+                                  .pp B3, 0o10000
+                                  .pp B4, 0o04000
+                                  .pp B5, 0o02000
+                                  .pp B6, 0o01000
+                                  .pp B7, 0o00400
+
+@0354:073400            char_tab: .word B1 | B2 | B3 | B5 | B6 | B7; Zero
+@0355:010400                      .word B3 | B7            ; One
+@0356:065400                      .word B1 | B2 | B4 | B6 | B7; Two
+@0357:035400                      .word B2 | B3 | B4 | B6 | B7; Three
+@0360:016400                      .word B3 | B4 | B5 | B7  ; Four
+@0361:037000                      .word B2 | B3 | B4 | B5 | B6; Five
+@0362:076000                      .word B1 | B2 | B3 | B4 | B5; Six
+@0363:011400                      .word B3 | B6 | B7       ; Seven
+@0364:077400                      .word B1 | B2 | B3 | B4 | B5 | B6 | B7; Eight
+@0365:017400                      .word B3 | B4 | B5 | B6 | B7; Nine
 

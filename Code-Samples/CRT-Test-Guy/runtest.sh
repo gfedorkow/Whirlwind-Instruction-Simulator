@@ -1,5 +1,8 @@
+# cd to the dir with this file, to facilitate external control
+thisfile=$0
+cd ${thisfile%/*}/
 
-echo "CRT-Test-Guy Test:"
+echo "CRT Test:"
 if [ "$1" == "--Accept" ];
 then
 	echo "Accepting..."
@@ -9,9 +12,9 @@ then
 else
 	asm="$PYTHONPATH/../../Py/Assembler/wwasm.py"		# Use quotes since can't resolve backslash yet -- it's needed for file name translation
 	sim="$PYTHONPATH/../../Py/Sim/wwsim.py"
-	rm crt-test.acore wwsim.log wwasm.log
-	python $asm crt-test.ww -o crt-test >&wwasm.log
-	python $sim --CycleLimit 7700 crt-test.acore >&wwsim.log
+	rm -f crt-test.acore crt-test.lst wwsim.log wwasm.log tmp-wwsim.log tmp-ref-wwsim.log 
+	python $asm crt-test.ww >&wwasm.log
+	python $sim --CycleLimit 5000 crt-test.acore >&wwsim.log
 	egrep "Warning|Error" wwasm.log >&tmp-wwasm.log
 	egrep "Warning|Error" TestRefs/wwasm.log >&tmp-ref-wwasm.log
 	grep ww_draw_point wwsim.log >&tmp-wwsim.log

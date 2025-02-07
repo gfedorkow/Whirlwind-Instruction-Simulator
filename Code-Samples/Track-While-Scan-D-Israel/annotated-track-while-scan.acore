@@ -2,14 +2,14 @@
 ; *** Core Image ***
 %ISA: 1950
 %File: annotated-track-while-scan.ww
-%TapeID: None
+%TapeID: 
 %JumpTo 0o435
-%Switch: FFRegAssign 0o10,0o27,0o34,0o35,0o36
-%Switch: FlipFlopPreset10 0o0
-%Switch: FlipFlopPreset27 0o0
-%Switch: FlipFlopPreset34 0o177777
-%Switch: FlipFlopPreset35 0o0
-%Switch: FlipFlopPreset36 0o372
+%Switch: FFRegAssign  0o000010, 0o000027, 0o000034, 0o000035, 0o000036
+%Switch: FlipFlopPreset10  0o000000
+%Switch: FlipFlopPreset27  0o000000
+%Switch: FlipFlopPreset34  0o177777
+%Switch: FlipFlopPreset35  0o000000
+%Switch: FlipFlopPreset36  0o000372
 %DbWgt:  .TargetHeading  0o05 %d
 %DbWgt:  0o010  0o01 %o
 %DbWgt:  0o036  0o01 %o
@@ -46,8 +46,8 @@
 @C0360: 0000000 0163777 0022525 0000040 0000022 0000000 0001046 0000144 
 @C0370: 0000310 0001212 0000000 0000000 0000000 0000000 0000000 0000000 
 @C0400: 0000000 0000000 0000000 0000000 0000000 0000000 0000000 0000000 
-@C0410: 0000000 0000000 0000000 0000000 0000000 0000000 0030646 0025251 
-@C0420: 0000000 0000000 0000000 0000000 0106314 0000012 0000000 0007557 
+@C0410: 0000000 0000000 0000000 0000000 0000000 0000000 0030647 0025252 
+@C0420: 0000000 0000000 0000000 0000000 0106314 0000012 0000000 0007560 
 @C0430: 0000000 0000000 0000000 0000000 0011463 0100036 0144036 0154012 
 @C0440: 0040430 0074040 0071300 0006710  None    None    None    None   
 @S0001: num_qtr
@@ -109,115 +109,128 @@
 @S0435: start
 @S0442: num71300
 @S0443: vIsqd32
-@E0126: exec: print("     @085 Found - Display Tracked Aircraft %s on F-Scope; Time0=%s, x_smoo0=%d, y_smoo0=%d" % (which_plane(cm), deci(cm.rd(rl("time0"))), cm.rd(rl("x_smoo0")), cm.rd(rl("y_smoo0"))))
+@E0126: exec: wwlog("     @085 Found - Display Tracked Aircraft %s on F-Scope; Time0=%s, x_smoo0=%d, y_smoo0=%d" % (which_plane(cm), deci(cm.rd(rl("time0"))), cm.rd(rl("x_smoo0")), cm.rd(rl("y_smoo0"))))
 @E0174: exec: if cm.rd(rl("which_tgt")) > 32*1024: dump_tracking_state(cm, deci, rl, long=True)
-@E0202: exec: print("@129 Initiate Aircraft %s; set time to %s" % (which_plane(cm), deci(cm.rd(rl("time0"))))) \n exec: record_initiation(cm, cb)
+@E0202: exec: wwlog("@129 Initiate Aircraft %s; set time to %s" % (which_plane(cm), deci(cm.rd(rl("time0"))))) \n exec: record_initiation(cm, cb)
 @E0325: exec: print_ff_heading(cm, deci, rl, cb)
-@E0331: exec: print("  @216 Radar response is in search zone for Aircraft %s; Time0=%s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
-@N0001: value is '1/4'  (not the usual 0o000001)
-@N0027: addr 0o27
-@N0034: addr 0o34
-@N0035: addr 0o35; "One over Tau"
-@N0036: addr 0o36; V-sub-I -- Interceptor velocity
-@N0037: constant;   1/2 - 2**-15
-@N0043: read radar data
-@N0044: Branch if Negative, i.e., no new data
-@N0045: Subtract the constant 0o037777, i.e. just less than 1/2, i.e., test most-significant bit after sign
-@N0046: Branch if Range; fall through if Azimuth
-@N0047: Process a radar Azimuth reading
-@N0051: stash the azi reading in @272
-@N0052: clear & add magnitude; this effectively inverts the reading, so a North azi turns to about 0o37776
-@N0054: a constant; this is the constant that (was) also an instruction @189
-@N0065: switch sign of @241; read and negate
-@N0066: ...  then write back; probably 0o163777 or 0o014000
-@N0067: exit here if all done in this loop
-@N0100: process a radar Range reading; turn the rng back into a positive number
-@N0101: hmm, -0o37777 + 0o37777 must be -0, so branch if negative, i.e., zero
-@N0102: positive number of miles (times two?); store in a temp
-@N0103: [this number is probably cosine of the azimuth]
-@N0104: compute the x position for display
-@N0105: ... and store it at 274
-@N0106: Retrieve the number of miles
-@N0107: [this number is probably sine of the azimuth]
-@N0111: display the Y value, and save it at 272
-@N0112: Read Light Gun to see if there's anything spotted, i.e., any negative value
-@N0113: branch if light-gun hit
-@N0114: no light-gun hit; increment Time0
-@N0115: [this branch usually falls through, 'cause we start with Time set slightly positive]
-@N0116: appears to subtract a constant 0d200; AC ends with (Time0 - 0d200)
-@N0117: fall through "if search sector has been covered"; branch if not covered
-@N0120: "...so reset the time counter" by subtracting another 0d550
-@N0121: ... and storing it back
-@N0122: test to see "if the aircraft was found during this scan of the antenna"
-@N0125: "Display Tracked Aircraft on F-Scope"
-@N0131: Load constant 18 decimal / 0o22 octal to set up small search area
-@N0134: calculate for x
-@N0135: constant - decimal 0.333; scale distance error
-@N0136: add correction to old velocity to create new velocity
-@N0137: store the result
-@N0140: add new velocity to the distance error
-@N0141: add to the previous the position
-@N0142: store as the new position
-@N0143: calculate for y
-@N0153: clear x_diff0
-@N0154: clear y_diff0
-@N0155: swap target and interceptor
-@N0161: increment the addresses for swap
-@N0163: subtract a handy constant to determine loop end: #0o040402  "ts srch_r0"
-@N0164: fall through if we're finished swapping
-@N0165: Fetch address of Time1 (Load #0o130404   "ao  time1")
-@N0166: reset the addresses of instructions
-@N0170: Load #0o130404   "ao  time1"
-@N0172: switch sign of @241; read the negative
-@N0173: ...  and store it back; probably 0o163777 or 0o014000
-@N0176: constant #100000; I think this makes the slightly-smaller inverse...
-@N0177: subtract one of two constants depending on which aircraft we're following
-@N0201: constant 650; this sets the beginning of the search area to 100 units before dead-center
-@N0202: reset time to wait for the next turn of the radar
-@N0206: display x-pos?
-@N0212: set up large search area
-@N0216: constant 32d for "large" search area;
-@N0222: store Target_x - Interceptor_x
-@N0225: store Target_y - Interceptor_y
-@N0227: branch back to Wait if not computing the heading
-@N0230: Tau_inv in the accumulator; multiply by delta Y
-@N0231: For Tau_inv == 1, this is (dy / 2**8), i.e., distance in units of miles
-@N0232: add Target y velocity, units of miles per hour
-@N0233: multiply by 32
-@N0235: compute (dy/tau + yvelo0)**2 / 32;  i.e. if (dy/tau + yvelo0) = 0o170, we store 0o702 in @283
-@N0245: compute (dx/tau + xvelo0)**2 / 32
-@N0246: @280
-@N0247: Here's the spot where I always (got) the overflow!
-@N0250: back to Wait
-@N0251: last seen, for Tau_inv==1, this had 'dy' in miles + Target_y velocity in mph
-@N0252: constant +.1500 decimal
-@N0253: last seen, (dx/tau + xvelo0) * 32
-@N0254: Last seen was (dy/tau + yvelo0)**2 / 32, in @158 (decimal!)
-@N0255: (dy/tau + yvelo0)**2 / 8
-@N0257: last seen, (dx/tau + xvelo0) * 32
-@N0267: retrieve (dy/tau + yvelo0)**2 / 8
-@N0276: I initially mis-read this instruction as CS 276
-@N0300: Was AO 0, i.e., add one to Switch Register Zero; put 1 in the accumulator
-@N0302: This probably sort-of converts hours to minutes, i.e., hours * 64
-@N0310: WAS SR 302;
-@N0327: finished with heading calculation; back to Wait
-@N0330: Branch here if we're "in" a search sector and have a candidate radar response
-@N0345: Take this branch "if the latest piece of data does not correspond more closely..."
-@N0346: In this case, we have a better reading for the aircraft; so we "reset" the time counter
-@N0353: an instruction used as a constant; @0126.086:030000   qh   000
-@N0357: note that @108 is a "ts y_diff0", i.e., they saved a word by jumping into the middle of the "clear diffs" sequence
-@N0361: -0.1875 = -3/16
-@N0362: 0.2917 decimal = 7/24
-@N0366: ** possible OCR mistake; the scan said 650, but I'm sure it's 550 **
-@N0372: Time Counter
-@N0373: X Smoothed Position
-@N0377: Difference between observed and predicted position
-@N0400: Difference between observed and predicted position
-@N0401: Search Area Size, Initial
-@N0402: Search Area Size, Running
-@N0417: constant - decimal 0.333
-@N0430: Interceptor Velocity Squared
-@N0436: square of expected interceptor velocity
-@N0437: shift left 15 to get it into AC, then right 5 to divide by 32; interceptor velocity squared divided by 32
-@N0441: added by guy
-@N0443: initial velocity squared divided by 32.
+@E0331: exec: wwlog("  @216 Radar response is in search zone for Aircraft %s; Time0=%s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
+@N0001:  value is '1/4'  (not the usual 0o000001)
+@N0002:  Switch Numbers are in Octal
+@N0027:  addr 0o27
+@N0034:  addr 0o34
+@N0035:  addr 0o35; "One over Tau"
+@N0036:  addr 0o36; V-sub-I -- Interceptor velocity
+@N0037:  constant;   1/2 - 2**-15
+@N0040:  32 decimal
+@N0043:  read radar data
+@N0044:   Branch if Negative, i.e., no new data
+@N0045:   Subtract the constant 0o037777, i.e. just less than 1/2, i.e., test most-significant bit after sign
+@N0046:   Branch if Range; fall through if Azimuth
+@N0047:   Process a radar Azimuth reading
+@N0051:  stash the azi reading in @272
+@N0052:  clear & add magnitude; this effectively inverts the reading, so a North azi turns to about 0o37776
+@N0054:   a constant; this is the constant that (was) also an instruction @189
+@N0065:   switch sign of @241; read and negate
+@N0066:     ...  then write back; probably 0o163777 or 0o014000
+@N0067:   exit here if all done in this loop
+@N0100:  process a radar Range reading; turn the rng back into a positive number
+@N0101:  hmm, -0o37777 + 0o37777 must be -0, so branch if negative, i.e., zero
+@N0102:   positive number of miles (times two?); store in a temp
+@N0103:   [this number is probably cosine of the azimuth]
+@N0104:   compute the x position for display
+@N0105:   ... and store it at 274
+@N0106:   Retrieve the number of miles
+@N0107:   [this number is probably sine of the azimuth]
+@N0111:   display the Y value, and save it at 272
+@N0112:  Read Light Gun to see if there's anything spotted, i.e., any negative value
+@N0113:   branch if light-gun hit
+@N0114:   no light-gun hit; increment Time0
+@N0115:   [this branch usually falls through, 'cause we start with Time set slightly positive]
+@N0116:   appears to subtract a constant 0d200; AC ends with (Time0 - 0d200)
+@N0117:   fall through "if search sector has been covered"; branch if not covered
+@N0120:   "...so reset the time counter" by subtracting another 0d550
+@N0121:      ... and storing it back
+@N0122:   test to see "if the aircraft was found during this scan of the antenna"
+@N0124: .exec wwlog("     @083 Test if aircraft %s found during this scan; srch_i0=0d%d, srch_r0=0d%d" % (which_plane(cm), cm.rd(rl("srch_i0")), cm.rd(rl("srch_r0"))))
+@N0125:   "Display Tracked Aircraft on F-Scope"
+@N0131:   Load constant 18 decimal / 0o22 octal to set up small search area
+@N0134:  calculate for x
+@N0135:   constant - decimal 0.333; scale distance error
+@N0136:   add correction to old velocity to create new velocity
+@N0137:   store the result
+@N0140:  add new velocity to the distance error
+@N0141:  add to the previous the position
+@N0142:   store as the new position
+@N0143:  calculate for y
+@N0153:  clear x_diff0
+@N0154:  clear y_diff0
+@N0155:  swap target and interceptor
+@N0161:  increment the addresses for swap
+@N0163:  subtract a handy constant to determine loop end: #0o040402  "ts srch_r0"
+@N0164:  fall through if we're finished swapping
+@N0165:  Fetch address of Time1 (Load #0o130404   "ao  time1")
+@N0166:  reset the addresses of instructions
+@N0170:  Load #0o130404   "ao  time1"
+@N0172:  switch sign of @241; read the negative
+@N0173:   ...  and store it back; probably 0o163777 or 0o014000
+@N0174:  This routine should print (about) two times per rotation.
+@N0176:   constant #100000; I think this makes the slightly-smaller inverse...
+@N0177:   subtract one of two constants depending on which aircraft we're following
+@N0201:   constant 650; this sets the beginning of the search area to 100 units before dead-center
+@N0202:   reset time to wait for the next turn of the radar
+@N0206:   display x-pos?
+@N0212:   set up large search area
+@N0216:   constant 32d for "large" search area;
+@N0217: .exec wwlog("     @142 Not Found - Aircraft %s; Time0=%s, x_smoo0=%d, y_smoo0=%d" % (which_plane(cm), deci(cm.rd(rl("time0"))), cm.rd(rl("x_smoo0")), cm.rd(rl("y_smoo0"))))
+@N0220:  and computes the heading to direct the interceptor to the target
+@N0221:  .exec if cm.rd(251) != 0 and cm.rd(261) != 0: cb.TracePC = 70
+@N0222:   store Target_x - Interceptor_x
+@N0225:   store Target_y - Interceptor_y
+@N0227:   branch back to Wait if not computing the heading
+@N0230:   Tau_inv in the accumulator; multiply by delta Y
+@N0231:   For Tau_inv == 1, this is (dy / 2**8), i.e., distance in units of miles
+@N0232:   add Target y velocity, units of miles per hour
+@N0233:   multiply by 32
+@N0235:   compute (dy/tau + yvelo0)**2 / 32;  i.e. if (dy/tau + yvelo0) = 0o170, we store 0o702 in @283
+@N0245:   compute (dx/tau + xvelo0)**2 / 32
+@N0246:   @280
+@N0247:   Here's the spot where I always (got) the overflow!
+@N0250:  back to Wait
+@N0251:   last seen, for Tau_inv==1, this had 'dy' in miles + Target_y velocity in mph
+@N0252:    constant +.1500 decimal
+@N0253:   last seen, (dx/tau + xvelo0) * 32
+@N0254:   Last seen was (dy/tau + yvelo0)**2 / 32, in @158 (decimal!)
+@N0255:   (dy/tau + yvelo0)**2 / 8
+@N0257:   last seen, (dx/tau + xvelo0) * 32
+@N0267:   retrieve (dy/tau + yvelo0)**2 / 8
+@N0275: ;;;;;;;;;;  I just don't see why this test is here...
+@N0276:   I initially mis-read this instruction as CS 276
+@N0300:  Was AO 0, i.e., add one to Switch Register Zero; put 1 in the accumulator
+@N0302:   This probably sort-of converts hours to minutes, i.e., hours * 64
+@N0304:  Units of angles are probably "revolutions", i.e., zero to one is 0 to 360 degrees
+@N0305:  .exec check_heading(cm, deci, rl)
+@N0310:   WAS SR 302;
+@N0325:  the following exec needs to be renamed; it doesn't just print, it also steers the Interceptor
+@N0327:   finished with heading calculation; back to Wait
+@N0330:  Branch here if we're "in" a search sector and have a candidate radar response
+@N0344:  .exec wwlog("  @228 Test if new data corresponds more closely: srch_r0=%s - @245=%s" % (deci(cm.rd(rl("srch_r0"))), deci(cm.rd(245))))
+@N0345:   Take this branch "if the latest piece of data does not correspond more closely..."
+@N0346:   In this case, we have a better reading for the aircraft; so we "reset" the time counter
+@N0353:   an instruction used as a constant; @0126.086:030000   qh   000
+@N0355:  .exec wwlog("    @233 Yes, it corresponds - Reset angular time counter for aircraft %s to %s, x_diff to %s" % (which_plane(cm), deci(cm.rd(rl("time0"))), deci(cm.rd(rl("x_diff0")))))
+@N0357:   note that @108 is a "ts y_diff0", i.e., they saved a word by jumping into the middle of the "clear diffs" sequence
+@N0361:   -0.1875 = -3/16
+@N0362:   0.2917 decimal = 7/24
+@N0366:  ** possible OCR mistake; the scan said 650, but I'm sure it's 550 **
+@N0372:  Time Counter
+@N0373:  X Smoothed Position
+@N0377:  Difference between observed and predicted position
+@N0400:  Difference between observed and predicted position
+@N0401:  Search Area Size, Initial
+@N0402:  Search Area Size, Running
+@N0417:   constant - decimal 0.333
+@N0430:  Interceptor Velocity Squared
+@N0436:   square of expected interceptor velocity
+@N0437:  shift left 15 to get it into AC, then right 5 to divide by 32; interceptor velocity squared divided by 32
+@N0441:  added by guy
+@N0443:  initial velocity squared divided by 32.

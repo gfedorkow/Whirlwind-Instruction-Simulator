@@ -67,7 +67,7 @@ dir of arg $0), to allow it to be run more easily from an external
 program. In particular, ro run all tests,
 
    cd <whirlwind-simulator-top-level-dir>
-   find . -name runtest*.sh -print -exec {} \;
+   find . -name runtest.sh -print -exec {} \;
 
 While I have considered making the wwtester.py code be a more
 comprehensive test tool, as I did at first, I don't see the need, and
@@ -579,13 +579,13 @@ literal-digit-seq												Decimal inreger
 
 12/23/24 todo assembler and further
 	* auto-comment
-	- comment space, alignment -- provide options?
+	* comment space, alignment -- provide options?
 	* write listing
 	* Button up file handling
 		- Except: Default output for core as stdout?
 	- Parens in expr print
 			Actually needed! crt-test.ww has (a-b)/3. (was a-b/3 and old asm did not follow std precedence.
-	- Related to last comment looks like bug in old asm forming one's-comp negative numbers. See crt-test.acore versus crt-test.n.ncore
+	* Related to last comment looks like bug in old asm forming one's-comp negative numbers. See crt-test.acore versus crt-test.n.ncore
 	* Quotes in strings
 	* .exec doesn't list properly -- strings in this case don't want quotes
 	- flexo translation
@@ -603,7 +603,7 @@ literal-digit-seq												Decimal inreger
 		We want case-insens ops and case-sens labels and vars
 	- Check range on nextcoreaddress since can overflow 2K as in all1.ww. Right now croaks.
 	- Mod and test disasm
-	* asm: no-prefx-addr option, to get a prety-printed source file
+	* asm: no-prefx-addr option, to get a pretty-printed source file
 		Changed to --MinimalListing
 	* --Legacy_Numbers: should go away? Rightnow .org has a mix in the
           code; it's clear some .org numbers are meant to be octal,
@@ -633,7 +633,7 @@ literal-digit-seq												Decimal inreger
 	* I'l take on a task of updating the asm manual.
 		Should be good for now
 	- Get rid of yaml files
-	- Assure all TestResults* dirs out of git -- ok git in web diff says deleted?
+	* Assure all TestResults* dirs out of git -- ok git in web diff says deleted?
 	- Do we need to handle anything special for "overflow" numbers?
       E.g., +1.001. Is there a need to handle this in some way in the
       asm lang?
@@ -642,61 +642,39 @@ literal-digit-seq												Decimal inreger
       and calculations, so the values associated with a PP are
       restricted to 0-2047."  This is in asm doc; I currently don't have this restriction.
 	- --Logdir -- still active?
-	- Clarify C std vis-a-via octal and other number syntax.
+	* Clarify C std vis-a-via octal and other number syntax.
+		Python does 0o, but C does not
 	* Issues with inheritance and *args? See listingString()
 		Looks ok -- needed to learn more about *args vs **kwargs
 	- Two .print insts in a row cause a comma-expected syntax bug (in sim)
 	- Unterminated string seems to crash asm tokenizer
-	- Rename new asm to be current; appropriate rename old prog and stuff if desired.
 	- C-ish
 	- How does float dv work? Can't find anything that matches this
 	  algorithm. The fixed-point-30 lib does not implement dv.
-	- Shifts in lz
+		Appears to be Taylor series of 1/(a+b), two terms.
+	* Shifts in lz
+	* Rename new asm to be current; appropriate rename old prog and stuff if desired.
+	  		 1/31/25 -- renamed away from .n
+	* Range check float input
+	- Found a log bug where the stdout logs were continually making
+      LogClass instances. Due to not using class var right -- needs
+      wrapper, unlike in C++.
+	- Tracebranch in sim -- need way to turn off
+	* Suppressed undefined-value error -- too noisy.
+	- Debugger: added provisions for "real" debugger by adding a
+      SymToAddr table to the sim; it already has an add-to-sym table,
+      SymTab. Also moveed wwasmparser.py to Common.
+	- Print floats with scientific notation or the eqv of C's "g" format.
 
-    - Summary of the new asm:
-    
-        - The new asm is called Py/Assembler/wwasm.new.py
 
-        - The new asm parser is a separate module,
-              Py/Assembler/wwasmparser.py. It can be invoked as a main
-              program for testing. Given -v and a .ww file, it will spit out a parse tree.
 
-        - The new asm produces core files called .ncore, and listing
-          files called .nlst. This is so we can run both asms and
-          compare results. When we're satisfied with the new asm, we
-          can rename.
 
-        - .ww files we have now will likely need modification, to conform to the new asm syntax. The changes are:
 
-              1. All ops accept operands in the same syntax, which is
-                 a comma-separated set of fields. Each field is an
-                 expression.  Ops needing change are .dbwgt, .switch, and .pp.
 
-              2. Strings passed to .ww_file and .ww_tapeid will need quotes
 
-              3. In expressions standard operator precedence (same as
-                 C) is used, so expressions like a-b/c will need to become
-                 (a-b)/c
-
-        - Other syntax notes:
-
-              1. Labels and preset (.pp) variables must be
-                 alphanumeric but can start with a digit. This allows
-                 more freedom in translating code like L&Z.
-
-              2. All ops are case-insenstive; all variables (labels
-                 and presets) are case-sensitive.
-
-        - In the Tests dir, I have a dir there now called asm, which
-          contains a test script for the new asm.
-
-        - In Code-Samples and Tests, I have in most cases copied
-          <file>.ww to <file>.n.ww, to indicate that the code needs
-          mod for the new asm. I think they all work, except maybe
-          radar. I have added for some a runtest.sh file, or that and
-          runtest.n.sh to keep old versus new for now.
 
 	- Get "everything" into git: tape images, images on code, etc.
+		Did sizing run see below marked 1/1/25
 	- LAS: work on L&Z? Maybe just use new translator and asm?
 	- LAS: disasm, C-ish compiler, ...? Where are we wrt to "musesum-ness"
 		- One goal is historical research and perhaps a paper on the
@@ -721,29 +699,75 @@ Procedure call and other compilation notes
 - Idiom: Establish an instruction like  ca <initial-addr>, then just ao
   to that instruction to bump a table loc.
 
-- Did rel-addr lib, yproc-cell.ww. Complicated! Probably better is to save all writeable words on stack and restore on exit.
+- Did rel-addr lib, stack-frame-rel-addr-lib.ww. Complicated! Probably
+  better is to save all writeable words on stack and restore on exit.
 
 - Could do k = *p++, where p is a ca instruction. 
 
+2/2/25
+Finding dv error in float-lib, note to Guy:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+I studied the instruction set and other doc more deeply and so far I
+conclude that the behavior described where BR is always positive is in
+fact correct. When I think about the difficulty of building hardware
+at the time it makes some sense to me. One's complement provides a way
+to do addition and subtraction on a common representation of both
+positive and negative numbers, but mult and div are still harder with
+signed arithmetic. Hence for those operations the hardware converts to
+mag form and back again. The B reg is the extender for operations that
+spill over a word, and does not need to have the complement logic
+built in; this may seem trivial now but then it was an expense.  I
+recall, but vaguely now, similar issues when I did signal processing
+hw in school, in the SSI/MSI TTL days.
+ 
+Anyway at this point I've turned off the flags that cause negation of
+BR, so vibrating-string works ok. I haven't looked at the L&Z issues
+yet, but rather dove back into the float lib, to see if these
+revelations cast any light on the troubles there. In doing tests and
+looking at traces and sim code, I have not found any sim errors in sf,
+shifts, add, and so forth. I tested dv on normal ww fractions and it
+looks ok.
+ 
+So I then dug into tracing the float-lib dv, and made I think a little
+headway, but nothing really solid yet. Where it says:
+ 
+                           ;       Form (2**-2/x**2)' (Use Euclid's algorithm)
+ 
+which starts at r41, there seems to be an error in the note, and it
+should say (2**-2/x2)', i.e., it's not something squared. There is
+also an error in another note, for the code starting at 37, where it
+should be just x2 and not x2**2.
+ 
+The Euclid part is due to using dv to get bits which are then used to
+get floor and remainder, for the lower bits of the reciprocal. Just
+what the exact calc is here I'm still trying to figure out. The "su
+17r" at 44 is really suspicious. 17r contains "ca 0", which is
+executed but never written, just read for its value, which is
+-32767. Issues arise when the low bits in the original floating
+divisor are zero.  We do 0 - -32767 = 32767, then add one to that, and
+kaboom. This is a common case; the test I used which crashes is
+float1/float2. It may be doing some kind of rounding.
+ 
+By playing with this and adding less than 32767, more tests like sqrt2
+run.  One problem is that aspects of the code are position-dependent,
+in that calc of dispatch addresses and such depend on fixed offsets of
+certain words. So one has to be careful inserting code.
+ 
+I'm pretty sure the overall formula for finding the reciprocal follows
+the Taylor series for 1/(a + b), which expands via Alpha as:
+ 
+1/(a+b) = 1/a - b/a^2 + b^2/a^3 - b^3/a^4 + ...
+ 
+It uses the first two terms, which accounts for the x-squared, but it
+really threw me off that the notes seem incorrect.
+ 
+Anyway I haven't found the problem yet but making progress.
+ 
+ - Larry
 
 ----------------------------------------------------------------------
 1/1/25
+The mounted shared whirlwind google drive:
 pwd
 /cygdrive/g/.shortcut-targets-by-id/1-7fYz-kOky_lqe_lvHZ0YBBHz-ikIffj/Whirlwind
 du -s -k -h *
@@ -804,4 +828,81 @@ chapter xv the utility control program							202
 chapter xvi automatic input-output requests [output]			224
 chapter xvii generalized post-mortems							241
 
+
+2/6/25
+Debugger Ideas
+==============
+
+I did some looking into how we might make a debugger for ww and the
+sim already has pretty good facilities for controlling the
+execution. Right now it's just an experimental hack to verify
+feasibility. In the while-true loop running the sim steps, I added a
+user-input call. With -t on this effectively makes a single-step
+interaction, and since trace is on each such step shows the machine
+state. So I then wired in a call to the asm parser, and hooked the
+eval to symbol tables in the sim. As a result at each of these steps I
+can print a symbol's value, memory contents, etc.
+
+So this is crude, but shows the feasibility of adding something like
+this to the sim. I also note that you have some "breakpoint" code in
+there now, but I can't tell what it does. Anyway a basic debugger
+proposal is as follows.
+
+The easiest syntax to support is asm, since it's there already. A
+basic command set might be:
+
+	p <expr> [, <format>]
+
+This will print an expr's value, and its contents if it's a valid
+memory loc. Format can be d, o, fl, fr, or fm (decimal, octal, float
+(24,6), fraction, and float-mra (30,15)) We can have special vars for
+AC, AR, etc. We could distinguish accessing a var's value versus the
+memory location it represents with * or something, as in C. I'd have
+to introduce * as a unary operator. I don't see this as really
+necessary as we could just use the same format used now to print
+trace state.
+
+So, eg:
+
+> p Xi
+@0o0201(Xi)=0o117777(-0o60000)
+
+or
+
+> p Xi, d
+@129(Xi)=-24576
+
+	pb {<var> | <integer>} , <n-words> [, <format>]
+
+Print a block of memory.
+
+> pb mra, 3, d
+@854(mra)=28160
+@855(mra)=0
+@856(mra)=8
+
+Also you can say:
+
+>p mra, fm
+@854(mra)=220.000000
+
+	s | <nl>
+
+Single-step. Just return will also do this but can be an option if preferred.
+
+	b <expr>
+
+Place a breakpoint at the address indicated by <expr>.
+
+	bl
+
+List breakpoints.
+
+	r
+
+Run from the current pc.
+
+	rs
+
+Restart the program.
 

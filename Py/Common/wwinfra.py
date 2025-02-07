@@ -55,18 +55,22 @@ class LogSeqno:
     def __init__ (self):
         self.seqno = 0
 
+class StdLog:
+    def __init__ (self):
+        self.stdLog = None
+
 class LogFactory:
     logs = {}                           # class var -- dictionary of LogClass instances keyed by log name
     cb = None                           # class var -- only one instance of the "constants"
     logSeqno = LogSeqno()               # class var -- global log entry seqno
-    stdLog = None                       # class var -- Holds cached LogClass instance for stdoout/stderr output
+    stdLog = StdLog()                   # class var -- Holds cached LogClass instance for stdoout/stderr output
     # logname is either an absolute path or the leaf of a file name to go under LogDir
     # logname of None means use stdout and stderr as the sole output streams.
     def getLog (self, logname=None, isAsmLog=False, **kwargs):
         if self.cb is None:
             self.cb = theConstWWbitClass
-        if logname is None and self.stdLog is not None:
-            return self.stdLog
+        if logname is None and self.stdLog.stdLog is not None:
+            return self.stdLog.stdLog
         else:
             if logname is not None and logname in self.logs:
                 return self.logs[logname]
@@ -79,10 +83,9 @@ class LogFactory:
         else:
             newLog = LogClass ("", logfile = logfile, factory = self, **kwargs)
         if logfile is None:
-            self.stdLog = newLog
+            self.stdLog.stdLog = newLog
         else:
             self.logs[logname] = newLog
-        # print ("LAS1", self.logs)
         return newLog
 
 LogMsgType = Enum ("LogMsgType", ["Raw", "Log", "Debug", "Debug7ch", "Debug556", "DebugLoader", "DebugTap"])
@@ -325,7 +328,7 @@ class Tokenizer:
                 self.state = 0
                 return self.endOfString
             elif self.state == 9:
-                if (c == 'l' or c == 'r'):
+                if c in ['l','r','m']:
                     self.state = 1
                     self.pos += 1
                     token = '%' + token + c
@@ -717,7 +720,7 @@ class WWSwitchClass:
     # writing the parser twice...  If this works, it might be possible to share more stuff.
     # So the routine returns an array of True/False for the sim, and a cleaned and validated
     # arg list for the assembler
-    def parse_ff_reg_assignment(self, cb, name, args):
+    def parse_ff_reg_assignment(self, name, args):
         ffreg_str = ''
         validated_str = ''
         for arg in args:
@@ -1103,6 +1106,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
     file_type = '?'  # default, assume it's a "core" file, not a tape stream (which would be 'T')
 
     symtab = {}
+    sym_to_addr_tab = {}
     switch_class = cpu.cpu_switches
     commenttab = cpu.CommentTab
     exectab = cpu.ExecTab
@@ -1165,6 +1169,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
                 continue
             address = int(tokens[0][2:], 8)
             symtab[address] = (tokens[1], '')  # save the name, and a marker saying we don't know the type
+            sym_to_addr_tab[tokens[1]] = address
         elif re.match("^@N", input_minus_comment):  # read a line with a comment indexed by the core address
             tokens = re.split("[: \t][: \t]*", input_minus_comment, maxsplit = 1)
             # print "tokens:", tokens
@@ -1253,7 +1258,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
     cm.metadata['isa'] = isa   # return a string with the instruction set to be used
     cm.metadata['file_type'] = file_type
 
-    return symtab, jumpto_addr, ww_file, ww_tapeid, screen_debug_widgets
+    return symtab, sym_to_addr_tab, jumpto_addr, ww_file, ww_tapeid, screen_debug_widgets
 
 
 # used only in write_core to output a hash of the core image as metadata

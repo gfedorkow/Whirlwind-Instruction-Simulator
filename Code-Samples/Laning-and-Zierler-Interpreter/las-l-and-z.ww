@@ -9,6 +9,7 @@
 ;    def resolveOpcode (self, opcode: str) -> str:
 ;        dict = {"sl": "slr", "sr": "srr", "p": ".word"}
 ;        if opcode in dict:
+;   2/4/25 -- checked
 
 ;
 ; | [Transcribed by Larry Stabile, 10/13/24]
@@ -58,14 +59,16 @@ a1:
           su 51a3              ;  | integer in (43r, 44r
           slr 9                ;  |
           ts 44a1              ; -|
+		  .print "digit read-in %fl", 43a1
           ca 25a1
           td 34a1
 ; | Sheet 2/20
 ; | a1
-32a1:     sp 852               ; (programmed arithmetic
+		  .print "mra a1----- %fm", mra
+32a1:     sp ax               ; (programmed arithmetic
           mr 4a7               ; (i.e., by 10) ; [LAS was "mr 497" -- transcription error]
 34a1:     ad 0
-          sp 852
+          sp ax
 36a1:     ao 37a1              ; (reset to 38r)
 37a1:     sp 2a1
 38a1:     .word 0              ; (counter for digits before decimal pt ; [LAS eliminated parens for opcode p or just data in this and following sections]
@@ -99,8 +102,8 @@ a2:
           sp 19a6              ;  |
           ad 56a10             ;  |
           sp 8a6               ; -|
-18a2:     sp 852               ; -| START
-          sp 32                ; -|
+18a2:     sp ax               ; -| START
+          sp a1                ; -|	   ; [LAS was sp 32]
 ; |
 ; | Sheet 4/20
 ; | a3 (Lower case symbols)
@@ -234,7 +237,7 @@ a4:
           sp 23a1              ; O (letter) (not used)
           sp 2a1               ; stop
 50a4:     ad 55a3              ; B (not used) ; [LAS was (55a3)]
-51a4:     sp 28a10             ; ; [LAS was sp (28a10/33r)]
+51a4:     sp 33a4             ; ; [LAS was sp (28a10/33r) -- had it at 28a10 but seems wrong so changed it]
 52a4:     sp 30a4              ; G (not used)
           sp 5a13
 54a4:     .word 20             ; 9 (exp.)
@@ -299,7 +302,7 @@ a6:
           ca 4ax               ; -|
           td 24a6              ;  | Form [?] +- [?] n, where
 22a6:     ca 2ax               ;  | n is in MRA in ; [LAS was (ca 2ax/cs 2ax)]
-          srr 15               ;  | (24,6) form ; [LAS was sr*]
+          srh 15               ;  | (24,6) form ; [LAS was sr*]
 24a6:     slr 0                ; -|
 25a6:     sp 0
 ; |
@@ -601,7 +604,8 @@ a15:
 14a15:    rc 14a15
           sp ax
 16a15:    ca 0                 ;                -| print number
-          sp 222               ; (24,6) print    |
+;          sp 222               ; (24,6) print    |			; [LAS check]
+		   si 0               ; ; [LAS we don't have the print routine yet]
           sp 1a15              ;   routine      -|
 ; |
 ; | Sheet 20/20
