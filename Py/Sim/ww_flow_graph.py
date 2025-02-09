@@ -616,6 +616,14 @@ def format_one_block(b, block_info_len, cpu):
         style = ';color="Green"'
     if b.contains_cf:  # CF fields have special (bad) meaning in flow-graphs, so that supersedes I/O designation
         style = ';color="Red"'
+
+    # Bug - Jan 27, 2025 - guy - Labels contain comments from code, which may in turn contain double quotes
+    # These quotes must be escaped to avoid freaking the Dot compiler out.
+    # Somehow this approach using replace() isn't working, but I don't want to debug this Right Now!
+    #if '"' in b.label:
+    #    breakp()
+    #    b.label = b.label.replace('"', '\\"')
+
     graph_label = '  %s [label="%s(%dw)\\l%s:\\l%s%s"%s;fontname=courier;shape=box3d]\n' % \
                   (b.id, b.label, block_len, cpu.wwaddr_to_str (b.start_addr, label_only_flag=True), block_start_label, block_end_label, style)
     return(graph_label)
