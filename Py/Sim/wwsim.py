@@ -420,7 +420,7 @@ class CpuClass:
         cpu = self
         for line in cmd.split('\\n '):
             exec_op = None
-            # the next two lines were combined with a Walrus Operator :-
+            # the next two lines once were combined with a Walrus Operator :-
             m = re.match("(\\w+): ", line)
             if m:
                 exec_op = m.group(1)
@@ -1885,7 +1885,7 @@ def main_run_sim(args, cb):
     flowgraph = None
     if args.FlowGraph:
         flowgraph = ww_flow_graph.FlowGraph (args.FlowGraph, args.FlowGraphOutFile, args.FlowGraphOutDir, cb)
-        cb.tracelog = flowgraph.init_log()
+        # cb.tracelog = flowgraph.init_log_from_sim()
 
     if args.Radar:
                                         # heading is given as degrees from North, counting up clockwise
@@ -2196,8 +2196,8 @@ def main():
         cb.TraceALU = True
     if args.TraceCoreLocation:
         cb.TraceCoreLocation = int(args.TraceCoreLocation, 8)
-    if args.FlowGraph:
-        cb.tracelog = ww_flow_graph.init_log_from_sim()
+#    if args.FlowGraph:
+#        cb.tracelog = ww_flow_graph.FlowGraph.init_log_from_sim()
     cb.decimal_addresses = args.DecimalAddresses  # if set, trace output is expressed in Decimal to suit 1950's chic
     cb.no_toggle_switch_warn = args.NoToggleSwitchWarning
 
