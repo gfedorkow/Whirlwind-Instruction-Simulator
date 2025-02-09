@@ -2,7 +2,7 @@
 thisfile=$0
 cd ${thisfile%/*}/
 
-echo "CRT Test:"
+echo "CRT Test in  ${thisfile%/*}/:"
 if [ "$1" == "--Accept" ];
 then
 	echo "Accepting..."
