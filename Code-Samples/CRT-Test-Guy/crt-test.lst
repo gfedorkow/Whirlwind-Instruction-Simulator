@@ -154,8 +154,8 @@
 @0166:076000                      .word MAX_POS_X_DELTA    ; X+ uptward line
 
 
-                                  ;  cdl_len:  .word  0o177767 ; (corner_display_list - cdl_len)/3  ; compute negative of table length by subtracting start from finish
-@0167:177766             cdl_len: .word corner_display_list - cdl_len / 3; compute negative of table length by subtracting start from finish @@ReadBy a0102
+                                  ; the count for table length should be off-by-one to match WW the loop-count mechanism
+@0167:177767             cdl_len: .word corner_display_list - cdl_len / 3 + 1; compute negative of table length by subtracting start from finish @@ReadBy a0102
 
                                   ;;;;;;;;;;;;;  Multi-Segment Test ;;;;;;;;;;;
                                   ; This test draws a series of horizontal, max-length vectors across the screen, each offset upwards by a small amount,
@@ -348,4 +348,3 @@
 @0363:011400                      .word B3 | B6 | B7       ; Seven
 @0364:077400                      .word B1 | B2 | B3 | B4 | B5 | B6 | B7; Eight
 @0365:017400                      .word B3 | B4 | B5 | B6 | B7; Nine
-
