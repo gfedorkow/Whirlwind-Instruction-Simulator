@@ -256,6 +256,15 @@ class AsmExpr:
             self.leftSubExpr.print (indent = indent + 3)
         elif t in [AsmExprType.Variable, AsmExprType.Literal]:
             sys.stderr.write (" " * indent + t.name + " " + self.exprData + "\n")
+    def asString (self) -> str:
+        t = self.exprType
+        if t in [AsmExprType.BinaryPlus, AsmExprType.BinaryMinus,
+                 AsmExprType.BinaryMult, AsmExprType.BinaryDot, AsmExprType.BinaryDiv]:
+            return self.leftSubExpr.asString() + self.exprData + self.rightSubExpr.asString()
+        elif t in [AsmExprType.UnaryPlus, AsmExprType.UnaryMinus, AsmExprType.UnaryZeroOh]:
+            return self.exprData + self.leftSubExpr.asString()
+        else:
+            return self.exprData
 
 class AsmParseSyntaxError (Exception):
     pass
@@ -310,6 +319,7 @@ class AsmParsedLine:
     def parseLine (self) -> bool:
         try:
             self.parsePrefixComment()
+            self.parseRecordSep()
             if self.parseSectionOffset():
                 self.parseRecordSep()
                 self.parseInst()
@@ -382,7 +392,7 @@ class AsmParsedLine:
                 negate = tok.tokenStr == "-"
                 # This is really groovy python syntax...
                 exprType = {"-":AsmExprType.UnaryMinus,"+":AsmExprType.UnaryPlus,"0o":AsmExprType.UnaryZeroOh}[tok.tokenStr]
-                e1 = AsmExpr (exprType, "")
+                e1 = AsmExpr (exprType, tok.tokenStr)
             else:
                 self.ptok (tok)
                 return self.parseAtom()
@@ -402,7 +412,7 @@ class AsmParsedLine:
                 leftExpr.rightSubExpr = e1
             tok = self.gtok()
             if tok.tokenType == AsmTokenType.Operator and tok.tokenStr in ["+", "-"]:
-                e = AsmExpr (AsmExprType.BinaryPlus if tok.tokenStr == '+' else AsmExprType.BinaryMinus, "")
+                e = AsmExpr (AsmExprType.BinaryPlus if tok.tokenStr == '+' else AsmExprType.BinaryMinus, tok.tokenStr)
                 if leftExpr is not None:
                     e.leftSubExpr = leftExpr
                 else:
@@ -424,7 +434,7 @@ class AsmParsedLine:
                 leftExpr.rightSubExpr = e1
             tok = self.gtok()
             if tok.tokenType == AsmTokenType.Operator and tok.tokenStr in ["*", "/"]:
-                e = AsmExpr (AsmExprType.BinaryMult if tok.tokenStr == "*" else AsmExprType.BinaryDiv, "")
+                e = AsmExpr (AsmExprType.BinaryMult if tok.tokenStr == "*" else AsmExprType.BinaryDiv, tok.tokenStr)
                 if leftExpr is not None:
                     e.leftSubExpr = leftExpr
                 else:
@@ -446,7 +456,7 @@ class AsmParsedLine:
                 leftExpr.rightSubExpr = e1
             tok = self.gtok()
             if tok.tokenType == AsmTokenType.Operator and tok.tokenStr in ["."]:
-                e = AsmExpr (AsmExprType.BinaryDot, "")
+                e = AsmExpr (AsmExprType.BinaryDot, tok.tokenStr)
                 if leftExpr is not None:
                     e.leftSubExpr = leftExpr
                 else:
@@ -484,6 +494,7 @@ class AsmParsedLine:
 class AsmProgram:
     def __init__ (self, cmdArgs):
         self.cmdArgs = cmdArgs
+        self.outFileName = ""
         self.outStream = self.openOutStream()
         self.verbose = self.cmdArgs.Verbose
         self.cb = wwinfra.theConstWWbitClass
@@ -494,11 +505,11 @@ class AsmProgram:
         self.curSection = ""
     def openOutStream (self):
         inFileName = self.cmdArgs.inFileName
-        outFileName = self.cmdArgs.OutFile if self.cmdArgs.OutFile is not None else self.getOutFileName (inFileName)
-        if outFileName == "-":
+        self.outFileName = self.cmdArgs.OutFile if self.cmdArgs.OutFile is not None else self.getOutFileName (inFileName)
+        if self.outFileName == "-":
             return sys.stdout
         else:
-            return open (outFileName, "w")
+            return open (self.outFileName, "w")
     def getOutFileName (self, inFileName):
         for i in range (len(inFileName)):
             j = len (inFileName) - 1 - i
@@ -516,6 +527,8 @@ class AsmProgram:
             return expr.exprData
         elif expr.exprType == AsmExprType.BinaryDot:
             return "%s.%s" % (expr.leftSubExpr.exprData, expr.rightSubExpr.exprData)
+        else:
+            return expr.asString()
     def resolveOpcode (self, opcode: str) -> str:
         dict = {"sl": "slr", "sr": "srr", "p": ".word"}
         if opcode in dict:
@@ -594,6 +607,7 @@ def main():
     p.parseLines()
     p.genTables()
     p.genAsmCode()
+    print ("Output to ", p.outFileName)
  
 if __name__ == "__main__":
     main()

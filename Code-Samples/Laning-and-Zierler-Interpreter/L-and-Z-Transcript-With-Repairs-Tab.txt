@@ -1,0 +1,653 @@
+| [Transcribed by Larry Stabile, 10/13/24]
+| [Transcription notes and questions in square brackets]
+| [Meaning of double-bars?]
+| [Did not transcribe "light-colored" text]
+|
+| Instrumentation Laboratory
+| Massachusetts Institute of Technology
+| Cambridge, Mass.
+| Prepared by: J.H Laning Jr.
+| Date: 3/53
+| (Tape T-2134-m8 plus correction tape P-2134-10)
+|
+| Sheet 1/20
+| a1 (Read-in) [LAS deleted useless [Section] heading
+|
+		section a1
+START           -->	0	si 128
+16r             -->	1	ao 36r
+NORMAL RE ENTRY -->	2	rd 2r
+              (1a4)	3	ad a3	(l.c. or u.c.) ; [LAS waa ad (a3/193)]
+	4	td 8r
+	5	td 40a4
+	6	td 14r
+	7	td 22r
+               (4r)	8	ca (-)
+	9	su 4a3	-| Is symbol
+	10	cp 12r	-| a number?
+	11	sp 38a4	; [LAS was sp (38a4/58a4)]
+10r             -->	12	ca 33a3	31a3 is the normal mode ; [LAS was ca (33a3/31a3)]
+	13	td 11r
+               (6r)	14	ca (-)
+	15	su 0	(Is symbol a period?)
+	16	cp 1r
+	17	su 54a3	-| l.c. no.[?] or
+	18	cp 45a4	-| exponent?
+	19	ca 43a3	-| set to interpret
+	20	td 60a4	 | digit as an
+	21	cs 62a4	-| exponent
+48a4 (7r)       -->	22	ad (-)
+	23	cp 39r	--> if digit is zero
+	24	sf 51a3	-|
+	25	ts 43r	 | Form [?] (24,6) version
+	26	ca 11a4	 | of digit as an
+	27	su 51a3	 | integer in (43r, 44r
+	28	sl 9	 |
+	29	ts 44r	-|
+	30	ca 25r
+	31	td 34r
+| Sheet 2/20
+| a1
+	32	sp 852	(programmed arithmetic
+	33	mr 4a7	(i.e., by 10) ; [LAS as "mr 497" -- transcription error]
+         (31r, 41r)	34	ad (-)
+	35	sp 852
+               (1r)	36	ao (37r)	(reset to 38r)
+	37	sp 2r
+	38	p 0	(counter for digits before decimal pt ; [LAS eliminated parens for opcode p or just data in this and following sections]
+	39	p 0	(  "      "    "    after     "    ")
+23r             -->	40	ca 10a6
+	41	td 34r
+	42	sp 32r
+	43	p 0	-| Temporary storage for
+	44	p 0	-| integer during read-in
+|
+| Sheet 3/20
+| a2 (PRINT)
+|
+		section a2
+(p) 44a4        -->	0	sp a16	; [LAS section offset was 0r]
+	1	sp 28a10
+44a4            -->	2	ca 11a16	-| store "sp to print
+	3	sp 9a8	-| control"
+	4	rd 4r	-| read in
+	5	ao 13r	 | "RINT"
+	6	cp 4r	-|
+	7	sp 2a1
+17a3 (period    -->	8	ca 15a3	-| reset counter
+after print instr.)	9	ts 13r	-|
+	10	sp a16
+	11	sp 23a10
+	12	sp 8r	; [LAS was (sp 8r/p 0)]
+           (5r, 9r)	13	p -3	(counter)
+5310            -->	14	ao 25a3	-| part of SP routine
+	15	sp 19a6	 |
+	16	ad 56a10	 |
+	17	sp 8a6	-|
+46a10           -->	18	sp 852	-| START
+	19	sp 32	-|
+|
+| Sheet 4/20
+| a3 (Lower case symbols)
+|			Symbol
+		section a3
+	0	p a3
+	1	p a4
+	2	sp 50a4	e
+	3	p 9	8
+	4	sp 0
+	5	p 0	1 ; [LAS was blank]
+	6	sp 50a4	a
+	7	p 4	3
+	8	sp 2a1	space
+	9	sp 10a10	=
+	10	sp 50a4	s
+	11	p 5	4
+	12	sp 50a4	i
+	13	sp 52a4	+
+	14	sp 50a4	u
+	15	p 3	2
+	16	p 0	shift ribbon ; [LAS was blank]
+             (8a16)	17	p 0	. [period] ; [LAS was "(p 0/sp 8a2)"]
+	18	sp 50a4	d
+	19	p 6	5
+	20	p 50a4	r
+	21	p 2	1
+	22	sp 50a4	j
+	23	p 8	7
+	24	sp 50a4	n
+	25	sp 14a10	,
+	26	sp 50a4	f
+	27	p 7	6
+	28	sp 50a4	c
+	29	sp 55a4	-
+	30	sp 50a4	k
+	31	p 58a4
+	32	sp 50a4	t
+	33	p 38a4
+| Sheet 5/20
+| a3 (continued)
+	34	sp 50a4	z
+	35	sp 2a1	back space
+	36	sp 50a4	l
+	37	sp 2a1	tabulate
+	38	sp 50a4	w
+	39	p a5
+	40	sp 50a4	h
+	41	sp 2a1	carr. return
+	42	sp 50a4	y
+	43	p a6
+	44	sp 50a4	p
+	45	cs 2ax
+	46	sp 50a4	q
+	47	ts 0
+	48	sp 50a4	o (letter)
+	49	sp 2a1	stop
+	50	sp 50a4	b
+	51	p 0
+	52	sp 50a4	g
+	53	p 1a3
+	54	p 10	9
+	55	mr 0
+	56	sp 50a4	m
+	57	sp 42a4	shift to u.c.
+	58	sp 50a4	x
+	59	dv 0
+	60	sp 50a4	v
+	61	sp a4	shift to l.c.
+	62	p 1	0 (zero)
+	63	sp 2a1	nullify
+|
+| Sheet 6/20
+| a4 (Upper case symbols & misc. program)
+|
+		section a4
+61r             -->	0	ca a3
+	1	td 3a1
+	2	sp 2a1	E (not used)
+	3	p 19	8 (exp.)
+	4	p 55a3
+	5	p 0.22000	_ ; [LAS Did say + not _ and 0,22000 but looks like hand-written sheet is as shown here now. Transcription error.]
+	6	p 59a3	A (not used)
+	7	p 14	3 (exp.)
+	8	sp 2a1	space
+	9	sp 2a1	. ['dot', not period] (see note)
+	10	sp 40a10	S
+	11	p 15	4 (exp.)
+	12	ad (59a3)	I (not used)
+	13	sp a9	/
+	14	p 14a9	U (not used)
+	15	p 13	2 (exp.)
+	16	p 0	shift ribbon ; [LAS was blank]
+	17	sp a12	)
+	18	sp a13	D (not used)
+	19	p 16	5 (exp.)
+            (11a10)	20	ts (-)	R (not used)
+	21	p 12	1 (exp.)
+	22	ad 41a13	J (not used)
+	23	p 18	7 (exp.)
+	24	cs 2ax	N (not used) ; [LAS was (cs 2ax/ca 2ax)]
+	25	sp a11	(
+	26	p 0	F ; [LAS was blank]
+	27	p 17	6 (exp.)
+	28	sp 50a10	C
+	29	sp 10a9	- (exp.)
+|
+| note: The symbol . ['dot', not period] can be used at the programmer's discretion to
+|  denote multiplication, where convenient typographically.
+|
+| Sheet 7/20
+| a4 (continued)
+52r, 552        -->	30	ta 32r	K (not used)
+	31	sp 18a9
+              (30r)	32	ca (-)	T (not used)
+51r             -->	33	sp 9a8
+	34	sp 2a1	Z (not used)
+	35	sp 2a1	back space
+	36	ca 2ax	L (not used)
+	37	sp 2a1	tabulate
+10a1            -->	38	ca 40r	W (not used)
+	39	su 4a3
+              (4a1)	40	sp (-)	H (not used)
+	41	sp 2a1	carr. return
+57a3            -->	42	ca 53a3	Y (not used)
+	43	sp 1r
+	44	sp a2	P ; [LAS was (sp a2/sp a2 + 2)]
+17a1            -->	45	ca 39a3
+	46	td 60r	Q (not used)
+	47	cs 62a3
+	48	sp 23a1	O (letter) (not used)
+	49	sp 2a1	stop
+	50	ad 55a3	B (not used) ; [LAS was (55a3)]
+	51	sp 28a10	; [LAS was sp (28a10/33r)]
+13a3            -->	52	sp 30r	G (not used)
+	53	sp 5a13
+	54	p 20	9 (exp.)
+29a3            -->	55	sp 30r
+	56	sp 10a13	M (not used)
+	57	sp 42r	shift to u.c.
+10a1            -->	58	ca 33a3	X (not used)
+	59	td 10a1
+        (19a1, 46r)	60	sp (-)	V (not used)
+	61	sp 0r	shift to l.c.
+	62	p 11	0 (zero exp.)
+	63	sp 2a1	nullify
+|
+| Sheet 8/20
+| a5 (Interpret MRA as lower case number)
+|
+		section a5
+60a4            -->	0	cs 39a1
+	1	ts 39a1
+18r             -->	2	ao 39a1
+	3	cp 15r
+	4	sp a8	(select new address k)
+	5	td 7r
+	6	sp ax	(= sp 852) -| store number
+               (5r)	7	ts (-)	            | in (k, k+1)
+	8	sp ax	           -|
+	9	ca 50a4	-| form symbol mr k
+	10	td 13r	 | or dv k, where
+	11	ca 7r	 | k is address at
+	12	su 47a3	 | which number has 
+              (10r)	13	ad (-)	 | just been stored
+	14	sp 8a6	-|
+3r              -->	15	sp ax
+	16	dv 4a7	(divide by 10)
+	17	sp ax
+	18	sp 2r
+|
+| Sheet 9/20
+| a6 (Interpret MRA as exponent)
+|
+		section a6
+60a4            -->	0	ca 18a8	-| store "sp exp" in
+	1	td 3r	 | place of last-stored
+	2	ca 18r	 | symbol (mr x or dv x)
+	3	ex (-)	-|
+	4	td 51a3	-|
+	5	ca 51a3	 | store "+x"
+	6	sp 9a8	-|
+	7	sp 19r	-| compute and store the
+	8	sp 9a8	-| exponent +- [?] n
+	9	sp ax	-|
+	10	ca a7	 | reset MRA
+	11	sp ax	 | and various
+	12	ca 0	 | counters
+	13	ts 38a1	 |
+	14	ts 39a1	 |
+	15	ca 13r	 |
+	16	td 36a1	-|
+	17	sp 38a4	; [LAS was sp (38a4/14a9)]
+	18	sp 15a13	"sp exp"
+	19	td 25r
+	20	ca 4ax	-|
+	21	td 24r	 | Form [?] +- [?] n, where
+	22	ca 2ax	 | n is in MRA in ; [LAS was (ca 2ax/cs 2ax)]
+	23	sr 15	 | (24,6) form ; [LAS was sr*]
+	24	sl (-)	-|
+	25	sp (-)
+|
+| Sheet 10/20
+| a7 (Numerical storage)
+|
+		section a7
+	0	p 0.00000	-| 0 ; [LAS added p to this section]
+	1	p 1.47777	-|
+	2	p 0.40000	-| 1
+	3	p 0.01000	-|
+	4	p 0.50000	-| 10
+	5	p 0.04000	-|
+|
+| Sheet 11/20
+| a8 (Address selection)
+|
+		section a8
+4a5             -->	0	ta 7r	-| Select new
+	1	ca 8r	 | address for
+	2	su 21a3	 | storage of
+	3	ts 8r	 | numerical
+	4	su 18r	 | quantity
+	5	cp 15r	 |
+	6	ca 8r	 |
+               (0r)	7	sp (-)	 |
+	8	p 197	-| (last address used) ; [LAS was just "+197", no op or pseudo-op]
+various points  -->	9	ta 17r	-|
+	10	ts (32)	 | Store C(AC) in
+	11	ao 10r	 | next available
+	12	su 47a3	 | program address.
+	13	su 8r	 |
+	14	cp 16r	 |
+5r              -->	15	ck 0	 |
+14r             -->	16	ao 18r	 |
+               (9r)	17	sp (-)	 |
+	18	p 31	-| (last occupied program address) ; [LAS was "(p 31)"]
+|
+| Sheet 12/20
+| a9 (division, etc.)
+|
+		section a9
+13a4            -->	0	ca 12a4	(divide)
+	1	ex 50a4
+	2	ex 12a4
+	3	sp 5r
+	4	sp 2a1	(the 14a10 mode is never used) ; [LAS was sp (2a1/14a10)]
+3r,10r,14r,30r  -->	5	ta 9r
+	6	ca 22a6
+	7	ex 24a4
+	8	ex 22a6
+(5r)            -->	9	sp (-)
+29a4            -->	10	sp 5r	(upper case minus)
+	11	ca 14a4
+	12	td 17a6
+	13	sp 2a1
+17a6 [?]	14	sp 5r
+	15	ca 17r
+	16	td 17a6
+	17	sp 38a4
+28r,12a10,22a10 -->	18	ta 27r	(reset dv and exp to normal)
+	19	ca 36a4
+	20	ts 22a6
+	21	ca 45a3
+	22	ts 24a4
+	23	ca 4a4
+	24	td 50a4
+	25	ca 6a4
+	26	td 12a4
+              (18r)	27	sp (-)
+8a12            -->	28	sp 18r	(reset dv and exp to non-normal)
+	29	sp 5r
+	30	ca 12a4
+	31	ex 50a4
+	32	ex 12a4
+	33	sp 9a12
+|
+| Sheet 13/20
+| a10 (Equals, comma, SP, CP)
+|
+		section a10
+10r,3a11        -->	0	ta 9r
+	1	ca 18a4
+	2	sp 9a8
+	3	td (68r)
+	4	su 62a3
+	5	ts (63r)
+	6	td 8r
+	7	ca 9r
+               (6r)	8	ex (-)
+               (0r)	9	sp (-)
+9a3            -->	10	sp 0r	(equals)
+	11	td 20a4
+17a11          -->	12	sp 18a9
+	13	sp 2a1
+25a3           -->	14	ca 22a4	(comma)
+	15	sp 9a8
+	16	ca 20a4
+	17	sp 9a8
+	18	ca 63r
+	19	td 21r
+	20	ca 68r
+              (19r)	21	td (-)
+	22	sp 18a9
+	23	ca 58r
+	24	td 51a4
+	25	td 51a4
+	26	td 12a1
+	27	sp 2a1	; [LAS was sp (2a1/49r)]
+51a4            -->	28	ca 59r
+	29	td 51a4
+	30	ca 60r
+	31	td 12a1
+	32	sp 19a6
+	33	ad 57r
+| Sheet 14/20
+| a10 (continued)
+	34	td 38r
+	35	ca 10a8
+	36	su 47a3
+	37	ad 4a3
+              (34r)	38	ts (-)
+	39	sp 9a6
+10a4            -->	40	ca 52r	(SP)
+51r             -->	41	ts 56r
+	42	rd 42r
+	43	su 54a4
+	44	cp 0	(provision for future SR, CR instructions)
+	45	su 21a4
+	46	cp 18a2	(START)
+	47	ca 61r
+	48	td 25a3
+	49	sp 2a1
+28a4            -->	50	ca 57r	(CP)
+	51	sp 41r
+	52	sp a14
+25a3            -->	53	sp 14a2
+25a3            -->	54	ca 62r
+	55	sp 48r
+	56	sp a14	; [LAS was (sp a14/cp a14)]
+	57	cp a14
+	58	p 28r	; [LAS added p to this section]
+	59	p 33a4
+	60	p 31a3
+	61	p 53r
+	62	p 14r
+	63	p 0	-| storage for addresses used by
+	64	p 0	 | parenthesis routines in forming
+	65	p 0	 | and storing sp orders
+	66	p 0	 |
+	67	p 0	 | [These are notated in the CS as: ]
+	68	p 0	 | [   63-67  +0                    ]
+	69	p 0	 | [   68-72  +0                    ]
+	70	p 0	 | [   73-77  +0                    ]
+	71	p 0	 |
+	72	p 0	 |
+	73	p 0	 |
+	74	p 0	 |
+	75	p 0	 |
+	76	p 0	 |
+	77	p 0	-|
+|
+| Sheet 15/20
+| a11 (Left parenthesis)
+|
+		section a11
+25a4            -->	0	sp 9a8	(store dummy symbol)
+	1	ao 3a10
+	2	ao 5a10
+	3	sp a10
+	4	sp a8
+	5	td 73a10	; [LAS was "td (73a10)"]
+	6	ao 5r
+	7	ca 12a4
+	8	su 50a4
+	9	cp 11r
+	10	sp 2a1
+9r              -->	11	ca 5a10
+	12	td 14r
+	13	td 16r
+              (12r)	14	ca (-)
+	15	ad 18r
+              (13r)	16	ts (-)
+	17	sp 12a10
+	18	p 0.04000	; [LAS added p]
+|
+| Sheet 16/20
+| a12 (Right parenthesis)
+|
+		section a12
+17a4            -->	0	ca 5a10
+	1	td 4r
+	2	su 62a3
+	3	td 5a10
+               (1r)	4	ca (-)
+	5	td 29r
+	6	su 18a11
+	7	cp 36r
+	8	sp 28a9
+37r             -->	9	ca 5a11
+	10	su 62a3
+	11	td 5a11
+	12	td 16r
+	13	td 32r
+	14	ca 22a4
+	15	sp 9a8
+              (12r)	16	ca (-)
+	17	ad 47a3
+	18	sp 9a8
+	19	ca 3a10
+	20	td 24r
+	21	su 62a3
+	22	td 3a10
+	23	td 25r
+              (20r)	24	ca (-)
+              (23r)	25	ex (-)
+	26	ad 4a3
+	27	sp 9a8
+	28	ad 62a3
+               (5r)	29	td (-)
+	30	ca 50a4
+	31	td 33r
+| Sheet 17/20
+| a12 (continued)
+              (13r)	32	ca (-)
+              (31r)	33	ad (-)
+	34	sp 9a8
+	35	sp 2a1
+7r             -->	36	sp 18a9
+	37	sp 9r
+|
+| Sheet 18/20
+| a13 (Interpretive routines)
+|
+		section a13
+               -->	0	ta 4r	equals
+	1	ca a7
+	2	ts 41r
+	3	ca 2a7
+	4	sp (-)
+               -->	5	ta 9r	plus
+	6	ad 41r
+	7	ts 41r
+	8	ca 207
+	9	sp (-)
+               -->	10	ta 14r	minus
+	11	ad 41r
+	12	ts 41r
+	13	cs 2a7
+	14	sp (-)
+               -->	15	ta 21r	exponent
+	16	ta 27r
+	17	sp ax
+	18	ao 21r
+	19	td 32r
+	20	ao 32r
+	21	cs (-)
+	22	cp 37r
+	23	ts 40r
+	24	cs 40r
+	25	ts 40r
+	26	ca 210
+	27	ad (-)
+	28	ts 34r
+	29	ao 40r
+	30	cp 33r
+	31	sp ax
+	32	sp (-)
+	33	sp ax
+	34	mr (-)	; [LAS was (mr (-)/dv (-))]
+	35	sp ax
+	36	sp 29r
+	37	ts 40r
+	38	ca 55a3
+	39	sp 27r
+	40	p 0	   -|n| counter ; [LAS added p to this section]
+	41	p 0	-| temporary sum storage for arithmetic
+	42	p 0	-|
+|
+| Sheet 19/20
+| a15 (Print control)
+|
+		section a15
+	0	ta 3r	-| plant address of 1st 
+	1	sp ax	-| character to be printed
+	2	si 149
+	3	ca (-)
+	4	td 16r
+	5	td 8r
+	6	cp 9r	-| If next symbol is an sp order carry it out. 
+	7	sp ax	 | Since symbols to be printed are stored as
+	8	sp (-)	-| "mr x,mr y," etc. the "mr" actuates this xxx [?]
+	9	su a3	-|
+	10	clc 10	 | form and print first letter
+	11	rc 11r	-|
+	12	ao 3r
+	13	ca 5a4	(0.22000 - "=")
+	14	rc 14r
+	15	sp ax
+	16	ca (-)	               -| print number
+	17	sp 222	(24,6) print    |
+	18	sp 1r	  routine      -|
+|
+| Sheet 20/20
+| a16 (used in a2)
+		section a16
+	0	ta 10r
+	1	ca 409	-| set g[?] to sp 2a1 and reset
+	2	ex 25a3	 |
+	3	ex 4a9	-|
+	4	ca 12r	-| set P to sp 2a2 (and reset)
+	5	ex 44a4	 |
+	6	ex 12r	-|
+	7	ca 12a2	-| set . to sp 8a2 (and reset)
+	8	ex 17a3	 |
+	9	ex 12a2	-|
+	10	sp (-)
+	11	sp a15
+	12	sp 2a2	; [LAS was (sp 2a2/sp a2)]
+|
+| [LAS Added this section based on info below. Not clear how it can
+|  possibly work using this data in the middle of the program (i.e.,
+|  at 212), but it should be ok to allocate a separate space for it.]
+| a14
+		section a14	
+	0	p 0
+	1	p 0
+	2	p 0
+	3	p 0
+	5	p 0
+	6	p 0
+	7	p 0
+	8	p 0
+	9	p 0
+	10	p 0
+	11	p 0
+
+| 
+| Miscellaneous [Not sure about this section needs proofing]
+| 
+| 210 dv 0
+| 
+| 211 = 0a14 and also "1t" in print routine. Equations are not allowed
+|       0 as a number, thus 0a14 is not used in a meaningful way.
+| 
+| 212-221 = a14 - 10a14: storage for sp orders to initial address of numbered equations (a
+|       maximum of 10 is allowed)
+| 
+| 222 (24,6) print routine
+| 
+| 852 = "ax"  = (24,6) programmed arithmetic
+| 
+
+| [LAS dummy section]
+|		section ax
+	0	si 0
+	1	si 0
+	2	si 0
+	3	si 0
+	4	si 0
+
+;; Local Variables:
+;; eval: (setq-local default-tab-width 20)
+;; eval: (setq-local tab-width 20)
+;; eval: (setq-local tab-stop-list '(20 40 60))
+;; End:

@@ -1,0 +1,46 @@
+start at 0o100
+proc-call-test 1
+proc-call-test 2 0o3775 10
+proc-call-test 5 100
+proc-call-test 6 101
+proc-call-test 2 0o3762 9
+proc-call-test 5 90
+proc-call-test 6 91
+proc-call-test 2 0o3747 8
+proc-call-test 5 80
+proc-call-test 6 81
+proc-call-test 2 0o3734 7
+proc-call-test 5 70
+proc-call-test 6 71
+proc-call-test 2 0o3721 6
+proc-call-test 5 60
+proc-call-test 6 61
+proc-call-test 2 0o3706 5
+proc-call-test 5 50
+proc-call-test 6 51
+proc-call-test 2 0o3673 4
+proc-call-test 5 40
+proc-call-test 6 41
+proc-call-test 2 0o3660 3
+proc-call-test 5 30
+proc-call-test 6 31
+proc-call-test 2 0o3645 2
+proc-call-test 5 20
+proc-call-test 6 21
+proc-call-test 2 0o3632 1
+proc-call-test 5 10
+proc-call-test 6 11
+proc-call-test 4 0o3620
+proc-call-test 4 0o3633
+proc-call-test 4 0o3646
+proc-call-test 4 0o3661
+proc-call-test 4 0o3674
+proc-call-test 4 0o3707
+proc-call-test 4 0o3722
+proc-call-test 4 0o3735
+proc-call-test 4 0o3750
+proc-call-test 4 0o3763
+proc-call-test 3 20
+Halt Instruction!  (Code=0) at pc=0106
+Alarm 'Program Halt' (5) at PC=0o106 (0d70)
+Ran 640 cycles; Used mem=48MB

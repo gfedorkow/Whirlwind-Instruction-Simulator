@@ -1,83 +1,83 @@
-                        ; bouncing ball demo
-                        ; guy fedorkow, Jan 2019
-                        ; copied from http://bitsavers.informatik.uni-stuttgart.de/pdf/mit/whirlwind/R-series/R-196_Programming_for_Whirlwind_I_Jun51.pdf
-                        ; pdf page 62
-                        ; translated into assembler with labels for variables and addresses
-                        ; updated to use the 1954 I/O instruction set for display
+                       ; bouncing ball demo
+                       ; guy fedorkow, Jan 2019
+                       ; copied from http://bitsavers.informatik.uni-stuttgart.de/pdf/mit/whirlwind/R-series/R-196_Programming_for_Whirlwind_I_Jun51.pdf
+                       ; pdf page 62
+                       ; translated into assembler with labels for variables and addresses
+                       ; updated to use the 1954 I/O instruction set for display
 
-                        ; Modified Mar 25, 2024 to move the code segment to the "normal" start address of 0o40, and
-                        ; to put two vars into FF Registers
+                       ; Modified Mar 25, 2024 to move the code segment to the "normal" start address of 0o40, and
+                       ; to put two vars into FF Registers
 
-                        .dbwgt Vy        ;  
-                        .dbwgt R 0o200   ;  
-                        .dbwgt Xi  0o400  ;  
-                        .dbwgt Yi 	0o100  ;  
+                       .dbwgt Vy
+                       .dbwgt R
+                       .dbwgt Xi
+                       .dbwgt Yi
 
-                        .jumpto main      ;  
-                        .org 0o40      ;  
-@0040:100205      main: ca   XI        ; Initialize X axis @@JumpedToBy a0103 
-@0041:040002            ts   Xi        ;  
-@0042:100206            ca   YI        ; initialize Y axis 
-@0043:040003            ts   Yi        ;  
-@0044:100207            ca   VYi       ; Initialize Y Velocity    ;; guy: this was the designated loop return in the exemplar, but that's clearly wrong 
-@0045:040201            ts   Vy        ;  
+                       .jumpto main
+                       .ORG 0o40
+@0040:100205     main: ca XI                    ;   Initialize X axis @@JumpedToBy a0103
+@0041:040002           ts Xi
+@0042:100206           ca YI                    ;   initialize Y axis
+@0043:040003           ts Yi
+@0044:100207           ca VYi                   ;  Initialize Y Velocity    ;; guy: this was the designated loop return in the exemplar, but that's clearly wrong
+@0045:040201           ts Vy
 
-@0046:100002      loop: ca   Xi        ; fetch current X value @@JumpedToBy a0102 
-@0047:110210            ad   Vxdt      ; add the velocity increment 
-                        ; Qh Xi   ; @201 ; output x axis
-@0050:040002            ts   Xi        ; store the next X back to Xi 
+@0046:100002     loop: ca Xi                    ;  fetch current X value @@JumpedToBy a0102
+@0047:110210           ad Vxdt                  ; add the velocity increment
+                       ;       Qh Xi   ; @201 ; output x axis
+@0050:040002           ts Xi                    ;   store the next X back to Xi
 
-@0051:100212            ca   Yha       ; fetch the y (horizontal) axis line 
-                        ; Qd Yha  ; @212 ; output the y axis point
-@0052:000600            si   0o600     ; select point; the Y deflection is Yha, picked up from ACC 
-@0053:100002            ca   Xi        ; put x in ACC 
-@0054:024000            rc   0         ; output a point to the display 
+@0051:100212           ca Yha                   ; fetch the y (horizontal) axis line
+                       ;       Qd Yha  ; @212 ; output the y axis point
+@0052:000600           si 0o600                 ; select point; the Y deflection is Yha, picked up from ACC ; Auto-Annotate I/O: Display Points
+@0053:100002           ca Xi                    ; put x in ACC
+@0054:024000           rc 0                     ; output a point to the display
 
-                        ; postitive falls through, negative takes the branch
-@0055:104003            cs   Yi        ; compare current Y to Y Axis    ;guy - cs seems like the wrong op code; it assumes Y Axis is zero 
-@0056:070067            cp   nobounce  ; @17 branch if it's not time to bounce 
-@0057:104201            cs   Vy        ; fetch velocity to see if we're already starting to bounce 
-@0060:070067            cp   nobounce  ; branch if velocity is already positive [instruction added by guy] 
+                       ; postitive falls through, negative takes the branch
+@0055:104003           cs Yi                    ; compare current Y to Y Axis    ;guy - cs seems like the wrong op code; it assumes Y Axis is zero
+@0056:070067           cp nobounce              ;@17 branch if it's not time to bounce
+@0057:104201           cs Vy                    ; fetch velocity to see if we're already starting to bounce
+@0060:070067           cp nobounce              ; branch if velocity is already positive [instruction added by guy]
 
-                        ; do a bounce by multiplying by the loss factor, reversing the velocity, and setting the
-                        ; Y position to equal the axis.
-@0061:100201    bounce: ca   Vy        ; @203 ; fetch Y velocity 
-@0062:140202            mr   R         ; @204 ; multiply by bounce loss and reverse the sign 
-@0063:040201            ts   Vy        ; @203 ; store the result in Y Velocity 
-                        ; the following two instructions added by guy
-@0064:100212            ca   Yha       ; fetch the Y Axis (better be zero until the bug above is fixed) 
-@0065:040003            ts   Yi        ;  
-@0066:074072            sp   continue  ; skip the step adding negative gravitation acceleration 
+                       ; do a bounce by multiplying by the loss factor, reversing the velocity, and setting the
+                       ; Y position to equal the axis.
+@0061:100201   bounce: ca Vy                    ; @203 ; fetch Y velocity
+@0062:140202           mr R                     ; @204 ; multiply by bounce loss and reverse the sign
+@0063:040201           ts Vy                    ; @203 ; store the result in Y Velocity
+                       ; the following two instructions added by guy
+@0064:100212           ca Yha                   ; fetch the Y Axis (better be zero until the bug above is fixed)
+@0065:040003           ts Yi
+@0066:074072           sp continue              ;skip the step adding negative gravitation acceleration
 
-@0067:100201  nobounce: ca   Vy        ; for no bounce, fetch the current velocity @@JumpedToBy a0056 a0060 
-@0070:114203            su   Gdt       ; subtract gravitational constant 
-@0071:040201            ts   Vy        ; store the result in Y Velocity 
-@0072:140204  continue: mr   dt        ; multiply velocity by time increment @@JumpedToBy a0066 
-@0073:110003            ad   Yi        ; add the incremental distance to the current Y value 
-                        ; qd Yi   ; @202 ; output the Y value for the ball (same X as last time)
-@0074:040003            ts   Yi        ; @202  ;guy: emulate store that was part of qd 
-@0075:000600            si   0o600     ; new-style i/o instruction; set the Y coord now in the ACC 
-@0076:100002            ca   Xi        ; put X coord in ACC 
-@0077:024000            rc   0         ; output a point to the display 
+@0067:100201 nobounce: ca Vy                    ; for no bounce, fetch the current velocity @@JumpedToBy a0056 a0060
+@0070:114203           su Gdt                   ; subtract gravitational constant
+@0071:040201           ts Vy                    ; store the result in Y Velocity
+@0072:140204 continue: mr dt                    ; multiply velocity by time increment @@JumpedToBy a0066
+@0073:110003           ad Yi                    ; add the incremental distance to the current Y value
+                       ;       qd Yi   ; @202 ; output the Y value for the ball (same X as last time)
+@0074:040003           ts Yi                    ; @202  ;guy: emulate store that was part of qd
+@0075:000600           si 0o600                 ; new-style i/o instruction; set the Y coord now in the ACC ; Auto-Annotate I/O: Display Points
+@0076:100002           ca Xi                    ; put X coord in ACC
+@0077:024000           rc 0                     ; output a point to the display
 
-@0100:120002            cm   Xi        ; retrieve current X coord 
-@0101:114211            su   Xul       ; compare to X Upper Limit 
-@0102:070046            cp   loop      ; @5   ; branch to next iteration 
-@0103:074040            sp   main      ; @1   ; start all over to refresh the display 
+@0100:120002           cm Xi                    ; retrieve current X coord
+@0101:114211           su Xul                   ; compare to X Upper Limit
+@0102:070046           cp loop                  ; @5   ; branch to next iteration
+@0103:074040           sp main                  ; @1   ; start all over to refresh the display
 
-                        .org 0o2       ; put two vars into FF Registers 
-@0002:000000        Xi: .word 0         ; current i'th value of x @@WrittenBy a0041 a0050 ReadBy loop a0053 a0076 a0100 
-@0003:000000        Yi: .word 0         ; current i'th value of y @@WrittenBy a0043 a0065 a0074 ReadBy a0055 a0073 
+                       .ORG 0o2                 ; put two vars into FF Registers
+@0002:000000       Xi: .word 0                  ; current i'th value of x @@WrittenBy a0041 a0050 ReadBy loop a0053 a0076 a0100
+@0003:000000       Yi: .word 0                  ; current i'th value of y @@WrittenBy a0043 a0065 a0074 ReadBy a0055 a0073
 
-                        .org 0o201     ;  
-@0201:000000        Vy: .word 0         ; current i'th value of velocity of y @@WrittenBy a0045 a0063 a0071 ReadBy a0057 bounce nobounce 
-@0202:107777         R: .word 1.07777   ; "coefficient of Restitution", i.e., energy loss during the bounce.  This number should be negative to reverse the ball's direction @@ReadBy a0062 
-@0203:001000       Gdt: .word 0.01000   ; constant graviational constant times delta t @@ReadBy a0070 
-@0204:040000        dt: .word 0.40000   ; constant time step (delta t) @@ReadBy continue 
-@0205:117777        XI: .word 1.17777   ; (-0.600)         ; constant starting position for X @@ReadBy main 
-@0206:060000        YI: .word 0.60000   ; constant starting position for Y @@ReadBy a0042 
-@0207:000000       VYi: .word 0.00000   ; constant starting velocity for Y @@ReadBy a0044 
-@0210:000600      Vxdt: .word 0.00600   ; constant X velocity times delta t @@ReadBy a0047 
-@0211:060000       Xul: .word 0.60000   ; constant X upper limit (i.e., the right-hand end of the simulation) @@ReadBy a0101 
-@0212:000000       Yha: .word 0         ; constant Y value of horizontal axis @@ReadBy a0051 a0064 
+                       .ORG 0o201
+@0201:000000       Vy: .word 0                  ; current i'th value of velocity of y @@WrittenBy a0045 a0063 a0071 ReadBy a0057 bounce nobounce
+@0202:107777        R: .word 1.07777            ; "coefficient of Restitution", i.e., energy loss during the bounce.  This number should be negative to reverse the ball's direction @@ReadBy a0062
+@0203:001000      Gdt: .word 0.01000            ; constant graviational constant times delta t @@ReadBy a0070
+@0204:040000       dt: .word 0.40000            ; constant time step (delta t) @@ReadBy continue
+@0205:117777       XI: .word 1.17777            ; (-0.600)         ; constant starting position for X @@ReadBy main
+@0206:060000       YI: .word 0.60000            ; constant starting position for Y @@ReadBy a0042
+@0207:000000      VYi: .word 0.00000            ; constant starting velocity for Y @@ReadBy a0044
+@0210:000600     Vxdt: .word 0.00600            ; constant X velocity times delta t @@ReadBy a0047
+@0211:060000      Xul: .word 0.60000            ; constant X upper limit (i.e., the right-hand end of the simulation) @@ReadBy a0101
+@0212:000000      Yha: .word 0                  ; constant Y value of horizontal axis @@ReadBy a0051 a0064
 

@@ -2,28 +2,43 @@
 thisfile=$0
 cd ${thisfile%/*}/
 
-echo "Proc Call Test:"
+echo "Test proc call:"
 if [ "$1" == "--Accept" ];
 then
 	echo "Accepting..."
 	rm -rf TestRefs/
 	mkdir TestRefs
-	cp wwasm.log wwsim.log TestRefs/
+	cp wwasm-proc.log wwsim-proc.log wwasm-frame.log wwsim-frame.log TestRefs/
 else
 	asm="$PYTHONPATH/../../Py/Assembler/wwasm.py"		# Use quotes since can't resolve backslash yet -- it's needed for file name translation
 	sim="$PYTHONPATH/../../Py/Sim/wwsim.py"
-	rm proc-call.acore wwsim.log wwasm.log
-	python $asm proc-call.ww -o proc-call >&wwasm.log
-	python $sim -q --CycleLimit 7700 proc-call.acore >&wwsim.log
-	egrep "Warning|Error" wwasm.log >&tmp-wwasm.log
-	egrep "Warning|Error" TestRefs/wwasm.log >&tmp-ref-wwasm.log
-	grep proc-call-test wwsim.log >&tmp-wwsim.log
-	grep proc-call-test TestRefs/wwsim.log >&tmp-ref-wwsim.log
+
+	rm proc-call.acore proc-call.lst
+	rm 	wwasm-proc.log wwsim-proc.log wwasm-frame.log wwsim-frame.log
+	python $asm proc-call.ww  >&wwasm-proc.log
+	python $sim -q --CycleLimit 7700 proc-call.acore >&wwsim-proc.log
+	egrep "Warning|Error" wwasm-proc.log >&tmp-wwasm.log
+	egrep "Warning|Error" TestRefs/wwasm-proc.log >&tmp-ref-wwasm.log
+	grep proc-call-test wwsim-proc.log >&tmp-wwsim.log
+	grep proc-call-test TestRefs/wwsim-proc.log >&tmp-ref-wwsim.log
 	diff -s tmp-wwasm.log tmp-ref-wwasm.log
 	status1=$?
 	diff -s tmp-wwsim.log tmp-ref-wwsim.log
 	status2=$?
-	status=$(($status1 + $status2))
+
+	rm stack-frame-rel-addr-lib.acore stack-frame-rel-addr-lib.lst
+	python $asm stack-frame-rel-addr-lib.ww >&wwasm-frame.log
+	python $sim -q --CycleLimit 7700 stack-frame-rel-addr-lib.acore >&wwsim-frame.log
+	egrep "Warning|Error" wwasm-frame.log >&tmp-wwasm.log
+	egrep "Warning|Error" TestRefs/wwasm-frame.log >&tmp-ref-wwasm.log
+	grep proc-call-test wwsim-frame.log >&tmp-wwsim.log
+	grep proc-call-test TestRefs/wwsim-frame.log >&tmp-ref-wwsim.log
+	diff -s tmp-wwasm.log tmp-ref-wwasm.log
+	status3=$?
+	diff -s tmp-wwsim.log tmp-ref-wwsim.log
+	status4=$?
+
+	status=$(($status1 + $status2 + $status3 + $status4))
 	if [ "$status" == "0" ];
 	then
 		echo "Test PASSED"

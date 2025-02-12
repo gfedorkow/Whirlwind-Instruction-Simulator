@@ -4,7 +4,7 @@
 						
                             .isa 1950      ;  "Sherman, Set the Instruction-Set Wayback Machine to 1950"
 
-              .dbwgt .TargetHeading 5 "%d"
+              .dbwgt ".TargetHeading", 5, "%d"
 							.dbwgt FF_angle
 							.dbwgt Veloc_I  
 
@@ -20,7 +20,7 @@
 							; Some day, I could(!) add address labels to the .switch directive, I suppose
 							; The FFRegAssign statement tells the simulator that it's ok to write these locations; other TSR locations are read-only
 							; Switch Numbers are in Octal
-                             .switch FFRegAssign  0o10, 27, 34, 35,36  ;  
+                             .switch FFRegAssign,  0o10, 0o27, 0o34, 0o35, 0o36  ;  
 							 .ORG 0o10
 				   FF_angle: .word 0
 							 .ORG 0o27
@@ -29,11 +29,11 @@
 				   Radar_in: .word 0   ; addr 0o34
 				   Tau_inv:  .word 0   ; addr 0o35; "One over Tau"
 				   Veloc_I:  .word 0   ; addr 0o36; V-sub-I -- Interceptor velocity
-                             .switch FlipFlopPreset10 0.00000  ; FF#3 at decimal 08; Angle Display 
-                             .switch FlipFlopPreset27 0.00000  ; FF#0 at decimal 23; Light Gun 
-                             .switch FlipFlopPreset34 1.77777  ; FF#4 at decimal 28; Radar Data Input - all ones is "no data" 
-                             .switch FlipFlopPreset35 0.00000  ; FF#1 at decimal 29; 1/tau 
-                             .switch FlipFlopPreset36 0.00372  ; FF#2 at decimal 30; Interceptor velocity VI ; 250 mph
+                             .switch FlipFlopPreset10, 0.00000  ; FF#3 at decimal 08; Angle Display 
+                             .switch FlipFlopPreset27, 0.00000  ; FF#0 at decimal 23; Light Gun 
+                             .switch FlipFlopPreset34, 1.77777  ; FF#4 at decimal 28; Radar Data Input - all ones is "no data" 
+                             .switch FlipFlopPreset35, 0.00000  ; FF#1 at decimal 29; 1/tau 
+                             .switch FlipFlopPreset36, 0.00372  ; FF#2 at decimal 30; Interceptor velocity VI ; 250 mph
                              .ORG 31        ;  
 @0037.031:037777  num37777:  .word 0o037777  ; constant;   1/2 - 2**-15 @@ReadBy a0045 a0076 a0100 
 
@@ -384,21 +384,21 @@
 @0414.268:000000   srch_r1: .word 0         ;  
 @0415.269:000000            .word 0         ;  @@WrittenBy a0332 ReadBy a0333 a0352 
 
-@0416.270:030646            .word +.3879    ;  @@ReadBy a0062 
-@0417.271:025251  num25251: .word +.3333    ;  constant - decimal 0.333  @@ReadBy a0135 a0144 
+@0416.270:030646            .word +0.3879    ;  @@ReadBy a0062 
+@0417.271:025251  num25251: .word +0.3333    ;  constant - decimal 0.333  @@ReadBy a0135 a0144 
 @0420.272:000000            .word 0         ;  @@WrittenBy a0051 a0102 ReadBy a0052 a0063 a0072 a0106 a0210 a0335 
 @0421.273:000000            .word 0         ;  @@WrittenBy a0053 a0064 ReadBy a0056 a0061 a0070 a0107 
 @0422.274:000000            .word 0         ;  @@ReadBy a0206 a0330 
 @0423.275:000000            .word 0         ;  @@WrittenBy a0234 a0274 a0277 ReadBy a0235 a0251 a0274 a0305 
-@0424.276:106314  num_pt9:  .word -.9000    ;  @@ReadBy a0276 a0307 
+@0424.276:106314  num_pt9:  .word -0.9000    ;  @@ReadBy a0276 a0307 
 @0425.277:000012  num00012: .word 10        ;  @@ReadBy a0313 a0316 
 @0426.278:000000            .word 0         ;  @@WrittenBy a0244 a0265 a0314 ReadBy a0245 a0253 a0257 a0260 a0266 a0320 
-@0427.279:007557  num07557: .word +.1206    ;  @@ReadBy a0060 
+@0427.279:007557  num07557: .word +0.1206    ;  @@ReadBy a0060 
 @0430.280:000000  vel_I_sq: .word 0         ; Interceptor Velocity Squared  @@WrittenBy a0437 ReadBy a0246 
 @0431.281:000000       dx:  .word 0         ;  @@WrittenBy a0222 a0256 ReadBy a0240 a0267 
 @0432.282:000000       dy:  .word 0         ;  @@WrittenBy a0225 ReadBy a0230 
 @0433.283:000000            .word 0         ;  @@WrittenBy a0236 a0254 a0263 a0270 ReadBy a0247 a0254 a0262 a0263 a0264 a0270 a0271 
-@0434.284:011463  num11463: .word +.1500    ;  @@ReadBy a0252 
+@0434.284:011463  num11463: .word +0.1500    ;  @@ReadBy a0252 
 
 @0435.285:100036 start:     ca  Veloc_I     ;  
 @0436.286:140036            mh  Veloc_I     ;  square of expected interceptor velocity

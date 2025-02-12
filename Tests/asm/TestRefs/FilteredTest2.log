@@ -97,7 +97,7 @@ AsmParsedLine:
          LiteralDigits 0
       LiteralDigits 56789
 Eval:
-    AsmExprValueType.Fraction -18609
+    AsmExprValueType.Fraction -0.56789
 
 
 AsmParsedLine:
@@ -189,7 +189,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= sp 
-    comment= Hi there! 
+    comment=  Hi there! 
     auto-comment= 
    BinaryComma
       Variable abc
@@ -203,7 +203,7 @@ AsmParsedLine:
                LiteralDigits 98765
             LiteralDigits 9800
 Eval:
-    AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 5349', 'AsmExprValueType.Fraction 32363', 'AsmExprValueType.Integer 9800']
+    AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 5349', 'AsmExprValueType.Fraction 0.98765', 'AsmExprValueType.Integer 9800']
 
 
 AsmParsedLine:

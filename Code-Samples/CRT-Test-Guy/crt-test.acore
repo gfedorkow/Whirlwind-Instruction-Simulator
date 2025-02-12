@@ -1,7 +1,7 @@
 
 ; *** Core Image ***
 %File: crt-test.ww
-%TapeID: None
+%TapeID: 
 @C0000: 0000000 0000001  None    None    None    None    None    None   
 @C0040: 0074041 0074057 0074101 0074170 0074312 0074231 0074041 0076040 
 @C0050: 0101737 0076000 0101000 0000174 0000200 0000002 0000003 0050100 
@@ -24,9 +24,9 @@
 @C0260: 0074000 0050306 0040311 0100344 0110001 0044304 0100340 0074300 
 @C0270: 0050306 0040311 0100344 0110055 0044304 0100340 0110340 0074300 
 @C0300: 0110307 0002677 0100310 0110340 0024000 0100311 0074000 0064000 
-@C0310: 0130000 0000000 0050334 0000014 0100000 0114335 0040336 0100343 
+@C0310: 0127777 0000000 0050334 0000014 0100000 0114335 0040336 0100343 
 @C0320: 0044326 0100337 0040341 0100342 0002677 0100341 0024000 0110340 
-@C0330: 0040341 0130326 0130336 0070325 0074000 0000020 0000000 0154000 
+@C0330: 0040341 0130326 0130336 0070325 0074000 0000020 0000000 0153777 
 @C0340: 0004000 0000000 0040000 0000345 0000354 0040000 0020000 0010000 
 @C0350: 0004000 0002000 0001000 0000400 0073400 0010400 0065400 0035400 
 @C0360: 0016400 0037000 0076000 0011400 0077400 0017400  None    None   
@@ -34,12 +34,6 @@
 @S0001: one
 @S0040: main
 @S0041: main_loop
-@S76040: MAX_POS_COORD
-@S101737: MAX_NEG_COORD
-@S76000: MAX_POS_X_DELTA
-@S101000: MAX_NEG_X_DELTA
-@S0174: MAX_POS_Y_DELTA
-@S0200: MAX_NEG_Y_DELTA
 @S0047: max_pos_coord
 @S0050: max_neg_coord
 @S0051: max_pos_x_delta
@@ -95,6 +89,13 @@
 @S0343: char_seg_tab_ptr
 @S0344: char_tab_ptr
 @S0345: char_seg_tab
+@S0354: char_tab
+@S76040: MAX_POS_COORD
+@S101737: MAX_NEG_COORD
+@S76000: MAX_POS_X_DELTA
+@S101000: MAX_NEG_X_DELTA
+@S0174: MAX_POS_Y_DELTA
+@S0200: MAX_NEG_Y_DELTA
 @S40000: B1
 @S20000: B2
 @S10000: B3
@@ -102,104 +103,115 @@
 @S2000: B5
 @S1000: B6
 @S0400: B7
-@S0354: char_tab
-@N0047: maximum deflection for X or Y coords
-@N0050: maximum deflection for X or Y coords
-@N0060: pick up Y value
-@N0061: select all the scopes; set Y value from the AC
-@N0062: pick up X value
-@N0063: draw the point using X val from AC
-@N0064: pick up Y value
-@N0065: select all the scopes; set Y value from the AC
-@N0066: pick up X value
-@N0067: draw the point using X val from AC
-@N0070: pick up Y value
-@N0071: select all the scopes; set Y value from the AC
-@N0072: pick up X value
-@N0073: draw the point using X val from AC
-@N0074: pick up Y value
-@N0075: select all the scopes; set Y value from the AC
-@N0076: pick up X value
-@N0077: draw the point using X val from AC
-@N0106: add one to the address
-@N0110: add one to the address
-@N0113: select all the scopes; set Y value from the AC
-@N0117: put the X value in AC
-@N0120: pick up the Delta vector
-@N0121: move pointer to next delta
-@N0124: move pointer to next X value
-@N0134: X coord  ; top left corner
-@N0135: Y coord
-@N0136: Y-/X+ diagonal line
-@N0137: X coord  ; top left corner
-@N0140: Y coord
-@N0141: Y- downward line
-@N0142: X coord  ; top left corner
-@N0143: Y coord
-@N0144: X+ rightward line
-@N0145: X coord  ; top right corner
-@N0146: Y coord
-@N0147: Y- downward line
-@N0150: X coord  ; top right corner
-@N0151: Y coord
-@N0152: X+ leftward line
-@N0153: X coord  ; Bottom right corner
-@N0154: Y coord
-@N0155: Y+ downward line
-@N0156: X coord  ; bottom right corner
-@N0157: Y coord
-@N0160: X- leftward line
-@N0161: X coord  ; Bottom left corner
-@N0162: Y coord
-@N0163: Y+ upward line
-@N0164: X coord  ; bottom left corner
-@N0165: Y coord
-@N0166: X+ uptward line
-@N0167: compute negative of table length by subtracting start from finish
-@N0200: pick up Y value
-@N0201: select all the scopes; set Y value from the AC
-@N0202: pick up X value
-@N0203: draw the point using X val from AC
-@N0204: pick up Y value
-@N0205: select all the scopes; set Y value from the AC
-@N0206: pick up X value
-@N0207: draw the line using X val from AC
-@N0210: pick up Y value
-@N0213: pick up X value
-@N0221: draws fifteen segments
-@N0232: turn on Expand Mode for characters
-@N0233: pick up Y value
-@N0234: select the first scope; set Y value from the AC
-@N0237: pick up Y value
-@N0240: select the second scope; set Y value from the AC
-@N0242: move right a bit
-@N0245: yeah, ok, I'm using the same delta offset for x and y
-@N0246: select all the scopes; set Y value from the AC
-@N0247: pick up X value
-@N0250: draw the point using X val from AC
-@N0251: read the light gun register
-@N0254: test the first gun
-@N0256: test the second gun
-@N0276: 2x delta for second gun
-@N0300: pick up Y value
-@N0301: set Y value from the AC
-@N0311: a place to stash the AC
-@N0313: turn on Expand Mode for characters
-@N0323: pick up Y value
-@N0324: select all the scopes; set Y value from the AC
-@N0325: fetch the new x position
-@N0326: operand address over-written in startup segment
-@N0327: current x pos'n still in AC; add the delta to it
-@N0331: advance the pointer in the char tab
-@N0332: advance the loop counter
-@N0333: ... and loop again if negative
-@N0354: Zero
-@N0355: One
-@N0356: Two
-@N0357: Three
-@N0360: Four
-@N0361: Five
-@N0362: Six
-@N0363: Seven
-@N0364: Eight
-@N0365: Nine
+@N0040:  g fedorkow, dec 13, 2023
+@N0047:  maximum deflection for X or Y coords
+@N0050:  maximum deflection for X or Y coords
+@N0055:  constants
+@N0060:  pick up Y value
+@N0061:  select all the scopes; set Y value from the AC
+@N0062:  pick up X value
+@N0063:  draw the point using X val from AC
+@N0064:  pick up Y value
+@N0065:  select all the scopes; set Y value from the AC
+@N0066:  pick up X value
+@N0067:  draw the point using X val from AC
+@N0070:  pick up Y value
+@N0071:  select all the scopes; set Y value from the AC
+@N0072:  pick up X value
+@N0073:  draw the point using X val from AC
+@N0074:  pick up Y value
+@N0075:  select all the scopes; set Y value from the AC
+@N0076:  pick up X value
+@N0077:  draw the point using X val from AC
+@N0101:  The list gives two vectors in each corner, plus a diagonal only in the top left
+@N0106:  add one to the address
+@N0110:  add one to the address
+@N0113:  select all the scopes; set Y value from the AC
+@N0117:  put the X value in AC
+@N0120:  pick up the Delta vector
+@N0121:  move pointer to next delta
+@N0124:  move pointer to next X value
+@N0132:  local variable
+@N0133:  vector instruction is +/- 32 units, where each unit is four screen pixels (I think!!).
+@N0134:  X coord  ; top left corner
+@N0135:  Y coord
+@N0136:  Y-/X+ diagonal line
+@N0137:  X coord  ; top left corner
+@N0140:  Y coord
+@N0141:  Y- downward line
+@N0142:  X coord  ; top left corner
+@N0143:  Y coord
+@N0144:  X+ rightward line
+@N0145:  X coord  ; top right corner
+@N0146:  Y coord
+@N0147:  Y- downward line
+@N0150:  X coord  ; top right corner
+@N0151:  Y coord
+@N0152:  X+ leftward line
+@N0153:  X coord  ; Bottom right corner
+@N0154:  Y coord
+@N0155:  Y+ downward line
+@N0156:  X coord  ; bottom right corner
+@N0157:  Y coord
+@N0160:  X- leftward line
+@N0161:  X coord  ; Bottom left corner
+@N0162:  Y coord
+@N0163:  Y+ upward line
+@N0164:  X coord  ; bottom left corner
+@N0165:  Y coord
+@N0166:  X+ uptward line
+@N0167:  compute negative of table length by subtracting start from finish
+@N0170:  to get a stair-step pattern.
+@N0200:  pick up Y value
+@N0201:  select all the scopes; set Y value from the AC
+@N0202:  pick up X value
+@N0203:  draw the point using X val from AC
+@N0204:  pick up Y value
+@N0205:  select all the scopes; set Y value from the AC
+@N0206:  pick up X value
+@N0207:  draw the line using X val from AC
+@N0210:  pick up Y value
+@N0213:  pick up X value
+@N0221:  draws fifteen segments
+@N0231:  show the digit 1 on scope-bit-0, 2 on scope-bit-1
+@N0232:  turn on Expand Mode for characters
+@N0233:  pick up Y value
+@N0234:  select the first scope; set Y value from the AC
+@N0237:  pick up Y value
+@N0240:  select the second scope; set Y value from the AC
+@N0242:  move right a bit
+@N0244:  seeing which gun hits it.
+@N0245:  yeah, ok, I'm using the same delta offset for x and y
+@N0246:  select all the scopes; set Y value from the AC
+@N0247:  pick up X value
+@N0250:  draw the point using X val from AC
+@N0251:  read the light gun register
+@N0254:  test the first gun
+@N0256:  test the second gun
+@N0261:  mark the first gun
+@N0270:  mark the second gun
+@N0276:  2x delta for second gun
+@N0300:  pick up Y value
+@N0301:  set Y value from the AC
+@N0311:  a place to stash the AC
+@N0312: ;;;;;;;;;;;  Character Generator Test
+@N0313:  turn on Expand Mode for characters
+@N0323:  pick up Y value
+@N0324:  select all the scopes; set Y value from the AC
+@N0325:  fetch the new x position
+@N0326:   operand address over-written in startup segment
+@N0327:  current x pos'n still in AC; add the delta to it
+@N0331:  advance the pointer in the char tab
+@N0332:  advance the loop counter
+@N0333:   ... and loop again if negative
+@N0345:  light each segment one at a time
+@N0354:  Zero
+@N0355:  One
+@N0356:  Two
+@N0357:  Three
+@N0360:  Four
+@N0361:  Five
+@N0362:  Six
+@N0363:  Seven
+@N0364:  Eight
+@N0365:  Nine
