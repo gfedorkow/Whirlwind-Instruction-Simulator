@@ -107,147 +107,150 @@
 @S0601: u0601
 @S0602: u0602
 @S0610: r0610
-@E0055: print: "calc_ Draw Screen u0600=%o, u0601=%o, u0602=%o disp_num=%o u0502=%o u0503=%o screen_rep_cnt=%o w0003=%o", u0600, u0601, u0602, disp_num, u0502, u0503, screen_rep_cnt, w0003
-@E0112: print: "calc_char input: acc=%ao disp_num=%o w0114=%o u0500=%o", disp_num, w0114, u0500
+@E0055: print: "calc_ Draw Screen u0600=%o, u0601=%o, u0602=%o disp_num=%o u0502=%o u0503=%o screen_rep_cnt=%o w0003=%o", 0o000600, 0o000601, 0o000602, 0o000501, 0o000502, 0o000503, 0o000504, 0o000003
+@E0112: print: "calc_char input: acc=%ao disp_num=%o w0114=%o u0500=%o", 0o000501, 0o000114, 0o000500
 @E0123: print: "calc_char output offset=%ad (d)"
-@N0040: load constant 0o12 into AC
-@N0041: Store it in a FF Reg
-@N0042: load constant 0o140510 into AC
-@N0043: transfer to storage (FF reg 03?)
-@N0044: load constant 0o310 into AC
-@N0045: transfer to storage
-@N0046: load constant 0o226 into AC
-@N0047: store in @0o601
-@N0050: clear AC
-@N0051: store 0 in @0o602
-@N0053: store -0o226 into a repetition count
-@N0054: clear and subtract
-@N0055: transfer to storage
-@N0056: clear and add
-@N0057: transfer to storage
-@N0060: clear and add
-@N0062: clear and add
-@N0063: subtract zero, i.e., prepare to branch on +0 or negative.
-@N0064: conditional program
-@N0065: cycle left and hold
-@N0066: transfer to storage
-@N0067: exchange
-@N0070: scale factor ; overwrite an SLH shift instruction operand @117 with a small number
-@N0071: -- and store the resulting scaled number in u0500
-@N0072: load a constant 0o12 from a FF reg
-@N0073: store an initial 'number' for the next row of chars
-@N0074: load a constant = instruction  'slh 0o024'
-@N0075: this subtracts 0o24 from the shift count calulated in @0o70
-@N0076: transfer digits -- store the result back on top of that SLH shift instruction @117
-@N0077: transfer digits - save the same result on top of an SRH
-@N0100: clear and subtract
-@N0101: character x pos is the starting param to the next loop
-@N0102: clear AC
-@N0103: initialize this var to zero before starting the inner loop
-@N0104: fetch the last chr_xpos
-@N0105: subtract constant 0o010000, i.e., move 0o010000 screen units left
-@N0106: store the new x base address for the character
-@N0107: check the count of remaining characters
-@N0110: subtract +zero ; this converts +0 into -0 (!)
-@N0111: conditional program
-@N0112: start the calc to find next char (u0500 is always 0o050000 or 0o040000)
-@N0113: shift left and roundoff; this puts the multiplied-by-two-but-truncated result in the AC
-@N0114: shift right and hold, i.e., divide by two
-@N0115: save the result; e.g. on the first pass, this will be '5'
-@N0116: multiply and hold; u0500 would still be 0o050000 or 0o040000
-@N0117: This shift is the reverse of the one in w0114;
-@N0120: exchange
-@N0121: exchange; adjust the 'remaining' character count
-@N0122: subtract x from AC, i.e. the AC figured two-instructions-ago from the current AC; this must be the character offset in the chr table
-@N0123: add the start address of the character table
-@N0124: transfer digits ; overwrite the next instruction with an addresss into the char table
-@N0125: load next char to draw into AC
-@N0126: scale factor; w0207 is initialized to zero, so the upper bits will stay zero
-@N0127: subtract a constant: ts  w0000 = .word 0o040000, eliminating Bit 1 (first bit after the sign bit)
-@N0130: ... and store the remaining bits in  u0511
-@N0131: Fetch the shift-count again, i.e., a small number from 0-31
-@N0132: initialized to zero just before starting the inner loop, adjusted once per pass of this inner loop
-@N0133: store whatever was in u0510 plus the shift count
-@N0134: multiply and hold -- constant .word=0o025253 (binary 0 010 101 010 101 011
-@N0135: store an intermediate result in computing the Y position
-@N0136: multiply and hold by constant .word=0o177774
-@N0137: shift left and hold  ; shift 15 decimal bits left
-@N0140: add
-@N0141: shift left 10 places to make a screen address
-@N0142: add the character's base xpos
-@N0143: Store the xpos for the next dot
-@N0145: shift left 10 places to make a screen address
-@N0146: add the character's base ypos to make ypos
-@N0147: call the routine to display a dot on the screen
-@N0150: recover the remaining bits
-@N0151: .. and exit the loop if negative
-@N0152: sub-program
-@N0153: exchange
-@N0154: exchange
-@N0155: conditional program
-@N0156: sub-program
-@N0157: add one
-@N0160: conditional program
-@N0161: add one
-@N0162: clear and subtract
-@N0163: exchange
-@N0164: exchange
-@N0165: conditional program
-@N0166: sub-program
-@N0167: add one
-@N0170: conditional program
-@N0171: Halt after the rep count is exhausted
-@N0172: sub-program
-@N0173: advance y_pos to next line
-@N0174: subtract
-@N0175: sub-program
-@N0202: was .word 0o000310 ; number of times to refresh one specific display pattern    ;
-@N0203: number of new screen patterns before exit     ;
-@N0206: pointer to the base of the char table
-@N0210: transfer to storage
-@N0211: constant used by point-drawing routine
-@N0212: constant used by point-drawing routine
-@N0213: Bitmap for character Zero
-@N0214: Bitmap for character One
-@N0215: Bitmap for character Two
-@N0216: Bitmap for character Three
-@N0217: Bitmap for character Four
-@N0220: Bitmap for character Five
-@N0221: Bitmap for character Six
-@N0222: Bitmap for character Seven
-@N0223: Bitmap for character Eight
-@N0224: Bitmap for character Nine
-@N0225: Bitmap for character 'T'
-@N0226: Bitmap for character 'E'
-@N0227: Bitmap for character 'L'
-@N0230: Bitmap for character 'H'
-@N0231: Bitmap for character ?
-@N0232: ????
-@N0234: Bitmap for character 'R'
-@N0241: sub-program
-@N0242: exchange
-@N0243: sub-program
-@N0244: block transfer out
-@N0245: check
-@N0246: transfer digits
-@N0247: block transfer in
-@N0250: conditional program
-@N0251: sub-program
-@N0252: shift left and hold
-@N0254: difference of magnitudes
-@N0255: conditional program
-@N0256: add
-@N0257: difference of magnitudes
-@N0260: transfer to storage
-@N0261: clear and add
-@N0262: cycle left and hold
-@N0263: sub-program
-@N0277: ad-hoc temp storage for the ACC
-@N0300: save the AC
-@N0301: select I/O: Device Display Points base=500, mask=7
-@N0302: clear and add
-@N0303: record
-@N0304: clear and add
-@N0305: return to the only caller
-@N0511: this is simply scratch storage inside the inner loop
-@N0610: clear and add
+@N0040:  load constant 0o12 into AC
+@N0041:  Store it in a FF Reg
+@N0042:  load constant 0o140510 into AC
+@N0043:  transfer to storage (FF reg 03?)
+@N0044:  load constant 0o310 into AC
+@N0045:  transfer to storage
+@N0046:  load constant 0o226 into AC
+@N0047:  store in @0o601
+@N0050:  clear AC
+@N0051:  store 0 in @0o602
+@N0053:  store -0o226 into a repetition count
+@N0054:  clear and subtract
+@N0055:  transfer to storage
+@N0056:  clear and add
+@N0057:  transfer to storage
+@N0060:  clear and add
+@N0062:  clear and add
+@N0063:  subtract zero, i.e., prepare to branch on +0 or negative.
+@N0064:  conditional program
+@N0065:  cycle left and hold
+@N0066:  transfer to storage
+@N0067:  exchange
+@N0070:  scale factor ; overwrite an SLH shift instruction operand @117 with a small number
+@N0071:  -- and store the resulting scaled number in u0500
+@N0072:  load a constant 0o12 from a FF reg
+@N0073:  store an initial 'number' for the next row of chars
+@N0074:  load a constant = instruction  'slh 0o024'
+@N0075:  this subtracts 0o24 from the shift count calulated in @0o70
+@N0076:  transfer digits -- store the result back on top of that SLH shift instruction @117
+@N0077:  transfer digits - save the same result on top of an SRH
+@N0100:  clear and subtract
+@N0101:  character x pos is the starting param to the next loop
+@N0102:  clear AC
+@N0103:  initialize this var to zero before starting the inner loop
+@N0104:  fetch the last chr_xpos
+@N0105:  subtract constant 0o010000, i.e., move 0o010000 screen units left
+@N0106:  store the new x base address for the character
+@N0107:  check the count of remaining characters
+@N0110:  subtract +zero ; this converts +0 into -0 (!)
+@N0111:  conditional program
+@N0112:  start the calc to find next char (u0500 is always 0o050000 or 0o040000)
+@N0113:  shift left and roundoff; this puts the multiplied-by-two-but-truncated result in the AC
+@N0114:  shift right and hold, i.e., divide by two
+@N0115:  save the result; e.g. on the first pass, this will be '5'
+@N0116:  multiply and hold; u0500 would still be 0o050000 or 0o040000
+@N0117:  This shift is the reverse of the one in w0114;
+@N0120:  exchange
+@N0121:  exchange; adjust the 'remaining' character count
+@N0122:  subtract x from AC, i.e. the AC figured two-instructions-ago from the current AC; this must be the character offset in the chr table
+@N0123:  add the start address of the character table
+@N0124:  transfer digits ; overwrite the next instruction with an addresss into the char table
+@N0125:  load next char to draw into AC
+@N0126:  scale factor; w0207 is initialized to zero, so the upper bits will stay zero
+@N0127:  subtract a constant: ts  w0000 = .word 0o040000, eliminating Bit 1 (first bit after the sign bit)
+@N0130:  ... and store the remaining bits in  u0511
+@N0131:  Fetch the shift-count again, i.e., a small number from 0-31
+@N0132:  initialized to zero just before starting the inner loop, adjusted once per pass of this inner loop
+@N0133:  store whatever was in u0510 plus the shift count
+@N0134:  multiply and hold -- constant .word=0o025253 (binary 0 010 101 010 101 011
+@N0135:  store an intermediate result in computing the Y position
+@N0136:  multiply and hold by constant .word=0o177774
+@N0137:  shift left and hold  ; shift 15 decimal bits left
+@N0140:  add
+@N0141:  shift left 10 places to make a screen address
+@N0142:  add the character's base xpos
+@N0143:  Store the xpos for the next dot
+@N0145:  shift left 10 places to make a screen address
+@N0146:  add the character's base ypos to make ypos
+@N0147:  call the routine to display a dot on the screen
+@N0150:  recover the remaining bits
+@N0151:  .. and exit the loop if negative
+@N0152:  sub-program
+@N0153:  exchange
+@N0154:  exchange
+@N0155:  conditional program
+@N0156:  sub-program
+@N0157:  add one
+@N0160:  conditional program
+@N0161:  add one
+@N0162:  clear and subtract
+@N0163:  exchange
+@N0164:  exchange
+@N0165:  conditional program
+@N0166:  sub-program
+@N0167:  add one
+@N0170:  conditional program
+@N0171:  Halt after the rep count is exhausted
+@N0172:  sub-program
+@N0173:  advance y_pos to next line
+@N0174:  subtract
+@N0175:  sub-program
+@N0176:  I am *totaly sure* (for now) that this is a block of constants (but not sure how long!)
+@N0202:  was .word 0o000310 ; number of times to refresh one specific display pattern    ;
+@N0203:  number of new screen patterns before exit     ;
+@N0206:  pointer to the base of the char table
+@N0210:  transfer to storage
+@N0211:  constant used by point-drawing routine
+@N0212:  constant used by point-drawing routine
+@N0213:  Bitmap for character Zero
+@N0214:  Bitmap for character One
+@N0215:  Bitmap for character Two
+@N0216:  Bitmap for character Three
+@N0217:  Bitmap for character Four
+@N0220:  Bitmap for character Five
+@N0221:  Bitmap for character Six
+@N0222:  Bitmap for character Seven
+@N0223:  Bitmap for character Eight
+@N0224:  Bitmap for character Nine
+@N0225:  Bitmap for character 'T'
+@N0226:  Bitmap for character 'E'
+@N0227:  Bitmap for character 'L'
+@N0230:  Bitmap for character 'H'
+@N0231:  Bitmap for character ?
+@N0232:  ????
+@N0234:  Bitmap for character 'R'
+@N0241:  sub-program
+@N0242:  exchange
+@N0243:  sub-program
+@N0244:  block transfer out
+@N0245:  check
+@N0246:  transfer digits
+@N0247:  block transfer in
+@N0250:  conditional program
+@N0251:  sub-program
+@N0252:  shift left and hold
+@N0254:  difference of magnitudes
+@N0255:  conditional program
+@N0256:  add
+@N0257:  difference of magnitudes
+@N0260:  transfer to storage
+@N0261:  clear and add
+@N0262:  cycle left and hold
+@N0263:  sub-program
+@N0264:  kinda-subroutine to display a point on the CRT
+@N0277:  ad-hoc temp storage for the ACC
+@N0300:  save the AC
+@N0301:  select I/O: Device Display Points base=500, mask=7
+@N0302:  clear and add
+@N0303:  record
+@N0304:  clear and add
+@N0305:  return to the only caller
+@N0306:  By adding labels, I can get the tools to indicate who reads and writes what...
+@N0511:  this is simply scratch storage inside the inner loop
+@N0610:  clear and add

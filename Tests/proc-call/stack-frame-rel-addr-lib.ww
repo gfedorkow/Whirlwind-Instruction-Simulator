@@ -1,0 +1,174 @@
+
+				  ; A procedure call, stack frame, and relative addressing lib.
+                  ; The example shows a recursive procedure call in ww.
+
+                  ; A stack is defined at the high end of memory, growing down,
+                  ; as is the case in modern machines.
+
+                  ; Via the .print in proc code body (the "user code") should
+                  ; show the stack pointer and call level decrementing, until
+                  ; finally unwinding all the calls at the proc exit.
+
+				  ; While this is a nice exercise, it's really
+				  ; clumsy. I think a better way to support proc call
+				  ; and recursion is to use globals, including
+				  ; modified instructions, and use the stack to push
+				  ; and pop them.
+
+                  .jumpto main
+                  .org 0o100
+            main:
+                  .print "proc-call-test 1"
+				  ca ten
+				  ad ten
+				  sp push_val
+                  sp subr
+				  sp pop_val
+				  ts main_tmp
+                  .print "proc-call-test 3 %d", main_tmp
+                  si 0
+		  main_tmp: .word 0
+
+                  ; Proc entry
+
+            subr: ta push_addr_tmp
+                  sp push_addr
+
+                  ; Proc code body
+
+                  .print "proc-call-test 2 %o %d", stackp, level
+                  ca ten
+                  sp push_frame
+
+                  ca level
+                  mh k
+                  slh 15                          ; Low part of product is in BR
+                  ts tmp
+                  .print "proc-call-test 5 %d", tmp
+                  ts rel_st_offset                ; Convenient parking spot
+                  ca one                          ; Replace the operand with the desired frame offset for a var
+                  ex rel_st_offset                ; Now rel_st_offset  holds the offset, and AC holds the value, to pass to rel_st
+                  sp rel_st
+
+                  ca one                          ; AC = frame offset
+                  sp rel_ld
+                  ad one
+                  ts tmp
+                  .print "proc-call-test 6 %d", tmp
+
+                  ca level
+                  su one
+                  ts level
+                  cp end
+                  sp subr
+
+                  ; Proc exit
+             end:
+                  .print "proc-call-test 4 %o", stackp
+                  ca ten
+                  sp pop_frame
+                  sp pop_addr
+             tmp: .word 0
+
+                  ; **** push_addr ****
+                  ; Push the value in push_addr_tmp onto the stack
+       push_addr: ta push_addr_rtn
+                  ca stackp
+                  ta push_addr_store
+                  su one
+                  ts stackp
+                  ca push_addr_tmp
+ push_addr_store: ts 0
+   push_addr_rtn: sp 0
+   push_addr_tmp: .word 0
+
+                  ; **** pop_addr ****
+                  ; Pop the addr off the stack and sp to it. The return
+                  ; addr for the pop_addr call is not needed (i.e., it's just a jmp to pop_addr)
+        pop_addr: ao stackp
+                  ca stackp
+                  ta pop_addr_load
+   pop_addr_load: ca 0
+                  ta pop_addr_rtn
+    pop_addr_rtn: sp 0
+
+	              ; **** rel_ld ****
+				  ; Load AC from a stack-relative address whose
+                  ; offset, to be subtracted from the stack pointer,
+                  ; is given in the AC. This is the most general
+                  ; relative AC loader and we'll likely also have
+                  ; clones of this for specific offsets for common
+                  ; case, like say 0-10.
+
+          rel_ld: ta rel_ld_rtn
+		  		  ts rel_ld_tmp
+				  ca stackp
+				  su rel_ld_tmp
+                  td rel_ld_load
+     rel_ld_load: ca 0
+      rel_ld_rtn: sp 0
+	  rel_ld_tmp: .word 0
+
+                  ; **** rel_st ****
+                  ; Store is harder since it's two args. For the general
+                  ; version, we'll assume the offset is in a special 'offset'
+                  ; global, and the value to store is in the AC.
+
+                  ; For any reasonable efficiency, we'll need the N specific
+                  ; versions of this routine.
+
+          rel_st: ta rel_st_rtn
+                  ts rel_st_tmp
+                  ca stackp
+				  su rel_st_offset
+                  td rel_st_store
+                  ca rel_st_tmp
+    rel_st_store: ts 0
+      rel_st_rtn: sp 0
+      rel_st_tmp: .word 0
+   rel_st_offset: .word 0
+
+                  ; **** push_frame ****
+                  ; AC contains the offset to subtract from the stack pointer to establish a new frame
+      push_frame: ta push_frame_rtn
+                  ex stackp
+                  su stackp
+                  ts stackp
+  push_frame_rtn: sp 0
+
+                  ; **** pop_frame ****
+                  ; AC contains the offset to add to the stack pointer to de-establish a frame
+       pop_frame: ta pop_frame_rtn
+                  ad stackp
+                  ts stackp
+   pop_frame_rtn: sp 0
+
+                  ; **** push_val ****
+                  ; Push the value in AC onto the stack
+        push_val: ta push_val_rtn
+                  ts push_val_tmp
+                  ca stackp
+                  ta push_val_store
+                  su one
+                  ts stackp
+                  ca push_val_tmp
+  push_val_store: ts 0
+    push_val_rtn: sp 0
+    push_val_tmp: .word 0
+
+                  ; **** pop_val ****
+                  ; Pop the value off the stack and into the AC
+         pop_val: ta pop_val_rtn
+                  ao stackp
+                  ca stackp
+                  ta pop_val_load
+    pop_val_load: ca 0
+     pop_val_rtn: sp 0
+
+            zero: .word 0
+             one: .word 1
+             two: .word 2
+             ten: .word 10
+               k: .word 10
+           level: .word 10
+          stackp: .word 0o3777                    ; Start in highest addr in memory and grow down

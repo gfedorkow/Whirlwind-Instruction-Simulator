@@ -1,1446 +1,1287 @@
-# #!/bin/python3
-
-# Assemble Whirlwind source
-# g fedorkow, Dec 22, 2017
-
-# Converted to Python 3, Apr 23, 2020
-
-# Whirlwind Computer Source Code Assembler
-# Sample Input Data
-
-#    .ORG 40
-# start: ta label  ;here's a comment
-#       si 5
-#       ck 5
-#       .ORG 210
-# label: .WORD 15
-#       .SWITCH ckalarm 00
-
-# Here's an example of the output from the assembler, which can be
-# recycled as input to the assembler.
-#    .WORD 123
-#
-# @0000:000000  label: op operand ; comment @@auto-comment
-#
-# ;strip autocomment
-# ;save ;comment
-# ;strip @addr:val
-# ;save and strip label:
-# ;look up op and operand
-#
-# @0040:040000label2a: ad L201 ; comment 2a @@auto-comment
-# @0040:040000  label2b: ad L201 ; comment 2b@@auto-comment
-# @0040:040000   label2c:    ad L201 bogus_arg; comment 2c @@auto-comment
-#
-# label2: ad L202  ;; comment on label2
-#
-# ad L203  @@autocomment on unlabeled add
-#
-#    ad L204 ;missing label following line with blanks
-#    .WORD 123
-
-# Dec 7, 2023 - fixed a bug that was ignoring labels on lines with no operator or operand
-
 import os
 import sys
-# sys.path.append('K:\\guy\\History-of-Computing\\Whirlwind\\Py\\Common')
 import re
+import math
+import traceback
 import argparse
 import wwinfra
+from enum import Enum
+from wwasmparser import AsmExprValue, AsmExprValueType, AsmExprEnv, AsmExpr, AsmExprType, AsmParsedLine
 
-breakpoint_trigger = False
-def breakp(log):
-    global breakpoint_trigger
+AsmOperandType = Enum ("AsmOperandType", ["None",       # it's a pseudo-op
+                                          "Jump",       # the address is a jump target
+                                          "WrData",     # the instruction writes to address 
+                                          "RdData",     # the instruction reads from address 
+                                          "RdWrData",   # the instruction reads and writes from/to address
+                                          "Param"])     # the operand isn't an address at all
 
-    if breakpoint_trigger:
-        print("hit breakpoint %s" % log)
-        return True
-    if log == "Trigger":
-        breakpoint_trigger = True
-    return False
+class OpCodeInfo:
+    def __init__ (self, opcode: int, type: AsmOperandType):
+        self.opcode = opcode
+        self.opcodeWitdth: int = None   # subclass def
+        self.type = type
+        self.className = AsmWwOpInst
+        
+class FiveBitOpCodeInfo (OpCodeInfo):
+    def __init__ (self, opcode: int, type: AsmOperandType):
+        super().__init__ (opcode, type)
+        self.opcodeWidth = 5
 
-# defines
-ADDRESS_MASK = 0o3777
-WORD_MASK = 0o177777
-CORE_SIZE = 2048
+class SiOpCodeInfo (FiveBitOpCodeInfo):
+    def __init__ (self, opcode: int, type: AsmOperandType):
+        super().__init__ (opcode, type)
+        self.className = AsmWwSiOpInst
 
-OPERAND_MASK_5BIT = 0o03777
-OPERAND_MASK_6BIT = 0o01777
-OPERAND_MASK_SHIFT = 0o777  # shifts can go from 0 to 31, i.e., five bits, but the field has room for 9 bits
+class SevenBitOpCodeInfo (OpCodeInfo):
+    def __init__ (self, opcode: int, type: AsmOperandType):
+        super().__init__ (opcode, type)
+        self.opcodeWidth = 7
+        
+class CsiiOpCodeInfo (OpCodeInfo):
+    def __init__ (self, opcode: int, type: AsmOperandType):
+        super().__init__ (opcode, type)
 
-Debug = False
-LexDebug = False
-Legacy_Numbers = False
+class OpCodeTables:
+    def __init__ (self):
+        #
+        # These tables map an opname to an opcode and related info.
+        #
+        self.op_code_1958 = { # 
+                "si":  SiOpCodeInfo       (0o000, AsmOperandType.Param),
+        "<unused01>":  FiveBitOpCodeInfo  (0o001, AsmOperandType.Param),
+                "bi":  FiveBitOpCodeInfo  (0o002, AsmOperandType.WrData),
+                "rd":  FiveBitOpCodeInfo  (0o003, AsmOperandType.Param),
+                "bo":  FiveBitOpCodeInfo  (0o004, AsmOperandType.RdData),
+                "rc":  FiveBitOpCodeInfo  (0o005, AsmOperandType.Param),
+                "sd":  FiveBitOpCodeInfo  (0o006, AsmOperandType.RdData),
+                "cf":  FiveBitOpCodeInfo  (0o007, AsmOperandType.Param),
+                "ts":  FiveBitOpCodeInfo  (0o010, AsmOperandType.WrData),
+                "td":  FiveBitOpCodeInfo  (0o011, AsmOperandType.WrData),
+                "ta":  FiveBitOpCodeInfo  (0o012, AsmOperandType.WrData),
+                "ck":  FiveBitOpCodeInfo  (0o013, AsmOperandType.RdData),
+                "ab":  FiveBitOpCodeInfo  (0o014, AsmOperandType.WrData),
+                "ex":  FiveBitOpCodeInfo  (0o015, AsmOperandType.RdWrData),
+                "cp":  FiveBitOpCodeInfo  (0o016, AsmOperandType.Jump),
+                "sp":  FiveBitOpCodeInfo  (0o017, AsmOperandType.Jump),
+                "ca":  FiveBitOpCodeInfo  (0o020, AsmOperandType.RdData),
+                "cs":  FiveBitOpCodeInfo  (0o021, AsmOperandType.RdData),
+                "ad":  FiveBitOpCodeInfo  (0o022, AsmOperandType.RdData),
+                "su":  FiveBitOpCodeInfo  (0o023, AsmOperandType.RdData),
+                "cm":  FiveBitOpCodeInfo  (0o024, AsmOperandType.RdData),
+                "sa":  FiveBitOpCodeInfo  (0o025, AsmOperandType.RdData),
+                "ao":  FiveBitOpCodeInfo  (0o026, AsmOperandType.RdWrData),
+                "dm":  FiveBitOpCodeInfo  (0o027, AsmOperandType.RdData),
+                "mr":  FiveBitOpCodeInfo  (0o030, AsmOperandType.RdData),
+                "mh":  FiveBitOpCodeInfo  (0o031, AsmOperandType.RdData),
+                "dv":  FiveBitOpCodeInfo  (0o032, AsmOperandType.RdData),
+               "slr":  SevenBitOpCodeInfo (0o154, AsmOperandType.Param),
+               "slh":  SevenBitOpCodeInfo (0o155, AsmOperandType.Param),
+               "srr":  SevenBitOpCodeInfo (0o160, AsmOperandType.Param),
+               "srh":  SevenBitOpCodeInfo (0o161, AsmOperandType.Param),
+                "sf":  FiveBitOpCodeInfo  (0o035, AsmOperandType.WrData),
+               "clc":  SevenBitOpCodeInfo (0o170, AsmOperandType.Param),
+               "clh":  SevenBitOpCodeInfo (0o171, AsmOperandType.Param),
+                "md":  FiveBitOpCodeInfo  (0o037, AsmOperandType.RdData),
+               "ica":  CsiiOpCodeInfo     (0o037, AsmOperandType.RdData),
+               "imr":  CsiiOpCodeInfo     (0o037, AsmOperandType.RdData),
+                "IN":  CsiiOpCodeInfo     (0o037, AsmOperandType.RdData),
+               "isp":  CsiiOpCodeInfo     (0o037, AsmOperandType.RdData),
+               "its":  CsiiOpCodeInfo     (0o037, AsmOperandType.RdData),
+               "OUT":  CsiiOpCodeInfo     (0o037, AsmOperandType.RdData)
+            }
 
-class DebugWidgetClass:
-    def __init__(self, linenumber, addr_str, incr_str, format_str):
-        self.linenumber = linenumber
-        self.addr_str = addr_str
-        self.incr_str = incr_str
-        self.addr_binary = None
-        self.incr_binary = None
-        self.format_str = format_str
+        self.op_code_1950 = { #
+                "ri":  FiveBitOpCodeInfo (0o00, AsmOperandType.Param),
+                "rs":  FiveBitOpCodeInfo (0o01, AsmOperandType.Param),
+                "rf":  FiveBitOpCodeInfo (0o02, AsmOperandType.WrData),
+                "rb":  FiveBitOpCodeInfo (0o03, AsmOperandType.Param),
+                "rd":  FiveBitOpCodeInfo (0o04, AsmOperandType.RdData),
+                "rc":  FiveBitOpCodeInfo (0o05, AsmOperandType.Param),
+                "qh":  FiveBitOpCodeInfo (0o06, AsmOperandType.Param),
+                "qd":  FiveBitOpCodeInfo (0o07, AsmOperandType.Param),
+                "ts":  FiveBitOpCodeInfo (0o10, AsmOperandType.WrData),
+                "td":  FiveBitOpCodeInfo (0o11, AsmOperandType.WrData),
+                "ta":  FiveBitOpCodeInfo (0o12, AsmOperandType.WrData),
+                "ck":  FiveBitOpCodeInfo (0o13, AsmOperandType.RdData),
+                "qf":  FiveBitOpCodeInfo (0o14, AsmOperandType.Param),  # guy made up the 0o14 op-code; I don't know what code they assigned
+                "qe":  FiveBitOpCodeInfo (0o15, AsmOperandType.RdWrData),
+                "cp":  FiveBitOpCodeInfo (0o16, AsmOperandType.Jump),
+                "sp":  FiveBitOpCodeInfo (0o17, AsmOperandType.Jump),
+                "ca":  FiveBitOpCodeInfo (0o20, AsmOperandType.RdData),
+                "cs":  FiveBitOpCodeInfo (0o21, AsmOperandType.RdData),
+                "ad":  FiveBitOpCodeInfo (0o22, AsmOperandType.RdData),
+                "su":  FiveBitOpCodeInfo (0o23, AsmOperandType.RdData),
+                "cm":  FiveBitOpCodeInfo (0o24, AsmOperandType.RdData),
+                "sa":  FiveBitOpCodeInfo (0o25, AsmOperandType.RdData),
+                "ao":  FiveBitOpCodeInfo (0o26, AsmOperandType.RdWrData),
+        "<unused05>":  FiveBitOpCodeInfo (0o27, AsmOperandType.Param),
+                "mr":  FiveBitOpCodeInfo (0o30, AsmOperandType.RdData),
+                "mh":  FiveBitOpCodeInfo (0o31, AsmOperandType.RdData),
+                "dv":  FiveBitOpCodeInfo (0o32, AsmOperandType.RdData),
+                "sl":  FiveBitOpCodeInfo (0o33, AsmOperandType.Param),
+                "sr":  FiveBitOpCodeInfo (0o34, AsmOperandType.Param),
+                "sf":  FiveBitOpCodeInfo (0o35, AsmOperandType.WrData),
+                "cl":  FiveBitOpCodeInfo (0o36, AsmOperandType.Param),
+                "md":  FiveBitOpCodeInfo (0o37, AsmOperandType.RdData)
+            }
 
+        # LAS 12/5/24
+        #
+        # Regarding .pp, We should support it as our way of denoting an assembly-time
+        # variable. But we don't need to duplicate the "=" syntax so I'll propose
+        # standard comma notation, e.g.
+        #
+        #                       .pp MAX_POS_COORD, 0o076040
+        #
+        # The model in csii did not use an explicit pseudo-op, but a naming convention
+        # where you could say e.g.:
+        #
+        #                       pp1=420
+        #                       sp ppl
+        #       which is eqv to:
+        #                       sp 420
+        #
+        # We don't need to implement this unless we want to process code verbatim.
+        # 
+        # Regarding ditto: we can implement ditto as in csii but we'll call it ".ditto"
+        # to remain true to the rest of the syntax. However again it's not clear
+        # whether this needs to be supported as-is.  Also there are simpler ways to add
+        # block allocation to the current assembler, e.g.:
+        #
+        #                       .words 42, 0o5757
+        #
+        # could allocate 42 words filled with 0o5757.
 
-def strip_space(s1):
-    s2 = re.sub("^[ \t]*", '', s1)
-    s3 = re.sub("[ \t]*$", '', s2)
-    return s3
+        # Map the pseudo-op code to the class handling it.
+        # The "dot" in each of these is parsed as an operator and so does not appear in the table
 
-def split_comment(in_str):
-  paren_depth = 0
-  in_quotes = False
-  in_comment = False
-  out_operands = ''
-  out_comment = ''
-  i = 0
+        self.meta_op_code = {
+          "org": AsmDotOrgInst,
+        "daorg": AsmDotDaOrgInst,       # Drum Address Origin -- generates warning, don't know what to do yet
+         "base": AsmDotBaseInst,        # Deprecated -- will generate warning
+         "word": AsmDotWordInst,
+        "words": AsmDotWordsInst,
+        "float": AsmDotFloatInst,
+        "flexl": AsmDotFlexlhInst,
+        "flexh": AsmDotFlexlhInst,
+       "switch": AsmDotSwitchInst,
+       "jumpto": AsmDotJumpToInst,
+        "dbwgt": AsmDotDbwgtInst,
+      "ww_file": AsmDotWwFilenameInst,
+    "ww_tapeid": AsmDotWwTapeIdInst,
+          "isa": AsmDotIsaInst,         # Directive to switch to the older 1950 instruction set
+         "exec": AsmDotExecInst,
+        "print": AsmDotPrintInst,
+           "pp": AsmDotPpInst,
+      "include": AsmDotIncludeInst      # Include the text of another ww file
+            }
 
-  for c in in_str:
-    i += 1
-    if c == '(':
-      paren_depth += 1
-    if c == ')':
-      paren_depth -= 1
-    if c == '"':
-      in_quotes = not in_quotes
+class AsmXrefEntry:
+    def __init__ (self):
+        self.readByStr = ""
+        self.writtenByStr = ""
+        self.jumpedToByStr = ""
+        self.AtAddrStr = ""
+        self.annotateIoStr = ""     # Not really an xref items but looks like a good place for it
+    def listingString (self):
+        r = self.annotateIoStr
+        if self.writtenByStr == "" and self.readByStr == "" and self.jumpedToByStr == "":
+            r += ""
+        else:
+            r += "@@"
+            if self.writtenByStr != "":
+                r += "WrittenBy " + self.writtenByStr
+            if self.readByStr != "":
+                r += "ReadBy " + self.readByStr
+            if self.jumpedToByStr != "":
+                r += "JumpedToBy " + self.jumpedToByStr
+        return r
 
-    if re.match("@@",in_str[i:] ) and (in_quotes == False) and (paren_depth == 0):
-      break
-
-    if (c == ';')  and (in_quotes == False) and (paren_depth == 0) and not in_comment:
-      in_comment = True
-      continue
-
-    if in_comment:
-      out_comment += c
-    else:
-      out_operands += c
-
-  return (strip_space(out_operands), strip_space(out_comment))
-
-
-
-# Source line Lexer; break the components of a single line into constituent components
-# Modified Jan 10 2020 to add .w, .fl, .fh directives
-
-# Line format looks like this:
-# @0000:000000  label: op operand ; comment @@auto-comment
-#
-# ;strip autocomment
-# ;save ;comment
-# ;strip @addr:val
-# ;save and strip label:
-# ;look up op and operand
-def lex_line(line, line_number):
-    global Legacy_Numbers
-
-    comment = ''
-    label = ''
-    op = ''
-    operand = ''
-    directive = 0
-
-    # sample line:
-    # @0061.49:140001     w0061: mr   0001      ; multiply and roundoff @@WrittenBy a0045 a0101 ReadBy a0101
-
-    if len(line) == 0:  # skip blank lines
-        # I had the assembler case-insensitive earlier, just in case, as it were.  But it seems like
-        # the original was case-sensitive so I took out an "op.lower()" here to leave well enough alone
-        return LexedLine(line_number, label, op, operand, comment, directive)
-
-    if LexDebug:
-        print(line_number, "Line=", line)
-
-    """
-    # old comment-stripper; delete this commented code
-    # strip auto-comment
-    r1 = re.sub(" *@@.*", '', line)
-    if LexDebug:
-        print(line_number, "remaining r1 after strip-autocomment:", r1)
-
-    # split op and save any regular comment
-    rl2 = re.split(";", r1, 1)
-    r2 = r1   # provisionally, output = input if no comment
-    if LexDebug:
-        print(line_number, "RL2 list:", rl2)
-    if len(rl2) > 1:
-        comment = strip_space(rl2[1])
-        r2 = strip_space(rl2[0])
-    """
-
-    (r2, comment) = split_comment(line)
-
-    # Special Case for .exec directive
-    # I'm adding directives to the assembler to:
-    #    - pass a string to the simulator that should be interpreted and executed as a python statement
-    #    - execute a specialized formatted print statement to dump the state of named variables
-    #           (i.e., for "printf debugging"
-    # e.g.    .exec print("time=%d" % cm.rd(0o05))
-    # The statement can't have a label, and must not start in column zero.  But other than that, we'll bypass
-    # the rest of the parser checks, as the python statement could have "anything"
-    # The .exec directive will follow a 'real' WW instruction; the assumption is that it is executed after
-    # the preceding instruction, before the next 'real' instruction.
-    exec_match = "^[ \t][ \t]*(.exec|.print)"
-    if m := re.search(exec_match, r2):
-        exec_stmt = re.sub(exec_match, '', r2)
-        exec_stmt = exec_stmt.lstrip().rstrip()
-        op = m.group(0).lstrip().rstrip()   # was '.exec'
-        operand = exec_stmt
-        # as above, .lower() removed
-        return LexedLine(line_number, label, op, operand, comment, directive)
-
-    # strip the initial "@address:data" tag
-    #    pattern = "(^@[0-7][0-9\.]*:[0-7][0-7]*) *([a-zA-Z][a-z[A-Z[0-7]*) *"
-    addr_data_tag = "(^@[0-7][0-9.]*:[0-7][0-7]*) *"
-    r3 = re.sub(addr_data_tag, '', r2)
-    if LexDebug:
-        print(line_number, "RS2=", r3)
-
-    # if there's nothing but a comment on the line, strip the semicolon and return it now
-    if len(r3) == 0:
-        return LexedLine(line_number, label, op, operand, comment, directive)
-
-    # split label and op
-    rl4 = re.split(":", r3)
-    r4 = strip_space(r3)
-    if LexDebug:
-        print(line_number, "RL4:", rl4)
-    if len(rl4) > 1:
-        r4 = strip_space(rl4[1])
-        label = strip_space(rl4[0])
-
-    # at this point, we should have nothing but an operator and operand
-    # With the one special case of an editing directive in the source file...
-    # If the source line contains .w, .fl, .fh, convert the line into a constant, either
-    # a number or flexo characters in the low or high bit positions.  Record the directive
-    # but don't keep it as part of the source file.
-    # added Jan 10, 2020
-    if (len(r4) > 0) and (r4[0] == '.'):
-        if r4.find(".w ") == 0:
-            directive = DOT_WORD_OP
-            r4 = re.sub("\\.w *", '', r4)
-        if r4.find(".fl ") == 0:
-            directive = DOT_FLEXL_OP
-            r4 = re.sub("\\.fl *", '', r4)
-        if r4.find(".fh ") == 0:
-            directive = DOT_FLEXH_OP
-            r4 = re.sub("\\.fh *", '', r4)
-
-    # split the operator and operand
-    rl5 = re.split(" ", r4, maxsplit=1)
-    op = r4
-    if LexDebug:
-        print(line_number, "RL5:", rl5)
-    if len(rl5) > 1:
-        operand = strip_space(rl5[1])
-        op = strip_space(rl5[0])
-        op = op.lower()
-        if Legacy_Numbers:   # guy's "legacy numbers" were purely and totally octal; the asm is now more flexible.
-            if operand.isnumeric():
-                operand = "0o" + operand
-
-    if len(op) > 0 and op not in op_code:
-        cb.log.error(line_number, "Unknown op code: %s" % op)
-        op = ''
-    return LexedLine(line_number, label, op, operand, comment, directive)
-
-
-def ww_int(nstr, line_number, relative_base=None):
-    global Legacy_Numbers
-    if Legacy_Numbers:
-        return ww_int_adhoc(line_number, nstr)
-    return ww_int_csii(nstr, line_number, relative_base)
-
-
-# This was guy's first try at WW Number Conversion, replaced in Oct 2020 with ww_int_csii
-#   In Whirlwind-speak, constants were viewed as fractional, i.e. 0 <= n < 1.0
-# and expressed as o.ooooo  - a sign bit followed by 5 octal digits
-# This routing accepts either ordinary octal ints, or WW fractional format.
-def ww_int_adhoc(line_number, nstr):
-    if re.match('0o', nstr):  # try Pythonic octal conversion
-        octal_str = nstr[2:]
-        if re.search('^[0-7][0-7]*$', octal_str) is None:
-            cb.log.error(line_number, "Expecting 0onnnnn octal number; got %s" % nstr)
+class AsmInst:
+    def __init__ (self, parsedLine: AsmParsedLine, prog):   # Should be prog: AsmProgram -- python is stupid
+        self.cb = wwinfra.theConstWWbitClass
+        self.parsedLine = parsedLine
+        self.prog = prog
+        self.xrefs = AsmXrefEntry()
+        # self.opcode: int = None       # Subclass def
+        # self.pseudoOp: str = None     # Subclass def
+        # def passOneOp (self):         # Subclass def
+        # def passTwoOp (self):         # Subclass def
+        self.instruction: int = 0       # 16 bits, may be a ww instruction or data
+        self.address: int = self.prog.nextCoreAddress   # All instructions even pseudo-ops get an address
+        self.prog.coreToInst[self.address] = self
+        self.relativeAddressBase: int = 0
+        # If it has a label, record it
+        if self.parsedLine.label != "":
+            self.prog.labelTab.insert (parsedLine.label, self)
+        # If it has a comment, record it
+        if self.parsedLine.comment != "":
+            self.prog.commentTab[self.address] = self.parsedLine.comment
+    #
+    # Given an int detect sign and range and generate a 16-bit one's complement
+    # representation.
+    #
+    # Note if x is positive, and we wish to represent -x, then
+    #
+    #   representation[-x] == 2^n - 1 - x (mod 2^n), where n is the bit length.
+    #
+    # Thus we use maxUnsignedWord which here is 2^16 - 1 and do the subtract of the
+    # negation, or just maxUnsignedWord + x. Since we're checking range there will
+    # be no overflow and thus no need to compute mod 2^n. This is all in the
+    # spirit of keeping this calc in a more number-theoretic form at this
+    # level, and not relying on bit-twiddling.
+    #
+    def intToSignedWwInt (self, x: int) -> int:
+        if x >= -self.prog.maxSignedWordMag and x <= self.prog.maxSignedWordMag:
+            if x < 0:
+                r = self.prog.maxUnsignedWord + x  # One's-complement representation
+            else:
+                r = x
+            return r
+        else:
+            self.error ("Signed integer conversion of %d is out of 16-bit one's-complement range" % x)
+    #
+    # Given an int check for positive 16-bit unsigned range and generate an
+    # unsigned 16-bit value (identity function)
+    #
+    def intToUnsignedWwInt (self, x: int) -> int:
+        if x >= 0 and x <= self.prog.maxUnsignedWord:
+            return x
+        else:
+            self.error ("Unsigned integer conversion of %d (= 0o%o) is out of 16-bit unsigned range" % (x, x))
+    #
+    # Convert host int x to one's complement given the total bit size (i.e., including sign) nbits
+    #
+    def intToSignedOnesCompInt (self, x: int, nbits: int) -> int:
+        maxmag = 2**(nbits-1)
+        if x >= -maxmag and x <= maxmag:
+            if x < 0:
+                r = 2**nbits - 1 + x  # One's-complement representation
+            else:
+                r = x
+            return r
+        else:
+            # self.error ("Signed integer conversion of %d is out of %d-bit one's-complement range" % (x, nbits))
+            # LAS This error is too obscure so we'll punt up a level
             return None
-        return int(octal_str, 8)
 
-    if nstr.find(".") == -1:
-        return int(nstr, 8)
-    else:
-        if (nstr[1] != '.') & (len(nstr) != 7):
-            cb.log.error(line_number, "format problem in WW Number %s" % nstr)
-        j = int(nstr.replace('.', ''), 8)
-        if Debug:
-            cb.log.error(line_number, "ww number %s = %6oo" % (nstr, j))
-        return j
+    def error (self, msg: str):
+        sys.stdout.flush()
+        """
+        traceback.print_stack()
+        sys.stdout.flush()
+        sys.stderr.flush()
+        """
+        self.cb.log.error (self.parsedLine.lineNo, "%s:\n%s" % (msg, self.parsedLine.lineStr))
+        pass
+    def operandTypeError (self, val: AsmExprValue):
+        # Grab the undefined error as it's too noisy, e.g., always comes with unbound var.
+        if val.type != AsmExprValueType.Undefined:
+            self.error ("Incorrect operand type %s" % val.asString())
+    def addrRangeError (self, addr: int):
+        self.error ("Address 0o%o out of range" % addr)
+    # Return a string for the prefix address, perhaps with decimal addresses and perhaps with content
+    def fmtPrefixAddrStr (self, address: int, contents: int = None) -> str:
+        da = self.cb.decimal_addresses
+        daStr = ".%04d" % address if da else ""
+        if contents is not None:
+            return ("@%04o" + daStr + ":%06o") % (address, contents)
+        else:
+            return (" "*5 + " "*len (daStr) + " "*7)
+    def opnamePrefix (self):
+        return ""
+    # Look for semicolons and justify
+    def formatComment (self, comment: str) -> (str, int):
+        nSemis = 0
+        cw = self.prog.commentWidth
+        if cw == 0:
+            r = comment
+        else:
+            cc = self.prog.labelTab.maxLabelLen + self.prog.commentColumn
+            l = len(comment)
+            s = ""
+            r = ""
+            for i in range (0, l):
+                if comment[i] == ';':
+                    nSemis += 1
+                    s = s.rstrip (" ")
+                    n = cw - len (s)
+                    if n < 0:
+                        n = 1
+                    r += s + " "*n + ";"
+                    s = ""
+                elif i == l - 1:
+                    s += comment[i]
+                    r += s
+                else:
+                    s += comment[i]
+        return (r, nSemis)
+    def listingString (self,
+                       quoteStrings: bool = True,
+                       minimalListing: bool = False,
+                       omitUnrefedLabels: bool = False,
+                       omitAutoComment: bool = False) -> str:
+        p = self.parsedLine
+        prefixAddr = self.prefixAddrStr() if not minimalListing else ""
+        autoComment = self.xrefs.listingString() if not minimalListing and not omitAutoComment else ""
+        maxLabelLen = self.prog.labelTab.maxLabelLen
+        commentWidth = self.prog.commentWidth
+        if omitUnrefedLabels and p.label not in self.prog.labelRef:
+            plabel = ""
+        else:
+            plabel = p.label
+        sp = " "
+        sp1 = sp*(maxLabelLen - len (plabel))
+        label = "%s%s" % (sp1, plabel) + (":" if plabel != "" else sp)
+        inst = self.opnamePrefix() + p.opname + (sp + p.operand.listingString (quoteStrings = quoteStrings)) if p.operand is not None else ""
+        (comment, nSemis) = self.formatComment (p.comment)
+        s1 = prefixAddr + sp + label + sp 
+        s2 = s1 + inst
+        commentColumn = len (s1) + self.prog.commentColumn
+        sp2 = sp*(commentColumn - len (s2)) if p.label != "" or p.opname != "" or nSemis > 0 else ""
+        s3 = (sp2 + ";" + comment + " " + autoComment) if comment + autoComment != "" else ""
+        return (s2 + s3).rstrip (" ")
 
+class AsmWwOpInst (AsmInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+        opcodeInfo = self.prog.curOpcodeTab[self.parsedLine.opname]
+        self.opcode = opcodeInfo.opcode << (self.prog.wordWidth - opcodeInfo.opcodeWidth)
+        self.operandType: AsmOperandType = opcodeInfo.type
+        self.operandVal: AsnExprValue = None    # Value stashed here after evaluation by AsmExpr.eval()
+    def prefixAddrStr (self) -> str:      # A ww op always displays address and contents in the prefix address
+        return self.fmtPrefixAddrStr (self.address, contents = self.instruction)
+    def passOneOp (self):
+        self.prog.nextCoreAddress += 1
+    def passTwoOp (self):
+        self.operandVal = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
+        val = self.operandVal
+        #
+        # A value stored in an instruction may be an address, or a positive
+        # integer n in the range 0 <= n <= 511 mod 32. Thus we disallow
+        # negative numbers, -0, or fractions, and we check we're in address
+        # range.  We could tag each opcode with its operand type, but we'll do
+        # that only if necessary.
+        #
+        if val.type == AsmExprValueType.Integer:
+            if val.value < 0 or val.value >= self.prog.coreSize:
+                self.addrRangeError (val.value)
+            else:
+                self.instruction = self.opcode | val.value      # mask not needed because we've checked range
+                self.prog.coreMem[self.address] = self.instruction
+                self.addXref (val.value)
+        else:
+            self.operandTypeError (val)
+    def addXref (self, operand: int):
+        if self.operandType in [AsmOperandType.RdData, AsmOperandType.WrData,
+                                AsmOperandType.RdWrData, AsmOperandType.Jump]:
+            address = operand
+            otherInst = self.prog.coreToInst[address]
+            if otherInst is not None:   # Could be None due to errors
+                otherLabelOrAddr = (otherInst.parsedLine.label if otherInst.parsedLine.label != "" else "a%04o" % otherInst.address) + " "
+                thisLabelOrAddr = (self.parsedLine.label if self.parsedLine.label != "" else "a%04o" % self.address) + " "
+                self.xrefs.AtAddrStr += otherLabelOrAddr + " "
+                match self.operandType:
+                    case AsmOperandType.RdData:
+                        otherInst.xrefs.readByStr += thisLabelOrAddr
+                    case AsmOperandType.WrData:
+                        otherInst.xrefs.writtenByStr += thisLabelOrAddr
+                    case AsmOperandType.RdWrData:
+                        otherInst.xrefs.readByStr += thisLabelOrAddr
+                        otherInst.xrefs.writtenByStr += thisLabelOrAddr
+                    case AsmOperandType.Jump:
+                        otherInst.xrefs.jumpedToByStr += thisLabelOrAddr
+                    case AsmOperandType.Param:
+                        pass
+                    
+class AsmWwSiOpInst (AsmWwOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def passTwoOp (self):
+        super().passTwoOp()
+        val = self.operandVal
+        if val.type == AsmExprValueType.Integer:
+            d: str = "; Auto-Annotate I/O: %s" % self.cb.Decode_IO (val.value)
+            if d not in self.parsedLine.comment:
+                self.xrefs.annotateIoStr = d
+        else:
+            self.operandTypeError (val)
 
-# A number-conversion routine that's more careful and adheres to the non-intuitive
-# combination of Decimal and Octal and Fixed-Point and Float
-#  See M-2539-2, page XI-3
-#  If it starts with '0.' or '1.' its octal.  + or - are not allowed
-#      There must be 5 digits to the right of the decimal point
-#  If it starts with + or - it's decimal
-#     +0 and -0 are different, as usual.
-#  if it starts with a digit, it's a positive decimal number
-#  If it starts with + or - and contains a decimal point, it's a decimal fraction
-#     and in that case, it may be followed by base-10 and/or base-2 exponent (yes, both)
-#     e.g. +1OO. x 10-2 x 2-2
-#       Note that Flexo actually had superscript numbers, and that may have been assumed...
-#       [And I'm not doing it until I find an example!]
-#  I'm adding a rule for no-questions-asked Octal, the usual Pythonic 0onnnn
-#  and I'm adding a hack for small positive numbers -- if it's 0-7, doesn't matter if it's octal or decimal!
-def ww_int_csii(nstr, line_number, relative_base=None):
-    try:
-        ww_small_int = int(nstr, 10)
-        if ww_small_int < 8 and ww_small_int > -8:
-            return ww_small_int
-        #  otherwise, fall through to all the other tests below
-    except ValueError:
+class AsmPseudoOpInst (AsmInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def prefixAddrStr (self) -> str:      # A pseudo-op by default displays only the address in the prefix addr string
+        return self.fmtPrefixAddrStr (self.address)
+    def opnamePrefix (self):
+        return "."
+    def wwWord (self, val: AsmExprValue) -> int:
+        inst = 0
+        if val.type == AsmExprValueType.Integer:
+
+            # This integer handling illustrates why we really could use more
+            # data types, esp. an Address type, so that we can clearly deal
+            # with range and sign. Here we check sign only to call the standard
+            # converters, which also check sign.
+            
+            if val.value >= 0:
+                # If positive, treat effectively as unsigned for the 16-bit range
+                inst = self.intToUnsignedWwInt (val.value)
+            else:
+                # Value negative -- store one's complement
+                inst = self.intToSignedWwInt (val.value)
+        elif val.type == AsmExprValueType.NegativeZero:
+            # Negative zero is its own type
+            inst = self.prog.maxUnsignedWord
+        elif val.type == AsmExprValueType.Fraction:
+            # Fractions need to stay in signed 16-bit one's complement range
+            inst = self.intToSignedWwInt (int (round (val.value * 2**(self.prog.wordWidth - 1))))
+        else:
+            self.operandTypeError (val)
+        return inst
+
+class AsmNullInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def passOneOp (self):
+        pass
+    def passTwoOp (self):
         pass
 
-    # there's a case I can't figure out how to categorize: "0.0" or "0.00" could be either decimal
-    # or Octal, but it seems to come closer to matching the Octal pattern.  Obviously the answer is
-    # zero in either case.
-    # In general, I think this routine is more conservative about number types than the real assembler,
-    # but I don't know what rules they actually used.
-    if re.match('0\\.|1\\.', nstr):  # try Whirlwind fixed-point octal conversion, e.g. n.nnnnn
-        octal_str = nstr.replace('.', '')
-        if re.search('^[01][0-7][0-7][0-7][0-7][0-7]$', octal_str) is None and \
-            re.search('^0.00*$', nstr) is None:
-            cb.log.error(line_number, "Line %d: Expecting n.nnnnn octal number; got %s" % (line_number, nstr))
+class AsmUnknownInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+        self.error ("Unknown op name %s" % self.parsedLine.opname)
+    def passOneOp (self):
+        pass
+    def passTwoOp (self):
+        pass
+
+class AsmDotOrgInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def passOneOp (self):
+
+        # Need to eval this in pass one, since it determines following address
+        # alloc. Normally .org is just literals, but any symbols used here
+        # must have been defined earlier in the program.
+
+        nextAddr: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
+        if nextAddr.type == AsmExprValueType.Integer:
+            if nextAddr.value >= 0 and nextAddr.value < self.prog.coreSize:
+                self.prog.nextCoreAddress = nextAddr.value
+                self.prog.currentRelativeBase = nextAddr   # <--- This is an important assumption!! [Guy]
+            else:
+                self.addrRangeError (nextAddr.value)
+        else:
+            self.operandTypeError (nextAddr)
+    def passTwoOp (self):
+        pass
+
+# [Guy:] process a .DAORG statement, setting the next *drum* address to load. I
+# have no idea what to do with these!
+
+class AsmDotDaOrgInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def passOneOp (self):
+        self.prog.cb.log.warn (self.parsedLine.lineNo,
+                               "Drum Address pseudo-op %s in %s" % (self.parsedLine.opname, self.parsedLine.lineStr))
+    def passTwoOp (self):
+        pass
+
+# [Guy:] process a .BASE statement, resetting the relative addr count to zero. I
+# added this pseudo-op during the first run at cs_ii conversion But on the next
+# go round, I changed it to parse the "0r" label directly.
+
+class AsmDotBaseInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def passOneOp (self):
+        # Like .org, need to eval this in pass one, since it determines following address alloc.
+        self.prog.currentRelativeBase = 0
+        self.prog.cb.log.warn (self.parsedLine.lineNo, "Deprecated .BASE @%04oo" % self.prog.nextCoreAddress)
+    def passTwoOp (self):
+        pass
+
+class AsmDotWordInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def prefixAddrStr (self) -> str:      # Override - display contents too
+        return self.fmtPrefixAddrStr (self.address, contents = self.instruction)
+    def passOneOp (self):
+        self.prog.nextCoreAddress += 1
+    def passTwoOp (self):
+        val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
+        self.instruction = self.wwWord (val)
+        self.prog.coreMem[self.address] = self.instruction
+
+class AsmDotWordsInst (AsmDotWordInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+        self.block = {}
+        self.fillInst = 0
+    def listingString (self,
+                       minimalListing: bool = False,
+                       **kwargs) -> str:
+        s = super().listingString (minimalListing = minimalListing, **kwargs)
+        if minimalListing:
+            return s
+        for i in range (1, len (self.block)):
+            s += "\n" + self.fmtPrefixAddrStr (self.address + i, contents = self.block[i])
+        return s
+    def passOneOp (self):
+        # Need to eval in pass one since this determines next addr. So all vars
+        # must have been defined previoiusly in the file.
+        val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
+        if val.type != AsmExprValueType.List:
+            valList = [val, AsmExprValue (AsmExprValueType.Integer, 0)]
+        else:
+            valList = val.value
+        if len (valList) == 2:
+            lenVal = valList[0]
+            if lenVal.type == AsmExprValueType.Integer:
+                fillLen = lenVal.value
+                fillVal = valList[1]
+                self.fillInst = self.wwWord (fillVal)
+                for i in range (0, fillLen):
+                    self.block[i] = self.fillInst
+                self.prog.nextCoreAddress += fillLen
+            else:
+                self.operandTypeError (lenVal)
+        else:
+            self.error ("Incorrect number of operands")
+    def passTwoOp (self):
+        self.instruction = self.fillInst
+        for i in range (0, len (self.block)):
+            self.prog.coreMem[self.address+i] = self.block[i]
+
+class AsmDotFloatInst (AsmDotWordsInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def passOneOp (self):
+        self.prog.nextCoreAddress += 2
+    def passTwoOp (self):
+        val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
+        if val.type == AsmExprValueType.List:
+            if len (val.value) == 2:
+                val1: AsmExprValue = val.value[0]
+                val2: AsmExprValue = val.value[1]
+                if val1.type == AsmExprValueType.Fraction:
+                    decMant = val.value[0].value  
+                elif val1.type == AsmExprValueType.Integer:
+                    decMant = val.value[0].value
+                else:
+                    self.operandTypeError (val1)
+                if val2.type == AsmExprValueType.Integer:
+                    decExp = val.value[1].value
+                    v: float = decMant*10**decExp
+                    exp: int = 0 if v == 0 else math.ceil (math.log (abs(v), 2)) # Signed, mag 6 bit range, host rep
+                    fracMant: float = v/2**exp
+                    if fracMant >= 1.0:
+                        exp += 1
+                        fracMant: float = v/2**exp
+                    mant = int (round (fracMant * 2**24)) # Mag is full 24-bit resolution, host rep
+                    wwExp = self.intToSignedOnesCompInt (exp, 7)
+                    if wwExp is None:
+                        self.error ("Float out of range")
+                        wwExp = 0
+                    wwMant = self.intToSignedOnesCompInt (mant, 25)
+                    if wwMant is None:
+                        self.error ("Float out of range")
+                        wwMant = 0
+                    wwMantHiMask = 0o177777000
+                    wwMantHi = (wwMant & wwMantHiMask) >> 9
+                    # print ("LAS86", "0o%o" % wwMant, "0o%o" % wwMantHi, v, fracMant, mant, decMant, decExp)
+                    wwMantLo = wwMant & ~wwMantHiMask
+                    wwHiWord = wwMantHi
+                    wwLoWord =  (wwExp << 9) | wwMantLo
+                    self.instruction = wwHiWord
+                    self.block[0] = wwHiWord
+                    self.block[1] = wwLoWord
+                else:
+                    self.operandTypeError (val2)
+            else:
+                self.error (".float takes two operands")
+        else:
+            self.operandTypeError (val)
+        self.prog.coreMem[self.address] = self.block[0]
+        self.prog.coreMem[self.address+1] = self.block[1]
+
+# .flexl and .flexh each store a word (as in .word), representing a character
+# as translated to the Flexowriter character code. .flexl stores in the low
+# part of the word and .flexh in the high part.
+#
+# LAS 12/16/24 I opted here for a tighter model for the .flex ops, where we
+# only accept a single literal character, rather than beyond that interpreting
+# the operand as a normal symbol or number, as in the prior version. In an
+# email exchange Guy approved of this change.
+
+class AsmDotFlexlhInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def prefixAddrStr (self) -> str:      # Override - display contents too
+        return self.fmtPrefixAddrStr (self.address, contents = self.instruction)
+    def passOneOp (self):
+        self.prog.nextCoreAddress += 1
+    def passTwoOp (self):
+        val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
+        if val.type == AsmExprValueType.String:
+            if len (val.value) == 1:
+                flexoChar: int = self.prog.flexoClass.ascii_to_flexo (val.value)
+                if self.parsedLine.opname == "flexl":
+                    pass
+                elif self.parsedLine.opname == "flexh":
+                    flexoChar <<= 10            # if it's "high", shift the six-bit code to WW bits 0..5
+                else:
+                    self.error ("Internal error: incorrect flexo operation")
+                # Plop the translated value in as in .word.
+                # The conversion here is more of less a formality but might
+                # catch bugs that produce out-of-range values
+                self.instruction = self.intToUnsignedWwInt (flexoChar)
+                self.prog.coreMem[self.address] = self.instruction                
+            else:
+                self.error (".flex operations only accept a single-character literal string")
+        else:
+            self.operandTypeError (val)
+
+class AsmDotJumpToInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def passOneOp (self):
+        pass
+    def passTwoOp (self):
+        val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
+        if val.type == AsmExprValueType.Integer:
+            if val.value >= 0 and val.value < self.prog.coreSize:
+                self.instruction = val.value                # Address to which to jump
+                self.prog.wwJumpToAddress = val.value       # Also set the program-level starting jump address
+            else:
+                self.addrRangeError (val.value)
+        else:
+            self.operandTypeError (val)
+
+class DebugWidgetClass:
+    def __init__(self, lineNo: int, addr: int, paramName: str, incr: int, format: str):
+        self.lineNo = lineNo
+        self.addr = addr            # A widget uses either a numerical address or a param name. Addr if paramName is empty
+        self.paramName = paramName
+        self.incr = incr
+        self.format = format
+
+class AsmDotDbwgtInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def passOneOp (self):
+        pass
+    def passTwoOp (self):
+        # We can have a max of three args for the debug widget:
+        #   [Address [, Incr [, Format]]]
+        # Address can be any address expression
+        # Incr is an integer
+        # Format is a %-style format string
+        env = self.prog.env
+        val: AsmExprValue = self.parsedLine.operand.evalMain (env, self.parsedLine)
+        if val.type != AsmExprValueType.List:
+            o = [val]
+        else:
+            o = val.value
+        addr = 0
+        paramName = ""
+        incr = 1
+        format = "%o"
+        if len (o) == 0:
+            self.error ("Internal error: .dbwgt zero-length operand list")
+        if len (o) >= 1:
+            if o[0].type == AsmExprValueType.Integer:
+                addr = o[0].value
+            elif o[0].type == AsmExprValueType.String:
+                paramName = o[0].value
+            else:
+                self.operandTypeError (o[0])
+        if len (o) >= 2:
+            if o[1].type == AsmExprValueType.Integer:
+                incr = o[1].value
+            else:
+                self.operandTypeError (o[1])
+        if len (o) == 3:
+            if o[2].type == AsmExprValueType.String:
+                format = o[2].value
+            else:
+                self.operandTypeError (o[2])
+        self.prog.dbwgtTab.append (DebugWidgetClass (self.parsedLine.lineNo, addr, paramName, incr, format))
+
+class AsmDotExecInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def listingString (self,
+                       quoteStrings: bool = True,
+                       minimalListing: bool = False,
+                       **kwargs) -> str:
+        p = self.parsedLine
+        prefixAddr = self.prefixAddrStr() if not minimalListing else ""
+        autoComment = self.xrefs.listingString
+        return super().listingString (quoteStrings = False,
+                                      minimalListing = minimalListing,
+                                      **kwargs)
+    def passOneOp (self):
+        pass
+    def passTwoOp (self):
+        execCmdVal = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
+        if execCmdVal.type != AsmExprValueType.String:
+            self.operandTypeError (execCmdVal)
+        else:
+            execCmd = "exec: " + execCmdVal.value
+            if self.address in self.prog.execTab:
+                self.prog.execTab[self.address] += " \\n " + execCmd
+            else:
+                self.prog.execTab[self.address] = execCmd
+
+class AsmDotPrintInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def passOneOp (self):
+        pass
+    def passTwoOp (self):
+
+        # LAS 12/14/24 Taking a shortcut here for now, as I don't want to modify
+        # the sim at this point if I can avoid it. We could and probably should
+        # parse the format string and produce a data structure specifically for
+        # .print in the sim. But for now we'll just produce the usual string
+        # and let the .exec processor handle it. However it should be a goal to
+        # make .print be on its own and further isolate .exec, which eventually
+        # should be replaced.
+        #
+        # However we'll make another change in that we'll resolve all the
+        # addresses here, and emit a string with numeric addresses. This avoids
+        # having the sim needing to lookup a symbol. Such lookup is a
+        # performance drag and also goes against modularity, where we'd like
+        # symbol lookup to be needed only for debugging. See also .dbwgt for
+        # more discussion.
+
+        execCmd = "print: "
+        val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
+        if val.type != AsmExprValueType.List:
+            operands = [val]
+        else:
+            operands = val.value
+        fmtVal = operands[0]
+        if fmtVal.type != AsmExprValueType.String:
+            self.operandTypeError (fmtVal)
+        else:
+            execCmd += "\"" + fmtVal.value + "\""
+            operandsLen = len (operands)
+            for i in range (1, operandsLen):
+                val = operands[i]
+                # Each value after the fmt string must be an integer and valid address
+                if val.type == AsmExprValueType.Integer:
+                    if val.value < 0 or val.value > self.prog.coreSize:
+                        self.addrRangeError (val.value)
+                    else:
+                        execCmd += ", 0o%06o" % val.value
+                else:
+                    self.operandTypeError (val)
+            if self.address in self.prog.execTab:
+                self.prog.execTab[self.address] += " \n " + execCmd
+            else:
+                self.prog.execTab[self.address] = execCmd
+
+class AsmDotPpInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def passOneOp (self):
+        pass
+    def passTwoOp (self):
+        operands = self.parsedLine.operand
+        if operands.exprType == AsmExprType.BinaryComma:
+            varExpr = operands.leftSubExpr
+            valExpr = operands.rightSubExpr
+            if varExpr.exprType == AsmExprType.Variable:
+                val: AsmExprValue = valExpr.evalMain (self.prog.env, self.parsedLine)
+                if val.type in [AsmExprValueType.Integer, AsmExprValueType.Fraction, AsmExprValueType.NegativeZero]:
+                    if varExpr.exprData in self.prog.presetTab:
+                        self.error ("Preset variable %s already defined" % varExpr.exprData)
+                    else:
+                        self.prog.presetTab[varExpr.exprData] = val
+                else:
+                    aelf.operandTypeError (val)
+            else:
+                self.error ("Binding target (first operand) of a preset must be a variable")
+        else:
+            self.error (".pp requires comma operator")
+
+class AsmDotIncludeInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def listingString (self, minimalListing: bool = False, **kwargs) -> str:
+        if self.prog.reformat:
+            return super().listingString (minimalListing = minimalListing, **kwargs)
+        else:
+            p = self.parsedLine
+            prefixAddr = self.prefixAddrStr() if not minimalListing else ""
+            maxLabelLen = self.prog.labelTab.maxLabelLen
+            sp = " "
+            spaces = " "*maxLabelLen
+            return prefixAddr + spaces + "   ; " + self.opnamePrefix() + p.opname + " " + p.operand.listingString()
+    def passOneOp (self):
+        if not self.prog.reformat:
+            # Must be evaluated in pass one, so the operand needs to be a literal
+            val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
+            if val.type == AsmExprValueType.String:
+                inFilename = val.value
+                inStream = open (inFilename, "r")
+                self.prog.pushStream (inStream, inFilename)
+            else:
+                self.operandTypeError (val)
+    def passTwoOp (self):
+        pass
+
+# An Inst just so we can mark the end of an included file. Works ok, but feels
+# a little greasy, maybe even slimy.
+
+class AsmEndDotIncludeInst (AsmDotIncludeInst):     # Specifically to support .include
+    def __init__ (self, inFilename: str, prog):
+        self.inFilename = inFilename
+        self.parsedLine = AsmParsedLine ("", 0)
+        self.parsedLine.opname = "include"
+        self.parsedLine.operand = AsmExpr (AsmExprType.LiteralString, self.inFilename)
+        super().__init__ (self.parsedLine, prog)
+    def opnamePrefix (self) -> str:
+        return "end ."
+    def passOneOp (self):
+        pass
+    def passTwoOp (self):
+        pass
+
+class AsmDotWwFilenameInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def passOneOp (self):
+        pass
+    def passTwoOp (self):
+        val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
+        if val.type == AsmExprValueType.String:
+            self.prog.wwFilename = val.value
+        else:
+            self.operandTypeError (val)
+
+class AsmDotWwTapeIdInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def passOneOp (self):
+        pass
+    def passTwoOp (self):
+        val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
+        if val.type == AsmExprValueType.String:
+            self.prog.wwTapeId = val.value
+        else:
+            aelf.operandTypeError (val)
+
+class AsmDotIsaInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def passOneOp (self):
+        # Needs to be evaluated in pass one. Literal digits only are allowed
+        digitsExpr: AsmExpr = self.parsedLine.operand
+        if digitsExpr.exprType == AsmExprType.LiteralDigits:
+            val: AsmExprValue = digitsExpr.evalMain (self.prog.env, self.parsedLine)
+            if val.type == AsmExprValueType.Integer:
+                d = {1950: self.prog.opCodeTables.op_code_1950, 1958: self.prog.opCodeTables.op_code_1958}
+                if val.value in d:
+                    self.prog.curOpcodeTab = d[val.value]
+                elif val.value < 1950 and val.value > 1940:
+                    self.error ("What do you think this is, ENIAC?")
+                elif val.value < 1900 and val.value > 1800:
+                    self.error ("Sorry, Babbage is no longer with us")
+                elif val.value <= 1500:
+                    self.error ("Setting instruction set to the Antikythera Mechanism")
+                elif val.value > 2024:
+                    self.error ("Setting instruction set to MIT WhirlWave Quantum Computer")
+                else:
+                    self.error ("Hope you and your time machine find your way home")
+            else:
+                self.operandTypeError (val)
+        else:
+            self.error ("Only literal integers allowed in .isa")
+    def passTwoOp (self):
+        pass
+
+# LAS 12/16/24 ww code will need to be converted to use comma-separated
+# operands, rather than space-separated.
+#
+# Again I'm stoppping short of a full-pipeline revamp of this since I don't
+# want to modify the sim if I can help it. Below though we have everything in
+# parsed format, and we'll change it back to text for the sim to parse again.
+#
+# The previous version special-cased FFRegAssign, but that's really not needed
+# since we'll stop processing if it's a one-arg op anyway. However we do thus
+# give up a little checking for form we could do.
+
+class AsmDotSwitchInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+    def passOneOp (self):
+        pass
+    def passTwoOp (self):
+        operands = self.parsedLine.operand
+        if operands.exprType == AsmExprType.BinaryComma:
+            varExpr = operands.leftSubExpr
+            valExpr = operands.rightSubExpr
+            # First operand is a name we take unevaluated
+            if varExpr.exprType == AsmExprType.Variable:
+                name = varExpr.exprData
+                settingsVal: AsmExprValue = valExpr.evalMain (self.prog.env, self.parsedLine)
+                # Can be one setting or a list
+                if settingsVal.type != AsmExprValueType.List:
+                    settingsValList = [settingsVal]
+                else:
+                    settingsValList = settingsVal.value
+                argStr = ""
+                sep = ""
+                for i in range (0, len (settingsValList)):
+                    val = settingsValList[i]
+                    if val.type == AsmExprValueType.Integer:
+                        if val.value >= 0:
+                            argStr += sep + " 0o%06o" % val.value
+                            sep = ","
+                        else:
+                            self.error ("Value can not be negative")
+                    else:
+                        self.operandTypeError (val)
+                self.prog.switchTab[name] = argStr
+            else:
+                self.error ("Switch name must be a variable")
+        else:
+            self.error (".switch syntax error")
+
+
+class AsmProgramEnv (AsmExprEnv):
+    def __init__ (self, prog): # prog: AsmProgram
+        self.prog = prog
+    # Override the default lookup
+    def lookup (self, var: str) -> AsmExprValue:
+        return self.prog.envLookup (var)
+
+# LAS 12/21/24 Defined this class to substitute for a regular dict, in order to
+# keep track of max label length. Hardly seems worth it.
+
+class AsmLabelTab:
+    def __init__ (self, prog):       # prog: AsmProgram
+        self.prog = prog
+        self.labelToInst: dict = {}  # Label: Variable: str -> AsmInst      A Label is a Variable but not all Variables must be labels.
+        self.maxLabelLen = 0
+    def insert (self, label: str, inst: AsmInst):
+        if label in self.labelToInst:
+            self.prog.error ("Label %s already defined" % label)
+        else:
+            self.labelToInst[label] = inst
+            self.maxLabelLen = max (self.maxLabelLen, len (label))
+    def lookup (self, label: str):
+        if label in self.labelToInst:
+            return self.labelToInst[label]
+        else:
             return None
-        return int(octal_str, 8)
-    if re.match('0o', nstr):  # try Pythonic octal conversion
-        octal_str = nstr[2:]
-        if re.search('^[0-7][0-7]*$', octal_str) is None:
-            cb.log.error(line_number, "Line %d: Expecting 0onnnnn octal number; got %s" % (line_number, nstr))
-            return None
-        return int(octal_str, 8)
-    if re.match('^[1-9][0-9]*r$', nstr):  # Try a Whirlwind relative base-10 label, eg "65r"
-        if relative_base is None:
-            cb.log.error(line_number, "assertion failure: relative_base is None; continue with Zero")
-            relative_base = 0
-        offset = int(nstr[0:-1])  # I don't think this can fail, as we only get here unless it's all digits
-        cb.log.warn(line_number, "relative label %s: evaluated as %d + %d" % (nstr, offset, relative_base))
-        return offset + relative_base
+    def labels (self) -> [str]:
+        return list (self.labelToInst)
 
-    if re.match('\\+|-|[1-9]|0$', nstr):  # Try Decimal conversion
-        sign = 1   # default to a positive number
-        sign_str = '+'
-        if nstr[0] == '-':
-            sign = -1
-            sign_str = '-'
-        dec_str = re.sub(r'-|\+', '', nstr)
-        if re.search(r'^[0-9.][0-9.]*$', dec_str) is None:
-            cb.log.error(line_number, "Expecting +/- decimal number; got %s" % (nstr))
-            return None
-        if nstr.find(".") == -1:  # if the number has no decimal point, it's an integer
-            ones_comp = int(dec_str, 10)
-            if ones_comp >= 0o77777:
-                cb.log.error(line_number, "Oversized decimal number: %s%d" % (sign_str, ones_comp))
-                return None
-        else:    # it must be a decimal float
-            ones_comp = int(float(dec_str) * 0o100000)
-            if ones_comp >= 0o77777:
-                cb.log.error(line_number, "Oversized decimal float: %s%s" % (sign_str, dec_str))
-                return None
-        if sign == -1:
-            ones_comp = ones_comp ^ 0o177777  # this should handle -0 automatically
-        return ones_comp
-        # add More Code for fractional decimal numbers with exponents
-    cb.log.error(line_number, "not sure what to do with this number: '%s'" % (nstr))
-    return None
+class AsmProgram:
+    def __init__ (self,
+                  inFilename, inStream,
+                  coreOutFilename, listingOutFilename,
+                  verbose, debug, minimalListing, isa1950,
+                  reformat, omitUnrefedLabels, commentColumn, commentWidth,omitAutoComment):
+        #
+        # The "fundamental constants" of the machine. Masks, which can hide
+        # bugs, are not used. Ranges of fields are checked.
+        #
+        self.wordWidth = 16
+        self.maxUnsignedWord = 2**self.wordWidth - 1
+        self.maxSignedWordMag = 2**(self.wordWidth - 1) - 1 # One's-complement machine
+        self.addressWidth = 11
+        self.coreSize = 2**self.addressWidth
+        #
+        # The opcode tables do hold another fundamental constant, the opcode
+        # width. Since this can vary that knowledge is in the OpcodeInfo
+        # classes.
+        #
+        self.opCodeTables = OpCodeTables()
+        self.isa1950 = isa1950
+        if self.isa1950:
+            self.curOpcodeTab: dict = self.opCodeTables.op_code_1950
+        else:
+            self.curOpcodeTab: dict = self.opCodeTables.op_code_1958
+        self.metaOpcode = self.opCodeTables.meta_op_code
 
+        self.cb = wwinfra.theConstWWbitClass
+        self.flexoClass = wwinfra.FlexoClass (None)
 
-def five_bit_op(inst, binary_opcode, operand_mask):
-    global NextCoreAddress, CurrentRelativeBase
+        # [Guy says:] I think the CSII assembler defaults to starting to load
+        # instructions at 0o40, the first word of writable core.  Of course a
+        # .org can change that before loading the first word of the program.
+        self.nextCoreAddress: int = 0o40     # Where to put the next instruction.
+        
+        self.currentRelativeBase: int = 0o40 # Base of NNr style address refs.
+        self.wwTapeId: str = ""
+        self.wwJumpToAddress: int = None     # Initial program addr
+        self.minimalListing = minimalListing
+        self.reformat = reformat
+        self.omitUnrefedLabels = omitUnrefedLabels
+        self.commentColumn = commentColumn if commentColumn is not None else 25
+        self.commentWidth = commentWidth if commentWidth is not None else 0
+        self.omitAutoComment = omitAutoComment
+        self.opCodeTable: list = []
+        self.isa1950: bool = False
 
-    # check that the operand is a label or a number
-    inst.instruction_address = NextCoreAddress
-    inst.relative_address_base = CurrentRelativeBase
-    inst.operand_mask = OPERAND_MASK_5BIT
-    inst.binary_opcode = binary_opcode << 11
-    addr_inc = 1
-    if Debug:
-        print("operator: %s, five bit op code %06oo, mask %4oo at addr %06oo" %
-              (inst.operator, inst.binary_opcode, inst.operand_mask, inst.instruction_address))
-    return addr_inc
+        self.insts: [AsmInst] = []
 
+        # These two tables constitute the evaluation environment for
+        # AsmExpr.eval(), via AsmProgram.envLookup(), which feeds AsmProgramEnv
+        self.labelTab = AsmLabelTab (self)            # Label: Variable: str -> AsmInst
+        self.presetTab = {}                           # Variable: str -> AsmExprValue        Defined via .pp
 
-# ok, they're six-bit op codes - shift right, shift left and cycle.  But the extra bit is in WW Bit 6, so it's
-# easier to treat them as seven bit, and require the extra bit in the middle to be zero.
-def seven_bit_op(inst, binary_opcode, operand_mask):
-    global NextCoreAddress, CurrentRelativeBase
-    inst.instruction_address = NextCoreAddress
-    inst.relative_address_base = CurrentRelativeBase
-    inst.operand_mask = OPERAND_MASK_SHIFT  # the mask allows 32 bit shift, i.e., five bits
-    inst.binary_opcode = binary_opcode << 9
-    addr_inc = 1
-    if Debug:
-        print("operator: %s, six bit op code %03oo, mask %4oo" % (inst.operator, binary_opcode, operand_mask))
-    return addr_inc
+        self.env = AsmProgramEnv (self)               # The evaluation environment itself
 
+        self.commentTab = [""]*self.coreSize          # An array of comments found in the source, indexed by address
+        self.dbwgtTab = []                            # An array [list?] to hold directives to add Debug Widgets to the screen
+        self.execTab = {}                             # Dictionary of Python Exec statements, indexed by core mem address
+        self.switchTab = {}
+        
+        self.coreMem = [None]*self.coreSize           # An image of the final core memory. Maps int -> int. Type ([int]*self.coreSize)[int]
 
-# # process a .ORG statement, setting the next address to load into core
-def dot_org_op(srcline, _binary_opcode, _operand_mask):
-    global NextCoreAddress, CurrentRelativeBase
+        self.parsedLine: AsmParsedLine = None
 
-    # put a try/except around this conversion
-    next_add = ww_int_csii(srcline.operand, srcline.linenumber, relative_base=CurrentRelativeBase)
-    if next_add is None:
-        cb.log.error(srcline.linenumber, "Line %d: can't parse number in .org" % srcline.linenumber)
-        return 1
-    NextCoreAddress = next_add
-    CurrentRelativeBase = next_add  # <--- This is an important assumption!!
-    if Debug:
-        print(".ORG %04oo" % NextCoreAddress)
-    return 0
+        self.coreToInst = [None]*self.coreSize        # An array mapping an address to an AsmInst -- for xref. Type ([AsmInst]*self.coreSize)[Address: int]
+        self.labelRef = {}                            # Map Label: str -> True. Just need to know label has been ref'd
 
+        self.inFilename = inFilename
+        self.wwFilename = self.inFilename             # wwFilename will be overwritten if there's a directive in the source
+        self.inStream = inStream
+        self.coreOutFilename = coreOutFilename
+        self.listingOutFilename = listingOutFilename
 
-# # process a .DAORG statement, setting the next *drum* address to load
-# I have no idea what to do with these!
-def dot_daorg_op(srcline, _binary_opcode, _operand_mask):
-    global NextCoreAddress, CurrentRelativeBase
+        self.inFilenameStack: [str] = []
+        self.inStreamStack: [] = []
 
-    cb.log.warn(srcline.linenumber, "Drum Address psuedo-op %s %s" %
-                (srcline.operator, srcline.operand))
-    return 0
+        # LAS 12/27/24 As of now these options are detected on the cmd line but
+        # there are no statements using them in the code
+        self.verbose = verbose
+        self.debug = debug
 
-# # process a .BASE statement, resetting the relative addr count to zero
-# I added this pseudo-op during the first run at cs_ii conversion
-# But on the next go round, I changed it to parse the "0r" label directly.
-def dot_relative_base_op(srcline, _binary_opcode, _operand_mask):
-    global NextCoreAddress, CurrentRelativeBase
+    def error (self, msg: str):
+        sys.stdout.flush()
+        self.cb.log.error (self.parsedLine.lineNo, "%s in %s" % (msg, self.parsedLine.lineStr))
 
-    CurrentRelativeBase = 0
-    cb.log.warn(srcline.linenumber, "Deprecated .BASE @%04oo" % NextCoreAddress)
-    return 0
-
-
-# Preset Parameters are like #define statements; they don't generate code, but
-# they do put values in the symbol table for later use.
-# They can be "called" in the source code as a way to insert a word of whatever value was
-# assigned to the pp.
-#  Samples look like this:       .PP pp15=pp14+1408  ;  @line:19a
-#  The program parameter label (e.g. pp15), apparently is always two letters plus one or two digits,
-#  but not necessarily always 'pp'
-# I am not so sure how to handle these guys!
-# See M-2539-2 Comprehensive System manual, pdf page 75 for the CS-II rules.  This assembler
-# doesn't enforce any of the rules; a Preset Param is just another label in the symbol table.
-# Preset Parameters are only represented as labels in the symbol table for the simulator, i.e.,
-# the .pp pseudo-op is not passed through.
-def dot_preset_param_op(srcline, _binary_opcode, _operand_mask):
+    def copyWwFileToBak (self) -> bool:
+        bakFile = self.inFilename + ".bak"
+        sout = open (bakFile, "wt")
+        sin = open (self.inFilename, "r")
+        while True:
+            l = sin.readline()
+            if l == "":
+                break
+            else:
+                sout.write (l)
+        sin.close()
+        sout.close()
+        return True
+        
     #
-    lhs = re.sub("=.*", '', srcline.operand)
-    rhs = re.sub(".*=", '', srcline.operand)
-
-    SymTab[lhs] = srcline
-
-    srcline.instruction_address = label_lookup_and_eval(rhs, srcline)
-    return 0
-
-
-# This routine is called when "pp" turns up as an op code.
-# In which case we're supposed to include the value of the parameter as a word
-def insert_program_param_op(srcline, _binary_opcode, _operand_mask):
-    cb.log.warn(srcline.linenumber, "Insert Program Parameter %s %s as a word" %
-                (srcline.operator, srcline.operand))
-    return 0
-
-
-# the Source Code may have a DITTO operation
-# don't know exactly what it does yet, except to duplicate words in memory
-def ditto_op(srcline, _binary_opcode, _operand_mask):
-    cb.log.warn(srcline.linenumber, "DITTO operation %s %s" %
-                (srcline.operator, srcline.operand))
-    return 0
-
-
-def csii_op(src_line, _binary_opcode, _operand_mask):
-    cb.log.warn(src_line.linenumber, "CS-II operation %s %s; inserting .word 0" %
-                (src_line.operator, src_line.operand))
-    global NextCoreAddress, CurrentRelativeBase
-    ret = 0
-    src_line.instruction_address = NextCoreAddress
-    src_line.relative_address_base = CurrentRelativeBase
-    src_line.operand_mask = WORD_MASK
-    src_line.binary_opcode = 0
-    NextCoreAddress += 1
-    return ret
-
-
-
-
-# # process a .SWITCH statement -- just pass the value forward to let the sim figure out what to do...
-def dot_switch_op(srcline, _binary_opcode, _operand_mask):
-    global SwitchTab
-    global cb
-
-    sw_class = wwinfra.WWSwitchClass(cb)
-    ret = 0
-    # put a try/except around this conversion
-    tokens = re.split("[ \t]", srcline.operand)
-    name = tokens[0]
-    if name == "FFRegAssign":  # special case syntax for assigning FF Register addresses
-        tokens.append('')  # cheap trick; add a null on the end to make sure the next statement doesn't trap
-        ff_reg_map, val = sw_class.parse_ff_reg_assignment(cb, name, tokens[1:])
-        if ff_reg_map is None:
-            cb.log.warn(srcline.linenumber, "can't parse %s: %s" % (name, tokens[1]))
-            ret = 1
-    else:
-        if len(tokens) != 2:
-            cb.log.warn(srcline.linenumber, "usage:  .SWITCH <switchname> <value>")
-            return 1
-        int_val = ww_int(tokens[1], srcline.linenumber)  # this will trap if it can't convert the number
-        if int_val is not None:
-            val = "0o%o" % int_val   # convert the number into canonical octal
+    # Used in AsmProgramEnv
+    #
+    # May want bells or whistles at some point to distinguish an address from
+    # other data.
+    #
+    def envLookup (self, var: str) -> AsmExprValue:
+        inst = self.labelTab.lookup (var)
+        if inst is not None:
+            self.labelRef[var] = True
+            return AsmExprValue (AsmExprValueType.Integer, inst.address)
+        elif var in self.presetTab:
+            return self.presetTab[var]
         else:
-            cb.log.warn(srcline.linenumber, ".SWITCH %s setting %s must be an octal number" % (name, tokens[1]))
-            ret = 1
-            val = ' '
-    SwitchTab[name] = val       # we're going to save the validated string, not numeric value
-    cb.log.info(".SWITCH %s set to %s" % (name, val))
-    return ret
+            return None
 
+    # Support for .include
 
-# # process a .WORD statement, to initialize the next word of storage
-# coming into the routine, the number to which storage should be set is
-# already in the operand field of the srcline class.
-# This same routine handles .flexh and .flexl for inserting words that
-# correspond to Flexowriter characters.
-def dot_word_op(src_line, _binary_opcode, _operand_mask):
-    global NextCoreAddress, CurrentRelativeBase, cb
+    def pushStream (self, inStream, inFilename):
+        self.inStreamStack.append (self.inStream)
+        self.inFilenameStack.append (self.inFilename)
+        self.inStream = inStream
+        self.inFilename = inFilename
 
-    ret = 0
-    # op-code contains the type of .word directive
-
-    # a flex[hl] directive can have a single quoted letter as an argument; otherwise treat the operand as a
-    # regular number or label
-    if re.match("\\.flexh|\\.flexl", src_line.operator) and re.match("\"|\\'.\"|\\'", src_line.operand):
-            # The argument should be a valid flexo character
-            fc = wwinfra.FlexoClass(cb)
-            flexo_char = fc.ascii_to_flexo(src_line.operand[1])
-            if flexo_char is None:
-                cb.log.fatal("Line %d: can't convert ASCII character to Flexo" % src_line.linenumber)
-            if re.match("\\.flexh", src_line.operator):
-                flexo_char <<= 10  # if it's "high", shift the six-bit code to WW bits 0..5
-            # convert the result back into a string and replace the incoming Operand with the new one
-            src_line.operand = "0o%o" % flexo_char
-
-    src_line.instruction_address = NextCoreAddress
-    src_line.relative_address_base = CurrentRelativeBase
-    src_line.operand_mask = WORD_MASK
-    src_line.binary_opcode = 0
-    NextCoreAddress += 1
-    if Debug:
-        print(".WORD %04s at addr %04oo" % (src_line.operand, src_line.instruction_address))
-    return ret
-
-
-# # process a .JumpTo statement, to indicate the program's start address
-def dot_jumpto_op(src_line, _binary_opcode, _operand_mask):
-    global WW_JumptoAddress
-    # the operand could be a number or a label; resolve that later
-    WW_JumptoAddress = src_line.operand
-    if Debug:
-        print(".JumpTo %04s" % src_line.operand)
-    return 0
-
-# # process a .dbwgt to add a debug widget to the simulated CRT display
-# This directive gives an address,which could be a number or label, and an optional
-# increment value, which must be a number.
-def dot_dbwgt_op(src_line, _binary_opcode, _operand_mask):
-    global DbWgtTab
-
-    tokens = src_line.operand.split()
-    addr = strip_space(tokens[0])
-    # defaults
-    incr = "1"
-    format_str = "%o"
-    i = 1
-    while i < len(tokens):
-        tok = strip_space(tokens[i])
-        if tok[0].isnumeric():
-            incr = tok
-        elif len(tok) > 2 and tok[0] == '"' and tok[-1] == '"' and '%' in tok:
-            format_str = tok[1:-1]
+    def popStream (self) -> bool:
+        if self.inStreamStack == []:
+            return False
         else:
-            print("Line %d: unknown param for .dbwgt op: %s" % (src_line.linenumber, tok))
-        i += 1
+            self.inStream.close()
+            self.inStream = self.inStreamStack.pop()
+            self.inFilename = self.inFilenameStack.pop()
+            return True
 
-    # the operand could be a number or a label; resolve that later
-    DbWgtTab.append(DebugWidgetClass(src_line.linenumber, addr, incr, format_str))
-    if Debug:
-        print(".DbWgt %04s %s" % (addr, incr))
-    return 0
-
-
-# process a .ISA 1950 statement, to change the instruction set to
-# the 1950's version with qh, qd and all the rest
-def dot_change_isa_op(src_line, _binary_opcode, _operand_mask):
-    global op_code, op_code_1950, op_code_1958  # the table for opcodes is a global
-    if src_line.operand == "1950":
-        op_code = change_isa(op_code_1950)
-    elif src_line.operand == "1958":
-        op_code = change_isa(op_code_1958)
-    else:
-        print("Error on .isa; must be 1950 or 1958, not %s" % src_line.operand)
-        exit(1)
-    return 0
-
-
-def dot_python_exec_op(src_line, _binary_opcode, _operand_mask):
-    global ExecTab, NextCoreAddress
-
-    # transform a .exec or .print command slightly to make it more readable in the .acore file
-    exec_cmd = re.sub("^\\.", "", src_line.operator) + ':'
-    exec_arg = src_line.operand
-    exec = exec_cmd + ' ' + exec_arg
-    addr = NextCoreAddress
-    if addr in ExecTab:
-        ExecTab[addr] = ExecTab[addr] + ' \\n ' + exec
-    else:
-        ExecTab[addr] = exec
-    if Debug:
-        print(".exec @0o%02o %s" % (addr, exec))
-    return 0
-
-
-
-# # process a filename directive
-def dot_ww_filename_op(src_line, _binary_opcode, _operand_mask):
-    global WW_Filename
-    # the operand is a string identifying the file name read into the tape decoder
-    WW_Filename = src_line.operand
-    if Debug:
-        print(".ww_filename %04s" % src_line.operand)
-    return 0
-
-
-def dot_ww_tapeid_op(src_line, _binary_opcode, _operand_mask):
-    global WW_TapeID
-    # the operand is a string identifying the Whirlwind Tape ID (if available)
-    WW_TapeID = src_line.operand
-    if Debug:
-        print(".ww_tapeid %04s" % src_line.operand)
-    return 0
-
-
-# Look up a label; generate an error if it's already in the symtab, otherwise
-# add the object corresponding to the line with the label to the symbol table.
-# Return zero for "it's all ok" and one for "not so good", so I can just add
-# the return code to the overall error count.
-def add_sym(label, srcline):
-    global SymTab, cb
-
-    if label in SymTab:
-        cb.log.error(srcline.linenumber, "Ignoring duplicate label %s" % (srcline.label))
-        return 1
-
-    SymTab[label] = srcline
-    return 0
-
-
-# # Parse a line after it's been Lexed.  This routine simply looks up the
-# # opcode string to find the binary opcode, and also to find if it's
-# # a five- or six-bit opcode, or a pseudo-op
-# I'm ignoring upper/lower case in op codes
-# Return the number of errors
-def parse_ww(srcline):
-    global NextCoreAddress, CurrentRelativeBase
-    # the special case at the start handles lines where there's a label but no operation
-    # This happens because a line can have more than one label(!)
-    # e.g.
-    #   d25:
-    #   0r: ca f11
-    # "real" operations increment the next address; this just records it.
-    # if the line has a label but no op, we need to update the Relative Address base
-
-    if len(srcline.operator) == 0:
-        # a label can appear on a line by itself, without an operator
-        err = 0
-        srcline.instruction_address = NextCoreAddress
-        if len(srcline.label):
-            err = add_sym(srcline.label, srcline)  #  poor form -- converting True/False to 1/0
-            CurrentRelativeBase = NextCoreAddress
-            if Debug: print("Line %d: Label %s: Implicit Set of Relative Base to 0o%o" %
-                  (srcline.linenumber, srcline.label, CurrentRelativeBase))
-        return err
-
-    ret = 0
-    addr_inc = 0
-    # continue from here with normal instruction processing
-    # Op Codes and Directives are case-independent
-    op = srcline.operator
-    if op in op_code:
-        op_list = op_code[op]
-        addr_inc = op_list[0](srcline, op_list[1], op_list[2])  # dispatch to the appropriate operator
-    else:
-        cb.log.error(srcline.linenumber, "Unrecognized operator: %s" % (srcline.operator))
-        ret += 1
-
-    # Adjust the Relative label (e.g. '0r:')
-    # special-case the "0r" label;  that one says, where ever you are, that line is the new base
-    # address for relative address offsets like "5r" or "r+5"
-    # Don't put "r" in the symbol table; it's picked off later with another special case.
-    if m := re.match("([0-9]+)r", srcline.label):
-        offset = int(m.group(1), 10)
-        new_relative_base = srcline.instruction_address - offset
-        if offset == 0:
-            print("Line %d: Setting '0r' Relative Base to 0o%o" % (srcline.linenumber, srcline.instruction_address))
-            CurrentRelativeBase = srcline.instruction_address
-        else:
-            if new_relative_base != CurrentRelativeBase:
-                cb.log.warn(srcline.linenumber, "Label %s: Changing Relative Base from 0o%o to 0o%o" %
-                        (srcline.label, CurrentRelativeBase, new_relative_base))
-                CurrentRelativeBase = new_relative_base
-    else:
-        # the book says that any 'comma operator', i.e. a label, resets the Relative Address
-        if len(srcline.label):
-            if add_sym(srcline.label, srcline):
-                ret += 1
-            if srcline.instruction_address is not None:
-                CurrentRelativeBase = srcline.instruction_address
-                if Debug: print("Line %d: Label %s: Setting Relative Base to 0o%o" %
-                        (srcline.linenumber, srcline.label, CurrentRelativeBase))
-
-    if len(srcline.operand) == 0:
-        cb.log.error(srcline.linenumber, "Missing operand: %s" % (srcline.operator))
-        ret += 1
-
-    NextCoreAddress += addr_inc
-
-    return ret
-
-
-# ;categorize the operand part of the instruction
-OPERAND_NONE = 0  # it's a pseudo-op
-OPERAND_JUMP = 1  # the address is a jump target
-OPERAND_WR_DATA = 2  # the address writes a data word to Core
-OPERAND_RD_DATA = 4  # the address writes a data word from Core
-OPERAND_PARAM = 8  # the operand isn't an address at all
-
-NO_DIRECTIVE_OP = 0
-DOT_WORD_OP = 1
-DOT_FLEXL_OP = 2
-DOT_FLEXH_OP = 3
-
-# dictionary table for op codes
-#  indexed by op code
-#  Return 
-#    numeric value
-#    5-bit, 6-bit or pseudo-op
-#    mask
-
-op_code_1958 = {   # # function, op-code, mask
-    "si":  [five_bit_op, 0, 0, OPERAND_PARAM],
-    "<unused01>": [five_bit_op, 0o1, 0, OPERAND_PARAM],
-    "bi":  [five_bit_op,  0o2, 0, OPERAND_WR_DATA],
-    "rd":  [five_bit_op,  0o3, 0, OPERAND_PARAM],
-    "bo":  [five_bit_op,  0o4, 0, OPERAND_RD_DATA],
-    "rc":  [five_bit_op,  0o5, 0, OPERAND_PARAM],
-    "sd":  [five_bit_op,  0o6, 0, OPERAND_RD_DATA],
-    "cf":  [five_bit_op, 0o07, 0, OPERAND_PARAM],
-    "ts":  [five_bit_op, 0o10, 0, OPERAND_WR_DATA],
-    "td":  [five_bit_op, 0o11, 0, OPERAND_WR_DATA],
-    "ta":  [five_bit_op, 0o12, 0, OPERAND_WR_DATA],
-    "ck":  [five_bit_op, 0o13, 0, OPERAND_RD_DATA],
-    "ab":  [five_bit_op, 0o14, 0, OPERAND_WR_DATA],
-    "ex":  [five_bit_op, 0o15, 0, OPERAND_WR_DATA | OPERAND_RD_DATA],
-    "cp":  [five_bit_op, 0o16, 0, OPERAND_JUMP],
-    "sp":  [five_bit_op, 0o17, 0, OPERAND_JUMP],
-    "ca":  [five_bit_op, 0o20, 0, OPERAND_RD_DATA],
-    "cs":  [five_bit_op, 0o21, 0, OPERAND_RD_DATA],
-    "ad":  [five_bit_op, 0o22, 0, OPERAND_RD_DATA],
-    "su":  [five_bit_op, 0o23, 0, OPERAND_RD_DATA],
-    "cm":  [five_bit_op, 0o24, 0, OPERAND_RD_DATA],
-    "sa":  [five_bit_op, 0o25, 0, OPERAND_RD_DATA],
-    "ao":  [five_bit_op, 0o26, 0, OPERAND_WR_DATA | OPERAND_RD_DATA],
-    "dm":  [five_bit_op, 0o27, 0, OPERAND_RD_DATA],
-    "mr":  [five_bit_op, 0o30, 0, OPERAND_RD_DATA],
-    "mh":  [five_bit_op, 0o31, 0, OPERAND_RD_DATA],
-    "dv":  [five_bit_op, 0o32, 0, OPERAND_RD_DATA],
-    "slr": [seven_bit_op,  0o154, 0, OPERAND_PARAM],
-    "slh": [seven_bit_op,  0o155, 0, OPERAND_PARAM],
-    "srr": [seven_bit_op,  0o160, 0, OPERAND_PARAM],
-    "srh": [seven_bit_op,  0o161, 0, OPERAND_PARAM],
-    "sf":  [five_bit_op, 0o35, 0, OPERAND_WR_DATA],
-    "clc": [seven_bit_op,  0o170, 0, OPERAND_PARAM],
-    "clh": [seven_bit_op,  0o171, 0, OPERAND_PARAM],
-    "md":  [five_bit_op, 0o37, 0, OPERAND_RD_DATA],
-
-    "ica": [csii_op, 0o37, 0, OPERAND_RD_DATA],
-    "imr": [csii_op, 0o37, 0, OPERAND_RD_DATA],
-    "IN":  [csii_op, 0o37, 0, OPERAND_RD_DATA],
-    "isp": [csii_op, 0o37, 0, OPERAND_RD_DATA],
-    "its": [csii_op, 0o37, 0, OPERAND_RD_DATA],
-    "OUT": [csii_op, 0o37, 0, OPERAND_RD_DATA],
-
-}
-
-op_code_1950 = {   # # function, op-code, mask
-    "ri":  [five_bit_op, 0, 0, OPERAND_PARAM],
-    "rs":  [five_bit_op, 0o1, 0, OPERAND_PARAM],
-    "rf":  [five_bit_op,  0o2, 0, OPERAND_WR_DATA],
-    "rb":  [five_bit_op,  0o3, 0, OPERAND_PARAM],
-    "rd":  [five_bit_op,  0o4, 0, OPERAND_RD_DATA],
-    "rc":  [five_bit_op,  0o5, 0, OPERAND_PARAM],
-    "qh":  [five_bit_op,  0o6, 0, OPERAND_PARAM],
-    "qd":  [five_bit_op,  0o7, 0, OPERAND_PARAM],
-    "ts":  [five_bit_op, 0o10, 0, OPERAND_WR_DATA],
-    "td":  [five_bit_op, 0o11, 0, OPERAND_WR_DATA],
-    "ta":  [five_bit_op, 0o12, 0, OPERAND_WR_DATA],
-    "ck":  [five_bit_op, 0o13, 0, OPERAND_RD_DATA],
-    "qf":  [five_bit_op,  0o14, 0, OPERAND_PARAM],  # guy made up the 0o14 op-code; I don't know what code they assigned
-    "qe":  [five_bit_op, 0o15, 0, OPERAND_WR_DATA | OPERAND_RD_DATA],
-    "cp":  [five_bit_op, 0o16, 0, OPERAND_JUMP],
-    "sp":  [five_bit_op, 0o17, 0, OPERAND_JUMP],
-    "ca":  [five_bit_op, 0o20, 0, OPERAND_RD_DATA],
-    "cs":  [five_bit_op, 0o21, 0, OPERAND_RD_DATA],
-    "ad":  [five_bit_op, 0o22, 0, OPERAND_RD_DATA],
-    "su":  [five_bit_op, 0o23, 0, OPERAND_RD_DATA],
-    "cm":  [five_bit_op, 0o24, 0, OPERAND_RD_DATA],
-    "sa":  [five_bit_op, 0o25, 0, OPERAND_RD_DATA],
-    "ao":  [five_bit_op, 0o26, 0, OPERAND_WR_DATA | OPERAND_RD_DATA],
-    "<unused05>":  [five_bit_op,  0o27, 0, OPERAND_PARAM],
-    "mr":  [five_bit_op, 0o30, 0, OPERAND_RD_DATA],
-    "mh":  [five_bit_op, 0o31, 0, OPERAND_RD_DATA],
-    "dv":  [five_bit_op, 0o32, 0, OPERAND_RD_DATA],
-    "sl":  [five_bit_op,  0o33, 0, OPERAND_PARAM],
-    "sr":  [five_bit_op,  0o34, 0, OPERAND_PARAM],
-    "sf":  [five_bit_op, 0o35, 0, OPERAND_WR_DATA],
-    "cl":  [five_bit_op,  0o36, 0, OPERAND_PARAM],
-    "md":  [five_bit_op, 0o37, 0, OPERAND_RD_DATA],
-    }
-op_code = op_code_1958  # default instruction set
-
-meta_op_code = {
-    ".org": [dot_org_op, 0, 0, OPERAND_NONE],
-    ".daorg": [dot_daorg_op, 0, 0, OPERAND_NONE],  # Disk Address Origen
-    ".base": [dot_relative_base_op, 0, 0, OPERAND_NONE],
-    ".word": [dot_word_op, DOT_WORD_OP, 0, OPERAND_NONE],
-    ".flexl": [dot_word_op, DOT_FLEXL_OP, 0, OPERAND_NONE],
-    ".flexh": [dot_word_op, DOT_FLEXH_OP, 0, OPERAND_NONE],
-    ".switch": [dot_switch_op, 0, 0, OPERAND_NONE],
-    ".jumpto": [dot_jumpto_op, 0, 0, OPERAND_NONE],
-    ".dbwgt": [dot_dbwgt_op, 0, 0, OPERAND_NONE],
-    ".ww_file": [dot_ww_filename_op, 0, 0, OPERAND_NONE],
-    ".ww_tapeid": [dot_ww_tapeid_op, 0, 0, OPERAND_NONE],
-    ".isa": [dot_change_isa_op, 0, 0, OPERAND_NONE],  # directive to switch to the older 1950 instruction set
-    ".exec": [dot_python_exec_op, 0, 0, OPERAND_NONE],
-    ".print": [dot_python_exec_op, 0, 0, OPERAND_NONE],
-    ".pp":   [dot_preset_param_op, 0, 0, OPERAND_NONE],
-    "pp": [insert_program_param_op, 0, 0, OPERAND_NONE],
-    "ditto": [ditto_op, 0, 0, OPERAND_NONE],
-}
-
-# this little routine updated the op code table to be used for analyze instructions.  (So far) there are only
-# two, the 1950 version from R-193 with extensions, and the 2M-0277 1958 version
-#  This should be revised if there are ever more op code sets
-def change_isa(oplist):
-    global op_code, op_code_1950
-    global ISA_1950
-
-    if oplist == op_code_1950:
-        ISA_1950 = True
-    else:
-        ISA_1950 = False
-    op_code = {}
-    op_code.update(oplist)
-    op_code.update(meta_op_code)
-    return op_code
-
-
-# go through the instructions and figure out which line is referenced by some other line
-def label_code(i):
-    operand_type = op_code[i.operator][3]
-    if operand_type == OPERAND_NONE:
-        return
-    pc = i.instruction_address
-    addr = i.binary_instruction_word & i.operand_mask
-    if operand_type & OPERAND_JUMP:
-        CoreReferredToByJump[addr].append(pc)
-    if operand_type & OPERAND_RD_DATA:
-        CoreReadBy[addr].append(pc)
-    if operand_type & OPERAND_WR_DATA:
-        CoreWrittenBy[addr].append(pc)
-
-
-# Whirlwind labels can have simple arithmetic expressions embedded, to calculate offsets from
-# whatever the nearest label might be, e.g., "t1+5" for five beyond the memory address identified by t1.
-# I think the offsets can be added or subtracted, but I don't think there are any other operations.
-# I've read that a "programmed constant", i.e., sort of like a cross between a label and a #define
-# can also be used in the expression, but haven't seen a case of this.
-# In this instance, there will certainly be cases with more than one term in the expression, e.g. t1+5+8
-# Numbers default to Decimal, and can also come in the 0.00000 octal format.
-# Return an Int with the offset
-def eval_addr_expr(expr: str, line_number):
-
-    loop = 0
-    terms = expr
-    offset = 0
-    while len(terms):
-        loop += 1
-        if loop > 20:
-            print("eval_addr_expr probably stuck in loop, line %d: expr=%s" % (line_number, expr))
-            exit(1)
-
-        if terms[0] == '+' or terms[0] == '-':
-            op = terms[0]
-            terms = terms[1:]
-        else:
-            op = '+'
-        if m := re.search("([0-9.]*)", terms):
-            number_str = m.group(1)
-            terms = re.sub("[0-9.]*", "", terms)
-            if len(number_str):
-                number = ww_int(number_str, line_number)
-                if number is None:
-                    # we've already printed a number-conversion error message, but stop processing here
-                    print("Line %d: can't evaluate number %s in expression; returning zero offset",
-                          line_number, number_str)
-                    return 0
+    def passOne (self):
+        #
+        # Resolve as much as possible in the first pass, such as ww opcodes,
+        # certain pseudo-ops like .org which change assembly state, allocate
+        # addresses, assign symbols in label table and preset table.
+        #
+        # Read and parse the asm file, generate an instruction (instance of
+        # AsmInst) for each parsed line.
+        #
+        lineNo = 0
+        while True:
+            lineStr = self.inStream.readline()
+            lineNo += 1
+            if lineStr == "":
+                curInfile = self.inFilename
+                if self.popStream():
+                    inst = AsmEndDotIncludeInst (curInfile, self)
+                    self.insts.append (inst)
+                    continue
+                else:
+                    self.inStream.close()
+                    break
             else:
-                number = 0
-            if op == '-':
-                number = -number
-            offset += number
+                line = AsmParsedLine (lineStr, lineNo, verbose = self.verbose)
+                line.parseLine()
+                self.parsedLine = line      # Current line available for error messages
+                # All lines result in an instruction class instance of some kind
+                opname = line.opname.lower()
+                if opname in self.metaOpcode:
+                    inst = self.metaOpcode[opname] (line, self)
+                elif opname in self.curOpcodeTab:
+                    inst = self.curOpcodeTab[opname].className (line, self)
+                elif opname == "":
+                    inst = AsmNullInst (line, self)
+                else:
+                    inst = AsmUnknownInst (line, self)
+                inst.passOneOp()
+                self.insts.append (inst)
+        pass
 
-    return offset
+    def passTwo (self):
+        # Evaluate operands and resolve full instructions as needed.
+        for inst in self.insts:
+            inst.passTwoOp()
 
+    def writeCore (self):
+        print ("Corefile output to file %s" % self.coreOutFilename)
+        fout = open (self.coreOutFilename, 'wt')
+        fout.write("\n; *** Core Image ***\n")
+        if self.curOpcodeTab == self.opCodeTables.op_code_1950:  # default in the sim is the 1958 instruction set; this directive changes it to 1950
+            fout.write("%%ISA: %s\n" % "1950")
+        fout.write("%%File: %s\n" % self.wwFilename)
+        fout.write("%%TapeID: %s\n" % self.wwTapeId)
+        if self.wwJumpToAddress is not None:
+            fout.write('%%JumpTo 0o%o\n' % self.wwJumpToAddress)
+        for s in self.switchTab:  # switch tab is indexed by name, contains a validated string for the value
+            fout.write("%%Switch: %s %s\n" % (s, self.switchTab[s]))
+        for w in self.dbwgtTab:
+            addrStr = w.paramName if w.paramName != "" else "0o%03o" % w.addr
+            fout.write("%%DbWgt:  %s  0o%02o %s\n" % (addrStr, w.incr, w.format))
+        columns = 8
+        addr = 0
+        while addr < self.coreSize:
+            i = 0
+            non_null = 0
+            row = ""
+            while i < columns:
+                if self.coreMem[addr+i] is not None:
+                    row += "%07o " % self.coreMem[addr+i]
+                    non_null += 1
+                else:
+                    row += " None   "
+                i += 1
+            if non_null:
+                fout.write('@C%04o: %s\n' % (addr, row))
+            addr += columns
+        for s in self.labelTab.labels():
+            addr = self.labelTab.lookup(s).address
+            fout.write("@S%04o: %s\n" % (addr, s))
+        for s in self.presetTab:
+            value = self.presetTab[s].value
+            fout.write("@S%04o: %s\n" % (value, s))
+        for addr in self.execTab:
+            fout.write("@E%04o: %s\n" % (addr, self.execTab[addr]))
+        for addr in range(0, len(self.commentTab)):
+            if self.commentTab[addr] is not None and len(self.commentTab[addr]) > 0:
+                fout.write("@N%04o: %s\n" % (addr, self.commentTab[addr]))
+        fout.close()
 
-# Labels can have simple arithmetic expressions (I think only "label +/- Label +/- Label")
-# Dec 17, 2023; I added an OR operator "|" to combine numbers.
-# Note a fundamental problem in number-syntax -- +/- specifically identifies Decimal numbers,
-# so in this parser, I'm _requiring_ arithmetic operators to be separated by spaces, and +/-
-# symbols that indicate Decimal numbers to be joined to their number.
-# e.g. it's legal to say "1 + 2 - -0.7"
-# but it's not legal to say 1+2
-# This routine could run into "programmed parameters", kinda like ifdefs, and will evaluate these as well
+    def writeListing (self):
+        listingOutStream = open (self.listingOutFilename, 'wt')
+        print ("Listing output to file %s" % self.listingOutFilename)
+        for inst in self.insts:
+            listingOutStream.write (inst.listingString (minimalListing = self.minimalListing,
+                                                        omitUnrefedLabels = self.omitUnrefedLabels,
+                                                        omitAutoComment = self.omitAutoComment) + "\n")
+        listingOutStream.close()
 
-# Dec 22, 2023 - new version of label parser, which can parse a variety of expressions as long as they
-# evaluate down into constants
-
-def label_lookup_and_eval(label_with_expr: str, srcline):
-    # if there's an expression, split it into tokens
-    tokens = label_with_expr.split()
-
-    if len(tokens) == 0:
-        return None
-
-    # CS-II has this weird label format with an offset prepended to a label value, e.g. "19r6"
-    # Separate the offset and the label and turn the offset into an explicit Add, i.e., "r6+19"
-    #   The syntax 19r6 means r6+19.  But I can only assume pp1-19r6 means pp1-(r6 + 19) = pp1 - r6 - 19
-    #   That is, I assume there's no syntax for a negative offset
-    # The 19r6-style labels are interpreted in ww_int();
-    #  That's probably a bug; they should be considered part of the expression parser.
-
-    # For this parser, I'm assuming that there must be an odd number of tokens, with every second one
-    # being an arithmetic operator!
-    if (len(tokens) % 2) != 1:
-        cb.log.error(srcline.linenumber,
-                     "Expression %s must contain labels separated by operators, i.e., an odd number of tokens"
-                     % label_with_expr)
-
-    valid_expr_ops = ['+', '-', '|', '*', '/']
-    for i in range(0, len(tokens)):
-        if (i % 2) == 1 and tokens[i] not in valid_expr_ops:
-            cb.log.error(srcline.linenumber, "Invalid Expression Operator: %s" % tokens[i])
-        if (i % 2) == 0 and not re.match("[0-9a-zA-Z+-]", tokens[i]):
-            cb.log.error(srcline.linenumber, "%s doesn't look like a number or label" % tokens[i])
-
-    # now we can evaluate all the terms in the expression
-    # This is a bit confusing, because '+' does double-duty to indicate addition
-    # but also that the following digits are a decimal number
-    vals = [None] * len(tokens)
-
-    # first loop evaluates the numbers and labels
-    for i in range(0, len(tokens), 2):
-        token = tokens[i]
-        val = None
-        if re.match("[a-zA-Z]", token):
-            if token == 'r':  # special case for relative addresses
-                val = CurrentRelativeBase
-            elif token in SymTab:
-                val = SymTab[token].instruction_address
-            if val is None:
-                cb.log.error(srcline.linenumber, "Unknown label %s in expression %s; using zero" %
-                             (token, srcline.operand))
-                val = 0
-        elif re.match("[0-9+-]", token):
-            # I need to pass the Sign into wwint to catch Decimal numbers...  ugh...
-            val = ww_int(token, srcline.linenumber,
-                                relative_base = srcline.relative_address_base)
-            if val is None:
-                cb.log.error(srcline.linenumber, "Can't convert number %s in expression; returning zero" %
-                      token)
-                val = 0
+    def assemble (self):
+        self.passOne()
+        self.passTwo()
+        errorCount = self.cb.log.error_count
+        if errorCount != 0:  # Don't write files if picked up errors
+            print ("Error Count = %d; output files suppressed" % errorCount)
         else:
-            cb.log.error(srcline.linenumber, "Unknown symbol %s in label_lookup_and_eval with %s" %
-                         (token, label_with_expr))
-        if val is None:
-            return 0
-        vals[i] = val
-
-    # finally, do the arithmetic
-    result = vals[0]
-    for i in range(1, len(tokens), 2):
-        eval_op = tokens[i]
-        if len(tokens) <= (i + 1):   # this test should never fail...
-            cb.log.error(srcline.linenumber, "Missing operand after eval_operator '%s'" % eval_op)
-            return result
-        if eval_op == '+':
-            result += vals[i + 1]
-        elif eval_op == '-':
-            result -= vals[i + 1]
-        elif eval_op == '|':
-            result |= vals[i + 1]
-        elif eval_op == '*':
-            result *= vals[i + 1]
-        elif eval_op == '/':
-            result //= vals[i + 1]
-        else:
-            cb.log.error(srcline.linenumber, "Unexpected eval_operator '%s'" % eval_op)
-
-    # print("line %d: label_lookup_and_eval(%s) resolves to %d (0o%o)" %
-    #      (srcline.linenumber, label_with_expr, result, result))
-    # print(tokens)
-    return result
-
-
-# this routine looks up an operand to resolve a label or convert a number
-# Return one for an error, zero for no error.
-def resolve_labels_gen_instr(srcline) -> int:
-    global Annotate_IO_Arg
-
-    if srcline.binary_opcode is None:
-        # this used to be an error, but cs_ii introduced labels on a line by themselves
-        # print("no op code: %s" % srcline.operator)
-        return 0
-
-    if True:   #  srcline.operand[0].isalpha():
-        operand = srcline.operand
-        binary_operand = label_lookup_and_eval(operand, srcline)
-        if binary_operand is None:
-            # I'm setting it to zero to prevent a trap later, but returning an error now
-            srcline.binary_instruction_word = 0
-            return 1
-        if Debug:
-            print("label %s resolved to %04oo" % (operand, binary_operand))
-    # else:
-    #     binary_operand = ww_int(srcline.operand, srcline.linenumber,
-    #                             relative_base = srcline.relative_address_base)
-    #     if Debug:
-    #         print("numeric %04oo" % binary_operand)
-
-    if binary_operand is None:
-        print("no operand found when resolving label %s in line %d" % (srcline.operand, srcline.linenumber))
-        return 1
-
-    # LAS Bug: When doing subtract this results in incorrect ww negative
-    # numbers, too great by one. binary_operand for some reason in that case
-    # has not been converted yet to one's complement.
-    
-    binary_operand &= srcline.operand_mask
-    srcline.binary_instruction_word = binary_operand | srcline.binary_opcode
-
-    if (srcline.operator == "si") and Annotate_IO_Arg:
-        srcline.comment += "; Auto-Annotate I/O: %s" % cb.Decode_IO(binary_operand)
-
-    if Debug:
-        print("  binary_instruction_word %06oo" % srcline.binary_instruction_word)
-    CoreMem[srcline.instruction_address] = srcline.binary_instruction_word
-    CommentTab[srcline.instruction_address] = srcline.comment
-    return 0
-
-
-# march through the list of debug widgets and convert the args to binary
-# Return 0 for no-error, 1 for error so the next layer up can just add up
-# the error count
-def resolve_dbwgt(dbwgt):
-    ret = 0
-    for w in dbwgt:
-        w.addr_binary = resolve_one_label(w.addr_str, "Debug Widget")
-        w.incr_binary = ww_int(w.incr_str, w.linenumber)
-        if w.incr_binary is None:
-            ret += 1
-    return ret
-
-
-# There's a special case to resolve the label for the psuedo-op directives
-def resolve_one_label(label, label_type):
-    if label is None:
-        return None
-    ret = label
-    if label[0].isalpha():  # resolve the start address, if any.
-        if label in SymTab:
-            ret = "0o%04o" % SymTab[label].instruction_address
-            if Debug:
-                print("%s %s resolved to 0o%04o" % (label_type, label, ret))
-        else:
-            print("missing label for %s address %s" % (label_type, label))
-            exit(1)
-
-    return ww_int(ret, 0)
-
-
-class LexedLine:
-    def __init__(self, _linenumber, _label, _operator, _operand, _comment, _directive):
-        self.linenumber = _linenumber
-        self.label = _label
-        self.operator = _operator.lower()
-        self.operand = _operand
-        self.comment = _comment
-        self.binary_opcode = None
-        self.binary_instruction_word = None
-        self.operand_mask = None
-        self.instruction_address = None
-        self.relative_address_base = None
-        self.directive = _directive
-
-    def formatit(self):
-        print("%3d, %s : %s %s ; %s" %
-              (self.linenumber,
-               self.label,
-               self.operator,
-               self.operand,
-               self.comment))
-
-    def _list_to_comment(self, name, llist, reversesymtab):
-        if len(llist) == 0:
-            return ''
-        ret = ''
-        for i in llist:
-            if reversesymtab[i] is not None:
-                ret += reversesymtab[i] + ' '
+            if self.reformat:
+                status: bool = self.copyWwFileToBak()
+                if status:
+                    self.listingOutFilename = self.inFilename
+                    self.writeListing()
+                else:
+                    error()
             else:
-                ret += "a%04o " % i
-        return "%s %s" % (name, ret)
+                self.writeCore()
+                self.writeListing()
 
-    # return a label to attach to the line and/or a comment showing xrefs
-    def _auto_label(self):
-        if self.binary_instruction_word is None:
-            return '', ''
-        addr = self.instruction_address
-        line_label = ''
-        if self.label is None:
-            if len(CoreReadBy[addr]) != 0:
-                line_label = "r%04o: " % addr
-            if len(CoreWrittenBy[addr]) != 0:
-                line_label = "w%04o: " % addr
-            if len(CoreReferredToByJump[addr]) != 0:
-                line_label = "i%04o: " % addr
-        list1 = self._list_to_comment("JumpedToBy", CoreReferredToByJump[addr], ReverseSymTab)
-        list2 = self._list_to_comment("WrittenBy", CoreWrittenBy[addr], ReverseSymTab)
-        list3 = self._list_to_comment("ReadBy", CoreReadBy[addr], ReverseSymTab)
-        auto_xref = "%s%s%s" % (list1, list2, list3)
-        if auto_xref != '':
-            auto_xref = "@@" + auto_xref
-        return line_label, auto_xref
-
-    # line#  Address Word  Label: operator  operand ; Comment
-    def listing(self, cb):
-        fc = wwinfra.FlexoClass(None)
-
-        # special-case the lines which are blank or have nothing but comments
-        if (len(self.label) == 0) & (len(self.operand) == 0) & (len(self.operator) == 0):
-            if len(self.comment) == 0:
-                return ''
-            return "                        ; %s" % self.comment
-
-        if self.instruction_address is not None:
-            decimal = ''
-            if cb.decimal_addresses:
-                decimal = '.' + cb.int_str(self.instruction_address)
-            addr = "@%04o%s:" % (self.instruction_address, decimal)
-        else:
-            addr = "      "
-            if cb.decimal_addresses:
-                addr += "     "
-
-        if self.binary_instruction_word is not None:
-            wrd = "%06o" % self.binary_instruction_word
-        else:
-            if self.instruction_address is not None:
-                wrd = "0     "  # put something in the field that should show memory contents,
-                                # even if there's no instruction.  This case covers lone labels in the source file
-            else:
-                wrd = "      "
-
-        auto_label, auto_comment = self._auto_label()
-
-        _label = self.label
-        if (len(_label) == 0) & (len(auto_label) != 0):
-            _label = auto_label
-
-        if len(_label):
-            label_separator = ':'
-        else:
-            label_separator = ' '
-
-        # the following happens only on the pass where the .w, .fl, .fh are found in, and removed from, the source deck
-        if self.directive != 0:
-            if self.directive == DOT_WORD_OP:
-                self.operator = ".word"
-                self.operand = wrd
-                self.comment = ""
-            elif self.directive == DOT_FLEXL_OP:
-                self.operator = ".flexl"
-                self.operand = wrd
-                self.comment = "Flexo Code '%s'" % \
-                               fc.code_to_letter(self.binary_instruction_word & 0o77, show_unprintable=True)
-            elif self.directive == DOT_FLEXH_OP:
-                self.operator = ".flexh"
-                self.operand = wrd
-                self.comment = "Flexo Code '%s'" % \
-                               fc.code_to_letter((self.binary_instruction_word >> 10) & 0o77, show_unprintable=True)
-            else:
-                print("finish Listing, line 484")
-                quit(1)
-
-        return "%s%s  %8s%s %-4s %-8s  ; %s %s" % \
-               (addr, wrd, _label, label_separator, self.operator, self.operand, self.comment, auto_comment)
-
-
-def write_listing(cb, sourceprogram, output_file):
-    if output_file is None:
-        fout = sys.stdout.fileno()
-    else:
-        fout = open(output_file, 'wt')
-        print("Listing output to file %s" % output_file)
-    for srcline in sourceprogram:
-        fout.write(srcline.listing(cb) + '\n')
-    fout.close()
-
-
-# Output the Core Image
-def write_core(coremem, ww_filename, ww_tapeid, ww_jumpto, output_file, isa_1950):
-    global SwitchTab, CommentTab, SymTab, DbWgtTab, ExecTab
-
-    if output_file is None:
-        fout = sys.stdout.fileno()
-    else:
-        fout = open(output_file, 'wt')
-        print("Corefile output to file %s" % output_file)
-    fout.write("\n; *** Core Image ***\n")
-    if isa_1950:  # default in the sim is the 1958 instruction set; this directive changes it to 1950
-        fout.write("%%ISA: %s\n" % "1950")
-    fout.write("%%File: %s\n" % ww_filename)
-    fout.write("%%TapeID: %s\n" % ww_tapeid)
-    if ww_jumpto is not None:
-        fout.write('%%JumpTo 0o%o\n' % ww_jumpto)
-    for s in SwitchTab:  # switch tab is indexed by name, contains a validated string for the value
-        fout.write("%%Switch: %s %s\n" % (s, SwitchTab[s]))
-    for w in DbWgtTab:
-        if w.addr_binary:
-            addr = "0o%03o" % w.addr_binary
-        else:
-            addr = w.addr_str
-        fout.write("%%DbWgt:  %s  0o%02o %s\n" % (addr, w.incr_binary, w.format_str))
-
-    columns = 8
-    addr = 0
-    while addr < CORE_SIZE:
-        i = 0
-        non_null = 0
-        row = ""
-        while i < columns:
-            if coremem[addr+i] is not None:
-                row += "%07o " % coremem[addr+i]
-                non_null += 1
-            else:
-                row += " None   "
-            i += 1
-        if non_null:
-            fout.write('@C%04o: %s\n' % (addr, row))
-        addr += columns
-
-    for s in SymTab:
-        addr = SymTab[s].instruction_address
-        fout.write("@S%04o: %s\n" % (addr, s))
-    for addr in ExecTab:
-        fout.write("@E%04o: %s\n" % (addr, ExecTab[addr]))
-    for addr in range(0, len(CommentTab)):
-        if CommentTab[addr] is not None and len(CommentTab[addr]) > 0:
-            fout.write("@N%04o: %s\n" % (addr, CommentTab[addr]))
-    fout.close()
-
-
-# # Globals
-SourceProgram = []  # # a list of class structs, one per source line
-SymTab = {}         # # a dictionary of symbols found in the source
-CommentTab = [None] * CORE_SIZE     # # an array of comments found in the source, indexed by address
-DbWgtTab = []   # an array to hold directoves to add Debug Widgets to the screen
-ExecTab = {}    # dictionary of Python Exec statements, indexed by core mem address
-CoreMem = [None] * CORE_SIZE  # # an image of the final core memory.
-ReverseSymTab = [None] * CORE_SIZE
-
-# arrays to keep track of who's calling whom
-CoreReferredToByJump = [[] for _ in range(CORE_SIZE)]
-CoreReadBy = [[] for _ in range(CORE_SIZE)]
-CoreWrittenBy = [[] for _ in range(CORE_SIZE)]
-
-
-# I think the CSII assembler defaults to starting to load instructions at 0o40, the
-# first word of writable core.  Of course a .org can change that before loading the
-# first word of the program.
-NextCoreAddress = 0o40  # # an int that keeps track of where to put the next instruction
-# WW Subroutines use "relative" addresses, that is, labels which are relative to the start
-# of the routine.  A label "0r" resets the base address, as (I think) does any assignment
-# of a physical address, i.e., a ".org xx" in the source
-CurrentRelativeBase = 0o40  # an int that keeps track of the offset from the last relative base
-
-WW_Filename = None
-WW_TapeID = None
-WW_JumptoAddress = None  # symbolic name for the start address, if any
-SwitchTab = {}
-ISA_1950 = False  # flag to show which instruction set is in force
-
-
-# #############  Main  #################
 def main():
-    global WW_Filename
-    global WW_TapeID
-    global WW_JumptoAddress
-    global SwitchTab
-    global Debug
-    global Legacy_Numbers
-    global op_code
-    global ISA_1950
-    global cb
-    global CurrentRelativeBase
-    global Annotate_IO_Arg
-
-
-
-    OutputCoreFileExtension = '.acore'  # 'assembler core', not the same as 'tape core'
-    OutputListingFileExtension = '.lst'
-    # This flag causes the lexer to assume that numeric operands are octal, and convert them
-    # to 0onnn format
-    Legacy_Numbers = False
-
     parser = wwinfra.StdArgs().getParser ("Assemble a Whirlwind Program.")
     parser.add_argument("inputfile", help="file name of ww asm source file")
+    parser.add_argument('--outputfilebase', '-o', type=str, help='base name for output file')
     parser.add_argument("--Verbose", '-v',  help="print progress messages", action="store_true")
     parser.add_argument("--Debug", '-d', help="Print lotsa debug info", action="store_true")
-    parser.add_argument("--Annotate_IO_Names", help="Auto-add comments to identify SI device names", action="store_true")
-    parser.add_argument("--Legacy_Numbers", help="guy-legacy - Assume numeric strings are Octal", action="store_true")
-    parser.add_argument("-D", "--DecimalAddresses", help="Display traec information in decimal (default is octal)",
-                        action="store_true")
-    parser.add_argument("--ISA_1950", help="Use the 1950 version of the instruction set",
-                        action="store_true")
-    parser.add_argument('--outputfilebase', '-o', type=str, help='base name for output file')
-    args = parser.parse_args()
+    parser.add_argument("--MinimalListing", help="Do not include prefix address and auto-comments in listing", action="store_true")
+    parser.add_argument("-D", "--DecimalAddresses", help="Display listing addresses in decimal as well as octal", action="store_true")
+    parser.add_argument("--ISA_1950", help="Use the 1950 version of the instruction set", action="store_true")
+    parser.add_argument("--Reformat", help="Prettify the source .ww file and move the original to .ww.bak", action="store_true")
+    parser.add_argument("--OmitUnrefedLabels", help="Don't put unreferenced labels in the listing", action="store_true")
+    # Suggested for CommentColumn is 25 for CommentWidth 50
+    parser.add_argument("--CommentColumn", type=int, help="Column after labels for comments in listing. Default 25")
+    parser.add_argument("--CommentWidth", type=int, help="Space to allocste to each comment field in listing. If not specified or zero, no field detection")
+    parser.add_argument("--OmitAutoComment", help="Omit the auto-comment xref in listing", action="store_true")
 
+    # We decided to keep this always-on
+    # parser.add_argument("--Annotate_IO_Names", help="Auto-add comments to identify SI device names", action="store_true")
+    
+    # No longer supported, in favor of editing the code. Thus bare digits are always decimal.
+    # Parser.add_argument("--Legacy_Numbers", help="guy-legacy - Assume numeric strings are Octal", action="store_true")
+
+    args = parser.parse_args()
     cb = wwinfra.ConstWWbitClass (args = args)
     wwinfra.theConstWWbitClass = cb
     cb.decimal_addresses = args.DecimalAddresses  # if set, trace output is expressed in Decimal to suit 1950's chic
-
-    input_file_name = args.inputfile
-    output_file_base_name = re.sub("\\.ww$", '', input_file_name)
-    if args.outputfilebase is not None:
-        output_file_base_name = args.outputfilebase
-
-    cb.CoreFileName = os.path.basename (output_file_base_name)
     cb.log = wwinfra.LogFactory().getLog (isAsmLog = True)
-        
-    Debug = args.Debug
+    debug = args.Debug
     verbose = args.Verbose
-    if verbose:
-        print('File %s' % input_file_name)
-    Legacy_Numbers = args.Legacy_Numbers
-    op_code = change_isa(op_code_1958)
-    if args.ISA_1950:
-        op_code = change_isa(op_code_1950)
-    WW_Filename = input_file_name   # WW_filename will be overwritten if there's a directive in the source
-    Annotate_IO_Arg = args.Annotate_IO_Names
-
-    # # on the first pass, read in the program, do lexical analysis to find
-    # labels, operators and operands.
-    # Convert the source program into a list of 'input line' structures
-
-    if verbose:
-        print("***Lexical Phase")
-    line_number = 0
-    error_count = 0
-    SwitchTab = {}
-    for line in open(input_file_name, 'r'):
-        inline = line.rstrip(' \t\n\r')  # strip trailing blanks and newline
-        line_number += 1
-
-        srcline = lex_line(inline, line_number)
-        SourceProgram.append(srcline)
-
-        if Debug:
-            print("Line %d: label '%s', operator '%s', operand '%s', comment '%s', directive %d" %
-                  (srcline.linenumber, srcline.label, srcline.operator, srcline.operand,
-                   srcline.comment, srcline.directive))
-
-    if Debug:
-        print("SourceProgram Length %d lines", (len(SourceProgram)))
-
-    if Debug:
-        print("*** Symbol Table:")
-        for s in SymTab:
-            print("Symbol %s: line %d" % (s, SymTab[s].linenumber))
-    elif verbose:
-        print("  %d symbols" % len(SymTab))
-
-    # # Scan again to parse instructions and assign addresses
-    # # Parse Instructions
-    if verbose:
-        print("*** Parse Instructions")
-    for srcline in SourceProgram:
-        error_count += parse_ww(srcline)
-
-#    if error_count != 0:  # bail out if there were errors in parsing the source
-#        print("Error Count = %d" % error_count)
-#        exit(1)
-
-    # # Scan Again to resolve address labels and generate the final binary instruction
-    if verbose:
-        print("*** Resolve Labels and Generate Instructions")
-    for srcline in SourceProgram:
-        if len(srcline.operator) != 0:
-            error_count += resolve_labels_gen_instr(srcline)
-
-#    if error_count != 0:  # bail out if there were errors in parsing the source
-#        print("Error Count = %d" % error_count)
-#        exit(1)
-
-    if verbose:
-        print("*** Identify Cross-References")
-    for srcline in SourceProgram:
-        if len(srcline.operator) != 0:
-            label_code(srcline)
-            if srcline.label != '':
-                ReverseSymTab[srcline.instruction_address] = srcline.label
-
-    jumpto = resolve_one_label(WW_JumptoAddress, "JumpTo")
-    error_count += resolve_dbwgt(DbWgtTab)
-
-    # ok, so Nov 2023 it dawned on me that it would be cleaner to print error messages
-    # and count errors in the Log class, not ad-hoc one at a time.
-    # So I 'should' eliminate the local error_count var by using the Log class routine
-    # In the meantime, I have both :-(
-    error_count += cb.log.error_count
-
-
-    if error_count != 0:  # bail out if there were errors in parsing the source
-        print("Error Count = %d; output files suppressed" % error_count)
-        exit(1)
-    else:
-        # # Listing & Output
-        if verbose:
-            print("*** Listing ***")
-        write_listing(cb, SourceProgram, output_file_base_name + OutputListingFileExtension)
-
-        # # Output Core Image
-        if verbose:
-            print("\n*** Core Image ***")
-        write_core(CoreMem, WW_Filename, WW_TapeID, jumpto,
-                   output_file_base_name + OutputCoreFileExtension, ISA_1950)
-
+    minimalListing = args.MinimalListing
+    isa1950 = args.ISA_1950
+    reformat = args.Reformat
+    omitUnrefedLabels = args.OmitUnrefedLabels
+    commentColumn = args.CommentColumn
+    commentWidth = args.CommentWidth
+    omitAutoComment = args.OmitAutoComment
+    inFilename = args.inputfile
+    outFileBaseName = re.sub("\\.ww$", '', inFilename)
+    if args.outputfilebase is not None:
+        outFileBaseName = args.outputfilebase
+    # cb.CoreFileName = os.path.basename (outFileBaseName)  # There does not seem to be a reason store this in cb in the assembler
+    coreOutFilename = outFileBaseName + ".acore"
+    listingOutFilename = outFileBaseName + ".lst"
+    inStream = open (inFilename, "r")
+    prog = AsmProgram (
+        inFilename, inStream,
+        coreOutFilename, listingOutFilename,
+        verbose, debug, minimalListing, isa1950,
+        reformat, omitUnrefedLabels, commentColumn, commentWidth, omitAutoComment)
+    prog.assemble()
 
 main()

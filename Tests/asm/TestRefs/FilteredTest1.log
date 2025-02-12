@@ -13,7 +13,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label= nobounce 
     opname= ca 
-    comment= for no bounce, fetch the current velocity 
+    comment=  for no bounce, fetch the current velocity 
     auto-comment= 
    BinaryPlus
       BinaryPlus
@@ -80,7 +80,7 @@ AsmParsedLine:
     prefixAddr= {0: '017', 1: '39', 2: '157'} 
     label=  
     opname= rc 
-    comment= output a point to the display 
+    comment=  output a point to the display 
     auto-comment= 
    LiteralDigits 0
 Eval:
@@ -93,7 +93,7 @@ AsmParsedLine:
     label=  
     opname=  
     operand= None 
-    comment= ca x+y + * z          ; uncomment this line to generate a syntax error 
+    comment=            ca x+y + * z          ; uncomment this line to generate a syntax error 
     auto-comment= 
 
 AsmParsedLine:
@@ -130,7 +130,7 @@ AsmParsedLine:
     label=  
     opname=  
     operand= None 
-    comment= .word a+!0o4242        ; uncomment this line to generate a syntax error (illegal char) 
+    comment=           .word a+!0o4242        ; uncomment this line to generate a syntax error (illegal char) 
     auto-comment= 
 
 AsmParsedLine:

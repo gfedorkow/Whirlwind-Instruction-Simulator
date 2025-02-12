@@ -460,9 +460,9 @@ def write_listing(fout, coremem, defzeroone, ww_filename, ww_tapeid, jumpto, swi
     if jumpto is not None:
         fout.write("                       .JumpTo 0o%o\n" % jumpto)
     if ww_filename is not None:
-        fout.write("                       .WW_File %s\n" % ww_filename)
+        fout.write("                       .WW_File \"%s\"\n" % ww_filename)
     if ww_tapeid is not None:
-        fout.write("                       .WW_TapeID %s\n" % ww_tapeid)
+        fout.write("                       .WW_TapeID \"%s\"\n" % ww_tapeid)
     fout.close()
 
 
@@ -527,7 +527,7 @@ def main():
     # read the core file from the tape-decoder
 #    (CoreMem, jump_to, WW_file, WW_TapeID) = read_core(args.basename + ".tcore")
     ret = coremem.read_core(input_file_name, cpu, cb)
-    (core_symtab, jump_to, WW_file, WW_TapeID, screen_debug_widgets) = ret
+    (core_symtab, sym_to_addr_tab, jump_to, WW_file, WW_TapeID, screen_debug_widgets) = ret
 
     ManualSymTab, SwitchTab = read_sym(base_filename + ".sym")
     ManualSymTab.update(core_symtab)  # combine the sym tabs

@@ -1,0 +1,662 @@
+; LAS 1/27/25. This file produced using wwlzparser from
+; L-and-Z-Transcript-With-Repairs-Tab.txt. See
+; ./runtest.sh. L-and-Z-Transcript-With-Repairs-Tab.txt in turn is a
+; set of hand-corrections to L-and-Z-Transcript-Tab.txt. These files
+; are now both read-only. las-l-and-z.ww will henceforth contain all
+; edits.
+
+; LAS 1/27/25 -- will need check shifts for hold/round since the map is to round:
+;    def resolveOpcode (self, opcode: str) -> str:
+;        dict = {"sl": "slr", "sr": "srr", "p": ".word"}
+;        if opcode in dict:
+;   2/4/25 -- checked
+
+;
+; | [Transcribed by Larry Stabile, 10/13/24]
+; | [Transcription notes and questions in square brackets]
+; | [Meaning of double-bars?]
+; | [Did not transcribe "light-colored" text]
+; |
+; | Instrumentation Laboratory
+; | Massachusetts Institute of Technology
+; | Cambridge, Mass.
+; | Prepared by: J.H Laning Jr.
+; | Date: 3/53
+; | (Tape T-2134-m8 plus correction tape P-2134-10)
+; |
+; | Sheet 1/20
+; | a1 (Read-in) [LAS deleted useless [Section] heading
+; |
+a1:
+          si 128
+1a1:      ao 36a1
+2a1:      rd 2a1
+		  .print "xxxxx 1 rd %ao"
+3a1:      ad a3                ; (l.c. or u.c.) ; [LAS waa ad (a3/193)]
+          td 8a1
+          td 40a4
+          td 14a1
+          td 22a1
+8a1:      ca 0
+          su 4a3               ; -| Is symbol
+10a1:     cp 12a1              ; -| a number?
+11a1:     sp 38a4              ; ; [LAS was sp (38a4/58a4)]
+12a1:     ca 33a3              ; 31a3 is the normal mode ; [LAS was ca (33a3/31a3)]
+          td 11a1
+14a1:     ca 0
+          su 0                 ; (Is symbol a period?)
+          cp 1a1
+          su 54a3              ; -| l.c. no.[?] or
+          cp 45a4              ; -| exponent?
+          ca 43a3              ; -| set to interpret
+          td 60a4              ;  | digit as an
+          cs 62a4              ; -| exponent
+22a1:     ad 0
+23a1:     cp 40a1              ; --> if digit is zero ; [LAS hand-written note in listing crossed out 39r and put 40r, which makes more sense]
+          sf 51a3              ; -|
+25a1:     ts 43a1              ;  | Form [?] (24,6) version
+          ca 11a4              ;  | of digit as an
+          su 51a3              ;  | integer in (43r, 44r
+          slr 9                ;  |
+          ts 44a1              ; -|
+		  .print "digit read-in %fl", 43a1
+          ca 25a1
+          td 34a1
+; | Sheet 2/20
+; | a1
+		  .print "mra a1----- %fm", mra
+32a1:     sp ax               ; (programmed arithmetic
+          mr 4a7               ; (i.e., by 10) ; [LAS was "mr 497" -- transcription error]
+34a1:     ad 0
+          sp ax
+36a1:     ao 37a1              ; (reset to 38r)
+37a1:     sp 2a1
+38a1:     .word 0              ; (counter for digits before decimal pt ; [LAS eliminated parens for opcode p or just data in this and following sections]
+39a1:     .word 0              ; (  "      "    "    after     "    ")
+40a1:     ca 10a6
+          td 34a1
+          sp 32a1
+43a1:     .word 0              ; -| Temporary storage for
+44a1:     .word 0              ; -| integer during read-in
+; |
+; | Sheet 3/20
+; | a2 (PRINT)
+; |
+a2:
+          sp a16               ; ; [LAS section offset was 0r]
+          sp 28a10
+2a2:      ca 11a16             ; -| store "sp to print
+          sp 9a8               ; -| control"
+4a2:      rd 4a2               ; -| read in
+		  .print "xxxxx 2 rd %ao"
+          ao 13a2              ;  | "RINT"
+          cp 4a2               ; -|
+          sp 2a1
+8a2:      cs 15a3              ; -| reset counter ; [LAS was "ca 15a3" -- transcription error]
+          ts 13a2              ; -|
+          sp a16
+          sp 23a10
+12a2:     sp 8a2               ; ; [LAS was (sp 8r/p 0)]
+13a2:     .word -3              ; (counter)
+14a2:     ao 25a3              ; -| part of SP routine
+          sp 19a6              ;  |
+          ad 56a10             ;  |
+          sp 8a6               ; -|
+18a2:     sp ax               ; -| START
+          sp a1                ; -|	   ; [LAS was sp 32]
+; |
+; | Sheet 4/20
+; | a3 (Lower case symbols)
+; |
+a3:
+          .word a3
+1a3:      .word a4
+          sp 50a4              ; e
+          .word 9              ; 8
+4a3:      sp 0
+          .word 0              ; 1 ; [LAS was blank]
+          sp 50a4              ; a
+          .word 4              ; 3
+          sp 2a1               ; space
+          sp 10a10             ; =
+          sp 50a4              ; s
+          .word 5              ; 4
+          sp 50a4              ; i
+          sp 52a4              ; +
+          sp 50a4              ; u
+15a3:     .word 3              ; 2
+          .word 0              ; shift ribbon ; [LAS was blank]
+17a3:     .word 0              ; . [period] ; [LAS was "(p 0/sp 8a2)"]
+          sp 50a4              ; d
+          .word 6              ; 5
+          .word 50a4           ; r
+21a3:     .word 2              ; 1
+          sp 50a4              ; j
+          .word 8              ; 7
+          sp 50a4              ; n
+25a3:     sp 14a10             ; ,
+          sp 50a4              ; f
+          .word 7              ; 6
+          sp 50a4              ; c
+          sp 55a4              ; -
+          sp 50a4              ; k
+31a3:     .word 58a4
+          sp 50a4              ; t
+33a3:     .word 38a4
+; | Sheet 5/20
+; | a3 (continued)
+          sp 50a4              ; z
+          sp 2a1               ; back space
+          sp 50a4              ; l
+          sp 2a1               ; tabulate
+          sp 50a4              ; w
+39a3:     .word a5
+          sp 50a4              ; h
+          sp 2a1               ; carr. return
+          sp 50a4              ; y
+43a3:     .word a6
+          sp 50a4              ; p
+45a3:     cs 2ax
+          sp 50a4              ; q
+47a3:     ts 0
+          sp 50a4              ; o (letter)
+          sp 2a1               ; stop
+          sp 50a4              ; b
+51a3:     .word 0
+          sp 50a4              ; g
+53a3:     .word 1a3
+54a3:     .word 10             ; 9
+55a3:     mr 0
+          sp 50a4              ; m
+          sp 42a4              ; shift to u.c.
+          sp 50a4              ; x
+59a3:     dv 0
+          sp 50a4              ; v
+          sp a4                ; shift to l.c.
+62a3:     .word 1              ; 0 (zero)
+          sp 2a1               ; nullify
+; |
+; | Sheet 6/20
+; | a4 (Upper case symbols & misc. program)
+; |
+a4:
+0a4:      ca a3
+1a4:      td 3a1
+          sp 2a1               ; E (not used)
+          .word 19             ; 8 (exp.)
+4a4:      .word 55a3
+5a4:      .word 0.22000              ; _ ; [LAS Did say + not _ and 0,22000 but looks like hand-written sheet is as shown here now. Transcription error.]
+6a4:      .word 59a3           ; A (not used)
+          .word 14             ; 3 (exp.)
+          sp 2a1               ; space
+          sp 2a1               ; . ['dot', not period] (see note)
+          sp 40a10             ; S
+11a4:     .word 15             ; 4 (exp.)
+12a4:     ad 59a3              ; I (not used)
+          sp a9                ; /
+14a4:     .word 14a9           ; U (not used)
+          .word 13             ; 2 (exp.)
+          .word 0              ; shift ribbon ; [LAS was blank]
+          sp a12               ; )
+18a4:     sp a13               ; D (not used)
+          .word 16             ; 5 (exp.)
+20a4:     ts 0                 ; R (not used)
+21a4:     .word 12             ; 1 (exp.)
+22a4:     ad 41a13             ; J (not used)
+          .word 18             ; 7 (exp.)
+24a4:     cs 2ax               ; N (not used) ; [LAS was (cs 2ax/ca 2ax)]
+          sp a11               ; (
+          .word 0              ; F ; [LAS was blank]
+          .word 17             ; 6 (exp.)
+          sp 50a10             ; C
+          sp 10a9              ; - (exp.)
+; |
+; | note: The symbol . ['dot', not period] can be used at the programmer's discretion to
+; |  denote multiplication, where convenient typographically.
+; |
+; | Sheet 7/20
+; | a4 (continued)
+30a4:     ta 32a4              ; K (not used)
+          sp 18a9
+32a4:     ca 0                 ; T (not used)
+33a4:     sp 9a8
+          sp 2a1               ; Z (not used)
+          sp 2a1               ; back space
+36a4:     ca 2ax               ; L (not used)
+          sp 2a1               ; tabulate
+38a4:     ca 40a4              ; W (not used)
+          su 4a3
+40a4:     sp 0                 ; H (not used)
+          sp 2a1               ; carr. return
+42a4:     ca 53a3              ; Y (not used)
+          sp 1a4
+44a4:     sp a2                ; P ; [LAS was (sp a2/sp a2 + 2)]
+45a4:     ca 39a3
+          td 60a4              ; Q (not used)
+          cs 62a3
+          sp 23a1              ; O (letter) (not used)
+          sp 2a1               ; stop
+50a4:     ad 55a3              ; B (not used) ; [LAS was (55a3)]
+51a4:     sp 33a4             ; ; [LAS was sp (28a10/33r) -- had it at 28a10 but seems wrong so changed it]
+52a4:     sp 30a4              ; G (not used)
+          sp 5a13
+54a4:     .word 20             ; 9 (exp.)
+55a4:     sp 30a4
+          sp 10a13             ; M (not used)
+          sp 42a4              ; shift to u.c.
+58a4:     ca 33a3              ; X (not used)
+          td 10a1
+60a4:     sp 0                 ; V (not used)
+          sp 0a4               ; shift to l.c.
+62a4:     .word 11             ; 0 (zero exp.)
+          sp 2a1               ; nullify
+; |
+; | Sheet 8/20
+; | a5 (Interpret MRA as lower case number)
+; |
+a5:
+          cs 39a1
+          ts 39a1
+2a5:      ao 39a1
+          cp 15a5
+          sp a8                ; (select new address k)
+          td 7a5
+          sp ax                ; (= sp 852) -| store number
+7a5:      ts 0                 ;             | in (k, k+1)
+          sp ax                ;            -|
+          ca 50a4              ; -| form symbol mr k
+          td 13a5              ;  | or dv k, where
+          ca 7a5               ;  | k is address at
+          su 47a3              ;  | which number has 
+13a5:     ad 0                 ;  | just been stored
+          sp 8a6               ; -|
+15a5:     sp ax
+          dv 4a7               ; (divide by 10)
+          sp ax
+          sp 2a5
+; |
+; | Sheet 9/20
+; | a6 (Interpret MRA as exponent)
+; |
+a6:
+          ca 18a8              ; -| store "sp exp" in
+          td 3a6               ;  | place of last-stored
+          ca 18a6              ;  | symbol (mr x or dv x)
+3a6:      ex 0                 ; -|
+          td 51a3              ; -|
+          ca 51a3              ;  | store "+x"
+          sp 9a8               ; -|
+          sp 19a6              ; -| compute and store the
+8a6:      sp 9a8               ; -| exponent +- [?] n
+9a6:      sp ax                ; -|
+10a6:     ca a7                ;  | reset MRA
+          sp ax                ;  | and various
+          ca 0                 ;  | counters
+13a6:     ts 38a1              ;  |
+          ts 39a1              ;  |
+          ca 13a6              ;  |
+          td 36a1              ; -|
+17a6:     sp 38a4              ; ; [LAS was sp (38a4/14a9)]
+18a6:     sp 15a13             ; "sp exp"
+19a6:     td 25a6
+          ca 4ax               ; -|
+          td 24a6              ;  | Form [?] +- [?] n, where
+22a6:     ca 2ax               ;  | n is in MRA in ; [LAS was (ca 2ax/cs 2ax)]
+          srh 15               ;  | (24,6) form ; [LAS was sr*]
+24a6:     slr 0                ; -|
+25a6:     sp 0
+; |
+; | Sheet 10/20
+; | a7 (Numerical storage)
+; |
+a7:
+          .word 0.00000              ; -| 0 ; [LAS added p to this section]
+          .word 1.47777              ; -|
+2a7:      .word 0.40000              ; -| 1
+          .word 0.01000              ; -|
+4a7:      .word 0.50000              ; -| 10
+          .word 0.04000              ; -|
+; |
+; | Sheet 11/20
+; | a8 (Address selection)
+; |
+a8:
+          ta 7a8               ; -| Select new
+          ca 8a8               ;  | address for
+          su 21a3              ;  | storage of
+          ts 8a8               ;  | numerical
+          su 18a8              ;  | quantity
+          cp 15a8              ;  |
+          ca 8a8               ;  |
+7a8:      sp 0                 ;  |
+8a8:      .word 197            ; -| (last address used) ; [LAS was just "+197", no op or pseudo-op]
+9a8:      ta 17a8              ; -|
+10a8:     ts 32                ;  | Store C(AC) in
+          ao 10a8              ;  | next available
+          su 47a3              ;  | program address.
+          su 8a8               ;  |
+          cp 16a8              ;  |
+15a8:     ck 0                 ;  |
+16a8:     ao 18a8              ;  |
+17a8:     sp 0                 ;  |
+18a8:     .word 31             ; -| (last occupied program address) ; [LAS was "(p 31)"]
+; |
+; | Sheet 12/20
+; | a9 (division, etc.)
+; |
+a9:
+          ca 12a4              ; (divide)
+          ex 50a4
+          ex 12a4
+          sp 5a9
+4a9:      sp 2a1               ; (the 14a10 mode is never used) ; [LAS was sp (2a1/14a10)]
+5a9:      ta 9a9
+          ca 22a6
+          ex 24a4
+          ex 22a6
+9a9:      sp 0
+10a9:     sp 5a9               ; (upper case minus)
+          ca 14a4
+          td 17a6
+          sp 2a1
+14a9:     sp 5a9
+          ca 17a9
+          td 17a6
+17a9:     sp 38a4
+18a9:     ta 27a9              ; (reset dv and exp to normal)
+          ca 36a4
+          ts 22a6
+          ca 45a3
+          ts 24a4
+          ca 4a4
+          td 50a4
+          ca 6a4
+          td 12a4
+27a9:     sp 0
+28a9:     sp 18a9              ; (reset dv and exp to non-normal)
+          sp 5a9
+          ca 12a4
+          ex 50a4
+          ex 12a4
+          sp 9a12
+; |
+; | Sheet 13/20
+; | a10 (Equals, comma, SP, CP)
+; |
+a10:
+0a10:     ta 9a10
+          ca 18a4
+          sp 9a8
+3a10:     td 68a10
+          su 62a3
+5a10:     ts 63a10
+          td 8a10
+          ca 9a10
+8a10:     ex 0
+9a10:     sp 0
+10a10:    sp 0a10              ; (equals)
+          td 20a4
+12a10:    sp 18a9
+          sp 2a1
+14a10:    ca 22a4              ; (comma)
+          sp 9a8
+          ca 20a4
+          sp 9a8
+          ca 63a10
+          td 21a10
+          ca 68a10
+21a10:    td 0
+          sp 18a9
+23a10:    ca 58a10
+          td 51a4
+          td 51a4
+          td 12a1
+          sp 2a1               ; ; [LAS was sp (2a1/49r)]
+28a10:    ca 59a10
+          td 51a4
+          ca 60a10
+          td 12a1
+          sp 19a6
+          ad 57a10
+; | Sheet 14/20
+; | a10 (continued)
+          td 38a10
+          ca 10a8
+          su 47a3
+          ad 4a3
+38a10:    ts 0
+          sp 9a6
+40a10:    ca 52a10             ; (SP)
+41a10:    ts 56a10
+42a10:    rd 42a10
+		  .print "xxxxx 3 rd %ao"
+          su 54a4
+          cp 0                 ; (provision for future SR, CR instructions)
+          su 21a4
+          cp 18a2              ; (START)
+          ca 61a10
+48a10:    td 25a3
+          sp 2a1
+50a10:    ca 57a10             ; (CP)
+          sp 41a10
+52a10:    sp a14
+53a10:    sp 14a2
+          ca 62a10
+          sp 48a10
+56a10:    sp a14               ; ; [LAS was (sp a14/cp a14)]
+57a10:    cp a14
+58a10:    .word 28a10          ; ; [LAS added p to this section]
+59a10:    .word 33a4
+60a10:    .word 31a3
+61a10:    .word 53a10
+62a10:    .word 14a10
+63a10:    .word 0              ; -| storage for addresses used by
+          .word 0              ;  | parenthesis routines in forming
+          .word 0              ;  | and storing sp orders
+          .word 0              ;  |
+          .word 0              ;  | [These are notated on the coding sheet as: ]
+68a10:    .word 0              ;  | [   63-67  +0                              ]
+          .word 0              ;  | [   68-72  +0                              ]
+          .word 0              ;  | [   73-77  +0                              ]
+          .word 0              ;  |
+          .word 0              ;  |
+73a10:    .word 0              ;  |
+          .word 0              ;  |
+          .word 0              ;  |
+          .word 0              ;  |
+          .word 0              ; -|
+; |
+; | Sheet 15/20
+; | a11 (Left parenthesis)
+; |
+a11:
+          sp 9a8               ; (store dummy symbol)
+          ao 3a10
+          ao 5a10
+          sp a10
+          sp a8
+5a11:     td 73a10             ; ; [LAS was "td (73a10)"]
+          ao 5a11
+          ca 12a4
+          su 50a4
+          cp 11a11
+          sp 2a1
+11a11:    ca 5a10
+          td 14a11
+          td 16a11
+14a11:    ca 0
+          ad 18a11
+16a11:    ts 0
+          sp 12a10
+18a11:    .word 0.04000              ; ; [LAS added p]
+; |
+; | Sheet 16/20
+; | a12 (Right parenthesis)
+; |
+a12:
+          ca 5a10
+          td 4a12
+          su 62a3
+          td 5a10
+4a12:     ca 0
+          td 29a12
+          su 18a11
+          cp 36a12
+          sp 28a9
+9a12:     ca 5a11
+          su 62a3
+          td 5a11
+          td 16a12
+          td 32a12
+          ca 22a4
+          sp 9a8
+16a12:    ca 0
+          ad 47a3
+          sp 9a8
+          ca 3a10
+          td 24a12
+          su 62a3
+          td 3a10
+          td 25a12
+24a12:    ca 0
+25a12:    ex 0
+          ad 4a3
+          sp 9a8
+          ad 62a3
+29a12:    td 0
+          ca 50a4
+          td 33a12
+; | Sheet 17/20
+; | a12 (continued)
+32a12:    ca 0
+33a12:    ad 0
+          sp 9a8
+          sp 2a1
+36a12:    sp 18a9
+          sp 9a12
+; |
+; | Sheet 18/20
+; | a13 (Interpretive routines)
+; |
+a13:
+          ta 4a13              ; equals
+          ca a7
+          ts 41a13
+          ca 2a7
+4a13:     sp 0
+5a13:     ta 9a13              ; plus
+          ad 41a13
+          ts 41a13
+          ca 207
+9a13:     sp 0
+10a13:    ta 14a13             ; minus
+          ad 41a13
+          ts 41a13
+          cs 2a7
+14a13:    sp 0
+15a13:    ta 21a13             ; exponent
+          ta 27a13
+          sp ax
+          ao 21a13
+          td 32a13
+          ao 32a13
+21a13:    cs 0
+          cp 37a13
+          ts 40a13
+          cs 40a13
+          ts 40a13
+          ca 210
+27a13:    ad 0
+          ts 34a13
+29a13:    ao 40a13
+          cp 33a13
+          sp ax
+32a13:    sp 0
+33a13:    sp ax
+34a13:    mr 0                 ; ; [LAS was (mr (-)/dv (-))]
+          sp ax
+          sp 29a13
+37a13:    ts 40a13
+          ca 55a3
+          sp 27a13
+40a13:    .word 0              ;    -|n| counter ; [LAS added p to this section]
+41a13:    .word 0              ; -| temporary sum storage for arithmetic
+          .word 0              ; -|
+; |
+; | Sheet 19/20
+; | a15 (Print control)
+; |
+a15:
+          ta 3a15              ; -| plant address of 1st 
+1a15:     sp ax                ; -| character to be printed
+          si 149
+3a15:     ca 0
+          td 16a15
+          td 8a15
+          cp 9a15              ; -| If next symbol is an sp order carry it out. 
+          sp ax                ;  | Since symbols to be printed are stored as
+8a15:     sp 0                 ; -| "mr x,mr y," etc. the "mr" actuates this xxx [?]
+9a15:     su a3                ; -|
+          clc 10               ;  | form and print first letter
+11a15:    rc 11a15             ; -|
+          ao 3a15
+          ca 5a4               ; (0.22000 - "=")
+14a15:    rc 14a15
+          sp ax
+16a15:    ca 0                 ;                -| print number
+;          sp 222               ; (24,6) print    |			; [LAS check]
+		   si 0               ; ; [LAS we don't have the print routine yet]
+          sp 1a15              ;   routine      -|
+; |
+; | Sheet 20/20
+; | a16 (used in a2)
+a16:
+          ta 10a16
+          ca 409               ; -| set g[?] to sp 2a1 and reset
+          ex 25a3              ;  |
+          ex 4a9               ; -|
+          ca 12a16             ; -| set P to sp 2a2 (and reset)
+          ex 44a4              ;  |
+          ex 12a16             ; -|
+          ca 12a2              ; -| set . to sp 8a2 (and reset)
+          ex 17a3              ;  |
+          ex 12a2              ; -|
+10a16:    sp 0
+11a16:    sp a15
+12a16:    sp 2a2               ; ; [LAS was (sp 2a2/sp a2)]
+; |
+; | [LAS Added this section based on info below. Not clear how it can
+; |  possibly work using this data in the middle of the program (i.e.,
+; |  at 212), but it should be ok to allocate a separate space for it.]
+; | a14
+a14:
+          .word 0
+          .word 0
+          .word 0
+          .word 0
+          .word 0
+          .word 0
+          .word 0
+          .word 0
+          .word 0
+          .word 0
+          .word 0
+; | 
+; | Miscellaneous [Not sure about this section needs proofing]
+; | 
+; | 210 dv 0
+; | 
+; | 211 = 0a14 and also "1t" in print routine. Equations are not allowed
+; |       0 as a number, thus 0a14 is not used in a meaningful way.
+; | 
+; | 212-221 = a14 - 10a14: storage for sp orders to initial address of numbered equations (a
+; |       maximum of 10 is allowed)
+; | 
+; | 222 (24,6) print routine
+; | 
+; | 852 = "ax"  = (24,6) programmed arithmetic
+
+;
+; LAS include the float-lib below, which defines ax and friends
+;
+            .include "las-float-lib.ww"

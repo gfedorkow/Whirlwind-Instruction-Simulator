@@ -22,16 +22,12 @@ Error: Line 3: Char pos 16: Digit string must be octal:
     sp 0o177789
                ^
 
-Error: Line 3: Incorrect operand type AsmExprValueType.Undefined :
-    sp 0o177789
 Error: Line 4: Address 0o177777 out of range:
     sp 0o177777
 Error: Line 6: Char pos 16: Unbound variable xyz:
     sp xyz + 42
                ^
 
-Error: Line 6: Incorrect operand type AsmExprValueType.Undefined :
-    sp xyz + 42
 Error: Line 7: Incorrect operand type AsmExprValueType.String abc:
     sp "abc"
 Error: Line 11: .flex operations only accept a single-character literal string:
@@ -42,4 +38,4 @@ Error: Line 20: Unsigned integer conversion of 70000 (= 0o210560) is out of 16-b
     .word 70000
 Error: Line 21: Signed integer conversion of -40000 is out of 16-bit one's-complement range:
     .word -40000
-Error Count = 18; output files suppressed
+Error Count = 16; output files suppressed

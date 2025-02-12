@@ -23,7 +23,7 @@
                         .org 0o0       ;  
 @0000:000000      zero: .word 0o0       ;  @@JumpedToBy w0271 w0403 i0437 w0553 w0573 i1517 r2005 r2006 WrittenBy w0457 w0503 w0530 w0543 w0552 w0555 w1411 r1725 a1726 a1727 r1735 r2007 r2010 a2011 a2022 a0533 a0535 ReadBy a0055 a0174 i0203 a0217 a0260 i0272 a0374 w0422 w0435 a0441 w0444 i0455 a0463 w0477 a0506 w0524 a0533 i0536 r0561 a0714 w1112 a1145 w1152 w1157 w1167 w1175 a1201 i1227 w1234 w1243 w1251 i1267 w1274 w1303 w1422 i1430 w1435 a1506 w1522 r1731 r1733 r2007 r2014 a2055 
 @0001:000001       one: .word 0o1       ;  @@ReadBy a0315 i0355 a0360 i0363 a0406 a0416 i1022 i1036 a1044 a1054 a1064 a1070 i1115 a1126 a1141 a1207 a1246 a1306 a1312 a1320 a1327 a1336 a1345 a1354 a1363 a1372 a1401 i1410 a1425 a1443 a1452 a1466 i1511 a1515 
-                        .switch CheckAlarmSpecial 0o1  ;  
+                        .switch CheckAlarmSpecial, 0o1  ;  
 
                         ; [guy] init a couple of the switch registers; we have no idea why, but these are used in the RNG
                         .org 0o11      ;  
@@ -1130,8 +1130,8 @@
 @0534:070513            cp   0o0513    ; conditional program 
 @0535:040000            ts   0o0000    ; no-op 
                         .jumpto 0o40      ;  
-                        .ww_file 102766747_fbblackjack_21_short.7ch/102766747_fbblackjack_21_short_gs001_.tcore  ;  
+                        .ww_file "102766747_fbblackjack_21_short.7ch/102766747_fbblackjack_21_short_gs001_.tcore"  ;  
 
                         .jumpto 0o040     ;  
-                        .ww_file ../../Paper-Tapes/all-tapes-from-AlK-Aug2018/2018_01/102766747_fbblackjack_215204_long.7ch  ;  
-                        .ww_tapeid fb2l5204  ;  
+                        .ww_file "../../Paper-Tapes/all-tapes-from-AlK-Aug2018/2018_01/102766747_fbblackjack_215204_long.7ch"  ;  
+                        .ww_tapeid "fb2l5204"  ;  

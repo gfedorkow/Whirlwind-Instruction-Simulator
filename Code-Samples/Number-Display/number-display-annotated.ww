@@ -284,5 +284,5 @@
                         .org 0o0610    ;  
 @0610:100000     r0610: ca   w0000     ; clear and add @@ReadBy a0100 a0256 
                         .jumpto 0o040     ;  
-                        .ww_file 102766750_fb131-0-2692_number_display.7c  ;  
-                        .ww_tapeid fbl3l-0-2692  ;  
+                        .ww_file "102766750_fb131-0-2692_number_display.7c"  ;  
+                        .ww_tapeid "fbl3l-0-2692"  ;  
