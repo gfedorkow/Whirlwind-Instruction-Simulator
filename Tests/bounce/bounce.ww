@@ -11,7 +11,7 @@
 	   .dbwgt Yi 	0o100
 
        .jumpto main
-       .org 1
+       .org 40
 main:  ca XI ;   Initialize X axis
        ts Xi ;  
        ca YI ;   initialize Y axis

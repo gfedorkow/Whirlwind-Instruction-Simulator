@@ -28,6 +28,7 @@ import os
 from screeninfo import get_monitors
 from enum import Enum
 import argparse
+import traceback
 
 theConstWWbitClass = None       # everything should use the same instance of the cb. Set in wwsim.
 
@@ -59,17 +60,24 @@ class StdLog:
     def __init__ (self):
         self.stdLog = None
 
+class StdAsmLog:
+    def __init__ (self):
+        self.stdAsmLog = None
+
 class LogFactory:
     logs = {}                           # class var -- dictionary of LogClass instances keyed by log name
     cb = None                           # class var -- only one instance of the "constants"
     logSeqno = LogSeqno()               # class var -- global log entry seqno
     stdLog = StdLog()                   # class var -- Holds cached LogClass instance for stdoout/stderr output
+    stdAsmLog = StdAsmLog()             # class var -- Holds cached AsmLogClass instance for stdoout/stderr output
     # logname is either an absolute path or the leaf of a file name to go under LogDir
     # logname of None means use stdout and stderr as the sole output streams.
     def getLog (self, logname=None, isAsmLog=False, **kwargs):
         if self.cb is None:
             self.cb = theConstWWbitClass
-        if logname is None and self.stdLog.stdLog is not None:
+        if logname is None and isAsmLog and self.stdAsmLog.stdAsmLog is not None:
+            return self.stdAsmLog.stdAsmLog
+        elif logname is None and not isAsmLog and self.stdLog.stdLog is not None:
             return self.stdLog.stdLog
         else:
             if logname is not None and logname in self.logs:
@@ -83,7 +91,10 @@ class LogFactory:
         else:
             newLog = LogClass ("", logfile = logfile, factory = self, **kwargs)
         if logfile is None:
-            self.stdLog.stdLog = newLog
+            if isAsmLog:
+                self.stdAsmLog.stdAsmLog = newLog
+            else:
+                self.stdLog.stdLog = newLog                
         else:
             self.logs[logname] = newLog
         return newLog
@@ -225,6 +236,8 @@ class Tokenizer:
     def caratString (self, str, pos) -> str:
         s = " " * pos
         return ":\n" + str + "\n" + s + "^\n"
+    def error (self, msg: str):
+        self.cb.log.error (msg)
     def getToken (self) -> str:
         token = ""
         while self.pos <= self.slen:
@@ -273,8 +286,8 @@ class Tokenizer:
                     self.state = 8
                     return token
                 elif self.isWhitespace (c):
-                    self.cb.log.fatal ("Comma expected at char pos %d in %s" % (self.pos, self.str) +
-                                       self.caratString (self.str, self.pos))
+                    self.error ("Comma expected at char pos %d in %s" % (self.pos, self.str) +
+                                self.caratString (self.str, self.pos))
                     self.pos += 1
                     return self.endOfString
                 else:
@@ -287,8 +300,8 @@ class Tokenizer:
                 elif c == self.endOfString:
                     return self.endOfString
                 else:
-                    self.cb.log.fatal ("Comma expected at char pos %d in %s" % (self.pos, self.str) +
-                                       self.caratString (self.str, self.pos))
+                    self.error ("Comma expected at char pos %d in %s" % (self.pos, self.str) +
+                                self.caratString (self.str, self.pos))
                     self.pos += 1
                     return self.endOfString
             elif self.state == 5:
@@ -306,8 +319,8 @@ class Tokenizer:
                     self.pos += 1
                     token = token + c
                 else:
-                    self.cb.log.fatal ("Illegal format directive at char pos %d in %s" % (self.pos, self.str) +
-                                       self.caratString (self.str, self.pos))
+                    self.error ("Illegal format directive at char pos %d in %s" % (self.pos, self.str) +
+                                self.caratString (self.str, self.pos))
                     self.pos += 1
                     return self.endOfString
             elif self.state == 6:
@@ -317,8 +330,8 @@ class Tokenizer:
                     token = '%' + token + c
                     return token
                 else:
-                    self.cb.log.fatal ("Illegal format directive at char pos %d in %s" % (self.pos, self.str) +
-                                       self.caratString (self.str, self.pos))
+                    self.error ("Illegal format directive at char pos %d in %s" % (self.pos, self.str) +
+                                self.caratString (self.str, self.pos))
                     self.pos += 1
                     return self.endOfString
             elif self.state == 7:
@@ -328,14 +341,15 @@ class Tokenizer:
                 self.state = 0
                 return self.endOfString
             elif self.state == 9:
-                if c in ['l','r','m']:
+                if c in ['l','r','m','x']:
                     self.state = 1
                     self.pos += 1
                     token = '%' + token + c
                     return token
                 else:
-                    self.cb.log.fatal ("Illegal format directive at char pos %d in %s" % (self.pos, self.str) +
-                                       self.caratString (self.str, self.pos))
+                    self.error ("Illegal format directive at char pos %d in %s" % (self.pos, self.str) +
+                                self.caratString (self.str, self.pos))
+                    return self.endOfString
             else:
                 print("Unexpected state %d in Tokenizer" % self.state)
                 exit(1)

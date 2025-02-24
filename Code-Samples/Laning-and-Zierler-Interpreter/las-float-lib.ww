@@ -102,8 +102,8 @@
   floathack: ta fhrtn
              ts ac_save
              ca ac_save
-             ;				   su r17
-             .print "floathack %ao"
+             ;	   su r17
+			 ;    .print "floathack %ao"
 			 ad max
       fhrtn: sp 0
     ac_save: .word 0
@@ -153,24 +153,24 @@
              sp r07                   ; "cm"                                             ; from 196r-->
         r14: .word 0                  ;  Temporary digits storage                        ; (170r)
 
-             .print "5 r03=%o AC=0o%ao", r03
+;             .print "5 r03=%o AC=0o%ao", r03
         r15: sa r03                   ; -|- Add two minor products                       ; from 24r
              ts r03                   ; -|
-             .print "6 r02=%o r03=%o", r02, r03
+;             .print "6 r02=%o r03=%o", r02, r03
 
         r17: ca 0                     ; -|- Store overflow
              ex tmp                   ; -|
 
-             .print "8 r02=%o AC=0o%ao", r02
+;             .print "8 r02=%o AC=0o%ao", r02
              mh r02                   ; Form major product
-             .print "7 r02=%o AC=0o%ao BR=0o%bo", r02
+;            .print "7 r02=%o AC=0o%ao BR=0o%bo", r02
              sp r158
-             .print "1 r02=%o r03=%o AC=%ao", r02, r03
+;             .print "1 r02=%o r03=%o AC=%ao", r02, r03
         r21: mr r02                   ; "mr" Form two                                    ; from 49r9,196r
-             .print "4 AC=0o%ao"
+;             .print "4 AC=0o%ao"
              ex r03                   ; minor products
              mr tmp
-             .print "2 tmp=%o AC=0o%ao", tmp
+;             .print "2 tmp=%o AC=0o%ao", tmp
              sp r15
              ex tmp                   ; "dv"                                             ; from 196r-->
              ts r97
@@ -193,9 +193,9 @@
 
              mh r97                   ; -|
              su r72                   ;  |
-             .print "xxx 11 %ao %bo"
+;             .print "xxx 11 %ao %bo"
              slh 15                   ;  |
-             .print "10 %ao %bo"
+;             .print "10 %ao %bo"
                                       ;             su r17                               ;  |- Form (2**-2/x**2)' (Use Euclid's algorithm)  ; [LAS Looks like this should say (2**-2/x2)' -- Uses remainder arith, hence the Euclid
                                       ;  |                                               ; ref, but broken. The use of r17 is highly suspicious, as it's the opcode of an instruction.]
              sp floathack
@@ -374,7 +374,7 @@
        r177: ts r04                   ; -|                                               ; 108r->
 
   next_inst: ao exec_inst             ; increase address                                 ; [LAS was transcription error ao r197]
-             .print "mra intermediate------- %fm", mra
+;             .print "mra intermediate------- %fm", mra
   exec_inst: ca 0                     ; Pick up next instruction
 
              ts r97                   ; -|
@@ -394,7 +394,7 @@
              ex r102                  ;  |
              ts tmp                   ;  |
              slh 15                   ; -|
-             .print "3 dis=%o tmp=x2=%o r102=y2=%o AC=x2'=0o%ao r02=x1=%o r03=x1'=%o r04=y1=%o", dispatch, tmp, r102, r02, r03, r04
+;             .print "3 dis=%o tmp=x2=%o r102=y2=%o AC=x2'=0o%ao r02=x1=%o r03=x1'=%o r04=y1=%o", dispatch, tmp, r102, r02, r03, r04
    dispatch: .word 0                  ; Go to part of I.S. for particular instruction    ; (188r)
    r197:
   sep_param: .word main_sep_param     ; Separation parameter                             ; [LAS There is a note in Subroutines.pdf pdf-page 25 that says r197 is "pax2"
@@ -403,7 +403,7 @@
 
        r199: ad r50                   ;                                                  ; from 70r-->
              cp exec_inst             ; Does address equal ax?
-             .print "mra result------- %fm", mra			 
+;             .print "mra result------- %fm", mra			 
        r201: sp 0                     ; Return to register following sp ax               ; (66r)
 
        r202: ca r108                  ; -|- Produce overflow alarm                       ; from 90r

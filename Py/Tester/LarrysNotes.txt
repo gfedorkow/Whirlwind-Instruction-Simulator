@@ -602,7 +602,7 @@ literal-digit-seq												Decimal inreger
 	* Case-sensitive? Right now new asm is not at all
 		We want case-insens ops and case-sens labels and vars
 	- Check range on nextcoreaddress since can overflow 2K as in all1.ww. Right now croaks.
-	- Mod and test disasm
+	* Mod and test disasm
 	* asm: no-prefx-addr option, to get a pretty-printed source file
 		Changed to --MinimalListing
 	* --Legacy_Numbers: should go away? Rightnow .org has a mix in the
@@ -659,17 +659,29 @@ literal-digit-seq												Decimal inreger
 	- Found a log bug where the stdout logs were continually making
       LogClass instances. Due to not using class var right -- needs
       wrapper, unlike in C++.
-	- Tracebranch in sim -- need way to turn off
+	* Tracebranch in sim -- need way to turn off
+		Turn on quiet id -d
 	* Suppressed undefined-value error -- too noisy.
-	- Debugger: added provisions for "real" debugger by adding a
-      SymToAddr table to the sim; it already has an add-to-sym table,
-      SymTab. Also moveed wwasmparser.py to Common.
-	- Print floats with scientific notation or the eqv of C's "g" format.
-
-
-
-
-
+	* Debugger: added provisions for "real" debugger by adding a
+      SymToAddr table to the sim; it already has an addr-to-sym table,
+      SymTab. Also moved wwasmparser.py to Common.
+	* Debugger investigation shows the .print tokenizer produces a fatal error. Can we change?
+		Changed to error
+	* Print floats with scientific notation or the eqv of C's "g" format.
+		Python has "g".  Now printing 30,15 floats with 10 digits and 24,6 floats with 8 digits
+	- Hoist cpu class so we can share with dbg
+	- Show .print etc in dbg. Right now just shows ww insts
+	- Get rid of need for dummy parsed line in dbg
+	- Dbg doesn't handle signals
+	- bounce test (and the one in code-samples) has a .org 1. This
+	  doesn't seem right. Fixed the test but not the code-sample.
+	- Asm syntax errors need work. Need better check for unbal'ed
+	  parens, and identifying specific clause types in errors,
+	  e.g. xyz* gives comma-op syntax error, which is misleading.
+	* Trap float overflow in conversion and return inf.
+	- Dbg bug in printing AC and prob other regs -- wrong signs. Trying printing neg number.
+	- Dbg bug in rs if do rs before running.
+	- Dbg possible enhs: watch-for-write (addr); allow a mem loc to be set
 
 
 
@@ -833,15 +845,48 @@ chapter xvii generalized post-mortems							241
 Debugger Ideas
 ==============
 
+Please let me know what you think of the debugger ideas below. From an
+implementation standpoint, this would be separate module, with an
+interface class for the sim to initiate control. We should thus be
+able to avoid lots of symbol contamination in the sim itself. Does the
+ras-pi sim still need an older python? This could affect debugger
+support on the ras-pi, as I prefer not to mod the asm parser for a
+retro python.
+
+Also, it was not my intent to be dismissive of the conditional-exec
+ideas, and separate from the idea below, we can consider some sort of
+conditional printing. I don't support allowing more Python in the asm
+language. We could easily do .printif:
+
+	.printif Debug, "X = %d", X
+
+where Debug can be a .pp symbol or somethig set of the cmd line. We
+could similarly do .execif:
+
+	.execif Debug, blah()
+
+Doing a general .if is also possible, e.g.:
+
+	.if Debug, .print "X = %d", X
+or
+	.if Debug, .exec blah()
+
+These latter forms break the current syntax, but not fatally and I
+could probably fit them in.
+
+However with this all said I prefer the debugger model so I'd like to
+hold off on conditional exec/print until we decide the basic
+direction.
+
 I did some looking into how we might make a debugger for ww and the
 sim already has pretty good facilities for controlling the
-execution. Right now it's just an experimental hack to verify
-feasibility. In the while-true loop running the sim steps, I added a
-user-input call. With -t on this effectively makes a single-step
-interaction, and since trace is on each such step shows the machine
-state. So I then wired in a call to the asm parser, and hooked the
-eval to symbol tables in the sim. As a result at each of these steps I
-can print a symbol's value, memory contents, etc.
+execution. Right now I have an experimental hack (not checked in) to
+verify feasibility. In the while-true loop running the sim steps, I
+added a user-input call. With -t on this effectively makes a
+single-step interaction, and since trace is on each such step shows
+the machine state. So I then wired in a call to the asm parser, and
+hooked the eval to symbol tables in the sim. As a result, at each of
+these steps I can print a symbol's value, memory contents, etc.
 
 So this is crude, but shows the feasibility of adding something like
 this to the sim. I also note that you have some "breakpoint" code in
@@ -849,7 +894,9 @@ there now, but I can't tell what it does. Anyway a basic debugger
 proposal is as follows.
 
 The easiest syntax to support is asm, since it's there already. A
-basic command set might be:
+basic command set for running code and examining memory
+follows. Setting memory or registers should be possible as well,
+following this basic pattern.
 
 	p <expr> [, <format>]
 
@@ -872,14 +919,14 @@ or
 > p Xi, d
 @129(Xi)=-24576
 
-	pb {<var> | <integer>} , <n-words> [, <format>]
+	pb <expr>, <n-words> [, <format>]
 
 Print a block of memory.
 
 > pb mra, 3, d
 @854(mra)=28160
-@855(mra)=0
-@856(mra)=8
+@855(mra+1)=0
+@856(mra+2)=8
 
 Also you can say:
 
@@ -898,6 +945,10 @@ Place a breakpoint at the address indicated by <expr>.
 
 List breakpoints.
 
+	bd <breakpoint> | all
+
+Delete breakpoint or all breakpoints
+
 	r
 
 Run from the current pc.
@@ -906,3 +957,8 @@ Run from the current pc.
 
 Restart the program.
 
+
+
+
+
+evalDbg ({0:Eval, 1:Noeval}) -- assumes comma list
