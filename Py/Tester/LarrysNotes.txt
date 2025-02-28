@@ -682,7 +682,7 @@ literal-digit-seq												Decimal inreger
 	- Dbg bug in printing AC and prob other regs -- wrong signs. Trying printing neg number.
 	- Dbg bug in rs if do rs before running.
 	- Dbg possible enhs: watch-for-write (addr); allow a mem loc to be set
-
+	- Send Knuth info we have for any insights
 
 
 	- Get "everything" into git: tape images, images on code, etc.

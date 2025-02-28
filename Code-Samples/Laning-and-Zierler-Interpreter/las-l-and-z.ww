@@ -27,6 +27,12 @@
 ; | Sheet 1/20
 ; | a1 (Read-in)
 ; |
+		  .jumpto 0o10
+		  .org 0o10
+		  sp a1
+		  .org 0o40
+		  .words 64, 0
+		  .org 0o400
 a1:
           si 128
 1a1:      ao 36a1
