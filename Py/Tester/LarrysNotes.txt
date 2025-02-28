@@ -842,19 +842,11 @@ chapter xvii generalized post-mortems							241
 
 
 2/6/25
-Debugger Ideas
-==============
+Conditional exec
+================
 
-Please let me know what you think of the debugger ideas below. From an
-implementation standpoint, this would be separate module, with an
-interface class for the sim to initiate control. We should thus be
-able to avoid lots of symbol contamination in the sim itself. Does the
-ras-pi sim still need an older python? This could affect debugger
-support on the ras-pi, as I prefer not to mod the asm parser for a
-retro python.
-
-Also, it was not my intent to be dismissive of the conditional-exec
-ideas, and separate from the idea below, we can consider some sort of
+It was not my intent to be dismissive of the conditional-exec ideas,
+and separate from the debugger idea we can consider some sort of
 conditional printing. I don't support allowing more Python in the asm
 language. We could easily do .printif:
 
@@ -874,91 +866,181 @@ or
 These latter forms break the current syntax, but not fatally and I
 could probably fit them in.
 
-However with this all said I prefer the debugger model so I'd like to
-hold off on conditional exec/print until we decide the basic
-direction.
+2/26/25
+Debugger Doc
+============
 
-I did some looking into how we might make a debugger for ww and the
-sim already has pretty good facilities for controlling the
-execution. Right now I have an experimental hack (not checked in) to
-verify feasibility. In the while-true loop running the sim steps, I
-added a user-input call. With -t on this effectively makes a
-single-step interaction, and since trace is on each such step shows
-the machine state. So I then wired in a call to the asm parser, and
-hooked the eval to symbol tables in the sim. As a result, at each of
-these steps I can print a symbol's value, memory contents, etc.
+The debugger is invoked as follows:
 
-So this is crude, but shows the feasibility of adding something like
-this to the sim. I also note that you have some "breakpoint" code in
-there now, but I can't tell what it does. Anyway a basic debugger
-proposal is as follows.
+python wwsim.py --Debugger x.acore
+python wwsim.py -d x.acore
 
-The easiest syntax to support is asm, since it's there already. A
-basic command set for running code and examining memory
-follows. Setting memory or registers should be possible as well,
-following this basic pattern.
+To my surprise, the -d option wasn't taken!
 
-	p <expr> [, <format>]
+Invoking -d automatically turns on "very quiet" mode, i.e., no info is
+printed like branch-forward, branch-backward, etc. I found this output
+too noisy when using the debugger.
 
-This will print an expr's value, and its contents if it's a valid
-memory loc. Format can be d, o, fl, fr, or fm (decimal, octal, float
-(24,6), fraction, and float-mra (30,15)) We can have special vars for
-AC, AR, etc. We could distinguish accessing a var's value versus the
-memory location it represents with * or something, as in C. I'd have
-to introduce * as a unary operator. I don't see this as really
-necessary as we could just use the same format used now to print
-trace state.
+The help output is:
 
-So, eg:
+p   <expr> [, format]   where format = o: octal, d: decimal, fr: fraction, fl: 24,6 float, fm: 30,15 float, i: instruction
+        print an address and its contents, or just the value if a register is specfied
+pb  <addr>, <nwords> [, format]
+        print a block of <nwords> starting at <addr>
+r   run program from current pc
+s   step program one instruction
+rs  restart program
+b   <addr>1,...,<addr>N
+        define a breakpoint for each given address. Prints breakpoint id and corresponding address
+bd  <bkptid>1,...,<bkptid>N
+        delete breakpoint defined by each given id
+bl  list breakpoints
+h   Print help
+quit    Exit debugger and simulator
 
-> p Xi
-@0o0201(Xi)=0o117777(-0o60000)
+The help output should be largely self-explanatory. Following is a
+transcript of a debugging run. I added the line numbers in this
+write-up, with some notes following.b
 
-or
+ 1   $ python $sim -d las-float-lib.acore
+ 2   start at 0o40
+ 3    pc:0o0040:          SP 0o0041(notes)         AC=0o000000,           BR=0o0,    Core@0o0041(notes)=0o075524
+ 4   dbg 40> b ax
+ 5   0 0o1524(ax)
+ 6   dbg 40> b loop
+ 7   1 0o45(loop)
+ 8   dbg 40> bl
+ 9   0 0o1524(ax)
+10   1 0o45(loop)
+11   dbg 40> r
+12    pc:0o1524(ax):      TA 0o2007(exec_inst)     AC=0o000000,           BR=0o0,    Core@0o2007(exec_inst)=0o100000(-0o77777)
+13    dbg 1524> r
+14    pc:0o0045(loop):    CA 0o0141(loopcnt)       AC=0o000001,           BR=0o0,    Core@0o0141(loopcnt)=0o000031
+15   dbg 45> p mra,fm
+16   0o1526(mra) = 220
+17   dbg 45> r
+18    pc:0o1524(ax):      TA 0o2007(exec_inst)     AC=0o000030,           BR=0o0,    Core@0o2007(exec_inst)=0o101524(-0o76253)
+19   dbg 1524> r
+20   xxxxxxxxxxxx 24 233.08189
+21    pc:0o0045(loop):    CA 0o0141(loopcnt)       AC=0o000001,           BR=0o0,    Core@0o0141(loopcnt)=0o000030
+22   dbg 45> p mra,fm
+23   0o1526(mra) = 233.0818939
+24   dbg 45> p t,fl
+25   0o123(t) = 233.08189
+26   dbg 45> pb mra,3
+27   0o1526(mra):
+28     0o1526 = 0o72212
+29     0o1527 = 0o36700
+30     0o1530 = 0o10
+31   dbg 45> pb mra,3,d
+32   0d854(mra):
+33     0d854 = 29834
+34     0d855 = 15808
+35     0d856 = 8
+36   dbg 45> r
+37    pc:0o1524(ax):      TA 0o2007(exec_inst)     AC=0o000027,           BR=0o0,    Core@0o2007(exec_inst)=0o101524(-0o76253)
+38   dbg 1524> p AR
+39   AR = 52
+40   dbg 1524> pb AR,4,i
+41   0o52(AR):
+42     0o52 = CA 0o123(t)
+43     0o53 = MR 0o137(semitone)
+44     0o54 = TS 0o123(t)
+45     0o55 = SP 0o1524(ax)
+46   dbg 1524> r
+47   xxxxxxxxxxxx 23 246.94168
+48    pc:0o0045(loop):    CA 0o0141(loopcnt)       AC=0o000001,           BR=0o0,    Core@0o0141(loopcnt)=0o000027
+49   dbg 45> bl
+50   0 0o1524(ax)
+51   1 0o45(loop)
+52   dbg 45> bd 0,1
+53   dbg 45> r
+54   xxxxxxxxxxxx 22 261.62561
+55   xxxxxxxxxxxx 21 277.18268
+56   xxxxxxxxxxxx 20 293.66483
+57   xxxxxxxxxxxx 19 311.12704
+58   xxxxxxxxxxxx 18 329.62762
+59   xxxxxxxxxxxx 17 349.22833
+60   xxxxxxxxxxxx 16 369.99454
+61   xxxxxxxxxxxx 15 391.99557
+62   xxxxxxxxxxxx 14 415.30487
+63   xxxxxxxxxxxx 13 440.00021
+64   xxxxxxxxxxxx 12 466.164
+65   xxxxxxxxxxxx 11 493.88358
+66   xxxxxxxxxxxx 10 523.25146
+67   xxxxxxxxxxxx 9 554.36566
+68   xxxxxxxxxxxx 8 587.32996
+69   xxxxxxxxxxxx 7 622.25446
+70   xxxxxxxxxxxx 6 659.25568
+71   xxxxxxxxxxxx 5 698.45709
+72   xxxxxxxxxxxx 4 739.98956
+73   xxxxxxxxxxxx 3 783.99164
+74   xxxxxxxxxxxx 2 830.61023
+75   xxxxxxxxxxxx 1 880.00092
+76   Halt Instruction!  (Code=0) at pc=0114
+77   Alarm 'Program Halt' (5) at PC=0o114 (0d76)
+78   Total cycles = 4252, last PC=0o115, wall_clock_time=121 sec, avg time per cycle = 28614.4 usec
+79   
+80   Ran 4252 cycles; Used mem=47MB
+81   start at 0o40
+82    pc:0o0040:          SP 0o0041(notes)         AC=0o000000,           BR=0o0,    Core@0o0041(notes)=0o075524
+83   dbg 40> quit
+84   $
 
-> p Xi, d
-@129(Xi)=-24576
 
-	pb <expr>, <n-words> [, <format>]
+Notes on the transcript:
 
-Print a block of memory.
+Line 12: First breakpoint hit, at ax. The instruction line is shown
+	before execution. The registers and memory values shown are the
+	current values at that point. Note that .print and .exec are not
+	shown, and are not executed until the next step or run. Changing
+	this is a possible enhancement, i.e., making .exec and .print
+	appear as "real" instructions to the debugger.
 
-> pb mra, 3, d
-@854(mra)=28160
-@855(mra+1)=0
-@856(mra+2)=8
+Line 22: Print the mra as a 30,15 float.
 
-Also you can say:
+Line 26: Print the mra as an octal block of 3 words.
 
->p mra, fm
-@854(mra)=220.000000
+Line 31: Same only decimal.
 
-	s | <nl>
+Line 38: Registers can be printed via their built-in names AC, AR, BR,
+	and SAM (lower case also allowed). I don't yet account for name
+	conflicts.
 
-Single-step. Just return will also do this but can be an option if preferred.
+Line 40: Print a block as instructions. Useful to see what code has
+	been modified. In this case we're seeing the "virtual
+	instructions" to be picked up by the float lib.
 
-	b <expr>
+Line 49: List the breakpoints. The next command then deletes them, then
+	we run the program to completion.
 
-Place a breakpoint at the address indicated by <expr>.
+Issues/Notes:
 
-	bl
+- rs doesn't actually restart, just goes to the beginning, and you
+  then have to type r. There may be other issues with it
+  too. Generally, I tried to be minimally invasive in the sim's
+  control loop, and there might be a few cracks.
 
-List breakpoints.
+- Printing registers has bugs, like negative numbers are wrong when
+  printed in decimal.
 
-	bd <breakpoint> | all
+- .print and .exec will not appear, nor are they executed, at a
+  breakpoint. You need to step or run from there to get that
+  executed. This is something we can potentially fix, i.e., these would
+  be treated as executable statements by the debugger.
 
-Delete breakpoint or all breakpoints
+- I could potentially combine p and pb into one command, by checking
+  the fields and ascertaining whether they're numbers or format
+  strings.
 
-	r
+- In the sim code, I added a few "helper functions" to pass to the
+  debugger, to get info from the sim. We should abstract out at least
+  the Cpu class so I don't need all those functions, so that is on the
+  to-do list. Note though that these additional functions don't
+  interfere with the sim, so I still consider the changes I needed to
+  be mininal. But at least python implements closures, so these
+  functions work!
 
-Run from the current pc.
-
-	rs
-
-Restart the program.
-
-
-
-
-
-evalDbg ({0:Eval, 1:Noeval}) -- assumes comma list
+- From an implementation standpoint, this is a separate module, with
+  an interface class for the sim to initiate control. We are thus be
+  able to avoid lots of symbol contamination in the sim itself.

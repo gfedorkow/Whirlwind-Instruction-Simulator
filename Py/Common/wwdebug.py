@@ -192,7 +192,7 @@ class DbgCmd_p (DbgCmd):
         pass
     def helpStr (self) -> str:
         r = (
-            "p\t<expr> [, format]\twhere format = o: octal, d: decimal, fr: fraction, fl: 24,6 float, fm: 30,15 float, i: instruction\n" +
+            "p\t<expr> [, format]\twhere format = o: octal, d: decimal, fr: fraction, fl: 24,6 float, fm: 30,15 float, fx: flexo-to-ascii, i: instruction\n" +
             "\t\tprint an address and its contents, or just the value if a register is specfied"
             )
         return r

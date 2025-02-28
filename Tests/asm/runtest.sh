@@ -1,4 +1,4 @@
-
+#!/bin/bash
 # This test is the *new* asm, even though we haven't marked it .n
 #
 # In this test we don't run any sims, just generate and compare. The

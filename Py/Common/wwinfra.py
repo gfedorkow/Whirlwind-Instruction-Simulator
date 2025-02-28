@@ -660,8 +660,14 @@ class ConstWWbitClass:
         if display:
             screens = get_monitors()
             for s in screens:
-                # print(s)
-                if s.is_primary:
+                # print (s)
+                
+                # LAS There are some version funnies with screeninfo and on
+                # ubuntu 24.04.2 only the old version (0.6.7), without the
+                # is_primary attribute, is available. It may have something to
+                # do with support (or lack thereof) for "wayland". So we'll
+                # assume we have the primary if the attribute does not exist.
+                if "is_primary" not in dir(s) or s.is_primary:
                     self.screen_x = s.width
                     self.screen_y = s.height
 
@@ -1556,6 +1562,23 @@ class FlexoClass:
                 ret = '<cntl>'
         return ret
 
+    # LAS Could not see an easy way to meld this into the other tables. This is
+    # used in the ascii-to-flexo tool to emit a human-readable table in
+    # comments.
+    def map_to_readable_ascii (self, flex_code: int, c: str) -> str:
+        dict = {
+            0o10: "sp",
+            0o20: "color change",
+            0o43: "bs",
+            0o45: "tab",
+            0o51: "cr",
+            0o61: "stop",
+            0o77: "nullify"
+            }
+        if flex_code in dict:
+            return dict[flex_code]
+        else:
+            return c
 
     # when "printing" ASCII to flexo, compile a dictionary of flexo codes indexed
     # by ASCII
