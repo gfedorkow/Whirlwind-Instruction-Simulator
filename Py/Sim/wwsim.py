@@ -37,7 +37,8 @@ import re
 import museum_mode_params as mm
 import csv
 import control_panel
-
+from wwdebug import DbgDebugger
+import math
 
 # There can be a source file that contains subroutines that might be called by exec statements specific
 #   to the particular project under simulation.  If the file exists in the current working dir, import it.
@@ -55,6 +56,14 @@ Debug = False
 LnZ = False
 
 flowgraph = None
+
+#
+# UseDebugger is set via the -d (--Debugger) cmd line arg. When true invokes
+# sim in in the interactive debugger.  The Debugger object itself is made once
+# in the sim loop, and retained for re-use across executions of rhe program.
+#
+UseDebugger = False
+Debugger: DbgDebugger = None
 
 def getiolog():
     return ww_io_sim.getiolog()
@@ -170,6 +179,9 @@ class CpuClass:
             ww_io_sim.InOutCheckRegistersClass(cb),
             ww_io_sim.CameraClass(cb),
         ]
+
+        # For code translation e.g. in .print support
+        self.flexo = wwinfra.FlexoClass(cb)
 
         self.cpu_switches = None
 
@@ -330,10 +342,16 @@ class CpuClass:
     # It appears we can do this using no bit twiddling and standard converters. 
     
     def ww_mra_float_to_py (self, ww_x: int, ww_x_prime: int, ww_y: int) -> float:
-        (x, s) = self.wwint_to_py (ww_x)
-        (x_prime, s) = self.wwint_to_py (ww_x_prime)
-        (y, s) = self.wwint_to_py (ww_y)
-        v = ((2**-15)*(x + (2**-15)*x_prime))*2**y
+        try:
+            (x, s) = self.wwint_to_py (ww_x)
+            (x_prime, s) = self.wwint_to_py (ww_x_prime)
+            (y, s) = self.wwint_to_py (ww_y)
+            v = ((2**-15)*(x + (2**-15)*x_prime))*2**y
+        except OverflowError as e:
+            if x < 0:
+                v = -math.inf
+            else:
+                v = math.inf
         return v
 
     # convert an address to a string, adding a label from the symbol table if there is one
@@ -390,16 +408,19 @@ class CpuClass:
             ret = color + string + self.cb.COLOR_default
         return ret
 
+    def get_trace_line (self, pc: int, short_opcode: str, address: int) -> str:
+        s1, cur = self.space_to_cursor("", (" pc:%s:" % self.wwaddr_to_str(pc)), 0, 20)
+        s2, cur = self.space_to_cursor(s1, (" %s %s" % (short_opcode, self.wwaddr_to_str(address))), cur, 25)
+        s3, cur = self.space_to_cursor(s2, (" AC=%s," % (self.wwint_to_str(self._AC))), cur, 23)
+        s4, cur = self.space_to_cursor(s3, (" BR=0o%o," % (self._BReg)), cur, 11)
+        s5, cur = self.space_to_cursor(s4, (" Core@%s=%s" %
+            (self.wwaddr_to_str(address),
+             self.wwint_to_str(CoreMem.rd(address, fix_none=False)))), cur, 20)
+        return s5
 
     def print_cpu_state(self, pc, op_code, short_opcode, description, address):
         if self.cb.TracePC != 0:
-            s1, cur = self.space_to_cursor("", (" pc:%s:" % self.wwaddr_to_str(pc)), 0, 20)
-            s2, cur = self.space_to_cursor(s1, (" %s %s" % (short_opcode, self.wwaddr_to_str(address))), cur, 25)
-            s3, cur = self.space_to_cursor(s2, (" AC=%s," % (self.wwint_to_str(self._AC))), cur, 23)
-            s4, cur = self.space_to_cursor(s3, (" BR=0o%o," % (self._BReg)), cur, 11)
-            s5, cur = self.space_to_cursor(s4, (" Core@%s=%s" %
-                                                (self.wwaddr_to_str(address),
-                                                 self.wwint_to_str(CoreMem.rd(address, fix_none=False)))), cur, 20)
+            s5 = self.get_trace_line (pc, short_opcode, address)
             if self.cb.LongTraceFormat:
                 slt = " AR=%s, BR=%s, SAM=%02oo  nextPC=%s" % \
                 (self.wwint_to_str(self._AReg), self.wwint_to_str(self._BReg), self._SAM, self.wwaddr_to_str(self.PC))
@@ -412,6 +433,51 @@ class CpuClass:
             self.cb.tracelog.append(ww_flow_graph.TraceLogClass(pc, self.wwaddr_to_str(pc, label_only_flag=True),
                                                                 short_opcode, address, self._AC, description))
 
+    # For the debugger we need the instruction and operand, and the current
+    # values of the registers. This is a variant on and combines aspects of
+    # print_cpu_state and run_cycle.
+            
+    def get_dbg_line (self, pc: int) -> str:
+        global CoreMem
+        instruction = CoreMem.rd (pc, fix_none=False) # ?? fix_none?
+        opcode = (instruction >> 11) & 0o37
+        address = instruction & self.cb.WW_ADDR_MASK
+        oplist = self.op_decode[opcode]
+        if self.CommentTab[pc] is not None and len(self.CommentTab[pc]) > 0:
+            description = self.CommentTab[pc]
+        else:
+            description = oplist[2]
+        short_opcode = oplist[1]
+        s5 = self.get_trace_line (pc, short_opcode, address)
+        return s5
+
+    # Needed by debugger
+    def get_reg (self, reg: str) -> int:
+        reg = reg.upper()
+        if reg == "AC":
+            return self._AC
+        elif reg == "BR":
+            return self._BReg
+        elif reg == "AR":
+            return self._AReg
+        elif reg == "SAM":
+            return self._SAM
+        else:
+            return None
+
+    # Another debugger helper, for the "i" (instruction) format
+    def get_inst_str (self, addr: int) -> str:
+        global CoreMem
+        instruction = CoreMem.rd (addr, fix_none=False) # ?? fix_none?
+        opcode = (instruction >> 11) & 0o37
+        address = instruction & self.cb.WW_ADDR_MASK
+        if address in self.SymTab:
+            label = "(" + self.SymTab[address][0] + ")"
+        else:
+            label = ""
+        oplist = self.op_decode[opcode]
+        short_opcode = oplist[1]
+        return "%s 0o%o%s" % (short_opcode, address, label)
 
     # Resolve-Label: special lookup for python statements embedded in ww source
     # The lookup takes a string, converts either decimal or octal, or looks for it in the symtab.
@@ -484,6 +550,9 @@ class CpuClass:
     # New version using tokenizer
 
     def wwprint (self, format_and_args):
+        self.ww_exec_log.raw (self.wwprint_to_str (format_and_args))
+
+    def wwprint_to_str (self, format_and_args) -> str:
         t = wwinfra.WwPrintTokenizer (format_and_args)
         fmtListDone = False
         fmtList = []
@@ -530,7 +599,7 @@ class CpuClass:
                 register_hi = self.cm.rd (addr)
                 register_lo = self.cm.rd (addr + 1)
                 r: float = self.ww_24_6_float_to_py (register_hi, register_lo)
-                output_str += "%f" % r
+                output_str += "{:.8g}".format (r)
             elif fmt == "%fr":
                 # Interpret the bits as a standard ww fraction and return a host float
                 addr = self.rl (argList.pop(0))
@@ -545,24 +614,21 @@ class CpuClass:
                 ww_x_prime = self.cm.rd (addr + 1)
                 ww_y = self.cm.rd (addr + 2)
                 r = self.ww_mra_float_to_py (ww_x, ww_x_prime, ww_y)
-                output_str += "%f" % r
+                output_str += "{:.10g}".format (r)
+            elif fmt == "%fx":
+                # Print flex code as ascii
+                addr = self.rl (argList.pop(0))
+                flex_code: int = self.cm.rd (addr)
+                if flex_code < 0 or flex_code > 63:
+                    flex_ascii = "<flex-code-out-of-range>"
+                else:
+                    flex_ascii: str = self.flexo.code_to_letter (flex_code, show_unprintable = True)
+                output_str += flex_ascii
             else:
                 output_str += fmt
         if argList != []:
-            print ("LAS ", "wwprint: too many args for ", fmtList, argList)
-            return None
-        self.ww_exec_log.raw (output_str)
-
-        # LAS 11/2/24: Commented-out this print as it is no longer needed since
-        # log.raw was added, and the default is to stdout/stderr.
-        #
-        # guy added the print-to-console back on Aug 18. 2024
-        # This needs a bit more thought -- the .print statements in WW programs are there 'cause the WW programmer
-        # wanted them, and probably wanted them in sync with the trace stream.
-        # I think saving them in the log is good for regression testing, but putting them on the console is
-        # good for debug.
-        #  Maybe we should think of a better way to control which messages go where...
-        # print(output_str)
+            self.cb.log.warn (".print: too many args. fmtlist= %s, arglist= %s" % (str (fmtList), str (argList)))
+        return output_str
 
     def run_cycle(self):
         global CoreMem
@@ -1806,12 +1872,13 @@ def poll_sim_io(cpu, cb):
 
 def main_run_sim(args, cb):
     global CoreMem, CommentTab   # should have put this in the CPU Class...
+    global UseDebugger, Debugger
 
     if args.CrtFadeDelay:
         cb.crt_fade_delay_param = args.CrtFadeDelay
         cb.log.info("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
 
-    if args.Quiet:
+    if args.Quiet and not UseDebugger:
         cb.TraceQuiet = True
         cb.log.info("TraceQuiet turned on")
     if args.NoZeroOneTSR:
@@ -1914,6 +1981,26 @@ def main_run_sim(args, cb):
     alarm_state = cb.NO_ALARM
     if cb.panel:
         cb.panel.update_panel(cb, 0, init_PC=cpu.PC)  # I don't think we can miss a mouse clicks on this call
+
+    # LAS
+    if UseDebugger:
+        # Refactoring and hoisting up at least the cpu class is something we should
+        # do. Here I'm straining to avoid it by passing in myriad functions to the
+        # debugger
+        if Debugger is None:
+            Debugger = DbgDebugger()
+        Debugger.reset (CoreMem,
+                        cpu.SymToAddrTab,
+                        cpu.SymTab,
+                        cpu.wwprint_to_str,
+                        cpu.get_dbg_line,
+                        cpu.get_reg,
+                        cpu.get_inst_str)
+
+    # LAS
+    if UseDebugger:
+        Debugger.repl (cpu.PC)
+        
     # the main sim loop is enclosed in a try/except so we can clean up from a keyboard interrupt
     # Mostly this doesn't matter...  but the analog GPIO and SPI libraries need to be closed
     # to avoid an error message on subsequent calls
@@ -2008,6 +2095,12 @@ def main_run_sim(args, cb):
                     print("Midnight Detected; Time to Restart!  New Day = %d" % now_day)
                     alarm_state = cb.NO_ALARM
                     break
+            # LAS
+            if UseDebugger:     # Detect restart cmd from dbg and set alarm state to no_alarm
+                restart = Debugger.repl (cpu.PC)
+                if restart:
+                    alarm_state = cb.QUIT_ALARM
+                    break
 
         # Here Ends The Main Loop
     except KeyboardInterrupt:
@@ -2017,8 +2110,8 @@ def main_run_sim(args, cb):
     end_time = time.time()
     wall_clock_time = end_time - start_time  # time in units of floating point seconds
     if wall_clock_time > 2.0 and sim_cycle > 10:  # don't do the timing calculation if the run was really short
-        sys.stderr.write("Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec\n" %
-                (sim_cycle, cpu.PC, wall_clock_time, 1000000.0 * float(wall_clock_time) / float(sim_cycle)))
+        cb.log.raw("Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec\n" %
+                   (sim_cycle, cpu.PC, wall_clock_time, 1000000.0 * float(wall_clock_time) / float(sim_cycle)))
         if args.Radar:
             print("    elapsed radar time = %4.1f minutes (%4.1f revolutions)" %
                   (radar.elapsed_time / 60.0, radar.antenna_revolutions))
@@ -2069,6 +2162,7 @@ def main_run_sim(args, cb):
 
 def main():
     global BlinkenLightsModule
+    global UseDebugger
     parser = wwinfra.StdArgs().getParser ("Run a Whirlwind Simulation.")
     parser.add_argument("corefile", help="file name of simulation core file")
     parser.add_argument("-t", "--TracePC", help="Trace PC for each instruction", action="store_true")
@@ -2117,13 +2211,18 @@ def main():
                         help="Cycle through states endlessly for museum display", action="store_true")
     parser.add_argument("--MidnightRestart",
                         help="Restart simulation daily at midnight", action="store_true")
+    parser.add_argument("-d", "--Debugger",
+                        help="Start simulation under the debugger", action="store_true")
 
     args = parser.parse_args()
 
+    UseDebugger = args.Debugger
+    quiet = args.Quiet or UseDebugger      # Too noisy in the debugger if not quiet
+    
     # instantiate the class full of constants
     cb = wwinfra.ConstWWbitClass (corefile=args.corefile, get_screen_size = True, args = args)
     wwinfra.theConstWWbitClass = cb
-    cb.log = wwinfra.LogFactory().getLog (quiet=args.Quiet)
+    cb.log = wwinfra.LogFactory().getLog (quiet=quiet)
 
     # Many args are just slightly transformed and stored in the Universal Bit Bucket 'cb'
 
@@ -2158,7 +2257,7 @@ def main():
         cb.crt_fade_delay_param = args.CrtFadeDelay
         cb.log.info("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
 
-    if args.Quiet:
+    if quiet:
         cb.TraceQuiet = True
         cb.log.info("TraceQuiet turned on")
     if args.NoZeroOneTSR:
@@ -2190,11 +2289,11 @@ def main():
     # a click of the red box.
     while True:
         (alarm_state, sim_cycle) = main_run_sim(args, cb)
-        if (alarm_state == cb.QUIT_ALARM) or \
-                (args.Panel == False and alarm_state != cb.NO_ALARM):
-            break
+        if (alarm_state == cb.QUIT_ALARM) or (args.Panel == False and alarm_state != cb.NO_ALARM):
+            print("Ran %d cycles; Used mem=%dMB" % (sim_cycle, psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
+            if not UseDebugger:
+                break
 
-    print("Ran %d cycles; Used mem=%dMB" % (sim_cycle, psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
     sys.exit(alarm_state != cb.NO_ALARM)
 
 

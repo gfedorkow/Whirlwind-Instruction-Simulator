@@ -1,3 +1,4 @@
+#!/bin/bash
 # cd to the dir with this file, to facilitate external control
 thisfile=$0
 cd ${thisfile%/*}/
