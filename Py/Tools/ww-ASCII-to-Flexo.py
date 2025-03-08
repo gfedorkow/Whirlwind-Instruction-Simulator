@@ -45,6 +45,35 @@ def convert_ascii(cb, input_string):
             flexo_codes.append(upper_dict[c])
     return flexo_codes
 
+
+
+
+            
+def format_readable (cb, input_string) -> str:
+    flexo = wwinfra.FlexoClass(cb)
+    mrfcn = flexo.map_to_readable_ascii
+
+    upper_dict = make_ascii_dict(flexo, upper_case=True)
+    lower_dict = make_ascii_dict(flexo, upper_case=False)
+    upper_case = False
+
+    r = ""
+
+    for c in input_string:
+        if c in lower_dict and c in upper_dict:
+            r += "; %06o %s\n" % (lower_dict[c], mrfcn (lower_dict[c], c))
+        elif c in lower_dict:
+            if upper_case == True:
+                r += "; %06o %s\n" % (flexo.FLEXO_LOWER, "shift dn")
+                upper_case = False
+            r += "; %06o %s\n" % (lower_dict[c], mrfcn (lower_dict[c], c))
+        elif c in upper_dict:
+            if upper_case == False:
+                r += "; %06o %s\n" % (flexo.FLEXO_UPPER, "shift up")
+                upper_case = True
+            r += "; %06o %s\n" % (upper_dict[c], mrfcn (upper_dict[c], c))
+    return r
+
 def format_tcodes(input_string, flexo_codes):
     output_str = "; ascii string converted to flexo code:\n; "
     for offset in range(0, len(input_string)):
@@ -73,6 +102,7 @@ def main():
     parser.add_argument("-o", "--OutputFile", type=str, help="File name for Flexo Output")
     parser.add_argument("-b", "--BinaryOut", help="Output Flexo in Binary Format (default is .tcore)", action="store_true")
     parser.add_argument("-q", "--Quiet", help="Suppress run-time message", action="store_true")
+    parser.add_argument("-r", "--Readable", help="Add a section to support human readbility of the translation", action="store_true")
     args = parser.parse_args()
 
     cb = wwinfra.ConstWWbitClass(corefile='help-me', args = args)
@@ -117,6 +147,8 @@ def main():
                 sys.stdout.write(b)
     else:
         output_str = format_tcodes(input_string, flexo_codes)
+        if args.Readable:
+            output_str += "\n;\n;\n" + format_readable (cb, input_string)
 
         if out_fd:
             out_fd.write(output_str)

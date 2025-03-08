@@ -25,14 +25,20 @@
 ; | (Tape T-2134-m8 plus correction tape P-2134-10)
 ; |
 ; | Sheet 1/20
-; | a1 (Read-in) [LAS deleted useless [Section] heading
+; | a1 (Read-in)
 ; |
+		  .jumpto 0o10
+		  .org 0o10
+		  sp a1
+		  .org 0o40
+		  .words 64, 0
+		  .org 0o400
 a1:
           si 128
 1a1:      ao 36a1
 2a1:      rd 2a1
 		  .print "xxxxx 1 rd %ao"
-3a1:      ad a3                ; (l.c. or u.c.) ; [LAS waa ad (a3/193)]
+3a1:      ad a3                ; (l.c. or u.c.) ; [LAS waa ad (a3/1a3)]
           td 8a1
           td 40a4
           td 14a1

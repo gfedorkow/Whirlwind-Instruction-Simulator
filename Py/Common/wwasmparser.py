@@ -1,5 +1,4 @@
 
-
 import os
 import sys
 import traceback
@@ -10,7 +9,7 @@ from enum import Enum
 # the asm log.
 
 class AsmLogFactory:
-    def getLog (self) -> wwinfra.LogClass:
+    def getLog (self) -> wwinfra.AsmLogClass:
         return wwinfra.LogFactory().getLog (isAsmLog = True)
 
 class AsmParseSyntaxError (Exception):
@@ -297,9 +296,15 @@ AsmExprType = Enum ("AsmExprType", ["BinaryPlus", "BinaryMinus",
 AsmExprValueType = Enum ("AsmExprValueType", ["Integer", "NegativeZero", "Fraction",
                                               "String", "List", "Undefined"])
 
+# Needed by debugger, as we need to differentiate between a plain value and an address.
+
+AsmExprValueSubType = Enum ("AsmExprValueSubType", ["Address", "Undefined"])
+
 class AsmExprValue:
-    def __init__ (self, exprValueType: AsmExprValueType, value):
+    def __init__ (self, exprValueType: AsmExprValueType, value,
+                  subType = AsmExprValueSubType.Address):
         self.type = exprValueType
+        self.subType = subType
         self.value = value  # int or float or str or list
     def asString (self) -> str:
         if self.type == AsmExprValueType.List:
@@ -310,9 +315,9 @@ class AsmExprValue:
 # We use a generic function here so that an eval may be done from contexts
 # outside the parser module, without requirng the parser module to import all
 # sorts of extra stuff. This maintains modularity and also helps avoid circular
-# refs, which python really seems to hate. So e.g., in wwasm.new.py tables are
-# built for labels and other vars and we can just pass in the function that
-# accesses those.
+# refs, which python really seems to hate. So e.g., in wwasm.py tables are
+# built for labels and other vars and we just pass those to the AsmExprEnv
+# subclass that support the lookup fcn.
 
 class AsmExprEnv:
     def __init__ (self):
@@ -548,6 +553,17 @@ class AsmParsedLine:
             sys.stdout.flush()
             self.log.error (self.lineNo,
                             "%s at char pos %d%s" % (e, self.tokenizer.pos, self.tokenizer.caratString (self.lineStr, self.tokenizer.pos - 1)))
+            return False
+    # Called from DbgDebugger for command-line processing
+    def parseDbgLine (self) -> bool:
+        try:
+            self.parseDbgInst()
+            return True
+        except AsmParseSyntaxError as e:
+            sys.stdout.flush()
+            self.log.error (self.lineNo,
+                            "%s at char pos %d%s" % (e, self.tokenizer.pos, self.tokenizer.caratString (self.lineStr, self.tokenizer.pos - 1)))
+            return False
     def parsePrefixAddr (self) -> bool:
         errMsg = "Syntax error in prefix address"
         tok = self.gtok()
@@ -620,6 +636,21 @@ class AsmParsedLine:
         elif tok1.tokenType == AsmTokenType.DotPrint or tok1.tokenType == AsmTokenType.DotExec:
             self.opname = "print" if  tok1.tokenType == AsmTokenType.DotPrint else "exec"
             self.operand = AsmExpr (AsmExprType.LiteralString, tok1.tokenStr)
+            return True
+        else:
+            self.ptok (tok1)
+            return False
+    def parseDbgInst (self) -> bool:
+        tok1 = self.gtok()
+        if tok1.tokenType == AsmTokenType.Identifier:
+            tok2 = self.gtok()
+            if tok2.tokenType == AsmTokenType.EndOfString:
+                e = AsmExpr (AsmExprType.LiteralString, "")
+            else:
+                self.ptok (tok2)
+                e = self.parseExpr()
+            self.operand = e
+            self.opname = tok1.tokenStr
             return True
         else:
             self.ptok (tok1)
