@@ -31,14 +31,14 @@
 		  .org 0o10
 		  sp a1
 		  .org 0o40
-		  .words 64, 0
+comp_code:	  .words 0o400 - comp_code, 0
 		  .org 0o400
 a1:
           si 128
 1a1:      ao 36a1
 2a1:      rd 2a1
 		  .print "xxxxx 1 rd %ao"
-3a1:      ad a3                ; (l.c. or u.c.) ; [LAS waa ad (a3/1a3)]
+3a1:      ad a3                ; (l.c. or u.c.) ; [LAS was ad (a3/1a3)]
           td 8a1
           td 40a4
           td 14a1
@@ -47,13 +47,13 @@ a1:
           su 4a3               ; -| Is symbol
 10a1:     cp 12a1              ; -| a number?
 11a1:     sp 38a4              ; ; [LAS was sp (38a4/58a4)]
-12a1:     ca 33a3              ; 31a3 is the normal mode ; [LAS was ca (33a3/31a3)]
+12a1:     ca 31a3              ; 31a3 is the normal mode ; [LAS was ca (33a3/31a3)]
           td 11a1
 14a1:     ca 0
           su 0                 ; (Is symbol a period?)
           cp 1a1
-          su 54a3              ; -| l.c. no.[?] or
-          cp 45a4              ; -| exponent?
+          su 54a3              ; -| l.c. no. or exponent?
+          cp 45a4              ; -| 
           ca 43a3              ; -| set to interpret
           td 60a4              ;  | digit as an
           cs 62a4              ; -| exponent
@@ -70,7 +70,7 @@ a1:
           td 34a1
 ; | Sheet 2/20
 ; | a1
-		  .print "mra a1----- %fm", mra
+;		  .print "mra a1----- %fm", mra
 32a1:     sp ax               ; (programmed arithmetic
           mr 4a7               ; (i.e., by 10) ; [LAS was "mr 497" -- transcription error]
 34a1:     ad 0
@@ -109,7 +109,7 @@ a2:
           ad 56a10             ;  |
           sp 8a6               ; -|
 18a2:     sp ax               ; -| START
-          sp a1                ; -|	   ; [LAS was sp 32]
+          sp comp_code                ; -|	   ; [LAS was sp 32] [LAS was sp a1, changed to go to start of compiled code]
 ; |
 ; | Sheet 4/20
 ; | a3 (Lower case symbols)
@@ -120,7 +120,7 @@ a3:
           sp 50a4              ; e
           .word 9              ; 8
 4a3:      sp 0
-          .word 0              ; 1 ; [LAS was blank]
+          .word 0              ; | ; [LAS was blank][Hard to read but looking up flex code it's vertical-bar]
           sp 50a4              ; a
           .word 4              ; 3
           sp 2a1               ; space
@@ -135,7 +135,7 @@ a3:
 17a3:     .word 0              ; . [period] ; [LAS was "(p 0/sp 8a2)"]
           sp 50a4              ; d
           .word 6              ; 5
-          .word 50a4           ; r
+		  sp 50a4           ; r ; [LAS was .word 50a4. Transcription error.]
 21a3:     .word 2              ; 1
           sp 50a4              ; j
           .word 8              ; 7
@@ -236,11 +236,11 @@ a4:
           sp 2a1               ; carr. return
 42a4:     ca 53a3              ; Y (not used)
           sp 1a4
-44a4:     sp a2                ; P ; [LAS was (sp a2/sp a2 + 2)]
+44a4:     sp a2                ; P ; [LAS was (sp a2/sp 2a2)]
 45a4:     ca 39a3
           td 60a4              ; Q (not used)
           cs 62a3
-          sp 23a1              ; O (letter) (not used)
+          sp 22a1              ; O (letter) (not used)  ; [LAS was 23a1. Transcription error.]
           sp 2a1               ; stop
 50a4:     ad 55a3              ; B (not used) ; [LAS was (55a3)]
 51a4:     sp 33a4             ; ; [LAS was sp (28a10/33r) -- had it at 28a10 but seems wrong so changed it]
@@ -251,7 +251,7 @@ a4:
           sp 10a13             ; M (not used)
           sp 42a4              ; shift to u.c.
 58a4:     ca 33a3              ; X (not used)
-          td 10a1
+          td 11a1 			   	 ; ; [LAS was td 10a1.  Transcription error -- cross-out in hand-listing]
 60a4:     sp 0                 ; V (not used)
           sp 0a4               ; shift to l.c.
 62a4:     .word 11             ; 0 (zero exp.)
@@ -293,7 +293,7 @@ a6:
           ca 51a3              ;  | store "+x"
           sp 9a8               ; -|
           sp 19a6              ; -| compute and store the
-8a6:      sp 9a8               ; -| exponent +- [?] n
+8a6:      sp 9a8               ; -| exponent +-n
 9a6:      sp ax                ; -|
 10a6:     ca a7                ;  | reset MRA
           sp ax                ;  | and various
@@ -304,9 +304,9 @@ a6:
           td 36a1              ; -|
 17a6:     sp 38a4              ; ; [LAS was sp (38a4/14a9)]
 18a6:     sp 15a13             ; "sp exp"
-19a6:     td 25a6
+19a6:     ta 25a6				; ; [LAS was td 25a6. Transcription error.]
           ca 4ax               ; -|
-          td 24a6              ;  | Form [?] +- [?] n, where
+          td 24a6              ;  | Form +-n, where
 22a6:     ca 2ax               ;  | n is in MRA in ; [LAS was (ca 2ax/cs 2ax)]
           srh 15               ;  | (24,6) form ; [LAS was sr*]
 24a6:     slr 0                ; -|
@@ -317,7 +317,8 @@ a6:
 ; |
 a7:
           .word 0.00000              ; -| 0 ; [LAS added p to this section]
-          .word 1.47777              ; -|
+;          .word 1.47777              ; -|
+          .word 0.00000              ; -|
 2a7:      .word 0.40000              ; -| 1
           .word 0.01000              ; -|
 4a7:      .word 0.50000              ; -| 10
@@ -337,7 +338,7 @@ a8:
 7a8:      sp 0                 ;  |
 8a8:      .word 197            ; -| (last address used) ; [LAS was just "+197", no op or pseudo-op]
 9a8:      ta 17a8              ; -|
-10a8:     ts 32                ;  | Store C(AC) in
+10a8:     ts comp_code                ;  | Store C(AC) in ; [LAS was ts 32. Replaced with comp_code. Note this inst gets ao'ed]
           ao 10a8              ;  | next available
           su 47a3              ;  | program address.
           su 8a8               ;  |
@@ -345,7 +346,7 @@ a8:
 15a8:     ck 0                 ;  |
 16a8:     ao 18a8              ;  |
 17a8:     sp 0                 ;  |
-18a8:     .word 31             ; -| (last occupied program address) ; [LAS was "(p 31)"]
+18a8:     .word comp_code - 1             ; -| (last occupied program address) ; [LAS was "(p 31)"] [LAS was .word 31. Replaced with comp_code - 1]
 ; |
 ; | Sheet 12/20
 ; | a9 (division, etc.)
@@ -415,7 +416,7 @@ a10:
           sp 18a9
 23a10:    ca 58a10
           td 51a4
-          td 51a4
+          ca 58a4 ; ; [LAS was td 51a4. Transcription error.]
           td 12a1
           sp 2a1               ; ; [LAS was sp (2a1/49r)]
 28a10:    ca 59a10
@@ -460,10 +461,10 @@ a10:
           .word 0              ;  | parenthesis routines in forming
           .word 0              ;  | and storing sp orders
           .word 0              ;  |
-          .word 0              ;  | [These are notated on the coding sheet as: ]
-68a10:    .word 0              ;  | [   63-67  +0                              ]
-          .word 0              ;  | [   68-72  +0                              ]
-          .word 0              ;  | [   73-77  +0                              ]
+          .word 0              ;  | ; [These are notated on the coding sheet as: ]
+68a10:    .word 0              ;  | ; [   63-67  +0                              ]
+          .word 0              ;  | ; [   68-72  +0                              ]
+          .word 0              ;  | ; [   73-77  +0                              ]
           .word 0              ;  |
           .word 0              ;  |
 73a10:    .word 0              ;  |
@@ -553,7 +554,7 @@ a13:
 5a13:     ta 9a13              ; plus
           ad 41a13
           ts 41a13
-          ca 207
+          ca 2a7	; ; [LAS was ca 207. Transcription error.]
 9a13:     sp 0
 10a13:    ta 14a13             ; minus
           ad 41a13
@@ -600,7 +601,9 @@ a15:
           td 16a15
           td 8a15
           cp 9a15              ; -| If next symbol is an sp order carry it out. 
-          sp ax                ;  | Since symbols to be printed are stored as
+          si 0                 ;  | Since symbols to be printed are stored as ; [LAS was sp ax. Would then crash due to following sp 0.
+                               ;  |                                           ; Not sure how this loop is supposed to be terminated,
+                               ;  |                                           ; but the calc is done so we'll halt.]
 8a15:     sp 0                 ; -| "mr x,mr y," etc. the "mr" actuates this xxx [?]
 9a15:     su a3                ; -|
           clc 10               ;  | form and print first letter
@@ -610,15 +613,14 @@ a15:
 14a15:    rc 14a15
           sp ax
 16a15:    ca 0                 ;                -| print number
-;          sp 222               ; (24,6) print    |			; [LAS check]
-		   si 0               ; ; [LAS we don't have the print routine yet]
+		  sp float_print                ; (24,6) print    |          ; [LAS Was sp 222. We don't have the original print routine]
           sp 1a15              ;   routine      -|
 ; |
 ; | Sheet 20/20
 ; | a16 (used in a2)
 a16:
           ta 10a16
-          ca 409               ; -| set g[?] to sp 2a1 and reset
+          ca 4a9               ; -| set , to sp 2a1 and reset  ; [LAS was ca 409. Transcription error.]
           ex 25a3              ;  |
           ex 4a9               ; -|
           ca 12a16             ; -| set P to sp 2a2 (and reset)
@@ -647,6 +649,17 @@ a14:
           .word 0
           .word 0
           .word 0
+
+; [LAS Added this section, since we don't have the original 24,6 (or 30,15) float
+;  printer. This is modeled after the 30,0 double-precision fixed-point
+;  printer found in Subroutines.pdf, OT 103.10t, pdf page 22.]
+
+float_print: ta fltprt_rtn
+			 sp ax ; Come out of spax and resume std ww operations
+			 .print "LZ output: %fm", mra
+			 sp ax ; Return control to the calling spax
+fltprt_rtn:	 sp 0  ; Return to caller (interpreted)
+
 ; | 
 ; | Miscellaneous [Not sure about this section needs proofing]
 ; | 
@@ -655,7 +668,7 @@ a14:
 ; | 211 = 0a14 and also "1t" in print routine. Equations are not allowed
 ; |       0 as a number, thus 0a14 is not used in a meaningful way.
 ; | 
-; | 212-221 = a14 - 10a14: storage for sp orders to initial address of numbered equations (a
+; | 212-221 = 1a14 - 10a14: storage for sp orders to initial address of numbered equations (a
 ; |       maximum of 10 is allowed)
 ; | 
 ; | 222 (24,6) print routine

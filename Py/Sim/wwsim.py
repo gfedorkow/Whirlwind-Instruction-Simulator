@@ -465,8 +465,8 @@ class CpuClass:
         else:
             return None
 
-    # Another debugger helper, for the "i" (instruction) format
-    def get_inst_str (self, addr: int) -> str:
+    # Another debugger helper, for the "i" (instruction) format and other purposes
+    def get_inst_info (self, addr: int) -> (int, str, int, str):
         global CoreMem
         instruction = CoreMem.rd (addr, fix_none=False) # ?? fix_none?
         opcode = (instruction >> 11) & 0o37
@@ -477,7 +477,7 @@ class CpuClass:
             label = ""
         oplist = self.op_decode[opcode]
         short_opcode = oplist[1]
-        return "%s 0o%o%s" % (short_opcode, address, label)
+        return (opcode, short_opcode, address, label)
 
     # Resolve-Label: special lookup for python statements embedded in ww source
     # The lookup takes a string, converts either decimal or octal, or looks for it in the symtab.
@@ -1995,7 +1995,7 @@ def main_run_sim(args, cb):
                         cpu.wwprint_to_str,
                         cpu.get_dbg_line,
                         cpu.get_reg,
-                        cpu.get_inst_str)
+                        cpu.get_inst_info)
 
     # LAS
     if UseDebugger:

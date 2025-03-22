@@ -583,8 +583,9 @@ literal-digit-seq												Decimal inreger
 	* write listing
 	* Button up file handling
 		- Except: Default output for core as stdout?
-	- Parens in expr print
+	* Parens in expr print
 			Actually needed! crt-test.ww has (a-b)/3. (was a-b/3 and old asm did not follow std precedence.
+			[Fixed with new expr type ParenWrapper; just a pass-through in eval, used only in listing.]
 	* Related to last comment looks like bug in old asm forming one's-comp negative numbers. See crt-test.acore versus crt-test.n.ncore
 	* Quotes in strings
 	* .exec doesn't list properly -- strings in this case don't want quotes
@@ -682,19 +683,43 @@ literal-digit-seq												Decimal inreger
 	- Dbg bug in printing AC and prob other regs -- wrong signs. Trying printing neg number.
 	- Dbg bug in rs if do rs before running.
 	- Dbg possible enhs: watch-for-write (addr); allow a mem loc to be set
+		[Watch-write done.]
+	* Dbg: added tb (traceback)
+	* Dbg: Added bp disable/enable
+	* Dbg: made "p" print single locs and blocks
 	- Send Knuth info we have for any insights
-
-
-
+	- Added -r (readable section) to flex converter
+	x Made ! be the stop char -- but not really needed
+		[Backed out -- not needed.]
+	- Added - for stdin to flex convertor. That and the same additionm to
+	  sim allows here-docs and thus easier testing of L&Z.
+	- sim accepts - for std in for papter tape file, so can easly run tests
+	- Float (actually 30,0) printer -- what's the qp instruction?
+	- Issues remaining with L&Z:
+		- Parens not compleletly working
+		- Divide seems broken overall (more than just the inaccurate spax divide)
+		- Float printer, flexo device
+	* Fixed precedence of | and &
+	- Question about one's-comp at asm level -- I'm not in favor
+	- Add debugger section to doc
+	- Update doc with new asm comment-fmt options
 
 	- Get "everything" into git: tape images, images on code, etc.
 		Did sizing run see below marked 1/1/25
-	- LAS: work on L&Z? Maybe just use new translator and asm?
+	* LAS: work on L&Z? Maybe just use new translator and asm?
 	- LAS: disasm, C-ish compiler, ...? Where are we wrt to "musesum-ness"
 		- One goal is historical research and perhaps a paper on the
 		  code we've found and resurrected.
 		- Another may be museum exhibits -- esp. hardware currently under dev.
-
+	- How can we characterize the kind of code that was written for ww?
+		What about SAGE? Same instruction set? The whole interpretive
+		"VM" thing seems to have been pushed hard in the MIT
+		setting. What about in practice, wherever that might have
+		been?
+	- Put together a set of graphics windows that represent the set of
+		i/o devices, e.g., a window for the flex printer, perhaps
+		another for paper tape, etc.  These would be similar to the
+		scope window.
 
 
 1/12/25
@@ -885,136 +910,40 @@ too noisy when using the debugger.
 
 The help output is:
 
-p   <expr> [, format]   where format = o: octal, d: decimal, fr: fraction, fl: 24,6 float, fm: 30,15 float, i: instruction
-        print an address and its contents, or just the value if a register is specfied
-pb  <addr>, <nwords> [, format]
-        print a block of <nwords> starting at <addr>
-r   run program from current pc
-s   step program one instruction
-rs  restart program
-b   <addr>1,...,<addr>N
-        define a breakpoint for each given address. Prints breakpoint id and corresponding address
-bd  <bkptid>1,...,<bkptid>N
-        delete breakpoint defined by each given id
-bl  list breakpoints
-h   Print help
-quit    Exit debugger and simulator
+dbg 10> h
+p expr [, block-len] [, format]
+          Format = o: octal, d: decimal, fr: fraction, fl: 24,6 float, fm: 30,15 float, fx: flexo-to-ascii, i: instruction.
+          Print an address or block and its contents, or just the value if a register is specfied.
+          Default format is octal.
+r
+          Run program from current pc
+s
+          Step program one instruction. Typing carriage-return does this too.
+rs
+          Restart program
+b addr1,...,addrN
+          Define a breakpoint for each given address. Prints id and corresponding address.
+bd id1,...,idN
+          Delete breakpoint or watchpoint defined by each given id.
+bdis id1,...,idN
+          Disable breakpoint or watchpoint defined by each given id.
+ben id1,...,idN
+          Enable breakpoint or watchpoint defined by each given id.
+bl
+          List breakpoints and watchpoints.
+tb [n-insts]
+          Traceback: history of instructions, latest at the bottom.
+          Prints n-insts; default (and max) is 100.
+wwr [addr1,...,addrN]
+          Watch for memory write. When any write instruction (ts, td, ta, ao, ex)
+          is executed which writes at one of the given addresses, break.
+          Prints watchpoint id and corresponding address.
+h
+          Print help
+quit
+          Exit debugger and simulator
+dbg 10> 
 
-The help output should be largely self-explanatory. Following is a
-transcript of a debugging run. I added the line numbers in this
-write-up, with some notes following.b
-
- 1   $ python $sim -d las-float-lib.acore
- 2   start at 0o40
- 3    pc:0o0040:          SP 0o0041(notes)         AC=0o000000,           BR=0o0,    Core@0o0041(notes)=0o075524
- 4   dbg 40> b ax
- 5   0 0o1524(ax)
- 6   dbg 40> b loop
- 7   1 0o45(loop)
- 8   dbg 40> bl
- 9   0 0o1524(ax)
-10   1 0o45(loop)
-11   dbg 40> r
-12    pc:0o1524(ax):      TA 0o2007(exec_inst)     AC=0o000000,           BR=0o0,    Core@0o2007(exec_inst)=0o100000(-0o77777)
-13    dbg 1524> r
-14    pc:0o0045(loop):    CA 0o0141(loopcnt)       AC=0o000001,           BR=0o0,    Core@0o0141(loopcnt)=0o000031
-15   dbg 45> p mra,fm
-16   0o1526(mra) = 220
-17   dbg 45> r
-18    pc:0o1524(ax):      TA 0o2007(exec_inst)     AC=0o000030,           BR=0o0,    Core@0o2007(exec_inst)=0o101524(-0o76253)
-19   dbg 1524> r
-20   xxxxxxxxxxxx 24 233.08189
-21    pc:0o0045(loop):    CA 0o0141(loopcnt)       AC=0o000001,           BR=0o0,    Core@0o0141(loopcnt)=0o000030
-22   dbg 45> p mra,fm
-23   0o1526(mra) = 233.0818939
-24   dbg 45> p t,fl
-25   0o123(t) = 233.08189
-26   dbg 45> pb mra,3
-27   0o1526(mra):
-28     0o1526 = 0o72212
-29     0o1527 = 0o36700
-30     0o1530 = 0o10
-31   dbg 45> pb mra,3,d
-32   0d854(mra):
-33     0d854 = 29834
-34     0d855 = 15808
-35     0d856 = 8
-36   dbg 45> r
-37    pc:0o1524(ax):      TA 0o2007(exec_inst)     AC=0o000027,           BR=0o0,    Core@0o2007(exec_inst)=0o101524(-0o76253)
-38   dbg 1524> p AR
-39   AR = 52
-40   dbg 1524> pb AR,4,i
-41   0o52(AR):
-42     0o52 = CA 0o123(t)
-43     0o53 = MR 0o137(semitone)
-44     0o54 = TS 0o123(t)
-45     0o55 = SP 0o1524(ax)
-46   dbg 1524> r
-47   xxxxxxxxxxxx 23 246.94168
-48    pc:0o0045(loop):    CA 0o0141(loopcnt)       AC=0o000001,           BR=0o0,    Core@0o0141(loopcnt)=0o000027
-49   dbg 45> bl
-50   0 0o1524(ax)
-51   1 0o45(loop)
-52   dbg 45> bd 0,1
-53   dbg 45> r
-54   xxxxxxxxxxxx 22 261.62561
-55   xxxxxxxxxxxx 21 277.18268
-56   xxxxxxxxxxxx 20 293.66483
-57   xxxxxxxxxxxx 19 311.12704
-58   xxxxxxxxxxxx 18 329.62762
-59   xxxxxxxxxxxx 17 349.22833
-60   xxxxxxxxxxxx 16 369.99454
-61   xxxxxxxxxxxx 15 391.99557
-62   xxxxxxxxxxxx 14 415.30487
-63   xxxxxxxxxxxx 13 440.00021
-64   xxxxxxxxxxxx 12 466.164
-65   xxxxxxxxxxxx 11 493.88358
-66   xxxxxxxxxxxx 10 523.25146
-67   xxxxxxxxxxxx 9 554.36566
-68   xxxxxxxxxxxx 8 587.32996
-69   xxxxxxxxxxxx 7 622.25446
-70   xxxxxxxxxxxx 6 659.25568
-71   xxxxxxxxxxxx 5 698.45709
-72   xxxxxxxxxxxx 4 739.98956
-73   xxxxxxxxxxxx 3 783.99164
-74   xxxxxxxxxxxx 2 830.61023
-75   xxxxxxxxxxxx 1 880.00092
-76   Halt Instruction!  (Code=0) at pc=0114
-77   Alarm 'Program Halt' (5) at PC=0o114 (0d76)
-78   Total cycles = 4252, last PC=0o115, wall_clock_time=121 sec, avg time per cycle = 28614.4 usec
-79   
-80   Ran 4252 cycles; Used mem=47MB
-81   start at 0o40
-82    pc:0o0040:          SP 0o0041(notes)         AC=0o000000,           BR=0o0,    Core@0o0041(notes)=0o075524
-83   dbg 40> quit
-84   $
-
-
-Notes on the transcript:
-
-Line 12: First breakpoint hit, at ax. The instruction line is shown
-	before execution. The registers and memory values shown are the
-	current values at that point. Note that .print and .exec are not
-	shown, and are not executed until the next step or run. Changing
-	this is a possible enhancement, i.e., making .exec and .print
-	appear as "real" instructions to the debugger.
-
-Line 22: Print the mra as a 30,15 float.
-
-Line 26: Print the mra as an octal block of 3 words.
-
-Line 31: Same only decimal.
-
-Line 38: Registers can be printed via their built-in names AC, AR, BR,
-	and SAM (lower case also allowed). I don't yet account for name
-	conflicts.
-
-Line 40: Print a block as instructions. Useful to see what code has
-	been modified. In this case we're seeing the "virtual
-	instructions" to be picked up by the float lib.
-
-Line 49: List the breakpoints. The next command then deletes them, then
-	we run the program to completion.
 
 Issues/Notes:
 
@@ -1031,10 +960,6 @@ Issues/Notes:
   executed. This is something we can potentially fix, i.e., these would
   be treated as executable statements by the debugger.
 
-- I could potentially combine p and pb into one command, by checking
-  the fields and ascertaining whether they're numbers or format
-  strings.
-
 - In the sim code, I added a few "helper functions" to pass to the
   debugger, to get info from the sim. We should abstract out at least
   the Cpu class so I don't need all those functions, so that is on the
@@ -1046,3 +971,62 @@ Issues/Notes:
 - From an implementation standpoint, this is a separate module, with
   an interface class for the sim to initiate control. We are thus be
   able to avoid lots of symbol contamination in the sim itself.
+
+
+Notes to Knuth
+==============
+
+(Combined Larry and Guy letter)
+
+Greetings Dr Knuth,
+
+  My colleague Larry Stabile and I have been working in conjunction
+  with the Computer History Museum and the MIT Museum to restore to
+  operation software from the 1950's Whirlwind computer built at MIT.
+  You can see some of this work at
+  https://ieeexplore.ieee.org/document/9312479
+
+  Recently, we came across a copy of Laning and Zierler's algebraic
+  interpreter, along with your notes analyzing operation of the
+  code. After much analysis, transcription, and debugging, we've been
+  able to get the code to execute in simulation, evaluating a few
+  simple expressions. We were helped immensely by your detailed notes
+  and markup of the hand-written listing. There's lots more to do to
+  validate some of the less-traveled parts of the program, but it's
+  certainly showing signs of life.
+
+  Your notes point out a bug in the code, that a = -b comes out as a =
+  1-b. This bug is present in the code we ported. You mentioned "See
+  Laning's letter." We cannot find this letter; any insight you may
+  have into this will be greatly appreciated.
+
+  The code overall is very inventive and effectively defines an
+  interpretive virtual machine of ww instructions; primarily this
+  supports fundamental floating point operations, but it's also used
+  to support higher-level operations like exponentiation by an
+  integer, within the L&Z system. This seems to us an extraordinary
+  leap early in the history of computers.
+
+  This effort has also triggered an interest in learning more about
+  the context and impact of L&Z's work.  Obviously you thought it was
+  important enough at one point to dig into it at some depth.  Do you
+  recall why, or if you published anything on your findings?
+
+  I know that there has been some debate over L&Z's impact on Fortran,
+  with J Backus first saying that Fortran had been influenced by L&Z,
+  then after a more careful study of the timelines, revising the
+  opinion to say he couldn't find a specific example where L&Z had
+  influenced early Fortran.  I am not surprised that the actual
+  interactions were hard to disentangle years later.
+
+  But I wonder if you were left yourself with some impression of the
+  reach of L&Z's work...  I believe that Hal Laning himself refined
+  the ideas for years on the Apollo Guidance Computer project, but do
+  you know if the original L&Z work had impact outside of MIT?
+
+  Finally, in looking at your own notes on the program, I have to
+  assume, that given the dates, you would never have seen the program
+  actually working...  That, coupled with an unusual instruction set,
+  must have made the paper analysis of the code a very challenging
+  undertaking!
+

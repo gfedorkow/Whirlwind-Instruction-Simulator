@@ -115,7 +115,7 @@ def main():
     if args.InputFile:
         fd = None
         try:
-            fd = open(args.InputFile, "r")
+            fd = open(args.InputFile, "r") if args.InputFile != "-" else sys.stdin
         except IOError:
             cb.log.fatal("Can't open input file %s" % args.InputFile)
 
