@@ -155,7 +155,7 @@
 
 
                                   ; the count for table length should be off-by-one to match WW the loop-count mechanism
-@0167:177767             cdl_len: .word corner_display_list - cdl_len / 3 + 1; compute negative of table length by subtracting start from finish @@ReadBy a0102
+@0167:177767             cdl_len: .word (corner_display_list - cdl_len) / 3 + 1; compute negative of table length by subtracting start from finish @@ReadBy a0102
 
                                   ;;;;;;;;;;;;;  Multi-Segment Test ;;;;;;;;;;;
                                   ; This test draws a series of horizontal, max-length vectors across the screen, each offset upwards by a small amount,

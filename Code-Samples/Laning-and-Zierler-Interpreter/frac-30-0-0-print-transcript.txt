@@ -1,0 +1,107 @@
+
+
+
+
+
+
+
+		section fp
+	0	ta 37r
+	1	sp ax	Resume ordinary ww operation
+	2	ca 3ax	-|
+	3	ta 2t	 |- Store C(mra) in 1t and 2t
+	4	ca 2ax	 |
+58r-->	5	ts 1t	-|
+54r-->	6	mr 2t	Do 1t and 2t agree in sign?
+	7	cp 38r
+	8	ca 1t	-|
+	9	cp 12r	 |
+	10	ca 74r	 |
+	11	sp 13r	 |- Sense and print algebraic sign of C(mra) followed by a decimal point
+9r-->	12	ca 75r	 |
+?r-->	13	qp 134sl	 |
+	14	qp 128sl	-|
+|
+	15	ca 61r	-|- Set up digit counter
+	16	ts 4t	-|
+|
+35r-->	17	cm 1t	-|
+	18	mh 62r	 |	 
+	19	ts 3t	 |
+	20	sl 15	 |
+	21	ts 1t	 |- Multiply C(1t,2t)by p10
+	22	cm 2t	 |
+	23	mh 62r	 |
+	24	ts 2t	 |
+	25	sl 15	 |
+	26	ex 2t	 |
+	27	sa 1t	 |
+	28	ts 1t	-|
+|
+	29	ca 3t	-|
+	30	ad 63r	 |- Set up entry into table
+	31	td 32r	-|
+|
+(31r)	32	ca 0	-|- Print a single digit
+	33	qp 128sl	-|
+
+	34	ao 4t	-|- Have enough digits been printed?
+	35	cp 17r	-|
+
+	36	sp ax	-|- Return control to int. subroutine
+(0r)	37	sp (0)	-|
+
+7r-->	38	cm 1t	-|
+	39	su 0	 |- Is C(1t) != 0?
+	40	cp 57r	-|
+
+	41	cm 2t	-|
+	42	su 0	 |- Is C(2t) != 0?
+	43	cp 51r	-|
+
+	44	su 60r	-|
+	45	ad 59r	 |- Form 1 - |C(2t)|
+	46	ts 2t	-|
+
+	47	ca 1t	-|- Is C(1t) pos.?
+	48	cp 55r	-|
+
+	49	su 60r	-|- Form C(1t) - 2^-15
+	50	ts 1t	-|
+
+43r-->	51	cs 2t	-|- Complement C(2t)
+	52	rs 2t	-|
+
+	53	ca 1t	-|- Re-enter sign agreement
+	54	sp 6r	-|
+
+48r-->	55	ao 1t
+	56	sp 9r
+40r-->	57	cs 1t
+	58	sp 5r
+	59	ca 0	; [59-73 are notated in Subroutines.pdf with no spaces, e.g., ca0, p1]
+	60	p 1
+	61	n1a2	v2 ; [need to track down this notation]
+	62	p 10
+	63	p 64r	, ; [I think comma]
+	64	p 45	0 Table
+	65	p 36	1
+	66	p 39	2
+	67	p 3	3
+	68	p 21	4
+	69	p 33	5
+	70	p 43	6
+	71	p 15	7
+	72	p 13	8
+	73	p 49	9
+	74	0.07143	+.
+	75	0.07107	-.
+
+
+
+
+;; Local Variables:
+;; eval: (setq-local default-tab-width 20)
+;; eval: (setq-local tab-width 20)
+;; eval: (setq-local tab-stop-list '(20 40 60))
+;; End:
