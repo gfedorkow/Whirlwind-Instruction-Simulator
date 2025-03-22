@@ -16,10 +16,16 @@
 
              sp notes
 
+			 ; This test loops through and prints musical notes
+			 ; starting with a semitone above A-220 and ending at
+			 ; A-880.  Also sp within the float lib is tested via the
+			 ; jump to skip.
+
       notes:
              sp ax
              ca a220
              ts t
+			 ts t1
              sp ax
        loop:
              ca loopcnt
@@ -29,7 +35,9 @@
              sp ax
              ca t
              mr semitone
-             ts t
+			 sp skip
+			 ts t1
+skip:        ts t
              sp ax
              .print "xxxxxxxxxxxx %d %fl", loopcnt, t
              sp loop
@@ -79,6 +87,7 @@
           y: .float +0.25, 0
           z: .float +0.1416595, 1     ; This value breaks dv when divided into float1
           t: .float 0, 0
+          t1: .float 0, 0
           u: .float +0.3141593, 1
           v: .float +0.2718282, 1
        a220: .float +0.220, 3
@@ -130,7 +139,8 @@
              ; vx2/pk: k = separation in storage of two registers of number
              ; vx/pN: N = address in storare of initial register of this subroutine
 
-             .org 852
+             ; .org 852
+			 .org 0o2000
 
          ax: ta exec_inst             ; Set address of 1st instruction to be interpreted ; from Enter
              sp exec_inst
@@ -153,24 +163,17 @@
              sp r07                   ; "cm"                                             ; from 196r-->
         r14: .word 0                  ;  Temporary digits storage                        ; (170r)
 
-;             .print "5 r03=%o AC=0o%ao", r03
         r15: sa r03                   ; -|- Add two minor products                       ; from 24r
              ts r03                   ; -|
-;             .print "6 r02=%o r03=%o", r02, r03
 
         r17: ca 0                     ; -|- Store overflow
              ex tmp                   ; -|
 
-;             .print "8 r02=%o AC=0o%ao", r02
              mh r02                   ; Form major product
-;            .print "7 r02=%o AC=0o%ao BR=0o%bo", r02
              sp r158
-;             .print "1 r02=%o r03=%o AC=%ao", r02, r03
         r21: mr r02                   ; "mr" Form two                                    ; from 49r9,196r
-;             .print "4 AC=0o%ao"
              ex r03                   ; minor products
              mr tmp
-;             .print "2 tmp=%o AC=0o%ao", tmp
              sp r15
              ex tmp                   ; "dv"                                             ; from 196r-->
              ts r97
@@ -193,9 +196,7 @@
 
              mh r97                   ; -|
              su r72                   ;  |
-;             .print "xxx 11 %ao %bo"
              slh 15                   ;  |
-;             .print "10 %ao %bo"
                                       ;             su r17                               ;  |- Form (2**-2/x**2)' (Use Euclid's algorithm)  ; [LAS Looks like this should say (2**-2/x2)' -- Uses remainder arith, hence the Euclid
                                       ;  |                                               ; ref, but broken. The use of r17 is highly suspicious, as it's the opcode of an instruction.]
              sp floathack
@@ -374,9 +375,7 @@
        r177: ts r04                   ; -|                                               ; 108r->
 
   next_inst: ao exec_inst             ; increase address                                 ; [LAS was transcription error ao r197]
-;             .print "mra intermediate------- %fm", mra
   exec_inst: ca 0                     ; Pick up next instruction
-
              ts r97                   ; -|
              td r56                   ;  |
              td r189                  ;  |- Store instruction and digits
@@ -403,7 +402,6 @@
 
        r199: ad r50                   ;                                                  ; from 70r-->
              cp exec_inst             ; Does address equal ax?
-;             .print "mra result------- %fm", mra			 
        r201: sp 0                     ; Return to register following sp ax               ; (66r)
 
        r202: ca r108                  ; -|- Produce overflow alarm                       ; from 90r

@@ -213,15 +213,16 @@ AsmParsedLine:
     opname= ca 
     comment=  
     auto-comment= 
-   BinaryBitAnd
-      Variable qwert
-      BinaryBitOr
-         BinaryPlus
-            Variable poiuyt
-            LiteralDigits 2
-         LiteralDigits 57
+   BinaryBitOr
+      BinaryBitAnd
+         Variable qwert
+         ParenWrapper
+            BinaryPlus
+               Variable poiuyt
+               LiteralDigits 2
+      LiteralDigits 57
 Eval:
-    AsmExprValueType.Integer 40
+    AsmExprValueType.Integer 57
 
 
 AsmParsedLine:
@@ -231,16 +232,16 @@ AsmParsedLine:
     opname= sp 
     comment=  
     auto-comment= 
-   BinaryBitAnd
-      UnaryZeroOh
-         LiteralDigits 177
-      BinaryBitOr
+   BinaryBitOr
+      BinaryBitAnd
+         UnaryZeroOh
+            LiteralDigits 177
          UnaryZeroOh
             LiteralDigits 077
-         UnaryZeroOh
-            LiteralDigits 1000
+      UnaryZeroOh
+         LiteralDigits 1000
 Eval:
-    AsmExprValueType.Integer 63
+    AsmExprValueType.Integer 575
 
 
 AsmParsedLine:

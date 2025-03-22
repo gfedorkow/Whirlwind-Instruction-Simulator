@@ -7,8 +7,7 @@
     sp "abc"
     .org 0o177777
     .org "xyz"
-    .flexl "a"
-    .flexh "pqr"
+    .flexl 42
     .dbwgt x, "blah"
 x:  .word 42
     .isa 1950

@@ -17,7 +17,7 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
+import sys
 import wwinfra
 import re
 
@@ -142,7 +142,7 @@ class PhotoElectricTapeReaderClass:
         if self.PETR_fd[self.PETR_device] is None:
             fd = None
             try:
-                self.PETR_fd[self.PETR_device] = open(filename, "r")
+                self.PETR_fd[self.PETR_device] = open(filename, "r") if filename != "-" else sys.stdin
                 fd = self.PETR_fd[self.PETR_device]
                 getiolog().info("Using file %s for PETR %s" % (filename, self.PETR_device))
             except IOError:

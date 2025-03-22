@@ -607,42 +607,63 @@ class AsmDotFloatInst (AsmDotWordsInst):
         self.prog.coreMem[self.address] = self.block[0]
         self.prog.coreMem[self.address+1] = self.block[1]
 
-# .flexl and .flexh each store a word (as in .word), representing a character
-# as translated to the Flexowriter character code. .flexl stores in the low
-# part of the word and .flexh in the high part.
-#
-# LAS 12/16/24 I opted here for a tighter model for the .flex ops, where we
-# only accept a single literal character, rather than beyond that interpreting
-# the operand as a normal symbol or number, as in the prior version. In an
-# email exchange Guy approved of this change.
+# .flexl and .flexh each store a word (as in .word) representing a character as
+# translated to the Flexowriter character code, for each character in the
+# string given as the first operand. If a second operand, an integer, is
+# supplied, it is added as a terminator. .flexl stores in the low part of the
+# word and .flexh in the high part.
 
-class AsmDotFlexlhInst (AsmPseudoOpInst):
+class AsmDotFlexlhInst (AsmDotWordsInst):
     def __init__ (self, *args):
         super().__init__ (*args)
-    def prefixAddrStr (self) -> str:      # Override - display contents too
-        return self.fmtPrefixAddrStr (self.address, contents = self.instruction)
+        self.block = {}
+        self.fillInst = 0
+    def listingString (self,
+                       minimalListing: bool = False,
+                       **kwargs) -> str:
+        s = super().listingString (minimalListing = minimalListing, **kwargs)
+        return s
     def passOneOp (self):
-        self.prog.nextCoreAddress += 1
-    def passTwoOp (self):
+        # Need to eval in pass one since this determines next addr. So all vars
+        # must have been defined previoiusly in the file.
         val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
-        if val.type == AsmExprValueType.String:
-            if len (val.value) == 1:
-                flexoChar: int = self.prog.flexoClass.ascii_to_flexo (val.value)
-                if self.parsedLine.opname == "flexl":
-                    pass
-                elif self.parsedLine.opname == "flexh":
-                    flexoChar <<= 10            # if it's "high", shift the six-bit code to WW bits 0..5
-                else:
-                    self.error ("Internal error: incorrect flexo operation")
-                # Plop the translated value in as in .word.
-                # The conversion here is more of less a formality but might
-                # catch bugs that produce out-of-range values
-                self.instruction = self.intToUnsignedWwInt (flexoChar)
-                self.prog.coreMem[self.address] = self.instruction                
-            else:
-                self.error (".flex operations only accept a single-character literal string")
+        if val.type == AsmExprValueType.List:
+            valList = val.value
         else:
-            self.operandTypeError (val)
+            valList = [val]
+        if len (valList) in [1, 2]:
+            strVal = valList[0]
+            if strVal.type == AsmExprValueType.String:
+                if len (valList) == 2:
+                    termVal = valList[1]
+                else:
+                    termVal = None
+                if termVal is None or termVal.type == AsmExprValueType.Integer:
+                    s = strVal.value
+                    for i in range (0, len (s)):
+                        flexoChar: int = self.prog.flexoClass.ascii_to_flexo (s[i])
+                        if self.parsedLine.opname == "flexl":
+                            pass
+                        elif self.parsedLine.opname == "flexh":
+                            flexoChar <<= 10            # if it's "high", shift the six-bit code to WW bits 0..5
+                        else:
+                            self.error ("Internal error: incorrect flexo operation")
+                        # The conversion here is more or less a formality but might
+                        # catch bugs that produce out-of-range values
+                        self.block[i] = self.intToUnsignedWwInt (flexoChar)
+                    if termVal is not None:
+                        self.block[len (s)] = self.intToSignedWwInt (termVal.value)
+                else:
+                    self.operandTypeError (termVal)
+            else:
+                self.operandTypeError (strVal)
+        else:
+            self.error ("Incorrect number of operands")
+    def passTwoOp (self):
+        if 0 in self.block:        # We need at least this one entry
+            self.instruction = self.block[0]
+            for i in range (0, len (self.block)):
+                self.prog.coreMem[self.address+i] = self.block[i]
 
 class AsmDotJumpToInst (AsmPseudoOpInst):
     def __init__ (self, *args):

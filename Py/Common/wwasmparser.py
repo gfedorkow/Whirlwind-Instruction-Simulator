@@ -258,7 +258,8 @@ AsmExprType = Enum ("AsmExprType", ["BinaryPlus", "BinaryMinus",
                                     "BinaryMult", "BinaryDiv",
                                     "BinaryDot", "BinaryComma",
                                     "BinaryBitAnd", "BinaryBitOr",
-                                    "Variable", "LiteralString", "LiteralDigits"])
+                                    "Variable", "LiteralString", "LiteralDigits",
+                                    "ParenWrapper", "Null"])
 
 # LAS 11/14/24 We have three numerical value types, each constrained to a bit
 # length of 16: integer, negative-zero, and fraction. We have one string type,
@@ -349,10 +350,10 @@ class AsmExpr:
                 self.rightSubExpr.print (indent = indent + 3)
             else:
                 print (" " * indent + "None")   # Should only get here if there is a bug
-        elif t in [AsmExprType.UnaryPlus, AsmExprType.UnaryMinus, AsmExprType.UnaryZeroOh]:
+        elif t in [AsmExprType.UnaryPlus, AsmExprType.UnaryMinus, AsmExprType.UnaryZeroOh, AsmExprType.ParenWrapper]:
             print (" " * indent + t.name)
             self.leftSubExpr.print (indent = indent + 3)
-        elif t in [AsmExprType.Variable, AsmExprType.LiteralString, AsmExprType.LiteralDigits]:
+        elif t in [AsmExprType.Variable, AsmExprType.LiteralString, AsmExprType.LiteralDigits, AsmExprType.Null]:
             print (" " * indent + t.name, self.exprData)
     # This does not yet handle parenthesized exprs correctly
     def listingString (self, quoteStrings: bool = True):
@@ -367,6 +368,8 @@ class AsmExpr:
             return self.exprData + self.leftSubExpr.listingString()
         elif self.exprType in [AsmExprType.LiteralString]:
             return "\"" + self.exprData + "\"" if quoteStrings else self.exprData
+        elif self.exprType == AsmExprType.ParenWrapper:
+            return "(" + self.leftSubExpr.listingString() + ")"
         else:
             return self.exprData
     def getIdStr (self):    # Just for test/debug print
@@ -496,6 +499,10 @@ class AsmExpr:
                     return AsmExprValue (AsmExprValueType.List, [x])
             else:
                 return AsmExprValue (AsmExprValueType.List, [x, y])
+        elif self.exprType == AsmExprType.ParenWrapper:
+            return self.leftSubExpr.eval (env)
+        elif self.exprType == AsmExprType.Null:
+            return AsmExprValue (AsmExprValueType.Undefined, "")
         else:
             self.evalError ("Unknown Asm Expression Type")
 
@@ -632,7 +639,7 @@ class AsmParsedLine:
                 self.opname = tok2.tokenStr
                 return True
             else:
-                error ("Opname expected")
+                self.error ("Opname expected")
         elif tok1.tokenType == AsmTokenType.DotPrint or tok1.tokenType == AsmTokenType.DotExec:
             self.opname = "print" if  tok1.tokenType == AsmTokenType.DotPrint else "exec"
             self.operand = AsmExpr (AsmExprType.LiteralString, tok1.tokenStr)
@@ -645,7 +652,7 @@ class AsmParsedLine:
         if tok1.tokenType == AsmTokenType.Identifier:
             tok2 = self.gtok()
             if tok2.tokenType == AsmTokenType.EndOfString:
-                e = AsmExpr (AsmExprType.LiteralString, "")
+                e = AsmExpr (AsmExprType.Null, "")
             else:
                 self.ptok (tok2)
                 e = self.parseExpr()
@@ -702,7 +709,7 @@ class AsmParsedLine:
     # clone, since it's right-associative, and everything else is
     # left-associative.
     def parseCommaOper (self, leftExpr: AsmExpr = None) -> AsmExpr:
-        e1 = self.parseAdditiveOper()
+        e1 = self.parseBitOrOper()
         if e1 is not None:
             tok = self.gtok()
             if tok.tokenType == AsmTokenType.Operator and tok.tokenStr == ",":
@@ -719,6 +726,50 @@ class AsmParsedLine:
                 return e1
         else:
             self.error ("Comma operator syntax error")
+    def parseBitOrOper (self, leftExpr: AsmExpr = None) -> AsmExpr:
+        e1 = self.parseBitAndOper()
+        if e1 is not None:
+            if leftExpr is not None:
+                leftExpr.rightSubExpr = e1
+            tok = self.gtok()
+            if tok.tokenType == AsmTokenType.Operator and tok.tokenStr in ["|"]:
+                e = AsmExpr (AsmExprType.BinaryBitOr, tok.tokenStr)
+                if leftExpr is not None:
+                    e.leftSubExpr = leftExpr
+                else:
+                    e.leftSubExpr = e1
+                e2 = self.parseBitOrOper (leftExpr = e)
+                return e2
+            else:
+                self.ptok (tok)
+                if leftExpr is not None:
+                    return leftExpr
+                else:
+                    return e1
+        else:
+            self.error ("Bitwise-or operator syntax error")
+    def parseBitAndOper (self, leftExpr: AsmExpr = None) -> AsmExpr:
+        e1 = self.parseAdditiveOper()
+        if e1 is not None:
+            if leftExpr is not None:
+                leftExpr.rightSubExpr = e1
+            tok = self.gtok()
+            if tok.tokenType == AsmTokenType.Operator and tok.tokenStr in ["&"]:
+                e = AsmExpr (AsmExprType.BinaryBitAnd, tok.tokenStr)
+                if leftExpr is not None:
+                    e.leftSubExpr = leftExpr
+                else:
+                    e.leftSubExpr = e1
+                e2 = self.parseBitAndOper (leftExpr = e)
+                return e2
+            else:
+                self.ptok (tok)
+                if leftExpr is not None:
+                    return leftExpr
+                else:
+                    return e1
+        else:
+            self.error ("Bitwise-and operator syntax error")
     def parseAdditiveOper (self, leftExpr: AsmExpr = None) -> AsmExpr:
         e1 = self.parseMultiplicativeOper()
         if e1 is not None:
@@ -742,7 +793,7 @@ class AsmParsedLine:
         else:
             self.error ("Additive operator syntax error")
     def parseMultiplicativeOper (self, leftExpr: AsmExpr = None) -> AsmExpr:
-        e1 = self.parseBitAndOper()
+        e1 = self.parseDotOper()
         if e1 is not None:
             if leftExpr is not None:
                 leftExpr.rightSubExpr = e1
@@ -764,50 +815,6 @@ class AsmParsedLine:
                     return e1
         else:
             self.error ("Multiplicative operator syntax error")
-    def parseBitAndOper (self, leftExpr: AsmExpr = None) -> AsmExpr:
-        e1 = self.parseBitOrOper()
-        if e1 is not None:
-            if leftExpr is not None:
-                leftExpr.rightSubExpr = e1
-            tok = self.gtok()
-            if tok.tokenType == AsmTokenType.Operator and tok.tokenStr in ["&"]:
-                e = AsmExpr (AsmExprType.BinaryBitAnd, tok.tokenStr)
-                if leftExpr is not None:
-                    e.leftSubExpr = leftExpr
-                else:
-                    e.leftSubExpr = e1
-                e2 = self.parseBitAndOper (leftExpr = e)
-                return e2
-            else:
-                self.ptok (tok)
-                if leftExpr is not None:
-                    return leftExpr
-                else:
-                    return e1
-        else:
-            self.error ("Bitwise-and operator syntax error")
-    def parseBitOrOper (self, leftExpr: AsmExpr = None) -> AsmExpr:
-        e1 = self.parseDotOper()
-        if e1 is not None:
-            if leftExpr is not None:
-                leftExpr.rightSubExpr = e1
-            tok = self.gtok()
-            if tok.tokenType == AsmTokenType.Operator and tok.tokenStr in ["|"]:
-                e = AsmExpr (AsmExprType.BinaryBitOr, tok.tokenStr)
-                if leftExpr is not None:
-                    e.leftSubExpr = leftExpr
-                else:
-                    e.leftSubExpr = e1
-                e2 = self.parseBitOrOper (leftExpr = e)
-                return e2
-            else:
-                self.ptok (tok)
-                if leftExpr is not None:
-                    return leftExpr
-                else:
-                    return e1
-        else:
-            self.error ("Bitwise-or operator syntax error")
     def parseDotOper (self, leftExpr: AsmExpr = None) -> AsmExpr:
         e1 = self.parseUnaryOper()
         if e1 is not None:
@@ -845,7 +852,9 @@ class AsmParsedLine:
             if e is not None:
                 tok = self.gtok()
                 if tok.tokenType == AsmTokenType.Operator and tok.tokenStr == ")":
-                    return e
+                    r = AsmExpr (AsmExprType.ParenWrapper, "")  # An eval pass-through; used only for listing
+                    r.leftSubExpr = e
+                    return r
                 else:
                     self.error ("Unbalanced parenthesis")
             else:
