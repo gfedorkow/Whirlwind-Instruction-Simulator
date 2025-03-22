@@ -65,7 +65,7 @@ class CpuClass:
 # the following class serves as a dispatcher for the three possible Panel technologies, one
 # with the xwindow emulated buttons, one with a few I2C buttons and lights, and the microWhirlwind panel
 # Both can be enabled at once, but the results probably aren't too predictable.
-class PanelClass:
+class xxPanelClass:
     def __init__(self, cb, panel_xwin=False, panel_blinken=False, panel_microWW=False, left_init=0, right_init=0):
         self.panel_xwin = panel_xwin
         self.panel_blinken = panel_blinken
@@ -512,7 +512,7 @@ class MappedSwitchClass:
             self.no_sw,   # 9
         )
         self.md = mapped_display
-        self.fn_buttons_def = (("Examine", "Read-In", "Order-by-Order", "Start-at-40", "Start-Over", "Restart", "Stop", "Clear"),
+        self.fn_buttons_def = (("Examine", "Read In", "Order-by-Order", "Start at 40", "Start Over", "Restart", "Stop", "Clear"),
                                ("Stop-on-Addr", "Stop-on-CK", "Stop-on-S1", "F-Scope", "D-Scope"))
         self.ff_preset_state = [0, 0]        # ff2 and ff3 preset values
         self.pc_preset_state = 0             # pc preset values
@@ -594,9 +594,9 @@ class MappedSwitchClass:
         self.ff_preset_state[ff] = regf
         print("ff flip bit: ff=%d, bit_num=%d, reg=0o%o, regf=0o%o" % (ff, bit_num, reg, regf))
         if ff == 0:
-            self.md.reg_disp.set_preset_switch_leds(pc=None, pc_bank=None, ff2=regf, ff3=None, bank_test=False)
+            self.md.set_preset_switch_leds(pc=None, pc_bank=None, ff2=regf, ff3=None, bank_test=False)
         else:
-            self.md.reg_disp.set_preset_switch_leds(pc=None, pc_bank=None, ff2=None, ff3=regf, bank_test=False)
+            self.md.set_preset_switch_leds(pc=None, pc_bank=None, ff2=None, ff3=regf, bank_test=False)
 
     def pc_preset_flip_bit(self, row, col):
         bit_num = row
@@ -606,7 +606,7 @@ class MappedSwitchClass:
         regf = reg ^ (1 << bit_num)         # flip the designated bit
         self.pc_preset_state = regf
         print("pc flip bit: bit_num=%d, reg=0o%o, regf=0o%o" % (bit_num, reg, regf))
-        self.md.reg_disp.set_preset_switch_leds(pc=regf, pc_bank=None, bank_test=False)
+        self.md.set_preset_switch_leds(pc=regf, pc_bank=None, bank_test=False)
 
 
     def mir_sw(self, row, col):
@@ -628,7 +628,7 @@ class MappedSwitchClass:
             self.mir_preset[self.which_mir] = regf
         print("preset LMIR = 0o%06o, RMIR = 0o%06o, MIR=%d" % 
             (self.mir_preset[0], self.mir_preset[1], self.which_mir))
-        self.md.reg_disp.set_mir_preset_switch_leds(regf, which=self.which_mir, activate=activate)
+        self.md.set_mir_preset_switch_leds(regf, which=self.which_mir, activate=activate)
 
 
 

@@ -581,7 +581,7 @@ class CPUControlClass:
             cb.CoreFileName = filename
             return
 
-        print("Unhandled Button %s" % sw)
+        print("Unhandled Button in control_panel:CpuControlClass %s" % sw)
         return
 
     def set_cpu_state_lamps(self, cb, sim_state, alarm_state):
@@ -914,7 +914,7 @@ class PanelClass:
             cb.CoreFileName = filename
             return
 
-        print("Unhandled Button %s" % sw)
+        print("Unhandled Button in control_panel:PanelClass %s" % sw)
         return
 ## the following class serves as a dispatcher for the three possible Panel technologies, one
 ## with the xwindow emulated buttons and one with the I2C buttons and lights
