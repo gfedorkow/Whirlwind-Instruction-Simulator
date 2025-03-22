@@ -2195,6 +2195,8 @@ def main():
                         help="Pop up a Whirlwind Manual Intervention Panel window", action="store_true")
     parser.add_argument("-b", "--BlinkenLights",
                         help="Activate a physical Whirlwind Manual Intervention Panel", action="store_true")
+    parser.add_argument("-m", "--MicroWhirlwind",
+                        help="Activate a physical Whirlwind Model", action="store_true")
     parser.add_argument("--NoZeroOneTSR",
                         help="Don't automatically return 0 and 1 for locations 0 and 1", action="store_true")
     parser.add_argument("--SynchronousVideo",
@@ -2232,8 +2234,8 @@ def main():
     if args.BlinkenLights and BlinkenLightsModule == False:
         cb.log.warn("No BlinkenLights Hardware available")
 
-    if args.Panel or args.BlinkenLights:
-        cb.panel = control_panel.PanelClass(cb, args.Panel, args.BlinkenLights)
+    if args.Panel or args.BlinkenLights or args.MicroWhirlwind:
+        cb.panel = control_panel.PanelClass(cb, args.Panel, args.BlinkenLights, args.MicroWhirlwind)
 
     # WW programs may read paper tape.  If the simulator is invoked specifically with a
     # name for the file containing paper tape bytes, use it.  If not, try taking the name
