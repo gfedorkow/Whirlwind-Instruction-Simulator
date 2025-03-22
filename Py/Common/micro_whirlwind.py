@@ -15,6 +15,7 @@ except ModuleNotFoundError:
     import smbus_replacement as smbus2
     import gpio_replacement
     gpio = gpio_replacement.gpioClass()
+    import msvcrt
     RasPi = False
 
 
@@ -246,6 +247,8 @@ class PanelMicroWWClass:
 #            self.set_cpu_state_lamps(cb, cb.sim_state, alarm_state)
             bn = self.check_buttons()
             if bn:
+                presets = self.md.read_preset_switch_leds()
+                pc_preset = presets["pc"]
                 self.sim_state_machine(bn, cb, pc_preset) # the third arg should be the PC Preset switch register
 
    # read a register from the switches and lights panel.
@@ -531,7 +534,7 @@ class MappedSwitchClass:
                 print("Pressed %s: row=%d, col=%d" % (button_press, row, col))
                 if button_press:
                     return button_press
-        if self.tca84_u4.available() > 0:
+        elif self.tca84_u4.available() > 0:
             key = self.tca84_u4.getEvent()
             pressed = key & 0x80
             if pressed:     # I'm ignoring "released" events
@@ -541,6 +544,13 @@ class MappedSwitchClass:
                 col = key % 10
                 button_press = self.u4_switch_map[col](row, col)
                 print("Pressed %s: row=%d, col=%d" % (button_press, row, col))
+#        else:
+#            if RasPi == False:
+#                if msvcrt.kbhit():
+#                    print("you pressed ", msvcrt.getch(), " so now i will sleep")
+#                    time.sleep(3)
+#                    button_press = input("type function button name: ")
+
 
         return button_press
 
