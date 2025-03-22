@@ -501,9 +501,12 @@ class ConstWWbitClass:
         self.command_name = sys.argv[0] # Leaf name of command running this code, i.e., argv[0]
         self.CoreFileName = corefile # Name of ww core file
         self.log = None
-        self.logDirSpecified = True if args.LogDir is not None else False
-        self.logDir = args.LogDir if self.logDirSpecified else "./"
-
+        if args:
+            self.logDirSpecified = True if args.LogDir is not None else False
+            self.logDir = args.LogDir if self.logDirSpecified else "./"
+        else:
+            self.logDirSpecified = False
+            self.logDir = "./"
         self.cpu = None
 
         self.dbwgt = None  # This list gives all the currently active Debug Widgets
