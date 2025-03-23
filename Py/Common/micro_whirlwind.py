@@ -47,10 +47,12 @@ Verbose = False
 Debug_I2C = False  # specific to low-level I2c
 Debug = True
 
+I2CBusTimeout = 0
+
 def breakp():
     pass
 
-class CpuClass:
+class localCpuClass:
     def __init__(self):
         self._BReg = 0
         self._AC = 0o123    # Accumulator
@@ -284,6 +286,7 @@ class PanelMicroWWClass:
         if type(which_one) is int:
             which_one = "FF%02o" % which_one
 
+        print("mWWPanelClass: write_register %s, val 0o%o" % (which_one, value))
         match which_one:
             case "FF02Sw":
                 self.md.set_preset_switch_leds(ff2=value)
@@ -293,7 +296,7 @@ class PanelMicroWWClass:
                 self.md.set_preset_switch_leds(pc=value)
 
             case _:
-                print("Panel.write_register: unknown register %s" % which_one)
+                print("mWWPanel.write_register: unknown register %s" % which_one)
                 exit()
 
 
@@ -411,17 +414,17 @@ class MappedRegisterDisplayClass:
         if pc is not None:
             self.u2_led[0] = pc & 0o003400 | bank & 0o7 << 12 | self.u2_led[0] & 0o377   # pc is only 11 bits
             self.u2_led[1] = ((pc & 0o377) << 8) | self.u2_led[1] & 0o377
-            print("set_preset_switch_leds: preset LEDs PC set to 0o%o" % pc)
+            # print("set_preset_switch_leds: preset LEDs PC set to 0o%o" % pc)
 
         if ff2 is not None:
             self.u2_led[2] = (ff2 & 0o177400)     | self.u2_led[2] & 0o377
             self.u2_led[3] = ((ff2 & 0o377) << 8) | self.u2_led[3] & 0o377
-            print("set_preset_switch_leds: preset LEDs FF2 set to 0o%o" % ff2)
+            # print("set_preset_switch_leds: preset LEDs FF2 set to 0o%o" % ff2)
 
         if ff3 is not None:
             self.u2_led[4] = (ff3 & 0o177400)     | self.u2_led[4] & 0o377
             self.u2_led[5] = ((ff3 & 0o377) << 8) | self.u2_led[5] & 0o377
-            print("set_preset_switch_leds: preset LEDs FF3 set to 0o%o" % ff3)
+            # print("set_preset_switch_leds: preset LEDs FF3 set to 0o%o" % ff3)
 
         # send new settings to all u2 LEDs at once
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=6)
@@ -471,7 +474,7 @@ class MappedRegisterDisplayClass:
         self.u2_led[4] = 1 << ((mir >>  3) & 0o7) | self.u2_led[4] & 0o0177400   #
         self.u2_led[5] = 1 << ((mir      ) & 0o7) | self.u2_led[5] & 0o0177400   #
 
-        print("Setting U2 LED[0] to 0x%x; mir=0o%o, which=%d, activate=%d" % (self.u2_led[0], mir, which, activate))
+        # print("Setting U2 LED[0] to 0x%x; mir=0o%o, which=%d, activate=%d" % (self.u2_led[0], mir, which, activate))
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=6)
 
 
@@ -1059,6 +1062,7 @@ class IS31FL3731:
     # either it runs out of words or exceeds nine
     # First_row gives the offset into the IS31 display registers
     def write_16bit_led_rows(self, first_row, int_list, len=9):
+        global I2CBusTimeout
         byte_list = []
         i = 0
         for val in int_list:
@@ -1068,8 +1072,11 @@ class IS31FL3731:
             if (i > len):
                 break
         #self.writeMultiRegister(row * 2, byte_list)   # 16 bits in two bytes
-        self.bus.write_i2c_block_data(self.i2c_addr, first_row * 2, byte_list)
-
+        try:
+            self.bus.write_i2c_block_data(self.i2c_addr, first_row * 2, byte_list)
+        except IOError:
+            I2CBusTimeout += 1
+            print("***  I2C Bus Timeout #%d ***" % I2CBusTimeout)
 
     def init_IS31(self):
         _frame = 0
@@ -1392,7 +1399,7 @@ class RegListClass:
 
 class MappedDisplayTestDriverClass:
     def __init__(self, i2c_bus):
-        self.cpu = CpuClass()
+        self.cpu = localCpuClass()
         self.mar = 0
         self.mdr = 0
         self.AC = 0
@@ -1540,7 +1547,7 @@ def main():
     sw = None
     mWW = None
     cb = wwinfra.ConstWWbitClass()
-    cb.cpu = CpuClass()
+    cb.cpu = localCpuClass()
     cb.cpu.cm = wwinfra.CorememClass(cb)
 
     if args.Verbose:
