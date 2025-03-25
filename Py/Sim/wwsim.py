@@ -2075,7 +2075,7 @@ def main_run_sim(args, cb):
                         alarm_state == cb.QUIT_ALARM  or alarm_state == cb.HALT_ALARM or alarm_state == cb.READIN_ALARM:
                     break
             sim_cycle += 1
-            if sim_cycle % 400000 == 0 or alarm_state == cb.QUIT_ALARM:
+            if sim_cycle % 2000000 == 0 or alarm_state == cb.QUIT_ALARM:
                 print("cycle %2.1fM; mem=%dMB" % (sim_cycle / (1000000.0), psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
             if cycle_limit and sim_cycle == cycle_limit:
                 if not cb.museum_mode:  # this is the normal case, not configured for Museum Mode forever-cycles

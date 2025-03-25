@@ -24,6 +24,7 @@ import time
 import blinkenlights
 import control_panel
 import re
+import time
 import wwinfra
 
 
@@ -63,131 +64,6 @@ class localCpuClass:
 
 
 
-# =================
-# the following class serves as a dispatcher for the three possible Panel technologies, one
-# with the xwindow emulated buttons, one with a few I2C buttons and lights, and the microWhirlwind panel
-# Both can be enabled at once, but the results probably aren't too predictable.
-class xxPanelClass:
-    def __init__(self, cb, panel_xwin=False, panel_blinken=False, panel_microWW=False, left_init=0, right_init=0):
-        self.panel_xwin = panel_xwin
-        self.panel_blinken = panel_blinken
-        self.panel_mWW = panel_microWW
-        if panel_xwin:
-            self.panel_xwin = control_panel.PanelXwinClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
-        if panel_blinken:
-            self.panel_blinken = blinkenlights.BlinkenLightsClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
-        if panel_microWW:
-            self.panel_mWW = PanelMicroWWClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
-
-    # Check the mouse, and update any buttons.  The only return from this call should be True or False to say
-    # whether the Exit box was clicked or not.
-    # As a side effect, the simulator run state in cb is updated
-    # Return True for normal operation, False if the user indicates that the sim should be halted
-    def update_panel(self, cb, bank, alarm_state=0, standalone=False, init_PC=None):
-        ret_xwin = True
-        ret_blinken = True
-        ret_mWW = True
-        if self.panel_xwin:
-            ret_xwin = self.panel_xwin.update_panel(cb, bank, alarm_state=0, standalone=False, init_PC=init_PC)
-        if self.panel_blinken:
-            ret_blinken = self.panel_blinken.update_panel(cb, bank, alarm_state=0, standalone=False, init_PC=init_PC)
-        if self.panel_mWW:
-            ret_mWW = self.panel_mWW.update_panel(cb, bank, alarm_state=0, standalone=False, init_PC=init_PC)
-        if ret_xwin == False or ret_blinken == False or ret_mWW == False:
-            return False
-        return True
-
-    # read a register from the switches and lights panel.
-    # It would normally be called with a string giving the name, so an FF Reg number can also be used
-    # The read routine simply returns an integer value
-    # Not obvious what to do if _both_ panel types are enabled at the same time
-    def read_register(self, which_one):
-        if self.panel_blinken:
-            return(self.panel_blinken.read_register(which_one))
-        if self.panel_xwin:
-            return(self.panel_xwin.read_register(which_one))
-        if self.panel_mWW:
-            return(self.panel_mWW.read_register(which_one))
-
-    # write a register to the switches and lights panel.
-    # there's no error return signal
-    def write_register(self, which_one, value):
-        if self.panel_blinken:
-            self.panel_blinken.write_register(which_one, value)
-        if self.panel_xwin:
-            self.panel_xwin.write_register(which_one, value)
-        if self.panel_mWW:
-            self.panel_mWW.write_register(which_one, value)
-
-    # assemble all the known activate bits into a single word
-    # Not obvious what to do if _both_ panel types are enabled at the same time
-    # def activate_reg_read(self):
-    #     if self.panel_blinken:
-    #         return(self.panel_blinken.activate_reg_read())
-    #     if self.panel_xwin:
-    #         return(self.panel_xwin.activate_reg_read())
-
-    # write activate register; no return value
-    # def activate_reg_write(self, val):
-    #     if self.panel_blinken:
-    #         self.panel_blinken.activate_reg_write(val)
-    #     if self.panel_xwin:
-    #         self.panel_xwin.activate_reg_write(val)
-
-    def reset_ff_registers(self, function, log=None, info_str=''):
-        if self.panel_blinken:
-            self.panel_blinken.reset_ff_registers(function, log=None, info_str='')
-        if self.panel_xwin:
-            self.panel_xwin.reset_ff_registers(function, log=None, info_str='')
-        if self.panel_mWW:
-            self.panel_mWW.reset_ff_registers(function, log=None, info_str='')
-
-    # This state machine is used to control the flow of execution for the simulator
-    def sim_state_machine(self, switch_name, cb, pc_switch_register):
-        sw = switch_name
-        if sw == "Stop":
-            cb.sim_state = cb.SIM_STATE_STOP
-            # self.dispatch["Stop"].lamp_object.set_lamp(True)
-            # self.dispatch["Start at 40"].lamp_object.set_lamp(False)
-            return
-
-        if sw == "Restart":   # don't mess with the PC, just pick up from the last address
-            cb.sim_state = cb.SIM_STATE_RUN
-            return
-
-        if sw == "Start at 40":
-            cb.sim_state = cb.SIM_STATE_RUN
-            cb.cpu.PC = 0o40
-            return
-
-        if sw == "Start Over":  # start executing at the address in the PC switch register
-            cb.sim_state = cb.SIM_STATE_RUN
-            # cb.cpu.PC = self.panel.pc_toggle_sw.read_button_vector()
-            cb.cpu.PC = pc_switch_register
-            return
-
-        if sw == "Order-by-Order":  # don't mess with the PC, just pick up from the last address
-            cb.sim_state = cb.SIM_STATE_SINGLE_STEP
-            return
-
-        if sw == "Examine":  # don't mess with the PC, just pick up from the last address
-            if cb.sim_state == cb.SIM_STATE_RUN:
-                cb.log.warn("Examine button may only be used when the machine is stopped")
-            addr = pc_switch_register
-            cb.cpu.cm.rd(addr)   # simply reading the register has the side effect of updating MAR and PAR/MDR
-            return
-
-        if sw == "Read In":  # Start all over again from reading in the "tape"
-            cb.sim_state = cb.SIM_STATE_READIN
-            popup = DialogPopup()
-            filename = popup.get_text_entry("Filename: ", "foo.acore")
-            print("filename:%s" % filename)
-            cb.CoreFileName = filename
-            return
-
-        print("Unhandled Button %s" % sw)
-        return
-
 # ==============================================
 
 
@@ -219,6 +95,7 @@ class PanelMicroWWClass:
             self.micro_ww_module_present = False
             print("Missing MicroWhirlwind Panel drivers")
             return
+        
 
 #        # the first element in the dict is the switch Read entry point, the second is the one to set the switches
 #        self.dispatch = {"LMIR":[self.md.read_left_register, self.md.set_left_register],
@@ -244,14 +121,21 @@ class PanelMicroWWClass:
 
         mar = cpu.cm.mem_addr_reg
 
-        if not standalone:
-            self.md.set_cpu_reg_display(cpu=cpu, mdr=mdr, mar=mar, mar_bank=0)
+        ff2 = cpu.cm.rd(2, skip_mar=True)   # 'skip_mar' says to _not_ update the MAR/PAR with this read
+        ff3 = cpu.cm.rd(3, skip_mar=True)
+        self.md.set_cpu_reg_display(cpu=cpu, mdr=mdr, mar=mar, mar_bank=0, ff2=ff2, ff3=ff3)
 #            self.set_cpu_state_lamps(cb, cb.sim_state, alarm_state)
-            bn = self.check_buttons()
-            if bn:
-                presets = self.md.read_preset_switch_leds()
-                pc_preset = presets["pc"]
-                self.sim_state_machine(bn, cb, pc_preset) # the third arg should be the PC Preset switch register
+        bn = self.check_buttons()
+        if bn:
+            presets = self.md.read_preset_switch_leds()
+            pc_preset = presets["pc"]
+            self.sim_state_machine(bn, cb, pc_preset) # the third arg should be the PC Preset switch register
+
+        if init_PC:
+            self.write_register("PC", init_PC)
+
+
+
 
    # read a register from the switches and lights panel.
     # It would normally be called with a string giving the name.  Inside the simulator
@@ -268,9 +152,13 @@ class PanelMicroWWClass:
             case "FF03Sw":
                 presets = self.md.read_preset_switch_leds()
                 ret = presets["ff3"]
-            case "PC":
+            case "PC":  # This is actually the PC Preset switches/lights
                 presets = self.md.read_preset_switch_leds()
                 ret = presets["pc"]
+            case "LMIR":
+                ret = self.md.mir_state[0]
+            case "RMIR":
+                ret = self.md.mir_state[1]
 
             case _:
                 print("Panel.read_register: unknown register %s" % which_one)
@@ -292,8 +180,20 @@ class PanelMicroWWClass:
                 self.md.set_preset_switch_leds(ff2=value)
             case "FF03Sw":
                 self.md.set_preset_switch_leds(ff3=value)
-            case "PC":
+            case "FF05Sw":
+                print("ignore Set to preset FF05Sw")
+                return
+            case "FF06Sw":
+                print("ignore Set to preset FF06Sw")
+                return
+            case "PC":  # this is actually the pc_preset LEDs
                 self.md.set_preset_switch_leds(pc=value)
+            case "LMIR":
+                self.md.mir_state[0] = value
+                self.md.set_mir_preset_switch_leds(which=0, mir=value)
+            case "RMIR":
+                self.md.mir_state[1] = value
+                self.md.set_mir_preset_switch_leds(which=1, mir=value)
 
             case _:
                 print("mWWPanel.write_register: unknown register %s" % which_one)
@@ -341,6 +241,10 @@ class MappedRegisterDisplayClass:
         self.u1_led = [0] * 9
         self.u2_led = [0] * 9
         self.u5_led = [0] * 9
+        # in most cases, the actual state for preset registers is stored in the LEDs, so that write and 
+        # read both go to the same place.  There's only one set of LEDs for the two MIRs, so that state is
+        # stored here, and the LEDs are nothing but display.
+        self.mir_state = [0]*2  # two element array to remember the MIR settings, Left=0, Right=1
 
 
     # CPU run state is displayed in the most significant three bits of U1 Register 8
@@ -353,13 +257,24 @@ class MappedRegisterDisplayClass:
         self.ind_register = bit_reverse_16(ind_register) & 0xff
         self.set_cpu_reg_display()
 
-    def set_cpu_reg_display(self, cpu=None, mdr=0, mar=0, mar_bank=0):
+    def set_cpu_reg_display(self, cpu=None, mdr=0, mar=0, mar_bank=0, ff2=0, ff3=0):
         if cpu:
             acc_r = bit_reverse_16(cpu._AC)
             pc_r = bit_reverse_16(cpu.PC & 0o3777)
             b_reg_r = bit_reverse_16(cpu._BReg)
             mdr_par_r = bit_reverse_16(mdr)
             mar_r = bit_reverse_16(mar & 0o3777 | (mar_bank & 0o7) << 12)
+
+            # try to save a few cycles here...  the FF registers usually stay at zero; no need to bit-reverse zero!
+            if ff2 != 0:
+                ff2r = bit_reverse_16(ff2)
+            else:
+                ff2r = ff2
+            if ff3 != 0:
+                ff3r = bit_reverse_16(ff3)
+            else:
+                ff3r = ff3
+
             self.u1_led[0] = ~mar_r
             self.u1_led[1] = mar_r
             self.u1_led[2] = ~mdr_par_r
@@ -371,6 +286,10 @@ class MappedRegisterDisplayClass:
 
             self.u5_led[0] = ~pc_r
             self.u5_led[1] = pc_r
+            self.u5_led[2] = ~ff3r
+            self.u5_led[3] = ff3r
+            self.u5_led[4] = ~ff2r
+            self.u5_led[5] = ff2r
 
             # Carry-Out / SAM register
             # Bit 8 -  0x0100 -> red -1 carry
@@ -397,18 +316,16 @@ class MappedRegisterDisplayClass:
         self.u1_led[8] = self.ind_register | state_leds
 
         self.u1_is31.is31.write_16bit_led_rows(0, self.u1_led)
-        self.u5_is31.is31.write_16bit_led_rows(0, self.u5_led, len=2)
+        self.u5_is31.is31.write_16bit_led_rows(0, self.u5_led, len=6)
 
 
-    # incomplete!
-    # bytes for this set of registers is all scrambled, so I have to mask-and-or for each one
+    # bytes for this set of switch-LED registers is all scrambled, so I have to mask-and-or for each one
     #
     # Register  High Byte           Low Byte
     #  PC Preset  R0-[8-10]         R1-[8-15]
     #  PC bank    R0-[12-14]
     #  FF2        R2-[8-15]         R3-[8-15]
     #  FF3        R4-[8-15]         R5-[8-15]
-
     def set_preset_switch_leds(self, pc=None, pc_bank=None, ff2=None, ff3=None, bank_test=False):
         bank = 0
         if pc is not None:
@@ -428,6 +345,7 @@ class MappedRegisterDisplayClass:
 
         # send new settings to all u2 LEDs at once
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=6)
+
 
     # read back whatever the preset registers are set to
     def read_preset_switch_leds(self):
@@ -460,19 +378,20 @@ class MappedRegisterDisplayClass:
     # MIR [15]     U2_R0-[0-1]
     # LMIR, RMIR   U2_R0-[2-3]
     # U, L Activate U2_R0-[4-5]
-    def set_mir_preset_switch_leds(self, mir, which=0, activate=0):
-        if which:
-            which_led = 8  # bit 3
-        else:
-            which_led = 4  # bit 2
+    def set_mir_preset_switch_leds(self, mir=None, which=0, activate=0):
+        if mir:
+            if which:
+                which_led = 8  # bit 3
+            else:
+                which_led = 4  # bit 2
 
-        mir &= 0o177777
-        self.u2_led[0] = which_led  | 1 << ((mir >> 15) & 1) | self.u2_led[0] & 0o0177400   #
-        self.u2_led[1] = 1 << ((mir >> 12) & 0o7) | self.u2_led[1] & 0o0177400   #
-        self.u2_led[2] = 1 << ((mir >>  9) & 0o7) | self.u2_led[2] & 0o0177400   #
-        self.u2_led[3] = 1 << ((mir >>  6) & 0o7) | self.u2_led[3] & 0o0177400   #
-        self.u2_led[4] = 1 << ((mir >>  3) & 0o7) | self.u2_led[4] & 0o0177400   #
-        self.u2_led[5] = 1 << ((mir      ) & 0o7) | self.u2_led[5] & 0o0177400   #
+            mir &= 0o177777
+            self.u2_led[0] = which_led  | 1 << ((mir >> 15) & 1) | self.u2_led[0] & 0o0177400   #
+            self.u2_led[1] = 1 << ((mir >> 12) & 0o7) | self.u2_led[1] & 0o0177400   #
+            self.u2_led[2] = 1 << ((mir >>  9) & 0o7) | self.u2_led[2] & 0o0177400   #
+            self.u2_led[3] = 1 << ((mir >>  6) & 0o7) | self.u2_led[3] & 0o0177400   #
+            self.u2_led[4] = 1 << ((mir >>  3) & 0o7) | self.u2_led[4] & 0o0177400   #
+            self.u2_led[5] = 1 << ((mir      ) & 0o7) | self.u2_led[5] & 0o0177400   #
 
         # print("Setting U2 LED[0] to 0x%x; mir=0o%o, which=%d, activate=%d" % (self.u2_led[0], mir, which, activate))
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=6)
@@ -519,7 +438,6 @@ class MappedSwitchClass:
                                ("Stop-on-Addr", "Stop-on-CK", "Stop-on-S1", "F-Scope", "D-Scope"))
         self.ff_preset_state = [0, 0]        # ff2 and ff3 preset values
         self.pc_preset_state = 0             # pc preset values
-        self.mir_preset = [0, 0]             # preset values for Left and Right Manual Intervention Register
         self.which_mir  = 0                  # Left is Zero, Right is One
 
 
@@ -620,17 +538,17 @@ class MappedSwitchClass:
                 self.which_mir = 0    # switch to Left MIR
             if row == 2:
                 self.which_mir = 1    # switch to Right MIR
-            regf = self.mir_preset[self.which_mir]
+            regf = self.md.mir_state[self.which_mir]
         else:
             print("mir switch row %d, col %d" %(row, col))
-            reg = self.mir_preset[self.which_mir]
+            reg = self.md.mir_state[self.which_mir]
             val = row & 7  # it can't be more than three bits anyways...
             mask = 0o177777 ^ (7 << 3 * ((5 - col)))   # mir switches are col 0-5
 
             regf = (reg & mask) | (val << (3 * (5 - col)))       # insert the three designated bits
-            self.mir_preset[self.which_mir] = regf
+            self.md.mir_state[self.which_mir] = regf
         print("preset LMIR = 0o%06o, RMIR = 0o%06o, MIR=%d" % 
-            (self.mir_preset[0], self.mir_preset[1], self.which_mir))
+            (self.md.mir_state[0], self.md.mir_state[1], self.which_mir))
         self.md.set_mir_preset_switch_leds(regf, which=self.which_mir, activate=activate)
 
 
@@ -1076,7 +994,7 @@ class IS31FL3731:
             self.bus.write_i2c_block_data(self.i2c_addr, first_row * 2, byte_list)
         except IOError:
             I2CBusTimeout += 1
-            print("***  I2C Bus Timeout #%d ***" % I2CBusTimeout)
+            print("***  I2C addr 0x%x Bus Timeout #%d at %s ***" % (self.i2c_addr, I2CBusTimeout,  time.asctime()))
 
     def init_IS31(self):
         _frame = 0
