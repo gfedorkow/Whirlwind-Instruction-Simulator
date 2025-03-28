@@ -688,19 +688,20 @@ literal-digit-seq												Decimal inreger
 	* Dbg: Added bp disable/enable
 	* Dbg: made "p" print single locs and blocks
 	- Send Knuth info we have for any insights
-	- Added -r (readable section) to flex converter
+	* Added -r (readable section) to flex converter
 	x Made ! be the stop char -- but not really needed
 		[Backed out -- not needed.]
-	- Added - for stdin to flex convertor. That and the same additionm to
+	* Added - for stdin to flex convertor. That and the same additionm to
 	  sim allows here-docs and thus easier testing of L&Z.
-	- sim accepts - for std in for papter tape file, so can easly run tests
+	* sim accepts - for std in for papter tape file, so can easly run tests
 	- Float (actually 30,0) printer -- what's the qp instruction?
 	- Issues remaining with L&Z:
 		- Parens not compleletly working
 		- Divide seems broken overall (more than just the inaccurate spax divide)
 		- Float printer, flexo device
 	* Fixed precedence of | and &
-	- Question about one's-comp at asm level -- I'm not in favor
+	* Question about one's-comp at asm level -- I'm not in favor
+		[Seems resolved that we'll keep it as-is]
 	- Add debugger section to doc
 	- Update doc with new asm comment-fmt options
 
@@ -923,14 +924,18 @@ rs
           Restart program
 b addr1,...,addrN
           Define a breakpoint for each given address. Prints id and corresponding address.
-bd id1,...,idN
-          Delete breakpoint or watchpoint defined by each given id.
-bdis id1,...,idN
-          Disable breakpoint or watchpoint defined by each given id.
-ben id1,...,idN
-          Enable breakpoint or watchpoint defined by each given id.
 bl
           List breakpoints and watchpoints.
+bd id-range1,...,id-rangeN
+          id-range = id-num | id-num1 - id-num2 | all
+          Delete breakpoint or watchpoint defined by each given id, id range, or all.
+          E.g.:
+          bd 0-4, 7, 8-10
+          bd all
+bdis id-range1,...,id-rangeN
+          Disable breakpoint or watchpoint defined by each given id, id range, or all.
+bden id-range1,...,id-rangeN
+          Enable breakpoint or watchpoint defined by each given id, id range, or all.
 tb [n-insts]
           Traceback: history of instructions, latest at the bottom.
           Prints n-insts; default (and max) is 100.
@@ -942,8 +947,7 @@ h
           Print help
 quit
           Exit debugger and simulator
-dbg 10> 
-
+dbg 10>
 
 Issues/Notes:
 

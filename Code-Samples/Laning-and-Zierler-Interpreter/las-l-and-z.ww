@@ -37,7 +37,7 @@ a1:
           si 128
 1a1:      ao 36a1
 2a1:      rd 2a1
-		  .print "xxxxx 1 rd %ao"
+;		  .print "xxxxx 1 rd %ao"
 3a1:      ad a3                ; (l.c. or u.c.) ; [LAS was ad (a3/1a3)]
           td 8a1
           td 40a4
@@ -65,7 +65,7 @@ a1:
           su 51a3              ;  | integer in (43r, 44r
           slr 9                ;  |
           ts 44a1              ; -|
-		  .print "digit read-in %fl", 43a1
+;		  .print "digit read-in %fl", 43a1
           ca 25a1
           td 34a1
 ; | Sheet 2/20
@@ -94,7 +94,7 @@ a2:
 2a2:      ca 11a16             ; -| store "sp to print
           sp 9a8               ; -| control"
 4a2:      rd 4a2               ; -| read in
-		  .print "xxxxx 2 rd %ao"
+;		  .print "xxxxx 2 rd %ao"
           ao 13a2              ;  | "RINT"
           cp 4a2               ; -|
           sp 2a1
@@ -436,7 +436,7 @@ a10:
 40a10:    ca 52a10             ; (SP)
 41a10:    ts 56a10
 42a10:    rd 42a10
-		  .print "xxxxx 3 rd %ao"
+;		  .print "xxxxx 3 rd %ao"
           su 54a4
           cp 0                 ; (provision for future SR, CR instructions)
           su 21a4
@@ -572,7 +572,7 @@ a13:
           ts 40a13
           cs 40a13
           ts 40a13
-          ca 210
+          ca 210	; ; [LAS Knuth says "= dv 0", so that is likely what's supposed to be at 210]
 27a13:    ad 0
           ts 34a13
 29a13:    ao 40a13
@@ -597,14 +597,17 @@ a15:
           ta 3a15              ; -| plant address of 1st 
 1a15:     sp ax                ; -| character to be printed
           si 149
+  		  .print "++++ 3a15: %i", 3a15
 3a15:     ca 0
           td 16a15
           td 8a15
           cp 9a15              ; -| If next symbol is an sp order carry it out. 
-          si 0                 ;  | Since symbols to be printed are stored as ; [LAS was sp ax. Would then crash due to following sp 0.
-                               ;  |                                           ; Not sure how this loop is supposed to be terminated,
-                               ;  |                                           ; but the calc is done so we'll halt.]
-8a15:     sp 0                 ; -| "mr x,mr y," etc. the "mr" actuates this xxx [?]
+; lz_halt:  si 0                 ;  | Since symbols to be printed are stored as    ; [LAS was sp ax. Would then crash due to following sp 0.
+                               ;  | "mr x,mr y," etc. the "mr" actuates          ;  Not sure how this loop is supposed to be terminated,
+                               ;  | this xxx [?]                                 ;  but the calc is done so we'll halt.]
+		  .print "**** 8a15: %i", 8a15
+8a15:     sp 0                 ; -|
+		  .print "^^^^ 9a15"
 9a15:     su a3                ; -|
           clc 10               ;  | form and print first letter
 11a15:    rc 11a15             ; -|
@@ -656,6 +659,8 @@ a14:
 
 float_print: ta fltprt_rtn
 			 sp ax ; Come out of spax and resume std ww operations
+			 ad 0  ; Nop for setting breakpoint
+			 ; Use internal op until we get "real" printer to work
 			 .print "LZ output: %fm", mra
 			 sp ax ; Return control to the calling spax
 fltprt_rtn:	 sp 0  ; Return to caller (interpreted)

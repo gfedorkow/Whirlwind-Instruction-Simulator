@@ -624,6 +624,10 @@ class CpuClass:
                 else:
                     flex_ascii: str = self.flexo.code_to_letter (flex_code, show_unprintable = True)
                 output_str += flex_ascii
+            elif fmt == "%i":
+                addr = self.rl (argList.pop(0))
+                (opcode, short_opcode, address, label) = self.get_inst_info (addr)
+                output_str += "%s 0o%o%s" % (short_opcode, address, label)
             else:
                 output_str += fmt
         if argList != []:

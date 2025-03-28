@@ -32,6 +32,17 @@ def convert_ascii(cb, input_string):
     flexo_codes = []
     for c in input_string:
         if c in lower_dict and c in upper_dict:
+
+            # If in both dicts, it doesn't necessarily mean the chars are the
+            # same, e.g., lower vs upper case (superscript) numbers. We'll take
+            # the lower, and change case to lower, but it does mean that to
+            # specify certain upper-case chars a special ascii notation will
+            # be needed. This appears to be what's behind WW's x|4, which means
+            # by modern conventions x^4.
+
+            if upper_case:
+                flexo_codes.append(flexo.FLEXO_LOWER)
+                upper_case = False
             flexo_codes.append(lower_dict[c])
         elif c in lower_dict:
             if upper_case == True:
@@ -44,10 +55,6 @@ def convert_ascii(cb, input_string):
                 upper_case = True
             flexo_codes.append(upper_dict[c])
     return flexo_codes
-
-
-
-
             
 def format_readable (cb, input_string) -> str:
     flexo = wwinfra.FlexoClass(cb)
@@ -61,6 +68,9 @@ def format_readable (cb, input_string) -> str:
 
     for c in input_string:
         if c in lower_dict and c in upper_dict:
+            if upper_case:
+                r += "; %06o %s\n" % (flexo.FLEXO_LOWER, "shift dn")    # See comment above about being in both dicts
+                upper_case = False
             r += "; %06o %s\n" % (lower_dict[c], mrfcn (lower_dict[c], c))
         elif c in lower_dict:
             if upper_case == True:

@@ -318,6 +318,11 @@ class Tokenizer:
                     self.state = 9
                     self.pos += 1
                     token = token + c
+                elif c == 'i':
+                    self.state = 1
+                    self.pos += 1
+                    token = '%' + c
+                    return token
                 else:
                     self.error ("Illegal format directive at char pos %d in %s" % (self.pos, self.str) +
                                 self.caratString (self.str, self.pos))
