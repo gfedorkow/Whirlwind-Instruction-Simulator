@@ -451,7 +451,6 @@ class MappedSwitchClass:
         self.fn_buttons_def = (("Examine", "Read In", "Order-by-Order", "Start at 40", "Start Over", "Restart", "Stop", "Clear"),
                                ("Stop-on-Addr", "Stop-on-CK", "Stop-on-S1", "F-Scope", "D-Scope"))
         self.ff_preset_state = [0, 0]        # ff2 and ff3 preset values
-        self.pc_preset_state = 0             # pc preset values
         self.which_mir  = 0                  # Left is Zero, Right is One
 
 
@@ -537,11 +536,12 @@ class MappedSwitchClass:
         bit_num = row
         if col & 1 == 0:  # even-numbered registers are the most-significant bits of Column numbers
             bit_num += 8
-        reg = self.pc_preset_state
+        presets = self.md.read_preset_switch_leds()
+
+        reg = presets["pc"]
         regf = reg ^ (1 << bit_num)         # flip the designated bit
-        self.pc_preset_state = regf
         print("pc flip bit: bit_num=%d, reg=0o%o, regf=0o%o" % (bit_num, reg, regf))
-        self.md.set_preset_switch_leds(pc=regf, pc_bank=None, bank_test=False)
+        self.md.set_preset_switch_leds(pc=regf, pc_bank=None)
 
 
     def mir_sw(self, row, col):
