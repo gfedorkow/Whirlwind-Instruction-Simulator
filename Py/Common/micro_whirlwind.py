@@ -123,8 +123,8 @@ class PanelMicroWWClass:
 
         ff2 = cpu.cm.rd(2, skip_mar=True)   # 'skip_mar' says to _not_ update the MAR/PAR with this read
         ff3 = cpu.cm.rd(3, skip_mar=True)
-        self.md.set_cpu_reg_display(cpu=cpu, mdr=mdr, mar=mar, mar_bank=0, ff2=ff2, ff3=ff3)
-#            self.set_cpu_state_lamps(cb, cb.sim_state, alarm_state)
+        self.md.set_cpu_reg_display(cpu=cpu, mdr=mdr, mar=mar, mar_bank=0, ff2=ff2, ff3=ff3,
+                                    run_state=cb.sim_state != cb.SIM_STATE_STOP)
         bn = self.check_buttons()
         if bn:
             presets = self.md.read_preset_switch_leds()
@@ -248,16 +248,20 @@ class MappedRegisterDisplayClass:
 
 
     # CPU run state is displayed in the most significant three bits of U1 Register 8
-    def set_run_state(self, run_state, alarm_state):
-        self.run_state = run_state
-        self.alarm_state = alarm_state
-        self.set_cpu_reg_display()
+#    def set_run_state(self, run_state, alarm_state):
+#        self.run_state = run_state
+#        self.alarm_state = alarm_state
+#        self.set_cpu_reg_display()
+#    def set_cpu_state_lamps(self, cb, sim_state, alarm_state):
+#        self.reg_disp.set_run_state(sim_state != cb.SIM_STATE_STOP, alarm_state, )
+
+
 
     def set_IndReg_leds(self, ind_register):
         self.ind_register = bit_reverse_16(ind_register) & 0xff
         self.set_cpu_reg_display()
 
-    def set_cpu_reg_display(self, cpu=None, mdr=0, mar=0, mar_bank=0, ff2=0, ff3=0):
+    def set_cpu_reg_display(self, cpu=None, mdr=0, mar=0, mar_bank=0, ff2=0, ff3=0, run_state=0):
         if cpu:
             acc_r = bit_reverse_16(cpu._AC)
             pc_r = bit_reverse_16(cpu.PC & 0o3777)
@@ -284,12 +288,12 @@ class MappedRegisterDisplayClass:
             self.u1_led[6] = ~b_reg_r
             self.u1_led[7] = b_reg_r
 
-            self.u5_led[0] = ~pc_r
-            self.u5_led[1] = pc_r
-            self.u5_led[2] = ~ff3r
-            self.u5_led[3] = ff3r
-            self.u5_led[4] = ~ff2r
-            self.u5_led[5] = ff2r
+            self.u5_led[0] = pc_r
+            self.u5_led[1] = ~pc_r
+            self.u5_led[2] = ff3r
+            self.u5_led[3] = ~ff3r
+            self.u5_led[4] = ff2r
+            self.u5_led[5] = ~ff2r
 
             # Carry-Out / SAM register
             # Bit 8 -  0x0100 -> red -1 carry
@@ -307,10 +311,12 @@ class MappedRegisterDisplayClass:
         # Bit 13 - 0x2000 -> red Alarm
         # Bit 14 - 0x4000 -> red Stop
         # Bit 15 - 0x8000 -> red Run
-        if self.run_state:
-            state_leds |= 0x8000  #  Run led
-        else:
-            state_leds |= 0x4000  #  Stop led
+        if run_state is not None:
+            if run_state:
+                state_leds |= 0x8000  #  Run led
+            else:
+                state_leds |= 0x4000  #  Stop led
+            self.run_state = run_state
         if self.alarm_state:
             state_leds |= 0x2000
         self.u1_led[8] = self.ind_register | state_leds
@@ -710,7 +716,11 @@ class TCA8414:
         self.bus.write_byte_data(self.i2c_addr, command, val)
 
     def readRegister(self, command):
-        val = self.bus.read_byte_data(self.i2c_addr, command)
+        try:
+            val = self.bus.read_byte_data(self.i2c_addr, command)
+        except IOError:
+            I2CBusTimeout += 1
+            print("***  bus.read_byte_data I2C addr 0x%x Bus Timeout #%d at %s ***" % (self.i2c_addr, I2CBusTimeout,  time.asctime()))
         if Debug_I2C: print("readRegister: cmd=%x val=%x" % (command, val))
         return val
 
@@ -994,7 +1004,7 @@ class IS31FL3731:
             self.bus.write_i2c_block_data(self.i2c_addr, first_row * 2, byte_list)
         except IOError:
             I2CBusTimeout += 1
-            print("***  I2C addr 0x%x Bus Timeout #%d at %s ***" % (self.i2c_addr, I2CBusTimeout,  time.asctime()))
+            print("***  bus.write_i2c_block_data I2C addr 0x%x Bus Timeout #%d at %s ***" % (self.i2c_addr, I2CBusTimeout,  time.asctime()))
 
     def init_IS31(self):
         _frame = 0
@@ -1347,8 +1357,6 @@ class MappedDisplayTestDriverClass:
 
         self.reg_list.append(RegListClass(var_name=self.mir_preset,  num_bits=16, fn="mir_preset"))  # 8
 
-#    def set_cpu_state_lamps(self, cb, sim_state, alarm_state):
-#        self.reg_disp.set_run_state(sim_state != cb.SIM_STATE_STOP, alarm_state, )
 
     def step(self, delay):
 
