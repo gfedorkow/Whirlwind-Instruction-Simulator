@@ -235,7 +235,15 @@ class MappedRegisterDisplayClass:
         self.run_state = 0
         self.alarm_state = 0
         self.ind_register = 0   # this is the eight-bit "user" indicator light display
-        self.u1_is31 = Is31(i2c_bus, IS31_1_ADDR_U1)
+
+        RdB = 8
+        WhB = 4
+        BlB = 10
+
+                        #  MAR                     MDR                 ACC                  BR
+        u1_brightness = [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + \
+                        [RdB]*8  + [RdB] + [WhB] + [RdB] + [WhB] + [RdB]*4   # IND + SAM + run/stop
+        self.u1_is31 = Is31(i2c_bus, IS31_1_ADDR_U1, u1_brightness)
         self.u2_is31 = Is31(i2c_bus, IS31_1_ADDR_U2)
         self.u5_is31 = Is31(i2c_bus, IS31_1_ADDR_U5)
         self.u1_led = [0] * 9
@@ -905,7 +913,6 @@ def rotary_decode(pressed, which_key):
     print("%s: key=%d dir=%d" % (push_str, which_key, direction))
 
 
-
 # =============== IS31FL3731 LED Mux ==================================
     # This class was derived from an Adafruit example
 class IS31FL3731:
@@ -974,16 +981,17 @@ class IS31FL3731:
         #  _i2c_dev->write(erasebuf, 25);
         #}
         IS31_LEDS = 192
-        I2C_BLOCK = 24
-        val = [bright] * I2C_BLOCK
+        I2C_BLOCK = 24    # break the 192 LED settings into nine blocks of 24 bytes
+        if bright is None:
+            bright = [4]*IS31_LEDS
 
-        print("set brightness to %x" % bright)
+        # There's a one-byte register to set brightness for each individual LED, starting at offset 0x24
         for i in range(0, IS31_LEDS // I2C_BLOCK):
-            self.writeMultiRegister(i*I2C_BLOCK + 0x24, val)   # each 8 LEDs on (off)
-        onoff = [0x5C] * (IS31_LEDS // 8)  # 8 bits per byte of on/off status
-        print("set on-status to ", onoff)
+            self.writeMultiRegister(i*I2C_BLOCK + 0x24, bright[I2C_BLOCK*i:I2C_BLOCK*(i+1)])
+        # onoff = [0x5C] * (IS31_LEDS // 8)  # 8 bits per byte of on/off status
+        # print("set on-status to ", onoff)
         # for i in range(0, 18):
-        self.writeMultiRegister(0, onoff)   # each 8 LEDs on (off)
+        # self.writeMultiRegister(0, onoff)   # each 8 LEDs on (off)
 
     # convert an array of 16-bit ints into a list of bytes to turn LEDs on or off
     # The longest string we can send is 9 words, so this routine goes until
@@ -1028,9 +1036,6 @@ class IS31FL3731:
         self.displayFrame(_frame)
 
         #time.sleep(1)
-        print("set brightness")
-        # all LEDs to the same brightness, and turn them all off
-        self.set_brightness(0x04)  # Red should be 16; white is less
 
 
 
@@ -1096,13 +1101,16 @@ class PwrCtlClass:
 
 # initialize a test instance for LED patterns.
 class Is31:
-    def __init__(self, i2c_bus, addr, reverse_bits=False):
+    def __init__(self, i2c_bus, addr, brightness=None, reverse_bits=False):
         self.is31 = IS31FL3731(i2c_bus, addr)
         self.i2c_bus = i2c_bus
         print("IS31 at 0x%0x Init" % addr)
         self.addr = addr
         # is31.i2c_reg_test()
         self.is31.init_IS31()
+        print("set brightness")
+        self.is31.set_brightness(brightness)
+
         self.is31.selectFrame(0)   # do this once, so it doesn't have to be done with each write of the LEDs
         self.is31.write_16bit_led_rows(0, [0, 0, 0, 0, 0, 0, 0, 0, 0])  # clear all the LEDs
         print("  IS31 init done")
