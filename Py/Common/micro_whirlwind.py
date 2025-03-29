@@ -226,30 +226,36 @@ def bit_reverse_16(x):
     x = ((x & 0x3333) << 2) | ((x & 0xCCCC) >> 2)
     x = ((x & 0x0F0F) << 4) | ((x & 0xF0F0) >> 4)
     x = ((x & 0x00FF) << 8) | ((x & 0xFF00) >> 8)
-    return x    
+    return x
 
+
+# This array of LED brightness is global so it can be called by the diagnostic as well as operational code
+RdB = 20
+WhB = 2
+BlB = 30
+                #  MAR                     MDR                 ACC                  BR
+u1_brightness = [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + \
+                [WhB]*8  + [RdB] + [WhB] + [RdB] + [WhB] + [RdB]*4   # IND + SAM + run/stop
+u2_brightness = [BlB]*192
+                #  PC                     FF3                 FF3                  unused
+u5_brightness = [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + \
+                [WhB]*16   # unused
 
 
 class MappedRegisterDisplayClass:
     def __init__(self, i2c_bus):
+        global RdB, WhB, BlB, u1_brightness, u2_brightness, u5_brightness
         self.run_state = 0
         self.alarm_state = 0
         self.ind_register = 0   # this is the eight-bit "user" indicator light display
 
-        RdB = 8
-        WhB = 4
-        BlB = 10
-
-                        #  MAR                     MDR                 ACC                  BR
-        u1_brightness = [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + \
-                        [RdB]*8  + [RdB] + [WhB] + [RdB] + [WhB] + [RdB]*4   # IND + SAM + run/stop
-        self.u1_is31 = Is31(i2c_bus, IS31_1_ADDR_U1, u1_brightness)
-        self.u2_is31 = Is31(i2c_bus, IS31_1_ADDR_U2)
-        self.u5_is31 = Is31(i2c_bus, IS31_1_ADDR_U5)
+        self.u1_is31 = Is31(i2c_bus, IS31_1_ADDR_U1, brightness=u1_brightness)
+        self.u2_is31 = Is31(i2c_bus, IS31_1_ADDR_U2, brightness=u2_brightness)
+        self.u5_is31 = Is31(i2c_bus, IS31_1_ADDR_U5, brightness=u5_brightness)
         self.u1_led = [0] * 9
         self.u2_led = [0] * 9
         self.u5_led = [0] * 9
-        # in most cases, the actual state for preset registers is stored in the LEDs, so that write and 
+        # in most cases, the actual state for preset registers is stored in the LED arrays, so that write and 
         # read both go to the same place.  There's only one set of LEDs for the two MIRs, so that state is
         # stored here, and the LEDs are nothing but display.
         self.mir_state = [0]*2  # two element array to remember the MIR settings, Left=0, Right=1
@@ -1440,6 +1446,8 @@ PassCount = 0
 
 def main():
     global PassCount, Verbose
+    global RdB, WhB, BlB, u1_brightness, u2_brightness, u5_brightness
+
     parser = argparse.ArgumentParser(description='Diagnostic for MicroWhirlwind PCB')
     parser.add_argument("-v", "--Verbose", help="Print lots of chatter", action="store_true")
     parser.add_argument("-d", "--Delay", help="wait time between steps", type=str)
@@ -1503,15 +1511,15 @@ def main():
         tests +=1
 
     if args.U1_LED_Mux_Loop:
-        is31_U1 = Is31(i2c_bus, IS31_1_ADDR_U1)
+        is31_U1 = Is31(i2c_bus, IS31_1_ADDR_U1, u1_brightness)
         tests += 1
 
     if args.U5_LED_Mux_Loop:
-        is31_U5 = Is31(i2c_bus, IS31_1_ADDR_U5)
+        is31_U5 = Is31(i2c_bus, IS31_1_ADDR_U5, u5_brightness)
         tests += 1
 
     if args.U2_LED_Mux_Loop:
-        is31_U2 = Is31(i2c_bus, IS31_1_ADDR_U2)
+        is31_U2 = Is31(i2c_bus, IS31_1_ADDR_U2, u2_brightness)
         tests += 1
 
     if args.Key_0_Scan:
