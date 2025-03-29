@@ -400,22 +400,38 @@ class MappedRegisterDisplayClass:
     # MIR [15]     U2_R0-[0-1]
     # LMIR, RMIR   U2_R0-[2-3]
     # U, L Activate U2_R0-[4-5]
-    def set_mir_preset_switch_leds(self, mir=None, which=0, activate=0):
-        if mir:
+    def set_mir_preset_switch_leds(self, mir=None, which=None, activate=None):
+        if which is not None:
             if which:
                 which_led = 8  # bit 3
             else:
                 which_led = 4  # bit 2
+            self.u2_led[0] = which_led | (self.u2_led[0] & 0o0177763)   #
+            print("which_led = %o, led[0] = 0o%06o" % (which_led, self.u2_led[0]))
+        else:
+            which = 0
+        if activate is not None:
+            self.u2_led[0] = (activate & 3) << 6  | (self.u2_led[0] & 0o0177477)   #
+            print("activate led = %o, led[0] = 0o%06o" % ((activate & 3 << 6), self.u2_led[0]))
+        else:
+            activate = -1
 
+        if mir is not None:
             mir &= 0o177777
-            self.u2_led[0] = which_led  | 1 << ((mir >> 15) & 1) | self.u2_led[0] & 0o0177400   #
-            self.u2_led[1] = 1 << ((mir >> 12) & 0o7) | self.u2_led[1] & 0o0177400   #
-            self.u2_led[2] = 1 << ((mir >>  9) & 0o7) | self.u2_led[2] & 0o0177400   #
-            self.u2_led[3] = 1 << ((mir >>  6) & 0o7) | self.u2_led[3] & 0o0177400   #
-            self.u2_led[4] = 1 << ((mir >>  3) & 0o7) | self.u2_led[4] & 0o0177400   #
-            self.u2_led[5] = 1 << ((mir      ) & 0o7) | self.u2_led[5] & 0o0177400   #
+            self.u2_led[0] = 1 << ((mir >> 15) & 1)   | (self.u2_led[0] & 0o0177774)   #
+            self.u2_led[1] = 1 << ((mir >> 12) & 0o7) | (self.u2_led[1] & 0o0177400)   #
+            self.u2_led[2] = 1 << ((mir >>  9) & 0o7) | (self.u2_led[2] & 0o0177400)   #
+            self.u2_led[3] = 1 << ((mir >>  6) & 0o7) | (self.u2_led[3] & 0o0177400)   #
+            self.u2_led[4] = 1 << ((mir >>  3) & 0o7) | (self.u2_led[4] & 0o0177400)   #
+            self.u2_led[5] = 1 << ((mir      ) & 0o7) | (self.u2_led[5] & 0o0177400)   #
+        else:
+            mir = -1
 
-        # print("Setting U2 LED[0] to 0x%x; mir=0o%o, which=%d, activate=%d" % (self.u2_led[0], mir, which, activate))
+        msg = ''
+        for i in range(0, 6):
+            msg += "%d:0o%06o, " % (i, self.u2_led[i])
+
+        print("Setting U2 LEDs to %s; mir=0o%o, which=%d, activate=%d" % (msg, mir, which, activate))
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=6)
 
 
