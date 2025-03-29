@@ -124,7 +124,7 @@ class PanelMicroWWClass:
         ff2 = cpu.cm.rd(2, skip_mar=True)   # 'skip_mar' says to _not_ update the MAR/PAR with this read
         ff3 = cpu.cm.rd(3, skip_mar=True)
         self.md.set_cpu_reg_display(cpu=cpu, mdr=mdr, mar=mar, mar_bank=0, ff2=ff2, ff3=ff3,
-                                    run_state=cb.sim_state != cb.SIM_STATE_STOP)
+                                    run_state=cb.sim_state != cb.SIM_STATE_STOP, alarm_state=alarm_state)
         bn = self.check_buttons()
         if bn:
             presets = self.md.read_preset_switch_leds()
@@ -275,7 +275,7 @@ class MappedRegisterDisplayClass:
         self.ind_register = bit_reverse_16(ind_register) & 0xff
         self.set_cpu_reg_display()
 
-    def set_cpu_reg_display(self, cpu=None, mdr=0, mar=0, mar_bank=0, ff2=0, ff3=0, run_state=0):
+    def set_cpu_reg_display(self, cpu=None, mdr=0, mar=0, mar_bank=0, ff2=0, ff3=0, run_state=0, alarm_state=None):
         if cpu:
             acc_r = bit_reverse_16(cpu._AC)
             pc_r = bit_reverse_16(cpu.PC & 0o3777)
@@ -331,6 +331,8 @@ class MappedRegisterDisplayClass:
             else:
                 state_leds |= 0x4000  #  Stop led
             self.run_state = run_state
+        if alarm_state is not None:
+            self.alarm_state = alarm_state
         if self.alarm_state:
             state_leds |= 0x2000
         self.u1_led[8] = self.ind_register | state_leds
