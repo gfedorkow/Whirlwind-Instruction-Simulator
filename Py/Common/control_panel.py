@@ -817,11 +817,11 @@ class PanelClass:
         ret_blinken = True
         ret_mWW = True
         if self.panel_xwin:
-            ret_xwin = self.panel_xwin.update_panel(cb, bank, alarm_state=0, standalone=False, init_PC=init_PC)
+            ret_xwin = self.panel_xwin.update_panel(cb, bank, alarm_state=alarm_state, standalone=False, init_PC=init_PC)
         if self.panel_blinken:
             ret_blinken = self.panel_blinken.update_panel(cb, bank, alarm_state=0, standalone=False, init_PC=init_PC)
         if self.panel_mWW:
-            ret_mWW = self.panel_mWW.update_panel(cb, bank, alarm_state=0, standalone=False, init_PC=init_PC)
+            ret_mWW = self.panel_mWW.update_panel(cb, bank, alarm_state=alarm_state, standalone=False, init_PC=init_PC)
         if ret_xwin == False or ret_blinken == False or ret_mWW == False:
             return False
         return True

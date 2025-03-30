@@ -1793,49 +1793,14 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
 
 # This state machine is used to control the flow of execution for the simulator
 # It's called by either the xwin graphical control panel or by the buttons-and-lights panel
-def moved_to_Panel_sim_state_machine(switch_name, cb):
-    sw = switch_name
-    if sw == "Stop":
-        cb.sim_state = cb.SIM_STATE_STOP
-        # self.dispatch["Stop"].lamp_object.set_lamp(True)
-        # self.dispatch["Start at 40"].lamp_object.set_lamp(False)
-        return
-
-    if sw == "Restart":   # don't mess with the PC, just pick up from the last address
-        cb.sim_state = cb.SIM_STATE_RUN
-        return
-
-    if sw == "Start at 40":
-        cb.sim_state = cb.SIM_STATE_RUN
-        cb.cpu.PC = 0o40
-        return
-
-    if sw == "Start Over":  # start executing at the address in the PC switch register
-        cb.sim_state = cb.SIM_STATE_RUN
-        cb.cpu.PC = cb.panel.pc_toggle_sw.read_button_vector()
-        return
-
-    if sw == "Order-by-Order":  # don't mess with the PC, just pick up from the last address
-        cb.sim_state = cb.SIM_STATE_SINGLE_STEP
-        return
-
-    if sw == "Examine":  # don't mess with the PC, just pick up from the last address
-        if cb.sim_state == cb.SIM_STATE_RUN:
-            cb.log.warn("Examine button may only be used when the machine is stopped")
-        addr = cb.panel.pc_toggle_sw.read_button_vector()
-        cb.cpu.cm.rd(addr)   # simply reading the register has the side effect of updating MAR and PAR/MDR
-        return
-
-    if sw == "Read In":  # Start all over again from reading in the "tape"
-        cb.sim_state = cb.SIM_STATE_READIN
-        popup = control_panel.DialogPopup()
-        filename = popup.get_text_entry("Filename: ", "foo.acore")
-        print("filename:%s" % filename)
-        cb.CoreFileName = filename
-        return
-
-    print("Unhandled Button %s" % sw)
-    return
+# def moved_to_Panel_sim_state_machine(switch_name, cb):
+#    sw = switch_name
+#    if sw == "Stop":
+#        cb.sim_state = cb.SIM_STATE_STOP
+         # self.dispatch["Stop"].lamp_object.set_lamp(True)
+         # self.dispatch["Start at 40"].lamp_object.set_lamp(False)
+#        return
+# etc...
 
 
 def poll_sim_io(cpu, cb):
@@ -1973,14 +1938,16 @@ def main_run_sim(args, cb):
 
     start_time = time.time()
     last_day = get_the_date()
-    #  Here Commences The Main Loop
+    #  Here (soon!) Commences The Main Loop (ok, maybe not quite here, but soon...)
     # simulate each cycle one by one
     sim_cycle = 0
-    if args.Panel:
+    if args.Panel and not args.QuickStart:
         cb.sim_state = cb.SIM_STATE_STOP
+    else:
+        cb.sim_state = cb.SIM_STATE_RUN
     alarm_state = cb.NO_ALARM
     if cb.panel:
-        cb.panel.update_panel(cb, 0, init_PC=cpu.PC)  # I don't think we can miss a mouse clicks on this call
+        cb.panel.update_panel(cb, 0, init_PC=cpu.PC, alarm_state=alarm_state)  # I don't think we can miss a mouse clicks on this call
 
     # LAS
     if UseDebugger:
@@ -2000,7 +1967,7 @@ def main_run_sim(args, cb):
     # LAS
     if UseDebugger:
         Debugger.repl (cpu.PC)
-        
+
     # the main sim loop is enclosed in a try/except so we can clean up from a keyboard interrupt
     # Mostly this doesn't matter...  but the analog GPIO and SPI libraries need to be closed
     # to avoid an error message on subsequent calls
@@ -2012,7 +1979,7 @@ def main_run_sim(args, cb):
             # When the simulation is not stopped, we do this check below ever n-hundred cycles to keep the
             #  panel overhead in check.
             if cb.sim_state == cb.SIM_STATE_STOP and cb.panel:
-                if cb.panel.update_panel(cb, 0) == False:  # just idle here, watching for mouse clicks on the panel
+                if cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # just idle here, watching for mouse clicks on the panel
                     alarm_state = cb.QUIT_ALARM
                     break  # bail out of the While True loop if display update says to stop due to Red-X hit
                 time.sleep(0.1)
@@ -2030,7 +1997,7 @@ def main_run_sim(args, cb):
             if (sim_cycle % update_rate == 0) or args.SynchronousVideo or CycleDelayTime:
                 exit_alarm = cb.NO_ALARM
                 if cb.panel:
-                    if cb.panel.update_panel(cb, 0) == False:  # watch for mouse clicks on the panel
+                    if cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # watch for mouse clicks on the panel
                         exit_alarm = cb.QUIT_ALARM
                     if cb.sim_state == cb.SIM_STATE_READIN:
                         alarm_state = cb.READIN_ALARM
@@ -2065,15 +2032,23 @@ def main_run_sim(args, cb):
             if cb.sim_state == cb.SIM_STATE_SINGLE_STEP:
                 cb.sim_state = cb.SIM_STATE_STOP
 
+            # Different things happen if there's an alarm; if Control Panel. we just switch to sim_stop; if it's cmd-line, exit
             if alarm_state != cb.NO_ALARM:
                 print("Alarm '%s' (%d) at PC=0o%o (0d%d)" % (cb.AlarmMessage[alarm_state], alarm_state, cpu.PC - 1, cpu.PC - 1))
-                if cb.panel and cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # watch for mouse clicks on the panel
-                    break
-                # the normal case is to stop on an alarm; if the command line flag says not to, we'll try to keep going
-                # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
-                if not args.NoAlarmStop or \
-                        alarm_state == cb.QUIT_ALARM  or alarm_state == cb.HALT_ALARM or alarm_state == cb.READIN_ALARM:
-                    break
+                if cb.panel:
+                    if alarm_state == cb.QUIT_ALARM:   # they said Quit, we'll quit.
+                        break
+                    else:  # here's the state where we hit an alarm, but it's not QUIT
+                        cb.sim_state = cb.SIM_STATE_STOP
+#                if cb.panel and cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # watch for mouse clicks on the panel
+#                    break
+
+                else:
+                    # the normal case with cmd-line wwsim is to stop on an alarm; if the command line flag says not to, we'll try to keep going
+                    # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
+                    if not args.NoAlarmStop or \
+                            alarm_state == cb.QUIT_ALARM  or alarm_state == cb.HALT_ALARM or alarm_state == cb.READIN_ALARM:
+                        break
             sim_cycle += 1
             if sim_cycle % 2000000 == 0 or alarm_state == cb.QUIT_ALARM:
                 print("cycle %2.1fM; mem=%dMB" % (sim_cycle / (1000000.0), psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
@@ -2190,6 +2165,7 @@ def main():
     parser.add_argument("--PETRBfile", type=str,
                         help="File name for photoelectric paper tape reader B input file")
     parser.add_argument("--NoAlarmStop", help="Don't stop on alarms", action="store_true")
+    parser.add_argument("--QuickStart", help="Don't wait for the Restart button on the control panel; just go!", action="store_true")
     parser.add_argument("-n", "--NoCloseOnStop", help="Don't close the display on halt", action="store_true")
     parser.add_argument("-p", "--Panel",
                         help="Pop up a Whirlwind Manual Intervention Panel window", action="store_true")

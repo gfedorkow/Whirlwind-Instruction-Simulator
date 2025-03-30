@@ -411,7 +411,10 @@ class MappedRegisterDisplayClass:
         else:
             which = 0
         if activate is not None:
-            self.u2_led[0] = (activate & 3) << 6  | (self.u2_led[0] & 0o0177477)   #
+            # Sigh, I still do not understand why Activate buttons turned up where they did...
+            self.u2_led[7] = activate & 1             # Lower Activate
+            self.u2_led[8] = (activate >> 1) & 1      # Upper Activate
+            # self.u2_led[0] = (activate & 3) << 6  | (self.u2_led[0] & 0o0177477)   #
             print("activate led = %o, led[0] = 0o%06o" % ((activate & 3 << 6), self.u2_led[0]))
         else:
             activate = -1
@@ -432,7 +435,7 @@ class MappedRegisterDisplayClass:
             msg += "%d:0o%06o, " % (i, self.u2_led[i])
 
         print("Setting U2 LEDs to %s; mir=0o%o, which=%d, activate=%d" % (msg, mir, which, activate))
-        self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=6)
+        self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # ought to be six, no?
 
 
 
