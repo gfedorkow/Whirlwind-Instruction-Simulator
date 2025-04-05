@@ -208,7 +208,7 @@ class PanelMicroWWClass:
         presets = self.md.read_preset_switch_leds()
         for sw in ("ff2", "ff3"):
             val = presets[sw]
-            print("copy 0o%o into %s" % (val, sw))
+            # print("copy 0o%o into %s" % (val, sw))
             addr = sw[2]   # 2 or 3
             function(int(addr), val)  # calls Coremem.write_ff_reg()
             if log:
@@ -376,19 +376,19 @@ class MappedRegisterDisplayClass:
         # self.u2_led[1] = ((pc & 0o377) << 8) | self.u2_led[1] & 0o377
         pc = (self.u2_led[1] >> 8) & 0o377 | self.u2_led[0] & 0o003400
         ret["pc"] = pc
-        print("read_preset_switch_leds: preset LEDs PC set to 0o%o" % pc)
+        # print("read_preset_switch_leds: preset LEDs PC set to 0o%o" % pc)
 
         # self.u2_led[2] = (ff2 & 0o177400)     | self.u2_led[2] & 0o377
         # self.u2_led[3] = ((ff2 & 0o377) << 8) | self.u2_led[3] & 0o377
         ff2 = (self.u2_led[3] >> 8) & 0o377 | self.u2_led[2] & 0o177400
         ret["ff2"] = ff2
-        print("read_preset_switch_leds: preset LEDs FF2 set to 0o%o" % ff2)
+        # print("read_preset_switch_leds: preset LEDs FF2 set to 0o%o" % ff2)
 
         # self.u2_led[4] = (ff3 & 0o177400)     | self.u2_led[4] & 0o377
         # self.u2_led[5] = ((ff3 & 0o377) << 8) | self.u2_led[5] & 0o377
         ff3 = (self.u2_led[5] >> 8) & 0o377 | self.u2_led[4] & 0o177400
         ret["ff3"] = ff3
-        print("read_preset_switch_leds: preset LEDs FF3 set to 0o%o" % ff3)
+        # print("read_preset_switch_leds: preset LEDs FF3 set to 0o%o" % ff3)
         return ret
 
     #
