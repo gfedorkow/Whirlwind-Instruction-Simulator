@@ -88,7 +88,8 @@ class AnaScope:
             gpio.setup(self.pin_doDraw, gpio.OUT)
             gpio.setup(self.pin_enZ1,   gpio.OUT)
             gpio.setup(self.pin_enZ2,   gpio.OUT)
-            gpio.setup(self.pin_TargetLED,  gpio.IN, pull_up_down=gpio.PUD_UP)
+            gpio.setup(self.pin_audio_click,    gpio.OUT)
+            gpio.setup(self.pin_TargetLED,      gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.setup(self.pin_InterceptorLED, gpio.IN, pull_up_down=gpio.PUD_UP)
 
             gpio.setup(self.pin_isKey, gpio.IN, pull_up_down=gpio.PUD_UP)

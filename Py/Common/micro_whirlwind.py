@@ -594,7 +594,7 @@ class MappedSwitchClass:
                 print("Lower Activate Button")
             elif row == 5:  # Upper_Activate
                 self.md.set_activate_switch_leds(2)
-                print("Lower Activate Button")
+                print("Upper Activate Button")
         else:
             # print("mir switch row %d, col %d" %(row, col))
             reg = self.md.mir_state[self.which_mir]
@@ -603,7 +603,7 @@ class MappedSwitchClass:
 
             regf = (reg & mask) | (val << (3 * (5 - col)))       # insert the three designated bits
             self.md.mir_state[self.which_mir] = regf
-            self.md.set_mir_preset_switch_leds(regf, which=self.which_mir)
+        self.md.set_mir_preset_switch_leds(regf, which=self.which_mir)
         print("preset LMIR = 0o%06o, RMIR = 0o%06o, MIR=%d" %
             (self.md.mir_state[0], self.md.mir_state[1], self.which_mir))
 
