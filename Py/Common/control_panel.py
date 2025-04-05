@@ -848,20 +848,6 @@ class PanelClass:
         if self.panel_mWW:
             self.panel_mWW.write_register(which_one, value)
 
-    # assemble all the known activate bits into a single word
-    # Not obvious what to do if _both_ panel types are enabled at the same time
-    # def activate_reg_read(self):
-    #     if self.panel_blinken:
-    #         return(self.panel_blinken.activate_reg_read())
-    #     if self.panel_xwin:
-    #         return(self.panel_xwin.activate_reg_read())
-
-    # write activate register; no return value
-    # def activate_reg_write(self, val):
-    #     if self.panel_blinken:
-    #         self.panel_blinken.activate_reg_write(val)
-    #     if self.panel_xwin:
-    #         self.panel_xwin.activate_reg_write(val)
 
     def reset_ff_registers(self, function, log=None, info_str=''):
         if self.panel_blinken:
