@@ -61,18 +61,6 @@
 @S0242: y_offset
 @S0243: data_strt
 @S0244: data_end
-@E0060: print: "xxx8 %ao %bo"
-@E0061: print: "xxx9 %ao %bo"
-@E0125: print: "xxx12 %ao %bo %d %o", 0o000002, 0o000002
-@E0126: print: "xxx10 %ao %bo"
-@E0127: print: "xxx11 %ao %bo"
-@E0211: print: "xxx1 %ao %bo"
-@E0212: print: "xxx2 %ao %bo"
-@E0213: print: "xxx3 %ao %bo"
-@E0215: print: "xxx4 %ao %bo"
-@E0216: print: "xxx5 %ao %bo"
-@E0220: print: "xxx6 %ao %bo"
-@E0221: print: "xxx7 %ao %bo"
 @N0002:  Flip Flop 2
 @N0003:  Flip Flop 3
 @N0040:  Red ; was FOUR; si 4 clears indicator-light-panel four
@@ -87,6 +75,7 @@
 @N0056:  fetch constant S2 = 0.37760
 @N0057:  divide contents of AC by npts_norm, result in BR; 0.37760 / 0.4 = almost 1.0
 @N0060:  Red ;Shift by eight bits *and round off* --> 0o400
+@N0061: 	.print "xxx9 %ao %bo"
 @N0062:  Red; Outer display loop;  Fetch a One
 @N0063:   T2+1 must contain a loop counter; initialize it to One
 @N0064:  Reset Flip Flop Registers to default from switches
@@ -123,6 +112,7 @@
 @N0123:  add current
 @N0124:  save the result in temp t6
 @N0125:   Scope Amplitude, default 0o10
+@N0126: 	.print "xxx10 %ao %bo"
 @N0127:  Select Display Points ; the vertical axis setting is in AC[0:9]
 @N0130:  Fetch current point in first data array
 @N0131:  Save it on the current point of the second array
@@ -151,6 +141,7 @@
 @N0213:  this puts 1 in the incr location, and 400 in the AC
 @N0214:  20r ; multiply 0.00001 times 0.00400 = 0.00000 0.01000
 @N0215:  AC=0o400
+@N0216: 	.print "xxx5 %ao %bo"
 @N0220:  double the increment value; now it's TWO
 @N0221:  @25r ; save the increment step size
 @N0223:  initialize the y-offset to the negative of the number of points = -0o400

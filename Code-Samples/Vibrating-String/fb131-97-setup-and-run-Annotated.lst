@@ -68,9 +68,9 @@
 @0055:130060            ao d1                    ; with the effect of dividing the number by four
 @0056:100147            ca s1                    ; fetch constant S2 = 0.37760
 @0057:150150            dv s2                    ; divide contents of AC by npts_norm, result in BR; 0.37760 / 0.4 = almost 1.0
-                        .print "xxx8 %ao %bo"
+                        ;	.print "xxx8 %ao %bo"
 @0060:154000        d1: slr 0                    ; Red ;Shift by eight bits *and round off* --> 0o400 @@WrittenBy a0052 a0054 a0055 ReadBy a0054 a0055
-                        .print "xxx9 %ao %bo"
+                        ;	.print "xxx9 %ao %bo"
 @0061:040151            ts s3
 @0062:100001     oloop: ca 1                     ; Red; Outer display loop;  Fetch a One @@JumpedToBy a0141
 @0063:040144            ts loop_cnt              ;  T2+1 must contain a loop counter; initialize it to One
@@ -110,11 +110,11 @@
 @0122:110000        a7: ad 0                     ; add current @@WrittenBy a0074
 @0123:110000        a8: ad 0                     ; add current @@WrittenBy a0075
 @0124:040146            ts t6                    ; save the result in temp t6
-                        .print "xxx12 %ao %bo %d %o", scope_amp, scope_amp
+                        ;	.print "xxx12 %ao %bo %d %o", scope_amp, scope_amp
 @0125:144002            mh scope_amp             ;  Scope Amplitude, default 0o10
-                        .print "xxx10 %ao %bo"
+                        ;	.print "xxx10 %ao %bo"
 @0126:154014            slr 12
-                        .print "xxx11 %ao %bo"
+                        ;	.print "xxx11 %ao %bo"
 @0127:000600            si 384                   ; Select Display Points ; the vertical axis setting is in AC[0:9] ; Auto-Annotate I/O: Display Points
 @0130:100000        a9: ca 0                     ; Fetch current point in first data array @@WrittenBy a0071
 @0131:040000       a10: ts 0                     ; Save it on the current point of the second array @@WrittenBy a0105
@@ -170,21 +170,21 @@
                         ; number of points.  But we seem to have lost the number of points scale factor...
 @0210:150241            dv npts_norm             ; divide contents of AC by npts_norm, result in BR;
                         ; i.e., 0.2 / 0.4  -> 0.4 octal, in the B Reg
-                        .print "xxx1 %ao %bo"
+                        ;	.print "xxx1 %ao %bo"
 @0211:155001            slh 1                    ; - puts 0o01 in AC
-                        .print "xxx2 %ao %bo"
+                        ;	.print "xxx2 %ao %bo"
 @0212:155000            slh 0                    ; ?? what's with this??  (WAS ZERO) @@WrittenBy a0203
-                        .print "xxx3 %ao %bo"
+                        ;	.print "xxx3 %ao %bo"
 @0213:064240            ex incr                  ; this puts 1 in the incr location, and 400 in the AC
 @0214:144240            mh incr                  ; 20r ; multiply 0.00001 times 0.00400 = 0.00000 0.01000
-                        .print "xxx4 %ao %bo"
+                        ;	.print "xxx4 %ao %bo"
 @0215:155017            slh 15                   ; AC=0o400
-                        .print "xxx5 %ao %bo"
+                        ;	.print "xxx5 %ao %bo"
 @0216:040241            ts npts_norm
 @0217:100240            ca incr
-                        .print "xxx6 %ao %bo"
+                        ;	.print "xxx6 %ao %bo"
 @0220:155001            slh 1                    ; double the increment value; now it's TWO
-                        .print "xxx7 %ao %bo"
+                        ;	.print "xxx7 %ao %bo"
 @0221:040240            ts incr                  ; @25r ; save the increment step size
 @0222:104241            cs npts_norm
 @0223:040242            ts y_offset              ; initialize the y-offset to the negative of the number of points = -0o400
