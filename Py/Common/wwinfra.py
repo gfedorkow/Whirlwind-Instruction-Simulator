@@ -104,15 +104,16 @@ LogMsgType = Enum ("LogMsgType", ["Raw", "Log", "Debug", "Debug7ch", "Debug556",
 LogMsgSeverity = Enum ("LogMsgSeverity", ["Error", "Info", "Warning", "Fatal"])
 
 class LogClass:
-    def __init__(self, corefile, quiet: bool = None, debug556: bool = None, debugtap: bool = None,
-                 debugldr: bool = None, debug7ch: bool = None, debug: bool = None,
-                 factory = None, logfile = None):
+    def __init__(self, corefile, quiet: bool = None, no_warn: bool = None, debug556: bool = None, 
+                 debugtap: bool = None, debugldr: bool = None, debug7ch: bool = None, 
+                 debug: bool = None, factory = None, logfile = None):
         self._debug = debug
         self._debug556 = debug556
         self._debug7ch = debug7ch
         self._debugtap = debugtap
         self._debugldr = debugldr
-        self._quiet = quiet
+        self._quiet = quiet        # suppress "info" messages like the next branch taken, etc
+        self._no_warn = no_warn    # Suppress messages that warn of things like unitialized memory
         self.corefile = corefile
         self.error_count = 0
         self.factory = factory
@@ -189,7 +190,8 @@ class LogClass:
             self.writeLog (LogMsgType.Log, LogMsgSeverity.Info, message)
 
     def warn(self, message):
-        self.writeLog (LogMsgType.Log, LogMsgSeverity.Warning, message)
+        if not self._no_warn:
+            self.writeLog (LogMsgType.Log, LogMsgSeverity.Warning, message)
 
     def fatal(self, message):
         self.writeLog (LogMsgType.Log, LogMsgSeverity.Fatal, message)

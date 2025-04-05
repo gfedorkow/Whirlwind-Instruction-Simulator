@@ -661,10 +661,6 @@ class CpuClass:
 
         if self.cb.ana_scope:
             self.cb.ana_scope.set_audio_click(self._AC)
-            if self._AC & 0o4:   # Bit 13 of the WW Accumulator
-                print("click")
-            else:
-                print("no click")
 
         if current_pc in Breakpoints:
             Breakpoints[current_pc](self)
@@ -1894,7 +1890,6 @@ def main_run_sim(args, cb):
     flowgraph = None
     if args.FlowGraph:
         flowgraph = ww_flow_graph.FlowGraph (args.FlowGraph, args.FlowGraphOutFile, args.FlowGraphOutDir, cb)
-        # cb.tracelog = flowgraph.init_log_from_sim()
 
     if args.Radar:
                                         # heading is given as degrees from North, counting up clockwise
@@ -2146,7 +2141,8 @@ def main():
     parser.add_argument("-fo", "--FlowGraphOutFile", help="Specify flow graph output file. Implies -f", type=str)
     parser.add_argument("-fd", "--FlowGraphOutDir", help="Specify flow graph output directory. Implies -f", type=str)
     parser.add_argument("-j", "--JumpTo", type=str, help="Sim Start Address in octal")
-    parser.add_argument("-q", "--Quiet", help="Suppress run-time message", action="store_true")
+    parser.add_argument("-q", "--Quiet", help="Suppress run-time messages", action="store_true")
+    parser.add_argument("--NoWarnings", help="Suppress Warning messages", action="store_true")
     parser.add_argument("-D", "--DecimalAddresses", help="Display trace information in decimal (default is octal)",
                         action="store_true")
     parser.add_argument("-c", "--CycleLimit", help="Specify how many instructions to run (zero->'forever')", type=int)
@@ -2200,7 +2196,7 @@ def main():
     # instantiate the class full of constants
     cb = wwinfra.ConstWWbitClass (corefile=args.corefile, get_screen_size = True, args = args)
     wwinfra.theConstWWbitClass = cb
-    cb.log = wwinfra.LogFactory().getLog (quiet=quiet)
+    cb.log = wwinfra.LogFactory().getLog (quiet=quiet, no_warn=args.NoWarnings)
 
     # Many args are just slightly transformed and stored in the Universal Bit Bucket 'cb'
 
