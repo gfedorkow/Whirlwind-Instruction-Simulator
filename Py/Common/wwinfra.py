@@ -473,6 +473,7 @@ class ConstWWbitClass:
         self.analog_display = False   # set this flag to display on an analog oscilloscope instead of an x-window
         self.use_x_win = True         # clear this flag to completely turn off the xwin display, widgets and all
         self.ana_scope = None   # this is a handle to the methods for operating the analog scope
+        self.which_scope = 3    # default to showing both D and F scopes on the xwin display
 
         # These two will be set by prog that needs them. Looks like only wwsim at this point. LAS 5/17/24
         self.argAutoClick = False

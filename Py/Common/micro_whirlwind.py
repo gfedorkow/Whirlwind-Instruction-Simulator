@@ -129,7 +129,7 @@ class PanelMicroWWClass:
         if bn:
             presets = self.md.read_preset_switch_leds()
             pc_preset = presets["pc"]
-            self.sim_state_machine(bn, cb, pc_preset) # the third arg should be the PC Preset switch register
+            self.sim_state_machine(bn, cb, pc_preset, which_scope=self.md.set_scope_selector_leds) # the third arg should be the PC Preset switch register
 
         if init_PC:
             self.write_register("PC", init_PC)
@@ -447,6 +447,13 @@ class MappedRegisterDisplayClass:
             self.activate = 0
             self.set_mir_preset_switch_leds()
         return ret
+
+    # write two bits to the LED array to indicate which 'scope (D and/or F) is enabled
+    def set_scope_selector_leds(self, which):
+        # Bits 11 & 12 of offset 7 in the LED array
+        self.u2_led[7] = 11 << (which & 0o3) | (self.u2_led[5] & 0o163777)
+        self.u2_is31.is31.write_16bit_led_rows(7, self.u2_led, len=1)  # just write one word
+
 
 class MappedSwitchClass:
     def __init__(self, i2c_bus, mapped_display):
