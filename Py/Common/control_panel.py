@@ -889,12 +889,12 @@ class PanelClass:
             return
 
         if sw == "D-Scope":  # Flip the selector for the D-Scope
-            cb.which_scope ^ 1   # D-Scope bit
+            cb.which_scope ^= 2   # D-Scope bit
             set_scope_selector_leds(cb.which_scope)
             return
 
         if sw == "F-Scope":  # Flip the selector for the D-Scope
-            cb.which_scope ^ 2   # F-Scope bit
+            cb.which_scope ^= 1   # F-Scope bit
             set_scope_selector_leds(cb.which_scope)
             return
 

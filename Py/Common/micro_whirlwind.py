@@ -91,6 +91,10 @@ class PanelMicroWWClass:
 
             self.md = MappedRegisterDisplayClass(i2c_bus)
             self.sw = MappedSwitchClass(i2c_bus, self.md)
+            # I think there's only one set of lights that need to be initialized from CB
+            # The rest come from the ReadIn operation
+            print("Preset Scope Selectors to %d" % cb.which_scope)
+            self.md.set_scope_selector_leds(cb.which_scope)
         except IOError:
             self.micro_ww_module_present = False
             print("Missing MicroWhirlwind Panel drivers")
@@ -200,10 +204,10 @@ class PanelMicroWWClass:
                 self.md.set_preset_switch_leds(pc=value)
             case "LMIR":
                 self.md.mir_state[0] = value
-                self.md.set_mir_preset_switch_leds(which=0, mir=value)
+                self.md.set_mir_preset_switch_leds()
             case "RMIR":
                 self.md.mir_state[1] = value
-                self.md.set_mir_preset_switch_leds(which=1, mir=value)
+                self.md.set_mir_preset_switch_leds()
             case "ActivationReg0":
                 # internally, the two Activate bits are stored as Py Bits 0 & 1;  In WW, it's bits 15, 14
                 # The Write Activate function is only used by Python Automation, i.e., the simulator can't turn
@@ -295,7 +299,7 @@ class MappedRegisterDisplayClass:
         # read both go to the same place.  There's only one set of LEDs for the two MIRs, so that state is
         # stored here, and the LEDs are nothing but display.
         self.mir_state = [0]*2  # two element array to remember the MIR settings, Left=0, Right=1
-
+        self.which_mir = 1      # this element remembers which MIR value to display
 
     def set_IndReg_leds(self, ind_register):
         self.ind_register = bit_reverse_16(ind_register) & 0xff
@@ -426,38 +430,34 @@ class MappedRegisterDisplayClass:
     # MIR [15]     U2_R0-[0-1]
     # LMIR, RMIR   U2_R0-[2-3]
     # U, L Activate U2_R0-[4-5]
-    def set_mir_preset_switch_leds(self, mir=None, which=None):
-        if which is not None:
-            if which:
-                which_led = 8  # bit 3
-            else:
-                which_led = 4  # bit 2
-            self.u2_led[0] = which_led | (self.u2_led[0] & 0o0177763)   #
-            print("which_led = %o, led[0] = 0o%06o" % (which_led, self.u2_led[0]))
-        else:
-            which = 0
-        # Sigh, I still do not understand why Activate buttons turned up where they did...
-        self.u2_led[7] = self.activate & 1             # Lower Activate
-        self.u2_led[8] = (self.activate >> 1) & 1      # Upper Activate
-        # self.u2_led[0] = (self.activate & 3) << 6  | (self.u2_led[0] & 0o0177477)   #
-        print("activate led = %o, led[0] = 0o%06o" % ((self.activate & 3 << 6), self.u2_led[0]))
 
-        if mir is not None:
-            mir &= 0o177777
-            self.u2_led[0] = 1 << ((mir >> 15) & 1)   | (self.u2_led[0] & 0o0177774)   #
-            self.u2_led[1] = 1 << ((mir >> 12) & 0o7) | (self.u2_led[1] & 0o0177400)   #
-            self.u2_led[2] = 1 << ((mir >>  9) & 0o7) | (self.u2_led[2] & 0o0177400)   #
-            self.u2_led[3] = 1 << ((mir >>  6) & 0o7) | (self.u2_led[3] & 0o0177400)   #
-            self.u2_led[4] = 1 << ((mir >>  3) & 0o7) | (self.u2_led[4] & 0o0177400)   #
-            self.u2_led[5] = 1 << ((mir      ) & 0o7) | (self.u2_led[5] & 0o0177400)   #
+    def set_mir_preset_switch_leds(self):
+        if self.which_mir:
+            which_led = 4  # bit 2
         else:
-            mir = -1
+            which_led = 8  # bit 3
+        self.u2_led[0] = which_led | (self.u2_led[0] & 0o0177763)   #
+                # Sigh, I still do not understand why Activate buttons turned up where they did...
+        self.u2_led[7] = self.activate & 1        | (self.u2_led[7] & 0o177776)     # Lower Activate
+        self.u2_led[8] = (self.activate >> 1) & 1 | (self.u2_led[8] & 0o177776)     # Upper Activate
+        # self.u2_led[0] = (self.activate & 3) << 6  | (self.u2_led[0] & 0o0177477)   #
+        # print("activate led = %o, led[0] = 0o%06o" % ((self.activate & 3 << 6), self.u2_led[0]))
+
+        mir = self.mir_state[self.which_mir]
+        mir &= 0o177777
+        self.u2_led[0] = 1 << ((mir >> 15) & 1)   | (self.u2_led[0] & 0o0177774)   #
+        self.u2_led[1] = 1 << ((mir >> 12) & 0o7) | (self.u2_led[1] & 0o0177400)   #
+        self.u2_led[2] = 1 << ((mir >>  9) & 0o7) | (self.u2_led[2] & 0o0177400)   #
+        self.u2_led[3] = 1 << ((mir >>  6) & 0o7) | (self.u2_led[3] & 0o0177400)   #
+        self.u2_led[4] = 1 << ((mir >>  3) & 0o7) | (self.u2_led[4] & 0o0177400)   #
+        self.u2_led[5] = 1 << ((mir      ) & 0o7) | (self.u2_led[5] & 0o0177400)   #
 
         msg = ''
         for i in range(0, 6):
             msg += "%d:0o%06o, " % (i, self.u2_led[i])
 
-        print("Setting U2 LEDs to %s; mir=0o%o, which=%d, activate=%d" % (msg, mir, which, self.activate))
+        print("Setting U2 LEDs to %s; mir[0]=0o%o, mir[1]=0o%o, mir=0o%o, which=%d, activate=%d" % 
+            (msg, self.mir_state[0], self.mir_state[1], mir, self.which_mir, self.activate))
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # ought to be six, no?
 
 
@@ -483,8 +483,8 @@ class MappedRegisterDisplayClass:
     # write two bits to the LED array to indicate which 'scope (D and/or F) is enabled
     def set_scope_selector_leds(self, which):
         # Bits 11 & 12 of offset 7 in the LED array
-        self.u2_led[7] = 11 << (which & 0o3) | (self.u2_led[7] & 0o163777)
-        self.u2_is31.is31.write_16bit_led_rows(7, self.u2_led, len=1)  # just need to write one word
+        self.u2_led[7] = (which & 0o3) << 11 | (self.u2_led[7] & 0o163777)
+        self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # just write one word
 
 
 class MappedSwitchClass:
@@ -540,7 +540,7 @@ class MappedSwitchClass:
                 row = key // 10
                 col = key % 10
                 button_press = self.u3_switch_map[col](row, col)
-                print("Pressed %s: row=%d, col=%d" % (button_press, row, col))
+                print("Pressed U3 %s: row=%d, col=%d" % (button_press, row, col))
                 if button_press:
                     return button_press
         elif self.tca84_u4.available() > 0:
@@ -552,7 +552,7 @@ class MappedSwitchClass:
                 row = key // 10
                 col = key % 10
                 button_press = self.u4_switch_map[col](row, col)
-                print("Pressed %s: row=%d, col=%d" % (button_press, row, col))
+                print("Pressed U4 %s: row=%d, col=%d" % (button_press, row, col))
 #        else:
 #            if RasPi == False:
 #                if msvcrt.kbhit():
@@ -623,11 +623,13 @@ class MappedSwitchClass:
         activate = 0
         if col == 0 and row >= 2:  # four buttons in Col 0 are function keys
             if row == 2:
-                self.which_mir = 1    # switch to Right MIR
-                regf = self.md.mir_state[self.which_mir]
+                self.md.which_mir = 1    # switch to Right MIR
+                self.md.set_mir_preset_switch_leds()
+                print("Set display to RMIR; self.which_mir=%d" % self.which_mir)
             elif row == 3:
-                self.which_mir = 0    # switch to Left MIR
-                regf = self.md.mir_state[self.which_mir]
+                self.md.which_mir = 0    # switch to Left MIR
+                self.md.set_mir_preset_switch_leds()
+                print("Set display to LMIR; self.which_mir=%d" % self.which_mir)
             elif row == 4:   # Lower_Activate
                 self.md.set_activate_switch_leds(1)
                 print("Lower Activate Button")
@@ -642,9 +644,9 @@ class MappedSwitchClass:
 
             regf = (reg & mask) | (val << (3 * (5 - col)))       # insert the three designated bits
             self.md.mir_state[self.which_mir] = regf
-        self.md.set_mir_preset_switch_leds(regf, which=self.which_mir)
-        print("preset LMIR = 0o%06o, RMIR = 0o%06o, MIR=%d" %
-            (self.md.mir_state[0], self.md.mir_state[1], self.which_mir))
+            self.md.set_mir_preset_switch_leds()
+            print("preset LMIR = 0o%06o, RMIR = 0o%06o, MIR=%d" %
+                (self.md.mir_state[0], self.md.mir_state[1], self.which_mir))
 
 
 
