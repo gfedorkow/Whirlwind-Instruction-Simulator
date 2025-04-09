@@ -1936,7 +1936,7 @@ def main_run_sim(args, cb):
     #  Here (soon!) Commences The Main Loop (ok, maybe not quite here, but soon...)
     # simulate each cycle one by one
     sim_cycle = 0
-    if args.Panel and not args.QuickStart:
+    if cb.panel and not args.QuickStart:
         cb.sim_state = cb.SIM_STATE_STOP
     else:
         cb.sim_state = cb.SIM_STATE_RUN
@@ -2263,7 +2263,7 @@ def main():
     # a click of the red box.
     while True:
         (alarm_state, sim_cycle) = main_run_sim(args, cb)
-        if (alarm_state == cb.QUIT_ALARM) or (args.Panel == False and alarm_state != cb.NO_ALARM):
+        if (alarm_state == cb.QUIT_ALARM) or (cb.panel is None and alarm_state != cb.NO_ALARM):
             print("Ran %d cycles; Used mem=%dMB" % (sim_cycle, psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
             if not UseDebugger:
                 break

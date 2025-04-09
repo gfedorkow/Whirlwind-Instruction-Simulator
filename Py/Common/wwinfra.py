@@ -718,8 +718,10 @@ class WWSwitchClass:
         # name" field to the dictionary below...
         self.SwitchNameDict = {
             # name: [default_val, mask, internal_name]
-            "CheckAlarmSpecial": [0, 0o01, None],  # Controls the behavior of the CK instruction; see 2M-0277
-                                             # "normal" is 'off'
+            "CheckAlarmSpecial": [0, 0o01, "CheckAlarmSpecial"],  # Controls the behavior of the CK instruction; see 2M-0277
+                                                                    # "normal" is 'off'
+            "StopOnS1":             [0, 0o01, "StopOnS1"],  # SI 0 always causes a Halt; SI 1 may or may not halt, depending this switch
+            "StopOnAddr":           [0, 0o01, "StopOnAddr"],  # WW 'breakpoint' -- if 'On': halt if PC==PC_Preset
             "LeftInterventionReg":  [0, 0xffff, "LMIR"],   # Left Manual Intervention Register - aka LMIR
             "RightInterventionReg": [0, 0xffff, "RMIR"],  # Right Manual Intervention Register - aka RMIR
             "ActivationReg0":       [0, 0xffff, "ActivationReg0"],  #

@@ -95,6 +95,8 @@ class PanelMicroWWClass:
             self.micro_ww_module_present = False
             print("Missing MicroWhirlwind Panel drivers")
             return
+
+        self.local_state_change_buttons = ("Stop-on-Addr", "Stop-on-CK", "Stop-on-S1")
         
 
 #        # the first element in the dict is the switch Read entry point, the second is the one to set the switches
@@ -127,14 +129,15 @@ class PanelMicroWWClass:
                                     run_state=cb.sim_state != cb.SIM_STATE_STOP, alarm_state=alarm_state)
         bn = self.check_buttons()
         if bn:
-            presets = self.md.read_preset_switch_leds()
-            pc_preset = presets["pc"]
-            self.sim_state_machine(bn, cb, pc_preset, which_scope=self.md.set_scope_selector_leds) # the third arg should be the PC Preset switch register
+            if bn in self.local_state_change_buttons:
+                self.local_state_change(bn)
+            else:
+                presets = self.md.read_preset_switch_leds()
+                pc_preset = presets["pc"]
+                self.sim_state_machine(bn, cb, pc_preset, which_scope=self.md.set_scope_selector_leds) # the third arg should be the PC Preset switch register
 
         if init_PC:
             self.write_register("PC", init_PC)
-
-
 
 
    # read a register from the switches and lights panel.
@@ -162,11 +165,15 @@ class PanelMicroWWClass:
             case "ActivationReg0":
                 # internally, the two Activate bits are stored as Py Bits 0 & 1;  In WW, it's bits 15, 14
                 ret = self.md.clear_activate_switch_leds() << 14
-
+            case "CheckAlarmSpecial":
+                ret = self.md.check_alarm_special_state
+            case "StopOnS1":
+                ret = self.md.stop_on_s1_state
+            case "StopOnAddr":
+                ret = self.md.stop_on_addr_state
             case _:
                 print("Panel.read_register: unknown register %s" % which_one)
                 exit()
-
         return ret
 
 
@@ -202,7 +209,15 @@ class PanelMicroWWClass:
                 # The Write Activate function is only used by Python Automation, i.e., the simulator can't turn
                 # on an Activate bit as a result of an instruction.
                 self.md.set_activate_switch_leds(value >> 14)
-
+            case "CheckAlarmSpecial":
+                self.md.check_alarm_special_state = value
+                self.md.update_exec_switch_leds()
+            case "StopOnS1":
+                self.md.stop_on_s1_state = value
+                self.md.update_exec_switch_leds()
+            case "StopOnAddr":
+                self.md.stop_on_addr_state = value
+                self.md.update_exec_switch_leds()
             case _:
                 print("mWWPanel.write_register: unknown register %s" % which_one)
                 exit()
@@ -222,8 +237,17 @@ class PanelMicroWWClass:
             if log:
                 log.info(info_str % (addr, addr, val))
 
-
-
+    def local_state_change(self,bn):
+        match bn:
+            case "Stop-on-Addr":
+                self.md.stop_on_addr_state ^= 1
+            case "Stop-on-CK":
+                self.md.check_alarm_special_state ^= 1
+            case "Stop-on-S1":
+                self.md.stop_on_s1_state ^= 1
+            case _:
+                print("mWWPanel.local_state_change: unknown button %s" % bn)
+        self.md.update_exec_switch_leds()
 
 # ==============================================================
 
@@ -257,6 +281,9 @@ class MappedRegisterDisplayClass:
         self.alarm_state = 0
         self.ind_register = 0   # this is the eight-bit "user" indicator light display
         self.activate = 0       # local storage of the state of the two Activate buttons
+        self.check_alarm_special_state = 0
+        self.stop_on_s1_state = 0
+        self.stop_on_addr_state = 0
 
         self.u1_is31 = Is31(i2c_bus, IS31_1_ADDR_U1, brightness=u1_brightness)
         self.u2_is31 = Is31(i2c_bus, IS31_1_ADDR_U2, brightness=u2_brightness)
@@ -448,11 +475,16 @@ class MappedRegisterDisplayClass:
             self.set_mir_preset_switch_leds()
         return ret
 
+    def update_exec_switch_leds(self):
+        self.u2_led[7] = self.u2_led[7] & 0o174377 | \
+                         self.stop_on_s1_state | self.check_alarm_special_state < 1 | self.stop_on_addr_state < 2
+        self.u2_is31.is31.write_16bit_led_rows(7, self.u2_led, len=1)  # just need to write one word
+
     # write two bits to the LED array to indicate which 'scope (D and/or F) is enabled
     def set_scope_selector_leds(self, which):
         # Bits 11 & 12 of offset 7 in the LED array
-        self.u2_led[7] = 11 << (which & 0o3) | (self.u2_led[5] & 0o163777)
-        self.u2_is31.is31.write_16bit_led_rows(7, self.u2_led, len=1)  # just write one word
+        self.u2_led[7] = 11 << (which & 0o3) | (self.u2_led[7] & 0o163777)
+        self.u2_is31.is31.write_16bit_led_rows(7, self.u2_led, len=1)  # just need to write one word
 
 
 class MappedSwitchClass:

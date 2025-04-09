@@ -619,9 +619,18 @@ class PanelXwinClass:
         self.cpu_control = CPUControlClass(self, sim_state_machine_arg=sim_state_machine_arg, x=30, y=y_start+row*self.y_step, x_step=self.x_step,
                                            y_step=self.y_step)
 
+        # this doesn't seem quite right, but the Panel is expected to store the state of a handful of switches like "Check Alarm Special"
+        self.hidden_switches = {"CheckAlarmSpecial": 0,
+                                "StopOnS1": 0,
+                                "StopOnAddr": 0,
+                                }
+
         # the first element in the dict is the switch Read entry point, the second is the one to set the switches
         self.dispatch = {"LMIR":[self.dual_ir.read_left_register, self.dual_ir.set_left_register],
                     "RMIR": [self.dual_ir.read_right_register, self.dual_ir.set_right_register],
+                    "CheckAlarmSpecial": [self.check_alarm_read, self.check_alarm_write],
+                    "StopOnS1": [self.stop_on_s1_read, self.stop_on_s1_write],
+                    "StopOnAddr": [self.stop_on_addr_read, self.stop_on_addr_write],
                     "ActivationReg0": [self.activate_reg_read, self.activate_reg_write],
                     "FF02": [self.ffreg[0].read_ff_register, self.ffreg[0].write_ff_register],
                     "FF02Sw": [self.ffreg[0].read_switch_register, self.ffreg[0].set_switch_register],
@@ -738,10 +747,33 @@ class PanelXwinClass:
                 lamp[i](True)   # turn on the light associated with the button
 
     def reset_ff_registers(self, function, log=None, info_str=''):
-
         for ff in self.ffreg:
             ff.reset_register(function, log, info_str)
 
+    def check_alarm_read(self):
+        return self.hidden_switches["CheckAlarmSpecial"]
+
+    def check_alarm_write(self, value):
+        self.hidden_switches["CheckAlarmSpecial"] = value
+        return 0
+
+    def stop_on_s1_read(self):
+        return self.hidden_switches["StopOnS1"]
+
+    def stop_on_s1_write(self, value):
+        self.hidden_switches["StopOnS1"] = value
+        return 0
+
+    def stop_on_addr_read(self):
+        return self.hidden_switches["StopOnAddr"]
+
+    def stop_on_addr_write(self, value):
+        self.hidden_switches["StopOnAddr"] = value
+        return 0
+
+# The graphic lib is _supposed_ to allow left or right justified text; but I _cannot_ figure out how
+# to get anything but centered.  This routine estimates how much to move a string so that it comes
+# out left-justified on the screen.  Used in Debug Widgets
 def compensate_justification(txt, font=9):
     count = len(txt)
     offset = count * (font / 3)
