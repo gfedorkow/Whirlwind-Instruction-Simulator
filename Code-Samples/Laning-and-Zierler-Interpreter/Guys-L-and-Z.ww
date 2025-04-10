@@ -1,0 +1,970 @@
+
+                        ; Converting L&Z transcription to WW format
+                        ; Sun Oct20, 2024, 2:48 pm
+                        ; Runestone iPad editor
+
+                        ; [guy] There are a number of places in the source where instructions or addresses
+                        ; are probably replaced as part of expression evaluation.  The source does seem to
+                        ; show what the two options are, but doesn't show what should go there at the time
+                        ; the program loads.
+                        ; I've assumed that the first choice goes there by default, and that something might
+                        ; change it later
+                        ; Sometimes the comments shows the address of the instruction that will carry out
+                        ; the modification.
+                        ; Here's an example
+                        ; was       (ca 2ax/cs 2ax)          ; r22 ; n is in MRA in
+                        ; ca ax + 2                ; r22 ; n is in MRA in
+
+                        ; In the comments, I'm trying to keep Laning's original comments in quote marks.
+                        ; A comment "From 10a4" would indicate that Laning thought the instruction was modified
+                        ; by 10a4, or that 10a4 branched to this location.
+
+                        ; Also in comments, square brackets indicate modern interpolations of any sort
+
+                        ; tool set corrections to be made, Nov 13, 2024
+                        ; wwsim
+                        ; needs a mode to do Trace in Decimal
+                        ; PETR RD instruction should display the character read in ASCII
+                        ; somehow comments that look like "; a ; b" are losing the 'b' part in the sim trace
+                        ; wwasm
+                        ; the assembler seemed fine with overwriting a word it had just assembled
+                        ; seems like a warning would be good :-)
+
+
+                        ; Code Transcription Follows
+                        ; [Transcribed by Larry Stabile, 10/13/24]
+                        ; [Transcription notes and questions in square brackets]
+                        ; [Meaning of double-bars?]
+                        ; [Did not transcribe "light-colored" text]
+
+                        ; Instrumentation Laboratory
+                        ; Massachusetts Institute of Technology
+                        ; Cambridge, Mass.
+                        ; Prepared by: J.H Laning Jr.
+                        ; Date: 3/53
+                        ; (Tape T-2134-m8 plus correction tape P-2134-10)
+
+                        ; Sheet 1/20
+                        ; [Section] a1 (Read-in)
+
+@0040.032:0          start:                ;  
+@0040.032:000200        a1: si   128       ; r0    ; r0 "from: START" @@JumpedToBy a0140 WrittenBy a0436 
+@0041.033:130104            ao   a1 + 36   ; r1 "from: 16r" @@JumpedToBy a0060 
+@0042.034:014042            rd   a1 + 2    ; r2 "from: NORMAL RE ENTRY" @@JumpedToBy a0105 a0124 a0151 a0204 a0206 a0212 a0222 a0240 a0243 a0251 a0252 a0303 a0304 a0306 a0312 a0322 a0340 a0453 a0464 a0526 a0544 a0572 a0641 a0715 
+                        ; [guy] the following address will be a3 or a3+1, depending if we're upper or lower case
+@0043.035:110141            ad   a3        ; r3 ; "(l.c. or u.c.)"  ; "from: (1a4)" @@WrittenBy a0242 
+@0044.036:044050            td   a1 + 8    ; r4 
+@0045.037:044311            td   a4 + 40   ; r5 
+@0046.038:044056            td   a1 + 14   ; r6 
+@0047.039:044066            td   a1 + 22   ; r7 
+@0050.040:100000            ca   0         ; r8 ;"from: (4r)" @@WrittenBy a0044 
+@0051.041:114145            su   a3 + 4    ; r9 ; " -| Is symbol [or]" 
+@0052.042:070054            cp   a1 + 12   ; r10 ;" -| a number? 
+
+                        ; was        sp (38a4/58a4)  ; r11
+@0053.043:074307            sp   a4 + 38   ; r11 @@WrittenBy a0055 a0334 
+
+                        ; was        ca (33a3/31a3)  ; r12  "31a3 is the normal mode"   ;"from: 10r"
+@0054.044:100202            ca   a3 + 33   ; r12    "31a3 is the normal mode"   ;"from: 10r" @@JumpedToBy a0052 WrittenBy a0543 a0550 
+@0055.045:044053            td   a1 + 11   ; r13 
+@0056.046:100000            ca   0         ; r14 ;"from: (6r)" @@WrittenBy a0046 
+@0057.047:114000            su   0         ; r15    "(Is symbol a period?)" 
+@0060.048:070041            cp   a1 + 1    ; r16 
+
+                        ; [guy] Remember in Flexo code, an "upper case number" is the same number, but
+                        ; printed as a superscript, which Laning uses to show Exponent...
+                        ; Laning's comment says "Lower-Case Number, or Exponent?; Set to
+                        ; interpret digit as an exponent"
+@0061.049:114227            su   a3 + 54   ; r17 ;- l.c. no.[?] or [subtract flexo for '9'] 
+@0062.050:070316            cp   a4 + 45   ; r18 ;- exponent? 
+@0063.051:100214            ca   a3 + 43   ; r19 ;- set to interpret 
+@0064.052:044335            td   a4 + 60   ; r20 ; digit as an 
+@0065.053:104337            cs   a4 + 62   ; r21 ;- exponent 
+@0066.054:110000            ad   0         ; r22 ;from: 48a4 (7r) @@JumpedToBy a0321 WrittenBy a0047 
+@0067.055:070107            cp   a1 + 39   ; r23 ;if digit is zero 
+
+                        ; [guy] Watch out for off-by-one with the sf instruction!  I _think_ it's correct!
+                        ; But I don't have test cases!
+                        ; a=0o04000 should result in n=0
+                        ; a=0o00001 should result in n=14 decimal, i.e., 0o16 -- I Think!
+                        ; The comment in r25-r27 says that we're going to store the incoming number
+                        ; as a (24,6) float in a1+43 and a1+42
+@0070.056:164224            sf   a3 + 51   ; r24 ;-| 
+@0071.057:040113            ts   a1 + 43   ; r25 ; |"Form (24,6) version" @@ReadBy a0076 
+@0072.058:100254            ca   a4 + 11   ; r26 ; |"of digit as an" 
+@0073.059:114224            su   a3 + 51   ; r27 ; |"integer in (43r, 44r)" 
+                        ; was        sl 9            ; r28 ;
+@0074.060:154011            slr  9         ; r28 ; | 
+@0075.061:040114            ts   a1 + 44   ; r29 ;-| 
+                        ; [guy] as an example, when reading input of '1', r43 gets 0o040000, r44 gets 0o001000 (I _think_ that's 1/2 raised to the 0o1000?)
+
+@0076.062:100071            ca   a1 + 25   ; r30 
+@0077.063:044102            td   a1 + 34   ; r31 
+
+                        ; Sheet 2/20
+                        ; a1
+@0100.064:075524            sp   852       ; r32    "(programmed arithmetic)" @@JumpedToBy a0112 
+@0101.065:140422            mr   a7 + 4    ; r33 ||   "(i.e., by 10)" 
+@0102.066:110000            ad   0         ; r34 || ; "written by (31r, 41r)" @@WrittenBy a0077 a0111 
+@0103.067:075524            sp   852       ; r35 || 
+@0104.068:130105            ao   a1 + 37   ; r36  ; (reset to a1 + 38)    ;from: (1r) @@WrittenBy a0041 a0404 ReadBy a0041 
+@0105.069:074042            sp   a1 + 2    ; r37 @@WrittenBy a0104 ReadBy a0104 
+@0106.070:000000            .word 0         ; r38   (counter for digits before decimal pt) @@WrittenBy a0401 
+@0107.071:000000            .word 0         ; r39   ( ''     ''   ''    after     ''   '' ) @@JumpedToBy a0067 WrittenBy a0342 a0343 a0402 ReadBy a5 a0343 
+@0110.072:100376            ca   a6 + 10   ; r40 ;from: 23r 
+@0111.073:044102            td   a1 + 34   ; r41 
+@0112.074:074100            sp   a1 + 32   ; r42 
+
+@0113.075:000000            .word 0         ; r43 ;- Temporary storage for @@WrittenBy a0071 
+@0114.076:000000            .word 0         ; r44 ;- integer during read-in @@WrittenBy a0075 
+
+
+                        ; Sheet 3/20
+                        ; a2 (PRINT)
+
+@0115.077:075016        a2: sp   a16       ; r0 ;from: (p) 44a4 @@JumpedToBy a0315 
+@0116.078:074545            sp   a10 + 28  ; r1 
+@0117.079:101031            ca   a16 + 11  ; r2 ;from: 44a4;- store 'sp to print @@JumpedToBy a1032 
+@0120.080:074435            sp   a8 + 9    ; r3 ;                        control' 
+@0121.081:014121            rd   a2 + 4    ; r4 ;-| read in @@JumpedToBy a0123 
+@0122.082:130132            ao   a2 + 13   ; r5 ; | "RINT" 
+@0123.083:070121            cp   a2 + 4    ; r6 ;-| 
+@0124.084:074042            sp   a1 + 2    ; r7 
+@0125.085:100134            ca   a2 + 15   ; r8 ;from: 17a3 (period after print instr.);- reset counter 
+@0126.086:040156            ts   a3 + 13   ; r9 ;- 
+@0127.087:075016            sp   a16       ; r10 
+@0130.088:074540            sp   a10 + 23  ; r11 
+                        ; was        (sp a3 + 8/p 0)  ; r12
+@0131.089:074151            sp   a3 + 8    ; r12 @@WrittenBy a1027 ReadBy a1025 a1027 
+@0132.090:177775            .word -3        ; r13 ; (counter); from (5r, 9r) @@WrittenBy a0122 ReadBy a0122 
+@0133.091:130172            ao   a3 + 25   ; r14 ;from: 5310 ;- part of SP routine @@JumpedToBy a0576 
+@0134.092:074407            sp   a6 + 19   ; r15 ; @@ReadBy a0125 
+@0135.093:110601            ad   a10 + 56  ; r16 ; 
+@0136.094:074374            sp   a6 + 8    ; r17 ;- 
+@0137.095:075524            sp   852       ; r18 ;from: 46a10;- START @@JumpedToBy a0567 
+@0140.096:074040            sp   32        ; r19 ;- 
+
+                        ; Sheet 4/20
+                        ; a3 (Lower case symbols)
+                        ; Symbol
+                        ; [This page is partly a table of flexo codes, but there's random bits of executable code interleaved
+                        ; among the unused flexo entries.  Almost all Flexo characters can be typed; surely that means that symbols
+                        ; that "shouldn't" be used can cause some mighty weird crashes...]
+
+@0141.097:000141        a3: .word a3        ; r0 @@ReadBy a0043 a4 a1004 
+@0142.098:000241            .word a4        ; r1 
+@0143.099:074323            sp   a4 + 50   ; r2   'e' 
+@0144.100:000011            .word 9         ; r3   '8' 
+@0145.101:074000            sp   0         ; r4 @@ReadBy a0051 a0310 a0556 a0704 
+@0146.102:000000            .word 0         ; r5; [This is the flexo code for ';', but the original doesn't have a dispatch address at all] 
+@0147.103:074323            sp   a4 + 50   ; r6   'a' 
+@0150.104:000004            .word 4         ; r7   '3' 
+
+@0151.105:074042            sp   a1 + 2    ; r8   "space" [if we hit this, we're discarding a space character in the input stream] @@JumpedToBy a0131 
+
+@0152.106:074523            sp   a10 + 10  ; r9   '=' 
+@0153.107:074323            sp   a4 + 50   ; r10  's' 
+@0154.108:000005            .word 5         ; r11  '4' 
+@0155.109:074323            sp   a4 + 50   ; r12  'i' 
+@0156.110:074325            sp   a4 + 52   ; r13  '+' @@WrittenBy a0126 
+@0157.111:074323            sp   a4 + 50   ; r14  'u' 
+@0160.112:000003            .word 3         ; r15  '2' 
+@0161.113:000000            .word 0         ; r16  ; unused flexo code "shift ribbon" 
+                        ; was   xx  (p 0/sp a2 + 8)        . [period]  ; r17 ;from: (8a16)
+@0162.114:000000            .word 0         ; r17  '.' [period] ;from: (8a16) @@WrittenBy a1026 ReadBy a1026 
+@0163.115:074323            sp   a4 + 50   ; r18  'd' 
+@0164.116:000006            .word 6         ; r19  '5' 
+@0165.117:000323            .word a4 + 50   ; r20  'r' 
+@0166.118:000002            .word 2         ; r21  '1' @@ReadBy a0426 
+@0167.119:074323            sp   a4 + 50   ; r22  'j' 
+@0170.120:000010            .word 8         ; r23  '7' 
+@0171.121:074323            sp   a4 + 50   ; r24  'n' 
+@0172.122:074527            sp   a10 + 14  ; r25  ',' @@WrittenBy a0133 a0571 a1020 ReadBy a0133 a1020 
+@0173.123:074323            sp   a4 + 50   ; r26  'f' 
+@0174.124:000007            .word 7         ; r27  '6' 
+@0175.125:074323            sp   a4 + 50   ; r28  'c' 
+@0176.126:074330            sp   a4 + 55   ; r29  '-' 
+@0177.127:074323            sp   a4 + 50   ; r30  'k' 
+@0200.128:000333            .word a4 + 58   ; r31 
+@0201.129:074323            sp   a4 + 50   ; r32  't' 
+@0202.130:000307            .word a4 + 38   ; r33 @@ReadBy a0054 a0333 
+                        ; Sheet 5/20
+                        ; a3 (continued)
+@0203.131:074323            sp   a4 + 50   ; r34  'z' 
+@0204.132:074042            sp   a1 + 2    ; r35  back space 
+@0205.133:074323            sp   a4 + 50   ; r36 'l' 
+@0206.134:074042            sp   a1 + 2    ; r37  tabulate 
+@0207.135:074323            sp   a4 + 50   ; r38  'w' 
+@0210.136:000341            .word a5        ; r39 @@ReadBy a0316 
+@0211.137:074323            sp   a4 + 50   ; r40  'h' 
+@0212.138:074042            sp   a1 + 2    ; r41  carr. return 
+@0213.139:074323            sp   a4 + 50   ; r42  'y' 
+@0214.140:000364            .word a6        ; r43 @@ReadBy a0063 
+@0215.141:074323            sp   a4 + 50   ; r44  'p' 
+@0216.142:105526            cs   ax + 2    ; r45 @@ReadBy a0474 
+@0217.143:074323            sp   a4 + 50   ; r46  'q' 
+@0220.144:040000            ts   0         ; r47 @@ReadBy a0355 a0440 a0555 a0673 
+@0221.145:074323            sp   a4 + 50   ; r48  'o' (letter) 
+@0222.146:074042            sp   a1 + 2    ; r49  stop 
+@0223.147:074323            sp   a4 + 50   ; r50  'b' 
+
+                        ; [guy] The number written here is a "number of bits to shift" from an SF instruction,
+                        ; and should be 0-32
+@0224.148:000000            .word 0         ; r51 @@WrittenBy a0070 a0370 ReadBy a0073 a0371 
+
+@0225.149:074323            sp   a4 + 50   ; r52  'g' 
+@0226.150:000142            .word a3 + 1    ; r53 @@ReadBy a0313 
+@0227.151:000012            .word 10        ; r54  '9' @@ReadBy a0061 
+@0230.152:140000            mr   0         ; r55 ; [this is probably a constant, not an op-code] @@ReadBy a14 a0766 
+@0231.153:074323            sp   a4 + 50   ; r56  'm' 
+@0232.154:074313            sp   a4 + 42   ; r57 shift to u.c. 
+@0233.155:074323            sp   a4 + 50   ; r58  'x' 
+@0234.156:150000            dv   0         ; r59 @@ReadBy a0255 
+@0235.157:074323            sp   a4 + 50   ; r60  'v' 
+@0236.158:074241            sp   a4        ; r61  shift to l.c. 
+@0237.159:000001            .word 1         ; r62  '0' (zero) @@ReadBy a0320 a0515 a0654 a0664 a0677 a0706 
+@0240.160:074042            sp   a1 + 2    ; r63  nullify 
+
+                        ; Sheet 6/20
+                        ; a4 (Upper case symbols & misc. program)
+
+                        ; [offsets in this table correspond to upper-case flexo codes; i.e., code point 6 is an upper case 'A']
+@0241.161:100141        a4: ca   a3        ; r0 ;from: 61r @@JumpedToBy a0236 a0336 
+@0242.162:044043            td   a1 + 3    ; r1 @@JumpedToBy a0314 
+@0243.163:074042            sp   a1 + 2    ; r2     'E' (not used) 
+@0244.164:000023            .word 19        ; r3     '8' (exp.) 
+@0245.165:000230            .word a3 + 55   ; r4 @@ReadBy a0476 
+@0246.166:022000            .word 0.22000   ; r5     '_'    ; r0  [Larry had it marked as '+'?] @@ReadBy a1010 
+@0247.167:000234            .word a3 + 59   ; r6     'A' (not used) @@ReadBy a0500 
+@0250.168:000016            .word 14        ; r7     '3' (exp.) 
+@0251.169:074042            sp   a1 + 2    ; r8     space 
+@0252.170:074042            sp   a1 + 2    ; r9     '.' ['dot', not period] (see note) 
+@0253.171:074561            sp   a10 + 40  ; r10    'S' 
+@0254.172:000017            .word 15        ; r11    '4' (exp.) @@ReadBy a0072 
+@0255.173:110234            ad   a3 + 59   ; r12 || 'I' (not used) @@WrittenBy a0451 a0501 a0507 ReadBy a9 a0451 a0505 a0507 a0636 
+@0256.174:074447            sp   a9        ; r13    '/' 
+@0257.175:000465            .word a9 + 14   ; r14    'U' (not used) @@ReadBy a0462 
+@0260.176:000015            .word 13        ; r15    '2' (exp.) 
+@0261.177:000000            .word 0         ; r16  shift ribbon 
+@0262.178:074652            sp   a12       ; r17    ')' 
+@0263.179:074720            sp   a13       ; r18 || 'D' (not used) @@ReadBy a0512 
+@0264.180:000020            .word 16        ; r19    '5' (exp.) @@ReadBy r67 
+@0265.181:040000            ts   0         ; r20 || 'R' (not used)  ;from: (11a10) @@WrittenBy a0524 ReadBy a0531 
+@0266.182:000014            .word 12        ; r21    '1' (exp.) @@ReadBy a0566 
+@0267.183:110771            ad   a13 + 41  ; r22 || 'J'(not used) @@ReadBy a0527 a0670 
+@0270.184:000022            .word 18        ; r23    '7' (exp.) 
+                        ; was      (cs 2ax/ca 2ax)        ; r24 || 'N' (not used)
+@0271.185:105526            cs   ax + 2    ; r24 || 'N' (not used) @@WrittenBy a0456 a0475 ReadBy a0456 
+@0272.186:074627            sp   a11       ; r25    '(' 
+@0273.187:000000            .word 0         ; r26    'F' 
+@0274.188:000021            .word 17        ; r27    '6' (exp.) 
+@0275.189:074573            sp   a10 + 50  ; r28    'C' 
+@0276.190:074461            sp   a9 + 10   ; r29    '-' (exp.) 
+
+                        ; note: The symbol . ['dot', not period] can be used at the programmer's discretion to
+                        ; denote multiplication, where convenient typographically.
+
+                        ; Sheet 7/20
+                        ; a4 (continued)
+@0277.191:050301            ta   a4 + 32   ; r30    'K' (not used)   ;from: 52r, 552 @@JumpedToBy a0325 a0330 
+@0300.192:074471            sp   a9 + 18   ; r31 
+@0301.193:100000            ca   0         ; r32    'T' (not used)  ;from: (30r) @@WrittenBy a0277 
+@0302.194:074435            sp   a8 + 9    ; r33        ;from: 51r @@JumpedToBy a0324 
+@0303.195:074042            sp   a1 + 2    ; r34    'Z' (not used) 
+@0304.196:074042            sp   a1 + 2    ; r35    back space 
+@0305.197:101526            ca   ax + 2    ; r36 || 'L' (not used) @@ReadBy a0472 
+@0306.198:074042            sp   a1 + 2    ; r37    tabulate 
+@0307.199:100311            ca   a4 + 40   ; r38    'W' (not used) ;from: 10a1 @@JumpedToBy a0053 a0405 a0470 
+@0310.200:114145            su   a3 + 4    ; r39 
+@0311.201:074000            sp   0         ; r40    'H' (not used)  ;from: (4a1) @@WrittenBy a0045 ReadBy a0307 
+@0312.202:074042            sp   a1 + 2    ; r41    carr. return 
+@0313.203:100226            ca   a3 + 53   ; r42    'Y' (not used);from: 57a3 @@JumpedToBy a0232 a0332 
+@0314.204:074242            sp   a4 + 1    ; r43 
+                        ; was       (sp a2/sp a2 + 2)      ; r44    'P'
+@0315.205:074115            sp   a2        ; r44    'P' @@WrittenBy a1023 ReadBy a1023 
+
+                        ; [guy] I think we come here when we're reading a digit from the input stream
+@0316.206:100210            ca   a3 + 39   ; r45 ;from: 17a1 @@JumpedToBy a0062 
+@0317.207:044335            td   a4 + 60   ; r46    'Q' (not used) @@ReadBy a0730 
+@0320.208:104237            cs   a3 + 62   ; r47 
+@0321.209:074066            sp   a1 + 22   ; r48    'O' (letter) (not used) 
+
+@0322.210:074042            sp   a1 + 2    ; r49    stop @@ReadBy a0752 
+@0323.211:110230       a14: ad   a3 + 55   ; r50    'B' (not used)  ;from: () @@JumpedToBy a0143 a0147 a0153 a0155 a0157 a0163 a0167 a0171 a0173 a0175 a0177 a0201 a0203 a0205 a0207 a0211 a0213 a0215 a0217 a0221 a0223 a0225 a0231 a0233 a0235 a0575 a0601 a0602 WrittenBy a0450 a0477 a0506 ReadBy a0352 a0450 a0506 a0637 a0710 
+                        ; was     sp (28a10/33r)         ; r51
+@0324.212:074302            sp   a4 + 33   ; r51 ; "33r -> normal mode" @@WrittenBy a0541 a0542 a0546 
+@0325.213:074277            sp   a4 + 30   ; r52    'G' (not used)  ;from: 13a3 @@JumpedToBy a0156 
+@0326.214:074725            sp   a13 + 5   ; r53 || 
+@0327.215:000024            .word 20        ; r54    '9' (exp.) @@ReadBy a0564 
+@0330.216:074277            sp   a4 + 30   ; r55    ;from: 29a3 @@JumpedToBy a0176 
+@0331.217:074732            sp   a13 + 10  ; r56 || 'M' (not used) 
+@0332.218:074313            sp   a4 + 42   ; r57     shift to u.c. 
+@0333.219:100202            ca   a3 + 33   ; r58    'X' (not used)  ;from: 10a1 
+@0334.220:044053            td   a1 + 11   ; r59 
+@0335.221:074000            sp   0         ; r60     'V' (not used) (from: 19a1, 46r) @@WrittenBy a0064 a0317 
+@0336.222:074241            sp   a4 + 0    ; r61     shift to l.c. @@JumpedToBy a1014 
+@0337.223:000013            .word 11        ; r62    '0' (zero exp.) @@ReadBy a0065 
+@0340.224:074042            sp   a1 + 2    ; r63    nullify 
+
+                        ; Sheet 8/20
+                        ; a5 (Interpret MRA as lower case number)
+
+@0341.225:104107        a5: cs   a1 + 39   ; r0 ;from: 60a4 
+@0342.226:040107            ts   a1 + 39   ; r1 
+@0343.227:130107            ao   a1 + 39   ; r2 ;from: 18r @@JumpedToBy a0363 
+@0344.228:070360            cp   a5 + 15   ; r3 
+@0345.229:074424            sp   a8        ; r4        (select new address k) 
+@0346.230:044350            td   a5 + 7    ; r5 
+@0347.231:075524            sp   ax        ; (= sp 852)   ; r6 ;|- store number 
+@0350.232:040000            ts   0         ; r7 || ;from: (5r);      |  in (k, k+1) @@WrittenBy a0346 ReadBy a0354 
+@0351.233:075524            sp   ax        ; r8 || 
+@0352.234:100323            ca   a4 + 50   ; r9 ; |- form symbol mr k 
+@0353.235:044356            td   a5 + 13   ; r10  |  or dv k, where 
+@0354.236:100350            ca   a5 + 7    ; r11  | k is address at 
+@0355.237:114220            su   a3 + 47   ; r12  | which number has 
+@0356.238:110000            ad   0         ; r13  |  just been stored  ;from: (10r) @@WrittenBy a0353 
+@0357.239:074374            sp   a6 + 8    ; r14  |- 
+@0360.240:075524            sp   ax        ; r15 ;from: 3r @@JumpedToBy a0344 
+@0361.241:150422            dv   a7 + 4    ; r16 ||        (divide by 10) 
+@0362.242:075524            sp   ax        ; r17 || 
+@0363.243:074343            sp   a5 + 2    ; r18 
+
+                        ; Sheet 9/20
+                        ; a6 (Interpret MRA as exponent)
+
+@0364.244:100446        a6: ca   a8 + 18   ; r0 ;from: 60a4;- store "sp exp" in 
+@0365.245:044367            td   a6 + 3    ; r1 ; place of last-stored 
+@0366.246:100406            ca   a6 + 18   ; r2 ; symbol (mr x or dv x) 
+@0367.247:064000            ex   0         ; r3 ;- @@WrittenBy a0365 
+@0370.248:044224            td   a3 + 51   ; r4 ;- 
+@0371.249:100224            ca   a3 + 51   ; r5 ; store "+x" 
+@0372.250:074435            sp   a8 + 9    ; r6 ;- 
+@0373.251:074407            sp   a6 + 19   ; r7 ;- compute and store the 
+@0374.252:074435            sp   a8 + 9    ; r8 ;- exponent +- [?] n @@JumpedToBy a0136 a0357 
+@0375.253:075524            sp   ax        ; r9 ;- @@JumpedToBy a0560 
+@0376.254:100416            ca   a7        ; r10 ; reset MRA @@ReadBy a0110 
+@0377.255:075524            sp   ax        ; r11 ; and various 
+@0400.256:100000            ca   0         ; r12 ; counters 
+@0401.257:040106            ts   a1 + 38   ; r13 ; @@ReadBy a0403 
+@0402.258:040107            ts   a1 + 39   ; r14 ; 
+@0403.259:100401            ca   a6 + 13   ; r15 ; 
+@0404.260:044104            td   a1 + 36   ; r16 ;- 
+                        ; was        sp (38a4/14a9)           ; r17
+@0405.261:074307            sp   a4 + 38   ; r17 @@WrittenBy a0463 a0467 
+@0406.262:074737            sp   a13 + 15  ; r18  ;"sp exp" @@ReadBy a0366 
+@0407.263:044415            td   a6 + 25   ; r19 @@JumpedToBy a0134 a0373 a0551 
+@0410.264:101530            ca   ax + 4    ; r20 ;- 
+@0411.265:044414            td   a6 + 24   ; r21 ; Form [?] +- [?] n, where 
+                        ; was       (ca 2ax/cs 2ax)          ; r22 ; n is in MRA in
+@0412.266:101526            ca   ax + 2    ; r22 ; n is in MRA in @@WrittenBy a0457 a0473 ReadBy a0455 a0457 
+                        ; was        sr* 15                   ; r23 ; (24,6) form
+@0413.267:160017            srr  15        ; r23 ; (24,6) form 
+                        ; was        sl 0                     ; r24 ;-
+@0414.268:154000            slr  0         ; r24 ;- @@WrittenBy a0411 
+@0415.269:074000            sp   0         ; r25 @@WrittenBy a0407 
+
+                        ; Sheet 10/20
+                        ; a7 (Numerical storage)
+
+                        ; [the source doc doesn't show these as either Octal or Decimal, but 47777 looks ]
+                        ; [like a hint, so I'll assume Octal ]
+                        ; [A7 seems like it's a couple of floating point constants]
+@0416.270:000000        a7: .word 0.00000   ; r0 ; } 0 @@ReadBy a0376 a0721 
+@0417.271:147777            .word 1.47777   ; r1 ; } 
+
+@0420.272:040000            .word 0.40000   ; r2 ; } 1 @@ReadBy a0723 a0735 
+@0421.273:001000            .word 0.01000   ; r3 ; } 
+
+@0422.274:050000            .word 0.50000   ; r4 ; } 10 @@ReadBy a0101 a0361 
+@0423.275:004000            .word 0.04000   ; r5 ; } 
+
+                        ; Sheet 11/20
+                        ; a8 (Address selection)
+
+@0424.276:050433        a8: ta   a8 + 7    ; r0 ;from: 4a5;- Select new @@JumpedToBy a0345 a0633 
+@0425.277:100434            ca   a8 + 8    ; r1 ; address for 
+@0426.278:114166            su   a3 + 21   ; r2 ; storage of 
+@0427.279:040434            ts   a8 + 8    ; r3 ; numerical 
+@0430.280:114446            su   a8 + 18   ; r4 ; quantity 
+@0431.281:070443            cp   a8 + 15   ; r5 ; 
+@0432.282:100434            ca   a8 + 8    ; r6 ; 
+@0433.283:074000            sp   0         ; r7 ;from: (0r); @@WrittenBy a8 
+@0434.284:000305            .word +197      ; r8 ;- (last address used) @@WrittenBy a0427 ReadBy a0425 a0432 a0441 
+@0435.285:050445            ta   a8 + 17   ; r9 ;from: various points;- @@JumpedToBy a0120 a0302 a0372 a0374 a0513 a0530 a0532 a11 a0671 a0674 a0705 a0714 
+@0436.286:040040            ts   32        ; r10 ; Store C(AC) in    () @@WrittenBy a0437 ReadBy a0437 a0554 
+@0437.287:130436            ao   a8 + 10   ; r11 ;    next available 
+@0440.288:114220            su   a3 + 47   ; r12 ;    program address. 
+@0441.289:114434            su   a8 + 8    ; r13 ; 
+@0442.290:070444            cp   a8 + 16   ; r14 ; 
+@0443.291:054000            ck   0         ; (alarm)        ; r15 ;from: 5r; @@JumpedToBy a0431 
+@0444.292:130446            ao   a8 + 18   ; r16 ;from: 14r; @@JumpedToBy a0442 
+@0445.293:074000            sp   0         ; r17 ;from: (9r); @@WrittenBy a0435 
+@0446.294:000037            .word 31        ; r18 ;- (last occupied program address) @@WrittenBy a0444 ReadBy a6 a0430 a0444 
+
+                        ; Sheet 12/20
+                        ; a9 (division, etc.)
+
+@0447.295:100255        a9: ca   a4 + 12   ; r0  (divide) ;from: 13a4 @@JumpedToBy a0256 
+@0450.296:064323            ex   a4 + 50   ; r1 
+@0451.297:064255            ex   a4 + 12   ; r2 
+@0452.298:074454            sp   a9 + 5    ; r3 
+                        ; was     sp (2a1/a10 + 14)      (the a10 + 14 mode is never used)  ; r4
+@0453.299:074042            sp   a1 + 2    ; r4  (the a10 + 14 mode is never used) @@WrittenBy a1021 ReadBy a1021 
+@0454.300:050460            ta   a9 + 9    ; r5 ;from: 3r,10r,14r,30r @@JumpedToBy a0452 a0461 a0465 a0504 
+@0455.301:100412            ca   a6 + 22   ; r6 
+@0456.302:064271            ex   a4 + 24   ; r7 
+@0457.303:064412            ex   a6 + 22   ; r8 
+@0460.304:074000            sp   0         ; r9 ;from: (5r) @@WrittenBy a0454 
+@0461.305:074454            sp   a9 + 5    ; r10     (upper case minus) ;from: 29a4 @@JumpedToBy a0276 
+@0462.306:100257            ca   a4 + 14   ; r11 
+@0463.307:044405            td   a6 + 17   ; r12 
+@0464.308:074042            sp   a1 + 2    ; r13 
+@0465.309:074454            sp   a9 + 5    ; r14      ; from: 17a6 [?] 
+@0466.310:100470            ca   a9 + 17   ; r15 
+@0467.311:044405            td   a6 + 17   ; r16 
+@0470.312:074307            sp   a4 + 38   ; r17 @@ReadBy a0466 
+@0471.313:050502            ta   a9 + 27   ; r18  (reset dv and exp to normal)  ;from: 28r,12a10,22a10 @@JumpedToBy a0300 a0503 a0525 a0537 a0716 
+@0472.314:100305            ca   a4 + 36   ; r19 
+@0473.315:040412            ts   a6 + 22   ; r20 
+@0474.316:100216            ca   a3 + 45   ; r21 
+@0475.317:040271            ts   a4 + 24   ; r22 
+@0476.318:100245            ca   a4 + 4    ; r23 
+@0477.319:044323            td   a4 + 50   ; r24 
+@0500.320:100247            ca   a4 + 6    ; r25 
+@0501.321:044255            td   a4 + 12   ; r26 
+@0502.322:074000            sp   0         ; r27 ;from: (18r) @@WrittenBy a0471 
+@0503.323:074471            sp   a9 + 18   ; r28   (reset dv and exp to non-normal)  ;from: 8a12 @@JumpedToBy a0662 
+@0504.324:074454            sp   a9 + 5    ; r29 
+@0505.325:100255            ca   a4 + 12   ; r30 
+@0506.326:064323            ex   a4 + 50   ; r31 
+@0507.327:064255            ex   a4 + 12   ; r32 
+@0510.328:074663            sp   a12 + 9   ; r33 
+
+                        ; Sheet 13/20
+                        ; a10 (Equals, comma, SP, CP)
+
+@0511.329:050522       a10: ta   a10 + 9   ; r0 ;from: 10r,3a11 @@JumpedToBy a0523 a0632 
+@0512.330:100263            ca   a4 + 18   ; r1 
+@0513.331:074435            sp   a8 + 9    ; r2 
+@0514.332:044615            td   a10 + 68  ; r3 @@WrittenBy a0630 a0700 ReadBy a0630 a0675 
+@0515.333:114237            su   a3 + 62   ; r4 
+@0516.334:040610            ts   a10 + 63  ; r5 @@WrittenBy a0631 a0655 ReadBy a0631 a0642 a12 
+@0517.335:044521            td   a10 + 8   ; r6 
+@0520.336:100522            ca   a10 + 9   ; r7 
+@0521.337:064000            ex   0         ; r8 ;from: (6r) @@WrittenBy a0517 
+@0522.338:074000            sp   0         ; r9 ;from: (0r) @@WrittenBy a10 ReadBy a0520 
+@0523.339:074511            sp   a10 + 0   ; r10 ;from: 9a3  (equals) @@JumpedToBy a0152 
+@0524.340:044265            td   a4 + 20   ; r11 
+@0525.341:074471            sp   a9 + 18   ; r12 ;from: 17a11 @@JumpedToBy a0650 
+@0526.342:074042            sp   a1 + 2    ; r13 
+@0527.343:100267            ca   a4 + 22   ; r14 (comma)   ;from: 25a3 @@JumpedToBy a0172 
+@0530.344:074435            sp   a8 + 9    ; r15 
+@0531.345:100265            ca   a4 + 20   ; r16 
+@0532.346:074435            sp   a8 + 9    ; r17 
+@0533.347:100610            ca   a10 + 63  ; r18 
+@0534.348:044536            td   a10 + 21  ; r19 
+@0535.349:100615            ca   a10 + 68  ; r20 
+@0536.350:044000            td   0         ; r21 ;from: (19r) @@WrittenBy a0534 
+@0537.351:074471            sp   a9 + 18   ; r22 
+@0540.352:100603            ca   a10 + 58  ; r23 @@JumpedToBy a0130 
+@0541.353:044324            td   a4 + 51   ; r24 
+@0542.354:044324            td   a4 + 51   ; r25 
+@0543.355:044054            td   a1 + 12   ; r26 
+                        ; was        sp (2a1/49r)  ; r27
+@0544.356:074042            sp   a1 + 2    ; r27 
+@0545.357:100604            ca   a10 + 59  ; r28 ;from: 51a4 @@JumpedToBy a0116 
+@0546.358:044324            td   a4 + 51   ; r29 
+@0547.359:100605            ca   a10 + 60  ; r30 
+@0550.360:044054            td   a1 + 12   ; r31 
+@0551.361:074407            sp   a6 + 19   ; r32 
+@0552.362:110602            ad   a10 + 57  ; r33 
+                        ; Sheet 14/20
+                        ; a10 (continued)
+@0553.363:044557            td   a10 + 38  ; r34 
+@0554.364:100436            ca   a8 + 10   ; r35 
+@0555.365:114220            su   a3 + 47   ; r36 
+@0556.366:110145            ad   a3 + 4    ; r37 
+@0557.367:040000            ts   0         ; r38 ;from: (34r) @@WrittenBy a0553 
+@0560.368:074375            sp   a6 + 9    ; r39 
+@0561.369:100575            ca   a10 + 52  ; r40   (SP)  ;from: 10a4 @@JumpedToBy a0253 
+@0562.370:040601            ts   a10 + 56  ; r41 ;from: 51r @@JumpedToBy a0574 
+@0563.371:014563            rd   a10 + 42  ; r42 
+@0564.372:114327            su   a4 + 54   ; r43 
+@0565.373:070000            cp   0         ; r44       (provision for future SR, CR instructions) 
+@0566.374:114266            su   a4 + 21   ; r45 
+@0567.375:070137            cp   a2 + 18   ; r46  (START) 
+@0570.376:100606            ca   a10 + 61  ; r47 
+@0571.377:044172            td   a3 + 25   ; r48 @@JumpedToBy a0600 
+@0572.378:074042            sp   a1 + 2    ; r49 
+@0573.379:100602            ca   a10 + 57  ; r50   (CP)  ;from: 28a4 @@JumpedToBy a0275 
+@0574.380:074562            sp   a10 + 41  ; r51 
+@0575.381:074323            sp   a14       ; r52 || @@ReadBy a0561 
+@0576.382:074133            sp   a2 + 14   ; r53 ;from: 25a3 
+@0577.383:100607            ca   a10 + 62  ; r54 ;from: 25a3 
+@0600.384:074571            sp   a10 + 48  ; r55 
+                        ; was      (sp a14/cp a14)  ; r56
+@0601.385:074323            sp   a14       ; r56 @@WrittenBy a0562 ReadBy a0135 
+@0602.386:070323            cp   a14       ; r57 @@ReadBy a0552 a0573 
+@0603.387:000545            .word a10 + 28  ; r58  [guy: I'm not sure if this is what "+28r" means!] @@ReadBy a0540 
+@0604.388:000302            .word a4 + 33   ; r59 @@ReadBy a0545 
+@0605.389:000200            .word a3 + 31   ; r60 @@ReadBy a0547 
+@0606.390:000576            .word a10 + 53  ; r61 @@ReadBy a0570 
+@0607.391:000527            .word a10 + 14  ; r62 @@ReadBy a0577 
+@0610.392:000000            .word 0         ; r63 ;- storage for addresses used by @@WrittenBy a0516 ReadBy a0533 
+@0611.393:000000            .word 0         ; r64 ; parenthesis routines in forming 
+@0612.394:000000            .word 0         ; r65 ; and storing sp orders 
+@0613.395:000000            .word 0         ; r66 ; 
+@0614.396:000000            .word 0         ; r67 ; [These are notated in the CS as: ] 
+@0615.397:000000            .word 0         ; r68 ; [   63-67 +0                    ] @@WrittenBy a0514 ReadBy a0535 
+@0616.398:000000            .word 0         ; r69 ; [   68-72 +0                    ] 
+@0617.399:000000            .word 0         ; r70 ; [   73-77 +0                    ] 
+@0620.400:000000            .word 0         ; r71 ; 
+@0621.401:000000            .word 0         ; r72 ; 
+@0622.402:000000            .word 0         ; r73 ; @@WrittenBy a0634 
+@0623.403:000000            .word 0         ; r74 ; 
+@0624.404:000000            .word 0         ; r75 ; 
+@0625.405:000000            .word 0         ; r76 ; 
+@0626.406:000000            .word 0         ; r77 ;- 
+
+                        ; Sheet 15/20
+                        ; a11 (Left parenthesis)
+
+@0627.407:074435       a11: sp   a8 + 9    ; r0 (store dummy symbol)  ;from: 25a4 @@JumpedToBy a0272 
+@0630.408:130514            ao   a10 + 3   ; r1 
+@0631.409:130516            ao   a10 + 5   ; r2 @@ReadBy a1017 
+@0632.410:074511            sp   a10       ; r3 
+@0633.411:074424            sp   a8        ; r4 
+@0634.412:044622            td   a10 + 73  ; r5 @@WrittenBy a0635 a0665 ReadBy a0635 a0663 
+@0635.413:130634            ao   a11 + 5   ; r6 
+@0636.414:100255            ca   a4 + 12   ; r7 
+@0637.415:114323            su   a4 + 50   ; r8 
+@0640.416:070642            cp   a11 + 11  ; r9 
+@0641.417:074042            sp   a1 + 2    ; r10 
+@0642.418:100516            ca   a10 + 5   ; r11 ;from: 9r @@JumpedToBy a0640 
+@0643.419:044645            td   a11 + 14  ; r12 
+@0644.420:044647            td   a11 + 16  ; r13 
+@0645.421:100000            ca   0         ; r14 ;from: (12r) @@WrittenBy a0643 
+@0646.422:110651            ad   a11 + 18  ; r15 
+@0647.423:040000            ts   0         ; r16 ;from: (13r) @@WrittenBy a0644 
+@0650.424:074525            sp   a10 + 12  ; r17 
+@0651.425:004000            .word 0.04000   ; r18  ; [assuming it's octal] @@ReadBy a0646 a0660 
+
+                        ; Sheet 16/20
+                        ; a12 (Right parenthesis)
+
+@0652.426:100516       a12: ca   a10 + 5   ; r0 ;from: 17a4 @@JumpedToBy a0262 
+@0653.427:044656            td   a12 + 4   ; r1 
+@0654.428:114237            su   a3 + 62   ; r2 
+@0655.429:044516            td   a10 + 5   ; r3 
+@0656.430:100000            ca   0         ; r4 ;from: (1r) @@WrittenBy a0653 
+@0657.431:044707            td   a12 + 29  ; r5 
+@0660.432:114651            su   a11 + 18  ; r6 
+@0661.433:070716            cp   a12 + 36  ; r7 
+@0662.434:074503            sp   a9 + 28   ; r8 
+@0663.435:100634            ca   a11 + 5   ; r9 ;from: 37r @@JumpedToBy a0510 a0717 
+@0664.436:114237            su   a3 + 62   ; r10 
+@0665.437:044634            td   a11 + 5   ; r11 
+@0666.438:044672            td   a12 + 16  ; r12 
+@0667.439:044712            td   a12 + 32  ; r13 
+@0670.440:100267            ca   a4 + 22   ; r14 
+@0671.441:074435            sp   a8 + 9    ; r15 
+@0672.442:100000            ca   0         ; r16 ;from: (12r) @@WrittenBy a0666 
+@0673.443:110220            ad   a3 + 47   ; r17 
+@0674.444:074435            sp   a8 + 9    ; r18 
+@0675.445:100514            ca   a10 + 3   ; r19 
+@0676.446:044702            td   a12 + 24  ; r20 
+@0677.447:114237            su   a3 + 62   ; r21 
+@0700.448:044514            td   a10 + 3   ; r22 
+@0701.449:044703            td   a12 + 25  ; r23 
+@0702.450:100000            ca   0         ; r24 ;from: (20r) @@WrittenBy a0676 
+@0703.451:064000            ex   0         ; r25 ;from: (23r) @@WrittenBy a0701 
+@0704.452:110145            ad   a3 + 4    ; r26 
+@0705.453:074435            sp   a8 + 9    ; r27 
+@0706.454:110237            ad   a3 + 62   ; r28 
+@0707.455:044000            td   0         ; r29 ;from: (5r) @@WrittenBy a0657 
+@0710.456:100323            ca   a4 + 50   ; r30 
+@0711.457:044713            td   a12 + 33  ; r31 
+                        ; Sheet 17/20
+                        ; a12 (continued)
+@0712.458:100000            ca   0         ; r32     ;from: (13r) @@WrittenBy a0667 
+@0713.459:110000            ad   0         ; r33     ;from: (31r) @@WrittenBy a0711 
+@0714.460:074435            sp   a8 + 9    ; r34 
+@0715.461:074042            sp   a1 + 2    ; r35 
+@0716.462:074471            sp   a9 + 18   ; r36 ;from: 7r @@JumpedToBy a0661 
+@0717.463:074663            sp   a12 + 9   ; r37 
+
+                        ; Sheet 18/20
+                        ; a13 (Interpretive routines)
+
+@0720.464:050724       a13: ta   a13 + 4   ; r0      equals   ;from: @@JumpedToBy a0263 
+@0721.465:100416            ca   a7        ; r1 
+@0722.466:040771            ts   a13 + 41  ; r2 
+@0723.467:100420            ca   a7 + 2    ; r3 
+@0724.468:074000            sp   0         ; r4 @@WrittenBy a13 
+@0725.469:050731            ta   a13 + 9   ; r5   plus   ;from: @@JumpedToBy a0326 
+@0726.470:110771            ad   a13 + 41  ; r6 
+@0727.471:040771            ts   a13 + 41  ; r7 
+@0730.472:100317            ca   207       ; r8 
+@0731.473:074000            sp   0         ; r9 @@WrittenBy a0725 
+@0732.474:050736            ta   a13 + 14  ; r10  minus  ;from: @@JumpedToBy a0331 
+@0733.475:110771            ad   a13 + 41  ; r11 
+@0734.476:040771            ts   a13 + 41  ; r12 
+@0735.477:104420            cs   a7 + 2    ; r13 
+@0736.478:074000            sp   0         ; r14 @@WrittenBy a0732 
+@0737.479:050745            ta   a13 + 21  ; r15  exponent ;from: @@JumpedToBy a0406 
+@0740.480:050753            ta   a13 + 27  ; r16 
+@0741.481:075524            sp   ax        ; r17 
+@0742.482:130745            ao   a13 + 21  ; r18 
+@0743.483:044760            td   a13 + 32  ; r19 
+@0744.484:130760            ao   a13 + 32  ; r20 
+@0745.485:104000            cs   0         ; r21 @@WrittenBy a0737 a0742 ReadBy a0742 
+@0746.486:070765            cp   a13 + 37  ; r22 
+@0747.487:040770            ts   a13 + 40  ; r23 
+@0750.488:104770            cs   a13 + 40  ; r24 
+@0751.489:040770            ts   a13 + 40  ; r25 
+@0752.490:100322            ca   210       ; r26 
+@0753.491:110000            ad   0         ; r27 @@JumpedToBy a0767 WrittenBy a0740 
+@0754.492:040762            ts   a13 + 34  ; r28 
+@0755.493:130770            ao   a13 + 40  ; r29 @@JumpedToBy a0764 
+@0756.494:070761            cp   a13 + 33  ; r30 
+@0757.495:075524            sp   ax        ; r31 
+@0760.496:074000            sp   0         ; r32 @@WrittenBy a0743 a0744 ReadBy a0744 
+@0761.497:075524            sp   ax        ; r33 @@JumpedToBy a0756 
+                        ; was        (mr 0/dv 0)     ; r34
+@0762.498:140000            mr   0         ; r34 @@WrittenBy a0754 
+@0763.499:075524            sp   ax        ; r35 
+@0764.500:074755            sp   a13 + 29  ; r36 
+@0765.501:040770            ts   a13 + 40  ; r37 @@JumpedToBy a0746 
+@0766.502:100230            ca   a3 + 55   ; r38 
+@0767.503:074753            sp   a13 + 27  ; r39 
+@0770.504:000000            .word 0         ; r40 ;-|n| counter @@WrittenBy a0747 a0751 a0755 a0765 ReadBy a0750 a0755 
+@0771.505:000000            .word 0         ; r41 ;- temporary sum storage for arithmetic @@WrittenBy a0722 a0727 a0734 ReadBy a0267 a0726 a0733 
+@0772.506:000000            .word 0         ; r42 ;- 
+
+                        ; Sheet 19/20
+                        ; a15 (Print control)
+
+@0773.507:050776       a15: ta   a15 + 3   ; r0 ;- plant address of 1st @@JumpedToBy a1031 
+@0774.508:075524            sp   ax        ; r1 ;- character to be printed @@JumpedToBy a1015 
+@0775.509:000225            si   149       ; r2 
+@0776.510:100000            ca   0         ; r3 @@WrittenBy a15 a1007 ReadBy a1007 
+@0777.511:045013            td   a15 + 16  ; r4 
+@1000.512:045003            td   a15 + 8   ; r5 
+@1001.513:071004            cp   a15 + 9   ; r6 ;- If next symbol is an sp order carry it out. 
+@1002.514:075524            sp   ax        ; r7 ; Since symbols to be printed are stored as 
+@1003.515:074000            sp   0         ; r8 ;- "mr x,mr y," etc. the "mr" actuates this xxx [?] @@WrittenBy a1000 
+@1004.516:114141            su   a3        ; r9 ;- @@JumpedToBy a1001 
+@1005.517:170012            clc  10        ; r10 ; form and print first letter 
+@1006.518:025006            rc   a15 + 11  ; r11 ;- 
+@1007.519:130776            ao   a15 + 3   ; r12 
+@1010.520:100246            ca   a4 + 5    ; r13  ;  (0.22000 - "=") 
+@1011.521:025011            rc   a15 + 14  ; r14 
+@1012.522:075524            sp   ax        ; r15 
+@1013.523:100000            ca   0         ; r16 ;- print number @@WrittenBy a0777 
+@1014.524:074336            sp   222       ; r17 (24,6)print routine [i.e., floating point format] 
+@1015.525:074774            sp   a15 + 1   ; r18 ;- 
+
+                        ; Sheet 20/20
+                        ; a16 (used in a2)
+@1016.526:051030       a16: ta   a16 + 10  ; r0 @@JumpedToBy a2 a0127 
+@1017.527:100631            ca   409       ; r1 ;- set g[?] to sp 2a1 and reset 
+@1020.528:064172            ex   a3 + 25   ; r2 ; 
+@1021.529:064453            ex   a9 + 4    ; r3 ;- 
+@1022.530:101032            ca   a16 + 12  ; r4 ;- set P to sp 2a2 (and reset) 
+@1023.531:064315            ex   a4 + 44   ; r5 ; 
+@1024.532:065032            ex   a16 + 12  ; r6 ;- 
+@1025.533:100131            ca   a2 + 12   ; r7 ;- set . to sp 8a2 (and reset) 
+@1026.534:064162            ex   a3 + 17   ; r8 ; 
+@1027.535:064131            ex   a2 + 12   ; r9 ;- 
+@1030.536:074000            sp   0         ; r10 @@WrittenBy a16 
+@1031.537:074773            sp   a15       ; r11 @@ReadBy a0117 
+                        ; was    (sp a2 + 2/sp a2)  ; r12
+@1032.538:074117            sp   a2 + 2    ; r12 @@WrittenBy a1024 ReadBy a1022 a1024 
+
+                        ; Miscellaneous [Not sure about this section needs proofing]
+
+                        ; 210 dv 0
+
+                        ; 211 = 0a14 and also "1t" in print routine. Equations are not allowed
+                        ; 0 as a number, thus 0a14is not used in a meaningful way.
+
+                        ; 212-221 = a14 - 10a14: storage for sp orders to initial address of numbered equations (a
+                        ; maximum of 10 is allowed)
+
+
+                        ; [guy] I'm sure this area shouldn't be zero'd out, but why didn't overwriting addr 211
+                        ; trigger an assembler error??
+                        ; .org 211
+                        ; a14:    .word 0
+                        ; .word 0
+                        ; .word 0
+                        ; .word 0
+                        ; .word 0
+                        ; .word 0
+                        ; .word 0
+                        ; .word 0
+                        ; .word 0
+                        ; .word 0
+                        ; .word 0
+
+
+                        ; 222 (24,6) print routine
+
+                        ; 852 = "ax"  = (24,6) programmed arithmetic
+
+                        ; .org 852       ;
+                        ; @1524.852:000000        ax: .word 0         ;
+                        ; @1525.853:000000            .word 0         ;
+
+                        ; -------------------------------------------------------------
+                        ; DIGITAL COMPUTER LABORATORY
+                        ; MASSACHUSETTS INSTITUTE OF TECHNOLOGY
+
+                        ; Specifications of WHIRLWIND I LIBRARY SUBROUTINE Number PA 2 ,Z
+
+                        ; Operations on Real (24,6, 0) Floating Point
+                        ; Double Register Numbers (General Subroutine)
+
+                        ; Source code contains two-letter shift ops, (sr, sl).  As far as I can tell,
+                        ; the original instruction set did only "shift and round", so I've converted
+                        ; them all to srr, slr.
+                        ; The shift value is often preceded by a '*', which appears to mean "don't clear
+                        ; the B Register".  See QTR Report #26, 1951
+
+
+                        ; Page 5
+                        ; Preset Parameters {to be typed in program titie)
+
+                        ; vx2/pk: k = separation in storage of two registers of number
+                        ; vx/pN: N = address in storare of initial register of this subroutine
+
+                             .org 852       ;  
+
+@1524.852:052007        ax: ta   r179      ; 00       Set address of 1st                 ; from Enter @@JumpedToBy a0100 a0103 a0137 a0347 a0351 a0360 a0362 a0375 a0377 a0741 a0757 a0761 a0763 a0774 a1002 a1012 ReadBy r06 
+@1525.853:076007       r01: sp   r179      ; 01       instruction to be interpreted 
+
+                       ; words R02 and R03 represents the double precision accumulator
+@1526.854:000000       r02: .word 0         ; 02       x1 Multiple @@WrittenBy r58 r78 r84 r105 r121 r137 r158 r164 r171 ReadBy a0216 a0271 a0305 a0412 r19 r21 r52 r58 r63 r77 r96 r109 r118 r124 r135 r156 r163 r169 
+@1527.855:000000       r03: .word 0         ; 03       x1 register @@WrittenBy r16 r22 r75 r98 r104 r107 r117 r123 r140 r154 r160 r161 r173 ReadBy r15 r22 r73 r98 r104 r107 r1l2 r122 r138 r154 r165 r167 
+@1530.856:000000       r04: .word 0         ; 04       y1 accumulator @@WrittenBy r85 r92 r100 r134 r177 ReadBy a0410 r85 r86 r89 r100 r130 r133 r176 
+
+
+@1531.857:161036       r05: srh  30        ; 05 *30   "ca"                               ; from 196r--> @@ReadBy r145 
+@1532.858:101524       r06: ca   ax        ; 06 @@ReadBy r69 
+@1533.859:102023       r07: ca   r191      ; 07       "cs"                               ; from l3r,196r @@JumpedToBy r13 
+@1534.860:075663       r08: sp   r95       ; 08 
+@1535.861:075725       r09: sp   r129      ; 09       "ad"                               ; from 196r--> 
+@1536.862:000000       r10: .word 0         ; what's p29??       ;10 @@ReadBy r142 
+@1537.863:041665       r11: ts   r97       ; 11       "su"                               ; from 196r--> 
+@1540.864:075722       r12: sp   r126      ; 12 
+@1541.865:075533       r13: sp   r07       ; 13       "cm"                               ; from 196r--> 
+@1542.866:000000       r14: .word 0         ; l4       Temporary digits                   ; (170r) @@WrittenBy r170 ReadBy r174 
+
+
+@1543.867:125527       r15: sa   r03       ; 15       Add two minor                      ; from 24r @@JumpedToBy r24 
+@1544.868:041527       r16: ts   r03       ; 16       products 
+@1545.869:100000       r17: ca   0         ; 17       Store @@ReadBy r44 r116 
+@1546.870:066032       r18: ex   r198      ; 18       overflow 
+@1547.871:145526       r19: mh   r02       ; 19       Form major product 
+@1550.872:075762       r20: sp   r158      ; 20 
+
+@1551.873:141526       r21: mr   r02       ; 21      "mr" Form two                      ; from 49r9,196r @@JumpedToBy r49 
+@1552.874:065527       r22: ex   r03       ; 22       minor products 
+@1553.875:142032       r23: mr   r198      ; 23 
+@1554.876:075543       r24: sp   r15       ; 24 
+
+@1555.877:066032       r25: ex   r198      ; 25       "dv"                               ; from 196r--> 
+@1556.878:041665       r26: ts   r97       ; 26 
+@1557.879:105672       r27: cs   r102      ; 27       Form exponent 
+@1560.880:111612       r28: ad   r54       ; 28       of 2**-2/x2 
+@1561.881:041672       r29: ts   r102      ; 29 
+@1562.882:105665       r30: cs   r97       ; 30 
+@1563.883:145665       r31: mh   r97       ; 31       Form and 
+@1564.884:066032       r32: ex   r198      ; 32       store 
+@1565.885:161002       r33: srh  2         ; 33  *2 
+@1566.886:152032       r34: dv   r198      ; 34 
+@1567.887:155017       r35: slh  15        ; 35  *15 @@JumpedToBy r60 
+@1570.888:051753       r36: ta   r151      ; 36 
+@1571.889:101634       r37: ca   r72       ; 37       Form and store 
+@1572.890:151665       r38: dv   r97       ; 38       2·2 
+@1573.891:155017       r39: slh  15        ; 39  *15           2 
+@1574.892:042032       r40: ts   r198      ; 40 
+@1575.893:145665       r41: mh   r97       ; 41       Form 
+@1576.894:115634       r42: su   r72       ; 42       x**-2/x2**2 
+@1577.895:155017       r43: slh  15        ; 43 *15      ( Use Euclid ' s 
+@1600.896:115545       r44: su   r17       ; 44       algorithm) 
+@1601.897:111606       r45: ad   r50       ; 45 
+@1602.898:151665       r46: dv   r97       ; 46 
+@1603.899:155017       r47: slh  15        ; 47 *15 
+@1604.900:111753       r48: ad   r151      ; 48       Add two minor parts 
+@1605.901:075551       r49: sp   r21       ; 49       of reciprocal 
+
+                        ; Page 6
+
+@1606.902:000001       r50: .word 1         ; 50    WAS p1 @@ReadBy r45 r115 r120 r147 r199 
+@1607.903:075635       r51: sp   r73       ; 51    "ts"                            ?? 
+@1610.904:101526       r52: ca   r02       ; 52    complement x1                   ?? @@JumpedToBy r111 
+@1611.905:075770       r53: sp   r164      ; 53 
+@1612.906:000002       r54: .word 2         ; 54    WAS p2 @@ReadBy r28 
+@1613.907:102035       r55: ca   r201      ; 55    "ta" Store digits               ; from 196r--> 
+@1614.908:044000       r56: td   0         ; 56      in indicated                  ; from {181r) @@WrittenBy r181 
+@1615.909:076006       r57: sp   r178      ; 57      address 
+@1616.910:131526       r58: ao   r02       ; 58    Increase xl                     ; from 119r--> @@JumpedToBy r119 
+@1617.911:075773       r59: sp   r167      ; 59     by 2**-15 
+@1620.912:075567       r60: sp   r35       ; 60 @@ReadBy r187 
+@1621.913:075635       r61: sp   r73       ; 61    "ex"                            ; from 196r--> 
+@1622.914:000077       r62: .word 63        ; 62    WAS p63 @@ReadBy r87 r91 
+@1623.915:105526       r63: cs   r02       ; 63     "cp" Is x1 negative?           ; from 196r--> 
+@1624.916:072020       r64: cp   r188      ; 64 
+@1625.917:132007       r65: ao   r179      ; 65     "sp" Set Return address        ; from 196r 
+@1626.918:046035       r66: td   r201      ; 66       for spax 
+@1627.919:100264       r67: ca   180       ; 67      Set  pick up order  ; LAST DIGIT is a GUESS! 
+@1630.920:046007       r68: td   r179      ; 68       for ordinary cp & sp 
+@1631.921:115532       r69: su   r06       ; 69      PROBABLY an SU op code! 
+@1632.922:072033       r70: cp   r199      ; 70      Test to see whether 
+@1633.923:076007       r71: sp   r179      ; 71       instruction is spax 
+@1634.924:020000       r72: .word 0.20000   ; 72 @@ReadBy r37 r42 
+@1635.925:101527       r73: ca   r03       ; 73      Round off X1' and             ; from 51r,61r-> @@JumpedToBy r51 r61 
+@1636.926:160006       r74: srr  6         ; 74        store x1' x 2**-6 
+@1637.927:041527       r75: ts   r03       ; 75 
+@1640.928:161011       r76: srh  9         ; 76    *9  Add round-off carry 
+@1641.929:125526       r77: sa   r02       ; 77         into x1 
+@1642.930:041526       r78: ts   r02       ; 78 
+@1643.931:100000       r79: ca   0         ; 79       Is there an overnow? 
+@1644.932:071647       r80: cp   r83       ; 80 
+@1645.933:114000       r81: su   0         ; 81 
+@1646.934:071652       r82: cp   r86       ; 82 
+@1647.935:154016       r83: slr  14        ; 83      Add cverflow                     ; from  80r-> @@JumpedToBy r80 
+@1650.936:041526       r84: ts   r02       ; 84      into x1 and x1' 
+@1651.937:131530       r85: ao   r04       ; 85      increase y1 
+@1652.938:121530       r86: cm   r04       ; 86                                       ; from  82r-> @@JumpedToBy r82 
+@1653.939:115622       r87: su   r62       ; 87      |y1| - 63 > 0? 
+@1654.940:075661       r88: sp   r93       ; 88 
+@1655.941:105530       r89: cs   r04       ; 89      y <= 0? 0? 
+@1656.942:072036       r90: cp   r202      ; 90       (i.e.  y1 < -63?) 
+@1657.943:105622       r91: cs   r62       ; 91 
+@1660.944:041530       r92: ts   r04       ; 92      Set y1  -63 
+@1661.945:101665       r93: ca   r97       ; 93      ts n + k                        ; from 88r-> @@JumpedToBy r88 
+@1662.946:112031       r94: ad   r197      ; 94      or ex n + k 
+@1663.947:041672       r95: ts   r102      ; 95      Store ts, ex, ca, cs or cm n+   ; from 8r-> @@JumpedToBy r08 
+@1664.948:101526       r96: ca   r02       ; 96 
+@1665.949:000000       r97: .word 0         ; 97       WAS P0                         ; from (180r) @@WrittenBy r11 r26 r131 r180 ReadBy r30 r31 r38 r41 r46 r93 r128 r141 
+@1666.950:065527       r98: ex   r03       ; 98       Perform 
+@1667.951:161011       r99: srh  9         ; 99    *9   ts, ex, ca, cs or cm n+k 
+
+@1670.952:065530      r100: ex   r04       ; 100 
+@1671.953:155011      r101: slh  9         ; 101   *9 
+@1672.954:000000      r102: .word 0         ; 102      WAS (p0)                         (95r) @@WrittenBy r29 r95 r129 r139 r148 r190 r193 ReadBy r27 r129 r139 r148 r175 r193 
+@1673.955:161011      r103: srh  9         ; 103   *9 
+@1674.956:065527      r104: ex   r03       ; 104 
+@1675.957:041526      r105: ts   r02       ; 105 
+@1676.958:155017      r106: slh  15        ; 106   *15 
+@1677.959:065527      r107: ex   r03       ; 107 
+@1700.960:076005      r108: sp   r177      ; 108 @@ReadBy r202 r203 
+@1701.961:121526      r109: cm   r02       ; 109                                       166r-> @@JumpedToBy r166 
+@1702.962:114000      r110: su   0         ; 110      x1 != 0? 
+@1703.963:071610      r111: cp   r52       ; 111 
+@1704.964:121527      r1l2: cm   r03       ; ll2 
+@1705.965:114000      r113: su   0         ; 113      x1' != 0? 
+@1706.966:071716      r1l4: cp   r122      ; ll4 
+@1707.967:115606      r115: su   r50       ; 115      Form 
+                        ; Page 7
+@1710.968:111545      r116: ad   r17       ; 116      |x1'| - 1  ; PROBABLY AD op cpde 
+@1711.969:041527      r117: ts   r03       ; 117 
+@1712.970:101526      r118: ca   r02       ; l18      x1 > 0? 
+@1713.971:071616      r119: cp   r58       ; 119 
+@1714.972:115606      r120: su   r50       ; 120      Form 
+@1715.973:041526      r121: ts   r02       ; 121      x1 - 2**-15 
+@1716.974:101527      r122: ca   r03       ; l22      complement x1'                    114r-> @@JumpedToBy r1l4 
+@1717.975:041527      r123: ts   r03       ; 123 
+@1720.976:141526      r124: mr   r02       ; 124      Form x1*x1' 
+@1721.977:075772      r125: sp   r166      ; 125 
+@1722.978:106032      r126: cs   r198      ; l26      Complement                        12r-> @@JumpedToBy r12 
+@1723.979:042032      r127: ts   r198      ; 127        x2, x2' 
+@1724.980:105665      r128: cs   r97       ; 128 
+@1725.981:065672      r129: ex   r102      ; 129      Form and store                    r9 -> @@JumpedToBy r09 
+@1726.982:115530      r130: su   r04       ; 130       y2 - yl 
+@1727.983:041665      r131: ts   r97       ; 131 
+@1730.984:071741      r132: cp   r141      ; 132       y2 - y1 > 0? 
+@1731.985:111530      r133: ad   r04       ; 133 
+@1732.986:041530      r134: ts   r04       ; 134       Interchange 
+@1733.987:101526      r135: ca   r02       ; 135        (x1, x1', y1) 
+@1734.988:066032      r136: ex   r198      ; 136         and (x2, x2', y2) 
+@1735.989:041526      r137: ts   r02       ; 137 
+@1736.990:101527      r138: ca   r03       ; 138 
+@1737.991:065672      r139: ex   r102      ; 139 
+@1740.992:041527      r140: ts   r03       ; 140 
+@1741.993:121665      r141: cm   r97       ; 141                                        132r-> @@JumpedToBy r132 
+@1742.994:115536      r142: su   r10       ; 142       |y2 - y1| - 29 > 0? 
+@1743.995:071745      r143: cp   r145      ; 143 
+@1744.996:076006      r144: sp   r178      ; 144       No need for addition 
+@1745.997:111531      r145: ad   r05       ; l45       Store                            143r-> @@JumpedToBy r143 
+@1746.998:041753      r146: ts   r151      ; 146         sr *1 +|y2 - y1| 
+@1747.999:101606      r147: ca   r50       ; 147          Set y2 = l 
+@1750.1000:065672      r148: ex   r102      ; 148 
+@1751.1001:161017      r149: srh  15        ; 149   *15   Form and store 
+@1752.1002:112032      r150: ad   r198      ; 150         ( 
+@1753.1003:000000      r151: .word 0         ; 151       WAS (p0)                         (146r) @@WrittenBy r36 r146 ReadBy r48 
+@1754.1004:042032      r152: ts   r198      ; 152 
+@1755.1005:155017      r153: slh  15        ; 153   *15 
+@1756.1006:065527      r154: ex   r03       ; 154 
+@1757.1007:161017      r155: srh  15        ; 155   *15   Form 
+@1760.1008:111526      r156: ad   r02       ; 156         (x1+x1' * 2**-15) * 2**-l 
+@1761.1009:161001      r157: srh  1         ; 157   *1 
+
+@1762.1010:041526      r158: ts   r02       ; 158        Store x1                          20r-> @@JumpedToBy r20 
+@1763.1011:155017      r159: slh  15        ; 159   *15 
+@1764.1012:041527      r160: ts   r03       ; 160 
+@1765.1013:041527      r161: ts   r03       ; 161           Add x1, x1' 
+@1766.1014:102032      r162: ca   r198      ; 162             and x2, x2' 
+@1767.1015:111526      r163: ad   r02       ; 163 
+@1770.1016:041526      r164: ts   r02       ; 164                                          53r-> @@JumpedToBy r53 
+@1771.1017:141527      r165: mr   r03       ; 165        Does sign x1= sign x1'? 
+@1772.1018:071701      r166: cp   r109      ; l66                                         125r-> @@JumpedToBy r125 
+@1773.1019:101527      r167: ca   r03       ; l67        Scale factor and                  59r-> @@JumpedToBy r59 
+@1774.1020:161017      r168: srh  15        ; 168   *15    store x1, x1' 
+@1775.1021:111526      r169: ad   r02       ; 169 
+@1776.1022:165542      r170: sf   r14       ; 170 
+@1777.1023:051526      r171: ta   r02       ; 171 
+@2000.1024:155017      r172: slh  15        ; 172   *15 
+@2001.1025:051527      r173: ta   r03       ; 173 
+@2002.1026:105542      r174: cs   r14       ; 174        Form exponent 
+@2003.1027:111672      r175: ad   r102      ; 175 
+@2004.1028:111530      r176: ad   r04       ; 176 
+@2005.1029:041530      r177: ts   r04       ; 177                                         108r-> @@JumpedToBy r108 
+
+
+
+                        ; Page 8
+
+@2006.1030:132031      r178: ao   r197      ; 178      increase address @@JumpedToBy r57 r144 
+@2007.1031:100000      r179: ca   0         ; 179      Pick up next instruction @@JumpedToBy r01 r71 r200 WrittenBy ax r65 r68 ReadBy r65 
+@2010.1032:041665      r180: ts   r97       ; 180      Store instruction 
+@2011.1033:045614      r181: td   r56       ; 181      and digits 
+@2012.1034:046021      r182: td   r189      ; 182 
+@2013.1035:112031      r183: ad   r197      ; 183 
+@2014.1036:046023      r184: td   r191      ; 184 
+@2015.1037:161033      r185: srh  27        ; 185  *27    Form sp to address 
+@2016.1038:155021      r186: slh  17        ; 186  *17    for particular 
+@2017.1039:111620      r187: ad   r60       ; 187      instruction 
+@2020.1040:042030      r188: ts   r196      ; 188 @@JumpedToBy r64 
+@2021.1041:100000      r189: ca   0         ; 189      Pick up x2, x2' and y2    ; (182r) @@WrittenBy r182 
+@2022.1042:041672      r190: ts   r102      ; 190      store x2 in reg 198 
+@2023.1043:100000      r191: ca   0         ; 191        y2 in reg 102           ; (181r) @@WrittenBy r184 ReadBy r07 
+@2024.1044:161011      r192: srh  9         ; 192  *9      Hold x2' in AC 
+@2025.1045:065672      r193: ex   r102      ; 193 
+@2026.1046:042032      r194: ts   r198      ; 194 
+@2027.1047:155017      r195: slh  15        ; 195  *15 
+@2030.1048:000000      r196: .word 0         ; l96         Go to part of I.S. for ; (188r) @@WrittenBy r188 
+@2031.1049:000000      r197: .word 0         ; 197  what's this?? pe x2 ??  ;          particular instruction @@WrittenBy r178 ReadBy r94 r178 r183 
+@2032.1050:000000      r198: .word 0         ; 198         Separation parameter @@WrittenBy r18 r25 r32 r40 r127 r136 r152 r194 ReadBy r18 r23 r25 r32 r34 r126 r136 r150 r162 
+@2033.1051:111606      r199: ad   r50       ; l99                                ; from 70r--> @@JumpedToBy r70 
+@2034.1052:072007      r200: cp   r179      ; 200      ??   Does address equal ax? 
+@2035.1053:074000      r201: sp   0         ; 201      Return to register following spax   ; (66r) @@WrittenBy r66 ReadBy r55 
+
+@2036.1054:101700      r202: ca   r108      ; 202         Produce overflow   ; from 90r @@JumpedToBy r90 
+@2037.1055:111700      r203: ad   r108      ; 203         alarm 
+
+
+
+

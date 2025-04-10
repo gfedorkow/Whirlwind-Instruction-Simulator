@@ -147,7 +147,7 @@ class DbgDebugger:
     # versions of coremem etc. So the sim must call reset when we restart and
     # pass in the new objects.
     def reset (self,
-               coreMem: wwinfra.CorememClass,        # Currently unused
+               coreMem: wwinfra.CorememClass,
                symToAddrTab: dict,
                addrToSymTab: dict,
                fmtPrinterFcn,
@@ -594,7 +594,7 @@ class DbgCmd_wwr (DbgCmd):
         pass
     def helpStrs (self) -> [str]:
         r = [
-            "wwr [addr1,...,addrN]",
+            "wwr addr1, ..., addrN",
             "Watch for memory write. When any write instruction (ts, td, ta, ao, ex)",
             "is executed which writes at one of the given addresses, break.",
             "Prints watchpoint id and corresponding address."
@@ -612,6 +612,38 @@ class DbgCmd_wwr (DbgCmd):
         else:
             self.error()
 
+# wr -- write mem loc
+class DbgCmd_wr (DbgCmd):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+        pass
+    def helpStrs (self) -> [str]:
+        r = [
+            "wr address, value",
+            "Writes value into the memory at address.",
+            "Address and value must be integer expressions."
+            ]
+        return r
+    def execute (self):
+        valList = self.eval()
+        if len (valList) == 2:
+            addrVal = valList[0]
+            if addrVal.type == AsmExprValueType.Integer:
+                addr = addrVal.value
+                if self.dbg.checkAddrRange (addr):
+                    contentsVal = valList[1]
+                    if contentsVal.type in [AsmExprValueType.Integer]:
+                        val = contentsVal.value
+                        self.dbg.coreMem.wr (addr, val)
+                    else:
+                        self.error()
+                else:
+                    self.error ("Address out of range")
+            else:
+                self.error()
+        else:
+            self.error()
+            
 # h -- help
 class DbgCmd_h (DbgCmd):
     def __init__ (self, *args):

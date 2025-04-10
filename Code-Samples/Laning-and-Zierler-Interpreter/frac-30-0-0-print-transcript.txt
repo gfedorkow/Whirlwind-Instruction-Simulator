@@ -1,15 +1,81 @@
-
-
-
-
-
-
-
-		section fp
+| [Transcipt by L. Stabile, April 8, 2025, from Subroutines.pdf, pdf-pages 22-24.
+|
+| Text in square brackets are transcription comments.  As of xxx this
+| file should be considered read-only, having been superseded by its
+| generated .ww counterpart.]
+|
+|                         DIGITAL COMPUTER LABORATORY
+|                   MASSACHUSETTS INSTITUTE OF TECHNOLOGY
+|                    WHIRLWIND SUBROUTINE SPECIFICATION
+|   
+|   TITLE: (30,0,0) MRA Print and/or Punch, Decimal Fraction,               LSR Of 103.10t
+|          Sign, Number of Digits Arbitrary, No Carriage                    TAPE T799-1
+|          Return, Sign Agreement (Interpreted)                             Classification
+|                                                                          Closed, Interpreted
+|                                                                           
+|   No. of Regs.        Temp. Regs.        Average Time                     Max. Time
+|   in Subroutine       used by Sub.       (operations)                    (operations)
+|        76                  4          94+19n, number of digits            94 + 27n
+|                                              printed = n
+|   
+|   Preset Parameters
+|   
+|       vx; pN, where N is the address in storage of the first register of the
+|               interpretive subroutine (in title of main program)
+|       vl: pO (does not need to be inserted) to print, p64 to punch, or pl28
+|               to print and punch simultaneously
+|       v2: pn, where n is the number of decimal digits to be printed.
+|   
+|   Description
+|   
+|       This subroutine prints and/or punches the sign and magnitude of the
+|   contents of the MRA in the following manner
+|   
+|            +-.d1d2...dn
+|   
+|   The number, n, of decimal digits to be printed is a preset parameter (v2). The
+|   digits, di, are obtained by multiplying the magnitude of the contents of the MRA
+|   successively by p10.
+|   
+|   This subroutine contains a sign agreement program so that the contents
+|   of the MRA need not be a number whose major and minor parts are of like sign.
+|   
+|   The sp instruction transferring control to this subroutine must be an
+|   interpreted sp (i.e., control must be in the interpretive subroutine). After
+|   execution of the subroutine control remains in the interpretive subroutine which
+|   then proceeds to interpret the instruction following the sp instruction in
+|   storage.
+|   
+|   There is no carriage return.
+|   
+|   This subroutine can be used with any(30,0,0) interpretive subroutine.
+|   The contents of the MRA are left undisturbed during the execution of this
+|   subroutine.
+|   
+|    FCH      MRS
+|   2/1/52  2/8/52
+|   
+|   Abstract: This subroutine prints out a +- sign and a decimal point followed
+|             by the magnitude of the contents of the MRA as a decimal fraction.
+|             The decimal digits are obtained by multiplying the contents of the
+|             MRA successively by plO. The number of digits to be printed is
+|             a preset parameter (v2). There is no carriage return. The sub-
+|             routine is interpreted and can be used with any (30,0,0) inter-—
+|             pretive subroutine.
+|
+|   Temporary Storage
+|       d       unused
+|       1t   -|
+|       2t    |- Temporary storage
+|       3G   -|
+|       4t      Digit counter
+|
+|
+   		section fp
 	0	ta 37r
 	1	sp ax	Resume ordinary ww operation
 	2	ca 3ax	-|
-	3	ta 2t	 |- Store C(mra) in 1t and 2t
+	3	ts 2t	 |- Store C(mra) in 1t and 2t
 	4	ca 2ax	 |
 58r-->	5	ts 1t	-|
 54r-->	6	mr 2t	Do 1t and 2t agree in sign?
@@ -21,15 +87,15 @@
 9r-->	12	ca 75r	 |
 ?r-->	13	qp 134sl	 |
 	14	qp 128sl	-|
-|
+
 	15	ca 61r	-|- Set up digit counter
 	16	ts 4t	-|
-|
+
 35r-->	17	cm 1t	-|
 	18	mh 62r	 |	 
 	19	ts 3t	 |
 	20	sl 15	 |
-	21	ts 1t	 |- Multiply C(1t,2t)by p10
+	21	ts 1t	 |- Multiply C(1t,2t) by p10
 	22	cm 2t	 |
 	23	mh 62r	 |
 	24	ts 2t	 |
@@ -37,11 +103,11 @@
 	26	ex 2t	 |
 	27	sa 1t	 |
 	28	ts 1t	-|
-|
+
 	29	ca 3t	-|
 	30	ad 63r	 |- Set up entry into table
 	31	td 32r	-|
-|
+
 (31r)	32	ca 0	-|- Print a single digit
 	33	qp 128sl	-|
 
@@ -70,7 +136,7 @@
 	50	ts 1t	-|
 
 43r-->	51	cs 2t	-|- Complement C(2t)
-	52	rs 2t	-|
+	52	ts 2t	-|
 
 	53	ca 1t	-|- Re-enter sign agreement
 	54	sp 6r	-|
@@ -81,9 +147,9 @@
 	58	sp 5r
 	59	ca 0	; [59-73 are notated in Subroutines.pdf with no spaces, e.g., ca0, p1]
 	60	p 1
-	61	n1a2	v2 ; [need to track down this notation]
+	61	p 10	v2 ; [was just n1a2 -- need to track down this notation]
 	62	p 10
-	63	p 64r	, ; [I think comma]
+	63	p 64r	, ; [I think comma? Might just be a blemish]
 	64	p 45	0 Table
 	65	p 36	1
 	66	p 39	2

@@ -704,6 +704,18 @@ literal-digit-seq												Decimal inreger
 		[Seems resolved that we'll keep it as-is]
 	- Add debugger section to doc
 	- Update doc with new asm comment-fmt options
+	- Consider .print control, to turn them on and off easily and in
+	  apprpropriate context. Tried adding asm --OmitDotPrint, which
+	    takes them out of the core and listing, but does not seem useful so removed.
+	- Better heuristics for semicolon-formatting in asm listing. There
+	  should be a way to get commented-out code to look "natural"
+		Looks a bit better now, but asm listingString() and formatComment()
+		 have a lot of hacks and should be replaced by a proper FSM scanner.
+	- Asm cb.log in infra -- not defined. Eg try unknown flex char
+	- Asm looks like syntax issue, e.g. "\n" fails.
+	- !!! Asm .flex broken -- not incrementing address!!??
+	- flex general problems? 
+
 
 	- Get "everything" into git: tape images, images on code, etc.
 		Did sizing run see below marked 1/1/25
@@ -1033,4 +1045,17 @@ Greetings Dr Knuth,
   actually working...  That, coupled with an unusual instruction set,
   must have made the paper analysis of the code a very challenging
   undertaking!
+
+
+Coding Idioms
+=============
+
+These are code "patterns," mostly found in ww code but some invented
+by Guy or Larry.
+
+This tests for x == 0 (seen in frac printer):
+	cm x
+	su 0
+	cp a	; Branch if x is zero
+
 

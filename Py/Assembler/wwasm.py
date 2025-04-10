@@ -291,21 +291,26 @@ class AsmInst:
     def opnamePrefix (self):
         return ""
     # Look for semicolons and justify
-    def formatComment (self, comment: str) -> (str, int):
+    # LAS 4/3/25 This and listingString() have a lot of hacks and should be replaced by a proper FSM scanner
+    def formatComment (self, comment: str, inst: str) -> (str, int):
         nSemis = 0
         cw = self.prog.commentWidth
         if cw == 0:
             r = comment
         else:
             cc = self.prog.labelTab.maxLabelLen + self.prog.commentColumn
+            initCc = self.prog.commentColumn - 1
             l = len(comment)
             s = ""
             r = ""
             for i in range (0, l):
                 if comment[i] == ';':
-                    nSemis += 1
                     s = s.rstrip (" ")
-                    n = cw - len (s)
+                    if nSemis == 0 and inst == "":
+                        n = initCc - len (s)
+                    else:
+                        n = cw - len (s)
+                    nSemis += 1
                     if n < 0:
                         n = 1
                     r += s + " "*n + ";"
@@ -334,11 +339,11 @@ class AsmInst:
         sp1 = sp*(maxLabelLen - len (plabel))
         label = "%s%s" % (sp1, plabel) + (":" if plabel != "" else sp)
         inst = self.opnamePrefix() + p.opname + (sp + p.operand.listingString (quoteStrings = quoteStrings)) if p.operand is not None else ""
-        (comment, nSemis) = self.formatComment (p.comment)
+        (comment, nSemis) = self.formatComment (p.comment, inst)
         s1 = prefixAddr + sp + label + sp 
         s2 = s1 + inst
         commentColumn = len (s1) + self.prog.commentColumn
-        sp2 = sp*(commentColumn - len (s2)) if p.label != "" or p.opname != "" or nSemis > 0 else ""
+        sp2 = sp*(commentColumn - len (s2)) if p.label != "" or p.opname != "" else ""
         s3 = (sp2 + ";" + comment + " " + autoComment) if comment + autoComment != "" else ""
         return (s2 + s3).rstrip (" ")
 
@@ -1009,7 +1014,7 @@ class AsmProgram:
                   inFilename, inStream,
                   coreOutFilename, listingOutFilename,
                   verbose, debug, minimalListing, isa1950,
-                  reformat, omitUnrefedLabels, commentColumn, commentWidth,omitAutoComment):
+                  reformat, omitUnrefedLabels, commentColumn, commentWidth, omitAutoComment):
         #
         # The "fundamental constants" of the machine. Masks, which can hide
         # bugs, are not used. Ranges of fields are checked.
@@ -1267,9 +1272,8 @@ def main():
     parser.add_argument("--OmitUnrefedLabels", help="Don't put unreferenced labels in the listing", action="store_true")
     # Suggested for CommentColumn is 25 for CommentWidth 50
     parser.add_argument("--CommentColumn", type=int, help="Column after labels for comments in listing. Default 25")
-    parser.add_argument("--CommentWidth", type=int, help="Space to allocste to each comment field in listing. If not specified or zero, no field detection")
+    parser.add_argument("--CommentWidth", type=int, help="Space to allocate to each comment field in listing. If not specified or zero, no field detection")
     parser.add_argument("--OmitAutoComment", help="Omit the auto-comment xref in listing", action="store_true")
-
     # We decided to keep this always-on
     # parser.add_argument("--Annotate_IO_Names", help="Auto-add comments to identify SI device names", action="store_true")
     

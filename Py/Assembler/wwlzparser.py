@@ -337,7 +337,7 @@ class AsmParsedLine:
         else:
             return False
     def parsePrefixComment (self) -> bool:
-        tok = self.tokenizer.getCommentToken() # Must be of type AsmTokenType.Commentp
+        tok = self.tokenizer.getCommentToken() # Must be of type AsmTokenType.Comment
         self.prefixComment = tok.tokenStr.rstrip ("\r\n")
         return True;
     def parsePostfixComment (self) -> bool:
@@ -593,6 +593,8 @@ class AsmProgram:
                                             commentFmt))
             elif parsedLine.prefixComment != "" and parsedLine.opcode == "":
                 s.write ("; %s\n" % parsedLine.prefixComment)
+            elif parsedLine.lineStr == "":
+                s.write ("\n")
 
 def main():
     parser = wwinfra.StdArgs().getParser (".")
