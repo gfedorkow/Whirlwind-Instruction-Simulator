@@ -658,6 +658,7 @@ class AsmDotFlexlhInst (AsmDotWordsInst):
                         self.block[i] = self.intToUnsignedWwInt (flexoChar)
                     if termVal is not None:
                         self.block[len (s)] = self.intToSignedWwInt (termVal.value)
+                    self.prog.nextCoreAddress += len (self.block)
                 else:
                     self.operandTypeError (termVal)
             else:
