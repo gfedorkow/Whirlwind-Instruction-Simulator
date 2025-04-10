@@ -23,7 +23,7 @@ class WwAppClass:
 Programs = [
     WwAppClass("Exit" ),  # Assume this is always the first option, i.e., index 0, so I can make "q" also work
     WwAppClass("Random-Raster", dir="Py/Common", exec="random-lines.py", is_WW=False),
-    WwAppClass("TicTacToe Two Person", exec="py", is_WW=False),
+    WwAppClass("TicTacToe Two Person", dir="Py/Shell", exec="tictactoe.py", is_WW=False),
     WwAppClass("TicTacToe vs WW", dir="Code-Samples/Tic-Tac-Toe", exec="tic-tac-toe.acore", is_WW=True),
     WwAppClass("R-196 Bounce", dir="Code-Samples/Bounce/BlinkenLights-Bounce", exec="bounce-control-panel.acore", is_WW=True),
     WwAppClass("Bounce w/ Hole", dir="Code-Samples/Bounce/Bounce-Tape-with-Hole", exec="fb131-0-2690_bounce-annotated.acore", is_WW=True),
@@ -44,12 +44,11 @@ def exec_program(pgm, args):
     exec_dir = WW_Root + '/' + pgm.directory
     if pgm.is_WW:
         sim_cmd = [Sim_Path, pgm.executable_name] + args + pgm.args
-        print("exec: ", ["python"] + sim_cmd)
         # subprocess.run(["ls -l"], shell=True, cwd=exec_dir)
         subprocess.run(["python"] + sim_cmd, shell=False, cwd=exec_dir)
     else:
         sim_cmd = [pgm.executable_name] + args + pgm.args
-        subprocess.run(["python"] + sim_cmd, shell=True, cwd=exec_dir)
+        subprocess.run(["python"] + sim_cmd, shell=False, cwd=exec_dir)
 
 
 def main():
