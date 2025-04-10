@@ -6,8 +6,9 @@ import sys
 
 #WW_Root = "/cygdrive/c/Users/guyfe/Documents/guy/History-of-Computing/Whirlwind/GitHub"
 #Sim_Path = WW_Root + "/Py/Sim/wwsim.py"
-WW_Root = "c:\\Users\\guyfe\\Documents\\guy\\History-of-Computing\\Whirlwind\\GitHub"
-Sim_Path = WW_Root + "\\Py/Sim/wwsim.py"
+# WW_Root = "c:\\Users\\guyfe\\Documents\\guy\\History-of-Computing\\Whirlwind\\GitHub"
+WW_Root = "/home/guyfe/History-of-Computing/Whirlwind/GitHub"
+Sim_Path = WW_Root + "/Py/Sim/wwsim.py"
 default_args = ["-q", "-p", "--Quick"]
 
 
@@ -40,10 +41,12 @@ Programs = [
 
 
 def exec_program(pgm, args):
-    exec_dir = WW_Root + '\\' + pgm.directory
+    exec_dir = WW_Root + '/' + pgm.directory
     if pgm.is_WW:
-        sim_cmd = [Sim_Path, pgm.executable_name] + pgm.args
-        subprocess.run(["python"] + sim_cmd, shell=True, cwd=exec_dir)
+        sim_cmd = [Sim_Path, pgm.executable_name] + args + pgm.args
+        print("exec: ", ["python"] + sim_cmd)
+        # subprocess.run(["ls -l"], shell=True, cwd=exec_dir)
+        subprocess.run(["python"] + sim_cmd, shell=False, cwd=exec_dir)
     else:
         sim_cmd = [pgm.executable_name] + args + pgm.args
         subprocess.run(["python"] + sim_cmd, shell=True, cwd=exec_dir)
