@@ -138,7 +138,7 @@ class PanelMicroWWClass:
             else:
                 presets = self.md.read_preset_switch_leds()
                 pc_preset = presets["pc"]
-                self.sim_state_machine(bn, cb, pc_preset, which_scope=self.md.set_scope_selector_leds) # the third arg should be the PC Preset switch register
+                self.sim_state_machine(bn, cb, pc_preset, set_scope_selector_leds=self.md.set_scope_selector_leds) # the third arg should be the PC Preset switch register
 
         if init_PC:
             self.write_register("PC", init_PC)
@@ -251,6 +251,8 @@ class PanelMicroWWClass:
                 self.md.stop_on_s1_state ^= 1
             case _:
                 print("mWWPanel.local_state_change: unknown button %s" % bn)
+        print("local_state_change: stop-on-addr=%d, stop-on-ck=%d, stop-on-S1=%d" % 
+            (self.md.stop_on_addr_state, self.md.check_alarm_special_state, self.md.stop_on_s1_state))
         self.md.update_exec_switch_leds()
 
 # ==============================================================
@@ -477,8 +479,8 @@ class MappedRegisterDisplayClass:
 
     def update_exec_switch_leds(self):
         self.u2_led[7] = self.u2_led[7] & 0o174377 | \
-                         self.stop_on_s1_state | self.check_alarm_special_state < 1 | self.stop_on_addr_state < 2
-        self.u2_is31.is31.write_16bit_led_rows(7, self.u2_led, len=1)  # just need to write one word
+                         self.stop_on_s1_state << 10 | self.check_alarm_special_state << 9 | self.stop_on_addr_state << 8
+        self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # just need to write one word
 
     # write two bits to the LED array to indicate which 'scope (D and/or F) is enabled
     def set_scope_selector_leds(self, which):

@@ -898,6 +898,9 @@ class PanelClass:
             set_scope_selector_leds(cb.which_scope)
             return
 
+        if sw == "Clear":   # clear the Alarm LED
+            print("Unimplemented Alarm Clear")
+            return
         print("Unhandled Button in control_panel:PanelClass %s" % sw)
         return
 
