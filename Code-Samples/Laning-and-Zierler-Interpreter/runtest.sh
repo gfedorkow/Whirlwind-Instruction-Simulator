@@ -8,13 +8,14 @@ asm="$PYTHONPATH/../../Py/Assembler/wwasm.py"
 asmp="$PYTHONPATH/../../Py/Common/wwasmparser.py"
 asml="$PYTHONPATH/../../Py/Assembler/wwlzparser.py"
 asmc="$PYTHONPATH/../../Py/Assembler/cwparser.py"
+ascflx="$PYTHONPATH/../../Py/Tools/ww-ASCII-to-Flexo.py"
 
 if [ "$1" == "--Accept" ];
 then
 	echo "Accepting L&Z Tests..."
 	rm -rf TestRefs/
 	mkdir TestRefs
-	cp fl-wwasm.log fl-wwsim.log lz-wwsim1.log lz-wwsim2.log TestRefs/
+	cp fl-wwasm.log fl-wwsim.log lz-wwsim1.log lz-wwsim2.log lz-wwsim3.log lz-music-wwsim.log TestRefs/
 elif [ "$1" == "--Build" ];
 then
  	echo "L&Z ww already built"
@@ -42,7 +43,7 @@ else
 	python $asm --CommentColumn 25 --CommentWidth 50 --OmitAutoComment --DecimalAddresses l-and-z.ww
 
 	echo "Testing L&Z program 1..."
-	(python ../../Py/Tools/ww-ASCII-to-Flexo.py -r -i - <<-EOF
+	(python $ascflx -r -i - <<-EOF
 		x = 42 + 57,
 		y = 86 + 99,
 		z = xy,
@@ -60,7 +61,7 @@ else
 	fi
 
 	echo "Testing L&Z program 2..."
-	(python ../../Py/Tools/ww-ASCII-to-Flexo.py -r -i - <<-EOF
+	(python $ascflx -r -i - <<-EOF
 		x = 1.059463094,
 		y = xx,
 		z = -x,
@@ -78,13 +79,13 @@ else
 	fi
 
 	echo "Testing L&Z program 3..."
-	(python ../../Py/Tools/ww-ASCII-to-Flexo.py -r -i - <<-EOF
+	(python $ascflx -r -i - <<-EOF
 		x = (3.14159 + 42)(2.718 + 57),
 		PRINT x.
 		STOP
 		EOF
-	) | python $sim -q --PETRAfile - l-and-z.acore >&lz-wwsim2.log
-	diff -s lz-wwsim2.log TestRefs/lz-wwsim2.log
+	) | python $sim -q --PETRAfile - l-and-z.acore >&lz-wwsim3.log
+	diff -s lz-wwsim3.log TestRefs/lz-wwsim3.log
 	status4=$?
 	if [ "$status4" == "0" ];
 	then
@@ -93,7 +94,20 @@ else
 		echo "Test FAILED"
 	fi
 
-	status=$(($status1 + $status2 + $status3 + $status4))
+	echo "Testing L&Z program music-notes.lz..."
+	# Note this does not bring up a FlexoWin
+	python $ascflx -r -i music-notes.lz -o music-notes.lz.pet
+	python $sim -q --PETRAfile music-notes.lz.pet l-and-z.acore >&lz-music-wwsim.log
+	diff -s lz-music-wwsim.log TestRefs/lz-music-wwsim.log
+	status5=$?
+	if [ "$status5" == "0" ];
+	then
+		echo "Test PASSED"
+	else
+		echo "Test FAILED"
+	fi
+
+	status=$(($status1 + $status2 + $status3 + $status4 + $status5))
 	if [ "$status" == "0" ];
 	then
 		echo "L&Z Test PASSED"

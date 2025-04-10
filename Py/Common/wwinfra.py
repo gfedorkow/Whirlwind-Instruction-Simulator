@@ -1461,18 +1461,17 @@ class FlexoWin:
         self.v = 1500
         self.win = gfx.GraphWin ("Window", self.h, self.v)
         self.win.setBackground ("cornsilk")
-        self.image = gfx.Image (gfx.Point (0, 0), ["~/ezgif.com-crop.gif"])
+        imageName = os.environ["PYTHONPATH"] + "/" + "flexowriter-scaled-cropped.gif"
+        self.image = gfx.Image (gfx.Point (0, 0), [imageName])
         self.imageH = self.image.getWidth()
         self.imageV = self.image.getHeight()
-        self.image = gfx.Image (gfx.Point (self.h/2, self.v - self.imageV/2), ["~/ezgif.com-crop.gif"])
+        self.image = gfx.Image (gfx.Point (self.h/2, self.v - self.imageV/2), [imageName])
         self.image.draw (self.win)
         self.textX = self.h/3
         self.textY = self.v - self.imageV/2 - 250
-
         self.texts = []
         self.overlays = []
         self.curText: gfx.Text = self.newText ("")
-
         pass
 
     def newText (self, s: str) -> gfx.Text:
