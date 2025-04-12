@@ -7,12 +7,14 @@
 
 import subprocess
 import sys
+import os
 
 #WW_Root = "/cygdrive/c/Users/guyfe/Documents/guy/History-of-Computing/Whirlwind/GitHub"
 #Sim_Path = WW_Root + "/Py/Sim/wwsim.py"
-# WW_Root = "c:\\Users\\guyfe\\Documents\\guy\\History-of-Computing\\Whirlwind\\GitHub"
-WW_Root = "/home/guyfe/History-of-Computing/Whirlwind/GitHub"
-Sim_Path = WW_Root + "/Py/Sim/wwsim.py"
+WW_Root_Win = "c:\\Users\\guyfe\\Documents\\guy\\History-of-Computing\\Whirlwind\\GitHub"
+WW_Root_Linux = "/home/guyfe/History-of-Computing/Whirlwind/GitHub"
+WW_Root = None
+Sim_Path = "/Py/Sim/wwsim.py"
 default_args = ["-q", "-p", "--Quick"]
 
 
@@ -35,7 +37,7 @@ Programs = [
     WwAppClass("Black-Jack", dir="Code-Samples/Blackjack", exec="bjack.acore", is_WW=True),
     WwAppClass("CRT Test", dir="Code-Samples/Diags", exec="crt-test-68_001_fbl00-0-50.tcore", is_WW=True),
     WwAppClass("Vibrating String, fixed ends", dir="Code-Samples/Vibrating-String", exec="v97.acore", is_WW=True, args=["--NoWarn"]),
-    WwAppClass("Vibrating String, open end", dir="Code-Samples/Vibrating-String", exec="v204.acore", is_WW=True, args=["--NoWarn"]),
+    WwAppClass("Vibrating String, open end", dir="Code-Samples/Vibrating-String", exec="v204-2.acore", is_WW=True, args=["--NoWarn"]),
     WwAppClass("Nim", dir="Code-Samples/Nim", exec="nim-fb.acore", is_WW=True, args=["--CrtFade", "3"]),
     WwAppClass("Number Display", dir="Code-Samples/Number-Display", exec="number-display-annotated.acore", is_WW=True),
     WwAppClass("Air Defense", dir="Code-Samples/Track-While-Scan-D-Israel", exec="annotated-track-while-scan.acore", 
@@ -46,9 +48,11 @@ Programs = [
 
 
 def exec_program(pgm, args):
+    global Sim_Path
     exec_dir = WW_Root + '/' + pgm.directory
+    sim_path = WW_Root + Sim_Path
     if pgm.is_WW:
-        sim_cmd = [Sim_Path, pgm.executable_name] + args + pgm.args
+        sim_cmd = [sim_path, pgm.executable_name] + args + pgm.args
         # subprocess.run(["ls -l"], shell=True, cwd=exec_dir)
         subprocess.run(["python"] + sim_cmd, shell=False, cwd=exec_dir)
     else:
@@ -57,10 +61,20 @@ def exec_program(pgm, args):
 
 
 def main():
+    global WW_Root
     args = sys.argv[1:]
     if len(args) == 0:
         args = default_args
-    print("args=", args)
+    if len(args) > 1:    # if the first arg on the cmd line is '+' then tack the rest of the args onto the end of the default arg string.
+        if args[0] == '+':
+            args = default_args + args[1:0]
+    host_os = os.getenv("OS")
+    if host_os == "Windows_NT":
+        WW_Root = WW_Root_Win
+    else:
+        WW_Root = WW_Root_Linux
+
+    print("args=", args, "  os=", host_os)
     while True:
         # print('\033[2J') #clear_screen
         print("\n\n\n")

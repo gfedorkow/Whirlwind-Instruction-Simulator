@@ -16,6 +16,22 @@ try:
 except ImportError:
     pass
 
+pin_pwr_ctl = 19
+class PwrCtlClass:
+    def __init__(self):
+        self.pwr_state: int = 0
+
+    def pwr_on(self) -> None:
+        global pin_pwr_ctl
+
+        self.pwr_state = 1
+
+        gpio.setmode(gpio.BCM)
+        gpio.setup(pin_pwr_ctl, gpio.OUT)
+
+        gpio.output(pin_pwr_ctl, self.pwr_state)
+
+
 def nsec_delay(duration):
     stop = time.perf_counter_ns() + int(duration)
     while time.perf_counter_ns() < stop:
@@ -89,6 +105,7 @@ def main():
 
     cb = ConstantsClass()
     ana_scope = analog_scope.AnaScope(host_os, cb)
+    PwrCtlClass()
 
     dpc = DisplayPoints(dimension)
     dpc.scramble_display_list()
@@ -119,6 +136,8 @@ def main():
                 incr = -incr
             if incr < 0 and i == 0:
                 break
+        if gpio.input(ana_scope.pin_isKey) == 0:   # detect the Interrupt button
+            return
 
 if __name__ == "__main__":
     class LogClass:

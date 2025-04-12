@@ -24,6 +24,23 @@
 import sys
 import time
 import vecIFbase as base
+pin_pwr_ctl = 19
+
+
+class PwrCtlClass:
+    def __init__(self):
+        self.pwr_state: int = 0
+
+    def pwr_on(self) -> None:
+        global pin_pwr_ctl
+
+        self.pwr_state = 1
+
+        gpio.setmode(gpio.BCM)
+        gpio.setup(pin_pwr_ctl, gpio.OUT)
+
+        gpio.output(pin_pwr_ctl, self.pwr_state)
+
 
 def drawNumber(x, y, num):
     base.drawCharacter(x, y, base.digits[num // 8], enlarge=8.0)   # changed to Octal by guy to line up with MIR activation
@@ -92,6 +109,7 @@ def loop():
 # run the main loop
 try:
     base.vecIFopen()
+    PwrCtlClass()    # turn the power on with Micro Whirlwind
     
      # wait for key release
     while True:
