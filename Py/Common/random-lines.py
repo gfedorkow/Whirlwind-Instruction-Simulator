@@ -30,6 +30,7 @@ class PwrCtlClass:
         gpio.setup(pin_pwr_ctl, gpio.OUT)
 
         gpio.output(pin_pwr_ctl, self.pwr_state)
+        print("Power bit on")
 
 
 def nsec_delay(duration):
@@ -105,7 +106,8 @@ def main():
 
     cb = ConstantsClass()
     ana_scope = analog_scope.AnaScope(host_os, cb)
-    PwrCtlClass()
+    pc = PwrCtlClass()
+    pc.pwr_on()
 
     dpc = DisplayPoints(dimension)
     dpc.scramble_display_list()
@@ -121,6 +123,11 @@ def main():
         d = 1
         i = 1
         while True:
+            if ana_scope.getSimStopButton():   # detect the Interrupt button
+                print("Stop Button")
+                return
+            #else:
+            #    print("not stopping yet")
             if i < 55:
                 m = 1.15
             else:
@@ -136,8 +143,7 @@ def main():
                 incr = -incr
             if incr < 0 and i == 0:
                 break
-        if gpio.input(ana_scope.pin_isKey) == 0:   # detect the Interrupt button
-            return
+
 
 if __name__ == "__main__":
     class LogClass:
