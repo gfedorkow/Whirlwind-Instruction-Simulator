@@ -71,7 +71,7 @@ def main():
         if user_string == 'q' or user_string == 'Q':
             user_string = '0'
         try:
-            choice = int(user_string)
+            choice = int(user_string, 8)
         except ValueError:
             print("\nEnter a number please")
             continue

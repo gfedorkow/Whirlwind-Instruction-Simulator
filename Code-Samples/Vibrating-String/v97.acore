@@ -1,153 +1,135 @@
 
-; *** Core Image ***
-%File: 102766755_fb131-97-6_patterson-t4.7ch
-%TapeID: fc TAPE 131-97-56 PATTERSON
-%JumpTo 0o170
-%Switch: LeftInterventionReg  0o000100
-%Switch: RightInterventionReg  0o040000
-%Switch: FlipFlopPreset02  0o000010
-%Switch: FlipFlopPreset03  0o070000
-@C0000: 0000000 0000001 0000010 0070000  None    None    None    None   
-@C0040: 0000336 0000336 0014000 0040142 0100142 0114001 0114001 0040143 
-@C0050: 0100142 0164000 0050060 0040150 0130060 0130060 0100147 0150150 
-@C0060: 0154000 0040151 0100001 0040144 0000010 0100152 0040153 0100145 
-@C0070: 0110144 0044130 0044115 0044116 0044122 0044123 0044133 0110001 
-@C0100: 0044117 0100145 0110142 0110144 0044121 0044131 0114001 0044114 
-@C0110: 0100153 0024000 0110151 0040153 0100000 0114000 0114000 0110000 
-@C0120: 0144003 0114000 0110000 0110000 0040146 0144002 0154014 0000600 
-@C0130: 0100000 0040000 0100146 0040000 0100144 0110001 0040144 0114143 
-@C0140: 0070067 0074062 0000400 0000000 0000000 0000620 0000000 0037760 
-@C0150: 0000000 0000000 0100037 0100037  None    None    None    None   
-@C0170: 0000336 0014000 0040240 0100243 0040230 0110240 0040231 0114001 
-@C0200: 0114001 0040244 0100240 0164212 0040241 0000337 0014000 0160001 
-@C0210: 0150241 0155001 0155000 0064240 0144240 0155017 0040241 0100240 
-@C0220: 0155001 0040240 0104241 0040242 0100242 0110240 0040242 0134241 
-@C0230: 0040621 0040711 0130231 0130230 0114244 0070224 0074040 0074041 
-@C0240: 0000000 0000000 0000000 0040621 0040707  None    None    None   
-@C0620: 0000000  None    None    None    None    None    None    None   
-@S0002: scope_amp
-@S0003: elastic
+ *** Core Image ***
+%File: 102766758_fc131-204-10_watson.7ch
+%TapeID: fc TAPE 131-204-6 WATSON
+%JumpTo 0o334
+%Switch: LeftInterventionReg 0o100
+%Switch: RightInterventionReg 0o40000
+%Switch: FlipFlopPreset02 0o10
+%Switch: FlipFlopPreset03 0o70000
+%Switch: FlipFlopPreset05 0o40000
+%Switch: FlipFlopPreset06 0o40000
+@C0040: 0000004 0000336 0014000 0040133 0114145 0040134 0100133 0164000 
+@C0050: 0050056 0040141 0130056 0130056 0100140 0150141 0154000 0040142 
+@C0060: 0100001 0040135 0000010 0100143 0040144 0100136 0110135 0044121 
+@C0070: 0044105 0044106 0044112 0044113 0110001 0044107 0114001 0110133 
+@C0100: 0044111 0044122 0114001 0044104 0100000 0114000 0114000 0110000 
+@C0110: 0144003 0114000 0110000 0110000 0040137 0144002 0154014 0000600 
+@C0120: 0100137 0064000 0040000 0100144 0024000 0110142 0040144 0130135 
+@C0130: 0114134 0070065 0074146 0000000 0000000 0000000 0001750 0000000 
+@C0140: 0037760 0000000 0000000 0100037 0000000 0000002 0100136 0110135 
+@C0150: 0044202 0044176 0114001 0044201 0044175 0110133 0044203 0110001 
+@C0160: 0044204 0044177 0100005 0134000 0070060 0100007 0134000 0070201 
+@C0170: 0100005 0110001 0064005 0150005 0155017 0140000 0064000 0040000 
+@C0200: 0074060 0100000 0040000 0100000 0040000 0074060  None    None   
+@C0330:  None    None    None    None   0000336 0014000 0040420 0160001 
+@C0340: 0040421 0160001 0040422 0104422 0040423 0100424 0040411 0110420 
+@C0350: 0040412 0100420 0164363 0040420 0100417 0040372 0000337 0014000 
+@C0360: 0160001 0150420 0155003 0155000 0040420 0100000 0040425 0130423 
+@C0370: 0130423 0070407 0074373 0074376 0074401 0074041 0104421 0040423 
+@C0400: 0074403 0104422 0040423 0130372 0104420 0040420 0130423 0100425 
+@C0410: 0110420 0040000 0040000 0040425 0130411 0130412 0074370 0074373 
+@C0420: 0000000 0000000 0000000 0000000 0041751 0000000  None    None   
+@C1750: 0000000  None    None    None    None    None    None    None   
+@S0334: f1
+@S0363: f4
+@S0370: f6
+@S0372: f6a
+@S0373: f5
+@S0376: f7
+@S0401: f8
+@S0403: f9
+@S0407: f10
+@S0411: f2
+@S0412: f3
+@S0417: e1
+@S0420: e2
+@S0421: e3
+@S0422: e4
+@S0423: e5
+@S0424: e6
+@S0425: e7
 @S0040: c1
-@S0060: d1
-@S0062: oloop
-@S0067: dloop
-@S0114: a2
-@S0115: a3
-@S0116: a4
-@S0117: a5
-@S0121: a6
-@S0122: a7
-@S0123: a8
-@S0130: a9
-@S0131: a10
-@S0133: a11
-@S0142: t1
-@S0143: t2
-@S0144: loop_cnt
-@S0145: t3
-@S0146: t6
-@S0147: s1
-@S0150: s2
-@S0151: s3
-@S0152: x_start
-@S0153: x_axis
-@S0620: r1
-@S0170: 0r
-@S0224: loop
-@S0230: lpstor1
-@S0231: lpstor2
-@S0240: incr
-@S0241: npts_norm
-@S0242: y_offset
-@S0243: data_strt
-@S0244: data_end
-@N0002: Flip Flop 2
-@N0003: Flip Flop 3
-@N0040: Red ; was FOUR; si 4 clears indicator-light-panel four
-@N0042: read number of points - 0o400
-@N0047: store n_pts -2 in T2
-@N0050: re-fetch n_pts
-@N0051: normalize n_pts
-@N0052: and save the shift count in the *Instruction* at D1
-@N0053: save normalized n_pts in S2
-@N0054: increment the shift count *instruction* of n_pts by two
-@N0055: with the effect of dividing the number by four
-@N0056: fetch constant S2 = 0.37760
-@N0057: divide contents of AC by npts_norm, result in BR; 0.37760 / 0.4 = almost 1.0
-@N0060: Red ;Shift by eight bits *and round off* --> 0o400
-@N0062: Red; Outer display loop;  Fetch a One
-@N0063: T2+1 must contain a loop counter; initialize it to One
-@N0064: Reset Flip Flop Registers to default from switches
-@N0065: fetch constant 1.00037
-@N0066: and initialize x_axis (was label s5)
-@N0067: Red; Inner Display Loop; pick up addr of start of Data segment 0o621
-@N0070: add the loop counter
-@N0071: overwrite the address in @0o130 CA instruction
-@N0072: and the @0o115 SU instruction
-@N0073: and the @0o116 SU instruction
-@N0074: and the @0o122 AD instruction
-@N0075: and the @0o123 AD instruction
-@N0076: and the @0o133 TS instruction
-@N0077: Move the address pointer to the next word
-@N0100: and overwrite the @0o117 AD instruction
-@N0101: pick up addr of start of Data segment 0o621 (again)
-@N0102: add the number of points, i.e. compute the start of the second copy of the data seg
-@N0103: add the loop counter
-@N0104: Overwrite the address of @0o121 SU
-@N0105: and @0o131 TS
-@N0106: Move to address pointer to the previous point in the second copy of the data seg
-@N0107: Overwrite @0o114 CA
-@N0110: pick up the recent copy of what started as 1.00037 = -0.77740, i.e., left edge of screen
-@N0111: Display to Scope: the horizontal axis setting is in AC[0:9]
-@N0112: add 0o400; I think we're stepping across the screen's x-axis
-@N0113: update the new x-axis
-@N0114: previous point on second data array (x-1, current)
-@N0115: Subtract Twice: current word in first data array
-@N0116: current word in first data array
-@N0117: Add the next word in the first data array (x+1, current)
-@N0120: Reduce the sum a bit Elasticity Factor; default 0.70000
-@N0121: subtract the current word in the second data array (x, old)
-@N0122: add current
-@N0123: add current
-@N0124: save the result in temp t6
-@N0125: Scope Amplitude, default 0o10
-@N0127: Select Display Points ; the vertical axis setting is in AC[0:9]
-@N0130: Fetch current point in first data array
-@N0131: Save it on the current point of the second array
-@N0132: retrieve the current point from T6
-@N0133: Store the new value in the current point of the first array
-@N0134: Increment the loop counter
-@N0136: and save it back
-@N0137: subtract the total number of points from the current count to test for end of loop
-@N0152: way on the left edge of the screen
-@N0154: start of the data segment
-@N0171: fetch the number of points
-@N0173: load a ts instruction pointing to the data area
-@N0174: store in the loop
-@N0175: @5r add the number of points to the data area pointer
-@N0176: AC now contains a pointer to the start of the second data area
-@N0200: subtract two from the address
-@N0202: 10r re-fetch the number of points in the sim.
-@N0203: WAS 118; Change to 138 ;this SF appears to write its result to unused location 118; AC=0.40000 and AR=6
-@N0204: Here's the number of points, normalized to 1.0 > x > 0.4 octal
-@N0205: select intervention register
-@N0206: fetch the magnitude of string displacement 0.40000 from switches
-@N0207: @15r  divide by two, -> 0.20000
-@N0210: divide contents of AC by npts_norm, result in BR;
-@N0211: - puts 0o01 in AC
-@N0212: ?? what's with this??  (WAS ZERO)
-@N0213: this puts 1 in the incr location, and 400 in the AC
-@N0214: 20r ; multiply 0.00001 times 0.00400 = 0.00000 0.01000
-@N0215: AC=0o400
-@N0220: double the increment value; now it's TWO
-@N0221: @25r ; save the increment step size
-@N0223: initialize the y-offset to the negative of the number of points = -0o400
-@N0224: fetch the last y-axis offset
-@N0225: add the increment
-@N0226: @30r  ; save the result for next loop
-@N0227: |AC| - |x|, i.e., |yoffset| - |npts_norm|
-@N0233: @35r
-@N0236: spliced by guy
-@N0240: @40r
-@N0620: so is this supposed to be 400 or 401??
-@N0621: pass through the loop, but it seems to be used for a few things along the way
+@S0056: d1
+@S0060: a1
+@S0065: a11
+@S0104: a2
+@S0105: a3
+@S0106: a4
+@S0107: a5
+@S0111: a6
+@S0112: a7
+@S0113: a8
+@S0121: a9
+@S0122: a10
+@S0133: t1
+@S0134: t2
+@S0135: t2+1
+@S0136: t3
+@S0137: t6
+@S0140: s1
+@S0141: s2
+@S0142: s3
+@S0143: s4
+@S0144: s5
+@S0145: s6
+@S0146: b1
+@S0175: b6
+@S0176: b7
+@S0177: b8
+@S0201: b2
+@S0202: b3
+@S0203: b4
+@S0204: b5
+@S1750: r1
+@N0040: Red
+@N0056: Red
+@N0060: Red
+@N0065: Red
+@N0104: Red
+@N0105: Red
+@N0106: Red
+@N0107: Red
+@N0111: Red
+@N0112: Red
+@N0113: Red
+@N0121: Red
+@N0122: Red
+@N0133: Red
+@N0134: Red
+@N0135: Red
+@N0136: Red
+@N0137: Red
+@N0140: Red
+@N0141: Red
+@N0142: Red
+@N0143: Red
+@N0144: Red
+@N0145: Red
+@N0146: Red
+@N0175: Red
+@N0176: Red
+@N0177: Red
+@N0201: Red
+@N0202: Red
+@N0203: Red
+@N0204: Red
+@N0334: Red
+@N0355: was "2f6", which must mean "label f6 plus 2"
+@N0363: Red
+@N0370: Red
+@N0373: Red
+@N0376: Red
+@N0401: Red
+@N0403: Red; ; was "2f6", which must mean "label f6 plus 2"
+@N0407: Red
+@N0411: Red
+@N0412: Red
+@N0417: Red
+@N0420: Red
+@N0421: Red
+@N0422: Red
+@N0423: Red
+@N0424: Red
+@N0425: Red
+@N1750: Red
