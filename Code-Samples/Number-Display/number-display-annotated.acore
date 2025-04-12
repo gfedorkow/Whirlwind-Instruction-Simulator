@@ -107,9 +107,6 @@
 @S0601: u0601
 @S0602: u0602
 @S0610: r0610
-@E0055: print: "calc_ Draw Screen u0600=%o, u0601=%o, u0602=%o disp_num=%o u0502=%o u0503=%o screen_rep_cnt=%o w0003=%o", 0o000600, 0o000601, 0o000602, 0o000501, 0o000502, 0o000503, 0o000504, 0o000003
-@E0112: print: "calc_char input: acc=%ao disp_num=%o w0114=%o u0500=%o", 0o000501, 0o000114, 0o000500
-@E0123: print: "calc_char output offset=%ad (d)"
 @N0040:  load constant 0o12 into AC
 @N0041:  Store it in a FF Reg
 @N0042:  load constant 0o140510 into AC
