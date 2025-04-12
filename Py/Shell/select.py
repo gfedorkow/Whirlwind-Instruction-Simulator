@@ -24,6 +24,7 @@
 import sys
 import time
 import vecIFbase as base
+import RPi.GPIO as gpio
 pin_pwr_ctl = 19
 
 
@@ -109,7 +110,8 @@ def loop():
 # run the main loop
 try:
     base.vecIFopen()
-    PwrCtlClass()    # turn the power on with Micro Whirlwind
+    pc = PwrCtlClass()    # turn the power on with Micro Whirlwind
+    pc.pwr_on()
     
      # wait for key release
     while True:
