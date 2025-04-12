@@ -9,14 +9,15 @@
     with the code selected. 
     
     The code can also be set with the lightgun selecting one of 16 points.
-    In normal mode, the programme imediately returns with the code selected.
+    In normal mode, the programme immediately returns with the code selected.
     In debug mode, the corresponding LEDs are activated and the push button terminates.
     
     Debug mode is switched with the push button in mode 0.
                                                     
                 
     Result is the bitwise or of the code selected by the lightgun and/or the keys.
-    
+
+    original code by Rainer Glaschick
 """
 
 # 
@@ -25,8 +26,8 @@ import time
 import vecIFbase as base
 
 def drawNumber(x, y, num):
-    base.drawCharacter(x, y, base.digits[num // 10], enlarge=8.0)
-    base.drawCharacter(x+0.1, y, base.digits[num % 10], enlarge=8.0)
+    base.drawCharacter(x, y, base.digits[num // 8], enlarge=8.0)   # changed to Octal by guy to line up with MIR activation
+    base.drawCharacter(x+0.1, y, base.digits[num % 8], enlarge=8.0)
     
 # show the menu, set LEDs and show the value on top
 def do_show() :

@@ -143,6 +143,10 @@ class PanelMicroWWClass:
         if init_PC:
             self.write_register("PC", init_PC)
 
+        if gpio.input(pin_gpio_isKey) == 0:   #
+            return False
+        return True
+
 
    # read a register from the switches and lights panel.
     # It would normally be called with a string giving the name.  Inside the simulator

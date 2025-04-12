@@ -1,4 +1,8 @@
+#!/usr/bin/env python
+# vi: ts=4
 
+# Demo Program Dispatcher for microWhirlwind
+# guy fedorkow, Apr 12, 2025
 
 
 import subprocess
@@ -30,8 +34,9 @@ Programs = [
     WwAppClass("Mad Game", dir="Code-Samples/Mad-Game", exec="mad-game.acore", is_WW=True),
     WwAppClass("Black-Jack", dir="Code-Samples/Blackjack", exec="bjack.acore", is_WW=True),
     WwAppClass("CRT Test", dir="Code-Samples/Diags", exec="crt-test-68_001_fbl00-0-50.tcore", is_WW=True),
-    WwAppClass("Vibrating String", dir="Code-Samples/Vibrating-String", exec="v97.acore", is_WW=True),
-    WwAppClass("Nim", dir="Code-Samples/Nim", exec="nim-fb.acore", is_WW=True),
+    WwAppClass("Vibrating String, fixed ends", dir="Code-Samples/Vibrating-String", exec="v97.acore", is_WW=True, args=["--NoWarn"]),
+    WwAppClass("Vibrating String, open end", dir="Code-Samples/Vibrating-String", exec="v204.acore", is_WW=True, args=["--NoWarn"]),
+    WwAppClass("Nim", dir="Code-Samples/Nim", exec="nim-fb.acore", is_WW=True, args=["--CrtFade", "3"]),
     WwAppClass("Number Display", dir="Code-Samples/Number-Display", exec="number-display-annotated.acore", is_WW=True),
     WwAppClass("Air Defense", dir="Code-Samples/Track-While-Scan-D-Israel", exec="annotated-track-while-scan.acore", 
                is_WW=True, args=["-D", "-r", "--CrtF 5", "--NoToggl", "--NoAlarmStop"]),
@@ -60,7 +65,7 @@ def main():
         # print('\033[2J') #clear_screen
         print("\n\n\n")
         for index in range(0, len(Programs)):
-            print("%2d: %s" % (index, Programs[index].title))
+            print("%2o: %s" % (index, Programs[index].title))
         choice = 0
         user_string = input("Type a number: ")
         if user_string == 'q' or user_string == 'Q':
