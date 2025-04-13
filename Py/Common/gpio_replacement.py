@@ -13,7 +13,9 @@ class gpioClass:
     def setup(self, pin_gpio_LED1, pindir, pull_up_down=0):
         print("pin setup")
 
-    def output(self, pin_pwr_ctl, pwr_state):
-        print("output")
+    def output(self, pin, val):
+        print("output val=0o%o to pin %d" % (val, pin))
 
+    def input(self, pin):
+        print("input from pin %d" % pin)
 
