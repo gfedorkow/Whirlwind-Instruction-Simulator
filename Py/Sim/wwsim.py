@@ -1986,9 +1986,11 @@ def main_run_sim(args, cb):
             # poll various I/O circumstances, and update the xwin screen
             # Do this less frequently in AnaScope mode, as it slows the Rasp Pi performance,
             # even to check the xwin stuff
-            update_rate = 500
+            # Set the update interval to a prime number in an attempt to prevent a program
+            # loop from synchronizing with the panel update
+            update_rate = 511
             if cb.analog_display:
-                update_rate = 5000
+                update_rate = 5003
             if (sim_cycle % update_rate == 0) or args.SynchronousVideo or CycleDelayTime:
                 exit_alarm = cb.NO_ALARM
                 if cb.panel:
