@@ -199,10 +199,13 @@ class PanelMicroWWClass:
             case "FF03Sw":
                 self.md.set_preset_switch_leds(ff3=value)
             case "FF05Sw":
-                print("ignore Set to preset FF05Sw")
+                print("ignore Set to preset %s" % which_one)
                 return
             case "FF06Sw":
-                print("ignore Set to preset FF06Sw")
+                print("ignore Set to preset %s" % which_one)
+                return
+            case "FF010Sw":
+                print("ignore Set to preset %s" % which_one)
                 return
             case "PC":  # this is actually the pc_preset LEDs
                 self.md.set_preset_switch_leds(pc=value)
@@ -227,8 +230,8 @@ class PanelMicroWWClass:
                 self.md.stop_on_addr_state = value
                 self.md.update_exec_switch_leds()
             case _:
-                print("mWWPanel.write_register: unknown register %s" % which_one)
-                exit()
+                print("MicroWhirlwind panel doesn't have register %s" % which_one)
+
 
 
     def reset_ff_registers(self, function, log=None, info_str=''):
