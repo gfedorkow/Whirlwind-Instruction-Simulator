@@ -1,0 +1,19 @@
+
+; *** Core Image ***
+%File: mir-pgm-selector.ww
+%TapeID: 
+%Switch: RightInterventionReg  0o000011
+@C0000: 0000000 0000001  None    None    None    None    None    None   
+@C0040: 0000300 0014000 0070044 0074040 0100000 0000337 0014000 0040100 
+@C0050: 0074040  None    None    None    None    None    None    None   
+@C0100: 0000000  None    None    None    None    None    None    None   
+@S0000: c_zero
+@S0001: c_one
+@S0040: main
+@S0044: get_input
+@S0100: return_code
+@E0050: exec: exit(cm.rd(0o100))
+@N0002:  set the default menu choice to Vibrating String
+@N0040:  read Activate Register Zero
+@N0041:  one of them ("upper", I think) is WW Bit Zero
+@N0045:  read the RMIR

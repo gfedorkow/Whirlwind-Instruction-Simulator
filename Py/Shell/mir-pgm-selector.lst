@@ -1,0 +1,24 @@
+                          .org 0
+@0000:000000      c_zero: .word 0                  ; @@ReadBy a0044
+@0001:000001       c_one: .word 1
+
+                          ; set the default menu choice to Vibrating String
+                          .switch RightInterventionReg, 0o11
+                          .org 0o40
+
+                    main:
+@0040:000300              si 0o300                 ; read Activate Register Zero ; Auto-Annotate I/O: Intervention and Activate Device@@JumpedToBy a0043 a0050
+@0041:014000              rd 0                     ; one of them ("upper", I think) is WW Bit Zero
+@0042:070044              cp get_input
+@0043:074040              sp main
+
+               get_input:
+@0044:100000              ca 0                     ; @@JumpedToBy a0042
+@0045:000337              si 0o337                 ; read the RMIR ; Auto-Annotate I/O: Intervention and Activate Device
+@0046:014000              rd 0
+@0047:040100              ts return_code
+                          .exec exit(cm.rd(0o100))
+@0050:074040              sp main
+
+                          .org 0o100
+@0100:000000 return_code: .word 0                  ; @@WrittenBy a0047

@@ -1,0 +1,24 @@
+        .org 0
+c_zero: .word 0        
+c_one:  .word 1
+
+        ; set the default menu choice to Vibrating String
+        .switch RightInterventionReg, 0o11
+        .org 0o40
+
+main:
+        si 0o300   ; read Activate Register Zero
+        rd 0       ; one of them ("upper", I think) is WW Bit Zero
+        cp get_input
+        sp main
+
+get_input:
+         ca 0
+         si 0o337   ; read the RMIR
+         rd 0
+         ts return_code
+        .exec exit(cm.rd(0o100))
+        sp main
+
+        .org 0o100
+return_code:  .word 0
