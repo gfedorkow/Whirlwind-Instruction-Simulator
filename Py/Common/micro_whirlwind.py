@@ -20,13 +20,12 @@ except ModuleNotFoundError:
 
 
 import argparse
-import time
 import blinkenlights
 import control_panel
-import re
 import time
 import wwinfra
 
+MwwPanelDebug = False    # turn on to see what's going on with the control panel code
 
 IS31_1_ADDR_U1 = 0x74    # U1
 IS31_1_ADDR_U5 = 0x75    # U5
@@ -70,18 +69,18 @@ class localCpuClass:
 class PanelMicroWWClass:
     def __init__(self, cb, sim_state_machine_arg=None, left_init=0, right_init=0):
 
-        self.cb = cb
+        self.log = cb.log
         self.sim_state_machine = sim_state_machine_arg
         self.micro_ww_module_present = True
         self.i2c_bus = None
-        print("I2C init: ")
+        if MwwPanelDebug: self.log.info("I2C init: ")
         try:
             i2c_bus = I2C(1)
             bus = i2c_bus.bus
-            gp_sw = gpio_switches()  # these are the switches and LEDs on Rainer's "Tap Board"
+            gp_sw = gpio_switches(self.log)  # these are the switches and LEDs on Rainer's "Tap Board"
         except IOError:
             self.micro_ww_module_present = False
-            print("No MicroWhirlwind Panel I2C/gpio Found")
+            self.log.warn("No MicroWhirlwind Panel I2C/gpio Found")
             return
 
         try:
@@ -89,15 +88,15 @@ class PanelMicroWWClass:
             pwr_ctl.pwr_on()
             time.sleep(0.3)
 
-            self.md = MappedRegisterDisplayClass(i2c_bus)
-            self.sw = MappedSwitchClass(i2c_bus, self.md)
+            self.md = MappedRegisterDisplayClass(self.log, i2c_bus)  # pass in cb.log for printing log messages
+            self.sw = MappedSwitchClass(self.log, i2c_bus, self.md)
             # I think there's only one set of lights that need to be initialized from CB
             # The rest come from the ReadIn operation
-            print("Preset Scope Selectors to %d" % cb.which_scope)
+            if MwwPanelDebug: self.log.info("Preset D/F Scope Selector switches to %d" % cb.which_scope)
             self.md.set_scope_selector_leds(cb.which_scope)
         except IOError:
             self.micro_ww_module_present = False
-            print("Missing MicroWhirlwind Panel drivers")
+            self.log.warn("Missing MicroWhirlwind Panel drivers")
             return
 
         self.local_state_change_buttons = ("Stop-on-Addr", "Stop-on-CK", "Stop-on-S1")
@@ -180,7 +179,7 @@ class PanelMicroWWClass:
             case "StopOnAddr":
                 ret = self.md.stop_on_addr_state
             case _:
-                print("Panel.read_register: unknown register %s" % which_one)
+                self.log.warn("Panel.read_register: unknown register %s" % which_one)
                 exit()
         return ret
 
@@ -192,20 +191,20 @@ class PanelMicroWWClass:
         if type(which_one) is int:
             which_one = "FF%02o" % which_one
 
-        print("mWWPanelClass: write_register %s, val 0o%o" % (which_one, value))
+        if MwwPanelDebug: self.log.info("mWWPanelClass: write_register %s, val 0o%o" % (which_one, value))
         match which_one:
             case "FF02Sw":
                 self.md.set_preset_switch_leds(ff2=value)
             case "FF03Sw":
                 self.md.set_preset_switch_leds(ff3=value)
             case "FF05Sw":
-                print("ignore Set to preset %s" % which_one)
+                if MwwPanelDebug: self.log.info("ignore Set to preset %s" % which_one)
                 return
             case "FF06Sw":
-                print("ignore Set to preset %s" % which_one)
+                if MwwPanelDebug: self.log.info("ignore Set to preset %s" % which_one)
                 return
             case "FF010Sw":
-                print("ignore Set to preset %s" % which_one)
+                if MwwPanelDebug: self.log.info("ignore Set to preset %s" % which_one)
                 return
             case "PC":  # this is actually the pc_preset LEDs
                 self.md.set_preset_switch_leds(pc=value)
@@ -230,7 +229,7 @@ class PanelMicroWWClass:
                 self.md.stop_on_addr_state = value
                 self.md.update_exec_switch_leds()
             case _:
-                print("MicroWhirlwind panel doesn't have register %s" % which_one)
+                self.log.info("MicroWhirlwind panel doesn't have register %s" % which_one)
 
 
 
@@ -257,8 +256,8 @@ class PanelMicroWWClass:
             case "Stop-on-S1":
                 self.md.stop_on_s1_state ^= 1
             case _:
-                print("mWWPanel.local_state_change: unknown button %s" % bn)
-        print("local_state_change: stop-on-addr=%d, stop-on-ck=%d, stop-on-S1=%d" % 
+                self.log.info("mWWPanel.local_state_change: unknown button %s" % bn)
+        if MwwPanelDebug: self.log.info("local_state_change: stop-on-addr=%d, stop-on-ck=%d, stop-on-S1=%d" %
             (self.md.stop_on_addr_state, self.md.check_alarm_special_state, self.md.stop_on_s1_state))
         self.md.update_exec_switch_leds()
 
@@ -288,8 +287,9 @@ u5_brightness = [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 
 
 
 class MappedRegisterDisplayClass:
-    def __init__(self, i2c_bus):
+    def __init__(self, log, i2c_bus):
         global RdB, WhB, BlB, u1_brightness, u2_brightness, u5_brightness
+        self.log = log
         self.run_state = 0
         self.alarm_state = 0
         self.ind_register = 0   # this is the eight-bit "user" indicator light display
@@ -298,9 +298,9 @@ class MappedRegisterDisplayClass:
         self.stop_on_s1_state = 0
         self.stop_on_addr_state = 0
 
-        self.u1_is31 = Is31(i2c_bus, IS31_1_ADDR_U1, brightness=u1_brightness)
-        self.u2_is31 = Is31(i2c_bus, IS31_1_ADDR_U2, brightness=u2_brightness)
-        self.u5_is31 = Is31(i2c_bus, IS31_1_ADDR_U5, brightness=u5_brightness)
+        self.u1_is31 = Is31(log, i2c_bus, IS31_1_ADDR_U1, brightness=u1_brightness)
+        self.u2_is31 = Is31(log, i2c_bus, IS31_1_ADDR_U2, brightness=u2_brightness)
+        self.u5_is31 = Is31(log, i2c_bus, IS31_1_ADDR_U5, brightness=u5_brightness)
         self.u1_led = [0] * 9
         self.u2_led = [0] * 9
         self.u5_led = [0] * 9
@@ -465,7 +465,7 @@ class MappedRegisterDisplayClass:
         for i in range(0, 6):
             msg += "%d:0o%06o, " % (i, self.u2_led[i])
 
-        print("Setting U2 LEDs to %s; mir[0]=0o%o, mir[1]=0o%o, mir=0o%o, which=%d, activate=%d" % 
+        if MwwPanelDebug: self.log.info("Setting U2 LEDs to %s; mir[0]=0o%o, mir[1]=0o%o, mir=0o%o, which=%d, activate=%d" %
             (msg, self.mir_state[0], self.mir_state[1], mir, self.which_mir, self.activate))
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # ought to be six, no?
 
@@ -497,14 +497,15 @@ class MappedRegisterDisplayClass:
 
 
 class MappedSwitchClass:
-    def __init__(self, i2c_bus, mapped_display):
-        self.tca84_u3 = tc_init_u3(i2c_bus.bus, TCA8414_0_ADDR)
-        self.tca84_u4 = tc_init_u4(i2c_bus.bus, TCA8414_1_ADDR)
+    def __init__(self, log, i2c_bus, mapped_display):
+        self.log = log
+        self.tca84_u3 = tc_init_u3(log, i2c_bus.bus, TCA8414_0_ADDR)
+        self.tca84_u4 = tc_init_u4(log, i2c_bus.bus, TCA8414_1_ADDR)
         # self.i2c_bus = smbus2.SMBus(1)
-        print("  done")
+        if MwwPanelDebug: self.log.info("  tca init done")
 
         self.tca84_u4.init_gp_out()
-        print("  TCA8414 init done")
+        if MwwPanelDebug: self.log.info("  TCA8414 init done")
 
         # push button switches can be classified first by the "column" number, 0-9
         self.u3_switch_map = (
@@ -548,7 +549,7 @@ class MappedSwitchClass:
                 row = key // 10
                 col = key % 10
                 button_press = self.u3_switch_map[col](row, col)
-                print("Pressed U3 %s: row=%d, col=%d" % (button_press, row, col))
+                if MwwPanelDebug: self.log.info("Pressed U3 %s: row=%d, col=%d" % (button_press, row, col))
                 if button_press:
                     return button_press
         elif self.tca84_u4.available() > 0:
@@ -560,7 +561,7 @@ class MappedSwitchClass:
                 row = key // 10
                 col = key % 10
                 button_press = self.u4_switch_map[col](row, col)
-                print("Pressed U4 %s: row=%d, col=%d" % (button_press, row, col))
+                if MwwPanelDebug: self.log.info("Pressed U4 %s: row=%d, col=%d" % (button_press, row, col))
 #        else:
 #            if RasPi == False:
 #                if msvcrt.kbhit():
@@ -570,7 +571,7 @@ class MappedSwitchClass:
         return button_press
 
     def no_sw(self, row, col):
-        print("unknown switch row %d, col %d" %(row, col))
+        self.log.warn("unknown switch row %d, col %d" %(row, col))
         return None
 
     def fn_sw(self, row, col):
@@ -579,23 +580,23 @@ class MappedSwitchClass:
             button = self.fn_buttons_def[col][row]
         except:
             button = "undefined button"
-        print("function switch %s: row %d, col %d" %(button, row, col))
+        if MwwPanelDebug: self.log.info("function switch %s: row %d, col %d" %(button, row, col))
         return button
 
     def ff2_sw(self, row, col):
-        print("ff2 switch row %d, col %d" %(row, col))
+        if MwwPanelDebug: self.log.info("ff2 switch row %d, col %d" %(row, col))
         self.ff_preset_flip_bit(0, row, col)
         return None
 
     def ff3_sw(self, row, col):
-        print("ff3 switch row %d, col %d" %(row, col))
+        if MwwPanelDebug: self.log.info("ff3 switch row %d, col %d" %(row, col))
         self.ff_preset_flip_bit(1, row, col)
         return None
 
     def pc_sw(self, row, col):
         button = "PC Preset"
         self.pc_preset_flip_bit(row, col)
-        print("pc switch '%s': row %d, col %d" %(button, row, col))
+        if MwwPanelDebug: self.log.info("pc switch '%s': row %d, col %d" %(button, row, col))
         return None
 
 
@@ -608,7 +609,7 @@ class MappedSwitchClass:
         reg = self.ff_preset_state[ff]
         regf = reg ^ (1 << bit_num)         # flip the designated bit
         self.ff_preset_state[ff] = regf
-        print("ff flip bit: ff=%d, bit_num=%d, reg=0o%o, regf=0o%o" % (ff, bit_num, reg, regf))
+        if MwwPanelDebug: self.log.info("ff flip bit: ff=%d, bit_num=%d, reg=0o%o, regf=0o%o" % (ff, bit_num, reg, regf))
         if ff == 0:
             self.md.set_preset_switch_leds(pc=None, pc_bank=None, ff2=regf, ff3=None, bank_test=False)
         else:
@@ -622,7 +623,7 @@ class MappedSwitchClass:
 
         reg = presets["pc"]
         regf = reg ^ (1 << bit_num)         # flip the designated bit
-        print("pc flip bit: bit_num=%d, reg=0o%o, regf=0o%o" % (bit_num, reg, regf))
+        if MwwPanelDebug: self.log.info("pc flip bit: bit_num=%d, reg=0o%o, regf=0o%o" % (bit_num, reg, regf))
         self.md.set_preset_switch_leds(pc=regf, pc_bank=None)
 
 
@@ -633,19 +634,19 @@ class MappedSwitchClass:
             if row == 2:
                 self.md.which_mir = 1    # switch to Right MIR
                 self.md.set_mir_preset_switch_leds()
-                print("Set display to RMIR; self.md.which_mir=%d" % self.md.which_mir)
+                if MwwPanelDebug: self.log.info("Set display to RMIR; self.md.which_mir=%d" % self.md.which_mir)
             elif row == 3:
                 self.md.which_mir = 0    # switch to Left MIR
                 self.md.set_mir_preset_switch_leds()
-                print("Set display to LMIR; self.md.which_mir=%d" % self.md.which_mir)
+                if MwwPanelDebug: self.log.info("Set display to LMIR; self.md.which_mir=%d" % self.md.which_mir)
             elif row == 4:   # Lower_Activate
                 self.md.set_activate_switch_leds(1)
-                print("Lower Activate Button")
+                if MwwPanelDebug: self.log.info("Lower Activate Button")
             elif row == 5:  # Upper_Activate
                 self.md.set_activate_switch_leds(2)
-                print("Upper Activate Button")
+                if MwwPanelDebug: self.log.info("Upper Activate Button")
         else:
-            # print("mir switch row %d, col %d" %(row, col))
+            # if MwwPanelDebug: self.log.info("mir switch row %d, col %d" %(row, col))
             reg = self.md.mir_state[self.md.which_mir]
             val = row & 7  # it can't be more than three bits anyways...
             mask = 0o177777 ^ (7 << 3 * ((5 - col)))   # mir switches are col 0-5
@@ -653,7 +654,7 @@ class MappedSwitchClass:
             regf = (reg & mask) | (val << (3 * (5 - col)))       # insert the three designated bits
             self.md.mir_state[self.md.which_mir] = regf
             self.md.set_mir_preset_switch_leds()
-            print("preset LMIR = 0o%06o, RMIR = 0o%06o, MIR=%d" %
+            if MwwPanelDebug: self.log.info("preset LMIR = 0o%06o, RMIR = 0o%06o, MIR=%d" %
                 (self.md.mir_state[0], self.md.mir_state[1], self.md.which_mir))
 
 
@@ -664,7 +665,8 @@ class MappedSwitchClass:
 # Guy Fedorkow, Jun 2024
 
 class gpio_switches:
-    def __init__(self):
+    def __init__(self, log):
+        self.log = log
         gpio.setmode(gpio.BCM)
 
         gpio.setup(pin_gpio_LED1, gpio.IN, pull_up_down=gpio.PUD_UP)
@@ -710,7 +712,7 @@ class gpio_switches:
             gpio.setup(led, gpio.OUT)
             gpio.output(led, 0)
             self.last_sw_state |= 1 << (n - 1)
-        if Verbose: print("set last_sw_state to 0x%x" % self.last_sw_state)
+        if MwwPanelDebug: self.log.info("set last_sw_state to 0x%x" % self.last_sw_state)
 
     def step(self, delay):
         # Note that Rainer numbered the LEDs 1-4, not 0-3
@@ -721,7 +723,7 @@ class gpio_switches:
 
         sw = self.getKeys()
         if sw != self.last_sw_state:
-            if Verbose: print("gpio switches: new state = 0x%x" % sw)
+            if MwwPanelDebug: self.log.info("gpio switches: new state = 0x%x" % sw)
             self.last_sw_state = sw
 
         time.sleep(delay)
@@ -732,8 +734,9 @@ class gpio_switches:
 # =============== TCA8414 Keypad Scanner ==================================
 
 class TCA8414:
-    def __init__(self, bus, i2c_addr):
+    def __init__(self, log, bus, i2c_addr):
         self.bus = bus
+        self.log = log
         self.i2c_addr = i2c_addr
         self.TCA8418_REG_CFG = 0x01  # < Configuration register
         self.TCA8418_REG_INT_STAT = 0x02  # < Interrupt status
@@ -815,6 +818,7 @@ class TCA8414:
         self.bus.write_byte_data(self.i2c_addr, command, val)
 
     def readRegister(self, command):
+        global I2CBusTimeout
         try:
             val = self.bus.read_byte_data(self.i2c_addr, command)
         except IOError:
@@ -834,9 +838,9 @@ class TCA8414:
         self.writeRegister(self.TCA8418_REG_CFG, 0x20)   # Interrupt for buffer overflow
         val = self.readRegister(self.TCA8418_REG_CFG)
         if val == 0x20:
-            print("TCA8414 at 0x%x config_reg = 0x%x" % (self.i2c_addr, val))
+            if MwwPanelDebug: self.log.info("TCA8414 at 0x%x config_reg = 0x%x" % (self.i2c_addr, val))
         else:
-            print("TCA8414 at 0x%x failed; val should be 0x20, is 0x%x" % (self.i2c_addr, val))
+            self.log.warn("TCA8414 at 0x%x failed; val should be 0x20, is 0x%x" % (self.i2c_addr, val))
 
         #  GPIO
         #  set default all GIO pins to INPUT
@@ -902,7 +906,7 @@ class TCA8414:
                     mask <<= 1
                     mask |= 1
             self.writeRegister(self.TCA8418_REG_KP_GPIO_2, mask)
-            print("matrix GPIO_2 set to 0x%x" % mask)
+            if MwwPanelDebug: self.log.info("matrix GPIO_2 set to 0x%x" % mask)
 
             mask = 0
             if columns > 8:
@@ -911,7 +915,7 @@ class TCA8414:
                 else:
                     mask = 0x03
             self.writeRegister(self.TCA8418_REG_KP_GPIO_3, mask)
-            print("matrix GPIO_3 set to 0x%x" % mask)
+            if MwwPanelDebug: self.log.info("matrix GPIO_3 set to 0x%x" % mask)
         return True
 
     # hack -- config two pins as output to blink an LED
@@ -962,7 +966,6 @@ class TCA8414:
     """
     /**
      * @brief checks if key events are available in the internal buffer
-     *
      * @return number of key events in the buffer
      */
     """
@@ -1007,8 +1010,9 @@ def rotary_decode(pressed, which_key):
 # =============== IS31FL3731 LED Mux ==================================
     # This class was derived from an Adafruit example
 class IS31FL3731:
-    def __init__(self, i2c_bus, i2c_addr):
+    def __init__(self, log, i2c_bus, i2c_addr):
         self.bus = i2c_bus.bus
+        self.log = log
         self.i2c_addr = i2c_addr
         # converted from Adafruit library
         self.ISSI_REG_CONFIG = 0x00
@@ -1192,19 +1196,20 @@ class PwrCtlClass:
 
 # initialize a test instance for LED patterns.
 class Is31:
-    def __init__(self, i2c_bus, addr, brightness=None, reverse_bits=False):
-        self.is31 = IS31FL3731(i2c_bus, addr)
+    def __init__(self, log, i2c_bus, addr, brightness=None, reverse_bits=False):
+        self.is31 = IS31FL3731(log, i2c_bus, addr)
         self.i2c_bus = i2c_bus
-        print("IS31 at 0x%0x Init" % addr)
+        self.log = log
+        if MwwPanelDebug: self.log.info("IS31 at 0x%0x Init" % addr)
         self.addr = addr
         # is31.i2c_reg_test()
         self.is31.init_IS31()
-        print("set brightness")
+        if MwwPanelDebug: self.log.info("set brightness")
         self.is31.set_brightness(brightness)
 
         self.is31.selectFrame(0)   # do this once, so it doesn't have to be done with each write of the LEDs
         self.is31.write_16bit_led_rows(0, [0, 0, 0, 0, 0, 0, 0, 0, 0])  # clear all the LEDs
-        print("  IS31 init done")
+        if MwwPanelDebug: self.log.info("  IS31 init done")
         self.test_step = 0
         self.previous_test_step = 0
         self.previous_word_offset = 0
@@ -1251,7 +1256,7 @@ class Is31:
         elif wsize == 1:       # swap bytes, leave bits in the same order
             new_word = ((word << 8) & 0xff00) | ((word >> 8) & 0xff)
         else:
-            print("unexpected word length %d in bit_reverse" % wsize)
+            self.log.warn("unexpected word length %d in bit_reverse" % wsize)
         return new_word
 
 
@@ -1268,8 +1273,6 @@ class Is31:
             int_list = [reversed_word]
         else:
             int_list = [word_reg]
-
-        if Verbose: print("Temp Debug: write LED register; val[0]=0o%o, offset=0o%o" % (int_list[0], reg_offset))
         self.is31.write_16bit_led_rows(reg_offset, int_list)
 
 
@@ -1277,6 +1280,7 @@ class Is31:
     def step(self, delay, pattern):
         global PassCount
 
+        word_reg = 0
         if pattern == 0 or pattern == 1:
             word_offset = self.test_step >> 4
             bit_num = self.test_step & 0xf
@@ -1291,7 +1295,8 @@ class Is31:
                 word_offset = (pattern23_addr >> 4) & 0xe   # in Pattern Three, we blink corresponding bits in adjacent registers
                 bit_num = pattern23_addr & 0xf
             else:
-                print("unexpected pattern")
+                bit_num = 0  # suppress an error message
+                self.log.warn("unexpected pattern")
 
 
         # with the Wave pattern, we just turn on bits one at a time until they're all on, then turn them off one at a time
@@ -1361,27 +1366,27 @@ class Is31:
         return restart_cycle
 
 
-def tc_init_u4(bus, addr):
-    tca84 = TCA8414(bus, addr)
-    print("TCA8414 @0x%x U4 Test" % tca84.i2c_addr)
+def tc_init_u4(log, bus, addr):
+    tca84 = TCA8414(log, bus, addr)
+    if MwwPanelDebug: log.info("TCA8414 @0x%x U4 Test" % tca84.i2c_addr)
     # tca84.i2c_reg_test()
     tca84.init_tca8414(8, 4)  # scan 8 rows, 4 columns
     # tca84.init_gp_out()
     # flush the internal buffer
     tca84.flush()
-    print("  TCA8414 U4 at 0x%x init done" % tca84.i2c_addr)
+    if MwwPanelDebug: log.info("  TCA8414 U4 at 0x%x init done" % tca84.i2c_addr)
     return tca84
 
 
-def tc_init_u3(bus, addr):
-    tca84 = TCA8414(bus, addr)
-    print("TCA8414 @0x%x U3 Test" % tca84.i2c_addr)
+def tc_init_u3(log, bus, addr):
+    tca84 = TCA8414(log, bus, addr)
+    if MwwPanelDebug: log.info("TCA8414 @0x%x U3 Test" % tca84.i2c_addr)
     # tca84.i2c_reg_test()
     tca84.init_tca8414(8, 10) #was 8  # scan 8 rows, 10 columns
     # tca84.init_gp_out()  # hack test
     # flush the internal buffer
     tca84.flush()
-    print("  TCA8414 U3 at 0x%x init done" % tca84.i2c_addr)
+    if MwwPanelDebug: log.info("  TCA8414 U3 at 0x%x init done" % tca84.i2c_addr)
     return tca84
 
 
@@ -1425,7 +1430,7 @@ class RegListClass:
         self.var_name = var_name
 
 class MappedDisplayTestDriverClass:
-    def __init__(self, i2c_bus):
+    def __init__(self, log, i2c_bus):
         self.cpu = localCpuClass()
         self.mar = 0
         self.mdr = 0
@@ -1438,7 +1443,7 @@ class MappedDisplayTestDriverClass:
         self.mir_preset = 0
 
 
-        self.reg_disp = MappedRegisterDisplayClass(i2c_bus)
+        self.reg_disp = MappedRegisterDisplayClass(log, i2c_bus)
         self.reg_disp.set_cpu_reg_display(self.cpu)  # default everything to zero
         self.bit_num = 0
         self.reg_num = 0
@@ -1566,16 +1571,18 @@ def main():
 
     pass_count = 0
 
-    # not much can happen if we can't initialize the i2c bus...
-    i2c_bus = I2C(1)
-    bus = i2c_bus.bus
-    gp_sw = gpio_switches()  # these are the switches and LEDs on Rainer's "Tap Board"
-    md = None
-    sw = None
-    mWW = None
     cb = wwinfra.ConstWWbitClass()
     cb.cpu = localCpuClass()
     cb.cpu.cm = wwinfra.CorememClass(cb)
+    cb.log = wwinfra.LogFactory().getLog (quiet=False, no_warn=args.NoWarnings)
+
+    # not much can happen if we can't initialize the i2c bus...
+    i2c_bus = I2C(1)
+    bus = i2c_bus.bus
+    gp_sw = gpio_switches(cb.log)  # these are the switches and LEDs on Rainer's "Tap Board"
+    md = None
+    sw = None
+    mWW = None
 
     if args.Verbose:
         Verbose = True
@@ -1596,23 +1603,23 @@ def main():
         tests +=1
 
     if args.U1_LED_Mux_Loop:
-        is31_U1 = Is31(i2c_bus, IS31_1_ADDR_U1, u1_brightness)
+        is31_U1 = Is31(cb.log, i2c_bus, IS31_1_ADDR_U1, u1_brightness)
         tests += 1
 
     if args.U5_LED_Mux_Loop:
-        is31_U5 = Is31(i2c_bus, IS31_1_ADDR_U5, u5_brightness)
+        is31_U5 = Is31(cb.log, i2c_bus, IS31_1_ADDR_U5, u5_brightness)
         tests += 1
 
     if args.U2_LED_Mux_Loop:
-        is31_U2 = Is31(i2c_bus, IS31_1_ADDR_U2, u2_brightness)
+        is31_U2 = Is31(cb.log, i2c_bus, IS31_1_ADDR_U2, u2_brightness)
         tests += 1
 
     if args.Key_0_Scan:
-        tca84_0 = tc_init_u3(bus, TCA8414_0_ADDR)
+        tca84_0 = tc_init_u3(cb.log, bus, TCA8414_0_ADDR)
         tests += 1
 
     if args.Key_1_Scan:
-        tca84_1 = tc_init_u4(bus, TCA8414_1_ADDR)
+        tca84_1 = tc_init_u4(cb.log, bus, TCA8414_1_ADDR)
         tests += 1
 
     # These test options don't need specific intialization
@@ -1620,16 +1627,16 @@ def main():
         tests += 1
 
     if args.LED_Mapped:
-        md = MappedDisplayTestDriverClass(i2c_bus)
+        md = MappedDisplayTestDriverClass(cb.log, i2c_bus)
         tests += 1
 
     if args.SW_Mapped:
-        md = MappedDisplayTestDriverClass(i2c_bus)
-        sw = MappedSwitchClass(i2c_bus, md)
+        md = MappedDisplayTestDriverClass(cb.log, i2c_bus)
+        sw = MappedSwitchClass(cb.log, i2c_bus, md)
         tests += 1
 
     if args.MicroWhirlwind:
-        mWW = PanelClass(None, panel_microWW=True)
+        mWW = control_panel.PanelClass(cb.log, None, panel_microWW=True)
         tests += 1
 
 
