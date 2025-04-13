@@ -195,7 +195,7 @@ class LogClass:
 
     def fatal(self, message):
         self.writeLog (LogMsgType.Log, LogMsgSeverity.Fatal, message)
-        sys.exit(1)
+        sys.exit(-1)
 
 class AsmLogClass (LogClass):
     def __init__ (self, corefile, **kwargs):
@@ -354,7 +354,7 @@ class Tokenizer:
                     return self.endOfString
             else:
                 print("Unexpected state %d in Tokenizer" % self.state)
-                exit(1)
+                exit(-1)
         return self.endOfString
 
 class WwPrintTokenizer (Tokenizer):
