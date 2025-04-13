@@ -532,7 +532,6 @@ class MappedSwitchClass:
         self.fn_buttons_def = (("Examine", "Read In", "Order-by-Order", "Start at 40", "Start Over", "Restart", "Stop", "Clear"),
                                ("Stop-on-Addr", "Stop-on-CK", "Stop-on-S1", "F-Scope", "D-Scope"))
         self.ff_preset_state = [0, 0]        # ff2 and ff3 preset values
-        self.which_mir  = 0                  # Left is Zero, Right is One
 
 
     def check_buttons(self):
@@ -631,11 +630,11 @@ class MappedSwitchClass:
             if row == 2:
                 self.md.which_mir = 1    # switch to Right MIR
                 self.md.set_mir_preset_switch_leds()
-                print("Set display to RMIR; self.which_mir=%d" % self.which_mir)
+                print("Set display to RMIR; self.md.which_mir=%d" % self.md.which_mir)
             elif row == 3:
                 self.md.which_mir = 0    # switch to Left MIR
                 self.md.set_mir_preset_switch_leds()
-                print("Set display to LMIR; self.which_mir=%d" % self.which_mir)
+                print("Set display to LMIR; self.md.which_mir=%d" % self.md.which_mir)
             elif row == 4:   # Lower_Activate
                 self.md.set_activate_switch_leds(1)
                 print("Lower Activate Button")
@@ -644,15 +643,15 @@ class MappedSwitchClass:
                 print("Upper Activate Button")
         else:
             # print("mir switch row %d, col %d" %(row, col))
-            reg = self.md.mir_state[self.which_mir]
+            reg = self.md.mir_state[self.md.which_mir]
             val = row & 7  # it can't be more than three bits anyways...
             mask = 0o177777 ^ (7 << 3 * ((5 - col)))   # mir switches are col 0-5
 
             regf = (reg & mask) | (val << (3 * (5 - col)))       # insert the three designated bits
-            self.md.mir_state[self.which_mir] = regf
+            self.md.mir_state[self.md.which_mir] = regf
             self.md.set_mir_preset_switch_leds()
             print("preset LMIR = 0o%06o, RMIR = 0o%06o, MIR=%d" %
-                (self.md.mir_state[0], self.md.mir_state[1], self.which_mir))
+                (self.md.mir_state[0], self.md.mir_state[1], self.md.which_mir))
 
 
 
