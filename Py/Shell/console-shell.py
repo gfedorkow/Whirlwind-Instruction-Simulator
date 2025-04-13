@@ -3,6 +3,17 @@
 
 # Demo Program Dispatcher for microWhirlwind
 # guy fedorkow, Apr 12, 2025
+#
+# Select a demo program by typing a number, or clicking the RMIR then Upper Activate on
+# a control panel.
+#  Add 0o100 to the selector number to indicate that the analog scope interface should
+# be used.
+#
+# The program uses the Linux keyboard if no panel is specified
+# Or the script can be started with '-m' or '-p' to use either the MicroWhirlwind or
+# the xWin control panels
+#
+# 
 
 
 import subprocess
@@ -15,9 +26,10 @@ WW_Root_Win = "c:\\Users\\guyfe\\Documents\\guy\\History-of-Computing\\Whirlwind
 WW_Root_Linux = "/home/guyfe/History-of-Computing/Whirlwind/GitHub"
 WW_Root = None
 Sim_Path = "/Py/Sim/wwsim.py"
-default_args = ["-q", "-p", "--Quick"]
+default_args = ["-q"]
 
-UseRMIR = True
+
+Use_RMIR = False
 
 class WwAppClass:
     def __init__(self, title, dir="none", exec=None, is_WW=True, args=[]):
@@ -54,6 +66,7 @@ def exec_program(pgm, args):
     sim_path = WW_Root + Sim_Path
     if pgm.is_WW:
         sim_cmd = [sim_path, pgm.executable_name] + args + pgm.args
+        print("Run pgm: ", sim_cmd)
         # subprocess.run(["ls -l"], shell=True, cwd=exec_dir)
         ret = subprocess.run(["python"] + sim_cmd, shell=False, cwd=exec_dir)
     else:
@@ -64,12 +77,21 @@ def exec_program(pgm, args):
 def main():
     global WW_Root
     global Sim_Path
+
     args = sys.argv[1:]
-    if len(args) == 0:
-        args = default_args
-    if len(args) > 1:    # if the first arg on the cmd line is '+' then tack the rest of the args onto the end of the default arg string.
-        if args[0] == '+':
-            args = default_args + args[1:0]
+    args += default_args
+    #if len(args) == 0:
+    #    args = default_args
+    #if len(args) > 1:    # if the first arg on the cmd line is '+' then tack the rest of the args onto the end of the default arg string.
+    #    if args[0] == '+':
+    #        args = default_args + args[1:0]
+
+    RMIR_arg = None
+    if "-p" in args:
+        RMIR_arg = ['-p', "--QuickStart"]   # this is a hack; the Start button is hard to get to on the small mWW screen
+    if '-m' in args:
+        RMIR_arg = ['-m']
+
     host_os = os.getenv("OS")
     if host_os == "Windows_NT":
         WW_Root = WW_Root_Win
@@ -83,11 +105,12 @@ def main():
         for index in range(0, len(Programs)):
             print("%2o: %s" % (index, Programs[index].title))
         choice = 0
-        if UseRMIR:
+        if RMIR_arg:
             print("\nEnter a number from the list in RMIR, then press Upper Activate")
             exec_dir = WW_Root + '/' + "Py/Shell"
             sim_path = WW_Root + Sim_Path
-            sim_cmd = [sim_path, "mir-pgm-selector.acore"] + ["-q", "-p", "--QuickStart"]
+            sim_cmd = [sim_path, "mir-pgm-selector.acore"] + ["-q", "--QuickStart"] + RMIR_arg
+            # print(sim_cmd)
             ret = subprocess.run(["python"] + sim_cmd, shell=False, cwd=exec_dir)
             choice = ret.returncode
             print("selection choice = 0o%o" % choice)
@@ -102,7 +125,12 @@ def main():
                 continue
         if choice == 0:
             return
-        elif choice >= len(Programs):
+        if RMIR_arg:
+            args += RMIR_arg
+        if choice & 0o100:
+            args += ["--Anal"]
+        choice &= 0o77
+        if choice >= len(Programs):
             print("\nEnter a number from the list above please")
             continue
         else:

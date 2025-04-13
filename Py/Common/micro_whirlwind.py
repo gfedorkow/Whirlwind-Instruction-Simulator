@@ -13,8 +13,8 @@ try:
 except ModuleNotFoundError:
     print("no GPIO library found")
     import smbus_replacement as smbus2
-    import gpio_replacement
-    gpio = gpio_replacement.gpioClass()
+    import gpio_replacement as gpio
+#    gpio = gpio_replacement.gpioClass()
     import msvcrt
     RasPi = False
 
@@ -45,7 +45,7 @@ pin_gpio_isKey = 27
 
 Verbose = False
 Debug_I2C = False  # specific to low-level I2c
-Debug = True
+Debug = False
 
 I2CBusTimeout = 0
 
@@ -84,7 +84,7 @@ class PanelMicroWWClass:
             return
 
         try:
-            pwr_ctl = PwrCtlClass()
+            pwr_ctl = PwrCtlClass(self.log)
             pwr_ctl.pwr_on()
             time.sleep(0.3)
 
@@ -898,7 +898,7 @@ class TCA8414:
                 mask <<= 1
                 mask |= 1
             self.writeRegister(self.TCA8418_REG_KP_GPIO_1, mask)
-            print("matrix GPIO_1 set to 0x%x" % mask)
+            if MwwPanelDebug: self.log.info("matrix GPIO_1 set to 0x%x" % mask)
 
             mask = 0x00
             for c in range(0, 8):  # (int c = 0; c < columns && c < 8; c++) {
@@ -1046,7 +1046,7 @@ class IS31FL3731:
     # has control registers instead of pixels.
     def writeRegister8(self, register, command, val=None):
         global PassCount
-        print("%05d: writeRegister: reg=%x, cmd=%x " % (PassCount, register, command), "val=", val)
+        if MwwPanelDebug: log.info("%05d: writeRegister: reg=%x, cmd=%x " % (PassCount, register, command), "val=", val)
         msg = [register]
         self.bus.write_i2c_block_data(self.i2c_addr, self.ISSI_COMMANDREGISTER, msg)
 
@@ -1110,24 +1110,25 @@ class IS31FL3731:
             print("***  bus.write_i2c_block_data I2C addr 0x%x Bus Timeout #%d at %s ***" % (self.i2c_addr, I2CBusTimeout,  time.asctime()))
 
     def init_IS31(self):
+        global MwwPanelDebug
         _frame = 0
         # shutdown
-        print("Shutdown")
+        if MwwPanelDebug: log.info("Shutdown")
         self.writeRegister8(self.ISSI_BANK_FUNCTIONREG, self.ISSI_REG_SHUTDOWN, val=0x00)
         time.sleep(0.01)
 
         # out of shutdown
-        print("unShutdown")
+        if MwwPanelDebug: log.info("unShutdown")
         self.writeRegister8(self.ISSI_BANK_FUNCTIONREG, self.ISSI_REG_SHUTDOWN, val=0x01)
         #time.sleep(1)
 
         # picture mode
-        print("picture mode")
+        if MwwPanelDebug: log.info("picture mode")
         self.writeRegister8(self.ISSI_BANK_FUNCTIONREG, self.ISSI_REG_CONFIG,
                  val=self.ISSI_REG_CONFIG_PICTUREMODE)
 
         #time.sleep(1)
-        print("display frame")
+        if MwwPanelDebug: log.info("display frame")
         self.displayFrame(_frame)
 
         #time.sleep(1)
@@ -1141,10 +1142,10 @@ class IS31FL3731:
 
 class I2C:
     def __init__(self, bus_number):
-        print("I2C init bus #%d: " % bus_number)
+        if Debug_I2C: print("I2C init bus #%d: " % bus_number)
         # bus = I2Cclass(channel = 1)
         self.bus = smbus2.SMBus(bus_number)
-        print("  done")
+        if Debug_I2C: print("  done")
         self.test_step = 0
 
     def writeRegister(self, i2c_addr, command, val):
@@ -1165,13 +1166,12 @@ class I2C:
 
 
 class PwrCtlClass:
-    def __init__(self):
+    def __init__(self, log):
         self.pwr_state: int = 0
 
     def pwr_on(self) -> None:
         global pin_pwr_ctl, pin_tca_reset, pin_tca_interrupt
 
-        print("power control utility 1.1a")
         self.pwr_state = 1
 
         gpio.setmode(gpio.BCM)
@@ -1184,7 +1184,7 @@ class PwrCtlClass:
         time.sleep(0.3)
         gpio.output(pin_tca_reset, 1)  # Enable the key scanners
 
-        print("power control pin %d set to one" % pin_pwr_ctl)
+        if MwwPanelDebug: log.info("power control pin %d set to one" % pin_pwr_ctl)
 
 
     def step(self):
@@ -1227,15 +1227,15 @@ class Is31:
         self.u2_exclusion = {}
         if addr == 0x74:   # LED driver U1
             self.exclusion =  self.u1_exclusion
-            print("U1 Exclusion List")
+            if MwwPanelDebug: log.info("U1 Exclusion List")
         if addr == 0x75:   # LED driver U5
             self.exclusion =  self.u5_exclusion
             self.register_range = 6
-            print("U5 Exclusion List")
+            if MwwPanelDebug: log.info("U5 Exclusion List")
         if addr == 0x77:   # LED driver U2
             self.exclusion =  self.u2_exclusion
             self.swap_size = 1
-            print("U2 Exclusion List")
+            if MwwPanelDebug: log.info("U2 Exclusion List")
 
 
 
@@ -1567,7 +1567,7 @@ def main():
     is31_U2 = None
     tca84_0 = None
     tca84_1 = None
-    pwr_ctl = PwrCtlClass()
+    pwr_ctl = PwrCtlClass(cb.log)
 
     pass_count = 0
 

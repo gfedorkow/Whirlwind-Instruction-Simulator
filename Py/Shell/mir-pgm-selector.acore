@@ -4,16 +4,21 @@
 %TapeID: 
 %Switch: RightInterventionReg  0o000011
 @C0000: 0000000 0000001  None    None    None    None    None    None   
-@C0040: 0000300 0014000 0070044 0074040 0100000 0000337 0014000 0040100 
-@C0050: 0074040  None    None    None    None    None    None    None   
-@C0100: 0000000  None    None    None    None    None    None    None   
+@C0040: 0000300 0014000 0070047 0104101 0110001 0070044 0074040 0100000 
+@C0050: 0000337 0014000 0040100 0074040  None    None    None    None   
+@C0100: 0000000 0003720  None    None    None    None    None    None   
 @S0000: c_zero
 @S0001: c_one
 @S0040: main
-@S0044: get_input
+@S0044: wait
+@S0047: get_input
 @S0100: return_code
-@E0050: exec: exit(cm.rd(0o100))
+@S0101: delay_val
+@E0053: exec: exit(cm.rd(0o100))
 @N0002:  set the default menu choice to Vibrating String
 @N0040:  read Activate Register Zero
 @N0041:  one of them ("upper", I think) is WW Bit Zero
-@N0045:  read the RMIR
+@N0044:  The loop spins so fast you can't tell it's running
+@N0045:  Adding a bit of delay will allow the program counter to keep up
+@N0050:  read the RMIR
+@N0101:  decimal 2K -> .1 sec
