@@ -284,7 +284,7 @@ class CpuClass:
             self.op_decode = self.op_decode_1958
         else:
             self.cb.log.warn("Error setting isa; must be 1950 or 1958, not %s" % isa_name)
-            sys.exit(1)
+            sys.exit(-1)
 
     # convert a ones-complement integer to a string, including negative number notation
     def wwint_to_str(self, num: Union[None, int]) -> str:
@@ -950,7 +950,7 @@ class CpuClass:
     def ww_branch(self, pc, address, _opcode, _op_description):
         if address >= self.cb.CORE_SIZE:
             print("branch: looks like a bad branch pointer to %oo at pc=%oo" % address, pc)
-            sys.exit()
+            sys.exit(-1)
         if not self.cb.TraceQuiet:
             if address < self.PC:
                 bdir = "backwards"
@@ -2270,7 +2270,8 @@ def main():
             if not UseDebugger:
                 break
 
-    sys.exit(alarm_state != cb.NO_ALARM)
+    # sys.exit(alarm_state != cb.NO_ALARM)
+    sys.exit(0)         # return zero for an ordinary exit
 
 
 if __name__ == "__main__":
