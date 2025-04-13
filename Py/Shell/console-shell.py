@@ -17,6 +17,7 @@ WW_Root = None
 Sim_Path = "/Py/Sim/wwsim.py"
 default_args = ["-q", "-p", "--Quick"]
 
+UseRMIR = True
 
 class WwAppClass:
     def __init__(self, title, dir="none", exec=None, is_WW=True, args=[]):
@@ -54,14 +55,15 @@ def exec_program(pgm, args):
     if pgm.is_WW:
         sim_cmd = [sim_path, pgm.executable_name] + args + pgm.args
         # subprocess.run(["ls -l"], shell=True, cwd=exec_dir)
-        subprocess.run(["python"] + sim_cmd, shell=False, cwd=exec_dir)
+        ret = subprocess.run(["python"] + sim_cmd, shell=False, cwd=exec_dir)
     else:
         sim_cmd = [pgm.executable_name] + args + pgm.args
-        subprocess.run(["python"] + sim_cmd, shell=False, cwd=exec_dir)
-
+        ret = subprocess.run(["python"] + sim_cmd, shell=False, cwd=exec_dir)
+    print("return code=", ret.returncode)
 
 def main():
     global WW_Root
+    global Sim_Path
     args = sys.argv[1:]
     if len(args) == 0:
         args = default_args
@@ -81,14 +83,23 @@ def main():
         for index in range(0, len(Programs)):
             print("%2o: %s" % (index, Programs[index].title))
         choice = 0
-        user_string = input("Type a number: ")
-        if user_string == 'q' or user_string == 'Q':
-            user_string = '0'
-        try:
-            choice = int(user_string, 8)
-        except ValueError:
-            print("\nEnter a number please")
-            continue
+        if UseRMIR:
+            print("\nEnter a number from the list in RMIR, then press Upper Activate")
+            exec_dir = WW_Root + '/' + "Py/Shell"
+            sim_path = WW_Root + Sim_Path
+            sim_cmd = [sim_path, "mir-pgm-selector.acore"] + ["-q", "-p", "--QuickStart"]
+            ret = subprocess.run(["python"] + sim_cmd, shell=False, cwd=exec_dir)
+            choice = ret.returncode
+            print("selection choice = 0o%o" % choice)
+        else:
+            user_string = input("Type a number: ")
+            if user_string == 'q' or user_string == 'Q':
+                user_string = '0'
+            try:
+                choice = int(user_string, 8)
+            except ValueError:
+                print("\nEnter a number please")
+                continue
         if choice == 0:
             return
         elif choice >= len(Programs):
