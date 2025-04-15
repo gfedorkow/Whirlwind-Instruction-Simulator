@@ -3,7 +3,7 @@
 @0001:000001       c_one: .word 1                  ; @@ReadBy wait
 
                           ; set the default menu choice to Vibrating String
-                          .switch RightInterventionReg, 0o11
+                          .switch RightInterventionReg, 0o112
                           .org 0o40
 
                     main:
