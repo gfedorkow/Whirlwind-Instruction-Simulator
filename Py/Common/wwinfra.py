@@ -1902,8 +1902,17 @@ class XwinCrt:
             self.gfx = __import__("graphics")
 
             cb.log.info("opening XwinCrt")
+            # find a size for the xWin.  If it's a large display, just use a fixed constant.
+            # If it's a small screen, shrink the size to fit the screen.
+            # The xWin is square, so find the smallest dimension of x or y
+            screen_size= cb.screen_x
+            if cb.screen_y < screen_size:
+                screen_size = cb.screen_y
+            screen_size -= 45   # reduce the available screen space to allow for a menu bar
+            if screen_size > 600:
+                screen_size = 600
             # gfx_scale_factor comes from Windows and depends on the display.  I think it's usually between 1.0 and 2.0
-            self.WIN_MAX_COORD = 600.0 * cb.gfx_scale_factor # 1024.0 + 512.0  # size of window to request from the laptop window  manager
+            self.WIN_MAX_COORD = float(screen_size) * cb.gfx_scale_factor # 1024.0 + 512.0  # size of window to request from the laptop window  manager
             win_y_size = self.WIN_MAX_COORD
             if widgets_only_on_xwin:
                 win_y_size = win_y_size / 4
