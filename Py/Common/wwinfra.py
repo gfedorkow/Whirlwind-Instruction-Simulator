@@ -684,7 +684,7 @@ class ConstWWbitClass:
             self.gfx_scale_factor = 2.0
 
         # (screen_x, screen_y) = win.master.maxsize()
-        # print("screen size: %d by %d, scale=%d" % (self.screen_x, self.screen_y, self.gfx_scale_factor))
+        print("screen size: %d by %d, scale=%d" % (self.screen_x, self.screen_y, self.gfx_scale_factor))
 
         return(self.screen_x, self.screen_y, self.gfx_scale_factor)
 
