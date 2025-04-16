@@ -472,6 +472,7 @@ class ConstWWbitClass:
         # configure the displays
         self.analog_display = False   # set this flag to display on an analog oscilloscope instead of an x-window
         self.use_x_win = True         # clear this flag to completely turn off the xwin display, widgets and all
+        self.xWin_size_arg = None   # if this is set to a number by the cmd-line arg, use it as the size of the xWinCRT
         self.ana_scope = None   # this is a handle to the methods for operating the analog scope
         self.which_scope = 3    # default to showing both D and F scopes on the xwin display
 
@@ -684,7 +685,7 @@ class ConstWWbitClass:
             self.gfx_scale_factor = 2.0
 
         # (screen_x, screen_y) = win.master.maxsize()
-        print("screen size: %d by %d, scale=%d" % (self.screen_x, self.screen_y, self.gfx_scale_factor))
+        # print("screen size: %d by %d, scale=%d" % (self.screen_x, self.screen_y, self.gfx_scale_factor))
 
         return(self.screen_x, self.screen_y, self.gfx_scale_factor)
 
@@ -1902,15 +1903,21 @@ class XwinCrt:
             self.gfx = __import__("graphics")
 
             cb.log.info("opening XwinCrt")
-            # find a size for the xWin.  If it's a large display, just use a fixed constant.
-            # If it's a small screen, shrink the size to fit the screen.
-            # The xWin is square, so find the smallest dimension of x or y
-            screen_size= cb.screen_x
-            if cb.screen_y < screen_size:
-                screen_size = cb.screen_y
-            screen_size -= 45   # reduce the available screen space to allow for a menu bar
-            if screen_size > 600:
-                screen_size = 600
+            # find a size for the xWin.
+            # If there's a size from the command line, just use it.
+            # Otherwise:
+            #   If it's a large display, just use a fixed constant.
+            #   If it's a small screen, shrink the size to fit the screen.
+            # The xWin is square, so use the smallest dimension of x or y
+            if cb.xWin_size_arg:
+                screen_size = cb.xWin_size_arg
+            else:
+                screen_size = cb.screen_x
+                if cb.screen_y < screen_size:
+                    screen_size = cb.screen_y
+                screen_size -= 45   # reduce the available screen space to allow for a menu bar
+                if screen_size > 600:
+                    screen_size = 600
             # gfx_scale_factor comes from Windows and depends on the display.  I think it's usually between 1.0 and 2.0
             self.WIN_MAX_COORD = float(screen_size) * cb.gfx_scale_factor # 1024.0 + 512.0  # size of window to request from the laptop window  manager
             win_y_size = self.WIN_MAX_COORD

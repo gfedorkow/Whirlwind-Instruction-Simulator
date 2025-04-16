@@ -116,11 +116,6 @@ Breakpoints = {
 #  2022
 #  >>>
 # In 'midnight-restart mode, I want the sim to stop when the day changes at midnight
-def get_the_date():
-    dt = datetime.today()
-    tt = dt.timetuple()
-    # return tt.tm_min//2
-    return tt.tm_mday
 
 
 # convert a Whirlwind int into a signed decimal number string; positive is easy, but
@@ -1931,8 +1926,8 @@ def main_run_sim(args, cb):
     #if project_exec_init is not None:
     #    project_exec_init(args.AutoClick)
 
-    start_time = time.time()
-    last_day = get_the_date()
+    start_time = time.time()        # use this to compute the total run time for the sim
+    checkpoint_time = start_time    # use this to calculate instructions-per-second every X-zillion instructions
     #  Here (soon!) Commences The Main Loop (ok, maybe not quite here, but soon...)
     # simulate each cycle one by one
     sim_cycle = 0
@@ -2047,8 +2042,14 @@ def main_run_sim(args, cb):
                             alarm_state == cb.QUIT_ALARM  or alarm_state == cb.HALT_ALARM or alarm_state == cb.READIN_ALARM:
                         break
             sim_cycle += 1
-            if sim_cycle % 2000000 == 0 or alarm_state == cb.QUIT_ALARM:
-                print("cycle %2.1fM; mem=%dMB" % (sim_cycle / (1000000.0), psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
+            checkpoint_cycle_interval = 2000000
+            if (sim_cycle % checkpoint_cycle_interval) == 0 or alarm_state == cb.QUIT_ALARM:
+                now = time.time()       # returns float time in microseconds from the epoch
+                interval = now - checkpoint_time  # figure how long since the last checkpoint
+                checkpoint_time = now
+                cycle_time = interval * 1000000 / checkpoint_cycle_interval
+                print("cycle %2.1fM; %4.1f usec/instruction, mem=%dMB" %
+                      (sim_cycle / (1000000.0), cycle_time, psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
             if cycle_limit and sim_cycle == cycle_limit:
                 if not cb.museum_mode:  # this is the normal case, not configured for Museum Mode forever-cycles
                     cb.log.warn("Cycle Count Exceeded")
@@ -2061,12 +2062,6 @@ def main_run_sim(args, cb):
                     CycleDelayTime = ns.instruction_cycle_delay
                     cb.crt_fade_delay_param = ns.crt_fade_delay
 
-            if args.MidnightRestart and (sim_cycle % 1024):
-                now_day = get_the_date()
-                if last_day != now_day:
-                    print("Midnight Detected; Time to Restart!  New Day = %d" % now_day)
-                    alarm_state = cb.NO_ALARM
-                    break
             # LAS
             if UseDebugger:     # Detect restart cmd from dbg and set alarm state to no_alarm
                 restart = Debugger.repl (cpu.PC)
@@ -2152,6 +2147,7 @@ def main():
     parser.add_argument("-r", "--Radar", help="Incorporate Radar Data Source", action="store_true")
     parser.add_argument("--AutoClick", help="Execute pre-programmed mouse clicks during simulation", action="store_true")
     parser.add_argument("--AnalogScope", help="Display graphical output on an analog CRT", action="store_true")
+    parser.add_argument("--xWinSize", help="specify the size of an xWinCrt pseudo-scope display in pixels", type=int)
     parser.add_argument("--NoXWin", help="Don't open any x-windows", action="store_true")
     parser.add_argument("--NoToggleSwitchWarning", help="Suppress warning if WW code writes a read-only toggle switch",
                         action="store_true")
@@ -2185,8 +2181,6 @@ def main():
                         help="File to store Persistent state for WW Drum", type=str)
     parser.add_argument("--MuseumMode",
                         help="Cycle through states endlessly for museum display", action="store_true")
-    parser.add_argument("--MidnightRestart",
-                        help="Restart simulation daily at midnight", action="store_true")
     parser.add_argument("-d", "--Debugger",
                         help="Start simulation under the debugger", action="store_true")
 
@@ -2228,6 +2222,8 @@ def main():
         cb.analog_display = True
     if args.NoXWin:
         cb.use_x_win = False
+    if args.xWinSize:
+        cb.xWin_size_arg = args.xWinSize
 
     if args.CrtFadeDelay:
         cb.crt_fade_delay_param = args.CrtFadeDelay
