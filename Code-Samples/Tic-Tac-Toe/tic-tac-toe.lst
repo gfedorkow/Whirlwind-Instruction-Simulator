@@ -32,9 +32,9 @@
 
                                       .org 0
                                 zero:
-@0000:000000                 const_0: .word 0                  ; @@WrittenBy apc_table_ts upc_table_ts a0616 apm_copy_dst a0704 igb_table_ts a1426 a1461 a1664 a1701 a1726 a1744 a2010 a2016 ReadBy ca_addr a0156 dd_y_arg dd_x_arg dc_y_arg dc_x_arg dn_y_arg dn_x1_arg dw_y_arg dw_x_arg dt_y_arg dt_x_arg lgh_x1_arg lgh_y1_arg apc_ca0 upc_ca0 a0572 a0610 a0617 apm_copy_src a0636 a0646 a0655 a0705 a0722 itw_st_ca a0735 itw_cell_ts a0744 a0753 a0761 itw_inc_gb a1072 a1110 a1141 iML_bptr rd_brd1 rd_brd2 a1305 rd_brd3 a1315 a1331 a1347 a1365 a1375 a1400 a1425 a1460 a1612 a1617 a1627 a1640 a1647 a1660 a1665 a1711 a1722 a1727 a1752 a1753 a1776 a2004 a2063 a2067 a2270 a2302 a2325 a2330 JumpedToBy gb_state_sp a0161 a0331 a0346 a0370 a0411 a0433 a0452 a0471 a0501 light_gun_cell_hit_ret a0551 a0601 a0620 a0706 a0707 a1022 a1112 a1267 a1323 a1406 a1440 a1467 a1756 a2035 a2075 a2334
+@0000:000000                 const_0: .word 0                  ; @@WrittenBy apc_table_ts upc_table_ts a0616 apm_copy_dst a0704 igb_table_ts a1426 a1461 a1664 a1703 a1730 a1746 a2015 a2023 ReadBy ca_addr a0156 dd_y_arg dd_x_arg dc_y_arg dc_x_arg dn_y_arg dn_x1_arg dw_y_arg dw_x_arg dt_y_arg dt_x_arg lgh_x1_arg lgh_y1_arg apc_ca0 upc_ca0 a0572 a0610 a0617 apm_copy_src a0636 a0646 a0655 a0705 a0722 itw_st_ca a0735 itw_cell_ts a0744 a0753 a0761 itw_inc_gb a1072 a1110 a1141 iML_bptr rd_brd1 rd_brd2 a1305 rd_brd3 a1315 a1331 a1347 a1365 a1375 a1400 a1425 a1460 a1612 a1617 a1627 a1640 a1647 a1660 a1665 a1666 a1713 a1724 a1731 a1754 a1755 a2003 a2011 a2073 a2077 a2300 a2312 a2335 a2340 JumpedToBy gb_state_sp a0161 a0331 a0346 a0370 a0411 a0433 a0452 a0471 a0501 light_gun_cell_hit_ret a0551 a0601 a0620 a0706 a0707 a1022 a1112 a1267 a1323 a1406 a1440 a1467 a1760 a2045 a2105 a2344
                                  one:
-@0001:000001                 const_1: .word 1                  ; @@ReadBy a0052 a0114 a0116 a0120 a0510 a0547 a0642 a0720 a1257 a1264 a1266 a1322 a1327 a1356 a1417 a1447 a1452 a1666 a1670 a1700 a1730 a1732 a1743 a1772 a2012 a2015 a2276 a2300
+@0001:000001                 const_1: .word 1                  ; @@ReadBy a0052 a0114 a0116 a0120 a0510 a0547 a0642 a0720 a1257 a1264 a1266 a1322 a1327 a1356 a1417 a1447 a1452 a1670 a1672 a1702 a1732 a1734 a1745 a1773 a1777 a2017 a2022 a2042 a2306 a2310
 
 
                                       ; constants for SI graphics instruction
@@ -50,9 +50,9 @@
 @0041:074046                          sp refresh_loop          ; branch to main display refresh loop
 
                                       ; constants
-@0042:000017                    c_15: .word 15                 ; @@ReadBy a2272
+@0042:000017                    c_15: .word 15                 ; @@ReadBy a2302
 @0043:000040                    c_32: .word 32
-@0044:073300            c_scope_edge: .word 950 * 32           ; close to the edge of the scope screen @@ReadBy a0152 a2043
+@0044:073300            c_scope_edge: .word 950 * 32           ; close to the edge of the scope screen @@ReadBy a0152 a2053
 @0045:062000             c_msg_x_pos: .word 800 * 32           ; @@ReadBy a0154
 
 @0046:074055            refresh_loop: sp draw_game_board       ; @@JumpedToBy a0041 a0050 a0054
@@ -72,7 +72,7 @@
                                       ; draw the tic-tac-toe grid
                                       ; two horizontal lines first
                      draw_game_board:
-@0055:050161                          ta draw_game_board_ret   ; @@JumpedToBy refresh_loop a2011
+@0055:050161                          ta draw_game_board_ret   ; @@JumpedToBy refresh_loop a2016
 @0056:105115                          cs const_2
 @0057:040167                          ts loop_count
 @0060:101120                          ca const_6
@@ -149,12 +149,12 @@
 @0151:044156                          td dcp_ca_addr
 
 @0152:104044                          cs c_scope_edge          ; set the location to draw a string
-@0153:042100                          ts ds_argy
+@0153:042110                          ts ds_argy
 @0154:104045                          cs c_msg_x_pos
-@0155:042077                          ts ds_argx
+@0155:042107                          ts ds_argx
                          dcp_ca_addr:
 @0156:100000                          ca 0                     ; get the pointer to the string into ACC @@WrittenBy a0151
-@0157:076053                          sp draw_str              ; "print" the string on the screen
+@0157:076063                          sp draw_str              ; "print" the string on the screen
 
 @0160:074472                          sp draw_reset_symbol     ; draw the symbol to call for a game reset
 
@@ -187,7 +187,7 @@
                                       ; this var is zero or one to show which player is on-deck for the next move
                                       ; But it can also be set to negative to say "Game Over", or 2 to say Win, three to say Draw/Tie
                                       ; The var, less the sign bit, is used to index player_icon_table below
-@0176:000000            which_player: .word 0                  ; @@WrittenBy a0550 a1002 a1005 a1021 a1111 ReadBy a0146 a0350 a0542 a0546 a0563
+@0176:000000            which_player: .word 0                  ; @@WrittenBy a0550 a1002 a1005 a1021 a1111 a1774 a2043 ReadBy a0146 a0350 a0542 a0546 a0563 a1772 a2041
 
 @0177:000007     player_state_x_addr: .word 7                  ; These two constants control where the X or O indicator lands on the screen
 @0200:000001     player_state_y_addr: .word 1
@@ -695,7 +695,7 @@
 @0672:101152                          ca c_XX
 @0673:041155                          ts opponent
                                       ; .exec print_board(cm, rl("boardp"), rl("push_lcl_depth"), rl("player"), "calling findBestMove")
-@0674:075767                          sp findBestMove          ; return the cell number for the Best Move in ACC
+@0674:075771                          sp findBestMove          ; return the cell number for the Best Move in ACC
 @0675:040712                          ts lcl_cell_for_move
 
                                       ; prepare to make the suggested move permanent in the game board
@@ -1002,18 +1002,18 @@
                                       ; Constants
 @1143:000002                     c_2: .word 2                  ; @@ReadBy a0613 a0700 a1370 a1372
 @1144:177775                    c_2n: .word -2                 ; for a loop of three @@ReadBy a1333 a1351
-@1145:000003                     c_3: .word 3                  ; @@ReadBy a1340 a1345 a2312 a2315 a2320
+@1145:000003                     c_3: .word 3                  ; @@ReadBy a1340 a1345 a2322 a2325 a2330
 @1146:000004                     c_4: .word 4                  ; @@ReadBy a1363
-@1147:177767                    c_8n: .word -8                 ; for a loop of nine passes @@ReadBy a1253 a1651 a1713 a1774
+@1147:177767                    c_8n: .word -8                 ; for a loop of nine passes @@ReadBy a1253 a1651 a1715 a2001
 @1150:000012                    c_10: .word 10                 ; @@ReadBy a1402 a1404 a1616 a1626
-@1151:001750                  c_1000: .word 1000               ; BigNum @@ReadBy a1645 a1707 a1770
+@1151:001750                  c_1000: .word 1000               ; BigNum @@ReadBy a1645 a1711 a1775
 @1152:000001                    c_XX: .word XX                 ; @@ReadBy apm_its_a_cross a0672
 @1153:000002                    c_oh: .word Oh                 ; @@ReadBy apm_its_a_naught a0670
 
                                       ; Global Variables
                                       ;Default state to start the game: player = 'x', opponent = 'o';
-@1154:000001                  player: .word XX                 ; @@WrittenBy a0671 ReadBy a1377 a1663 a2007
-@1155:000002                opponent: .word Oh                 ; @@WrittenBy a0673 ReadBy a1725
+@1154:000001                  player: .word XX                 ; @@WrittenBy a0671 ReadBy a1377 a1663 a2014
+@1155:000002                opponent: .word Oh                 ; @@WrittenBy a0673 ReadBy a1727
 
 
 
@@ -1140,7 +1140,7 @@
 @1246:177776                          .word None
 
 
-@1247:001236                  boardp: .word board4             ; board2 to scan all the games @@ReadBy a0627 a1251 a1273 a1653 a1715 a2000
+@1247:001236                  boardp: .word board4             ; board2 to scan all the games @@ReadBy a0627 a1251 a1273 a1653 a1717 a2005
 
                                       ; // This function returns true if there are moves
                                       ; // remaining on the board. It returns false if
@@ -1424,7 +1424,7 @@
 
 
                           pop_minmax:
-@1441:051467                          ta pop_ret               ; @@JumpedToBy a1755
+@1441:051467                          ta pop_ret               ; @@JumpedToBy a1757
 @1442:041471                          ts push_pop_lcl_acc_stash; stash the AC
 @1443:101476                          ca stackp                ; back up the stack pointer
 @1444:115473                          su frame_size
@@ -1464,7 +1464,7 @@
                                       ; calculate the size of a single push on the stack
 @1473:000007              frame_size: .word minmax_lcl_data_end - minmax_ret; @@ReadBy a1416 a1434 a1444 a1451
                         minimax_retp:                          ; Here's the address of the minimax local data to be pushed onto stack
-@1474:001756                          .word minmax_ret         ; @@ReadBy a1421 a1454
+@1474:001760                          .word minmax_ret         ; @@ReadBy a1421 a1454
                           stack_size:
 @1475:000012                          .word 10                 ; I've allocated ten frames below for use of the stack @@ReadBy a1413
 
@@ -1665,17 +1665,17 @@
                                       ; The routine takes one arg to say if we're trying to do Max or Min; Max is +1
                                       ; Min is -1, passed in AC
                              minimax:
-@1607:051756                          ta minmax_ret            ; @@JumpedToBy a1667 a1731 a2013
-@1610:041757                          ts minmax_lcl_isMax
+@1607:051760                          ta minmax_ret            ; @@JumpedToBy a1671 a1733 a2020
+@1610:041761                          ts minmax_lcl_isMax
 @1611:075411                          sp push_minmax           ; store state on "the stack"
                                       ; .exec print_indent(cm, "Starting minimax: IsMax:%d, player: %d opponent %d, depth: %d" % (cm.rd(rl("minmax_lcl_isMax")), cm.rd(rl("player")), cm.rd(rl("opponent")), cm.rd(rl("push_lcl_depth"))), rl("push_lcl_depth"))
 @1612:030000                          sd zero                  ; no-op
                                       ; .exec print_board(cm, rl("boardp"), rl("push_lcl_depth"), rl("player"), "Starting Minimax")
 @1613:075326                          sp evaluate_board        ; figure out how we're doing
-@1614:041760                          ts minmax_lcl_score
+@1614:041762                          ts minmax_lcl_score
 
                      minmax_test_max:                          ; test if Maximizer has won
-@1615:101760                          ca minmax_lcl_score
+@1615:101762                          ca minmax_lcl_score
 @1616:115150                          su c_10
 @1617:134000                          dm 0                     ; test to see if score is +10
 @1620:071622                          cp minmax_max_won        ; branch if yes
@@ -1683,12 +1683,12 @@
 
                       minmax_max_won:
                                       ; .print "Maximizer Won, score %d", minmax_lcl_score
-@1622:101760                          ca minmax_lcl_score      ; @@JumpedToBy a1620
-@1623:041763                          ts minmax_lcl_best       ; set up the return code
-@1624:075752                          sp minmax_exit           ; all done
+@1622:101762                          ca minmax_lcl_score      ; @@JumpedToBy a1620
+@1623:041765                          ts minmax_lcl_best       ; set up the return code
+@1624:075754                          sp minmax_exit           ; all done
 
                      minmax_test_min:
-@1625:101760                          ca minmax_lcl_score      ; @@JumpedToBy a1621
+@1625:101762                          ca minmax_lcl_score      ; @@JumpedToBy a1621
 @1626:111150                          ad c_10
 @1627:134000                          dm 0                     ; test to see if score is -10
 @1630:071632                          cp minmax_min_won        ; branch if yes
@@ -1696,9 +1696,9 @@
 
                       minmax_min_won:
                                       ; .print "Minimizer Won, score %d", minmax_lcl_score
-@1632:101760                          ca minmax_lcl_score      ; @@JumpedToBy a1630
-@1633:041763                          ts minmax_lcl_best       ; set up the return code
-@1634:075752                          sp minmax_exit           ; all done
+@1632:101762                          ca minmax_lcl_score      ; @@JumpedToBy a1630
+@1633:041765                          ts minmax_lcl_best       ; set up the return code
+@1634:075754                          sp minmax_exit           ; all done
 
                      minmax_test_tie:
 @1635:075250                          sp isMovesLeft           ; test if there are more moves to go @@JumpedToBy a1631
@@ -1709,31 +1709,31 @@
                           minmax_tie:
 @1640:100000                          ca zero                  ; @@JumpedToBy a1636
                                       ;.print "Minimax Tie"
-@1641:041763                          ts minmax_lcl_best       ; set up the return code
-@1642:075752                          sp minmax_exit           ; bail out
+@1641:041765                          ts minmax_lcl_best       ; set up the return code
+@1642:075754                          sp minmax_exit           ; bail out
 
                  minmax_prepare_scan:
-@1643:101757                          ca minmax_lcl_isMax      ; @@JumpedToBy a1637
-@1644:071707                          cp minmax_not_isMax      ; branch if isMax == False
+@1643:101761                          ca minmax_lcl_isMax      ; @@JumpedToBy a1637
+@1644:071711                          cp minmax_not_isMax      ; branch if isMax == False
 
                                       ; ======== This section is "isMax == True" =============
                         minmax_isMax:
 @1645:105151                          cs c_1000
-@1646:041763                          ts minmax_lcl_best       ; initialize to Most Negative
+@1646:041765                          ts minmax_lcl_best       ; initialize to Most Negative
 @1647:100000                          ca zero                  ; prepare to scan all cells starting w/zero
-@1650:041761                          ts minmax_lcl_next_cell
+@1650:041763                          ts minmax_lcl_next_cell
 @1651:101147                          ca c_8n                  ; loop nine times
-@1652:041762                          ts minmax_lcl_loop_cnt
+@1652:041764                          ts minmax_lcl_loop_cnt
                         minmax_loop1:
-@1653:101247                          ca boardp                ; get the base board ptr to read the next cell @@JumpedToBy a1704
-@1654:111761                          ad minmax_lcl_next_cell
+@1653:101247                          ca boardp                ; get the base board ptr to read the next cell @@JumpedToBy a1706
+@1654:111763                          ad minmax_lcl_next_cell
 @1655:045660                          td minmax_rd1
 @1656:045664                          td minmax_wr1
-@1657:045764                          td minmax_lcl_undo_move  ; this is only used _after_ the recursive call, and will need to be restored from stack
+@1657:045766                          td minmax_lcl_undo_move  ; this is only used _after_ the recursive call, and will need to be restored from stack
                           minmax_rd1:
 @1660:100000                          ca 0                     ; fetch the next cell @@WrittenBy a1655
 @1661:071663                          cp minmax_empty_cell1    ; continue if the cell is empty
-@1662:075702                          sp minmax_loop1_end      ; go to the next loop step if the cell is not empty
+@1662:075704                          sp minmax_loop1_end      ; go to the next loop step if the cell is not empty
 
                   minmax_empty_cell1:                          ; here, we know the cell we tested is empty, and a candidate for analysis
 @1663:101154                          ca player                ; fetch the Player marker @@JumpedToBy a1661
@@ -1742,127 +1742,127 @@
                                       .exec print_experiment(cm, cb, "Trying  game piece %d to cell %d, count %d, isMax==True", ("player", "minmax_lcl_next_cell", "minmax_lcl_loop_cnt"), "push_lcl_depth")
 @1665:030000                          sd zero                  ; no-op
 
-                                      ;        cs zero                 ; load negative zero, i.e. all ones
-                                      ;        sd minmax_lcl_isMax     ; Sum Digits, i.e., xor, will reverse isMax
-@1666:104001                          cs one                   ; load -1 to signal isMax should be False
+@1666:104000                          cs zero                  ; load negative zero, i.e. all ones
+@1667:031761                          sd minmax_lcl_isMax      ; Sum Digits, i.e., xor, will reverse isMax
+@1670:104001                          cs one                   ; load -1 to signal isMax should be False
                                       ; here begins the recursion
                                       ; .exec print_indent(cm, "starting recursive call to minimax: isMax==True-branch, cell at %d, depth: %d, loop_count: %d" % (cm.rd(rl("minmax_lcl_next_cell")), cm.rd(rl("push_lcl_depth")), cm.rd(rl("minmax_lcl_loop_cnt"))), rl("push_lcl_depth"))
-@1667:075607                          sp minimax
+@1671:075607                          sp minimax
                                       ; the following adjustment probably shouldn't be done if the answer is Zero
-@1670:114001                          su one                   ; push_lcl_depth       ; reduce the score by the calling depth
-@1671:041766                          ts mm_lcl_ret_val        ; very local storage for the minimax return call
+@1672:114001                          su one                   ; push_lcl_depth       ; reduce the score by the calling depth
+@1673:041770                          ts mm_lcl_ret_val        ; very local storage for the minimax return call
                                       ; .exec print_indent(cm, "finished recursive call to minimax: isMax==True-branch, cell at %d, depth: %d, loop_count: %d, score: 0o%o" % (cm.rd(rl("minmax_lcl_next_cell")), cm.rd(rl("push_lcl_depth")), cm.rd(rl("minmax_lcl_loop_cnt")), cm.rd(rl("mm_lcl_ret_val"))), rl("push_lcl_depth"))
-@1672:115763                          su minmax_lcl_best       ; determine if this was the "best" score so far
-@1673:071676                          cp minmax_not_best0      ; branch if we've seen a better score already
+@1674:115765                          su minmax_lcl_best       ; determine if this was the "best" score so far
+@1675:071700                          cp minmax_not_best0      ; branch if we've seen a better score already
 
-@1674:101766                          ca mm_lcl_ret_val        ; save this result as the Best Score So Far
-@1675:041763                          ts minmax_lcl_best
+@1676:101770                          ca mm_lcl_ret_val        ; save this result as the Best Score So Far
+@1677:041765                          ts minmax_lcl_best
 
                     minmax_not_best0:
-@1676:101764                          ca minmax_lcl_undo_move  ; remember that modified instruction addresses are effectively local variables, so restore this one from the stack @@JumpedToBy a1673
+@1700:101766                          ca minmax_lcl_undo_move  ; remember that modified instruction addresses are effectively local variables, so restore this one from the stack @@JumpedToBy a1675
                                       ;.exec print_experiment(cm, cb, "Undoing game piece %d in cell %d at 0o%o, isMax==True", ("player", "minmax_lcl_next_cell", "minmax_lcl_undo_move"), "push_lcl_depth")
-@1677:045701                          td minmax_undo_move0
-@1700:104001                          cs one                   ; undo the trial move
+@1701:045703                          td minmax_undo_move0
+@1702:104001                          cs one                   ; undo the trial move
                    minmax_undo_move0:
-@1701:040000                          ts 0                     ; @@WrittenBy a1677
+@1703:040000                          ts 0                     ; @@WrittenBy a1701
 
                     minmax_loop1_end:                          ; get ready for the next cell iteration
-@1702:131761                          ao minmax_lcl_next_cell  ; @@JumpedToBy a1662
-@1703:131762                          ao minmax_lcl_loop_cnt
+@1704:131763                          ao minmax_lcl_next_cell  ; @@JumpedToBy a1662
+@1705:131764                          ao minmax_lcl_loop_cnt
                                       ; .print "decrement loop count to %ad, depth: %d, isMax==True-branch", push_lcl_depth
-@1704:071653                          cp minmax_loop1          ; go around again if the loop cnt is not exhausted
+@1706:071653                          cp minmax_loop1          ; go around again if the loop cnt is not exhausted
 
-@1705:101763                          ca minmax_lcl_best       ; return the best score found in AC
-@1706:075752                          sp minmax_exit           ; all done with this pass of isMax == True
+@1707:101765                          ca minmax_lcl_best       ; return the best score found in AC
+@1710:075754                          sp minmax_exit           ; all done with this pass of isMax == True
 
 
 
                                       ; ======== This section is "isMax == False" =============
                     minmax_not_isMax:
-@1707:101151                          ca c_1000                ; @@JumpedToBy a1644
-@1710:041763                          ts minmax_lcl_best       ; initialize to Most Positive
-@1711:100000                          ca zero                  ; prepare to scan all cells starting w/zero
-@1712:041761                          ts minmax_lcl_next_cell
-@1713:101147                          ca c_8n                  ; loop nine times
-@1714:041762                          ts minmax_lcl_loop_cnt
+@1711:101151                          ca c_1000                ; @@JumpedToBy a1644
+@1712:041765                          ts minmax_lcl_best       ; initialize to Most Positive
+@1713:100000                          ca zero                  ; prepare to scan all cells starting w/zero
+@1714:041763                          ts minmax_lcl_next_cell
+@1715:101147                          ca c_8n                  ; loop nine times
+@1716:041764                          ts minmax_lcl_loop_cnt
                         minmax_loop2:
-@1715:101247                          ca boardp                ; get the base board ptr to read the next cell @@JumpedToBy a1747
-@1716:111761                          ad minmax_lcl_next_cell
-@1717:045722                          td minmax_rd2
-@1720:045726                          td minmax_wr2
-@1721:045764                          td minmax_lcl_undo_move  ; store this address on the 'stack' for now
+@1717:101247                          ca boardp                ; get the base board ptr to read the next cell @@JumpedToBy a1751
+@1720:111763                          ad minmax_lcl_next_cell
+@1721:045724                          td minmax_rd2
+@1722:045730                          td minmax_wr2
+@1723:045766                          td minmax_lcl_undo_move  ; store this address on the 'stack' for now
                           minmax_rd2:
-@1722:100000                          ca 0                     ; fetch the next cell @@WrittenBy a1717
-@1723:071725                          cp minmax_empty_cell2    ; continue if the cell is empty
-@1724:075745                          sp minmax_loop2_end      ; go to the next loop step if the cell is not empty
+@1724:100000                          ca 0                     ; fetch the next cell @@WrittenBy a1721
+@1725:071727                          cp minmax_empty_cell2    ; continue if the cell is empty
+@1726:075747                          sp minmax_loop2_end      ; go to the next loop step if the cell is not empty
 
                   minmax_empty_cell2:                          ; here, we know the cell we tested is empty, and a candidate for analysis
-@1725:101155                          ca opponent              ; fetch the Opponent marker @@JumpedToBy a1723
+@1727:101155                          ca opponent              ; fetch the Opponent marker @@JumpedToBy a1725
                           minmax_wr2:
-@1726:040000                          ts 0                     ; ... and write it into the cell @@WrittenBy a1720
+@1730:040000                          ts 0                     ; ... and write it into the cell @@WrittenBy a1722
                                       ; .exec print_experiment(cm, cb, "Trying  game piece %d in cell %d, count %d, isMax==False", ("opponent", "minmax_lcl_next_cell", "minmax_lcl_loop_cnt"), "push_lcl_depth")
-@1727:030000                          sd zero                  ; no-op
+@1731:030000                          sd zero                  ; no-op
                                       ;        cs zero                 ; load negative zero, i.e. all ones
                                       ;        sd minmax_lcl_isMax     ; Sum Digits, i.e., xor, will reverse isMax
-@1730:100001                          ca one                   ; load -1 to signal isMax should be True
+@1732:100001                          ca one                   ; load -1 to signal isMax should be True
                                       ; here begins the recursion
                                       ; .exec print_indent(cm, "starting recursive call to minimax: isMax==False-branch, cell at %d, depth: %d, loop_count: %d" % (cm.rd(rl("minmax_lcl_next_cell")), cm.rd(rl("push_lcl_depth")), cm.rd(rl("minmax_lcl_loop_cnt"))), rl("push_lcl_depth"))
-@1731:075607                          sp minimax
+@1733:075607                          sp minimax
                                       ; the following adjustment probably shouldn't be done if the answer is Zero
-@1732:110001                          ad one                   ;  push_lcl_depth       ; increase the (negative) score by the calling depth
-@1733:041766                          ts mm_lcl_ret_val        ; very local storage for the minimax return value
+@1734:110001                          ad one                   ;  push_lcl_depth       ; increase the (negative) score by the calling depth
+@1735:041770                          ts mm_lcl_ret_val        ; very local storage for the minimax return value
                                       ; .exec print_indent(cm, "finished recursive call to minimax: isMax==False-branch, cell at %d, depth: %d, loop_count: %d, score: 0o%o" % (cm.rd(rl("minmax_lcl_next_cell")), cm.rd(rl("push_lcl_depth")), cm.rd(rl("minmax_lcl_loop_cnt")), cm.rd(rl("mm_lcl_ret_val"))), rl("push_lcl_depth"))
 
 
-@1734:115763                          su minmax_lcl_best       ; determine if this was the "best" score so far
-@1735:071737                          cp minmax_best2
-@1736:075741                          sp minmax_not_best2      ; branch if we've seen a better score already
+@1736:115765                          su minmax_lcl_best       ; determine if this was the "best" score so far
+@1737:071741                          cp minmax_best2
+@1740:075743                          sp minmax_not_best2      ; branch if we've seen a better score already
 
                         minmax_best2:
-@1737:101766                          ca mm_lcl_ret_val        ; save this result as the Best Score So Far @@JumpedToBy a1735
-@1740:041763                          ts minmax_lcl_best
+@1741:101770                          ca mm_lcl_ret_val        ; save this result as the Best Score So Far @@JumpedToBy a1737
+@1742:041765                          ts minmax_lcl_best
 
                     minmax_not_best2:
 
-@1741:101764                          ca minmax_lcl_undo_move  ; remember that modified instruction addresses are effectively local variables, so restore this one from the stack @@JumpedToBy a1736
+@1743:101766                          ca minmax_lcl_undo_move  ; remember that modified instruction addresses are effectively local variables, so restore this one from the stack @@JumpedToBy a1740
                                       ; .exec print_experiment(cm, cb, "Undoing game piece %d in cell %d at 0o%o, isMax==False", ("player", "minmax_lcl_next_cell", "minmax_lcl_undo_move"), "push_lcl_depth")
-@1742:045744                          td minmax_undo_move2
-@1743:104001                          cs one                   ; undo the trial move
+@1744:045746                          td minmax_undo_move2
+@1745:104001                          cs one                   ; undo the trial move
                    minmax_undo_move2:
-@1744:040000                          ts 0                     ; @@WrittenBy a1742
+@1746:040000                          ts 0                     ; @@WrittenBy a1744
 
                     minmax_loop2_end:                          ; get ready for the next cell iteration
-@1745:131761                          ao minmax_lcl_next_cell  ; @@JumpedToBy a1724
-@1746:131762                          ao minmax_lcl_loop_cnt
-@1747:071715                          cp minmax_loop2          ; go around again if the loop cnt is not exhausted
+@1747:131763                          ao minmax_lcl_next_cell  ; @@JumpedToBy a1726
+@1750:131764                          ao minmax_lcl_loop_cnt
+@1751:071717                          cp minmax_loop2          ; go around again if the loop cnt is not exhausted
 
-@1750:101763                          ca minmax_lcl_best       ; return the best score found in AC
-@1751:075752                          sp minmax_exit           ; all done with this pass of isMax == False
+@1752:101765                          ca minmax_lcl_best       ; return the best score found in AC
+@1753:075754                          sp minmax_exit           ; all done with this pass of isMax == False
 
 
                          minmax_exit:
-@1752:030000                          sd zero                  ; no-op for .exec @@JumpedToBy a1624 a1634 a1642 a1706 a1751
+@1754:030000                          sd zero                  ; no-op for .exec @@JumpedToBy a1624 a1634 a1642 a1710 a1753
                                       ; .exec print_indent(cm, "Exiting minimax: IsMax:%d, depth: %d, score: %d" % (cm.rd(rl("minmax_lcl_isMax")), cm.rd(rl("push_lcl_depth")), cm.rd(rl("minmax_lcl_best"))), rl("push_lcl_depth"))
-@1753:030000                          sd zero                  ; this is a no-op
+@1755:030000                          sd zero                  ; this is a no-op
                                       ; .exec print_board(cm, rl("boardp"), rl("push_lcl_depth"), rl("player") )
-@1754:101763                          ca minmax_lcl_best
+@1756:101765                          ca minmax_lcl_best
 
                                       ; note that we stash and retrieve the AC during PoP
-@1755:075441                          sp pop_minmax
+@1757:075441                          sp pop_minmax
                           minmax_ret:
-@1756:074000                          sp 0                     ; @@WrittenBy a1607
+@1760:074000                          sp 0                     ; @@WrittenBy a1607
 
                                       ; the 'local data' for minmax must be copied/retrieved from the "stack" for recursion
                                       ; a "stack frame" must store from minmax_ret to minmax_lcl_data_end
-@1757:000000        minmax_lcl_isMax: .word 0                  ; @@WrittenBy a1610 ReadBy a1643
-@1760:000000        minmax_lcl_score: .word 0                  ; @@WrittenBy a1614 ReadBy a1615 a1622 a1625 a1632
-@1761:000000    minmax_lcl_next_cell: .word 0                  ; @@WrittenBy a1650 a1702 a1712 a1745 ReadBy a1654 a1702 a1716 a1745
-@1762:000000     minmax_lcl_loop_cnt: .word 0                  ; @@WrittenBy a1652 a1703 a1714 a1746 ReadBy a1703 a1746
-@1763:000000         minmax_lcl_best: .word 0                  ; @@WrittenBy a1623 a1633 a1641 a1646 a1675 a1710 a1740 ReadBy a1672 a1705 a1734 a1750 a1754
-@1764:000000    minmax_lcl_undo_move: .word 0                  ; @@WrittenBy a1657 a1721 ReadBy a1676 a1741
-@1765:000000     minmax_lcl_data_end: .word 0                  ; this is just a marker for the end of data to be pushed
+@1761:000000        minmax_lcl_isMax: .word 0                  ; @@WrittenBy a1610 ReadBy a1643 a1667
+@1762:000000        minmax_lcl_score: .word 0                  ; @@WrittenBy a1614 ReadBy a1615 a1622 a1625 a1632
+@1763:000000    minmax_lcl_next_cell: .word 0                  ; @@WrittenBy a1650 a1704 a1714 a1747 ReadBy a1654 a1704 a1720 a1747
+@1764:000000     minmax_lcl_loop_cnt: .word 0                  ; @@WrittenBy a1652 a1705 a1716 a1750 ReadBy a1705 a1750
+@1765:000000         minmax_lcl_best: .word 0                  ; @@WrittenBy a1623 a1633 a1641 a1646 a1677 a1712 a1742 ReadBy a1674 a1707 a1736 a1752 a1756
+@1766:000000    minmax_lcl_undo_move: .word 0                  ; @@WrittenBy a1657 a1723 ReadBy a1700 a1743
+@1767:000000     minmax_lcl_data_end: .word 0                  ; this is just a marker for the end of data to be pushed
 
-@1766:000000          mm_lcl_ret_val: .word 0                  ; @@WrittenBy a1671 a1733 ReadBy a1674 a1737
+@1770:000000          mm_lcl_ret_val: .word 0                  ; @@WrittenBy a1673 a1735 ReadBy a1676 a1741
 
 
 
@@ -1928,82 +1928,94 @@
                                       ; The routine takes no explicit argument, but assumes that Player is the
                                       ; one we're trying to advance
                                       ; the assumption on calling this routine is that there's at least one move available to be tried
+                                      ; This routine can take a while, so it redraws the screen a couple of times.  To indicate who'S
+                                      ; doing what, we reverse the "player" bit temporarily.
                         findBestMove:
-@1767:052035                          ta fBM_ret               ; @@JumpedToBy a0674
+@1771:052045                          ta fBM_ret               ; @@JumpedToBy a0674
+
+                                      ; switch the display to the machine player
+@1772:100176                          ca which_player
+@1773:030001                          sd const_1               ; xor a 1 into the LSB; i.e. 0->1 or 1->0
+@1774:040176                          ts which_player
 
                                       ; initialize the 'best stuff' detector
-@1770:105151                          cs c_1000
-@1771:042036                          ts fBM_lcl_best_value
+@1775:105151                          cs c_1000
+@1776:042046                          ts fBM_lcl_best_value
                                       ; .print "Starting findBestMove, player=%d, opponent=%d", player, opponent
-@1772:104001                          cs one
-@1773:042037                          ts fBM_lcl_best_move
-@1774:101147                          ca c_8n
-@1775:042040                          ts fBM_lcl_loop_count
-@1776:100000                          ca zero
-@1777:042041                          ts fBM_lcl_current_cell
-@2000:101247                          ca boardp                ; we always start from cell zero`
-@2001:046004                          td fBM_fetch_cell
-@2002:046010                          td fBM_set_cell
-@2003:046016                          td fBM_clear_cell
+@1777:104001                          cs one
+@2000:042047                          ts fBM_lcl_best_move
+@2001:101147                          ca c_8n
+@2002:042050                          ts fBM_lcl_loop_count
+@2003:100000                          ca zero
+@2004:042051                          ts fBM_lcl_current_cell
+@2005:101247                          ca boardp                ; we always start from cell zero`
+@2006:046011                          td fBM_fetch_cell
+@2007:046015                          td fBM_set_cell
+@2010:046023                          td fBM_clear_cell
 
                                       ; we start the loop here, but the first test will bypass the rest of the loop if the cell is already spoken for
                       fBM_fetch_cell:
-@2004:100000                          ca 0                     ; read the current cell into AC @@WrittenBy a2001 a2026 ReadBy a2026 JumpedToBy a2033
-@2005:072007                          cp fBM_try_move          ; if the cell is empty, go on to try out a move
-@2006:076026                          sp fBM_next_loop         ; take a pass on this non-empty cell, go on to the next one
+@2011:100000                          ca 0                     ; read the current cell into AC @@WrittenBy a2006 a2033 ReadBy a2033 JumpedToBy a2040
+@2012:072014                          cp fBM_try_move          ; if the cell is empty, go on to try out a move
+@2013:076033                          sp fBM_next_loop         ; take a pass on this non-empty cell, go on to the next one
 
                         fBM_try_move:
-@2007:101154                          ca player                ; @@JumpedToBy a2005
+@2014:101154                          ca player                ; @@JumpedToBy a2012
                                       ; try out a move on this cell
                                       .print "fBM: try  empty cell %d, player=%d", fBM_lcl_current_cell, player
                         fBM_set_cell:
-@2010:040000                          ts 0                     ; @@WrittenBy a2002 a2027 ReadBy a2027
-@2011:074055                          sp draw_game_board       ; this doesn't work yet -- unintended recursion...
+@2015:040000                          ts 0                     ; @@WrittenBy a2007 a2034 ReadBy a2034
+@2016:074055                          sp draw_game_board       ; be careful to not trigger unintended recursion...
 
-@2012:104001                          cs one                   ; tell Minimax to try for a Min score on this cell
+@2017:104001                          cs one                   ; tell Minimax to try for a Min score on this cell
                                       ; .print "fBM: call minimax, player=%d, IsMax=%ad", player
-@2013:075607                          sp minimax               ; call the optimizer; best-score comes back in AC
+@2020:075607                          sp minimax               ; call the optimizer; best-score comes back in AC
                                       ;.print "fBM: minimax returned %ad"
-@2014:042042                          ts fBM_lcl_tmp_score     ; stash the score for now
+@2021:042052                          ts fBM_lcl_tmp_score     ; stash the score for now
 
-@2015:104001                          cs one                   ; undo the trial move, then evaluate the results of minimax
+@2022:104001                          cs one                   ; undo the trial move, then evaluate the results of minimax
                       fBM_clear_cell:
-@2016:040000                          ts 0                     ; @@WrittenBy a2003 a2030 ReadBy a2030
+@2023:040000                          ts 0                     ; @@WrittenBy a2010 a2035 ReadBy a2035
 
                                       ; see if we bested a previous score
-@2017:102042                          ca fBM_lcl_tmp_score     ; compare the new result with previous best
-@2020:116036                          su fBM_lcl_best_value    ; branch if the old one was better; i.e., skip updating the eval_score_players
-@2021:072026                          cp fBM_next_loop
+@2024:102052                          ca fBM_lcl_tmp_score     ; compare the new result with previous best
+@2025:116046                          su fBM_lcl_best_value    ; branch if the old one was better; i.e., skip updating the eval_score_players
+@2026:072033                          cp fBM_next_loop
 
-@2022:102042                          ca fBM_lcl_tmp_score
-@2023:042036                          ts fBM_lcl_best_value    ; save the New Best Score
-@2024:102041                          ca fBM_lcl_current_cell  ; and remember how we got here, i.e., which cell we tried
+@2027:102052                          ca fBM_lcl_tmp_score
+@2030:042046                          ts fBM_lcl_best_value    ; save the New Best Score
+@2031:102051                          ca fBM_lcl_current_cell  ; and remember how we got here, i.e., which cell we tried
                                       .print "fBM new Best Move: score %d, cell %d, loop: %d", fBM_lcl_tmp_score, fBM_lcl_current_cell, fBM_lcl_loop_count
-@2025:042037                          ts fBM_lcl_best_move
+@2032:042047                          ts fBM_lcl_best_move
 
                        fBM_next_loop:
-@2026:132004                          ao fBM_fetch_cell        ; @@JumpedToBy a2006 a2021
-@2027:132010                          ao fBM_set_cell
-@2030:132016                          ao fBM_clear_cell
-@2031:132041                          ao fBM_lcl_current_cell
-@2032:132040                          ao fBM_lcl_loop_count
-@2033:072004                          cp fBM_fetch_cell        ; go 'round the loop again
+@2033:132011                          ao fBM_fetch_cell        ; @@JumpedToBy a2013 a2026
+@2034:132015                          ao fBM_set_cell
+@2035:132023                          ao fBM_clear_cell
+@2036:132051                          ao fBM_lcl_current_cell
+@2037:132050                          ao fBM_lcl_loop_count
+@2040:072011                          cp fBM_fetch_cell        ; go 'round the loop again
+
+                                      ; now switch the display back to the original (human) player
+@2041:100176                          ca which_player
+@2042:030001                          sd const_1               ; xor a 1 into the LSB; i.e. 0->1 or 1->0
+@2043:040176                          ts which_player
 
                                       ; when we're done with the loop, return the best move found (not the score, the cell that played best)
-@2034:102037                          ca fBM_lcl_best_move
+@2044:102047                          ca fBM_lcl_best_move
                                       .print "fBM findBestMove for player %d returns move to cell %ad, score=%d", player, fBM_lcl_best_value
                              fBM_ret:
-@2035:074000                          sp 0                     ; @@WrittenBy a1767
+@2045:074000                          sp 0                     ; @@WrittenBy a1771
                   fBM_lcl_best_value:                          ; best score found so far
-@2036:000000                          .word 0                  ; @@WrittenBy a1771 a2023 ReadBy a2020
+@2046:000000                          .word 0                  ; @@WrittenBy a1776 a2030 ReadBy a2025
                    fBM_lcl_best_move:                          ; remember the move that resulted in the best score
-@2037:000000                          .word 0                  ; @@WrittenBy a1773 a2025 ReadBy a2034
+@2047:000000                          .word 0                  ; @@WrittenBy a2000 a2032 ReadBy a2044
                   fBM_lcl_loop_count:
-@2040:000000                          .word 0                  ; @@WrittenBy a1775 a2032 ReadBy a2032
+@2050:000000                          .word 0                  ; @@WrittenBy a2002 a2037 ReadBy a2037
                 fBM_lcl_current_cell:
-@2041:000000                          .word 0                  ; @@WrittenBy a1777 a2031 ReadBy a2024 a2031
+@2051:000000                          .word 0                  ; @@WrittenBy a2004 a2036 ReadBy a2031 a2036
                    fBM_lcl_tmp_score:
-@2042:000000                          .word 0                  ; @@WrittenBy a2014 ReadBy a2017 a2022
+@2052:000000                          .word 0                  ; @@WrittenBy a2021 ReadBy a2024 a2027
 
 
                                       ;=====================================================================================
@@ -2018,32 +2030,32 @@
 
 
                       unit_test_main:
-@2043:104044                          cs c_scope_edge          ; @@JumpedToBy a2050
-@2044:042077                          ts ds_argx
-@2045:042100                          ts ds_argy
-@2046:102051                          ca msgp
-@2047:076053                          sp draw_str
+@2053:104044                          cs c_scope_edge          ; @@JumpedToBy a2060
+@2054:042107                          ts ds_argx
+@2055:042110                          ts ds_argy
+@2056:102061                          ca msgp
+@2057:076063                          sp draw_str
                                       ;si 0
-@2050:076043                          sp unit_test_main
+@2060:076053                          sp unit_test_main
 
 
-@2051:002052                    msgp: .word msg                ; @@ReadBy a2046
-@2052:000030                     msg: .flexl "N"
-@2052:000060                          .flexl "O"
-@2052:000046                          .flexl "W"
-@2052:000010                          .flexl " "
-@2052:000014                          .flexl "I"
-@2052:000012                          .flexl "S"
-@2052:000010                          .flexl " "
-@2052:000040                          .flexl "T"
-@2052:000050                          .flexl "H"
-@2052:000002                          .flexl "E"
-@2052:000010                          .flexl " "
-@2052:000040                          .flexl "T"
-@2052:000014                          .flexl "I"
-@2052:000070                          .flexl "M"
-@2052:000002                          .flexl "E"
-@2052:177776                          .word -1
+@2061:002062                    msgp: .word msg                ; @@ReadBy a2056
+@2062:000030                     msg: .flexl "N"
+@2062:000060                          .flexl "O"
+@2062:000046                          .flexl "W"
+@2062:000010                          .flexl " "
+@2062:000014                          .flexl "I"
+@2062:000012                          .flexl "S"
+@2062:000010                          .flexl " "
+@2062:000040                          .flexl "T"
+@2062:000050                          .flexl "H"
+@2062:000002                          .flexl "E"
+@2062:000010                          .flexl " "
+@2062:000040                          .flexl "T"
+@2062:000014                          .flexl "I"
+@2062:000070                          .flexl "M"
+@2062:000002                          .flexl "E"
+@2062:177776                          .word -1
 
 
                                       ; -----------------------------------------
@@ -2051,109 +2063,109 @@
                                       ; AC contains a pointer to the string, terminated by the first negative 'character'
                                       ; ds_argx and ds_argy give the initial (x, y) location
                             draw_str:
-@2053:052075                          ta ds_ret                ; @@JumpedToBy a0157 a2047
-@2054:046076                          td ds_lcl_charp          ; save the character pointer passed in the ACC
+@2063:052105                          ta ds_ret                ; @@JumpedToBy a0157 a2057
+@2064:046106                          td ds_lcl_charp          ; save the character pointer passed in the ACC
                              ds_loop:
-@2055:102077                          ca ds_argx               ; @@JumpedToBy a2074
-@2056:042335                          ts d16c_argx
-@2057:102100                          ca ds_argy
-@2060:042336                          ts d16c_argy
-@2061:102076                          ca ds_lcl_charp          ; walk the string from start to finish
-@2062:046063                          td ds_get_char
+@2065:102107                          ca ds_argx               ; @@JumpedToBy a2104
+@2066:042345                          ts d16c_argx
+@2067:102110                          ca ds_argy
+@2070:042346                          ts d16c_argy
+@2071:102106                          ca ds_lcl_charp          ; walk the string from start to finish
+@2072:046073                          td ds_get_char
                          ds_get_char:
-@2063:100000                          ca 0                     ; fetch the next character in the string @@WrittenBy a2062
-@2064:076265                          sp draw_16seg_char       ; actually draw the character!
+@2073:100000                          ca 0                     ; fetch the next character in the string @@WrittenBy a2072
+@2074:076275                          sp draw_16seg_char       ; actually draw the character!
 
-@2065:132076                          ao ds_lcl_charp          ; prepare for next char in loop
-@2066:046067                          td ds_test_str_end
+@2075:132106                          ao ds_lcl_charp          ; prepare for next char in loop
+@2076:046077                          td ds_test_str_end
                      ds_test_str_end:
-@2067:100000                          ca 0                     ; @@WrittenBy a2066
-@2070:072075                          cp ds_ret                ; test for a negative number as the marker for the string end; branch out if done
+@2077:100000                          ca 0                     ; @@WrittenBy a2076
+@2100:072105                          cp ds_ret                ; test for a negative number as the marker for the string end; branch out if done
 
-@2071:102077                          ca ds_argx
-@2072:112264                          ad char_spacing
-@2073:042077                          ts ds_argx
-@2074:076055                          sp ds_loop
+@2101:102107                          ca ds_argx
+@2102:112274                          ad char_spacing
+@2103:042107                          ts ds_argx
+@2104:076065                          sp ds_loop
 
                               ds_ret:
-@2075:074000                          sp 0                     ; @@WrittenBy a2053 JumpedToBy a2070
+@2105:074000                          sp 0                     ; @@WrittenBy a2063 JumpedToBy a2100
 
-@2076:000000            ds_lcl_charp: .word 0                  ; pointer to the next character to display @@WrittenBy a2054 a2065 ReadBy a2061 a2065
-@2077:000000                 ds_argx: .word 0                  ; @@WrittenBy a0155 a2044 a2073 ReadBy a2055 a2071
-@2100:000000                 ds_argy: .word 0                  ; @@WrittenBy a0153 a2045 ReadBy a2057
+@2106:000000            ds_lcl_charp: .word 0                  ; pointer to the next character to display @@WrittenBy a2064 a2075 ReadBy a2071 a2075
+@2107:000000                 ds_argx: .word 0                  ; @@WrittenBy a0155 a2054 a2103 ReadBy a2065 a2101
+@2110:000000                 ds_argy: .word 0                  ; @@WrittenBy a0153 a2055 ReadBy a2067
 
                                       ; ---------------------------
 
                                       ; The following table, indexed by ASCII character, gives a bit map of which of the 16
                                       ; segments should be lit for each symbol.
                 SixteenSegmentFlexop:
-@2101:002102                          .word SixteenSegmentFlexo; @@ReadBy a2266
+@2111:002112                          .word SixteenSegmentFlexo; @@ReadBy a2276
                  SixteenSegmentFlexo:
                          flexo_ucase:
-@2102:125074                          .word 0o125074           ; /* # */
-@2103:125074                          .word 0o125074           ; /* # */
-@2104:100363                          .word 0o100363           ; /* E */
-@2105:104377                          .word 0o104377           ; /* 8 */
-@2106:125074                          .word 0o125074           ; /* # */
-@2107:000060                          .word 0o000060           ; /* _ */
-@2110:104317                          .word 0o104317           ; /* A */
-@2111:004077                          .word 0o004077           ; /* 3 */
-@2112:000000                          .word 0o000000           ; /* (space) */
-@2113:021000                          .word 0o021000           ; /* : */
-@2114:104273                          .word 0o104273           ; /* S */
-@2115:104214                          .word 0o104214           ; /* 4 */
-@2116:021063                          .word 0o021063           ; /* I */
-@2117:042000                          .word 0o042000           ; /* / */
-@2120:000374                          .word 0o000374           ; /* U */
-@2121:104167                          .word 0o104167           ; /* 2 */
-@2122:177777                          .word 0o177777           ; /* (del) */
-@2123:040400                          .word 0o040400           ; /* ) */
-@2124:021077                          .word 0o021077           ; /* D */
-@2125:110263                          .word 0o110263           ; /* 5 */
-@2126:114307                          .word 0o114307           ; /* R */
-@2127:002014                          .word 0o002014           ; /* 1 */
-@2130:000174                          .word 0o000174           ; /* J */
-@2131:000017                          .word 0o000017           ; /* 7 */
-@2132:010714                          .word 0o010714           ; /* N */
-@2133:012000                          .word 0o012000           ; /* ( */
-@2134:100303                          .word 0o100303           ; /* F */
-@2135:104373                          .word 0o104373           ; /* 6 */
-@2136:000363                          .word 0o000363           ; /* C */
-@2137:104000                          .word 0o104000           ; /* - */
-@2140:112300                          .word 0o112300           ; /* K */
-@2141:125074                          .word 0o125074           ; /* # */
-@2142:021003                          .word 0o021003           ; /* T */
-@2143:125074                          .word 0o125074           ; /* # */
-@2144:042063                          .word 0o042063           ; /* Z */
-@2145:177777                          .word 0o177777           ; /* (del) */
-@2146:000360                          .word 0o000360           ; /* L */
-@2147:000000                          .word 0o000000           ; /* (space) */
-@2150:050314                          .word 0o050314           ; /* W */
+@2112:125074                          .word 0o125074           ; /* # */
+@2113:125074                          .word 0o125074           ; /* # */
+@2114:100363                          .word 0o100363           ; /* E */
+@2115:104377                          .word 0o104377           ; /* 8 */
+@2116:125074                          .word 0o125074           ; /* # */
+@2117:000060                          .word 0o000060           ; /* _ */
+@2120:104317                          .word 0o104317           ; /* A */
+@2121:004077                          .word 0o004077           ; /* 3 */
+@2122:000000                          .word 0o000000           ; /* (space) */
+@2123:021000                          .word 0o021000           ; /* : */
+@2124:104273                          .word 0o104273           ; /* S */
+@2125:104214                          .word 0o104214           ; /* 4 */
+@2126:021063                          .word 0o021063           ; /* I */
+@2127:042000                          .word 0o042000           ; /* / */
+@2130:000374                          .word 0o000374           ; /* U */
+@2131:104167                          .word 0o104167           ; /* 2 */
+@2132:177777                          .word 0o177777           ; /* (del) */
+@2133:040400                          .word 0o040400           ; /* ) */
+@2134:021077                          .word 0o021077           ; /* D */
+@2135:110263                          .word 0o110263           ; /* 5 */
+@2136:114307                          .word 0o114307           ; /* R */
+@2137:002014                          .word 0o002014           ; /* 1 */
+@2140:000174                          .word 0o000174           ; /* J */
+@2141:000017                          .word 0o000017           ; /* 7 */
+@2142:010714                          .word 0o010714           ; /* N */
+@2143:012000                          .word 0o012000           ; /* ( */
+@2144:100303                          .word 0o100303           ; /* F */
+@2145:104373                          .word 0o104373           ; /* 6 */
+@2146:000363                          .word 0o000363           ; /* C */
+@2147:104000                          .word 0o104000           ; /* - */
+@2150:112300                          .word 0o112300           ; /* K */
 @2151:125074                          .word 0o125074           ; /* # */
-@2152:104314                          .word 0o104314           ; /* H */
-@2153:000000                          .word 0o000000           ; /* (space) */
-@2154:104274                          .word 0o104274           ; /* Y */
-@2155:125074                          .word 0o125074           ; /* # */
-@2156:104307                          .word 0o104307           ; /* P */
-@2157:125074                          .word 0o125074           ; /* # */
-@2160:010377                          .word 0o010377           ; /* Q */
+@2152:021003                          .word 0o021003           ; /* T */
+@2153:125074                          .word 0o125074           ; /* # */
+@2154:042063                          .word 0o042063           ; /* Z */
+@2155:177777                          .word 0o177777           ; /* (del) */
+@2156:000360                          .word 0o000360           ; /* L */
+@2157:000000                          .word 0o000000           ; /* (space) */
+@2160:050314                          .word 0o050314           ; /* W */
 @2161:125074                          .word 0o125074           ; /* # */
-@2162:000377                          .word 0o000377           ; /* O */
-@2163:177777                          .word 0o177777           ; /* (del) */
-@2164:025077                          .word 0o025077           ; /* B */
+@2162:104314                          .word 0o104314           ; /* H */
+@2163:000000                          .word 0o000000           ; /* (space) */
+@2164:104274                          .word 0o104274           ; /* Y */
 @2165:125074                          .word 0o125074           ; /* # */
-@2166:004373                          .word 0o004373           ; /* G */
+@2166:104307                          .word 0o104307           ; /* P */
 @2167:125074                          .word 0o125074           ; /* # */
-@2170:104277                          .word 0o104277           ; /* 9 */
+@2170:010377                          .word 0o010377           ; /* Q */
 @2171:125074                          .word 0o125074           ; /* # */
-@2172:002714                          .word 0o002714           ; /* M */
+@2172:000377                          .word 0o000377           ; /* O */
 @2173:177777                          .word 0o177777           ; /* (del) */
-@2174:052400                          .word 0o052400           ; /* X */
+@2174:025077                          .word 0o025077           ; /* B */
 @2175:125074                          .word 0o125074           ; /* # */
-@2176:042300                          .word 0o042300           ; /* V */
-@2177:177777                          .word 0o177777           ; /* (del) */
-@2200:042377                          .word 0o042377           ; /* 0 */
-@2201:177777                          .word 0o177777           ; /* (del) */
+@2176:004373                          .word 0o004373           ; /* G */
+@2177:125074                          .word 0o125074           ; /* # */
+@2200:104277                          .word 0o104277           ; /* 9 */
+@2201:125074                          .word 0o125074           ; /* # */
+@2202:002714                          .word 0o002714           ; /* M */
+@2203:177777                          .word 0o177777           ; /* (del) */
+@2204:052400                          .word 0o052400           ; /* X */
+@2205:125074                          .word 0o125074           ; /* # */
+@2206:042300                          .word 0o042300           ; /* V */
+@2207:177777                          .word 0o177777           ; /* (del) */
+@2210:042377                          .word 0o042377           ; /* 0 */
+@2211:177777                          .word 0o177777           ; /* (del) */
 
 
                                       ; Lower Case not used yet
@@ -2277,76 +2289,76 @@
                                       ; // segment in the 16-segment display character.
 
                       seg_tab_startp:
-@2202:002203                          .word seg00x
+@2212:002213                          .word seg00x
 
-@2203:001000                  seg00x: .word P0x                ;   {P0, P1}
-@2204:011000                  seg00y: .word P0y
-@2205:030000                  seg00d: .word HORIZ_RIGHT
+@2213:001000                  seg00x: .word P0x                ;   {P0, P1}
+@2214:011000                  seg00y: .word P0y
+@2215:030000                  seg00d: .word HORIZ_RIGHT
 
-@2206:004000                  seg01x: .word P1x                ;   {P1, P2},
-@2207:011000                  seg01y: .word P1y
-@2210:030000                  seg01d: .word HORIZ_RIGHT
+@2216:004000                  seg01x: .word P1x                ;   {P1, P2},
+@2217:011000                  seg01y: .word P1y
+@2220:030000                  seg01d: .word HORIZ_RIGHT
 
-@2211:007000                  seg02x: .word P2x                ;   {P2, P3},
-@2212:011000                  seg02y: .word P2y
-@2213:172267                  seg02d: .word DOWN_LEFT
+@2221:007000                  seg02x: .word P2x                ;   {P2, P3},
+@2222:011000                  seg02y: .word P2y
+@2223:172267                  seg02d: .word DOWN_LEFT
 
-@2214:006400                  seg03x: .word P3x                ;   {P3, P4},
-@2215:004400                  seg03y: .word P3y
-@2216:172267                  seg03d: .word DOWN_LEFT
+@2224:006400                  seg03x: .word P3x                ;   {P3, P4},
+@2225:004400                  seg03y: .word P3y
+@2226:172267                  seg03d: .word DOWN_LEFT
 
-@2217:003000                  seg04x: .word P5x                ;   {P4, P5},
-@2220:000000                  seg04y: .word P5y
-@2221:030000                  seg04d: .word HORIZ_RIGHT
+@2227:003000                  seg04x: .word P5x                ;   {P4, P5},
+@2230:000000                  seg04y: .word P5y
+@2231:030000                  seg04d: .word HORIZ_RIGHT
 
-@2222:000000                  seg05x: .word P6x                ;   {P5, P6},
-@2223:000000                  seg05y: .word P6y
-@2224:030000                  seg05d: .word HORIZ_RIGHT
+@2232:000000                  seg05x: .word P6x                ;   {P5, P6},
+@2233:000000                  seg05y: .word P6y
+@2234:030000                  seg05d: .word HORIZ_RIGHT
 
-@2225:000000                  seg06x: .word P6x                ;   {P6, P7},
-@2226:000000                  seg06y: .word P6y
-@2227:005110                  seg06d: .word UP_RIGHT
+@2235:000000                  seg06x: .word P6x                ;   {P6, P7},
+@2236:000000                  seg06y: .word P6y
+@2237:005110                  seg06d: .word UP_RIGHT
 
-@2230:000400                  seg07x: .word P7x                ;   {P7, P0},
-@2231:004400                  seg07y: .word P7y
-@2232:005110                  seg07d: .word UP_RIGHT
+@2240:000400                  seg07x: .word P7x                ;   {P7, P0},
+@2241:004400                  seg07y: .word P7y
+@2242:005110                  seg07d: .word UP_RIGHT
 
-@2233:001000                  seg08x: .word P0x                ;   {P0, P8},
-@2234:011000                  seg08y: .word P0y
-@2235:024267                  seg08d: .word DOWN_RIGHT_DIAG
+@2243:001000                  seg08x: .word P0x                ;   {P0, P8},
+@2244:011000                  seg08y: .word P0y
+@2245:024267                  seg08d: .word DOWN_RIGHT_DIAG
 
-@2236:004000                  seg09x: .word P1x                ;   {P1, P8},
-@2237:011000                  seg09y: .word P1y
-@2240:172267                  seg09d: .word DOWN_LEFT
+@2246:004000                  seg09x: .word P1x                ;   {P1, P8},
+@2247:011000                  seg09y: .word P1y
+@2250:172267                  seg09d: .word DOWN_LEFT
 
-@2241:003400                  seg10x: .word P8x                ;   {P2, P8},
-@2242:004400                  seg10y: .word P8y
-@2243:034110                  seg10d: .word UP_RIGHT_DIAG
+@2251:003400                  seg10x: .word P8x                ;   {P2, P8},
+@2252:004400                  seg10y: .word P8y
+@2253:034110                  seg10d: .word UP_RIGHT_DIAG
 
-@2244:003400                  seg11x: .word P8x                ;   {P3, P8},
-@2245:004400                  seg11y: .word P8y
-@2246:030000                  seg11d: .word HORIZ_RIGHT
+@2254:003400                  seg11x: .word P8x                ;   {P3, P8},
+@2255:004400                  seg11y: .word P8y
+@2256:030000                  seg11d: .word HORIZ_RIGHT
 
-@2247:003400                  seg12x: .word P8x                ;   {P4, P8},
-@2250:004400                  seg12y: .word P8y
-@2251:024267                  seg12d: .word DOWN_RIGHT_DIAG
+@2257:003400                  seg12x: .word P8x                ;   {P4, P8},
+@2260:004400                  seg12y: .word P8y
+@2261:024267                  seg12d: .word DOWN_RIGHT_DIAG
 
-@2252:003400                  seg13x: .word P8x                ;   {P5, P8},
-@2253:004400                  seg13y: .word P8y
-@2254:172267                  seg13d: .word DOWN_LEFT
+@2262:003400                  seg13x: .word P8x                ;   {P5, P8},
+@2263:004400                  seg13y: .word P8y
+@2264:172267                  seg13d: .word DOWN_LEFT
 
-@2255:000000                  seg14x: .word P6x                ;   {P6, P8},
-@2256:000000                  seg14y: .word P6y
-@2257:034110                  seg14d: .word UP_RIGHT_DIAG
+@2265:000000                  seg14x: .word P6x                ;   {P6, P8},
+@2266:000000                  seg14y: .word P6y
+@2267:034110                  seg14d: .word UP_RIGHT_DIAG
 
-@2260:000400                  seg15x: .word P7x                ;   {P7, P8},
-@2261:004400                  seg15y: .word P7y
-@2262:030000                  seg15d: .word HORIZ_RIGHT
+@2270:000400                  seg15x: .word P7x                ;   {P7, P8},
+@2271:004400                  seg15y: .word P7y
+@2272:030000                  seg15d: .word HORIZ_RIGHT
 
                         seg_tab_endp:
-@2263:002260                          .word seg15x             ; @@ReadBy a2274
+@2273:002270                          .word seg15x             ; @@ReadBy a2304
                         char_spacing:
-@2264:007400                          .word SPACING_16SEG      ; @@ReadBy a2072
+@2274:007400                          .word SPACING_16SEG      ; @@ReadBy a2102
 
 
                                       ; Draw a Flexo character passed in to this routine in the ACC
@@ -2355,59 +2367,59 @@
                                       ; bit is one, draw the stroke; if not, don't draw.
                                       ; Character position is given by the args d16c_argx, d16c_argy.
                      draw_16seg_char:
-@2265:052334                          ta d16c_ret              ; @@JumpedToBy a2064
+@2275:052344                          ta d16c_ret              ; @@JumpedToBy a2074
 
-@2266:112101                          ad SixteenSegmentFlexop  ; add the table start addr to the offset in ACC
-@2267:046270                          td d16c_rd
+@2276:112111                          ad SixteenSegmentFlexop  ; add the table start addr to the offset in ACC
+@2277:046300                          td d16c_rd
                              d16c_rd:
-@2270:100000                          ca 0                     ; fetch the bit map @@WrittenBy a2267
-@2271:042337                          ts d16c_lcl_seg_map
+@2300:100000                          ca 0                     ; fetch the bit map @@WrittenBy a2277
+@2301:042347                          ts d16c_lcl_seg_map
 
                                       ; draw the sixteen segments, starting with the most significant bit
-@2272:104042                          cs c_15                  ; prep for 16 times around the loop
-@2273:042340                          ts d16c_lcl_loop_cnt
-@2274:102263                          ca seg_tab_endp          ; walk the segment table back to front
-@2275:046330                          td d16c_read_seg_tabx    ; first table entry
+@2302:104042                          cs c_15                  ; prep for 16 times around the loop
+@2303:042350                          ts d16c_lcl_loop_cnt
+@2304:102273                          ca seg_tab_endp          ; walk the segment table back to front
+@2305:046340                          td d16c_read_seg_tabx    ; first table entry
                                       ;        td tmp_tabx
-@2276:110001                          ad one
-@2277:046325                          td d16c_read_seg_taby    ; second table entry
+@2306:110001                          ad one
+@2307:046335                          td d16c_read_seg_taby    ; second table entry
                                       ;        td tmp_taby
-@2300:110001                          ad one
-@2301:046332                          td d16c_read_seg_tabdxy  ; third table entry
+@2310:110001                          ad one
+@2311:046342                          td d16c_read_seg_tabdxy  ; third table entry
 
                                       ; I've commented out a bit of debug code here to draw dots at each of the junction points in the
                                       ; 16-segment figure.  Use this to verify that the line segments are the right length...
                            d16s_loop:
                                       ; this strip draws dots at the intersection points
-@2302:100000                          ca 0                     ; no op @@JumpedToBy a2323
+@2312:100000                          ca 0                     ; no op @@JumpedToBy a2333
                                       ;tmp_taby:
                                       ;        ca 0
-@2303:000677                          si scope_point           ; ; Auto-Annotate I/O: Display Points
+@2313:000677                          si scope_point           ; ; Auto-Annotate I/O: Display Points
                                       ;tmp_tabx:
                                       ;        ca 0
                                       ;        rc 0
                                       ; end of debug hack
-@2304:102337                          ca d16c_lcl_seg_map
-@2305:072325                          cp d16c_draw_seg         ; branch if most significant bit is on
+@2314:102347                          ca d16c_lcl_seg_map
+@2315:072335                          cp d16c_draw_seg         ; branch if most significant bit is on
 
                   d16s_loop_continue:
-@2306:102337                          ca d16c_lcl_seg_map      ; @@JumpedToBy a2333
-@2307:170001                          clc 1                    ; shift AC left by one bit
-@2310:042337                          ts d16c_lcl_seg_map
-@2311:102330                          ca d16c_read_seg_tabx
-@2312:115145                          su c_3
-@2313:046330                          td d16c_read_seg_tabx
+@2316:102347                          ca d16c_lcl_seg_map      ; @@JumpedToBy a2343
+@2317:170001                          clc 1                    ; shift AC left by one bit
+@2320:042347                          ts d16c_lcl_seg_map
+@2321:102340                          ca d16c_read_seg_tabx
+@2322:115145                          su c_3
+@2323:046340                          td d16c_read_seg_tabx
                                       ;        td tmp_tabx
-@2314:102325                          ca d16c_read_seg_taby
-@2315:115145                          su c_3
-@2316:046325                          td d16c_read_seg_taby
+@2324:102335                          ca d16c_read_seg_taby
+@2325:115145                          su c_3
+@2326:046335                          td d16c_read_seg_taby
                                       ;        td tmp_taby
-@2317:102332                          ca d16c_read_seg_tabdxy
-@2320:115145                          su c_3
-@2321:046332                          td d16c_read_seg_tabdxy
-@2322:132340                          ao d16c_lcl_loop_cnt
-@2323:072302                          cp d16s_loop
-@2324:076334                          sp d16c_ret              ; bail out when count exhausted
+@2327:102342                          ca d16c_read_seg_tabdxy
+@2330:115145                          su c_3
+@2331:046342                          td d16c_read_seg_tabdxy
+@2332:132350                          ao d16c_lcl_loop_cnt
+@2333:072312                          cp d16s_loop
+@2334:076344                          sp d16c_ret              ; bail out when count exhausted
 
                                       ; on entry to this code block, the three entries in the segment table should give:
                                       ;   _tab1 = X pos'n
@@ -2416,29 +2428,29 @@
                        d16c_draw_seg:                          ; branch here if we're doing a segment, then return to the loop
                                       ; the SI uses the AC to set Y coord
                   d16c_read_seg_taby:
-@2325:100000                          ca 0                     ; @@WrittenBy a2277 a2316 ReadBy a2314 JumpedToBy a2305
-@2326:112336                          ad d16c_argy
-@2327:001677                          si scope_vector          ; initialize vector gen with the y-coord in ACC ; Auto-Annotate I/O: Display Vectors
+@2335:100000                          ca 0                     ; @@WrittenBy a2307 a2326 ReadBy a2324 JumpedToBy a2315
+@2336:112346                          ad d16c_argy
+@2337:001677                          si scope_vector          ; initialize vector gen with the y-coord in ACC ; Auto-Annotate I/O: Display Vectors
 
                                       ; the RC uses AC to set X coord and mem address for the vector length
                   d16c_read_seg_tabx:
-@2330:100000                          ca 0                     ; @@WrittenBy a2275 a2313 ReadBy a2311
-@2331:112335                          ad d16c_argx
+@2340:100000                          ca 0                     ; @@WrittenBy a2305 a2323 ReadBy a2321
+@2341:112345                          ad d16c_argx
                 d16c_read_seg_tabdxy:
-@2332:024000                          rc 0                     ; @@WrittenBy a2301 a2321 ReadBy a2317
-@2333:076306                          sp d16s_loop_continue
+@2342:024000                          rc 0                     ; @@WrittenBy a2311 a2331 ReadBy a2327
+@2343:076316                          sp d16s_loop_continue
 
                             d16c_ret:                          ;; Return from draw_16seg_char
-@2334:074000                          sp 0                     ; @@WrittenBy a2265 JumpedToBy a2324
+@2344:074000                          sp 0                     ; @@WrittenBy a2275 JumpedToBy a2334
 
                            d16c_argx:
-@2335:000000                          .word 0                  ; @@WrittenBy a2056 ReadBy a2331
+@2345:000000                          .word 0                  ; @@WrittenBy a2066 ReadBy a2341
                            d16c_argy:
-@2336:000000                          .word 0                  ; @@WrittenBy a2060 ReadBy a2326
+@2346:000000                          .word 0                  ; @@WrittenBy a2070 ReadBy a2336
                     d16c_lcl_seg_map:
-@2337:000000                          .word 0                  ; @@WrittenBy a2271 a2310 ReadBy a2304 a2306
+@2347:000000                          .word 0                  ; @@WrittenBy a2301 a2320 ReadBy a2314 a2316
                    d16c_lcl_loop_cnt:
-@2340:000000                          .word 0                  ; @@WrittenBy a2273 a2322 ReadBy a2322
+@2350:000000                          .word 0                  ; @@WrittenBy a2303 a2332 ReadBy a2332
 
 
 

@@ -1742,8 +1742,8 @@ minmax_wr1:
         .exec print_experiment(cm, cb, "Trying  game piece %d to cell %d, count %d, isMax==True", ("player", "minmax_lcl_next_cell", "minmax_lcl_loop_cnt"), "push_lcl_depth")
         sd zero   ; no-op
 
-;        cs zero                 ; load negative zero, i.e. all ones    
-;        sd minmax_lcl_isMax     ; Sum Digits, i.e., xor, will reverse isMax
+        cs zero                 ; load negative zero, i.e. all ones    
+        sd minmax_lcl_isMax     ; Sum Digits, i.e., xor, will reverse isMax
         cs one                   ; load -1 to signal isMax should be False
         ; here begins the recursion
         ; .exec print_indent(cm, "starting recursive call to minimax: isMax==True-branch, cell at %d, depth: %d, loop_count: %d" % (cm.rd(rl("minmax_lcl_next_cell")), cm.rd(rl("push_lcl_depth")), cm.rd(rl("minmax_lcl_loop_cnt"))), rl("push_lcl_depth"))
@@ -1928,8 +1928,15 @@ mm_lcl_ret_val:         .word 0
 ; The routine takes no explicit argument, but assumes that Player is the
 ; one we're trying to advance
 ; the assumption on calling this routine is that there's at least one move available to be tried
+; This routine can take a while, so it redraws the screen a couple of times.  To indicate who'S
+; doing what, we reverse the "player" bit temporarily.
 findBestMove:
         ta fBM_ret
+
+        ; switch the display to the machine player
+        ca which_player
+        sd const_1              ; xor a 1 into the LSB; i.e. 0->1 or 1->0
+        ts which_player
 
         ; initialize the 'best stuff' detector
         cs c_1000
@@ -1958,7 +1965,7 @@ fBM_try_move:
         .print "fBM: try  empty cell %d, player=%d", fBM_lcl_current_cell, player
 fBM_set_cell:
         ts 0
-        sp draw_game_board    ; this doesn't work yet -- unintended recursion...
+        sp draw_game_board    ; be careful to not trigger unintended recursion...
 
         cs one                  ; tell Minimax to try for a Min score on this cell
         ; .print "fBM: call minimax, player=%d, IsMax=%ad", player
@@ -1988,6 +1995,11 @@ fBM_next_loop:
         ao fBM_lcl_current_cell
         ao fBM_lcl_loop_count
         cp fBM_fetch_cell       ; go 'round the loop again
+
+        ; now switch the display back to the original (human) player
+        ca which_player
+        sd const_1              ; xor a 1 into the LSB; i.e. 0->1 or 1->0
+        ts which_player
 
         ; when we're done with the loop, return the best move found (not the score, the cell that played best)
         ca fBM_lcl_best_move
