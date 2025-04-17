@@ -78,18 +78,13 @@ def main():
     global WW_Root
     global Sim_Path
 
-    args = sys.argv[1:]
-    args += default_args
-    #if len(args) == 0:
-    #    args = default_args
-    #if len(args) > 1:    # if the first arg on the cmd line is '+' then tack the rest of the args onto the end of the default arg string.
-    #    if args[0] == '+':
-    #        args = default_args + args[1:0]
+    startup_args = sys.argv[1:]
+    startup_args += default_args
 
     RMIR_arg = None
-    if "-p" in args:
+    if "-p" in startup_args:
         RMIR_arg = ['-p', "--QuickStart"]   # this is a hack; the Start button is hard to get to on the small mWW screen
-    if '-m' in args:
+    if '-m' in startup_args:
         RMIR_arg = ['-m']
 
     host_os = os.getenv("OS")
@@ -98,10 +93,12 @@ def main():
     else:
         WW_Root = WW_Root_Linux
 
-    print("args=", args, "  os=", host_os)
+    print("args=", startup_args, "  os=", host_os)
     while True:
+        args = startup_args.copy()  # reset the args and start again
         # print('\033[2J') #clear_screen
         print("\n\n\n")
+        print("args: ", args, "   startup_args` ", startup_args)   
         for index in range(0, len(Programs)):
             print("%2o: %s" % (index, Programs[index].title))
         choice = 0
@@ -123,11 +120,12 @@ def main():
             except ValueError:
                 print("\nEnter a number please")
                 continue
-        if choice == 0:
+        if choice & 0o77 == 0:
             return
         if RMIR_arg:
             args += RMIR_arg
         if choice & 0o100:
+            print("add --Anal to args")
             args += ["--Anal"]
         choice &= 0o77
         if choice >= len(Programs):
