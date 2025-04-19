@@ -56,7 +56,16 @@ c_scope_edge: .word 950 * 32        ; close to the edge of the scope screen
 c_msg_x_pos:  .word 800 * 32
 
 refresh_loop: sp draw_game_board
+            ca g_game_over          ; negative value means "game over"
+            cp refresh_loop
+            sp is_there_winner      ; check to see if this user move ended the game
+            ca which_player         ; if which_player is not zero, then the game has ended 
+            .print "is_there_a_winner returns %ao, which_player = 0o%o", which_player
+            dm zero
+            cp rl_continue_game
+            sp set_game_over        ; negative means no more moves
 
+rl_continue_game:
             ca light_gun_mailbox
             cp refresh_loop
             .print "light gun hit at cell %d", light_gun_mailbox
@@ -64,6 +73,11 @@ refresh_loop: sp draw_game_board
             cs one
             ts light_gun_mailbox  ; mark the mailbox as empty
 
+            sp refresh_loop
+
+set_game_over:  cs one              ; the game_over flag starts set to zero by init_game_board
+            ts g_game_over          ; But when the game is over, we set it to -1
+            .print "set g_game_over flag to 0o%o", g_game_over
             sp refresh_loop
 
 
@@ -516,7 +530,7 @@ lgh_y1_arg: ca 0        ; load the y value of the cell's address in the grid
 
             .print "light gun %o hit x=%o, y=%o, cell=%ao", lcl_gun_num, lcl_cell_x, lcl_cell_y
 
-            ; the cell number of thie hit is passed below in ACC
+            ; the cell number of the hit is passed below in ACC
             ; sp alternate_play_cell   ; do something with the light gun hit!; this call is for two-person play
             ts light_gun_mailbox
             ; sp user_play_cell   ; do something with the light gun hit!  ; this call is for person-vs-computer play
@@ -586,7 +600,7 @@ upc_ca0:    ca 0                    ; ACC should now contain the address of the 
 upc_table_ts: ts 0                  ; store the display routine to the game state table
 
             sp is_there_winner      ; check to see if this user move ended the game
-            cp upc_cleanup          ; negative means it's a tie; no more moves
+            cp upc_cleanup          ; negative means no more moves
 
             ; now switch to the other player for the next move
             ; table_play_move is used to optimize the first move by a simple table lookup
@@ -724,7 +738,7 @@ apm_ret:
             sp 0
 
 apm_panic:
-            .print "not dot, cross or naught in auto_play_move: lcl_apm_cell_state=0o%o", lcl_apm_cell_state
+            .print "APM_Panic Halt: not dot, cross or naught in auto_play_move: lcl_apm_cell_state=0o%o", lcl_apm_cell_state
             sp 0
 
 lcl_apm_copy_count:
@@ -747,6 +761,8 @@ lcl_cell_for_move:
 ;   b) then see if anyone won
 ;   [future part c might determine if anyone could win on the next round]
 ; The second part also can determine if the game is tied, i.e., no open cells left to play
+;   [Use of this routine would be cleaner if it returned with +0 if there are more moves,
+;     or -0 if it's 'game over']
 is_there_winner:
             ta is_there_winner_ret
             ; set up the outer loop
@@ -756,7 +772,7 @@ is_there_winner:
             td itw_st_ca
             ad const_1
             td itw_inc_gb
-            cs const_0          ; initialize with negative zero to simply zero-detect later
+            cs const_0          ; initialize with negative zero to simplify zero-detect later
             ts lcl_total_dots        ; count all the unplayed cells
 
             ; set up the inner loop
@@ -836,7 +852,7 @@ itw_next_outer_loop:
             ao lcl_tb_loop_count
             cp itw_outer_loop
 
-            .print "unplayed cells=0o%o", lcl_total_dots
+            ; .print "unplayed cells=0d%d", lcl_total_dots
             ca lcl_total_dots
             cp its_a_tie            ; negative zero means its a tie (i.e., zero dots found)
             sp is_there_winner_ret  ; so if it's not negative, we're done
@@ -933,6 +949,7 @@ igb_table_ts: ts 0                  ; set a table entry to the default pointer
 
             ca const_0
             ts which_player
+            ts g_game_over          ; clear the "game over" flag
 
             ;;;;;
             ; debug - pre-populate two moves
@@ -953,6 +970,7 @@ igb_table_ts: ts 0                  ; set a table entry to the default pointer
 init_game_board_ret:
             sp 0
 lcl_init_val: .word draw_dot
+g_game_over:  .word 0
 
 ; ****************************************
 
