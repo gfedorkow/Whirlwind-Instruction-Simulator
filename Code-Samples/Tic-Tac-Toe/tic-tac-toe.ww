@@ -60,7 +60,6 @@ refresh_loop: sp draw_game_board
             cp refresh_loop
             sp is_there_winner      ; check to see if this user move ended the game
             ca which_player         ; if which_player is not zero, then the game has ended 
-            .print "is_there_a_winner returns %ao, which_player = 0o%o", which_player
             dm zero
             cp rl_continue_game
             sp set_game_over        ; negative means no more moves
@@ -77,7 +76,6 @@ rl_continue_game:
 
 set_game_over:  cs one              ; the game_over flag starts set to zero by init_game_board
             ts g_game_over          ; But when the game is over, we set it to -1
-            .print "set g_game_over flag to 0o%o", g_game_over
             sp refresh_loop
 
 

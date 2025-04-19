@@ -604,9 +604,7 @@
 @S4400: P7y
 @S3400: P8x
 @S4400: P8y
-@E0053: print: "is_there_a_winner returns %ao, which_player = 0o%o", 0o000210
 @E0060: print: "light gun hit at cell %d", 0o000200
-@E0066: print: "set g_game_over flag to 0o%o", 0o001127
 @E0536: print: "light gun %o hit x=%o, y=%o, cell=%ao", 0o000543, 0o000541, 0o000542
 @E0631: print: "User move to cell %d; Table-driven move to cell offset %d / 3, ts 0o%o 0o%ao", 0o000633, 0o000634, 0o000630
 @E0715: exec: print_experiment(cm, cb, "move game board player %d to cell %d, function 0o%o to gb offset 0o%o", ("player", "lcl_cell_for_move", "apm_fetch_icon_fn", "apm_store_move"), 0)
