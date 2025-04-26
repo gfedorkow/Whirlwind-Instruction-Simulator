@@ -1484,7 +1484,7 @@ class FlexoWin:
         if c in ["\n", "\\n"]:      # Accept the real ascii char or printed rep
             self.texts.append (self.curText)
             for i in range (0, len (self.texts)):
-                self.texts[i].move (0, -17)
+                self.texts[i].move (0, -25)
             for text in self.overlays:
                 text.undraw()
                 pass
@@ -1501,7 +1501,7 @@ class FlexoWin:
 # This class is primarily the Flexowriter output driver, but it's also used
 # other places for translating characters between ASCII and Flexo code.
 class FlexoClass:
-    def __init__(self, cb):
+    def __init__(self, cb, log = None):
         self._uppercase = False  # Flexo used a code to switch to upper case, another code to return to lower
         self._color = False  # the Flexo had a two-color ribbon, I assume it defaulted to Black
         self.stop_on_zero = None
@@ -1512,6 +1512,10 @@ class FlexoClass:
         self.flexoWin: FlexoWin = None  # Instantiated if sim option given and flex device selected via si
         self.name = "Flexowriter"
         self.cb = cb   # what's the right way to do this??
+        if log is not None:
+            self.log = log
+        else:
+            self.log = cb.log
 
         self.FLEXO_BASE_ADDRESS = 0o224  # Flexowriter printers
         self.FLEXO_ADDR_MASK = ~0o013  # mask out these bits to identify any Flexo address
@@ -1659,7 +1663,7 @@ class FlexoClass:
             flexo_code = self.flexo_ascii_ucase_dict[a]
             upper_case = True
         else:
-            self.cb.log.warn("no flexo translation for '%s'" % a)
+            self.log.warn("no flexo translation for '%s'" % a)
         return flexo_code
 
 

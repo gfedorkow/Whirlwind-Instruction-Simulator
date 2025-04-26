@@ -22,14 +22,15 @@ then
 	# This cycle of editing the lz transcript and producing the ww is
 	# over. The ww now is edited directly.
 	# python $asml L-and-Z-Transcript-With-Repairs-Tab.txt -o l-and-z.ww
-	echo "Building frac printer..."
-	python $asml frac-30-0-0-print-transcript.txt -o frac-30-0-0-print.ww
+	echo "Frac printer already built"
+	# Ditto for the frac printer. This morphed into modern-frac-30-0-0-print.ww.
+	# python $asml frac-30-0-0-print-transcript.txt -o frac-30-0-0-print.ww
 else
 	rm -f fl-wwasm.log fl-wwsim.log lz-wwsim1.log lz-wwsim2.log help-me
 	echo "Testing floatlib..."
-	python $asm --CommentColumn 25 --CommentWidth 50 --OmitAutoComment float-lib.ww >&fl-wwasm.log
-	# We'll assume the "notes" test is the default run by the floatlib
-	python $sim -q float-lib.acore | grep xxxxxx >&fl-wwsim.log
+	python $asm --CommentColumn 25 --CommentWidth 50 --OmitAutoComment test-float-lib.ww >&fl-wwasm.log
+	# We'll assume the "notes" test is the default run by the floatlib test code
+	python $sim -q test-float-lib.acore | grep xxxxxx >&fl-wwsim.log
 	diff -s fl-wwsim.log TestRefs/fl-wwsim.log
 	status1=$?	
 	if [ "$status1" == "0" ];
@@ -94,10 +95,13 @@ else
 		echo "Test FAILED"
 	fi
 
-	echo "Testing L&Z program music-notes.lz..."
-	# Note this does not bring up a FlexoWin
-	python $ascflx -r -i music-notes.lz -o music-notes.lz.pet
-	python $sim -q --PETRAfile music-notes.lz.pet l-and-z.acore >&lz-music-wwsim.log
+	echo "Testing L&Z program music-notes.lzt..."
+
+	python $ascflx -r -i music-notes.lzt -o music-notes.lzt.pet
+	# Note this does not bring up a FlexoWin...
+	python $sim -q --PETRAfile music-notes.lzt.pet l-and-z.acore >&lz-music-wwsim.log
+	# ...but this does
+	# python $sim -q -p --FlexoWin --PETRAfile music-notes.lzt.pet l-and-z.acore
 	diff -s lz-music-wwsim.log TestRefs/lz-music-wwsim.log
 	status5=$?
 	if [ "$status5" == "0" ];

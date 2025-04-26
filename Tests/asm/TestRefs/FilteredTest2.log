@@ -1,18 +1,20 @@
 
 AsmParsedLine:
     line=            .dbwgt Vy 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= dbwgt 
     comment=  
     auto-comment= 
    Variable Vy
-Eval:
+Eval operand:
     AsmExprValueType.Integer 42
 
 
 AsmParsedLine:
     line=            .dbwgt R, 0o200, "%d" 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= dbwgt 
@@ -24,12 +26,13 @@ AsmParsedLine:
          UnaryZeroOh
             LiteralDigits 200
          LiteralString %d
-Eval:
+Eval operand:
     AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 128', 'AsmExprValueType.String %d']
 
 
 AsmParsedLine:
     line=            .dbwgt Xi, 0o400 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= dbwgt 
@@ -39,12 +42,13 @@ AsmParsedLine:
       Variable Xi
       UnaryZeroOh
          LiteralDigits 400
-Eval:
+Eval operand:
     AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 256']
 
 
 AsmParsedLine:
     line=            .dbwgt Yi, 0o100 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= dbwgt 
@@ -54,12 +58,13 @@ AsmParsedLine:
       Variable Yi
       UnaryZeroOh
          LiteralDigits 100
-Eval:
+Eval operand:
     AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 64']
 
 
 AsmParsedLine:
     line= nobounce:  sp x+57 
+    dotIf= None 
     prefixAddr= {} 
     label= nobounce 
     opname= sp 
@@ -68,12 +73,13 @@ AsmParsedLine:
    BinaryPlus
       Variable x
       LiteralDigits 57
-Eval:
+Eval operand:
     AsmExprValueType.Integer 99
 
 
 AsmParsedLine:
     line=            .word 0o4270 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= word 
@@ -81,12 +87,13 @@ AsmParsedLine:
     auto-comment= 
    UnaryZeroOh
       LiteralDigits 4270
-Eval:
+Eval operand:
     AsmExprValueType.Integer 2232
 
 
 AsmParsedLine:
     line=            .word -0.56789 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= word 
@@ -96,12 +103,13 @@ AsmParsedLine:
       UnaryMinus
          LiteralDigits 0
       LiteralDigits 56789
-Eval:
+Eval operand:
     AsmExprValueType.Fraction -0.56789
 
 
 AsmParsedLine:
     line=            .print "This is a message %s", 42, xyz 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= print 
@@ -112,12 +120,13 @@ AsmParsedLine:
       BinaryComma
          LiteralDigits 42
          Variable xyz
-Eval:
+Eval operand:
     AsmExprValueType.List ['AsmExprValueType.String This is a message %s', 'AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 42']
 
 
 AsmParsedLine:
     line=            ts -0 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= ts 
@@ -125,12 +134,13 @@ AsmParsedLine:
     auto-comment= 
    UnaryMinus
       LiteralDigits 0
-Eval:
+Eval operand:
     AsmExprValueType.NegativeZero 0
 
 
 AsmParsedLine:
     line=            sp x+-37 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= sp 
@@ -140,24 +150,26 @@ AsmParsedLine:
       Variable x
       UnaryMinus
          LiteralDigits 37
-Eval:
+Eval operand:
     AsmExprValueType.Integer 5
 
 
 AsmParsedLine:
     line=            .exec for i in range(0, 10): print(f"### data[{i}] = {py_int(cm.rd(rl('data') + i))} ###") 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= exec 
     comment=  
     auto-comment= 
    LiteralString for i in range(0, 10): print(f"### data[{i}] = {py_int(cm.rd(rl('data') + i))} ###")
-Eval:
+Eval operand:
     AsmExprValueType.String for i in range(0, 10): print(f"### data[{i}] = {py_int(cm.rd(rl('data') + i))} ###")
 
 
 AsmParsedLine:
     line=            sp 0o12345 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= sp 
@@ -165,12 +177,13 @@ AsmParsedLine:
     auto-comment= 
    UnaryZeroOh
       LiteralDigits 12345
-Eval:
+Eval operand:
     AsmExprValueType.Integer 5349
 
 
 AsmParsedLine:
     line= 		   sp xyz, 0o12345 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= sp 
@@ -180,12 +193,13 @@ AsmParsedLine:
       Variable xyz
       UnaryZeroOh
          LiteralDigits 12345
-Eval:
+Eval operand:
     AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 5349']
 
 
 AsmParsedLine:
     line= 		   sp abc, 0o12345, +0.98765, 9800 ; Hi there! 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= sp 
@@ -202,12 +216,13 @@ AsmParsedLine:
                   LiteralDigits 0
                LiteralDigits 98765
             LiteralDigits 9800
-Eval:
+Eval operand:
     AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 5349', 'AsmExprValueType.Fraction 0.98765', 'AsmExprValueType.Integer 9800']
 
 
 AsmParsedLine:
     line= 		   ca qwert & (poiuyt + 2) | 57 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= ca 
@@ -221,12 +236,13 @@ AsmParsedLine:
                Variable poiuyt
                LiteralDigits 2
       LiteralDigits 57
-Eval:
+Eval operand:
     AsmExprValueType.Integer 57
 
 
 AsmParsedLine:
     line= 		   sp 0o177 & 0o077 | 0o1000 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= sp 
@@ -240,12 +256,13 @@ AsmParsedLine:
             LiteralDigits 077
       UnaryZeroOh
          LiteralDigits 1000
-Eval:
+Eval operand:
     AsmExprValueType.Integer 575
 
 
 AsmParsedLine:
     line= 		   sp 1.07777 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= sp 
@@ -254,12 +271,13 @@ AsmParsedLine:
    BinaryDot
       LiteralDigits 1
       LiteralDigits 07777
-Eval:
+Eval operand:
     AsmExprValueType.Integer 36863
 
 
 AsmParsedLine:
     line=  
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname=  

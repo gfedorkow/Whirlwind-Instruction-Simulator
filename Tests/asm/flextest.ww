@@ -1,0 +1,23 @@
+            ; Print "poiuyt" to the flexowriter.
+
+            ; The other .flex ops are checked via the listing
+
+            .org 0o40
+            si 149                   ; ; Auto-Annotate I/O: Mechanical Paper Tape Reader
+            ca str_ptr
+            td load_char
+      loop:
+ load_char: ca 0
+            cp done
+            clc 10
+            rc 0
+            ao load_char
+            sp loop
+      done: si 0                     ; ; Auto-Annotate I/O: unknown i/o device
+            .flexl "abcde"
+            .flexh "1"
+            .flexh "qwert"
+   str_ptr: .word str
+       str:
+            .flexl "poiuyt", -1
+  high_str: .flexh "poiuyt", -1

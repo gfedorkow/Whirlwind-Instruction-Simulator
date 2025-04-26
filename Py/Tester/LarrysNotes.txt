@@ -64,7 +64,7 @@ or output files to the test refs area.
 
 Each runtest.sh also has a standard cd to its own location (i.e., the
 dir of arg $0), to allow it to be run more easily from an external
-program. In particular, ro run all tests,
+program. In particular, to run all tests,
 
    cd <whirlwind-simulator-top-level-dir>
    find . -name runtest.sh -print -exec {} \;
@@ -674,20 +674,22 @@ literal-digit-seq												Decimal inreger
 	- Show .print etc in dbg. Right now just shows ww insts
 	- Get rid of need for dummy parsed line in dbg
 	- Dbg doesn't handle signals
-	- bounce test (and the one in code-samples) has a .org 1. This
+	* bounce test (and the one in code-samples) has a .org 1. This
 	  doesn't seem right. Fixed the test but not the code-sample.
+		[Guy says this is what the original code did.]
 	- Asm syntax errors need work. Need better check for unbal'ed
 	  parens, and identifying specific clause types in errors,
 	  e.g. xyz* gives comma-op syntax error, which is misleading.
 	* Trap float overflow in conversion and return inf.
 	- Dbg bug in printing AC and prob other regs -- wrong signs. Trying printing neg number.
 	- Dbg bug in rs if do rs before running.
-	- Dbg possible enhs: watch-for-write (addr); allow a mem loc to be set
-		[Watch-write done.]
+	* Dbg possible enhs: watch-for-write (addr); allow a mem loc to be set
+			[Watch-write done,
+			 Write-loc done.]
 	* Dbg: added tb (traceback)
 	* Dbg: Added bp disable/enable
 	* Dbg: made "p" print single locs and blocks
-	- Send Knuth info we have for any insights
+	* Send Knuth info we have for any insights
 	* Added -r (readable section) to flex converter
 	x Made ! be the stop char -- but not really needed
 		[Backed out -- not needed.]
@@ -696,8 +698,11 @@ literal-digit-seq												Decimal inreger
 	* sim accepts - for std in for papter tape file, so can easly run tests
 	- Float (actually 30,0) printer -- what's the qp instruction?
 	- Issues remaining with L&Z:
-		- Parens not compleletly working
-		- Divide seems broken overall (more than just the inaccurate spax divide)
+		* Parens not compleletly working
+			[Fixed -- was issue in translated ascii to flex]
+		* Divide seems broken overall (more than just the inaccurate spax divide)
+		  	[Fixed -- prob same flex issue. But we still have
+		  	 inaccurate spax dv and can crash on some tests.]
 		- Float printer, flexo device
 	* Fixed precedence of | and &
 	* Question about one's-comp at asm level -- I'm not in favor
@@ -707,14 +712,27 @@ literal-digit-seq												Decimal inreger
 	- Consider .print control, to turn them on and off easily and in
 	  apprpropriate context. Tried adding asm --OmitDotPrint, which
 	    takes them out of the core and listing, but does not seem useful so removed.
-	- Better heuristics for semicolon-formatting in asm listing. There
+	- .if -- emit in listing if --Reformat
+	* Better heuristics for semicolon-formatting in asm listing. There
 	  should be a way to get commented-out code to look "natural"
-		Looks a bit better now, but asm listingString() and formatComment()
-		 have a lot of hacks and should be replaced by a proper FSM scanner.
-	- Asm cb.log in infra -- not defined. Eg try unknown flex char
-	- Asm looks like syntax issue, e.g. "\n" fails.
-	- !!! Asm .flex broken -- not incrementing address!!??
-	- flex general problems? 
+		Looks a bit better now, but...
+	- Asm listingString() and formatComment()
+	   have a lot of hacks and should be replaced by a proper FSM scanner.
+	* Asm cb.log in infra -- not defined. Eg try unknown flex char
+	* !!! Asm .flex broken -- not incrementing address!!??
+		[Yes, it was not. Fixed.]
+	* Note rc for flex takes high end of word for flex code. If shift in ww need to clc.
+	- Asm .flex needs to understand "\n" and maybe other chars in strings
+	  so proper flex code is generated. Also handle shift, color,
+	  superscript numbers.
+	- Flexowin -- check noxwin flag
+	- .float does not detect all out-of-range cases -- try .float +0.1,20
+	- .float gets wrong nunmber if use too many digits, eg .float
+	  +0.99999995, 0 => 0.99999994, but .float +0.99999999, 0 =>
+	    -0.99999994
+
+
+
 
 
 	- Get "everything" into git: tape images, images on code, etc.
@@ -1058,4 +1076,22 @@ This tests for x == 0 (seen in frac printer):
 	su 0
 	cp a	; Branch if x is zero
 
+
+Pattern for a for-loop, executing stuff N times, where N is
+non-negative:
+
+	  cs N
+	  ts cntr
+loop: ao cntr
+	  cp cont
+	  sp done
+cont: stuff
+	  sp loop
+done: ...
+
+This pattern shows how one's-complement needs to be used with care,
+since it's not what we're used to nowadays. When cntr gets to -1,
+adding one via ao produces -0.  -0 still checks as negative so the
+loop continues. On the next loop adding one to -0 produces 1, and the
+loop ends. Thus stuff is executed N times.
 

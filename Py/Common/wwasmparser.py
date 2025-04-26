@@ -355,7 +355,6 @@ class AsmExpr:
             self.leftSubExpr.print (indent = indent + 3)
         elif t in [AsmExprType.Variable, AsmExprType.LiteralString, AsmExprType.LiteralDigits, AsmExprType.Null]:
             print (" " * indent + t.name, self.exprData)
-    # This does not yet handle parenthesized exprs correctly
     def listingString (self, quoteStrings: bool = True):
         if self.exprType in [AsmExprType.BinaryPlus, AsmExprType.BinaryMinus,
                              AsmExprType.BinaryMult, AsmExprType.BinaryDiv, AsmExprType.BinaryBitAnd,
@@ -515,6 +514,7 @@ class AsmParsedLine:
         self.lineNo = lineNo
         self.tokenizer = AsmTokenizer (str)
         self.tokenBuf = []
+        self.dotIfExpr: AsmExpr = None
         self.prefixAddr = {}
         self.label = ""
         self.opname = ""
@@ -538,6 +538,7 @@ class AsmParsedLine:
         s = " "*3
         print ("\nAsmParsedLine:\n",
                s + "line=", self.lineStr, "\n",
+               s + "dotIf=", self.dotIfExpr, "\n",
                s + "prefixAddr=", self.prefixAddr, "\n",
                s + "label=", self.label, "\n",
                s + "opname=", self.opname, "\n",
@@ -545,12 +546,16 @@ class AsmParsedLine:
                s + "comment=", self.comment, "\n",
                s + "auto-comment=", self.autoComment)
         if self.operand is not None:
-            print ("AsmExpr-" + str (id (self.operand)) + ":")
+            print ("Operand AsmExpr-" + str (id (self.operand)) + ":")
             self.operand.print()
+        if self.dotIfExpr is not None:
+            print (".if AsmExpr-" + str (id (self.dotIfExpr)) + ":")
+            self.dotIfExpr.print()
     # public
     def parseLine (self) -> bool:
         try:
             self.parsePrefixAddr()
+            self.parseDotIf()
             self.parseLabel()
             self.parseInst()
             self.parseComment()
@@ -624,6 +629,27 @@ class AsmParsedLine:
         else:
             self.ptok (tok1)
             return False;
+    def parseDotIf (self) -> bool:
+        tok1 = self.gtok()
+        if tok1.tokenType == AsmTokenType.Operator and  tok1.tokenStr == ".":
+            tok2 = self.gtok()
+            if tok2.tokenType == AsmTokenType.Identifier and tok2.tokenStr == "if":
+                #
+                # "Ideal" model is to parse a full expr, but we need to be
+                # simple in this part of the source line, so we'll just parse
+                # an atom. Note, though, it should work to write an arbitrarily
+                # complex expr in parens, if so desired.
+                #
+                e = self.parseAtom()
+                self.dotIfExpr = e
+                return True
+            else:
+                self.ptok (tok2)
+                self.ptok (tok1)
+                return False
+        else:
+            self.ptok (tok1)
+            return False
     def parseInst (self) -> bool:
         tok1 = self.gtok()
         if tok1.tokenType == AsmTokenType.Identifier:
@@ -856,7 +882,7 @@ class AsmParsedLine:
                     r.leftSubExpr = e
                     return r
                 else:
-                    self.error ("Unbalanced parenthesis")
+                    self.error ("Unbalanced parentheses")
             else:
                 self.error ("Nested expression syntax error")
         else:
@@ -911,10 +937,20 @@ class AsmParseTest:
                     self.flush()
                 self.parsedLines.append (l)
                 lineNo += 1
+                if l.dotIfExpr is not None:
+                    env = AsmExprEnv()
+                    if verbose:
+                        print ("Eval .if:")
+                        print (" "*2 + l.dotIfExpr.getIdStr())
+                    v = l.dotIfExpr.evalMain (env, l)
+                    if v is not None:
+                        if verbose:
+                            print (" "*4 + v.asString())
+                            print ("")
                 if l.operand is not None:
                     env = AsmExprEnv()
                     if verbose:
-                        print ("Eval:")
+                        print ("Eval operand:")
                         print (" "*2 + l.operand.getIdStr())
                     v = l.operand.evalMain (env, l)
                     if v is not None:

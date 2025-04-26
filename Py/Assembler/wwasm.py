@@ -281,7 +281,8 @@ class AsmInst:
     def addrRangeError (self, addr: int):
         self.error ("Address 0o%o out of range" % addr)
     # Return a string for the prefix address, perhaps with decimal addresses and perhaps with content
-    def fmtPrefixAddrStr (self, address: int, contents: int = None) -> str:
+    def fmtPrefixAddrStr (self, address: int,
+                          contents: int = None) -> str:
         da = self.cb.decimal_addresses
         daStr = ".%04d" % address if da else ""
         if contents is not None:
@@ -327,6 +328,11 @@ class AsmInst:
                        omitUnrefedLabels: bool = False,
                        omitAutoComment: bool = False) -> str:
         p = self.parsedLine
+        sp = " "
+        if p.dotIfExpr is not None:
+            dotIf = ".if " + p.dotIfExpr.listingString() + sp
+        else:
+            dotIf = ""
         prefixAddr = self.prefixAddrStr() if not minimalListing else ""
         autoComment = self.xrefs.listingString() if not minimalListing and not omitAutoComment else ""
         maxLabelLen = self.prog.labelTab.maxLabelLen
@@ -335,12 +341,11 @@ class AsmInst:
             plabel = ""
         else:
             plabel = p.label
-        sp = " "
-        sp1 = sp*(maxLabelLen - len (plabel))
+        sp1 = sp*(maxLabelLen - len (plabel) - len (dotIf))
         label = "%s%s" % (sp1, plabel) + (":" if plabel != "" else sp)
         inst = self.opnamePrefix() + p.opname + (sp + p.operand.listingString (quoteStrings = quoteStrings)) if p.operand is not None else ""
         (comment, nSemis) = self.formatComment (p.comment, inst)
-        s1 = prefixAddr + sp + label + sp 
+        s1 = prefixAddr + sp + dotIf + label + sp 
         s2 = s1 + inst
         commentColumn = len (s1) + self.prog.commentColumn
         sp2 = sp*(commentColumn - len (s2)) if p.label != "" or p.opname != "" else ""
@@ -461,6 +466,26 @@ class AsmUnknownInst (AsmPseudoOpInst):
     def passTwoOp (self):
         pass
 
+# AsmDotIfInst is the blandest of instructions. Note it doesn't even run
+# super() in init, just inits the pieces it needs. Technically I suppose it
+# should subclass from a bare base class. It is only emitted on a false
+# .if. Like a neutrino, it exists only as a pass-through to the instruction
+# source line so elided by the false .if, to extract an appropriate listing
+# string.
+
+class AsmDotIfInst (AsmInst):
+    def __init__ (self, instParsedLine: AsmParsedLine, *args):
+        self.instParsedLine: AsmParsedLine = instParsedLine
+        self.cb = wwinfra.theConstWWbitClass
+    def prefixAddrStr (self) -> str:
+        return self.fmtPrefixAddrStr (0)
+    def listingString (self, **kwargs) -> str:
+        return ";" + self.prefixAddrStr() + self.instParsedLine.lineStr
+    def passOneOp (self):
+        pass
+    def passTwoOp (self):
+        pass
+ 
 class AsmDotOrgInst (AsmPseudoOpInst):
     def __init__ (self, *args):
         super().__init__ (*args)
@@ -596,7 +621,6 @@ class AsmDotFloatInst (AsmDotWordsInst):
                         wwMant = 0
                     wwMantHiMask = 0o177777000
                     wwMantHi = (wwMant & wwMantHiMask) >> 9
-                    # print ("LAS86", "0o%o" % wwMant, "0o%o" % wwMantHi, v, fracMant, mant, decMant, decExp)
                     wwMantLo = wwMant & ~wwMantHiMask
                     wwHiWord = wwMantHi
                     wwLoWord =  (wwExp << 9) | wwMantLo
@@ -647,6 +671,9 @@ class AsmDotFlexlhInst (AsmDotWordsInst):
                     s = strVal.value
                     for i in range (0, len (s)):
                         flexoChar: int = self.prog.flexoClass.ascii_to_flexo (s[i])
+                        # Just storing zero does not seem to be the best way to handle this
+                        if flexoChar is None:
+                            flexoChar = 0
                         if self.parsedLine.opname == "flexl":
                             pass
                         elif self.parsedLine.opname == "flexh":
@@ -816,8 +843,6 @@ class AsmDotPpInst (AsmPseudoOpInst):
     def __init__ (self, *args):
         super().__init__ (*args)
     def passOneOp (self):
-        pass
-    def passTwoOp (self):
         operands = self.parsedLine.operand
         if operands.exprType == AsmExprType.BinaryComma:
             varExpr = operands.leftSubExpr
@@ -835,6 +860,8 @@ class AsmDotPpInst (AsmPseudoOpInst):
                 self.error ("Binding target (first operand) of a preset must be a variable")
         else:
             self.error (".pp requires comma operator")
+    def passTwoOp (self):
+        pass
 
 class AsmDotIncludeInst (AsmPseudoOpInst):
     def __init__ (self, *args):
@@ -1039,7 +1066,7 @@ class AsmProgram:
         self.metaOpcode = self.opCodeTables.meta_op_code
 
         self.cb = wwinfra.theConstWWbitClass
-        self.flexoClass = wwinfra.FlexoClass (None)
+        self.flexoClass = wwinfra.FlexoClass (self.cb, log = wwinfra.LogFactory().getLog())   # want a non-asm log at the low-level
 
         # [Guy says:] I think the CSII assembler defaults to starting to load
         # instructions at 0o40, the first word of writable core.  Of course a
@@ -1144,10 +1171,21 @@ class AsmProgram:
             self.inFilename = self.inFilenameStack.pop()
             return True
 
+    def evalDotIf (self) -> bool:
+        if self.parsedLine.dotIfExpr is not None:
+            val = self.parsedLine.dotIfExpr.evalMain (self.env, self.parsedLine)
+            if val.type == AsmExprValueType.Integer:
+                return val.value != 0
+            else:
+                self.error (".if arg must be an integer")
+                return True
+        else:
+            return None     # Indicates no .if was specified
+
     def passOne (self):
         #
-        # Resolve as much as possible in the first pass, such as ww opcodes,
-        # certain pseudo-ops like .org which change assembly state, allocate
+        # Resolve as much as possible in the first pass, such as ww opcodes and
+        # certain pseudo-ops like .org which change assembly state. Allocate
         # addresses, assign symbols in label table and preset table.
         #
         # Read and parse the asm file, generate an instruction (instance of
@@ -1171,15 +1209,20 @@ class AsmProgram:
                 line.parseLine()
                 self.parsedLine = line      # Current line available for error messages
                 # All lines result in an instruction class instance of some kind
-                opname = line.opname.lower()
-                if opname in self.metaOpcode:
-                    inst = self.metaOpcode[opname] (line, self)
-                elif opname in self.curOpcodeTab:
-                    inst = self.curOpcodeTab[opname].className (line, self)
-                elif opname == "":
-                    inst = AsmNullInst (line, self)
+                dotIf = self.evalDotIf()
+                if dotIf is not None and not dotIf:
+                    # A false .if means don't include the instruction, so make a DotIfInst pass-through for the listing
+                    inst = AsmDotIfInst (line, self)
                 else:
-                    inst = AsmUnknownInst (line, self)
+                    opname = line.opname.lower()
+                    if opname in self.metaOpcode:
+                        inst = self.metaOpcode[opname] (line, self)
+                    elif opname in self.curOpcodeTab:
+                        inst = self.curOpcodeTab[opname].className (line, self)
+                    elif opname == "":
+                        inst = AsmNullInst (line, self)
+                    else:
+                        inst = AsmUnknownInst (line, self)
                 inst.passOneOp()
                 self.insts.append (inst)
         pass
@@ -1271,7 +1314,7 @@ def main():
     parser.add_argument("--ISA_1950", help="Use the 1950 version of the instruction set", action="store_true")
     parser.add_argument("--Reformat", help="Prettify the source .ww file and move the original to .ww.bak", action="store_true")
     parser.add_argument("--OmitUnrefedLabels", help="Don't put unreferenced labels in the listing", action="store_true")
-    # Suggested for CommentColumn is 25 for CommentWidth 50
+    # Suggested for comment columns is "--CommentColumn 25 --CommentWidth 50"
     parser.add_argument("--CommentColumn", type=int, help="Column after labels for comments in listing. Default 25")
     parser.add_argument("--CommentWidth", type=int, help="Space to allocate to each comment field in listing. If not specified or zero, no field detection")
     parser.add_argument("--OmitAutoComment", help="Omit the auto-comment xref in listing", action="store_true")
@@ -1291,6 +1334,8 @@ def main():
     minimalListing = args.MinimalListing
     isa1950 = args.ISA_1950
     reformat = args.Reformat
+    if reformat:
+        minimalListing = True
     omitUnrefedLabels = args.OmitUnrefedLabels
     commentColumn = args.CommentColumn
     commentWidth = args.CommentWidth

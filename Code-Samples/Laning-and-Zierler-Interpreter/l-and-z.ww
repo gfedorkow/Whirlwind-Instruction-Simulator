@@ -2,15 +2,12 @@
 ; L-and-Z-Transcript-With-Repairs-Tab.txt. See
 ; ./runtest.sh. L-and-Z-Transcript-With-Repairs-Tab.txt in turn is a
 ; set of hand-corrections to L-and-Z-Transcript-Tab.txt. These files
-; are now both read-only. las-l-and-z.ww will henceforth contain all
-; edits.
-
-; LAS 1/27/25 -- will need check shifts for hold/round since the map is to round:
-;    def resolveOpcode (self, opcode: str) -> str:
-;        dict = {"sl": "slr", "sr": "srr", "p": ".word"}
-;        if opcode in dict:
-;   2/4/25 -- checked
-
+; are now both read-only. las-l-and-z.ww will henceforth contain all changes.
+;
+; Below, lines beginning with "; |" are comments from the original
+; text (with braceketed moden notes from the transcription Similarly,
+; comments in the first comment field following an instruction are
+; from the original text. Subsequent comment fields are modern notes.
 ;
 ; | [Transcribed by Larry Stabile, 10/13/24]
 ; | [Transcription notes and questions in square brackets]
@@ -611,7 +608,8 @@ a15:
 14a15:    rc 14a15
           sp ax
 16a15:    ca 0                 ;                -| print number
-		  sp float_print       ; (24,6) print    |          ; [LAS Was sp 222. We don't have the original print routine]
+;		  sp float_print       ; (24,6) print    |          ; [LAS Was sp 222. We don't have the original print routine]
+		  sp mfp
           sp 1a15              ;   routine      -|
 ; |
 ; | Sheet 20/20
@@ -655,11 +653,11 @@ a14:
 
 float_print: ta fp_rtn
 			 sp ax ; Come out of spax and resume std ww operations
-			 ad 0  ; Nop for setting breakpoint
+fpbrk:		  ad 0  ; Nop for setting breakpoint
 			 ; Use internal op until we get "real" printer to work
 			 .print "LZ output: %fm", mra
 			 si 149
-			 ca fp_cntr_init
+			 cs fp_cntr_init
 			 ts fp_cntr
 	fp_loop:
 			 ca zero_char
@@ -676,7 +674,7 @@ zero_char:	 .word 0o76*1024
 one_char:	 .word 0o25*1024
 newline:     .word 0o51*1024
 fp_cntr: 	 .word 0
-fp_cntr_init: .word -10
+fp_cntr_init: .word 10
 
 ; | 
 ; | Miscellaneous [Not sure about this section needs proofing]
@@ -697,3 +695,8 @@ fp_cntr_init: .word -10
 ; LAS include the float-lib below, which defines ax and friends
 ;
             .include "float-lib.ww"
+
+; LAS include current version of printer. Right now this just prints
+; the fractional part of a 30,15 float.
+
+  	  		.include "modern-frac-30-0-0-print.ww"

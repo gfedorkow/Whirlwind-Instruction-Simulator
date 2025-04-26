@@ -67,7 +67,7 @@
 |       d       unused
 |       1t   -|
 |       2t    |- Temporary storage
-|       3G   -|
+|       3t   -|
 |       4t      Digit counter
 |
 |
@@ -88,7 +88,7 @@
 ?r-->	13	qp 134sl	 |
 	14	qp 128sl	-|
 
-	15	ca 61r	-|- Set up digit counter
+	15	cs 61r	-|- Set up digit counter
 	16	ts 4t	-|
 
 35r-->	17	cm 1t	-|
@@ -160,8 +160,8 @@
 	71	p 15	7
 	72	p 13	8
 	73	p 49	9
-	74	0.07143	+.
-	75	0.07107	-.
+	74	p 0.07143	+.  ; [This and the next had no "p"]
+	75	p 0.07107	-.
 
 
 

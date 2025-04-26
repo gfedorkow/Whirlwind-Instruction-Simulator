@@ -160,6 +160,8 @@ fp:
           .word 15             ; 7
           .word 13             ; 8
           .word 49             ; 9
+74fp:     .word 0.07143              ; +.  ; [This and the next had no "p"]
+75fp:     .word 0.07107              ; -.
 
 
 
