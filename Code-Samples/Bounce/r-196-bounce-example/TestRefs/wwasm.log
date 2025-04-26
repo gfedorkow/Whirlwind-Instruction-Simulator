@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Py\Common/../../Py/Assembler/wwasm.py", line 1441, in <module>
+    main()
+  File "C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Py\Common/../../Py/Assembler/wwasm.py", line 1363, in main
+    for line in open(input_file_name, 'r'):
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'bounce.ww'
