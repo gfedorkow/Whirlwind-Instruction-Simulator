@@ -1,0 +1,169 @@
+                ; notes is the default test expected by runtest.sh
+                ; Other test points are test and sqrt2
+
+				sp notes
+                ; sp digit_test
+
+                ; This test loops through and prints musical notes
+                ; starting with a semitone above A-220 and ending at
+                ; A-880.  Also sp within the float lib is tested via the
+                ; jump to skip.
+
+         notes:
+                .print "----------- %fl", semitone
+                sp ax
+                ca a220
+                ts t
+                ts t1
+                sp ax
+          loop:
+                ca loopcnt
+                su one
+                ts loopcnt
+                cp done
+                sp ax
+                ca t
+                mr semitone
+                sp skip
+                ts t1
+          skip: ts t
+                sp ax
+                .print "xxxxxxxxxxxx %d %fl", loopcnt, t
+                sp loop
+          done:
+                sp exit
+
+         sqrt2:
+                sp ax
+                ca float1
+                ts t
+                sp ax
+         sloop:
+                ca sloopcnt
+                su one
+                ts sloopcnt
+                cp sdone
+                sp ax
+                ca float2
+                dv t
+                ad t
+                dv float2
+                ts t
+                sp ax
+                .print "xxxxxxxxxxxx %d %fl", sloopcnt, t
+                ca 0
+                .print "------------ %fm", mra
+                sp sloop
+      sloopcnt: .word 10
+         sdone:
+                sp exit
+
+          test:
+                ca 0
+                ; .print "02 %o %o %o %o %o %o %o %o", u, u+1, v, v+1, z, z+1, t, t+1
+                sp ax
+                cs v
+                dv u
+                ts t
+                cs t
+                ts t
+                sp ax
+                .print "xxxxxxx  %fl %fm", t, mra
+                ca 0
+                sp exit
+
+    digit_test: sp ax                    ; Spax in
+                ca float0
+                ts t1
+                ca num2
+       dt_loop: ts t
+                ca float1
+                su t
+                cp dt_1
+                sp dt_done
+          dt_1: ca t1
+                ad float1
+                ts t1
+                ca t
+                mr float_point_1
+                sp dt_loop
+       dt_done: ca t
+                sp ax                    ; Spax out
+                ; Here the mra holds the fraction of the reduced value
+                ;  and t1 the decimal exponent (in 24,6 float format).
+                ;  value is >= .1 and < 1.0
+                ca mra + 2               ; Exponent always zero or negative
+                ts t3
+                ca zero
+                ts t4
+  dt_mask_loop: ao t3
+                cp dt_2_cont
+                sp dt_mask_done
+     dt_2_cont: ca t4
+                clc 1
+                ad one
+                ts t4
+                sp dt_mask_loop
+  dt_mask_done:                          ; t4 has the mask
+                ca mra + 0               ; Upper mant
+                md t4
+                ts t5                    ; t5 has the rightmnost bits of upper mant
+                cs mra + 2
+                td dt_shift_hi
+                td dt_shift_lo
+                ca mra + 0
+   dt_shift_hi: srh 0
+                ts mra + 0
+                ca mra + 1               ; Lower mant
+   dt_shift_lo: srh 0
+                ts mra + 1
+                ca word_size
+                ad mra + 2
+                td dt_smb
+                ca t5
+        dt_smb: clc 0                    ; Shift the masked bits up
+                sd mra + 1
+                ts mra + 1
+                ca 0
+                ts mra + 2
+       dt_exit: sp exit
+
+          exit:
+                si 0
+             x: .float +0.5, 0
+             y: .float +0.25, 0
+             z: .float +0.1416595, 1     ; This value breaks dv when divided into float1
+             t: .float 0, 0
+            t1: .float 0, 0
+            t2: .word 0
+            t3: .word 0
+            t4: .word 0
+            t5: .word 0
+     word_size: .word 15
+             u: .float +0.3141593, 1
+             v: .float +0.2718282, 1
+          a220: .float +0.220, 3
+     frac_a220: .word +0.220
+          a440: .float +0.440, 3
+          a880: .float +0.880, 3
+          num1: .float +0.314159, 10
+          num2: .word 0o010000           ; float 2^11
+                .word 0o022000
+          frac: .word +0.1
+      semitone: .float +0.1059463094, 1
+       loopcnt: .word 25
+           one: .word 1
+          zero: .word 0
+
+        float0: .float 0, 0
+      float1_2: .float +0.5, 0
+        float1: .float +0.1, 1
+        float2: .float +0.2, 1
+       float16: .float +0.16, 2
+ float_point_1: .float +0.1, 0
+    float_neg1:
+                .word 0o137777
+                .word 0o001777
+
+				.include "float-lib.ww"
+

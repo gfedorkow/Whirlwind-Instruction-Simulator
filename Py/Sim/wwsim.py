@@ -619,6 +619,10 @@ class CpuClass:
                 else:
                     flex_ascii: str = self.flexo.code_to_letter (flex_code, show_unprintable = True)
                 output_str += flex_ascii
+            elif fmt == "%i":
+                addr = self.rl (argList.pop(0))
+                (opcode, short_opcode, address, label) = self.get_inst_info (addr)
+                output_str += "%s 0o%o%s" % (short_opcode, address, label)
             else:
                 output_str += fmt
         if argList != []:
@@ -2148,6 +2152,7 @@ def main():
     parser.add_argument("--AutoClick", help="Execute pre-programmed mouse clicks during simulation", action="store_true")
     parser.add_argument("--AnalogScope", help="Display graphical output on an analog CRT", action="store_true")
     parser.add_argument("--xWinSize", help="specify the size of an xWinCrt pseudo-scope display in pixels", type=int)
+    parser.add_argument("--FlexoWin", help="Display Flexowriter output in its own window", action="store_true")
     parser.add_argument("--NoXWin", help="Don't open any x-windows", action="store_true")
     parser.add_argument("--NoToggleSwitchWarning", help="Suppress warning if WW code writes a read-only toggle switch",
                         action="store_true")
@@ -2220,6 +2225,10 @@ def main():
     # This command line arg switches graphical output to an analog oscilloscope display
     if args.AnalogScope:
         cb.analog_display = True
+
+    if args.FlexoWin:
+        cb.flexo_win = True
+        
     if args.NoXWin:
         cb.use_x_win = False
     if args.xWinSize:

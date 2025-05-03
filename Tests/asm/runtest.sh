@@ -15,10 +15,12 @@ then
 	echo "Accepting..."
 	rm -rf TestRefs/
 	mkdir TestRefs
-	cp ErrorTest.log FilteredTest1.log FilteredTest2.log inc1.lst TestRefs/
+	cp ErrorTest.log FilteredTest1.log FilteredTest2.log inc1.lst flextest.lst flextest.sim.log TestRefs/
 else
 	asmp="$PYTHONPATH/../../Py/Common/wwasmparser.py"		# Use quotes since can't resolve backslash yet -- it's needed for file name translation
 	asm="$PYTHONPATH/../../Py/Assembler/wwasm.py"
+	sim="$PYTHONPATH/../../Py/Sim/wwsim.py"
+
 
 	# Test parsing and some eval-ing, only
 	echo "Test Parsing..."
@@ -83,8 +85,26 @@ else
 	else
 		echo "Test FAILED"
 	fi
-	
-	status=$(($status1 + $status2 + $status3 + $status4 + $status5))
+
+
+	# .flex test
+	echo "Test .flexh and .flexl..."
+	rm -f flextest.lst flextest.acore flextest.sim.log 
+	python $asm flextest.ww >&flextest.asm.log
+	python $sim -q flextest.acore >&flextest.sim.log 
+   	diff -s flextest.lst TestRefs/flextest.lst
+	status6=$?
+	diff -s flextest.sim.log TestRefs/flextest.sim.log
+	status7=$?
+	status=$(($status6 + $status7))
+	if [ "$status" == "0" ];
+	then
+		echo "Test PASSED"
+	else
+		echo "Test FAILED"
+	fi
+
+	status=$(($status1 + $status2 + $status3 + $status4 + $status5 + $status6 + $status7))
 	if [ "$status" == "0" ];
 	then
 		echo "Assembler Test PASSED"

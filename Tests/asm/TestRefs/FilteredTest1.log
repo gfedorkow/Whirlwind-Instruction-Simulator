@@ -1,6 +1,7 @@
 
 AsmParsedLine:
     line=  
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname=  
@@ -10,6 +11,7 @@ AsmParsedLine:
 
 AsmParsedLine:
     line= nobounce:   ca Vy + Vx - (q * (p  + 53)) + -42 + 017 + Vg*Vx*+0.888 - (-0.76589 --Vz) + -57 + +0.9999 + 0o177 + 0.12345 + x * (y + z) ; for no bounce, fetch the current velocity 
+    dotIf= None 
     prefixAddr= {} 
     label= nobounce 
     opname= ca 
@@ -71,7 +73,7 @@ AsmParsedLine:
             BinaryPlus
                Variable y
                Variable z
-Eval:
+Eval operand:
 Error: Line 2: Char pos 178: Only integers are allowed in arithmetic operations:
 nobounce:   ca Vy + Vx - (q * (p  + 53)) + -42 + 017 + Vg*Vx*+0.888 - (-0.76589 --Vz) + -57 + +0.9999 + 0o177 + 0.12345 + x * (y + z) ; for no bounce, fetch the current velocity
                                                                                                                                                                                  ^
@@ -81,18 +83,20 @@ nobounce:   ca Vy + Vx - (q * (p  + 53)) + -42 + 017 + Vg*Vx*+0.888 - (-0.76589 
 
 AsmParsedLine:
     line= @017.39:157 rc 0            ; output a point to the display 
+    dotIf= None 
     prefixAddr= {0: '017', 1: '39', 2: '157'} 
     label=  
     opname= rc 
     comment=  output a point to the display 
     auto-comment= 
    LiteralDigits 0
-Eval:
+Eval operand:
     AsmExprValueType.Integer 0
 
 
 AsmParsedLine:
     line= ;           ca x+y + * z          ; uncomment this line to generate a syntax error 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname=  
@@ -102,6 +106,7 @@ AsmParsedLine:
 
 AsmParsedLine:
     line=            .print "LAS WW1 %o %o and %ad", Xi, Yi 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= print 
@@ -112,24 +117,26 @@ AsmParsedLine:
       BinaryComma
          Variable Xi
          Variable Yi
-Eval:
+Eval operand:
     AsmExprValueType.List ['AsmExprValueType.String LAS WW1 %o %o and %ad', 'AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 42']
 
 
 AsmParsedLine:
     line=            .exec wwlog ("LAS WW2") 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= exec 
     comment=  
     auto-comment= 
    LiteralString wwlog ("LAS WW2")
-Eval:
+Eval operand:
     AsmExprValueType.String wwlog ("LAS WW2")
 
 
 AsmParsedLine:
     line= ;          .word a+!0o4242        ; uncomment this line to generate a syntax error (illegal char) 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname=  
@@ -139,6 +146,7 @@ AsmParsedLine:
 
 AsmParsedLine:
     line=            .word 0o4200 
+    dotIf= None 
     prefixAddr= {} 
     label=  
     opname= word 
@@ -146,6 +154,6 @@ AsmParsedLine:
     auto-comment= 
    UnaryZeroOh
       LiteralDigits 4200
-Eval:
+Eval operand:
     AsmExprValueType.Integer 2176
 

@@ -29,6 +29,8 @@ from screeninfo import get_monitors
 from enum import Enum
 import argparse
 import traceback
+import graphics as gfx
+import time
 
 theConstWWbitClass = None       # everything should use the same instance of the cb. Set in wwsim.
 
@@ -320,6 +322,11 @@ class Tokenizer:
                     self.state = 9
                     self.pos += 1
                     token = token + c
+                elif c == 'i':
+                    self.state = 1
+                    self.pos += 1
+                    token = '%' + c
+                    return token
                 else:
                     self.error ("Illegal format directive at char pos %d in %s" % (self.pos, self.str) +
                                 self.caratString (self.str, self.pos))
@@ -471,6 +478,7 @@ class ConstWWbitClass:
 
         # configure the displays
         self.analog_display = False   # set this flag to display on an analog oscilloscope instead of an x-window
+        self.flexo_win = False;       # Window to display flexo output
         self.use_x_win = True         # clear this flag to completely turn off the xwin display, widgets and all
         self.xWin_size_arg = None   # if this is set to a number by the cmd-line arg, use it as the size of the xWinCRT
         self.ana_scope = None   # this is a handle to the methods for operating the analog scope
@@ -1454,12 +1462,55 @@ class InstructionOpTable:
             "CL": [["clc", "clh"], ["cycle left and clear", "cycle left and hold"]]
             }
 
+# Check noxwin option!!!!!
+        
+class FlexoWin:
+    def __init__(self):
+        self.h = 1000
+        self.v = 1500
+        self.win = gfx.GraphWin ("Window", self.h, self.v)
+        self.win.setBackground ("cornsilk")
+        imageName = os.path.normpath (os.environ["PYTHONPATH"] + "/" + "flexowriter-scaled-cropped.gif")
+        self.image = gfx.Image (gfx.Point (0, 0), [imageName])
+        self.imageH = self.image.getWidth()
+        self.imageV = self.image.getHeight()
+        self.image = gfx.Image (gfx.Point (self.h/2, self.v - self.imageV/2), [imageName])
+        self.image.draw (self.win)
+        self.textX = self.h/3
+        self.textY = self.v - self.imageV/2 - 250
+        self.texts = []
+        self.overlays = []
+        self.curText: gfx.Text = self.newText ("")
+        pass
+
+    def newText (self, s: str) -> gfx.Text:
+        text = gfx.Text (gfx.Point (self.textX, self.textY), s)
+        text.setFace ("courier")
+        text.setSize (15)
+        return text
+
+    def writeChar (self, c: str):
+        if c in ["\n", "\\n"]:      # Accept the real ascii char or printed rep
+            self.texts.append (self.curText)
+            for i in range (0, len (self.texts)):
+                self.texts[i].move (0, -25)
+            for text in self.overlays:
+                text.undraw()
+                pass
+            overlays = []
+            self.curText = self.newText ("")
+            time.sleep (100e-3)
+        else:
+            self.overlays.append (self.curText)
+            self.curText = self.newText (" " + self.curText.getText() + c)
+            self.curText.draw (self.win)
+            time.sleep (75e-3)
 
 # See manual 2M-0277 pg 46 for flexowriter codes and addresses
 # This class is primarily the Flexowriter output driver, but it's also used
 # other places for translating characters between ASCII and Flexo code.
 class FlexoClass:
-    def __init__(self, cb):
+    def __init__(self, cb, log = None):
         self._uppercase = False  # Flexo used a code to switch to upper case, another code to return to lower
         self._color = False  # the Flexo had a two-color ribbon, I assume it defaulted to Black
         self.stop_on_zero = None
@@ -1467,8 +1518,13 @@ class FlexoClass:
         self.null_count = 0
         self.FlexoOutput = []  # this is the accumulation of all output from the Flexowriter
         self.FlexoLine = ""    # this one accumulates one line of Flexo output for immediate printing
+        self.flexoWin: FlexoWin = None  # Instantiated if sim option given and flex device selected via si
         self.name = "Flexowriter"
         self.cb = cb   # what's the right way to do this??
+        if log is not None:
+            self.log = log
+        else:
+            self.log = cb.log
 
         self.FLEXO_BASE_ADDRESS = 0o224  # Flexowriter printers
         self.FLEXO_ADDR_MASK = ~0o013  # mask out these bits to identify any Flexo address
@@ -1549,7 +1605,7 @@ class FlexoClass:
             if code == self.FLEXO_NULLIFY or code == self.FLEXO_COLOR:
                 ret = ''
 
-        if make_filename_safe is True:
+        if make_filename_safe:
             if ret == '\n':
                 ret = ''
             elif ret == '\t':
@@ -1560,7 +1616,7 @@ class FlexoClass:
                 ret = ' '
             elif ret[0] == '<':   # if we're making a file name, ignore all the control functions in the table above
                 ret = ''
-        elif show_unprintable is True:
+        elif show_unprintable:
             if ret == '\n':
                 ret = '\\n'
             if ret == '\t':
@@ -1616,7 +1672,7 @@ class FlexoClass:
             flexo_code = self.flexo_ascii_ucase_dict[a]
             upper_case = True
         else:
-            self.cb.log.warn("no flexo translation for '%s'" % a)
+            self.log.warn("no flexo translation for '%s'" % a)
         return flexo_code
 
 
@@ -1640,18 +1696,26 @@ class FlexoClass:
             print("Flexowriter packed mode not implemented")
             return self.cb.UNIMPLEMENTED_ALARM
 
-        print(("configure flexowriter #2, stop_on_zero=%o, packed=%o" % (self.stop_on_zero, self.packed)))
+        if self.cb.flexo_win:
+            if self.flexoWin is None:
+                self.flexoWin = FlexoWin()
+        else:
+            print(("configure flexowriter #2, stop_on_zero=%o, packed=%o" % (self.stop_on_zero, self.packed)))
         return self.cb.NO_ALARM
 
     def rc(self, _unused, acc):  # "record", i.e. output instruction to tty
         code = acc >> 10  # the code is in the upper six bits of the accumulator
         symbol = self.code_to_letter(code)  # look up the code, mess with Upper Case and Color
-        self.FlexoOutput.append(symbol)
-        self.FlexoLine += symbol
-        if symbol == '\n':
-            symbol = '\\n'   # convert the newline into something that can go in a Record status message
-            print("Flexo: %s" % self.FlexoLine[0:-1])   # print the full line on the console, ignoring the line feed
-            self.FlexoLine = ""                         # and start accumulating the next line
+        # Only do the standard flex buffering if we have no flex window
+        if self.flexoWin is not None:
+            self.flexoWin.writeChar (symbol)
+        else:
+            self.FlexoOutput.append(symbol)
+            self.FlexoLine += symbol
+            if symbol == '\n':
+                symbol = '\\n'   # convert the newline into something that can go in a Record status message
+                print("Flexo: %s" % self.FlexoLine[0:-1])   # print the full line on the console, ignoring the line feed
+                self.FlexoLine = ""                         # and start accumulating the next line
         return self.cb.NO_ALARM, symbol
 
     def bo(self, address, acc, cm):  # "block transfer out"
