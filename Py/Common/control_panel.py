@@ -20,6 +20,7 @@
 
 from graphics import *
 from blinkenlights import BlinkenLightsClass
+from micro_whirlwind import PanelMicroWWClass
 
 
 # ###########################################
@@ -538,50 +539,6 @@ class CPUControlClass:
             self.dispatch[sw].button_object.draw_toggle(None)
             return
 
-    # This state machine is used to control the flow of execution for the simulator
-    def former_sim_state_machine(self, switch_name, cb):
-        sw = switch_name
-        if sw == "Stop":
-            cb.sim_state = cb.SIM_STATE_STOP
-            # self.dispatch["Stop"].lamp_object.set_lamp(True)
-            # self.dispatch["Start at 40"].lamp_object.set_lamp(False)
-            return
-
-        if sw == "Restart":   # don't mess with the PC, just pick up from the last address
-            cb.sim_state = cb.SIM_STATE_RUN
-            return
-
-        if sw == "Start at 40":
-            cb.sim_state = cb.SIM_STATE_RUN
-            cb.cpu.PC = 0o40
-            return
-
-        if sw == "Start Over":  # start executing at the address in the PC switch register
-            cb.sim_state = cb.SIM_STATE_RUN
-            cb.cpu.PC = self.panel.pc_toggle_sw.read_button_vector()
-            return
-
-        if sw == "Order-by-Order":  # don't mess with the PC, just pick up from the last address
-            cb.sim_state = cb.SIM_STATE_SINGLE_STEP
-            return
-
-        if sw == "Examine":  # don't mess with the PC, just pick up from the last address
-            if cb.sim_state == cb.SIM_STATE_RUN:
-                cb.log.warn("Examine button may only be used when the machine is stopped")
-            addr = self.panel.pc_toggle_sw.read_button_vector()
-            cb.cpu.cm.rd(addr)   # simply reading the register has the side effect of updating MAR and PAR/MDR
-            return
-
-        if sw == "Read In":  # Start all over again from reading in the "tape"
-            cb.sim_state = cb.SIM_STATE_READIN
-            popup = DialogPopup()
-            filename = popup.get_text_entry("Filename: ", "foo.acore")
-            print("filename:%s" % filename)
-            cb.CoreFileName = filename
-            return
-
-        print("Unhandled Button %s" % sw)
-        return
 
     def set_cpu_state_lamps(self, cb, sim_state, alarm_state):
         run = sim_state != cb.SIM_STATE_STOP
@@ -662,9 +619,18 @@ class PanelXwinClass:
         self.cpu_control = CPUControlClass(self, sim_state_machine_arg=sim_state_machine_arg, x=30, y=y_start+row*self.y_step, x_step=self.x_step,
                                            y_step=self.y_step)
 
+        # this doesn't seem quite right, but the Panel is expected to store the state of a handful of switches like "Check Alarm Special"
+        self.hidden_switches = {"CheckAlarmSpecial": 0,
+                                "StopOnS1": 0,
+                                "StopOnAddr": 0,
+                                }
+
         # the first element in the dict is the switch Read entry point, the second is the one to set the switches
         self.dispatch = {"LMIR":[self.dual_ir.read_left_register, self.dual_ir.set_left_register],
                     "RMIR": [self.dual_ir.read_right_register, self.dual_ir.set_right_register],
+                    "CheckAlarmSpecial": [self.check_alarm_read, self.check_alarm_write],
+                    "StopOnS1": [self.stop_on_s1_read, self.stop_on_s1_write],
+                    "StopOnAddr": [self.stop_on_addr_read, self.stop_on_addr_write],
                     "ActivationReg0": [self.activate_reg_read, self.activate_reg_write],
                     "FF02": [self.ffreg[0].read_ff_register, self.ffreg[0].write_ff_register],
                     "FF02Sw": [self.ffreg[0].read_switch_register, self.ffreg[0].set_switch_register],
@@ -749,8 +715,8 @@ class PanelXwinClass:
         if type(which_one) is int:
             which_one = "FF%02o" % which_one
         if which_one not in self.dispatch:
-            print("Panel.write_register: unknown register %s" % which_one)
-            exit()
+            print("xWin control panel doesn't have register %s" % which_one)
+            return None
         # element zero in the dispatch is the Read entry; element one is the Set entry
         return self.dispatch[which_one][1](value)
 
@@ -781,29 +747,54 @@ class PanelXwinClass:
                 lamp[i](True)   # turn on the light associated with the button
 
     def reset_ff_registers(self, function, log=None, info_str=''):
-
         for ff in self.ffreg:
             ff.reset_register(function, log, info_str)
 
+    def check_alarm_read(self):
+        return self.hidden_switches["CheckAlarmSpecial"]
+
+    def check_alarm_write(self, value):
+        self.hidden_switches["CheckAlarmSpecial"] = value
+        return 0
+
+    def stop_on_s1_read(self):
+        return self.hidden_switches["StopOnS1"]
+
+    def stop_on_s1_write(self, value):
+        self.hidden_switches["StopOnS1"] = value
+        return 0
+
+    def stop_on_addr_read(self):
+        return self.hidden_switches["StopOnAddr"]
+
+    def stop_on_addr_write(self, value):
+        self.hidden_switches["StopOnAddr"] = value
+        return 0
+
+# The graphic lib is _supposed_ to allow left or right justified text; but I _cannot_ figure out how
+# to get anything but centered.  This routine estimates how much to move a string so that it comes
+# out left-justified on the screen.  Used in Debug Widgets
 def compensate_justification(txt, font=9):
     count = len(txt)
     offset = count * (font / 3)
     return offset
 
 
-
 # =================
-# the following class serves as a dispatcher for the two possible Panel technologies, one
-# with the xwindow emulated buttons and one with the I2C buttons and lights
+# the following class serves as a dispatcher for the three possible Panel technologies, one
+# with the xwindow emulated buttons, one with a few I2C buttons and lights, and the microWhirlwind panel
 # Both can be enabled at once, but the results probably aren't too predictable.
 class PanelClass:
-    def __init__(self, cb, panel_xwin, panel_blinken, left_init=0, right_init=0):
-        self.panel_xwin = None
-        self.panel_blinken = None
+    def __init__(self, cb, panel_xwin=False, panel_blinken=False, panel_microWW=False, left_init=0, right_init=0):
+        self.panel_xwin = panel_xwin
+        self.panel_blinken = panel_blinken
+        self.panel_mWW = panel_microWW
         if panel_xwin:
             self.panel_xwin = PanelXwinClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
         if panel_blinken:
             self.panel_blinken = BlinkenLightsClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
+        if panel_microWW:
+            self.panel_mWW = PanelMicroWWClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
 
     # Check the mouse, and update any buttons.  The only return from this call should be True or False to say
     # whether the Exit box was clicked or not.
@@ -812,11 +803,14 @@ class PanelClass:
     def update_panel(self, cb, bank, alarm_state=0, standalone=False, init_PC=None):
         ret_xwin = True
         ret_blinken = True
+        ret_mWW = True
         if self.panel_xwin:
-            ret_xwin = self.panel_xwin.update_panel(cb, bank, alarm_state=0, standalone=False, init_PC=init_PC)
+            ret_xwin = self.panel_xwin.update_panel(cb, bank, alarm_state=alarm_state, standalone=False, init_PC=init_PC)
         if self.panel_blinken:
             ret_blinken = self.panel_blinken.update_panel(cb, bank, alarm_state=0, standalone=False, init_PC=init_PC)
-        if ret_xwin == False or ret_blinken == False:
+        if self.panel_mWW:
+            ret_mWW = self.panel_mWW.update_panel(cb, bank, alarm_state=alarm_state, standalone=False, init_PC=init_PC)
+        if ret_xwin == False or ret_blinken == False or ret_mWW == False:
             return False
         return True
 
@@ -829,6 +823,8 @@ class PanelClass:
             return(self.panel_blinken.read_register(which_one))
         if self.panel_xwin:
             return(self.panel_xwin.read_register(which_one))
+        if self.panel_mWW:
+            return(self.panel_mWW.read_register(which_one))
 
     # write a register to the switches and lights panel.
     # there's no error return signal
@@ -837,30 +833,20 @@ class PanelClass:
             self.panel_blinken.write_register(which_one, value)
         if self.panel_xwin:
             self.panel_xwin.write_register(which_one, value)
+        if self.panel_mWW:
+            self.panel_mWW.write_register(which_one, value)
 
-    # assemble all the known activate bits into a single word
-    # Not obvious what to do if _both_ panel types are enabled at the same time
-    # def activate_reg_read(self):
-    #     if self.panel_blinken:
-    #         return(self.panel_blinken.activate_reg_read())
-    #     if self.panel_xwin:
-    #         return(self.panel_xwin.activate_reg_read())
-
-    # write activate register; no return value
-    # def activate_reg_write(self, val):
-    #     if self.panel_blinken:
-    #         self.panel_blinken.activate_reg_write(val)
-    #     if self.panel_xwin:
-    #         self.panel_xwin.activate_reg_write(val)
 
     def reset_ff_registers(self, function, log=None, info_str=''):
         if self.panel_blinken:
             self.panel_blinken.reset_ff_registers(function, log=None, info_str='')
         if self.panel_xwin:
             self.panel_xwin.reset_ff_registers(function, log=None, info_str='')
+        if self.panel_mWW:
+            self.panel_mWW.reset_ff_registers(function, log=None, info_str='')
 
     # This state machine is used to control the flow of execution for the simulator
-    def sim_state_machine(self, switch_name, cb, pc_switch_register):
+    def sim_state_machine(self, switch_name, cb, pc_switch_register=None, set_scope_selector_leds=None):
         sw = switch_name
         if sw == "Stop":
             cb.sim_state = cb.SIM_STATE_STOP
@@ -902,8 +888,22 @@ class PanelClass:
             cb.CoreFileName = filename
             return
 
-        print("Unhandled Button %s" % sw)
+        if sw == "D-Scope":  # Flip the selector for the D-Scope
+            cb.which_scope ^= 2   # D-Scope bit
+            set_scope_selector_leds(cb.which_scope)
+            return
+
+        if sw == "F-Scope":  # Flip the selector for the D-Scope
+            cb.which_scope ^= 1   # F-Scope bit
+            set_scope_selector_leds(cb.which_scope)
+            return
+
+        if sw == "Clear":   # clear the Alarm LED
+            print("Unimplemented Alarm Clear")
+            return
+        print("Unhandled Button in control_panel:PanelClass %s" % sw)
         return
+
 
 
 # ########################## Dialog Popup ########################

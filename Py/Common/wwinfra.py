@@ -106,15 +106,16 @@ LogMsgType = Enum ("LogMsgType", ["Raw", "Log", "Debug", "Debug7ch", "Debug556",
 LogMsgSeverity = Enum ("LogMsgSeverity", ["Error", "Info", "Warning", "Fatal"])
 
 class LogClass:
-    def __init__(self, corefile, quiet: bool = None, debug556: bool = None, debugtap: bool = None,
-                 debugldr: bool = None, debug7ch: bool = None, debug: bool = None,
-                 factory = None, logfile = None):
+    def __init__(self, corefile, quiet: bool = None, no_warn: bool = None, debug556: bool = None, 
+                 debugtap: bool = None, debugldr: bool = None, debug7ch: bool = None, 
+                 debug: bool = None, factory = None, logfile = None):
         self._debug = debug
         self._debug556 = debug556
         self._debug7ch = debug7ch
         self._debugtap = debugtap
         self._debugldr = debugldr
-        self._quiet = quiet
+        self._quiet = quiet        # suppress "info" messages like the next branch taken, etc
+        self._no_warn = no_warn    # Suppress messages that warn of things like unitialized memory
         self.corefile = corefile
         self.error_count = 0
         self.factory = factory
@@ -191,11 +192,12 @@ class LogClass:
             self.writeLog (LogMsgType.Log, LogMsgSeverity.Info, message)
 
     def warn(self, message):
-        self.writeLog (LogMsgType.Log, LogMsgSeverity.Warning, message)
+        if not self._no_warn:
+            self.writeLog (LogMsgType.Log, LogMsgSeverity.Warning, message)
 
     def fatal(self, message):
         self.writeLog (LogMsgType.Log, LogMsgSeverity.Fatal, message)
-        sys.exit(1)
+        sys.exit(-1)
 
 class AsmLogClass (LogClass):
     def __init__ (self, corefile, **kwargs):
@@ -359,7 +361,7 @@ class Tokenizer:
                     return self.endOfString
             else:
                 print("Unexpected state %d in Tokenizer" % self.state)
-                exit(1)
+                exit(-1)
         return self.endOfString
 
 class WwPrintTokenizer (Tokenizer):
@@ -478,7 +480,9 @@ class ConstWWbitClass:
         self.analog_display = False   # set this flag to display on an analog oscilloscope instead of an x-window
         self.flexo_win = False;       # Window to display flexo output
         self.use_x_win = True         # clear this flag to completely turn off the xwin display, widgets and all
+        self.xWin_size_arg = None   # if this is set to a number by the cmd-line arg, use it as the size of the xWinCRT
         self.ana_scope = None   # this is a handle to the methods for operating the analog scope
+        self.which_scope = 3    # default to showing both D and F scopes on the xwin display
 
         # These two will be set by prog that needs them. Looks like only wwsim at this point. LAS 5/17/24
         self.argAutoClick = False
@@ -509,9 +513,12 @@ class ConstWWbitClass:
         self.command_name = sys.argv[0] # Leaf name of command running this code, i.e., argv[0]
         self.CoreFileName = corefile # Name of ww core file
         self.log = None
-        self.logDirSpecified = True if args.LogDir is not None else False
-        self.logDir = args.LogDir if self.logDirSpecified else "./"
-
+        if args:
+            self.logDirSpecified = True if args.LogDir is not None else False
+            self.logDir = args.LogDir if self.logDirSpecified else "./"
+        else:
+            self.logDirSpecified = False
+            self.logDir = "./"
         self.cpu = None
 
         self.dbwgt = None  # This list gives all the currently active Debug Widgets
@@ -720,8 +727,10 @@ class WWSwitchClass:
         # name" field to the dictionary below...
         self.SwitchNameDict = {
             # name: [default_val, mask, internal_name]
-            "CheckAlarmSpecial": [0, 0o01, None],  # Controls the behavior of the CK instruction; see 2M-0277
-                                             # "normal" is 'off'
+            "CheckAlarmSpecial": [0, 0o01, "CheckAlarmSpecial"],  # Controls the behavior of the CK instruction; see 2M-0277
+                                                                    # "normal" is 'off'
+            "StopOnS1":             [0, 0o01, "StopOnS1"],  # SI 0 always causes a Halt; SI 1 may or may not halt, depending this switch
+            "StopOnAddr":           [0, 0o01, "StopOnAddr"],  # WW 'breakpoint' -- if 'On': halt if PC==PC_Preset
             "LeftInterventionReg":  [0, 0xffff, "LMIR"],   # Left Manual Intervention Register - aka LMIR
             "RightInterventionReg": [0, 0xffff, "RMIR"],  # Right Manual Intervention Register - aka RMIR
             "ActivationReg0":       [0, 0xffff, "ActivationReg0"],  #
@@ -1958,8 +1967,23 @@ class XwinCrt:
             self.gfx = __import__("graphics")
 
             cb.log.info("opening XwinCrt")
+            # find a size for the xWin.
+            # If there's a size from the command line, just use it.
+            # Otherwise:
+            #   If it's a large display, just use a fixed constant.
+            #   If it's a small screen, shrink the size to fit the screen.
+            # The xWin is square, so use the smallest dimension of x or y
+            if cb.xWin_size_arg:
+                screen_size = cb.xWin_size_arg
+            else:
+                screen_size = cb.screen_x
+                if cb.screen_y < screen_size:
+                    screen_size = cb.screen_y
+                screen_size -= 45   # reduce the available screen space to allow for a menu bar
+                if screen_size > 600:
+                    screen_size = 600
             # gfx_scale_factor comes from Windows and depends on the display.  I think it's usually between 1.0 and 2.0
-            self.WIN_MAX_COORD = 600.0 * cb.gfx_scale_factor # 1024.0 + 512.0  # size of window to request from the laptop window  manager
+            self.WIN_MAX_COORD = float(screen_size) * cb.gfx_scale_factor # 1024.0 + 512.0  # size of window to request from the laptop window  manager
             win_y_size = self.WIN_MAX_COORD
             if widgets_only_on_xwin:
                 win_y_size = win_y_size / 4

@@ -36,7 +36,7 @@
 
                         ; ************* Start of Update the message on the screen loop (I think)
 @0054:104600     i0054: cs   u0600     ; clear and subtract @@JumpedToBy a0166 a0170 
-						.print "calc_ Draw Screen u0600=%o, u0601=%o, u0602=%o disp_num=%o u0502=%o u0503=%o screen_rep_cnt=%o w0003=%o", u0600, u0601, u0602, disp_num, u0502, u0503, screen_rep_cnt, w0003
+						; .print "calc_ Draw Screen u0600=%o, u0601=%o, u0602=%o disp_num=%o u0502=%o u0503=%o screen_rep_cnt=%o w0003=%o", u0600, u0601, u0602, disp_num, u0502, u0503, screen_rep_cnt, w0003
 @0055:040504            ts   screen_rep_cnt  ; transfer to storage 
 
                         ; ************* Start of Draw One Screen loop ******************
@@ -92,7 +92,7 @@
                         ; The disp_num is shifted right at least once for each character printed, e.g. 0o12->5->2->1->0
                         ; "Divide by 1/2 is multiply by two", i.e., 0o040000 = 1/2
 
-                        .print "calc_char input: acc=%ao disp_num=%o w0114=%o u0500=%o", disp_num, w0114, u0500
+                        ; .print "calc_char input: acc=%ao disp_num=%o w0114=%o u0500=%o", disp_num, w0114, u0500
 @0112:150500  calc_char: dv   u0500     ; start the calc to find next char (u0500 is always 0o050000 or 0o040000) 
 @0113:154017            slr  0o017     ; shift left and roundoff; this puts the multiplied-by-two-but-truncated result in the AC 
 @0114:161000     w0114: srh  00000     ; shift right and hold, i.e., divide by two @@WrittenBy a0077 
@@ -104,7 +104,7 @@
 @0121:064501            ex   disp_num   ; exchange; adjust the 'remaining' character count 
 @0122:114502            su   u0502     ; subtract x from AC, i.e. the AC figured two-instructions-ago from the current AC; this must be the character offset in the chr table 
                         ; the next three instructions effectively index into the character table and find the bitmap for the character
-                        .print "calc_char output offset=%ad (d)"
+                        ; .print "calc_char output offset=%ad (d)"
 @0123:110206            ad   chr_tab   ; add the start address of the character table 
 @0124:044125            td   w0125     ; transfer digits ; overwrite the next instruction with an addresss into the char table 
 @0125:100000     w0125: ca   w0000     ; load next char to draw into AC @@WrittenBy a0124 
