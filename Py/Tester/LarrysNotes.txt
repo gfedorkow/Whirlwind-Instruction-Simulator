@@ -722,18 +722,23 @@ literal-digit-seq												Decimal inreger
 	* !!! Asm .flex broken -- not incrementing address!!??
 		[Yes, it was not. Fixed.]
 	* Note rc for flex takes high end of word for flex code. If shift in ww need to clc.
-	- Asm .flex needs to understand "\n" and maybe other chars in strings
+	*  Asm .flex needs to understand "\n" and maybe other chars in strings
 	  so proper flex code is generated. Also handle shift, color,
 	  superscript numbers.
+		[Asm now understands Flascii]
 	- Flexowin -- check noxwin flag
 	- .float does not detect all out-of-range cases -- try .float +0.1,20
 	- .float gets wrong nunmber if use too many digits, eg .float
 	  +0.99999995, 0 => 0.99999994, but .float +0.99999999, 0 =>
 	    -0.99999994
-
-
-
-
+	- "help-me" files look like they're coming from flex converter
+		[Should go away after revamp of that program. In-progress.]
+	- What is supposed to happen if you read beyond the end of a PETR?
+    - petr: should we have end-of-tape return a <stop> char?
+	- si does not rewind paper tape. Can use A and B but seems hokey
+	- device id for petr seems wrong manual says that code is for mech tr
+	- Where is current flex-code converter used?
+	
 
 	- Get "everything" into git: tape images, images on code, etc.
 		Did sizing run see below marked 1/1/25

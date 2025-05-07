@@ -7,6 +7,7 @@ import argparse
 import wwinfra
 from enum import Enum
 from wwasmparser import AsmExprValue, AsmExprValueType, AsmExprEnv, AsmExpr, AsmExprType, AsmParsedLine
+from wwflex import FlasciiToFlex
 
 AsmOperandType = Enum ("AsmOperandType", ["None",       # it's a pseudo-op
                                           "Jump",       # the address is a jump target
@@ -273,6 +274,15 @@ class AsmInst:
         sys.stderr.flush()
         """
         self.cb.log.error (self.parsedLine.lineNo, "%s:\n%s" % (msg, self.parsedLine.lineStr))
+        pass
+    def fatalError (self, msg: str):
+        sys.stdout.flush()
+        """
+        traceback.print_stack()
+        sys.stdout.flush()
+        sys.stderr.flush()
+        """
+        self.cb.log.fatal ("line: %d, %s:\n%s" % (self.parsedLine.lineNo, msg, self.parsedLine.lineStr))
         pass
     def operandTypeError (self, val: AsmExprValue):
         # Grab the undefined error as it's too noisy, e.g., always comes with unbound var.
@@ -668,23 +678,21 @@ class AsmDotFlexlhInst (AsmDotWordsInst):
                 else:
                     termVal = None
                 if termVal is None or termVal.type == AsmExprValueType.Integer:
-                    s = strVal.value
-                    for i in range (0, len (s)):
-                        flexoChar: int = self.prog.flexoClass.ascii_to_flexo (s[i])
-                        # Just storing zero does not seem to be the best way to handle this
-                        if flexoChar is None:
-                            flexoChar = 0
+                    flexCodes = FlasciiToFlex (strVal.value).getFlex()
+                    i = 0
+                    for flexCode in flexCodes:
                         if self.parsedLine.opname == "flexl":
                             pass
                         elif self.parsedLine.opname == "flexh":
-                            flexoChar <<= 10            # if it's "high", shift the six-bit code to WW bits 0..5
+                            flexCode <<= 10            # if it's "high", shift the six-bit code to WW bits 0..5
                         else:
-                            self.error ("Internal error: incorrect flexo operation")
+                            self.error ("Internal error: incorrect flex operation")
                         # The conversion here is more or less a formality but might
                         # catch bugs that produce out-of-range values
-                        self.block[i] = self.intToUnsignedWwInt (flexoChar)
+                        self.block[i] = self.intToUnsignedWwInt (flexCode)
+                        i += 1
                     if termVal is not None:
-                        self.block[len (s)] = self.intToSignedWwInt (termVal.value)
+                        self.block[len (flexCodes)] = self.intToSignedWwInt (termVal.value)
                     self.prog.nextCoreAddress += len (self.block)
                 else:
                     self.operandTypeError (termVal)
@@ -882,8 +890,13 @@ class AsmDotIncludeInst (AsmPseudoOpInst):
             val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
             if val.type == AsmExprValueType.String:
                 inFilename = val.value
-                inStream = open (inFilename, "r")
-                self.prog.pushStream (inStream, inFilename)
+                try:
+                    inStream = open (inFilename, "r")
+                    self.prog.pushStream (inStream, inFilename)
+                except FileNotFoundError:
+                    self.fatalError ("file %s not found" % inFilename)
+                except IOError:
+                    self.fatalError ("I/O Error opening file %s" % inFilename)
             else:
                 self.operandTypeError (val)
     def passTwoOp (self):

@@ -1,0 +1,154 @@
+
+               ; LAS 4/13/25 This file is adapted from frac-30-0-0-print.ww, but
+               ;    altered enough that we can't call it the same routine
+               ;    anymore. One basic change is replacement of the qp instruction
+               ;    with si/rc instructions for the flexowriter, and also replacement
+               ;    of the code table with flex codes. It's not known yet what codes
+               ;    were used by the device on the receiving end of the qp.  Since
+               ;    we're essentially creating a new routine, much of the the doc
+               ;    included with the orginal has been omitted from the description below.
+
+               ; |   Description
+               ; |
+               ; |       This subroutine prints and/or punches the sign and magnitude of the
+               ; |   contents of the MRA in the following manner
+               ; |
+               ; |            +-.d1d2...dn
+               ; |
+               ; |   The number, n, of decimal digits to be printed is a preset parameter (v2). The
+               ; |   digits, di, are obtained by multiplying the magnitude of the contents of the MRA
+               ; |   successively by p10.
+               ; |
+               ; |   This subroutine contains a sign agreement program so that the contents
+               ; |   of the MRA need not be a number whose major and minor parts are of like sign.
+               ; |
+               ; |   The sp instruction transferring control to this subroutine must be an
+               ; |   interpreted sp (i.e., control must be in the interpretive subroutine). After
+               ; |   execution of the subroutine control remains in the interpretive subroutine which
+               ; |   then proceeds to interpret the instruction following the sp instruction in
+               ; |   storage.
+               ; |
+               ; |   There is no carriage return.
+               ; |
+               ; |   This subroutine can be used with any(30,0,0) interpretive subroutine.
+               ; |   The contents of the MRA are left undisturbed during the execution of this
+               ; |   subroutine.
+               ; |
+               ; |   Abstract: This subroutine prints out a +- sign and a decimal point followed
+               ; |             by the magnitude of the contents of the MRA as a decimal fraction.
+               ; |             The decimal digits are obtained by multiplying the contents of the
+               ; |             MRA successively by plO. The number of digits to be printed is
+               ; |             a preset parameter (v2). There is no carriage return. The sub-
+               ; |             routine is interpreted and can be used with any (30,0,0) inter-—
+               ; |             pretive subroutine.
+               ; |
+               ; |   Temporary Storage
+               ; |       d       unused
+               ; |       1tmfp   -|
+               ; |       2tmfp    |- Temporary storage
+               ; |       3tmfp   -|
+               ; |       4tmfp      Digit counter
+               ; |
+               ; |
+
+          mfp:							; mfp == modern frac print
+               ta 37mfp
+               sp ax                    ; Resume ordinary ww operation
+			   .print "LZ output: %fm", mra
+               ca 3ax                   ; -|
+               ts 2tmfp                 ;  |- Store C(mra) in 1tmfp and 2tmfp
+               ca 2ax                   ;  |
+         5mfp: ts 1tmfp                 ; -|
+         6mfp: mr 2tmfp                 ; Do 1tmfp and 2tmfp agree in sign?
+               cp 38mfp
+               ca 1tmfp                 ; -|
+         9mfp: cp 12mfp                 ;  |
+               ca plus_char             ;  |
+               sp 13mfp                 ;  |- Sense and print algebraic sign of C(mra) followed by a decimal point
+        12mfp: ca minus_char            ;  |
+        13mfp: si 149                   ;  |
+               rc 0                     ;  |
+               ca dot_char              ;  |
+               rc 0                     ; -|
+
+               cs ndigits               ; -|- Set up digit counter
+               ts digit_cntr            ; -|
+
+        17mfp: cm 1tmfp                 ; -|
+               mh 62mfp                 ;  |
+               ts 3tmfp                 ;  |
+               slr 15                   ;  |
+               ts 1tmfp                 ;  |- Multiply C(1tmfp,2tmfp) by p10
+               cm 2tmfp                 ;  |
+               mh 62mfp                 ;  |
+               ts 2tmfp                 ;  |
+               slr 15                   ;  |
+               ex 2tmfp                 ;  |
+               sa 1tmfp                 ;  |
+               ts 1tmfp                 ; -|
+
+               ca 3tmfp                 ; -|
+               ad 63mfp                 ;  |- Set up entry into table
+               td 32mfp                 ; -|
+
+        32mfp:
+			   ca 0                     ; -|- Print a single digit
+               rc 0                     ; -|
+
+               ao digit_cntr            ; -|- Have enough digits been printed?
+               cp 17mfp                 ; -|
+
+			   ca newline				;; LAS The description says no cr, but there does not seem to be one emitted at any level
+			   rc 0
+
+               sp ax                    ; -|- Return control to int. subroutine
+        37mfp: sp 0                     ; -|
+
+        38mfp: cm 1tmfp                 ; -|
+               su 0                     ;  |- Is C(1tmfp) != 0?
+               cp 57mfp                 ; -|
+
+               cm 2tmfp                 ; -|
+               su 0                     ;  |- Is C(2tmfp) != 0?
+               cp 51mfp                 ; -|
+
+               su 60mfp                 ; -|
+               ad 59mfp                 ;  |- Form 1 - |C(2tmfp)|
+               ts 2tmfp                 ; -|
+
+               ca 1tmfp                 ; -|- Is C(1tmfp) pos.?
+               cp 55mfp                 ; -|
+
+               su 60mfp                 ; -|- Form C(1tmfp) - 2^-15
+               ts 1tmfp                 ; -|
+
+        51mfp: cs 2tmfp                 ; -|- Complement C(2tmfp)
+               ts 2tmfp                 ; -|
+
+               ca 1tmfp                 ; -|- Re-enter sign agreement
+               sp 6mfp                  ; -|
+
+        55mfp: ao 1tmfp
+               sp 9mfp
+        57mfp: cs 1tmfp
+               sp 5mfp
+        59mfp: ca 0                     ;                                                  ; [59-73 are notated in Subroutines.pdf with no spaces, e.g., ca0, p1]
+        60mfp: .word 1
+      ndigits:
+        61mfp: .word 10                 ; v2                                               ; [was just n1a2 -- need to track down this notation]
+        62mfp: .word 10
+        63mfp: .word 64mfp              ; ,                                                ; [I think comma? Might just be a blemish]
+        64mfp: .flexh "0123456789"      ; Digit table
+    plus_char:
+        74mfp: .flexh "+"
+   minus_char:
+        75mfp: .flexh "-"
+     dot_char: .flexh "."
+
+        1tmfp: .word 0
+        2tmfp: .word 0
+        3tmfp: .word 0
+   digit_cntr:
+        4tmfp: .word 0
+		upcase: .word 0o71 * 1024
+		dncase: .word 0o75 * 1024

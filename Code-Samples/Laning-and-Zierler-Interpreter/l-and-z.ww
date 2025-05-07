@@ -26,12 +26,13 @@
 ; |
 		  .jumpto 0o10
 		  .org 0o10
+		  sp print_prog
 		  sp a1
 		  .org 0o40
-comp_code:	  .words 0o400 - comp_code, 0
-		  .org 0o400
+comp_code:	  .words 0o1000 - comp_code, 0
+		  .org 0o1000
 a1:
-          si 128
+   		  si 128		; ; PETR A
 1a1:      ao 36a1
 2a1:      rd 2a1
 		  ; ; 		  .print "xxxxx 1 rd %ao"
@@ -700,3 +701,6 @@ fp_cntr_init: .word 10
 ; the fractional part of a 30,15 float.
 
   	  		.include "modern-frac-30-0-0-print.ww"
+
+			.include "print-prog.ww"
+			
