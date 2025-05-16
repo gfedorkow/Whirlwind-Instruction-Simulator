@@ -115,9 +115,9 @@ def main():
     parser.add_argument("-r", "--Readable", help="Add a section to support human readbility of the translation", action="store_true")
     args = parser.parse_args()
 
-    cb = wwinfra.ConstWWbitClass(corefile='help-me', args = args)
+    cb = wwinfra.ConstWWbitClass(corefile='none', args = args)
     wwinfra.theConstWWbitClass = cb
-    cb.log = wwinfra.LogFactory().getLog(logname='help-me', quiet=args.Quiet)
+    cb.log = wwinfra.LogFactory().getLog(quiet=args.Quiet)
 #    core = wwinfra.CorememClass(cb)
 
     input_string = args.ascii_string
