@@ -11,7 +11,6 @@ try:
     # https://pypi.org/project/smbus2/
     import smbus2  # also contains i2c support
 except ModuleNotFoundError:
-    print("no GPIO library found")
     import smbus_replacement as smbus2
     import gpio_replacement as gpio
 #    gpio = gpio_replacement.gpioClass()
