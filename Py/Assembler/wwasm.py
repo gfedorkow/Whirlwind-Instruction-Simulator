@@ -183,7 +183,7 @@ class AsmXrefEntry:
         self.writtenByStr = ""
         self.jumpedToByStr = ""
         self.AtAddrStr = ""
-        self.annotateIoStr = ""     # Not really an xref items but looks like a good place for it
+        self.annotateIoStr = ""     # Not really an xref item but looks like a good place for it
     def listingString (self):
         r = self.annotateIoStr
         if self.writtenByStr == "" and self.readByStr == "" and self.jumpedToByStr == "":
@@ -204,6 +204,8 @@ class AsmInst:
         self.parsedLine = parsedLine
         self.prog = prog
         self.xrefs = AsmXrefEntry()
+        if self.prog.reformat and self.parsedLine.operand is not None:
+            self.parsedLine.operand.suppressEvalError = True
         # self.opcode: int = None       # Subclass def
         # self.pseudoOp: str = None     # Subclass def
         # def passOneOp (self):         # Subclass def
@@ -254,7 +256,7 @@ class AsmInst:
     # Convert host int x to one's complement given the total bit size (i.e., including sign) nbits
     #
     def intToSignedOnesCompInt (self, x: int, nbits: int) -> int:
-        maxmag = 2**(nbits-1)
+        maxmag = 2**(nbits-1) - 1
         if x >= -maxmag and x <= maxmag:
             if x < 0:
                 r = 2**nbits - 1 + x  # One's-complement representation
@@ -368,7 +370,7 @@ class AsmWwOpInst (AsmInst):
         opcodeInfo = self.prog.curOpcodeTab[self.parsedLine.opname]
         self.opcode = opcodeInfo.opcode << (self.prog.wordWidth - opcodeInfo.opcodeWidth)
         self.operandType: AsmOperandType = opcodeInfo.type
-        self.operandVal: AsnExprValue = None    # Value stashed here after evaluation by AsmExpr.eval()
+        self.operandVal: AsmExprValue = None    # Value stashed here after evaluation by AsmExpr.eval()
     def prefixAddrStr (self) -> str:      # A ww op always displays address and contents in the prefix address
         return self.fmtPrefixAddrStr (self.address, contents = self.instruction)
     def passOneOp (self):
@@ -484,13 +486,14 @@ class AsmUnknownInst (AsmPseudoOpInst):
 # string.
 
 class AsmDotIfInst (AsmInst):
-    def __init__ (self, instParsedLine: AsmParsedLine, *args):
+    def __init__ (self, instParsedLine: AsmParsedLine, prog):   # prog: AsmProgram
         self.instParsedLine: AsmParsedLine = instParsedLine
+        self.prog = prog
         self.cb = wwinfra.theConstWWbitClass
     def prefixAddrStr (self) -> str:
         return self.fmtPrefixAddrStr (0)
     def listingString (self, **kwargs) -> str:
-        return ";" + self.prefixAddrStr() + self.instParsedLine.lineStr
+        return (";" if not self.prog.reformat else "")  + self.prefixAddrStr() + self.instParsedLine.lineStr
     def passOneOp (self):
         pass
     def passTwoOp (self):
@@ -601,6 +604,8 @@ class AsmDotFloatInst (AsmDotWordsInst):
     def passOneOp (self):
         self.prog.nextCoreAddress += 2
     def passTwoOp (self):
+        self.block[0] = 0       # In case of errors fill this in
+        self.block[1] = 0
         val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
         if val.type == AsmExprValueType.List:
             if len (val.value) == 2:
@@ -617,10 +622,14 @@ class AsmDotFloatInst (AsmDotWordsInst):
                     v: float = decMant*10**decExp
                     exp: int = 0 if v == 0 else math.ceil (math.log (abs(v), 2)) # Signed, mag 6 bit range, host rep
                     fracMant: float = v/2**exp
-                    if fracMant >= 1.0:
+                    if abs (fracMant) >= 1.0:
                         exp += 1
-                        fracMant: float = v/2**exp
-                    mant = int (round (fracMant * 2**24)) # Mag is full 24-bit resolution, host rep
+                        fracMant = v/2**exp
+
+                    # print ("LAS42", decMant, decExp, v, exp, fracMant)
+                        
+                    # Use floor rather than round to avoid going over 2^24 - 1
+                    mant = int (math.floor (fracMant * 2**24)) # Mag is full 24-bit resolution, host rep
                     wwExp = self.intToSignedOnesCompInt (exp, 7)
                     if wwExp is None:
                         self.error ("Float out of range")
@@ -1291,7 +1300,6 @@ class AsmProgram:
 
     def writeListing (self):
         listingOutStream = open (self.listingOutFilename, 'wt')
-        print ("Listing output to file %s" % self.listingOutFilename)
         for inst in self.insts:
             listingOutStream.write (inst.listingString (minimalListing = self.minimalListing,
                                                         omitUnrefedLabels = self.omitUnrefedLabels,
@@ -1302,26 +1310,31 @@ class AsmProgram:
         self.passOne()
         self.passTwo()
         errorCount = self.cb.log.error_count
-        if errorCount != 0:  # Don't write files if picked up errors
+        if errorCount != 0:     # Don't write files if picked up errors
             print ("Error Count = %d; output files suppressed" % errorCount)
         else:
             if self.reformat:
                 status: bool = self.copyWwFileToBak()
                 if status:
+                    print ("Reformatted output to file %s" % self.inFilename)
+                    print ("Original file copied to %s.bak" % self.inFilename)
                     self.listingOutFilename = self.inFilename
                     self.writeListing()
                 else:
                     error()
             else:
                 self.writeCore()
+                print ("Listing output to file %s" % self.listingOutFilename)
                 self.writeListing()
 
 def main():
     parser = wwinfra.StdArgs().getParser ("Assemble a Whirlwind Program.")
-    parser.add_argument("inputfile", help="file name of ww asm source file")
-    parser.add_argument('--outputfilebase', '-o', type=str, help='base name for output file')
-    parser.add_argument("--Verbose", '-v',  help="print progress messages", action="store_true")
-    parser.add_argument("--Debug", '-d', help="Print lotsa debug info", action="store_true")
+    parser.add_argument("inputfile", help="File name of ww asm source file")
+    parser.add_argument('--outputfilebase', '-o', type=str, help='Base name for output file')
+    # These two are not currently used but the flags remain in the code and can
+    # be reactivated by enabling these statements and picking up their values below.
+    # parser.add_argument("--Verbose", '-v',  help="Print progress messages", action="store_true")
+    # parser.add_argument("--Debug", '-d', help="Print lotsa debug info", action="store_true")
     parser.add_argument("--MinimalListing", help="Do not include prefix address and auto-comments in listing", action="store_true")
     parser.add_argument("-D", "--DecimalAddresses", help="Display listing addresses in decimal as well as octal", action="store_true")
     parser.add_argument("--ISA_1950", help="Use the 1950 version of the instruction set", action="store_true")
@@ -1342,8 +1355,9 @@ def main():
     wwinfra.theConstWWbitClass = cb
     cb.decimal_addresses = args.DecimalAddresses  # if set, trace output is expressed in Decimal to suit 1950's chic
     cb.log = wwinfra.LogFactory().getLog (isAsmLog = True)
-    debug = args.Debug
-    verbose = args.Verbose
+    
+    debug = False # args.Debug
+    verbose = False # args.Verbose
     minimalListing = args.MinimalListing
     isa1950 = args.ISA_1950
     reformat = args.Reformat

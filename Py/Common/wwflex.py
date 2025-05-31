@@ -65,9 +65,6 @@ class FlasciiTokenizer (AsciiFlexBase):
         # self.cb = theConstWWbitClass
         self.endOfString = "<EndOfString>"
         self.endOfStringTok = FlasciiToken (FlasciiTokenType.EndOfString, "")
-    def caratString (self, str, pos) -> str:
-        s = " " * pos
-        return ":\n" + str + "\n" + s + "^\n"
     def getToken (self) -> FlasciiToken:
         data = ""
         while self.pos <= self.slen:
@@ -81,7 +78,7 @@ class FlasciiTokenizer (AsciiFlexBase):
                     self.state = 1
                     self.pos += 1
                 elif c == '<':
-                    self.state = 2
+                    self.state = 3
                     self.pos += 1
                 elif c == self.endOfString:
                     return self.endOfStringTok
@@ -91,13 +88,25 @@ class FlasciiTokenizer (AsciiFlexBase):
                     return FlasciiToken (FlasciiTokenType.Character, c)
             elif self.state == 1:
                 if self.isDigit (c):
-                    self.state = 1
+                    self.state = 2
+                    self.pos += 1
+                    data += c
+                elif c == "-":
+                    self.state = 2
                     self.pos += 1
                     data += c
                 else:
                     self.state = 0
                     return FlasciiToken (FlasciiTokenType.Super, data)
             elif self.state == 2:
+                if self.isDigit (c):
+                    self.state = 2
+                    self.pos += 1
+                    data += c
+                else:
+                    self.state = 0
+                    return FlasciiToken (FlasciiTokenType.Super, data)
+            elif self.state == 3:
                 if c == '>':
                     self.state = 0
                     self.pos += 1
@@ -106,7 +115,7 @@ class FlasciiTokenizer (AsciiFlexBase):
                     self.error ("Unterminated bracketed op %s" % '<' + data )
                     return self.endOfStringTok
                 else:
-                    self.state = 2
+                    self.state = 3
                     self.pos += 1
                     data += c
             else:
@@ -153,12 +162,15 @@ class AsciiFlex (AsciiFlexBase):
         else:
             return False
 
-# Provide a string, then use getFlex to get the resulting list of flex codes
+# Provide a string, then use getFlex to get the resulting list of flex codes.
+# If addStopCode is True, automatically add the <stop> char to the end of the
+# resulting set of flex codes.
 
 class FlasciiToFlex (AsciiFlex):
-    def __init__ (self, asciiIn: str):
+    def __init__ (self, asciiIn: str, addStopCode: bool = False):
         super().__init__()
-        self.asciiIn = asciiIn
+        self.addStopCode = addStopCode
+        self.asciiIn = asciiIn + ("<stop>" if self.addStopCode else "")
         self.flexOut = []
     def checkShiftUp (self):
         if super().checkShiftUp():
@@ -328,7 +340,7 @@ class AsciiFlexCodes:
         [0o32,   'f',                'F'],
         [0o33,   '6',                '6'],
         [0o34,   'c',                'C'],
-        [0o35,   '-',                '-'],                                       # In doc upper case '-' looks a little higher up than lower case version. Not sure whether to reflect the difference
+        [0o35,   '-',                '-'],                                       # Upper case '-' is for superscripts, e.g. for negative exponents
         [0o36,   'k',                'K'],
         [0o40,   't',                'T'],
         [0o42,   'z',                'Z'],
@@ -374,7 +386,7 @@ class AsciiFlexCodes:
 class FlexoWin:
     def __init__(self):
         self.crTime = 50e-3         # Set these based on the times above for "authentic" timing
-        self.charTime = 50e-3
+        self.charTime = 10e-3
         self.h = 1000
         self.v = 1500
         self.win = gfx.GraphWin ("Flexowriter", self.h, self.v)

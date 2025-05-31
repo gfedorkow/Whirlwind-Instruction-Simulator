@@ -51,7 +51,6 @@ else
 	python $asm test3.lst.ww &>>test3.log
 	diff -s test3.lst test3.lst.lst
 	status3=$?
-
 	if [ "$status3" == "0" ];
 	then
 		echo "Test PASSED"
@@ -64,7 +63,6 @@ else
 	python $asm ErrorTest.ww >&ErrorTest.log
 	diff -s ErrorTest.log TestRefs/ErrorTest.log
 	status4=$?
-
 	if [ "$status4" == "0" ];
 	then
 		echo "Test PASSED"
@@ -78,7 +76,6 @@ else
 	python $asm --OmitAutoComment inc1.ww >&includetest.log
    	diff -s inc1.lst TestRefs/inc1.lst
 	status5=$?
-
 	if [ "$status5" == "0" ];
 	then
 		echo "Test PASSED"
@@ -90,8 +87,8 @@ else
 	# .flex test
 	echo "Test .flexh and .flexl..."
 	rm -f flextest.lst flextest.acore flextest.sim.log 
-	python $asm flextest.ww >&flextest.asm.log
-	python $sim -q flextest.acore >&flextest.sim.log 
+	python $asm --OmitAutoComment flextest.ww >&flextest.asm.log
+	python $sim -q flextest.acore |& grep -v cycles >flextest.sim.log 
    	diff -s flextest.lst TestRefs/flextest.lst
 	status6=$?
 	diff -s flextest.sim.log TestRefs/flextest.sim.log

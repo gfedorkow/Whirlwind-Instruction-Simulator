@@ -39,6 +39,7 @@ import csv
 import control_panel
 from wwdebug import DbgDebugger
 import math
+import traceback
 
 # There can be a source file that contains subroutines that might be called by exec statements specific
 #   to the particular project under simulation.  If the file exists in the current working dir, import it.
@@ -2071,6 +2072,8 @@ def main_run_sim(args, cb):
 
             if alarm_state != cb.NO_ALARM:
                 print("Alarm '%s' (%d) at PC=0o%o (0d%d)" % (cb.AlarmMessage[alarm_state], alarm_state, cpu.PC - 1, cpu.PC - 1))
+                # LAS
+                traceback.print_stack()
                 if cb.panel and cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # watch for mouse clicks on the panel
                     break
                 # the normal case is to stop on an alarm; if the command line flag says not to, we'll try to keep going
@@ -2100,7 +2103,10 @@ def main_run_sim(args, cb):
                     alarm_state = cb.NO_ALARM
                     break
             # LAS
-            if UseDebugger:     # Detect restart cmd from dbg and set alarm state to no_alarm
+            if UseDebugger:
+                # Detect restart cmd from dbg and set alarm state to quit, so
+                # will return to main() and call main_run_sim() again, which
+                # should reset everything
                 restart = Debugger.repl (cpu.PC)
                 if restart:
                     alarm_state = cb.QUIT_ALARM

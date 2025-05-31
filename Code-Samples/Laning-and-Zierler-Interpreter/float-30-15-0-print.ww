@@ -1,0 +1,152 @@
+
+                      ; Print a (24,6) float nunmber. The value to print is in mra, which
+                      ; is (30,15), but we'll only use (24,6) range.
+
+float_30_15_print:    ta flt_print_rtn
+                      ts nm_x
+                      sp ax             ; Spax out
+                      sp normalize
+                      ; .print "floating print normalize x = %fl, t = %fl, mra-fm = %fm, mra-fr = %fr, mra-exp = %d", nm_x, t, mra, mra, mra + 2
+                      ; After normnalize the mra contains a 2-word denormalized fraction
+                      ; in mra and mra+1, and a power of ten exponent in mra+2.
+                      sp ax             ; Spax in
+                      sp mfp
+                      sp ax             ; Spax out
+                      sp print_exp
+                      
+                      ; Not much guidance on where spaces and newlines should be printed,
+                      ; but we'll use the Laning letter as the template (see
+                      ; ./InfoFromKnuth/from-Laning-76-07-02.pdf).  Print a space
+                      ; following each equation, then at the upper level when all are done
+                      ; print a newline.
+                      ca fp_space
+                      rc 0
+                      
+                      sp ax             ; Spax in
+flt_print_rtn:        sp 0
+
+                      ; Normalize, first by reducing to a fraction f such that 0.1 <= f < 1.0,
+                      ; with a decimal exponent d, then shifting to normalize in the
+                      ; binary exponent e, -4 >= e >= 0. The result is a two-word 30,0 fraction
+                      ; along with a decimal exponent. The fraction is printed with the frac printer mfp.
+                      ;
+                      ; Input: nm_x, (24,6) format
+                      ; Output: mra, first two words fraction (denormalized mantissa), third word decimal exponent
+                      
+            normalize:
+                      ta nm_rtn
+                      ca zero
+                      ts nm_exp
+                      sp ax                    ; Spax in
+                      ca nm_x                  ; x
+                      ts t
+             nm_loop:
+                      cm t
+                      su float1
+                      cp nm_not_ge_1
+                      ; setup 0.1 loop         ; |x| >= 1
+                      sp ax                    ; Spax out
+                      ca nm_mr_float_point_1
+                      ts nm_calc_mr
+                      ca nm_ad_one
+                      ts nm_calc_ad
+                      sp ax                    ; Spax in
+                      sp nm_calc
+         nm_not_ge_1: cm t                     ; |x| < 1
+                      su float_point_1
+                      cp nm_lt_point_1
+                      sp nm_already_norm       ; |x| >= .1
+       nm_lt_point_1:
+                      ; setup 10 loop          ; |x| < .1
+                      sp ax                    ; Spax out
+                      ca nm_mr_float10
+                      ts nm_calc_mr
+                      ca nm_su_one
+                      ts nm_calc_ad
+                      sp ax                    ; Spax in
+             nm_calc:
+                      ca t
+          nm_calc_mr: .word 0                  ; mr =0.1 or mr =10.0
+                      ts t
+                      sp ax                    ; Spax out
+                      ca nm_exp
+          nm_calc_ad: .word 0                  ; ad one or su one
+                      ts nm_exp
+                      sp ax                    ; Spax in
+                      sp nm_loop
+     nm_already_norm:
+             nm_done: ca t
+                      ; ad float_low_rnd       ; Rounding experiment. Really want decimal round in the printer   LAS
+                      sp ax                    ; Spax out
+
+                      ; Here t and the mra hold the (fractional) reduced value (0.1 <=
+                      ;  |value| < 1.0), and nm_exp holds the decimal exponent
+                      ;  (single-word int).
+
+                      ; Now we need to shift down by the binary exponent to denormalize
+                      ;  the float to a 2-word fraction. Printing that fraction in decimal
+                      ;  will result in a correct digits since we now have the base-10
+                      ;  exponent as a separate value.
+
+                      ca mra + 2               ; Binary exponent range zero to negative four
+                      ts t3
+                      ca zero
+                      ts t4
+        nm_mask_loop: ao t3
+                      cp nm_2_cont
+                      sp nm_mask_done
+           nm_2_cont: ca t4
+                      clc 1
+                      ad one
+                      ts t4
+                      sp nm_mask_loop
+        nm_mask_done:                          ; t4 has the mask
+                      ca mra + 0               ; Upper mant
+                      md t4
+                      ts t5                    ; t5 has the rightmost bits of upper mant
+                      cm mra + 2
+                      sd nm_srh_inst
+                      ts nm_shift_hi
+                      ts nm_shift_lo
+                      ca mra + 0
+         nm_shift_hi: srh 0
+                      ts mra + 0
+                      ca mra + 1               ; Lower mant
+         nm_shift_lo: srh 0
+                      ts mra + 1
+                      ca word_size
+                      ad mra + 2
+                      td nm_smb
+                      ca t5
+              nm_smb: clc 0                    ; Shift the masked bits up
+                      sd mra + 1
+                      ts mra + 1
+                      ca nm_exp
+                      ts mra + 2
+              nm_rtn: sp 0
+
+              nm_exp: .word 0
+           nm_su_one: su one
+       nm_mr_float10: mr float10
+ nm_mr_float_point_1: mr float_point_1
+           nm_ad_one: ad one
+                nm_x: .float 0, 0
+        nm_srh_inst:  srh 0                 ; Note can't use td with these insts or you overwrite the opcode
+                   t: .word 0
+                  t3: .word 0
+                  t4: .word 0
+                  t5: .word 0
+           word_size: .word 15
+                 one: .word 1
+                zero: .word 0
+              float0: .float 0, 0
+            float1_2: .float +0.5, 0
+              float1: .float +0.1, 1
+              float2: .float +0.2, 1
+             float10: .float +0.1, 2
+             float16: .float +0.16, 2
+       float_point_1: .float +0.1, 0
+       float_low_rnd: .float +0.5, -6    ; -6 is the smallest exponent to bump up to above the int (still not round to the int)
+          float_neg1: .word 0o137777
+                      .word 0o001777
+        fp_space:     .flexh " "

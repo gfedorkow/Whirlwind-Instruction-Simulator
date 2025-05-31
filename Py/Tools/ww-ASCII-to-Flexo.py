@@ -31,9 +31,6 @@ def format_tcodes(input_string, flexo_codes):
     return output_str
 
 def main():
-    # global theConstWWbitClass
-
-    # parser = argparse.ArgumentParser(description='Convert an ASCII string to Flexowriter codes.')
     parser = wwinfra.StdArgs().getParser ("Convert an ASCII string to Flexowriter codes.")
     parser.add_argument("ascii_string", nargs='?', help="string to be converted to flexowriter code")
     parser.add_argument("-i", "--InputFile", type=str, help="ASCII File to be converted")
@@ -42,6 +39,7 @@ def main():
     parser.add_argument("-q", "--Quiet", help="Suppress run-time message", action="store_true")
     parser.add_argument("-r", "--Readable", help="Add a section to support human readbility of the translation", action="store_true")
     parser.add_argument("-w", "--FlexoWin", help="Create and print to a FlexoWin in addition to creating an output file", action="store_true")
+    parser.add_argument("--OmitAutoStop", help="Omit the addition of the flex <stop> code to the end of the output file", action="store_true")
     args = parser.parse_args()
 
     cb = wwinfra.ConstWWbitClass(args = args)
@@ -73,8 +71,8 @@ def main():
         except IOError:
             cb.log.fatal("Can't write to file %s" % args.OutputFile)
 
-    # LAS
-    flexo_codes = FlasciiToFlex (input_string).getFlex()
+    # LAS Should debate this auto-add ofs stop, probably an option to omit it is wise
+    flexo_codes = FlasciiToFlex (input_string, addStopCode = not args.OmitAutoStop).getFlex()
 
     if args.BinaryOut:
         sys.stdout = sys.stdout.buffer

@@ -74,10 +74,8 @@ AsmParsedLine:
                Variable y
                Variable z
 Eval operand:
-Error: Line 2: Char pos 178: Only integers are allowed in arithmetic operations:
+Error: Line 2: Only integers are allowed in arithmetic operations:
 nobounce:   ca Vy + Vx - (q * (p  + 53)) + -42 + 017 + Vg*Vx*+0.888 - (-0.76589 --Vz) + -57 + +0.9999 + 0o177 + 0.12345 + x * (y + z) ; for no bounce, fetch the current velocity
-                                                                                                                                                                                 ^
-
     AsmExprValueType.Undefined 
 
 

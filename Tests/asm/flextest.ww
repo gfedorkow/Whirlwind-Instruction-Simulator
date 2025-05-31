@@ -3,7 +3,7 @@
             ; The other .flex ops are checked via the listing
 
             .org 0o40
-            si 149                   ; ; Auto-Annotate I/O: Mechanical Paper Tape Reader
+            si 149
             ca str_ptr
             td load_char
       loop:
@@ -13,7 +13,7 @@
             rc 0
             ao load_char
             sp loop
-      done: si 0                     ; ; Auto-Annotate I/O: unknown i/o device
+      done: si 0
             .flexl "abcde"
             .flexh "1"
             .flexh "qwert"
@@ -21,3 +21,9 @@
        str:
             .flexl "poiuyt", -1
   high_str: .flexh "poiuyt", -1
+  		    .flexh "\n\b\t"
+		    .flexl "\n"
+		    .flexl "\b"
+		    .flexl "\t"
+			.flexl "<stop>"
+			.flexl "<shift up>"

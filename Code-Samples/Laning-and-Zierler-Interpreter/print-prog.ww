@@ -1,74 +1,71 @@
-				sp print_prog
-				si 0
 
-	print_prog:
-				ta pp_rtn
+   print_prog:
+               ta ppg_rtn
 
-		   	   ; First section with pr_ label prefix reads all the
-			   ; chars from the pet into pp_buffer.
-			   ;  
-			   ; After reading, we assume there is at least one zero
-			   ;  at the end of the chars but within the buffer, so we
-			   ;  can terminate the print and zeroing loops
+               ; First section with pr_ label prefix reads all the
+               ; chars from the pet into pp_buffer.
 
-           pr_enter: si 129			; PETR B
+               ; After reading, we assume there is at least one zero
+               ;  at the end of the chars but within the buffer, so we
+               ;  can terminate the print and zeroing loops
+
+     pr_enter: si 0o1004                   ; PETR A, rewind
                ca pr_buf
                td pr_st_char
       pr_loop: rd 0
-	  		   ts pr_char
+               ts pr_char
                su pr_stop_char
                ts pr_tmp
                cm pr_tmp
                su 0
                cp pr_done
-			   ca pr_char
+               ca pr_char
    pr_st_char: ts 0
                ao pr_st_char
                sp pr_loop
-			   ;  pr_buffer: .words 512
-			   ;  pr_buf: .word pr_buffer
-   pr_buf:	   .word comp_code					; share the "heap space" with the L&Z compiled code
+       pr_buf: .word comp_code          ; share the "heap space" with the L&Z compiled code
  pr_stop_char: .flexl "<stop>"
        pr_tmp: .word 0
-	   pr_char: .word 0
+      pr_char: .word 0
       pr_done:
 
-				; This section with pp label prints the buffer to the flexowriter
+               ; This section with pp label prints the buffer to the flexowriter
 
-pp_enter:	   si 149
-			   ca pr_buf
-			   td pp_rd_char
-pp_loop:
-pp_rd_char:	   ca 0
-			   ts pp_tmp
-			   cm pp_tmp
-			   su 0
-			   cp pp_done
-			   ca pp_tmp
-			   clc 10
-			   rc 0
-			   ao pp_rd_char
-			   sp pp_loop
-pp_tmp:		   .word 0
-pp_done:	   
+     pp_enter: si 149
+               ca pr_buf
+               td pp_rd_char
+      pp_loop:
+   pp_rd_char: ca 0
+               ts pp_tmp
+               cm pp_tmp
+               su 0
+               cp pp_done
+               ca pp_tmp
+               clc 10
+               rc 0
+               ao pp_rd_char
+               sp pp_loop
+       pp_tmp: .word 0
+      pp_done:
 
-; Last section zeroes-out the buffer to return it to its orginal state.
+               ; Last section with pz label zeroes-out the buffer to return it to its orginal state.
 
-pz_enter:	   
-			   ca pr_buf
-			   td pz_rd_char
-			   td pz_wr_zero
-pz_loop:
-pz_rd_char:	   ca 0
-			   ts pz_tmp
-			   cm pz_tmp
-			   su 0
-			   cp pz_done
-			   ca 0
-pz_wr_zero:	   ts 0
-			   ao pz_rd_char
-			   ao pz_wr_zero
-			   sp pz_loop
-pz_done:
-pp_rtn:		   sp 0
-pz_tmp:		   .word 0
+     pz_enter:
+               ca pr_buf
+               td pz_rd_char
+               td pz_wr_zero
+      pz_loop:
+   pz_rd_char: ca 0
+               ts pz_tmp
+               cm pz_tmp
+               su 0
+               cp pz_done
+               ca 0
+   pz_wr_zero: ts 0
+               ao pz_rd_char
+               ao pz_wr_zero
+               sp pz_loop
+       pz_tmp: .word 0
+      pz_done:
+      ppg_rtn: sp 0
+

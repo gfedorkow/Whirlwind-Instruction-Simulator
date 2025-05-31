@@ -54,7 +54,6 @@
           mfp:							; mfp == modern frac print
                ta 37mfp
                sp ax                    ; Resume ordinary ww operation
-			   .print "LZ output: %fm", mra
                ca 3ax                   ; -|
                ts 2tmfp                 ;  |- Store C(mra) in 1tmfp and 2tmfp
                ca 2ax                   ;  |
@@ -98,8 +97,8 @@
                ao digit_cntr            ; -|- Have enough digits been printed?
                cp 17mfp                 ; -|
 
-			   ca newline				;; LAS The description says no cr, but there does not seem to be one emitted at any level
-			   rc 0
+			   ; ca newlinemfp	 		;; LAS The description says no cr, but there does not seem to be one emitted at any level
+			   ; rc 0
 
                sp ax                    ; -|- Return control to int. subroutine
         37mfp: sp 0                     ; -|
@@ -132,11 +131,15 @@
                sp 9mfp
         57mfp: cs 1tmfp
                sp 5mfp
+
         59mfp: ca 0                     ;                                                  ; [59-73 are notated in Subroutines.pdf with no spaces, e.g., ca0, p1]
         60mfp: .word 1
+			   ; [Really ndigits - 1. Here as in Laning's letter
+			   ;  (see ./InfoFromKnuth/from-Laning-76-07-02.pdf) we want 8.]
       ndigits:
-        61mfp: .word 10                 ; v2                                               ; [was just n1a2 -- need to track down this notation]
+        61mfp: .word 8 - 1              ; v2                                               ; [was just n1a2 -- need to track down this notation]
         62mfp: .word 10
+  digit_table:
         63mfp: .word 64mfp              ; ,                                                ; [I think comma? Might just be a blemish]
         64mfp: .flexh "0123456789"      ; Digit table
     plus_char:
@@ -144,11 +147,52 @@
    minus_char:
         75mfp: .flexh "-"
      dot_char: .flexh "."
-
         1tmfp: .word 0
         2tmfp: .word 0
         3tmfp: .word 0
    digit_cntr:
         4tmfp: .word 0
-		upcase: .word 0o71 * 1024
-		dncase: .word 0o75 * 1024
+	newlinemfp: .flexh "\n"
+
+
+			   ; The (decimal) exponent is in the exp field of the mra (mra+2)
+
+			   ; dv looks really hard to use for cases like this, since we really want an
+			   ; integer divide. It looks like some way can be devised with appropriate
+			   ; shifting, but instead we'll just take advantage of the fact that
+			   ; exponents wiil be no greater in magnitude than 19, so just subtraction
+			   ; will do.
+
+print_exp:	   ta print_exp_rtn
+			   si 149
+			   cs mra+2
+			   cp pe_non_neg
+			   ca minus_char
+			   sp pe_2
+pe_non_neg:	   ca plus_char
+pe_2:		   rc 0			   
+			   cm mra+2
+			   ts pe_t1
+			   ca pe_10
+			   su pe_t1
+			   cp pe_exp_ge_10
+pe_exp_lt_10:  cm mra+2
+			   ts pe_t1
+			   ca pe_zero_char
+			   rc 0
+			   sp pe_1
+pe_exp_ge_10:  cm mra+2
+			   su pe_10
+			   ts pe_t1
+			   ca pe_one_char
+			   rc 0
+pe_1:		   ca pe_t1
+			   ad digit_table
+               td pe_load_char
+pe_load_char:  ca 0
+			   rc 0
+print_exp_rtn: sp 0
+pe_10:		   .word 10
+pe_t1:		   .word 0
+pe_one_char:   .flexh "1"
+pe_zero_char:  .flexh "0"

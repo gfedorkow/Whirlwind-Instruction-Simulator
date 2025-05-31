@@ -566,8 +566,12 @@ class ConstWWbitClass:
         # I/O addresses.  I've put them here so the disassembler can identify I/O devices using this shared module.
         self.PTR_BASE_ADDRESS = 0o200  # starting address of mechanical paper tape reader
         self.PTR_ADDR_MASK = ~0o003  # sub-addresses cover PETR-A and PETR-B, word-by-word vs char-by-char
-        self.PETR_BASE_ADDRESS = 0o210  # starting address of PETR device(s)
+        
+        self.PETR_BASE_ADDRESS = 0o210  # starting address of PETR device(s)        
         self.PETR_ADDR_MASK = ~0o003  # sub-addresses cover PETR-A and PETR-B, word-by-word vs char-by-char
+
+        self.REWIND_PETR_BASE_ADDRESS = 0o1000 # starting address of rewindable PETR devices
+        self.REWIND_PETR_ADDR_MASK = ~0o007    # 3 bits of parameter: rewind, A|B, word|char
 
         self.CLEAR_BASE_ADDRESS = 0o17  # starting address of memory-clear device(s)
         self.CLEAR_ADDR_MASK = ~0000  # there aren't any sub-addresses
