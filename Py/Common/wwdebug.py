@@ -136,7 +136,10 @@ class DbgReadWatchPt (DbgBrk):
 # This state is set by the debugger -- i.e., it's the state of the prog from the debugger's viewpoint
 DbgProgState = Enum ("DbgProgState", ["Running", "Stepping", "Restarting", "Stopped"])
 
-# This is the state from the prog's viewpoint. For the debugger we want the largest-grain abstraction.
+# This is the state from the prog's viewpoint. For the debugger we want the
+# largest-grain abstraction, so we'll avoid if we can importing the cb.ALARM
+# enum.
+
 DbgProgContext = Enum ("DbgProgContext", ["Normal", "Alarmed"])
 
 class DbgDebugger:
@@ -200,7 +203,7 @@ class DbgDebugger:
         raise DbgException ("")
         pass
     # Return True if a restart command was issued
-    def repl (self, pc: int, progContext: DbgProgContext) -> bool:
+    def repl (self, pc: int) -> bool:
         self.checkTraceback (pc)
         if self.state == DbgProgState.Running:
             brk = self.brks.checkBrk (pc)
