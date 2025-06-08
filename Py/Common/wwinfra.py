@@ -450,6 +450,7 @@ class ConstWWbitClass:
         self.IO_ERROR_ALARM = 8  # guy's alarm for an instruction that tries to read beyond the end of tape media
         self.DIVIDE_ALARM = 9    # a real alarm for an overflow in Divide
         self.READIN_ALARM = 10   # synthetic alarm to return to ReadIn state due to control panel button
+        self.KBD_INT_ALARM = 11  # Keyboard interrupt alarm
 
         self.AlarmMessage = {self.NO_ALARM: "No Alarm",
                              self.OVERFLOW_ALARM: "Overflow Alarm",
@@ -462,6 +463,7 @@ class ConstWWbitClass:
                              self.IO_ERROR_ALARM: "I/O Error Alarm",
                              self.DIVIDE_ALARM: "Divide Error Alarm",
                              self.READIN_ALARM: "Return-to-Readin Alarm",
+                             self.KBD_INT_ALARM: "Keyboard Interrupt"
                              }
 
         self.COLOR_BR = "\033[93m"  # Yellow color code for Branch Instructions in console trace if color_trace is True

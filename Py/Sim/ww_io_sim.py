@@ -1012,7 +1012,7 @@ class IndicatorLightRegistersClass:
     def si(self, device, acc, _cm):
         device = device & ~self.cb.INDICATOR_LIGHT_ADDR_MASK
         self.indicator_reg = device
-        getiolog().info("SI: configured Indicator device %o" % self.indicatator_reg)
+        getiolog().info("SI: configured Indicator device %o" % self.indicator_reg)
         return self.cb.NO_ALARM
 
     def rc(self, operand, acc):  # "record", i.e. output instruction to device

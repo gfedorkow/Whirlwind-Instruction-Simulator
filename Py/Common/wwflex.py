@@ -391,7 +391,8 @@ class FlexoWin:
         self.v = 1500
         self.win = gfx.GraphWin ("Flexowriter", self.h, self.v)
         self.win.setBackground ("cornsilk")     # A color that really looks old-fashioned
-        imageName = os.path.normpath (os.environ["PYTHONPATH"] + "/" + "flexowriter-scaled-cropped.gif")
+        # imageName = os.path.normpath (os.environ["PYTHONPATH"] + "/" + "flexowriter-scaled-cropped.gif")
+        imageName = os.path.normpath ("flexowriter-scaled-cropped.gif")
         self.image = gfx.Image (gfx.Point (0, 0), [imageName])
         self.imageH = self.image.getWidth()
         self.imageV = self.image.getHeight()

@@ -39,7 +39,7 @@ are gone and are available via a previous git version. Some of the
 rationale for the change is below in a note to Guy dated Nov 2024.
 
 The main thing new is that we're script-based, and use basic scripting
-to run tests and do diffs. It's based on bolier-plate scripting which
+to run tests and do diffs. It's based on boiler-plate scripting which
 is copied an modified to make a new test. The convenience and
 flexibility of such script developement outweighs the "badness" of the
 redundancy, and if needed we can develop mass-editing tools to help us
@@ -672,7 +672,8 @@ literal-digit-seq												Decimal inreger
 	- Hoist cpu class so we can share with dbg
 	- Show .print etc in dbg. Right now just shows ww insts
 	- Get rid of need for dummy parsed line in dbg
-	- Dbg doesn't handle signals
+	* Dbg doesn't handle signals and alarms
+		[Handles all alarms, and kbd interrupt]
 	* bounce test (and the one in code-samples) has a .org 1. This
 	  doesn't seem right. Fixed the test but not the code-sample.
 		[Guy says this is what the original code did.]
@@ -688,6 +689,22 @@ literal-digit-seq												Decimal inreger
 	* Dbg: added tb (traceback)
 	* Dbg: Added bp disable/enable
 	* Dbg: made "p" print single locs and blocks
+	- Dbg: srh etc doesn't read param properly and it comes out as a (too-large) address
+	- Dbg: Label versus .pp Parameter -- Shown as same kind of symbol
+      mainly since the core files just have a single symbol type.
+	- Dbg: Consistency of machine state at alarms and interrupt points
+	  is a question.  An instruction which picks up an alarm, like dv
+	  alarm or overflow, should leave the state as if the instruction
+	  were not executed, and leave the pc at that instruction -- i.e.,
+	  IMO. What did real machine do?
+
+	  Instructions like halt execute, and where is the pc left (on the
+	  real machine)?
+
+
+	
+
+
 	* Send Knuth info we have for any insights
 	* Added -r (readable section) to flex converter
 	x Made ! be the stop char -- but not really needed
@@ -767,15 +784,16 @@ literal-digit-seq												Decimal inreger
 	* Float printer -- extreme accuracy issues
 		[Looks like bug in spax, where if you shift a 24,6 low word it
 		 will get the wrong bits due to a negative exponent. Fixed with
-		 ".if f26" enablement in the code.]
+		 ".if f24" enablement in the code.]
 	- Float printer: do low-end rounding? eg 42^2 + 57^2 = 5013, but
-	  printer gives +0.50129985+04. Same issue printing 42^2 and 57^2.
+		printer gives +0.50129985+04. Same issue printing 42^2 and 57^2.
 		Problem in essence is the modern style is to do decimal
 		rounding, after producing digits. Would need code change to
 		frac printer to store digits then do the round. This does not
 		seem to be in the spirit of the ww apps at the time.
-	- LZ: 197 location needs to change to different space -- runs into comp_code
-	- LZ: Note switch-table loc for a letter (var) is re-used during
+	* LZ: 197 location needs to change to different space -- runs into comp_code
+		[Now grows down from top of comp_code]
+	* LZ: Note switch-table loc for a letter (var) is re-used during
 			execution, since its parsing job is done and the table
 			entries are no longer needed.  But 2 words are needed per
 			var. Scanning the table shows that no letter is directly
@@ -783,6 +801,11 @@ literal-digit-seq												Decimal inreger
 			are avoided. The upper case table has a few such
 			collisions, but vars are all lower case.
 	- LZ: 12th root of 2 accuracy?
+	- LZ Paper:
+		- -32767 -- fractional behavior
+		- Fig 5 -- wrong; it's not the 24,6 routine
+	- %fx -- really can't support it
+
 
 
 	- C-ish
