@@ -801,6 +801,14 @@ literal-digit-seq												Decimal inreger
 			are avoided. The upper case table has a few such
 			collisions, but vars are all lower case.
 	- LZ: 12th root of 2 accuracy?
+		Note use this clisp loop to get many digits of music-note prog for ref:
+
+			 (let ((r (expt 2d0 (coerce 1/12 'double-float)))
+			 	   (s 220d0))
+			   (dotimes (i 25)
+				 (print (list i s (sq s) (/ 1 (sq s))))
+				 (setq s (* r s))))
+	  
 	- LZ Paper:
 		- -32767 -- fractional behavior
 		- Fig 5 -- wrong; it's not the 24,6 routine

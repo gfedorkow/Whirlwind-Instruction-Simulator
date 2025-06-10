@@ -212,7 +212,7 @@ class DbgDebugger:
         raise DbgException ("")
         pass
     # Return True if a restart command was issued
-    def repl (self, pc: int, context: DbgProgContext) -> DbgProgState:
+    def repl (self, pc: int, context: DbgProgContext) -> bool:
         self.addTraceback (pc)
         if self.state == DbgProgState.Running:
             if context == DbgProgContext.Alarmed:
@@ -220,7 +220,7 @@ class DbgDebugger:
             else:
                 brk = self.brks.checkBrk (pc)
                 if brk is None:
-                    return self.state
+                    return False
                 else:
                     print (brk.prompt())
         self.updatePanelFcn()
@@ -231,7 +231,7 @@ class DbgDebugger:
                 sys.exit (0)
             elif s == "":
                 self.state = DbgProgState.Stepping
-                return self.state
+                return False
             else:
                 try:
                     parsedLine = AsmParsedLine (s, 0)
@@ -253,9 +253,9 @@ class DbgDebugger:
                     continue
         if self.state == DbgProgState.Restarting:
             self.state = DbgProgState.Running
-            return DbgProgState.Restarting
+            return True
         else:
-            return self.state
+            return False
         pass
 
 class DbgCmd:

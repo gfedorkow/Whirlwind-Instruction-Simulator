@@ -37,7 +37,7 @@ import re
 import museum_mode_params as mm
 import csv
 import control_panel
-from wwdebug import DbgDebugger, DbgProgContext, DbgProgState
+from wwdebug import DbgDebugger, DbgProgContext
 import math
 import traceback
 import signal
@@ -2026,22 +2026,24 @@ def main_run_sim(args, cb):
     # Mostly this doesn't matter...  but the analog GPIO and SPI libraries need to be closed
     # to avoid an error message on subsequent calls
     try:
+        if UseDebugger:
+            # Handle keyboard interrupts specially during sim, by detecting at
+            # a sync point that the interrupt count cpu.kbd_int is non-zero,
+            # and doing an alarm breakpoint in the debugger. In this manner we
+            # get to interrupt a ww prog in a consistent state.
+            def kbd_int_handler (signum, frame):
+                cpu.kbd_int += 1
+                if cpu.kbd_int > 2:
+                    # If user hit ^C more than twice then the sim (not the ww
+                    # prog) is probably in a loop so enable the interrupt and
+                    # exception
+                    signal.signal (signal.SIGINT, signal.default_int_handler)
+                    raise KeyboardInterrupt
+            signal.signal (signal.SIGINT, kbd_int_handler)
         while True:
             # LAS
-            dbgProgState: DbgProgState = None
             if UseDebugger:
                 cpu.kbd_int = 0
-                
-                def kbd_int_handler (signum, frame):
-                    cpu.kbd_int += 1
-                    if cpu.kbd_int > 2:
-                        # If user hit ^C more than twice then we're probably in a loop
-                        # so enable the interrupt
-                        signal.signal (signal.SIGINT, signal.default_int_handler)
-
-                # Don't accept keyboard interrupts during an instruction execution
-                signal.signal (signal.SIGINT, kbd_int_handler)
-
                 # Detect restart cmd from dbg and set alarm state to quit, so
                 # will return to main() and call main_run_sim() again, which
                 # should reset everything
@@ -2050,8 +2052,8 @@ def main_run_sim(args, cb):
                     dbgProgContext = DbgProgContext.Normal
                 else:
                     dbgProgContext = DbgProgContext.Alarmed
-                dbgProgState = Debugger.repl (cpu.PC, dbgProgContext)
-                if dbgProgState == DbgProgState.Restarting:
+                restart = Debugger.repl (cpu.PC, dbgProgContext)
+                if restart:
                     alarm_state = cb.QUIT_ALARM
                     break
             
@@ -2149,18 +2151,14 @@ def main_run_sim(args, cb):
                     break
 
             if UseDebugger:
-                # LAS Restore interrupts
+                # LAS
                 if cpu.kbd_int != 0:
                     alarm_state = cb.KBD_INT_ALARM
                     cpu.print_alarm_msg (alarm_state)
-                signal.signal (signal.SIGINT, signal.default_int_handler)
 
             pass   # Here Ends The Main Loop
 
     except KeyboardInterrupt:
-        # LAS If sim (not the ww prog it is simming) is stuck in a loop we'll
-        # eventually get enough ^C's that we'll take the interrupt as an
-        # exception.
         print("Keyboard Interrupt: Cleanup and exit")
         alarm_state = cb.QUIT_ALARM
 
