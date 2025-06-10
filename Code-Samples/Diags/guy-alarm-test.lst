@@ -1,0 +1,19 @@
+
+
+                     ; diagnostic to test Alarm processing
+                     ; g fedorkow, Mar 29, 2025
+
+                     ; this code simply makes an alarm happen as soon as possible
+
+                     .org 0o40
+
+@0040:100000   main: ca 0                     ; @@JumpedToBy a0045
+@0041:040047         ts answer
+@0042:100046         ca bignum
+@0043:110046         ad bignum                ; integer overflow
+@0044:040047         ts answer
+@0045:074040         sp main
+
+
+@0046:077777 bignum: .word 0o77777            ; @@ReadBy a0042 a0043
+@0047:000000 answer: .word 0                  ; @@WrittenBy a0041 a0044

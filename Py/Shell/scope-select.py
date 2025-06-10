@@ -9,24 +9,43 @@
     with the code selected. 
     
     The code can also be set with the lightgun selecting one of 16 points.
-    In normal mode, the programme imediately returns with the code selected.
+    In normal mode, the programme immediately returns with the code selected.
     In debug mode, the corresponding LEDs are activated and the push button terminates.
     
     Debug mode is switched with the push button in mode 0.
                                                     
                 
     Result is the bitwise or of the code selected by the lightgun and/or the keys.
-    
+
+    original code by Rainer Glaschick
 """
 
 # 
 import sys
 import time
 import vecIFbase as base
+import RPi.GPIO as gpio
+pin_pwr_ctl = 19
+
+
+class PwrCtlClass:
+    def __init__(self):
+        self.pwr_state: int = 0
+
+    def pwr_on(self) -> None:
+        global pin_pwr_ctl
+
+        self.pwr_state = 1
+
+        gpio.setmode(gpio.BCM)
+        gpio.setup(pin_pwr_ctl, gpio.OUT)
+
+        gpio.output(pin_pwr_ctl, self.pwr_state)
+
 
 def drawNumber(x, y, num):
-    base.drawCharacter(x, y, base.digits[num // 10], enlarge=8.0)
-    base.drawCharacter(x+0.1, y, base.digits[num % 10], enlarge=8.0)
+    base.drawCharacter(x, y, base.digits[num // 8], enlarge=8.0)   # changed to Octal by guy to line up with MIR activation
+    base.drawCharacter(x+0.1, y, base.digits[num % 8], enlarge=8.0)
     
 # show the menu, set LEDs and show the value on top
 def do_show() :
@@ -91,6 +110,8 @@ def loop():
 # run the main loop
 try:
     base.vecIFopen()
+    pc = PwrCtlClass()    # turn the power on with Micro Whirlwind
+    pc.pwr_on()
     
      # wait for key release
     while True:

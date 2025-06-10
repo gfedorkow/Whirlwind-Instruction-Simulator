@@ -1,0 +1,19 @@
+
+
+; diagnostic to test Alarm processing
+; g fedorkow, Mar 29, 2025
+
+; this code simply makes an alarm happen as soon as possible
+
+        .org 0o40
+
+main:   ca 0
+        ts answer
+        ca bignum
+        ad bignum   ; integer overflow
+        ts answer
+        sp main
+
+
+bignum:  .word 0o77777
+answer:  .word 0

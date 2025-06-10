@@ -26,9 +26,9 @@ SetupOnly = True
 
 SetupSwitchSettings = [
     [(None, 0)],    # a 'no-op' state to make sure the we don't start before the game is Ready to Go...  Not sure this is necessary, but it reduces confusion...
-    [("FF02Sw", 7), ("FF03Sw", 2)],  # remove up to seven pieces from one group per move; must alter 2 groups per move
+    [("FF02Sw", 2), ("FF03Sw", 1)],  # remove up to seven pieces from one group per move; must alter 2 groups per move
     [("RMIR", 3)],	# initial A
-    [("RMIR", 0)],	# initial B
+    [("RMIR", 2)],	# initial B
     [("RMIR", 0)],	# initial C	
     [("RMIR", 0)],	# initial D
     [("RMIR", 0)],  # initial E

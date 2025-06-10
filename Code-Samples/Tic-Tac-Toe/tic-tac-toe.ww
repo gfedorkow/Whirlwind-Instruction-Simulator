@@ -35,10 +35,6 @@ zero:
 const_0:  .word 0
 one:
 const_1:  .word 1
-c_15:       .word 15
-c_32:       .word 32
-c_scope_edge: .word 950 * 32        ; close to the edge of the scope screen
-c_msg_x_pos:  .word 800 * 32
 
 
 ; constants for SI graphics instruction
@@ -50,10 +46,36 @@ c_msg_x_pos:  .word 800 * 32
             .org 0o40
 ;
 
-main:       sp init_game_board
+main:       sp init_game_board      ; call the init subroutine
+            sp refresh_loop         ; branch to main display refresh loop
+
+; constants
+c_15:       .word 15
+c_32:       .word 32
+c_scope_edge: .word 950 * 32        ; close to the edge of the scope screen
+c_msg_x_pos:  .word 800 * 32
 
 refresh_loop: sp draw_game_board
-;            si 0
+            ca g_game_over          ; negative value means "game over"
+            cp refresh_loop
+            sp is_there_winner      ; check to see if this user move ended the game
+            ca which_player         ; if which_player is not zero, then the game has ended 
+            dm zero
+            cp rl_continue_game
+            sp set_game_over        ; negative means no more moves
+
+rl_continue_game:
+            ca light_gun_mailbox
+            cp refresh_loop
+            .print "light gun hit at cell %d", light_gun_mailbox
+            sp user_play_cell   ; do something with the light gun hit!  ; this call is for person-vs-computer play
+            cs one
+            ts light_gun_mailbox  ; mark the mailbox as empty
+
+            sp refresh_loop
+
+set_game_over:  cs one              ; the game_over flag starts set to zero by init_game_board
+            ts g_game_over          ; But when the game is over, we set it to -1
             sp refresh_loop
 
 
@@ -106,6 +128,8 @@ draw_game_state:
             ts next_y_addr
             ad const_1
             ts next_gb_state_addr
+            cs one
+            ts light_gun_mailbox
 gb_loop:
 gb_x_inst:  ca next_x_addr
             ts x_addr_arg
@@ -115,7 +139,7 @@ gb_gs_inst: ca next_gb_state_addr
             td ca_addr
 ca_addr:    ca 0
             td gb_state_sp
-gb_state_sp: sp 0   ; draw the X, O or dot
+gb_state_sp: sp 0   ; draw the X, O or dot; this call may have a side-effect of seeing a light-gun hit
 
             ; increment pointers and loop count for the next pass
             ca next_x_addr
@@ -130,21 +154,11 @@ gb_state_sp: sp 0   ; draw the X, O or dot
             ao loop_count
             cp gb_loop
 
-draw_current_player:
-;            ca player_state_x_ptr
-;            ts x_addr_arg
-;            ca player_state_y_ptr
-;            ts y_addr_arg
+draw_current_player:            ; draw an alpha string at the bottom of the screen to show the state of the game
             ca which_player     ; see definition for this number
             md const_7          ; clear the sign bit in case of "Game Over"
             ad state_msg_tablep
             td dcp_ca_addr
-; this small strip drew symbols for the player state instead of printing words...  used prior to getting the 
-; string-printer to work...            
-;dcp_ca_addr: ca 0
-;            td dxp_which_player_sp
-;dxp_which_player_sp:
-;            sp 0        ; call the subroutine to draw an X or O to show which player is on deck
 
             cs c_scope_edge     ; set the location to draw a string
             ts ds_argy
@@ -167,6 +181,7 @@ move_number: .word 0    ; count the number of moves
 next_x_addr:  .word 0
 next_y_addr:  .word 0
 next_gb_state_addr: .word 0
+light_gun_mailbox:  .word -1  ; used to pass light-gun hits back from the drawing routine.  Negative means "no hit"
 
 loop_count:  ; used only in top-level routines for drawing the game board
           .word 0
@@ -209,48 +224,53 @@ state_msg_table:
 
 
 msg_cross_play:
-            .flexl "P"
-            .flexl "L"
-            .flexl "A"
-            .flexl "Y"
-            .flexl "E"
-            .flexl "R"
-            .flexl " "
-            .flexl "X"
+;            .flexl "PLAYER X"
+            .word 0o000054
+            .word 0o000044
+            .word 0o000006
+            .word 0o000052
+            .word 0o000002
+            .word 0o000024
+            .word 0o000010
+            .word 0o000072
             .word -1
 
 msg_naught_play:
-            .flexl "P"
-            .flexl "L"
-            .flexl "A"
-            .flexl "Y"
-            .flexl "E"
-            .flexl "R"
-            .flexl " "
-            .flexl "O"
+;            .flexl "PLAYER O"
+            .word 0o054
+            .word 0o044
+            .word 0o006
+            .word 0o052
+            .word 0o002
+            .word 0o024
+            .word 0o010
+            .word 0o060
             .word -1
 
 msg_x_win:
-            .flexl "X"
-            .flexl " "
-            .flexl "W"
-            .flexl "I"
-            .flexl "N"
+;            .flexl "X WIN"
+            .word 0o072
+            .word 0o010
+            .word 0o046
+            .word 0o014
+            .word 0o030
             .word -1
 
 msg_o_win:
-            .flexl "O"
-            .flexl " "
-            .flexl "W"
-            .flexl "I"
-            .flexl "N"
+;            .flexl "O WIN"
+            .word 0o060
+            .word 0o010
+            .word 0o046
+            .word 0o014
+            .word 0o030
             .word -1
 
 msg_draw:
-            .flexl "D"
-            .flexl "R"
-            .flexl "A"
-            .flexl "W"
+;            .flexl "DRAW"
+            .word 0o022
+            .word 0o024
+            .word 0o006
+            .word 0o046
             .word -1
 
 
@@ -508,8 +528,10 @@ lgh_y1_arg: ca 0        ; load the y value of the cell's address in the grid
 
             .print "light gun %o hit x=%o, y=%o, cell=%ao", lcl_gun_num, lcl_cell_x, lcl_cell_y
 
+            ; the cell number of the hit is passed below in ACC
             ; sp alternate_play_cell   ; do something with the light gun hit!; this call is for two-person play
-            sp user_play_cell   ; do something with the light gun hit!  ; this call is for person-vs-computer play
+            ts light_gun_mailbox
+            ; sp user_play_cell   ; do something with the light gun hit!  ; this call is for person-vs-computer play
 
             sp is_there_winner       ; test to see if it's Game Over
 
@@ -557,7 +579,8 @@ lcl_aplay_cell_num: .word 0
 ; This routine plays person against computer; each light gun hit plays an Cross,
 ; then the machine plays Naught
 ; Note that this routine can only be called on a previously-unplayed cell, 'cause those
-; are the only ones with dots in them, and that's all the light gun can see
+; are the only ones with dots in them, and that's all the light gun can see.
+; The number of the cell being played is in ACC
 user_play_cell:
             ta user_play_cell_ret
 
@@ -575,7 +598,7 @@ upc_ca0:    ca 0                    ; ACC should now contain the address of the 
 upc_table_ts: ts 0                  ; store the display routine to the game state table
 
             sp is_there_winner      ; check to see if this user move ended the game
-            cp upc_cleanup          ; negative means it's a tie; no more moves
+            cp upc_cleanup          ; negative means no more moves
 
             ; now switch to the other player for the next move
             ; table_play_move is used to optimize the first move by a simple table lookup
@@ -713,7 +736,7 @@ apm_ret:
             sp 0
 
 apm_panic:
-            .print "not dot, cross or naught in auto_play_move: lcl_apm_cell_state=0o%o", lcl_apm_cell_state
+            .print "APM_Panic Halt: not dot, cross or naught in auto_play_move: lcl_apm_cell_state=0o%o", lcl_apm_cell_state
             sp 0
 
 lcl_apm_copy_count:
@@ -736,6 +759,8 @@ lcl_cell_for_move:
 ;   b) then see if anyone won
 ;   [future part c might determine if anyone could win on the next round]
 ; The second part also can determine if the game is tied, i.e., no open cells left to play
+;   [Use of this routine would be cleaner if it returned with +0 if there are more moves,
+;     or -0 if it's 'game over']
 is_there_winner:
             ta is_there_winner_ret
             ; set up the outer loop
@@ -745,7 +770,7 @@ is_there_winner:
             td itw_st_ca
             ad const_1
             td itw_inc_gb
-            cs const_0          ; initialize with negative zero to simply zero-detect later
+            cs const_0          ; initialize with negative zero to simplify zero-detect later
             ts lcl_total_dots        ; count all the unplayed cells
 
             ; set up the inner loop
@@ -825,7 +850,7 @@ itw_next_outer_loop:
             ao lcl_tb_loop_count
             cp itw_outer_loop
 
-            .print "unplayed cells=0o%o", lcl_total_dots
+            ; .print "unplayed cells=0d%d", lcl_total_dots
             ca lcl_total_dots
             cp its_a_tie            ; negative zero means its a tie (i.e., zero dots found)
             sp is_there_winner_ret  ; so if it's not negative, we're done
@@ -922,6 +947,7 @@ igb_table_ts: ts 0                  ; set a table entry to the default pointer
 
             ca const_0
             ts which_player
+            ts g_game_over          ; clear the "game over" flag
 
             ;;;;;
             ; debug - pre-populate two moves
@@ -942,6 +968,7 @@ igb_table_ts: ts 0                  ; set a table entry to the default pointer
 init_game_board_ret:
             sp 0
 lcl_init_val: .word draw_dot
+g_game_over:  .word 0
 
 ; ****************************************
 
@@ -1731,8 +1758,8 @@ minmax_wr1:
         .exec print_experiment(cm, cb, "Trying  game piece %d to cell %d, count %d, isMax==True", ("player", "minmax_lcl_next_cell", "minmax_lcl_loop_cnt"), "push_lcl_depth")
         sd zero   ; no-op
 
-;        cs zero                 ; load negative zero, i.e. all ones    
-;        sd minmax_lcl_isMax     ; Sum Digits, i.e., xor, will reverse isMax
+        cs zero                 ; load negative zero, i.e. all ones    
+        sd minmax_lcl_isMax     ; Sum Digits, i.e., xor, will reverse isMax
         cs one                   ; load -1 to signal isMax should be False
         ; here begins the recursion
         ; .exec print_indent(cm, "starting recursive call to minimax: isMax==True-branch, cell at %d, depth: %d, loop_count: %d" % (cm.rd(rl("minmax_lcl_next_cell")), cm.rd(rl("push_lcl_depth")), cm.rd(rl("minmax_lcl_loop_cnt"))), rl("push_lcl_depth"))
@@ -1917,8 +1944,15 @@ mm_lcl_ret_val:         .word 0
 ; The routine takes no explicit argument, but assumes that Player is the
 ; one we're trying to advance
 ; the assumption on calling this routine is that there's at least one move available to be tried
+; This routine can take a while, so it redraws the screen a couple of times.  To indicate who'S
+; doing what, we reverse the "player" bit temporarily.
 findBestMove:
         ta fBM_ret
+
+        ; switch the display to the machine player
+        ca which_player
+        sd const_1              ; xor a 1 into the LSB; i.e. 0->1 or 1->0
+        ts which_player
 
         ; initialize the 'best stuff' detector
         cs c_1000
@@ -1947,10 +1981,9 @@ fBM_try_move:
         .print "fBM: try  empty cell %d, player=%d", fBM_lcl_current_cell, player
 fBM_set_cell:
         ts 0
+        sp draw_game_board    ; be careful to not trigger unintended recursion...
+
         cs one                  ; tell Minimax to try for a Min score on this cell
-
-        ; sp draw_game_board    ; this doesn't work yet -- unintended recursion...
-
         ; .print "fBM: call minimax, player=%d, IsMax=%ad", player
         sp minimax              ; call the optimizer; best-score comes back in AC
         ;.print "fBM: minimax returned %ad"
@@ -1979,10 +2012,14 @@ fBM_next_loop:
         ao fBM_lcl_loop_count
         cp fBM_fetch_cell       ; go 'round the loop again
 
+        ; now switch the display back to the original (human) player
+        ca which_player
+        sd const_1              ; xor a 1 into the LSB; i.e. 0->1 or 1->0
+        ts which_player
+
         ; when we're done with the loop, return the best move found (not the score, the cell that played best)
         ca fBM_lcl_best_move
         .print "fBM findBestMove for player %d returns move to cell %ad, score=%d", player, fBM_lcl_best_value
-
 fBM_ret:
         sp 0
 fBM_lcl_best_value:     ; best score found so far
@@ -2043,7 +2080,7 @@ msg:        .flexl "N"
 ; ds_argx and ds_argy give the initial (x, y) location
 draw_str:
             ta ds_ret
-            td ds_lcl_charp      ; save the character pointer
+            td ds_lcl_charp      ; save the character pointer passed in the ACC
 ds_loop:
             ca ds_argx
             ts d16c_argx

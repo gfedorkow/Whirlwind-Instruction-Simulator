@@ -1,0 +1,30 @@
+        .org 0
+c_zero: .word 0        
+c_one:  .word 1
+
+        ; set the default menu choice to Vibrating String
+        .switch RightInterventionReg, 0o112
+        .org 0o40
+
+main:
+        si 0o300   ; read Activate Register Zero
+        rd 0       ; one of them ("upper", I think) is WW Bit Zero
+        cp get_input
+
+	cs delay_val
+wait:	ad c_one	; The loop spins so fast you can't tell it's running
+	cp wait		; Adding a bit of delay will allow the program counter to keep up
+
+        sp main
+
+get_input:
+         ca 0
+         si 0o337   ; read the RMIR
+         rd 0
+         ts return_code
+        .exec exit(cm.rd(0o100))
+        sp main
+
+        .org 0o100
+return_code:  .word 0
+delay_val:    .word 2000  ; decimal 2K -> .1 sec

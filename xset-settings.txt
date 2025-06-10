@@ -1,0 +1,23 @@
+https://forums.raspberrypi.com/viewtopic.php?t=302937
+
+There are actually 2 blankers going at the same time. One handled by xset s and the other handled by xset dpms. Both are set to default 600 seconds (10 min.)
+To view current settings use:
+
+Code: Select all
+
+xset q
+
+I find it easiest to turn one off and only deal with the one.
+
+Code: Select all
+
+xset s off
+
+Then to set blanking to 30 min. for example:
+
+Code: Select all
+
+xset dpms 1800 1800 1800
+
+Note that on reboot both screenblankers will revert to the default 600 seconds.
+If you want to have your own settings each boot then add the 2 commands to autostart: viewtopic.php?f=66&t=294014
