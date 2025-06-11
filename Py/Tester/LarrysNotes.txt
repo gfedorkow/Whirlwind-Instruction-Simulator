@@ -589,8 +589,9 @@ literal-digit-seq												Decimal inreger
 	* Related to last comment looks like bug in old asm forming one's-comp negative numbers. See crt-test.acore versus crt-test.n.ncore
 	* Quotes in strings
 	* .exec doesn't list properly -- strings in this case don't want quotes
-	- flexo translation
+	* flexo translation
 		Not sure I have it all right
+		[New wwflex code and Flascii takes care of it. See below for remaining issues.]
 	- "See .dbwgt for more discussion"
 	* Assure all wwasm args are handled in some way
 		Yes, with some debate ahead
@@ -769,7 +770,6 @@ literal-digit-seq												Decimal inreger
 		[Added new device, rewindable PETR, base 0o1000. See ww_io_sim.py]
 	- device id for petr seems wrong manual says that code is for mech tr
 		[Looks like it was easier for Guy just to support both devices with the same code.]
-	- Where is current flex-code converter used?
 	- LZ status 5/11/25:
 		- Drum-based storage of compiled code NYI (Knuth notes and not in the code)
 		- Subscript vars NYI (Knuth notes and not in the code -- note blank op space for vertical bar)
@@ -813,7 +813,8 @@ literal-digit-seq												Decimal inreger
 		- -32767 -- fractional behavior
 		- Fig 5 -- wrong; it's not the 24,6 routine
 	- %fx -- really can't support it
-
+	- Replace FlexoClass with code in wwflex
+		Where is current flex-code converter used?
 
 
 	- C-ish
