@@ -1,12 +1,26 @@
 sh: 1: color: not found
-Warning: Overwriting a read-only toggle switch at addr=0o10, was 0o130007, is 0o74400
-start at 0o10
+start at 0o1000
 configure flexowriter #2, stop_on_zero=1, packed=0
-LZ print: 18315
+Flexo: x = 42 + 57,
+Flexo: y = 86 + 99,
+Flexo: z = xy,
+Flexo: PRINT z.
+Flexo: STOP
 configure flexowriter #2, stop_on_zero=1, packed=0
-Halt Instruction!  (Code=0) at pc=01342
-Alarm 'Program Halt' (5) at PC=0o1342 (0d738)
+LZ output: 18315
+configure flexowriter #2, stop_on_zero=1, packed=0
+configure flexowriter #2, stop_on_zero=1, packed=0
+configure flexowriter #2, stop_on_zero=1, packed=0
+Flexo: z=+.18314994+05 
+Halt Instruction!  (Code=0) at pc=02745
+Alarm 'Program Halt' (5) at PC=0o2745 (0d1509)
 
 Flexowriter Said:
-z=
-Ran 5174 cycles; Used mem=47MB
+x = 42 + 57,
+y = 86 + 99,
+z = xy,
+PRINT z.
+STOP
+z=+.18314994+05 
+
+Ran 12724 cycles; Used mem=48MB

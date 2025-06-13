@@ -20,16 +20,12 @@ Error: Line 16: Setting instruction set to the Antikythera Mechanism:
     .isa 1066
 Error: Line 17: Setting instruction set to MIT WhirlWave Quantum Computer:
     .isa 4000
-Error: Line 3: Char pos 16: Digit string must be octal:
+Error: Line 3: Digit string must be octal:
     sp 0o177789
-               ^
-
 Error: Line 4: Address 0o177777 out of range:
     sp 0o177777
-Error: Line 6: Char pos 16: Unbound variable xyz:
+Error: Line 6: Unbound variable xyz:
     sp xyz + 42
-               ^
-
 Error: Line 7: Incorrect operand type AsmExprValueType.String abc:
     sp "abc"
 Error: Line 11: Incorrect operand type AsmExprValueType.String blah:

@@ -37,8 +37,10 @@ import re
 import museum_mode_params as mm
 import csv
 import control_panel
-from wwdebug import DbgDebugger
+from wwdebug import DbgDebugger, DbgProgContext
 import math
+import traceback
+import signal
 
 # There can be a source file that contains subroutines that might be called by exec statements specific
 #   to the particular project under simulation.  If the file exists in the current working dir, import it.
@@ -261,7 +263,6 @@ class CpuClass:
             [self.unused1_inst, "UN37", "Unused 0o37"],  # 037
         ]
 
-
         # putting this stuff here seems pretty darn hacky
         self.SymTab = {}
         self.SymToAddr = {}
@@ -270,6 +271,7 @@ class CpuClass:
 
         self.decif = deci   # I am baffled at how to pass this function name into my py_exec routine
 
+        self.kbd_int = 0    # Count of keyboard interrupts
 
     def set_isa(self, isa_name):
         if isa_name == "1950":
@@ -435,14 +437,18 @@ class CpuClass:
     def get_dbg_line (self, pc: int) -> str:
         global CoreMem
         instruction = CoreMem.rd (pc, fix_none=False) # ?? fix_none?
-        opcode = (instruction >> 11) & 0o37
-        address = instruction & self.cb.WW_ADDR_MASK
-        oplist = self.op_decode[opcode]
-        if self.CommentTab[pc] is not None and len(self.CommentTab[pc]) > 0:
-            description = self.CommentTab[pc]
+        if instruction is not None:
+            opcode = (instruction >> 11) & 0o37
+            address = instruction & self.cb.WW_ADDR_MASK
+            oplist = self.op_decode[opcode]
+            if self.CommentTab[pc] is not None and len(self.CommentTab[pc]) > 0:
+                description = self.CommentTab[pc]
+            else:
+                description = oplist[2]
+            short_opcode = oplist[1]
         else:
-            description = oplist[2]
-        short_opcode = oplist[1]
+            short_opcode = "<Uninitialized Memory>"
+            address = 0
         s5 = self.get_trace_line (pc, short_opcode, address)
         return s5
 
@@ -464,6 +470,8 @@ class CpuClass:
     def get_inst_info (self, addr: int) -> (int, str, int, str):
         global CoreMem
         instruction = CoreMem.rd (addr, fix_none=False) # ?? fix_none?
+        if instruction is None:
+            return None
         opcode = (instruction >> 11) & 0o37
         address = instruction & self.cb.WW_ADDR_MASK
         if address in self.SymTab:
@@ -472,7 +480,16 @@ class CpuClass:
             label = ""
         oplist = self.op_decode[opcode]
         short_opcode = oplist[1]
-        return (opcode, short_opcode, address, label)
+        return (opcode, short_opcode, address, label, self._AC, self._BReg)
+
+    # Fcn passed to debugger just to get panel up to date when hitting break or step
+    def update_panel_for_dbg (self):
+        if self.cb.panel is not None:
+            self.cb.panel.update_panel (self.cb, 0)
+
+    def print_alarm_msg (self, alarm_state: int):
+        print("Alarm '%s' (%d) at PC=0o%o (0d%d)" %
+              (self.cb.AlarmMessage[alarm_state], alarm_state, self.PC - 1, self.PC - 1))
 
     # Resolve-Label: special lookup for python statements embedded in ww source
     # The lookup takes a string, converts either decimal or octal, or looks for it in the symtab.
@@ -629,6 +646,7 @@ class CpuClass:
             self.cb.log.warn (".print: too many args. fmtlist= %s, arglist= %s" % (str (fmtList), str (argList)))
         return output_str
 
+
     def run_cycle(self):
         global CoreMem
         global Breakpoints
@@ -664,7 +682,6 @@ class CpuClass:
         if current_pc in Breakpoints:
             Breakpoints[current_pc](self)
         return ret
-
 
     # generic WW add, used by all instructions involving ones complement add or subtract
     # New Version, Dec 21 2023
@@ -1956,17 +1973,44 @@ def main_run_sim(args, cb):
                         cpu.wwprint_to_str,
                         cpu.get_dbg_line,
                         cpu.get_reg,
-                        cpu.get_inst_info)
-
-    # LAS
-    if UseDebugger:
-        Debugger.repl (cpu.PC)
+                        cpu.get_inst_info,
+                        cpu.update_panel_for_dbg)
 
     # the main sim loop is enclosed in a try/except so we can clean up from a keyboard interrupt
     # Mostly this doesn't matter...  but the analog GPIO and SPI libraries need to be closed
     # to avoid an error message on subsequent calls
     try:
+        if UseDebugger:
+            # Handle keyboard interrupts specially during sim, by detecting at
+            # a sync point that the interrupt count cpu.kbd_int is non-zero,
+            # and doing an alarm breakpoint in the debugger. In this manner we
+            # get to interrupt a ww prog in a consistent state.
+            def kbd_int_handler (signum, frame):
+                cpu.kbd_int += 1
+                if cpu.kbd_int > 2:
+                    # If user hit ^C more than twice then the sim (not the ww
+                    # prog) is probably in a loop so enable the interrupt and
+                    # exception
+                    signal.signal (signal.SIGINT, signal.default_int_handler)
+                    raise KeyboardInterrupt
+            signal.signal (signal.SIGINT, kbd_int_handler)
         while True:
+            # LAS
+            if UseDebugger:
+                cpu.kbd_int = 0
+                # Detect restart cmd from dbg and set alarm state to quit, so
+                # will return to main() and call main_run_sim() again, which
+                # should reset everything
+                dbgProgContext: DbgProgContext = None
+                if alarm_state == cb.NO_ALARM:
+                    dbgProgContext = DbgProgContext.Normal
+                else:
+                    dbgProgContext = DbgProgContext.Alarmed
+                restart = Debugger.repl (cpu.PC, dbgProgContext)
+                if restart:
+                    alarm_state = cb.QUIT_ALARM
+                    break
+            
             # if the simulation is stopped, we should poll the panel and wait for a start of some wort
             #  The panel_update will set the cpu_state if start or stop buttons are pressed, and will update
             #  the PC to the starting address if needed.
@@ -2030,7 +2074,10 @@ def main_run_sim(args, cb):
 
             # Different things happen if there's an alarm; if Control Panel. we just switch to sim_stop; if it's cmd-line, exit
             if alarm_state != cb.NO_ALARM:
-                print("Alarm '%s' (%d) at PC=0o%o (0d%d)" % (cb.AlarmMessage[alarm_state], alarm_state, cpu.PC - 1, cpu.PC - 1))
+                cpu.print_alarm_msg (alarm_state)
+                # LAS
+                if UseDebugger:
+                    continue
                 if cb.panel:
                     if alarm_state == cb.QUIT_ALARM:   # they said Quit, we'll quit.
                         break
@@ -2038,7 +2085,6 @@ def main_run_sim(args, cb):
                         cb.sim_state = cb.SIM_STATE_STOP
 #                if cb.panel and cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # watch for mouse clicks on the panel
 #                    break
-
                 else:
                     # the normal case with cmd-line wwsim is to stop on an alarm; if the command line flag says not to, we'll try to keep going
                     # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
@@ -2066,14 +2112,14 @@ def main_run_sim(args, cb):
                     CycleDelayTime = ns.instruction_cycle_delay
                     cb.crt_fade_delay_param = ns.crt_fade_delay
 
-            # LAS
-            if UseDebugger:     # Detect restart cmd from dbg and set alarm state to no_alarm
-                restart = Debugger.repl (cpu.PC)
-                if restart:
-                    alarm_state = cb.QUIT_ALARM
-                    break
+            if UseDebugger:
+                # LAS
+                if cpu.kbd_int != 0:
+                    alarm_state = cb.KBD_INT_ALARM
+                    cpu.print_alarm_msg (alarm_state)
 
-        # Here Ends The Main Loop
+            pass   # Here Ends The Main Loop
+
     except KeyboardInterrupt:
         print("Keyboard Interrupt: Cleanup and exit")
         alarm_state = cb.QUIT_ALARM

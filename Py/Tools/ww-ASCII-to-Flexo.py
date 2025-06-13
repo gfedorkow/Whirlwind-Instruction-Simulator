@@ -10,79 +10,7 @@ import re
 import wwinfra
 import struct
 from typing import List, Dict, Tuple, Sequence, Union, Any
-
-
-def make_ascii_dict(flexo, upper_case:bool=False):
-    ascii_dict = {}
-    for flex in range(1,64):
-        if upper_case:
-            ascii = flexo.flexocode_ucase[flex]
-        else:
-            ascii = flexo.flexocode_lcase[flex]
-        ascii_dict[ascii] = flex
-    return ascii_dict
-
-def convert_ascii(cb, input_string):
-    flexo = wwinfra.FlexoClass(cb)
-
-    upper_dict = make_ascii_dict(flexo, upper_case=True)
-    lower_dict = make_ascii_dict(flexo, upper_case=False)
-    upper_case = False
-
-    flexo_codes = []
-    for c in input_string:
-        if c in lower_dict and c in upper_dict:
-
-            # If in both dicts, it doesn't necessarily mean the chars are the
-            # same, e.g., lower vs upper case (superscript) numbers. We'll take
-            # the lower, and change case to lower, but it does mean that to
-            # specify certain upper-case chars a special ascii notation will
-            # be needed. This appears to be what's behind WW's x|4, which means
-            # by modern conventions x^4.
-
-            if upper_case:
-                flexo_codes.append(flexo.FLEXO_LOWER)
-                upper_case = False
-            flexo_codes.append(lower_dict[c])
-        elif c in lower_dict:
-            if upper_case == True:
-                flexo_codes.append(flexo.FLEXO_LOWER)
-                upper_case = False
-            flexo_codes.append(lower_dict[c])
-        elif c in upper_dict:
-            if upper_case == False:
-                flexo_codes.append(flexo.FLEXO_UPPER)
-                upper_case = True
-            flexo_codes.append(upper_dict[c])
-    return flexo_codes
-            
-def format_readable (cb, input_string) -> str:
-    flexo = wwinfra.FlexoClass(cb)
-    mrfcn = flexo.map_to_readable_ascii
-
-    upper_dict = make_ascii_dict(flexo, upper_case=True)
-    lower_dict = make_ascii_dict(flexo, upper_case=False)
-    upper_case = False
-
-    r = ""
-
-    for c in input_string:
-        if c in lower_dict and c in upper_dict:
-            if upper_case:
-                r += "; %06o %s\n" % (flexo.FLEXO_LOWER, "shift dn")    # See comment above about being in both dicts
-                upper_case = False
-            r += "; %06o %s\n" % (lower_dict[c], mrfcn (lower_dict[c], c))
-        elif c in lower_dict:
-            if upper_case == True:
-                r += "; %06o %s\n" % (flexo.FLEXO_LOWER, "shift dn")
-                upper_case = False
-            r += "; %06o %s\n" % (lower_dict[c], mrfcn (lower_dict[c], c))
-        elif c in upper_dict:
-            if upper_case == False:
-                r += "; %06o %s\n" % (flexo.FLEXO_UPPER, "shift up")
-                upper_case = True
-            r += "; %06o %s\n" % (upper_dict[c], mrfcn (upper_dict[c], c))
-    return r
+from wwflex import FlasciiToFlex, FlexToComment, FlexToFlexoWin
 
 def format_tcodes(input_string, flexo_codes):
     output_str = "; ascii string converted to flexo code:\n; "
@@ -103,9 +31,6 @@ def format_tcodes(input_string, flexo_codes):
     return output_str
 
 def main():
-    # global theConstWWbitClass
-
-    # parser = argparse.ArgumentParser(description='Convert an ASCII string to Flexowriter codes.')
     parser = wwinfra.StdArgs().getParser ("Convert an ASCII string to Flexowriter codes.")
     parser.add_argument("ascii_string", nargs='?', help="string to be converted to flexowriter code")
     parser.add_argument("-i", "--InputFile", type=str, help="ASCII File to be converted")
@@ -113,12 +38,13 @@ def main():
     parser.add_argument("-b", "--BinaryOut", help="Output Flexo in Binary Format (default is .tcore)", action="store_true")
     parser.add_argument("-q", "--Quiet", help="Suppress run-time message", action="store_true")
     parser.add_argument("-r", "--Readable", help="Add a section to support human readbility of the translation", action="store_true")
+    parser.add_argument("-w", "--FlexoWin", help="Create and print to a FlexoWin in addition to creating an output file", action="store_true")
+    parser.add_argument("--OmitAutoStop", help="Omit the addition of the flex <stop> code to the end of the output file", action="store_true")
     args = parser.parse_args()
 
-    cb = wwinfra.ConstWWbitClass(corefile='help-me', args = args)
+    cb = wwinfra.ConstWWbitClass(args = args)
     wwinfra.theConstWWbitClass = cb
-    cb.log = wwinfra.LogFactory().getLog(logname='help-me', quiet=args.Quiet)
-#    core = wwinfra.CorememClass(cb)
+    cb.log = wwinfra.LogFactory().getLog(quiet=args.Quiet)
 
     input_string = args.ascii_string
 
@@ -145,7 +71,8 @@ def main():
         except IOError:
             cb.log.fatal("Can't write to file %s" % args.OutputFile)
 
-    flexo_codes = convert_ascii(cb, input_string)
+    # LAS Should debate this auto-add ofs stop, probably an option to omit it is wise
+    flexo_codes = FlasciiToFlex (input_string, addStopCode = not args.OmitAutoStop).getFlex()
 
     if args.BinaryOut:
         sys.stdout = sys.stdout.buffer
@@ -158,12 +85,19 @@ def main():
     else:
         output_str = format_tcodes(input_string, flexo_codes)
         if args.Readable:
-            output_str += "\n;\n;\n" + format_readable (cb, input_string)
+            # LAS
+            output_str += "\n;\n;\n" + (FlexToComment (flexo_codes).getComment())
 
         if out_fd:
             out_fd.write(output_str)
         else:
             print("%s" % output_str)
+
+    if args.FlexoWin:
+        w = FlexToFlexoWin()
+        for code in flexo_codes:
+            w.addCode (code)
+        input ("<return> to quit: ")
 
 if __name__ == "__main__":
     main()
