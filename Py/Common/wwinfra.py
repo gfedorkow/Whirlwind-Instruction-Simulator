@@ -1026,7 +1026,7 @@ class CorememClass:
                             self.cb.log.warn("Can't write a read-only toggle switch at addr=0o%o" % addr)
                         return
                     if force and self._toggle_switch_mem_default[addr][1]:  # issue a warning if it's Read Only
-                        self.cb.log.warn("Overwriting a read-only toggle switch at addr=0o%o, was 0o%o, is 0o%o" %
+                        self.cb.log.info("Overwriting a read-only toggle switch at addr=0o%o, was 0o%o, is 0o%o" %
                                          (addr, self._toggle_switch_mem_default[addr][0], val))
 
                     self.write_ff_reg(addr, val)
@@ -1178,6 +1178,9 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             continue
         if len(line) and line[0] == ';':  # skip comment lines
             continue
+        if re.match(" \*\*\* Core Image \*\*\*", line):  # sigh, due to an error in wwutd, this now is a de-facto comment
+            continue
+
         input_minus_comment = re.sub(";.*", "", line).rstrip()
         if not re.match("^@N|^@C|^@T|^@S|^@E|^%[a-zA-Z]", input_minus_comment):
             cb.log.warn("ignoring line %d: %s" % (line_number, line))
@@ -1265,7 +1268,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
                 ww_strings += tokens[1] + '\n'
             else:
                 cb.log.warn("read_core: missing arg to %String")
-        elif re.match("^%Stats:", input_minus_comment):  # put the Colon back in here!
+        elif re.match("^%Stats", input_minus_comment):  # put the Colon back in here!
             tokens = input_minus_comment.split(' ', 1)
             if len(tokens) > 1:
                 ww_stats = tokens[1]

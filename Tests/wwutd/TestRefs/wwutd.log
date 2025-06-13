@@ -1,0 +1,24 @@
+no GPIO library found
+Info: input file: 102663328_fb131-0-2690_new_decoders_3of4.7ch, type: 7ch, basename: 102663328_fb131-0-2690_new_decoders_3of4
+Info: FileName: 102663328_fb131-0-2690_new_decoders_3of4.7ch
+Info: block_array contains 8 elements
+Info: Offset: 0o3(3), decode_556_word: non-zero LSBs in c0 or c1: c0=0o7, c1=0o25, c2=0o35
+Info: Offset: 0o6(6), decode_556_word: non-zero LSBs in c0 or c1: c0=0o76, c1=0o35, c2=0o17
+Info: Offset: 0o11(9), decode_556_word: non-zero LSBs in c0 or c1: c0=0o33, c1=0o66, c2=0o76
+Info: Offset: 0o14(12), decode_556_word: non-zero LSBs in c0 or c1: c0=0o51, c1=0o0, c2=0o0
+Warning: Warning: Offset: 0o17(15), decode_556_word needs 3 char, but called with 1 characters; returning zero
+Warning: 556 Decode: leftover word 0o067125
+Info: DA Aux Group Program Block Address Word: w0=0o15235
+Warning: 556 Decode: leftover word 0o067376
+Warning: suspicious WW block length: count=24576(d), actual block length=6(d)
+Warning: Writing beyond end of Core address at addr=0o60000, offset=0o60006, core-size=0o4000
+Warning: unexpected end of block at addr=0o0, offset=0o6, block_len=0o6
+Warning: Non-556 Block in decode_556_file
+Core Image 2048(d) words, output to file 102663328_fb131-0-2690_new_decoders_3of4_gs001.tcore
+Info: Block Type Summary: 
+  loader: 000(d):  b556,b556wc, b556,b556wc, b556,b556wc, b556,b556wc, b556,b556wc, b556,b556wc, b556,jumpto, 
+     end: 008(d): end, 
+Info: 8(d) Loader Block Chains, 0(d) Data Block Chains
+Info: Completed Every Last Byte of tape 102663328_fb131-0-2690_new_decoders_3of4
+Info:    Wrote 1 files; Ignored 0 files due to size less than 30 words
+Info: 556 Checksum summary: Good=6(d), Bad=0(d), Missing=0(d), Jump_To's=1(d), Non_556_blocks=0(d)
