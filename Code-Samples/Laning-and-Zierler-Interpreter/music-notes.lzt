@@ -3,7 +3,9 @@ PRINT a.
 y = 220,
 x = -24,
 1 y = ay,
-PRINT y.
+z = y^2,
+t = 1/z,
+PRINT y,z,t.
 x = x + 1,
 CP 1,
 STOP

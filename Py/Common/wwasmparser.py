@@ -246,10 +246,31 @@ class AsmTokenizer:
                         self.state = 0
                         self.pos += 1
                         return AsmToken (AsmTokenType.String, self.pop())
+                    elif c == "\\":
+                        self.state = 10
+                        self.pos += 1
                     else:
                         self.state = 9
                         self.pos += 1
                         self.push (c)
+                # Here we process common escapes \n etc. and note they are
+                # converted back to escapes in AsmExpr.listingstring(). 
+                case 10:
+                    if c == "b":
+                        self.state = 9
+                        self.pos += 1
+                        self.push ("\b")
+                    elif c == "t":
+                        self.state = 9
+                        self.pos += 1
+                        self.push ("\t")
+                    elif c == "n":
+                        self.state = 9
+                        self.pos += 1
+                        self.push ("\n")
+                    else:
+                        self.state = 9
+                        self.push ("\\")
         return AsmToken()
 
 
@@ -335,6 +356,7 @@ class AsmExpr:
         self.exprData = exprData            # variable, literal, or oper name
         self.leftSubExpr: AsmExpr = None
         self.rightSubExpr: AsmExpr = None
+        self.suppressEvalError: bool = False # Feels likea hack, but adding an error value type is worse. Needed by --Reformat
     def print (self, indent = 3):           # Debug fcn
         t = self.exprType
         if t in [AsmExprType.BinaryPlus, AsmExprType.BinaryMinus,
@@ -366,11 +388,15 @@ class AsmExpr:
         elif self.exprType in [AsmExprType.UnaryPlus, AsmExprType.UnaryMinus, AsmExprType.UnaryZeroOh]:
             return self.exprData + self.leftSubExpr.listingString()
         elif self.exprType in [AsmExprType.LiteralString]:
-            return "\"" + self.exprData + "\"" if quoteStrings else self.exprData
+            s = self.strToSrcFormat (self.exprData)
+            return "\"" + s + "\"" if quoteStrings else s
         elif self.exprType == AsmExprType.ParenWrapper:
             return "(" + self.leftSubExpr.listingString() + ")"
         else:
             return self.exprData
+    # Convert newlines back to escapes, etc.
+    def strToSrcFormat (self, s: str) -> str:
+        return s.replace("\n", "\\n").replace("\b", "\\b").replace("\t", "\\t")
     def getIdStr (self):    # Just for test/debug print
         return "AsmExpr-" + str (id (self))
     def evalError (self, msg: str):
@@ -401,9 +427,13 @@ class AsmExpr:
             sys.stdout.flush()
             # traceback.print_stack()
             p = parsedLine
+            if not self.suppressEvalError:
+                p.log.error (p.lineNo, "%s:\n%s" % (e, p.lineStr))
+            """
             p.log.error (p.lineNo,
                          "Char pos %d: %s%s" %
                          (p.tokenizer.pos, e, p.tokenizer.caratString (p.lineStr, p.tokenizer.pos - 1)))
+            """
             return AsmExprValue (AsmExprValueType.Undefined, "")
     def eval (self, env: AsmExprEnv) -> AsmExprValue:
         if self.exprType in [AsmExprType.BinaryPlus,
@@ -440,8 +470,9 @@ class AsmExpr:
                 "+" if self.leftSubExpr.exprType == AsmExprType.UnaryPlus else "-",
                 self.leftSubExpr.leftSubExpr.exprData,
                 self.rightSubExpr.exprData)
-            # v = round (float (s) * 2**15)
-            v = float (s)     # LAS
+            v = float (s)
+            if v >= 1.0:
+                self.evalError ("Too many digits specified in fraction")
             return AsmExprValue (AsmExprValueType.Fraction, v)
         elif self.exprType == AsmExprType.BinaryDot:
             # It's a literal octal number, of the form (0|1).xxxxx

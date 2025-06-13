@@ -39,7 +39,7 @@ are gone and are available via a previous git version. Some of the
 rationale for the change is below in a note to Guy dated Nov 2024.
 
 The main thing new is that we're script-based, and use basic scripting
-to run tests and do diffs. It's based on bolier-plate scripting which
+to run tests and do diffs. It's based on boiler-plate scripting which
 is copied an modified to make a new test. The convenience and
 flexibility of such script developement outweighs the "badness" of the
 redundancy, and if needed we can develop mass-editing tools to help us
@@ -589,8 +589,9 @@ literal-digit-seq												Decimal inreger
 	* Related to last comment looks like bug in old asm forming one's-comp negative numbers. See crt-test.acore versus crt-test.n.ncore
 	* Quotes in strings
 	* .exec doesn't list properly -- strings in this case don't want quotes
-	- flexo translation
+	* flexo translation
 		Not sure I have it all right
+		[New wwflex code and Flascii takes care of it. See below for remaining issues.]
 	- "See .dbwgt for more discussion"
 	* Assure all wwasm args are handled in some way
 		Yes, with some debate ahead
@@ -649,7 +650,6 @@ literal-digit-seq												Decimal inreger
 		Looks ok -- needed to learn more about *args vs **kwargs
 	- Two .print insts in a row cause a comma-expected syntax bug (in sim)
 	- Unterminated string seems to crash asm tokenizer
-	- C-ish
 	- How does float dv work? Can't find anything that matches this
 	  algorithm. The fixed-point-30 lib does not implement dv.
 		Appears to be Taylor series of 1/(a+b), two terms.
@@ -673,7 +673,8 @@ literal-digit-seq												Decimal inreger
 	- Hoist cpu class so we can share with dbg
 	- Show .print etc in dbg. Right now just shows ww insts
 	- Get rid of need for dummy parsed line in dbg
-	- Dbg doesn't handle signals
+	* Dbg doesn't handle signals and alarms
+		[Handles all alarms, and kbd interrupt]
 	* bounce test (and the one in code-samples) has a .org 1. This
 	  doesn't seem right. Fixed the test but not the code-sample.
 		[Guy says this is what the original code did.]
@@ -689,6 +690,22 @@ literal-digit-seq												Decimal inreger
 	* Dbg: added tb (traceback)
 	* Dbg: Added bp disable/enable
 	* Dbg: made "p" print single locs and blocks
+	- Dbg: srh etc doesn't read param properly and it comes out as a (too-large) address
+	- Dbg: Label versus .pp Parameter -- Shown as same kind of symbol
+      mainly since the core files just have a single symbol type.
+	- Dbg: Consistency of machine state at alarms and interrupt points
+	  is a question.  An instruction which picks up an alarm, like dv
+	  alarm or overflow, should leave the state as if the instruction
+	  were not executed, and leave the pc at that instruction -- i.e.,
+	  IMO. What did real machine do?
+
+	  Instructions like halt execute, and where is the pc left (on the
+	  real machine)?
+
+
+	
+
+
 	* Send Knuth info we have for any insights
 	* Added -r (readable section) to flex converter
 	x Made ! be the stop char -- but not really needed
@@ -696,23 +713,27 @@ literal-digit-seq												Decimal inreger
 	* Added - for stdin to flex convertor. That and the same additionm to
 	  sim allows here-docs and thus easier testing of L&Z.
 	* sim accepts - for std in for papter tape file, so can easly run tests
-	- Float (actually 30,0) printer -- what's the qp instruction?
-	- Issues remaining with L&Z:
+	* Float (actually 30,0) printer -- what's the qp instruction?
+	* Issues remaining with L&Z:
 		* Parens not compleletly working
 			[Fixed -- was issue in translated ascii to flex]
 		* Divide seems broken overall (more than just the inaccurate spax divide)
 		  	[Fixed -- prob same flex issue. But we still have
 		  	 inaccurate spax dv and can crash on some tests.]
-		- Float printer, flexo device
+		* Float printer, flexo device
 	* Fixed precedence of | and &
 	* Question about one's-comp at asm level -- I'm not in favor
 		[Seems resolved that we'll keep it as-is]
-	- Add debugger section to doc
+	- Dbg: Add debugger section to doc
 	- Update doc with new asm comment-fmt options
-	- Consider .print control, to turn them on and off easily and in
+	* Consider .print control, to turn them on and off easily and in
 	  apprpropriate context. Tried adding asm --OmitDotPrint, which
 	    takes them out of the core and listing, but does not seem useful so removed.
+		[Solved with .if]
 	- .if -- emit in listing if --Reformat
+	* --Reformat: error handling, etc, -- expr eval needs error value?
+		[Looks good for now: added error suppression to evalError if
+		 reformatting. So syntax errrors should still bail.]
 	* Better heuristics for semicolon-formatting in asm listing. There
 	  should be a way to get commented-out code to look "natural"
 		Looks a bit better now, but...
@@ -722,19 +743,81 @@ literal-digit-seq												Decimal inreger
 	* !!! Asm .flex broken -- not incrementing address!!??
 		[Yes, it was not. Fixed.]
 	* Note rc for flex takes high end of word for flex code. If shift in ww need to clc.
-	- Asm .flex needs to understand "\n" and maybe other chars in strings
+	*  Asm .flex needs to understand "\n" and maybe other chars in strings
 	  so proper flex code is generated. Also handle shift, color,
 	  superscript numbers.
+		[Asm now understands Flascii]
 	- Flexowin -- check noxwin flag
-	- .float does not detect all out-of-range cases -- try .float +0.1,20
-	- .float gets wrong nunmber if use too many digits, eg .float
+	* .float does not detect all out-of-range cases -- try .float +0.1,20
+		[Fixed check off-by-one.]
+	* .float still issues with neg nums, eg try .float -0.1,1 versus +0.1,1
+		[Some progress, was not detecting mag(mant) correctly in float reader.]
+	* .float gets wrong nunmber if use too many digits, eg .float
 	  +0.99999995, 0 => 0.99999994, but .float +0.99999999, 0 =>
 	    -0.99999994
+		[Fixed by limitng number of digits based on system rounding such that
+		 the resulting floating value is less than 1.0.]
+	- "help-me" files look like they're coming from flex converter
+		[Should go away after revamp of that program. In-progress.]
+	* What is supposed to happen if you read beyond the end of a PETR?
+		[Unknown, but note mention of <stop> char in L&Z user doc,
+		  i.e., stops the computer to e.g. load a new tape. The flex
+		  file converter now adds a <stop> char to end of file, which
+		  may be detected by a ww program.]
+    * Petr: should we have end-of-tape return a <stop> char?
+		[No, but we get that effectively with previous entry.]
+	* si does not rewind paper tape. Can use A and B but seems hokey
+		[Added new device, rewindable PETR, base 0o1000. See ww_io_sim.py]
+	- device id for petr seems wrong manual says that code is for mech tr
+		[Looks like it was easier for Guy just to support both devices with the same code.]
+	- LZ status 5/11/25:
+		- Drum-based storage of compiled code NYI (Knuth notes and not in the code)
+		- Subscript vars NYI (Knuth notes and not in the code -- note blank op space for vertical bar)
+		- Negative exponents -- works after fixing "ca 210" problem
+		- SR and CR are not implemented (these did calls to one-line subrs)
+		- The F^n library of math functions (eg trig)
+	* \n in asm (esp flex) NYI.
+		[Added escape support for \n, \t, and \b to asm
+		 tokenizer. These produce the literal char e.g. newline. The
+		 listingString() function changes it back to the source form.
+	- Asm: carat-string is useless. Fix or discard,
+	* Float printer -- extreme accuracy issues
+		[Looks like bug in spax, where if you shift a 24,6 low word it
+		 will get the wrong bits due to a negative exponent. Fixed with
+		 ".if f24" enablement in the code.]
+	- Float printer: do low-end rounding? eg 42^2 + 57^2 = 5013, but
+		printer gives +0.50129985+04. Same issue printing 42^2 and 57^2.
+		Problem in essence is the modern style is to do decimal
+		rounding, after producing digits. Would need code change to
+		frac printer to store digits then do the round. This does not
+		seem to be in the spirit of the ww apps at the time.
+	* LZ: 197 location needs to change to different space -- runs into comp_code
+		[Now grows down from top of comp_code]
+	* LZ: Note switch-table loc for a letter (var) is re-used during
+			execution, since its parsing job is done and the table
+			entries are no longer needed.  But 2 words are needed per
+			var. Scanning the table shows that no letter is directly
+			followed by another in the table, so variable collisions
+			are avoided. The upper case table has a few such
+			collisions, but vars are all lower case.
+	- LZ: 12th root of 2 accuracy?
+		Note use this clisp loop to get many digits of music-note prog for ref:
+
+			 (let ((r (expt 2d0 (coerce 1/12 'double-float)))
+			 	   (s 220d0))
+			   (dotimes (i 25)
+				 (print (list i s (sq s) (/ 1 (sq s))))
+				 (setq s (* r s))))
+	  
+	- LZ Paper:
+		- -32767 -- fractional behavior
+		- Fig 5 -- wrong; it's not the 24,6 routine
+	- %fx -- really can't support it
+	- Replace FlexoClass with code in wwflex
+		Where is current flex-code converter used?
 
 
-
-
-
+	- C-ish
 	- Get "everything" into git: tape images, images on code, etc.
 		Did sizing run see below marked 1/1/25
 	* LAS: work on L&Z? Maybe just use new translator and asm?
@@ -1003,8 +1086,8 @@ Issues/Notes:
   functions work!
 
 - From an implementation standpoint, this is a separate module, with
-  an interface class for the sim to initiate control. We are thus be
-  able to avoid lots of symbol contamination in the sim itself.
+  an interface class for the sim to initiate control. We are thus able
+  to avoid lots of symbol contamination in the sim itself.
 
 
 Notes to Knuth
@@ -1071,11 +1154,17 @@ Coding Idioms
 These are code "patterns," mostly found in ww code but some invented
 by Guy or Larry.
 
+------------------------------------------------------------------------------
+--- Nice test for zero
+
 This tests for x == 0 (seen in frac printer):
 	cm x
 	su 0
 	cp a	; Branch if x is zero
 
+
+------------------------------------------------------------------------------
+--- For-loop
 
 Pattern for a for-loop, executing stuff N times, where N is
 non-negative:
@@ -1094,4 +1183,12 @@ since it's not what we're used to nowadays. When cntr gets to -1,
 adding one via ao produces -0.  -0 still checks as negative so the
 loop continues. On the next loop adding one to -0 produces 1, and the
 loop ends. Thus stuff is executed N times.
+
+------------------------------------------------------------------------------
+--- Beware the td!
+
+Writing instructions is a normal part of ww coding. Careful with td!
+When used with shift instructions td will overwrite the low opcode bit
+and potentially change the shift from hold to round.
+
 

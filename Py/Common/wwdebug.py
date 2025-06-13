@@ -74,11 +74,13 @@ class DbgBrks:
         if pc in self.pcToBrkPtTab:
             r = self.pcToBrkPtTab[pc]
         else:
-            (opcode, short_opcode, address, label) = self.dbg.getInstInfoFcn (pc)
-            if opcode in self.writeOpcodes and address in self.addrToWrBrkTab:
-                r = self.addrToWrBrkTab[address]
-            else:
-                r = None
+            info = self.dbg.getInstInfoFcn (pc)
+            if info is not None:
+                (opcode, short_opcode, address, label, ac, br) = info
+                if opcode in self.writeOpcodes and address in self.addrToWrBrkTab:
+                    r = self.addrToWrBrkTab[address]
+                else:
+                    r = None
         if r is not None and r.disabled:
             r = None
         return r
@@ -133,7 +135,14 @@ class DbgReadWatchPt (DbgBrk):
     def delete (self, brkId: int):
         del self.brks.addrToRdBrkTab[self.addr]
 
+# This state is set by the debugger -- i.e., it's the state of the prog from the debugger's viewpoint
 DbgProgState = Enum ("DbgProgState", ["Running", "Stepping", "Restarting", "Stopped"])
+
+# This is the state from the prog's viewpoint. For the debugger we want the
+# largest-grain abstraction, so we'll avoid if we can importing the cb.ALARM
+# enum.
+
+DbgProgContext = Enum ("DbgProgContext", ["Normal", "Alarmed"])
 
 class DbgDebugger:
     def __init__ (self):
@@ -153,7 +162,8 @@ class DbgDebugger:
                fmtPrinterFcn,
                asmLineFcn,
                getRegFcn,
-               getInstInfoFcn):
+               getInstInfoFcn,
+               updatePanelFcn):
         self.coreMem = coreMem
         self.symToAddrTab = symToAddrTab
         self.addrToSymTab = addrToSymTab
@@ -161,6 +171,7 @@ class DbgDebugger:
         self.asmLineFcn = asmLineFcn
         self.getRegFcn = getRegFcn
         self.getInstInfoFcn = getInstInfoFcn
+        self.updatePanelFcn = updatePanelFcn
         self.cb = wwinfra.theConstWWbitClass
         self.env = DbgEnv (self.symToAddrTab, self.getRegFcn)
         self.state = DbgProgState.Stopped
@@ -183,12 +194,17 @@ class DbgDebugger:
         else:
             return False
     def getInstStr (self, addr: int) -> str:
-        (opcode, short_opcode, address, label) = self.getInstInfoFcn (addr)
-        return "%s 0o%o%s" % (short_opcode, address, label)
-    def checkTraceback (self, pc):
-        (opcode, short_opcode, address, label) = self.getInstInfoFcn (pc)
-        if True: # opcode in self.jumpOpcodes:
-            self.tbStack[self.tbIndex] = [pc, opcode, short_opcode, address]
+        info = self.getInstInfoFcn (addr)
+        if info is not None:
+            (opcode, short_opcode, address, label, ac, br) = info
+            return "%s 0o%o%s" % (short_opcode, address, label)
+        else:
+            return "<none>"
+    def addTraceback (self, pc):
+        info = self.getInstInfoFcn (pc)
+        if info is not None:
+            (opcode, short_opcode, address, label, ac, br) = info
+            self.tbStack[self.tbIndex] = [pc, opcode, short_opcode, address, ac, br]
             self.tbIndex = (self.tbIndex + 1) % self.tbSize
     def error (self):
         print ("Error!")
@@ -196,14 +212,18 @@ class DbgDebugger:
         raise DbgException ("")
         pass
     # Return True if a restart command was issued
-    def repl (self, pc: int) -> bool:
-        self.checkTraceback (pc)
+    def repl (self, pc: int, context: DbgProgContext) -> bool:
+        self.addTraceback (pc)
         if self.state == DbgProgState.Running:
-            brk = self.brks.checkBrk (pc)
-            if brk is None:
-                return False
+            if context == DbgProgContext.Alarmed:
+                print ("Alarm break:")
             else:
-                print (brk.prompt())
+                brk = self.brks.checkBrk (pc)
+                if brk is None:
+                    return False
+                else:
+                    print (brk.prompt())
+        self.updatePanelFcn()
         print (self.asmLineFcn (pc))
         while True:
             s = input ("dbg %o> " % pc)
@@ -235,7 +255,7 @@ class DbgDebugger:
             self.state = DbgProgState.Running
             return True
         else:
-            return False;
+            return False
         pass
 
 class DbgCmd:
@@ -570,22 +590,26 @@ class DbgCmd_tb (DbgCmd):
             n = self.dbg.tbSize
         stack = self.dbg.tbStack
         maxLabelLen = 0
+        maxInstStrLen = 0
         printInfo = []
         i = (self.dbg.tbIndex - n) % self.dbg.tbSize
         for j in range (0, n):
             if i in stack:
                 e = stack[i]
-                (pc, opcode, short_opcode, addr) = e
+                (pc, opcode, short_opcode, addr, ac, br) = e
                 addrLabel = ("0o%o" % addr) + (("(" + self.dbg.addrToSymTab[addr][0] + ")") if addr in self.dbg.addrToSymTab else "")
                 instStr = "%s %s" % (short_opcode, addrLabel)
+                instStrLen = len (instStr)
+                maxInstStrLen = max (maxInstStrLen, instStrLen)
                 label = ("0o%o" % pc) + (("(" + self.dbg.addrToSymTab[pc][0] + ")") if pc in self.dbg.addrToSymTab else "")
                 labelLen = len (label)
                 maxLabelLen = max (maxLabelLen, labelLen)
-                printInfo.append ([instStr, pc, label, labelLen])
+                printInfo.append ([instStr, pc, label, labelLen, ac, br])
             i = (i + 1) % self.dbg.tbSize
         for p in printInfo:
-            (instStr, pc, label, labelLen) = p
-            print ("%s: %s%s" % (label, " "*(maxLabelLen - len (label)), instStr))
+            (instStr, pc, label, labelLen, ac, br) = p
+            print ("%s: %s%s%s    AC=0o%06o    BR=0o%06o" %
+                   (label, " "*(maxLabelLen - len (label)), instStr, " "*(maxInstStrLen - len (instStr)), ac, br))
 
 # wwr -- watch write
 class DbgCmd_wwr (DbgCmd):

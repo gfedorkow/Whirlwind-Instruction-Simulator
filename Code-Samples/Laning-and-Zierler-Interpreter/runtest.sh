@@ -26,7 +26,7 @@ then
 	# Ditto for the frac printer. This morphed into modern-frac-30-0-0-print.ww.
 	# python $asml frac-30-0-0-print-transcript.txt -o frac-30-0-0-print.ww
 else
-	rm -f fl-wwasm.log fl-wwsim.log lz-wwsim1.log lz-wwsim2.log help-me
+	rm -f fl-wwasm.log fl-wwsim.log lz-wwsim1.log lz-wwsim2.log help-me lz-tmp.pet
 	echo "Testing floatlib..."
 	python $asm --CommentColumn 25 --CommentWidth 50 --OmitAutoComment test-float-lib.ww >&fl-wwasm.log
 	# We'll assume the "notes" test is the default run by the floatlib test code
@@ -51,7 +51,8 @@ else
 		PRINT z.
 		STOP
 		EOF
-	) | python $sim -q --PETRAfile - l-and-z.acore >&lz-wwsim1.log
+	) >lz-tmp.pet
+	python $sim -q --PETRAfile lz-tmp.pet l-and-z.acore >&lz-wwsim1.log
 	diff -s lz-wwsim1.log TestRefs/lz-wwsim1.log
 	status2=$?
 	if [ "$status2" == "0" ];
@@ -69,7 +70,8 @@ else
 		PRINT yz.
 		STOP
 		EOF
-	) | python $sim -q --PETRAfile - l-and-z.acore >&lz-wwsim2.log
+ 	) >lz-tmp.pet
+	python $sim -q --PETRAfile lz-tmp.pet  l-and-z.acore >&lz-wwsim2.log
 	diff -s lz-wwsim2.log TestRefs/lz-wwsim2.log
 	status3=$?
 	if [ "$status3" == "0" ];
@@ -85,7 +87,8 @@ else
 		PRINT x.
 		STOP
 		EOF
-	) | python $sim -q --PETRAfile - l-and-z.acore >&lz-wwsim3.log
+  	) >lz-tmp.pet
+	python $sim -q --PETRAfile lz-tmp.pet l-and-z.acore >&lz-wwsim3.log
 	diff -s lz-wwsim3.log TestRefs/lz-wwsim3.log
 	status4=$?
 	if [ "$status4" == "0" ];
@@ -97,11 +100,11 @@ else
 
 	echo "Testing L&Z program music-notes.lzt..."
 
-	python $ascflx -r -i music-notes.lzt -o music-notes.lzt.pet
+	python $ascflx -r -i music-notes.lzt -o music-notes.pet
 	# Note this does not bring up a FlexoWin...
-	python $sim -q --PETRAfile music-notes.lzt.pet l-and-z.acore >&lz-music-wwsim.log
+	python $sim -q --PETRAfile music-notes.pet l-and-z.acore >&lz-music-wwsim.log
 	# ...but this does
-	# python $sim -q -p --FlexoWin --PETRAfile music-notes.lzt.pet l-and-z.acore
+	# python $sim -q -p --FlexoWin --PETRAfile music-notes.pet l-and-z.acore
 	diff -s lz-music-wwsim.log TestRefs/lz-music-wwsim.log
 	status5=$?
 	if [ "$status5" == "0" ];
