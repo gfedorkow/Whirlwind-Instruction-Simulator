@@ -31,6 +31,7 @@ import argparse
 import traceback
 import graphics as gfx
 import time
+from wwflex import FlexToFlexoWin
 
 theConstWWbitClass = None       # everything should use the same instance of the cb. Set in wwsim.
 
@@ -451,6 +452,7 @@ class ConstWWbitClass:
         self.IO_ERROR_ALARM = 8  # guy's alarm for an instruction that tries to read beyond the end of tape media
         self.DIVIDE_ALARM = 9    # a real alarm for an overflow in Divide
         self.READIN_ALARM = 10   # synthetic alarm to return to ReadIn state due to control panel button
+        self.KBD_INT_ALARM = 11  # Keyboard interrupt alarm
 
         self.AlarmMessage = {self.NO_ALARM: "No Alarm",
                              self.OVERFLOW_ALARM: "Overflow Alarm",
@@ -463,6 +465,7 @@ class ConstWWbitClass:
                              self.IO_ERROR_ALARM: "I/O Error Alarm",
                              self.DIVIDE_ALARM: "Divide Error Alarm",
                              self.READIN_ALARM: "Return-to-Readin Alarm",
+                             self.KBD_INT_ALARM: "Keyboard Interrupt"
                              }
 
         self.COLOR_BR = "\033[93m"  # Yellow color code for Branch Instructions in console trace if color_trace is True
@@ -572,8 +575,12 @@ class ConstWWbitClass:
         # I/O addresses.  I've put them here so the disassembler can identify I/O devices using this shared module.
         self.PTR_BASE_ADDRESS = 0o200  # starting address of mechanical paper tape reader
         self.PTR_ADDR_MASK = ~0o003  # sub-addresses cover PETR-A and PETR-B, word-by-word vs char-by-char
-        self.PETR_BASE_ADDRESS = 0o210  # starting address of PETR device(s)
+        
+        self.PETR_BASE_ADDRESS = 0o210  # starting address of PETR device(s)        
         self.PETR_ADDR_MASK = ~0o003  # sub-addresses cover PETR-A and PETR-B, word-by-word vs char-by-char
+
+        self.REWIND_PETR_BASE_ADDRESS = 0o1000 # starting address of rewindable PETR devices
+        self.REWIND_PETR_ADDR_MASK = ~0o007    # 3 bits of parameter: rewind, A|B, word|char
 
         self.CLEAR_BASE_ADDRESS = 0o17  # starting address of memory-clear device(s)
         self.CLEAR_ADDR_MASK = ~0000  # there aren't any sub-addresses
@@ -1465,50 +1472,6 @@ class InstructionOpTable:
             "CL": [["clc", "clh"], ["cycle left and clear", "cycle left and hold"]]
             }
 
-# Check noxwin option!!!!!
-        
-class FlexoWin:
-    def __init__(self):
-        self.h = 1000
-        self.v = 1500
-        self.win = gfx.GraphWin ("Window", self.h, self.v)
-        self.win.setBackground ("cornsilk")
-        imageName = os.path.normpath (os.environ["PYTHONPATH"] + "/" + "flexowriter-scaled-cropped.gif")
-        self.image = gfx.Image (gfx.Point (0, 0), [imageName])
-        self.imageH = self.image.getWidth()
-        self.imageV = self.image.getHeight()
-        self.image = gfx.Image (gfx.Point (self.h/2, self.v - self.imageV/2), [imageName])
-        self.image.draw (self.win)
-        self.textX = self.h/3
-        self.textY = self.v - self.imageV/2 - 250
-        self.texts = []
-        self.overlays = []
-        self.curText: gfx.Text = self.newText ("")
-        pass
-
-    def newText (self, s: str) -> gfx.Text:
-        text = gfx.Text (gfx.Point (self.textX, self.textY), s)
-        text.setFace ("courier")
-        text.setSize (15)
-        return text
-
-    def writeChar (self, c: str):
-        if c in ["\n", "\\n"]:      # Accept the real ascii char or printed rep
-            self.texts.append (self.curText)
-            for i in range (0, len (self.texts)):
-                self.texts[i].move (0, -25)
-            for text in self.overlays:
-                text.undraw()
-                pass
-            overlays = []
-            self.curText = self.newText ("")
-            time.sleep (100e-3)
-        else:
-            self.overlays.append (self.curText)
-            self.curText = self.newText (" " + self.curText.getText() + c)
-            self.curText.draw (self.win)
-            time.sleep (75e-3)
-
 # See manual 2M-0277 pg 46 for flexowriter codes and addresses
 # This class is primarily the Flexowriter output driver, but it's also used
 # other places for translating characters between ASCII and Flexo code.
@@ -1521,7 +1484,7 @@ class FlexoClass:
         self.null_count = 0
         self.FlexoOutput = []  # this is the accumulation of all output from the Flexowriter
         self.FlexoLine = ""    # this one accumulates one line of Flexo output for immediate printing
-        self.flexoWin: FlexoWin = None  # Instantiated if sim option given and flex device selected via si
+        self.flexToFlexoWin: FlexToFlexoWin = None
         self.name = "Flexowriter"
         self.cb = cb   # what's the right way to do this??
         if log is not None:
@@ -1700,8 +1663,8 @@ class FlexoClass:
             return self.cb.UNIMPLEMENTED_ALARM
 
         if self.cb.flexo_win:
-            if self.flexoWin is None:
-                self.flexoWin = FlexoWin()
+            if self.flexToFlexoWin is None:
+                self.flexToFlexoWin = FlexToFlexoWin()
         else:
             print(("configure flexowriter #2, stop_on_zero=%o, packed=%o" % (self.stop_on_zero, self.packed)))
         return self.cb.NO_ALARM
@@ -1710,8 +1673,8 @@ class FlexoClass:
         code = acc >> 10  # the code is in the upper six bits of the accumulator
         symbol = self.code_to_letter(code)  # look up the code, mess with Upper Case and Color
         # Only do the standard flex buffering if we have no flex window
-        if self.flexoWin is not None:
-            self.flexoWin.writeChar (symbol)
+        if self.flexToFlexoWin is not None:
+            self.flexToFlexoWin.addCode (code)
         else:
             self.FlexoOutput.append(symbol)
             self.FlexoLine += symbol

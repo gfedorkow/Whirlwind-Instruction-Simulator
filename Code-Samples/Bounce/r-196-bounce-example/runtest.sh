@@ -1,5 +1,11 @@
+#!/bin/bash
 
 echo "Bounce Test:"
+
+# cd to the dir with this file, to facilitate external control
+thisfile=$0
+cd ${thisfile%/*}/
+
 if [ "$1" == "--Accept" ];
 then
 	echo "Accepting..."

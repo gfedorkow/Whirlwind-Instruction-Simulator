@@ -3,17 +3,17 @@
                         ; The other .flex ops are checked via the listing
 
                         .org 0o40
-@0040:000225            si 149                   ; ; Auto-Annotate I/O: Mechanical Paper Tape Reader ; Auto-Annotate I/O: FlexoPrinter
+@0040:000225            si 149
 @0041:100065            ca str_ptr
 @0042:044043            td load_char
                   loop:
-@0043:100000 load_char: ca 0                     ; @@WrittenBy a0042 a0047 ReadBy a0047 JumpedToBy a0050
+@0043:100000 load_char: ca 0
 @0044:070051            cp done
 @0045:170012            clc 10
 @0046:024000            rc 0
 @0047:130043            ao load_char
 @0050:074043            sp loop
-@0051:000000      done: si 0                     ; ; Auto-Annotate I/O: unknown i/o device @@JumpedToBy a0044
+@0051:000000      done: si 0
 @0052:000006            .flexl "abcde"
 @0053:000062
 @0054:000034
@@ -25,7 +25,7 @@
 @0062:004000
 @0063:050000
 @0064:100000
-@0065:000066   str_ptr: .word str                ; @@ReadBy a0041
+@0065:000066   str_ptr: .word str
                    str:
 @0066:000054            .flexl "poiuyt", -1
 @0067:000060
@@ -41,3 +41,11 @@
 @0101:124000
 @0102:100000
 @0103:177776
+@0104:122000            .flexh "\n\b\t"
+@0105:106000
+@0106:112000
+@0107:000051            .flexl "\n"
+@0110:000043            .flexl "\b"
+@0111:000045            .flexl "\t"
+@0112:000061            .flexl "<stop>"
+@0113:000071            .flexl "<shift up>"

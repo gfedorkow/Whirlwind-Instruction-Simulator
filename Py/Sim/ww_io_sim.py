@@ -18,9 +18,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import sys
+
 import wwinfra
 import re
-
+import traceback
 iolog = None
 def getiolog ():
     global iolog
@@ -92,12 +93,42 @@ class CameraClass:
 # that is, once selected, it continues to run until deselected by an si instruction.
 # # 3.3.5 si Addresses for the Photoelectric Reader
 #                      PETR
-# read line-by-line:
+# read line-by-line
+#   (i.e. char-by-char):
 #    si 210 (o)           A
 #    si 211 (o)           B
 # read word-by-word:
 #    si 212 (o)           A
 #    si 213 (o)           B
+#
+# LAS Extension for rewinding tapes:
+#
+#        New device, rewindable PETR
+#
+#    Base address 0o1000 (REWIND_PETR_BASE_ADDR), coded as:
+#
+#              1 0 0 rfd
+#
+#       r = rewind, 0 => don't, 1 => do
+#       f = format, 0 => char, 1 => word
+#       d = device, 0 => A, 1 => B
+#
+# There is no define range. The next base address in use is 0o1600 (display
+# scopes -> dusplay vectors)
+#
+#                                 Rewindable PETR
+# read line-by-line, no rewind:
+#    si 0o1000                       A
+#    si 0o1001                       B
+# read word-by-word, no rewind:
+#    si 0o1002                       A
+#    si 0o1003                       B
+# read line-by-line, rewind:
+#    si 0o1004                       A
+#    si 0o1005                       B
+# read word-by-word, rewind:
+#    si 0o1006                       A
+#    si 0o1007                       B
 
 # I am assuming that the machine could be programmed to alternate between PETRA and PETRB, although
 # I'm not really sure PETRB was even used.
@@ -117,11 +148,13 @@ class PhotoElectricTapeReaderClass:
         # But if we open the file, we'll read all of it into an array of bytes for later use, indexed by unit letter
         self.PETR_tape_image = {'A':None, 'B':None}  # two arrays containing the contents of the tape
         # we assume the paper tape cannot be rewound; start the offset at zero and go up from there!
+        # LAS 5/9/25 No we added a rewind capability, device base 0o1000. See below rewind var.
         self.PETR_read_offset = {'A': 0, 'B': 0}
 
     # each device needs to identify its own unit number.
     def is_this_for_me(self, io_address):
         if ((io_address & self.cb.PETR_ADDR_MASK) == self.cb.PETR_BASE_ADDRESS) or \
+            ((io_address & self.cb.REWIND_PETR_ADDR_MASK) == self.cb.REWIND_PETR_BASE_ADDRESS) or \
             ((io_address & self.cb.PTR_ADDR_MASK) == self.cb.PTR_BASE_ADDRESS):
             return self
         else:
@@ -138,8 +171,11 @@ class PhotoElectricTapeReaderClass:
             self.PETR_mode = 'Word'
         else:
             self.PETR_mode = 'Char'
+            
+        rewind: bool = device & self.cb.REWIND_PETR_ADDR_MASK == self.cb.REWIND_PETR_BASE_ADDRESS and device & 0o4 != 0
 
-        if self.PETR_fd[self.PETR_device] is None:
+        if self.PETR_fd[self.PETR_device] is None or rewind:
+            self.PETR_read_offset[self.PETR_device] = 0
             fd = None
             try:
                 self.PETR_fd[self.PETR_device] = open(filename, "r") if filename != "-" else sys.stdin
@@ -976,7 +1012,7 @@ class IndicatorLightRegistersClass:
     def si(self, device, acc, _cm):
         device = device & ~self.cb.INDICATOR_LIGHT_ADDR_MASK
         self.indicator_reg = device
-        getiolog().info("SI: configured Indicator device %o" % self.indicatator_reg)
+        getiolog().info("SI: configured Indicator device %o" % self.indicator_reg)
         return self.cb.NO_ALARM
 
     def rc(self, operand, acc):  # "record", i.e. output instruction to device
