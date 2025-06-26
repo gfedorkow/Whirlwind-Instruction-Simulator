@@ -88,6 +88,9 @@ class PanelMicroWWClass:
             pwr_ctl.pwr_on()
             time.sleep(0.3)
 
+            self.pin_audio_click = 12  # audio pin
+            gpio.setup(self.pin_audio_click, gpio.OUT)
+
             self.md = MappedRegisterDisplayClass(self.log, i2c_bus)  # pass in cb.log for printing log messages
             self.sw = MappedSwitchClass(self.log, i2c_bus, self.md)
             # I think there's only one set of lights that need to be initialized from CB
@@ -100,7 +103,7 @@ class PanelMicroWWClass:
             return
 
         self.local_state_change_buttons = ("Stop-on-Addr", "Stop-on-CK", "Stop-on-S1")
-        
+
 
 #        # the first element in the dict is the switch Read entry point, the second is the one to set the switches
 #        self.dispatch = {"LMIR":[self.md.read_left_register, self.md.set_left_register],
@@ -260,6 +263,11 @@ class PanelMicroWWClass:
         if MwwPanelDebug: self.log.info("local_state_change: stop-on-addr=%d, stop-on-ck=%d, stop-on-S1=%d" %
             (self.md.stop_on_addr_state, self.md.check_alarm_special_state, self.md.stop_on_s1_state))
         self.md.update_exec_switch_leds()
+
+    def set_audio_click(self, acc):
+        val = (acc & 0o4) != 0
+        gpio.output(self.pin_audio_click, val)
+
 
 # ==============================================================
 
@@ -1046,7 +1054,7 @@ class IS31FL3731:
     # has control registers instead of pixels.
     def writeRegister8(self, register, command, val=None):
         global PassCount
-        if MwwPanelDebug: log.info("%05d: writeRegister: reg=%x, cmd=%x " % (PassCount, register, command), "val=", val)
+        if MwwPanelDebug: self.log.info("%05d: writeRegister: reg=%x, cmd=%x " % (PassCount, register, command), "val=", val)
         msg = [register]
         self.bus.write_i2c_block_data(self.i2c_addr, self.ISSI_COMMANDREGISTER, msg)
 
@@ -1113,22 +1121,22 @@ class IS31FL3731:
         global MwwPanelDebug
         _frame = 0
         # shutdown
-        if MwwPanelDebug: log.info("Shutdown")
+        if MwwPanelDebug: self.log.info("Shutdown")
         self.writeRegister8(self.ISSI_BANK_FUNCTIONREG, self.ISSI_REG_SHUTDOWN, val=0x00)
         time.sleep(0.01)
 
         # out of shutdown
-        if MwwPanelDebug: log.info("unShutdown")
+        if MwwPanelDebug: self.log.info("unShutdown")
         self.writeRegister8(self.ISSI_BANK_FUNCTIONREG, self.ISSI_REG_SHUTDOWN, val=0x01)
         #time.sleep(1)
 
         # picture mode
-        if MwwPanelDebug: log.info("picture mode")
+        if MwwPanelDebug: self.log.info("picture mode")
         self.writeRegister8(self.ISSI_BANK_FUNCTIONREG, self.ISSI_REG_CONFIG,
                  val=self.ISSI_REG_CONFIG_PICTUREMODE)
 
         #time.sleep(1)
-        if MwwPanelDebug: log.info("display frame")
+        if MwwPanelDebug: self.log.info("display frame")
         self.displayFrame(_frame)
 
         #time.sleep(1)
@@ -1168,6 +1176,7 @@ class I2C:
 class PwrCtlClass:
     def __init__(self, log):
         self.pwr_state: int = 0
+        self.log = log
 
     def pwr_on(self) -> None:
         global pin_pwr_ctl, pin_tca_reset, pin_tca_interrupt
@@ -1184,7 +1193,7 @@ class PwrCtlClass:
         time.sleep(0.3)
         gpio.output(pin_tca_reset, 1)  # Enable the key scanners
 
-        if MwwPanelDebug: log.info("power control pin %d set to one" % pin_pwr_ctl)
+        if MwwPanelDebug: self.log.info("power control pin %d set to one" % pin_pwr_ctl)
 
 
     def step(self):
@@ -1281,6 +1290,7 @@ class Is31:
         global PassCount
 
         word_reg = 0
+        word_offset = 0
         if pattern == 0 or pattern == 1:
             word_offset = self.test_step >> 4
             bit_num = self.test_step & 0xf

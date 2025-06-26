@@ -66,7 +66,7 @@ class AnaScope:
         self.pin_InterceptorLED = 6
         self.pin_isIntercept = 21  # used to indicate Target or Intercept to air-defense sim
 
-        self.pin_audio_click = 12  # experiment
+        # self.pin_audio_click = 12  # experiment
 
         # SPI pins are defined by SPI interface
 
@@ -88,7 +88,7 @@ class AnaScope:
             gpio.setup(self.pin_doDraw, gpio.OUT)
             gpio.setup(self.pin_enZ1,   gpio.OUT)
             gpio.setup(self.pin_enZ2,   gpio.OUT)
-            gpio.setup(self.pin_audio_click,    gpio.OUT)
+            # gpio.setup(self.pin_audio_click,    gpio.OUT)
             gpio.setup(self.pin_TargetLED,      gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.setup(self.pin_InterceptorLED, gpio.IN, pull_up_down=gpio.PUD_UP)
 
@@ -355,11 +355,11 @@ class AnaScope:
         return(gpio.input(self.pin_isKey) == 0)
 
 
-    def set_audio_click(self, acc):
-        if gpio is None:
-            return False
-        val = (acc & 0o4) != 0
-        gpio.output(self.pin_audio_click, val)
+#    def set_audio_click(self, acc):
+#        if gpio is None:
+#            return False
+#        val = (acc & 0o4) != 0
+#        gpio.output(self.pin_audio_click, val)
 
     #
 #### next functions for stand alone test only
