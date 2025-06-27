@@ -29,6 +29,7 @@
 
 DebugAnaScope = False
 DebugGun = True
+RasPi = True
 
 import time
 import math
@@ -37,12 +38,13 @@ try:
     import RPi.GPIO as gpio
     import spidev
 except ImportError:
-    pass
+    RasPi = False
 
 
 # Analog Scope Interface Class
 class AnaScope:
     def __init__(self, host_os, cb):
+        cb.RasPi = RasPi
         #
         version = "g1.1gf"
         if DebugAnaScope: print("Analog Scope Interface Version %s" % version)

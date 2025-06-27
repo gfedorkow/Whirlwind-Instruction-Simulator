@@ -486,9 +486,10 @@ class ConstWWbitClass:
         self.xWin_size_arg = None   # if this is set to a number by the cmd-line arg, use it as the size of the xWinCRT
         self.ana_scope = None   # this is a handle to the methods for operating the analog scope
         self.which_scope = 3    # default to showing both D and F scopes on the xwin display
+        self.RasPi = False      # this will be set in microWhirlwind if it's running on a RasPi
 
         # These two will be set by prog that needs them. Looks like only wwsim at this point. LAS 5/17/24
-        self.argAutoClick = False
+        self.argAutoClick = False   # used in air defense and Nim (I think)
         self.panel = None
 
         # use these vars to control how much Helpful Stuff emerges from the sim

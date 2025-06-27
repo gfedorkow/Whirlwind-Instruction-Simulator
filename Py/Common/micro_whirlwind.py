@@ -8,14 +8,14 @@
 RasPi = True
 try:
     import RPi.GPIO as gpio
-    # https://pypi.org/project/smbus2/
+    # we'll import https://pypi.org/project/smbus2/
     import smbus2  # also contains i2c support
-    import msvcrt
 except ModuleNotFoundError:
 #    print("no GPIO library found")
     import smbus_replacement as smbus2
     import gpio_replacement as gpio
 #    gpio = gpio_replacement.gpioClass()
+#    import msvcrt
     RasPi = False
 
 
@@ -68,6 +68,8 @@ class localCpuClass:
 
 class PanelMicroWWClass:
     def __init__(self, cb, sim_state_machine_arg=None, left_init=0, right_init=0):
+
+        cb.RasPi = RasPi
 
         self.log = cb.log
         self.sim_state_machine = sim_state_machine_arg

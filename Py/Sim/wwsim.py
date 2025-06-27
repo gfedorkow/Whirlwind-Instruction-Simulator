@@ -676,7 +676,7 @@ class CpuClass:
             description = oplist[2]
         self.print_cpu_state(current_pc, opcode, oplist[1], description, address)
 
-        if self.cb.panel.panel_mWW:
+        if self.cb.RasPi:
             self.cb.panel.panel_mWW.set_audio_click(self._AC)
 
         if current_pc in Breakpoints:
