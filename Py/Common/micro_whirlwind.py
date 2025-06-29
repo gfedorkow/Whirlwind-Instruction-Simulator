@@ -589,7 +589,7 @@ class MappedSwitchClass:
         try:
             button = self.fn_buttons_def[col][row]
         except:
-            button = "undefined button"
+            button = "undefined mWW button col=%d, row=%d" % (col, row)
         if MwwPanelDebug: self.log.info("function switch %s: row %d, col %d" %(button, row, col))
         return button
 
