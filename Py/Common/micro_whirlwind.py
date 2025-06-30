@@ -572,7 +572,6 @@ class MappedSwitchClass:
                 button_press = self.fn_rotary_decode(pressed, key - 111)  # the two codes come in as 111 and 112
 
             elif pressed:     # I'm ignoring "released" events
-                key &= 0x7F
                 key -= 1
                 row = key // 10
                 col = key % 10
