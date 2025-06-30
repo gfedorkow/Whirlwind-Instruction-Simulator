@@ -519,33 +519,34 @@ class MappedSwitchClass:
 
         # push button switches can be classified first by the "column" number, 0-9
         self.u3_switch_map = (
-            self.mir_sw,  # 0
-            self.mir_sw,  # 1
-            self.mir_sw,  # 2
-            self.mir_sw,  # 3
-            self.mir_sw,  # 4
-            self.mir_sw,  # 5
-            self.ff2_sw,  # 6
-            self.ff2_sw,  # 7
-            self.ff3_sw,  # 8
-            self.ff3_sw,  # 9
+            self.fn_mir_sw,  # 0
+            self.fn_mir_sw,  # 1
+            self.fn_mir_sw,  # 2
+            self.fn_mir_sw,  # 3
+            self.fn_mir_sw,  # 4
+            self.fn_mir_sw,  # 5
+            self.fn_ff2_sw,  # 6
+            self.fn_ff2_sw,  # 7
+            self.fn_ff3_sw,  # 8
+            self.fn_ff3_sw,  # 9
         )
         self.u4_switch_map = (
-            self.fn_sw,   # 0  - function switches - Clear Alarm through to Examine
-            self.fn_sw,   # 1  - function switches - Stop-on-X
-            self.pc_sw,   # 2  - PC Preset switches
-            self.pc_sw,   # 3  - PC Preset switches
-            self.no_sw,   # 4
-            self.no_sw,   # 5
-            self.no_sw,   # 6
-            self.no_sw,   # 7
-            self.no_sw,   # 8
-            self.no_sw,   # 9
+            self.fn_sw,  # 0  - function switches - Clear Alarm through to Examine
+            self.fn_sw,  # 1  - function switches - Stop-on-X
+            self.fn_pc_sw,  # 2  - PC Preset switches
+            self.fn_pc_sw,  # 3  - PC Preset switches
+            self.fn_no_sw,  # 4
+            self.fn_no_sw,  # 5
+            self.fn_no_sw,  # 6
+            self.fn_no_sw,  # 7
+            self.fn_no_sw,  # 8
+            self.fn_no_sw,   # 9
         )
         self.md = mapped_display
         self.fn_buttons_def = (("Examine", "Read In", "Order-by-Order", "Start at 40", "Start Over", "Restart", "Stop", "Clear"),
-                               ("Stop-on-Addr", "Stop-on-CK", "Stop-on-S1", "F-Scope", "D-Scope"))
+                               ("Stop-on-Addr", "Stop-on-CK", "Stop-on-S1", "F-Scope", "D-Scope", "unused", "unused", "Rotary-Push"))
         self.ff_preset_state = [0, 0]        # ff2 and ff3 preset values
+        self.encoder_state = [0,0]
 
 
     def check_buttons(self):
@@ -565,7 +566,11 @@ class MappedSwitchClass:
         elif self.tca84_u4.available() > 0:
             key = self.tca84_u4.getEvent()
             pressed = key & 0x80
-            if pressed:     # I'm ignoring "released" events
+            if (key == 111 or key == 112):   # siphon off rotary encoder actions from U4 first,
+                                            # then get the rest of the buttons
+                button_press = self.fn_rotary_decode(pressed, key - 111)  # the two codes come in as 111 and 112
+
+            elif pressed:     # I'm ignoring "released" events
                 key &= 0x7F
                 key -= 1
                 row = key // 10
@@ -580,7 +585,7 @@ class MappedSwitchClass:
 #                    button_press = input("type function button name: ")
         return button_press
 
-    def no_sw(self, row, col):
+    def fn_no_sw(self, row, col):
         self.log.warn("unknown switch row %d, col %d" %(row, col))
         return None
 
@@ -593,17 +598,17 @@ class MappedSwitchClass:
         if MwwPanelDebug: self.log.info("function switch %s: row %d, col %d" %(button, row, col))
         return button
 
-    def ff2_sw(self, row, col):
+    def fn_ff2_sw(self, row, col):
         if MwwPanelDebug: self.log.info("ff2 switch row %d, col %d" %(row, col))
         self.ff_preset_flip_bit(0, row, col)
         return None
 
-    def ff3_sw(self, row, col):
+    def fn_ff3_sw(self, row, col):
         if MwwPanelDebug: self.log.info("ff3 switch row %d, col %d" %(row, col))
         self.ff_preset_flip_bit(1, row, col)
         return None
 
-    def pc_sw(self, row, col):
+    def fn_pc_sw(self, row, col):
         button = "PC Preset"
         self.pc_preset_flip_bit(row, col)
         if MwwPanelDebug: self.log.info("pc switch '%s': row %d, col %d" %(button, row, col))
@@ -637,7 +642,7 @@ class MappedSwitchClass:
         self.md.set_preset_switch_leds(pc=regf, pc_bank=None)
 
 
-    def mir_sw(self, row, col):
+    def fn_mir_sw(self, row, col):
         # mir buttons are columns 0-5, rows 0-7
         activate = 0
         if col == 0 and row >= 2:  # four buttons in Col 0 are function keys
@@ -667,7 +672,35 @@ class MappedSwitchClass:
             if MwwPanelDebug: self.log.info("preset LMIR = 0o%06o, RMIR = 0o%06o, MIR=%d" %
                 (self.md.mir_state[0], self.md.mir_state[1], self.md.which_mir))
 
+    # =============== Rotary Encoder  ==================================
+    # The following routine decodes the two signals from a Rotary Encoder to
+    # figure out which way the knob is being turned.
+    # The code relies on the key scanner to deliver an 'interrupt' when either pin
+    # changes state.
+    # We're relying completely on the scanner to debounce the signals!
+    # 'which_key' is which one of the two Rotary phases changed.
+    def fn_rotary_decode(self, pressed, which_key):
 
+        self.encoder_state[which_key] = (pressed != 0)
+
+        direction = 33  # this is here because PyCharm figures it _could_ be uninitialized.
+        if pressed:
+            if which_key == 0:
+                direction = self.encoder_state[1]
+            if which_key == 1:
+                direction = self.encoder_state[0] == 0
+        else:
+            if which_key == 0:
+                direction = self.encoder_state[1] == 0
+            if which_key == 1:
+                direction = self.encoder_state[0]
+
+        if direction:
+            push_str = "Rotary Up"
+        else:
+            push_str = "Rotary Down"
+        print("%s: key=%d dir=%d" % (push_str, which_key, direction))
+        return push_str
 
 
 # ******************************************************************** #
@@ -994,7 +1027,7 @@ class TCA8414:
 # We're also relying completely on the scanner to debounce the signals!
 EncoderState = [0,0]
 # 'which_key' is which one of the two Rotary phases changed.
-def rotary_decode(pressed, which_key):
+def rotary_decode_test(pressed, which_key):
     global EncoderState
 
     EncoderState[which_key] = (pressed != 0)
@@ -1418,7 +1451,7 @@ def run_tca(tca84):
         pressed = key & 0x80
         key &= 0x7F
         if (key == 111 or key == 112) and tca84.i2c_addr == TCA8414_1_ADDR:
-            rotary_decode(pressed, key - 111)  # the two codes come in as 111 and 112
+            rotary_decode_test(pressed, key - 111)  # the two codes come in as 111 and 112
 
         else:
             key -= 1
@@ -1579,15 +1612,13 @@ def main():
     is31_U2 = None
     tca84_0 = None
     tca84_1 = None
-    pwr_ctl = PwrCtlClass(cb.log)
-
-    pass_count = 0
 
     cb = wwinfra.ConstWWbitClass()
     cb.cpu = localCpuClass()
     cb.cpu.cm = wwinfra.CorememClass(cb)
     cb.log = wwinfra.LogFactory().getLog (quiet=False, no_warn=args.NoWarnings)
 
+    pwr_ctl = PwrCtlClass(cb.log)
     # not much can happen if we can't initialize the i2c bus...
     i2c_bus = I2C(1)
     bus = i2c_bus.bus
