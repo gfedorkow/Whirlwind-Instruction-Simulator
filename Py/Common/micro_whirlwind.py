@@ -566,6 +566,7 @@ class MappedSwitchClass:
         elif self.tca84_u4.available() > 0:
             key = self.tca84_u4.getEvent()
             pressed = key & 0x80
+            key &= 0x7F
             if (key == 111 or key == 112):   # siphon off rotary encoder actions from U4 first,
                                             # then get the rest of the buttons
                 button_press = self.fn_rotary_decode(pressed, key - 111)  # the two codes come in as 111 and 112
@@ -699,7 +700,7 @@ class MappedSwitchClass:
             push_str = "Rotary Up"
         else:
             push_str = "Rotary Down"
-        print("%s: key=%d dir=%d" % (push_str, which_key, direction))
+        if MwwPanelDebug: print("%s: key=%d dir=%d" % (push_str, which_key, direction))
         return push_str
 
 
