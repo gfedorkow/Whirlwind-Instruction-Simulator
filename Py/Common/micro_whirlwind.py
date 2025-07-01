@@ -544,7 +544,7 @@ class MappedSwitchClass:
         )
         self.md = mapped_display
         self.fn_buttons_def = (("Examine", "Read In", "Order-by-Order", "Start at 40", "Start Over", "Restart", "Stop", "Clear"),
-                               ("Stop-on-Addr", "Stop-on-CK", "Stop-on-S1", "F-Scope", "D-Scope", "unused", "unused", "Rotary-Push"))
+                               ("Stop-on-Addr", "Stop-on-CK", "Stop-on-S1", "F-Scope", "D-Scope", "unused", "unused", "Rotary Push"))
         self.ff_preset_state = [0, 0]        # ff2 and ff3 preset values
         self.encoder_state = [0,0]
 
