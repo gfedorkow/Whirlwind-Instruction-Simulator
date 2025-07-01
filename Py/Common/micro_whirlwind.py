@@ -147,6 +147,12 @@ class PanelMicroWWClass:
         if init_PC:
             self.write_register("PC", init_PC)
 
+        if self.md.stop_on_addr_state:  # Test the Stop on Address button on the panel
+            #  This is not a very efficient way to retrieve the PC Preset switch register
+            cpu.stop_on_address = self.md.read_preset_switch_leds()["pc"]  # if activated, set the address for the cpu to watch
+        else:
+            cpu.stop_on_address = None  # otherwise, deactivate the Stop on PC function
+
         if gpio.input(pin_gpio_isKey) == 0:   #
             return False
         return True

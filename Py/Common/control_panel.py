@@ -993,10 +993,11 @@ class PanelClass:
             return
 
         if sw == "Read In":  # Start all over again from reading in the "tape"
+            # this block pops up a dialog, initialized with the current file name
             cb.sim_state = cb.SIM_STATE_READIN
             popup = DialogPopup()
-            filename = popup.get_text_entry("Filename: ", "foo.acore")
-            print("filename:%s" % filename)
+            filename = popup.get_text_entry("Filename: ", cb.CoreFileName)
+            cb.log.info("ReadIn Filename:%s" % filename)
             cb.CoreFileName = filename
             return
 

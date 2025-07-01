@@ -142,6 +142,7 @@ class CpuClass:
         global CoreMem  # get rid of this global -- change to the cm in this class
 
         self.isa_1950 = False   # set this to use the early 1950's instruction set, rather than the 1958 version
+        self.stop_on_address = None   # set this if the front-panel "stop on pc preset address" is active
 
         # I don't know what initializes the CPU registers, but it's easier to code if I assume they're zero!
         self._BReg = 0
@@ -2022,6 +2023,13 @@ def main_run_sim(args, cb):
                     break  # bail out of the While True loop if display update says to stop due to Red-X hit
                 time.sleep(0.1)
                 continue
+
+            #
+            if cpu.stop_on_address is not None:
+                if cpu.PC == cpu.stop_on_address:
+                    cb.log.info("Stop on PC Preset switches activated")
+                    cb.sim_state = cb.SIM_STATE_STOP
+                break
 
             # ################### The Simulation Starts Here ###################
             alarm_state = cpu.run_cycle()
