@@ -142,7 +142,13 @@ class CpuClass:
         global CoreMem  # get rid of this global -- change to the cm in this class
 
         self.isa_1950 = False   # set this to use the early 1950's instruction set, rather than the 1958 version
+
         self.stop_on_address = None   # set this if the front-panel "stop on pc preset address" is active
+        # this flag allows the sim to restart after hitting a stop_on_address "breakpoint"
+        # it's set by any control panel 'start' activity, then cleared as soon as the first instruction
+        # is completed.
+        self.first_instruction_after_start = True
+
 
         # I don't know what initializes the CPU registers, but it's easier to code if I assume they're zero!
         self._BReg = 0
@@ -2025,11 +2031,11 @@ def main_run_sim(args, cb):
                 continue
 
             #
-            if cpu.stop_on_address is not None:
+            if cpu.stop_on_address is not None and cpu.first_instruction_after_start:
                 if cpu.PC == cpu.stop_on_address:
-                    cb.log.info("Stop on PC Preset switches activated")
+                    cb.log.warn("Stop on PC Preset switches activated")
                     cb.sim_state = cb.SIM_STATE_STOP
-                break
+                    continue
 
             # ################### The Simulation Starts Here ###################
             alarm_state = cpu.run_cycle()
