@@ -2027,9 +2027,9 @@ def main_run_sim(args, cb):
             #
             if cpu.stop_on_address is not None:
                 if cpu.PC == cpu.stop_on_address:
-                    cb.log.info("Stop on PC Preset switches activated")
+                    cb.log.warn("Stop on PC Preset switches activated")
                     cb.sim_state = cb.SIM_STATE_STOP
-                break
+                    continue
 
             # ################### The Simulation Starts Here ###################
             alarm_state = cpu.run_cycle()
