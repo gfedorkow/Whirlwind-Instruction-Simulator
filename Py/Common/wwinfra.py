@@ -406,6 +406,11 @@ class ConstWWbitClass:
         self.SIM_STATE_SINGLE_STEP = 2
         self.SIM_STATE_READIN = 3
         self.sim_state = self.SIM_STATE_STOP
+        # this flag allows the sim to restart after hitting a stop_on_address "breakpoint"
+        # it's set by any control panel 'start' activity, then cleared as soon as the first instruction
+        # is completed.
+        self.first_instruction_after_start = True
+
         # Caution -- Whirlwind puts bit 0 to the left (Big Endian, no?)
         self.WWBIT0 = 0o100000
         self.WWBIT1 = 0o040000

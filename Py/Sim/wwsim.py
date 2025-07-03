@@ -144,11 +144,6 @@ class CpuClass:
         self.isa_1950 = False   # set this to use the early 1950's instruction set, rather than the 1958 version
 
         self.stop_on_address = None   # set this if the front-panel "stop on pc preset address" is active
-        # this flag allows the sim to restart after hitting a stop_on_address "breakpoint"
-        # it's set by any control panel 'start' activity, then cleared as soon as the first instruction
-        # is completed.
-        self.first_instruction_after_start = True
-
 
         # I don't know what initializes the CPU registers, but it's easier to code if I assume they're zero!
         self._BReg = 0
@@ -1963,6 +1958,8 @@ def main_run_sim(args, cb):
         cb.sim_state = cb.SIM_STATE_STOP
     else:
         cb.sim_state = cb.SIM_STATE_RUN
+        cb.first_instruction_after_start = True
+
     alarm_state = cb.NO_ALARM
     if cb.panel:
         cb.panel.update_panel(cb, 0, init_PC=cpu.PC, alarm_state=alarm_state)  # I don't think we can miss a mouse clicks on this call
@@ -2031,7 +2028,7 @@ def main_run_sim(args, cb):
                 continue
 
             #
-            if cpu.stop_on_address is not None and cpu.first_instruction_after_start:
+            if cpu.stop_on_address is not None and cb.first_instruction_after_start == False:
                 if cpu.PC == cpu.stop_on_address:
                     cb.log.warn("Stop on PC Preset switches activated")
                     cb.sim_state = cb.SIM_STATE_STOP
@@ -2040,6 +2037,7 @@ def main_run_sim(args, cb):
             # ################### The Simulation Starts Here ###################
             alarm_state = cpu.run_cycle()
             # ################### The Rest is Just Overhead  ###################
+            cb.first_instruction_after_start = False # clear this flag to re-enable control panel stop-on-address
             # poll various I/O circumstances, and update the xwin screen
             # Do this less frequently in AnaScope mode, as it slows the Rasp Pi performance,
             # even to check the xwin stuff

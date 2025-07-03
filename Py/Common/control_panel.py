@@ -625,21 +625,25 @@ class PanelClass:
 
         if sw == "Restart":   # don't mess with the PC, just pick up from the last address
             cb.sim_state = cb.SIM_STATE_RUN
+            cb.first_instruction_after_start = True
             return
 
         if sw == "Start at 40":
             cb.sim_state = cb.SIM_STATE_RUN
+            cb.first_instruction_after_start = True
             cb.cpu.PC = 0o40
             return
 
         if sw == "Start Over":  # start executing at the address in the PC switch register
             cb.sim_state = cb.SIM_STATE_RUN
+            cb.first_instruction_after_start = True
             # cb.cpu.PC = self.panel.pc_toggle_sw.read_button_vector()
             cb.cpu.PC = pc_switch_register
             return
 
         if sw == "Order-by-Order":  # don't mess with the PC, just pick up from the last address
             cb.sim_state = cb.SIM_STATE_SINGLE_STEP
+            cb.first_instruction_after_start = True
             return
 
         if sw == "Examine":  # don't mess with the PC, just pick up from the last address
