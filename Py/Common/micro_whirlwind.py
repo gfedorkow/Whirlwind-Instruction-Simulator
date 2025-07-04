@@ -104,7 +104,7 @@ class PanelMicroWWClass:
             self.log.warn("Missing MicroWhirlwind Panel drivers")
             return
 
-        self.local_state_change_buttons = ("Stop-on-Addr", "Stop-on-CK", "Stop-on-S1")
+        self.local_state_change_buttons = ("Stop on Addr", "Stop on CK", "Stop on S1")
 
 
 #        # the first element in the dict is the switch Read entry point, the second is the one to set the switches
@@ -263,11 +263,11 @@ class PanelMicroWWClass:
 
     def local_state_change(self,bn):
         match bn:
-            case "Stop-on-Addr":
+            case "Stop on Addr":
                 self.md.stop_on_addr_state ^= 1
-            case "Stop-on-CK":
+            case "Stop on CK":
                 self.md.check_alarm_special_state ^= 1
-            case "Stop-on-S1":
+            case "Stop on S1":
                 self.md.stop_on_s1_state ^= 1
             case _:
                 self.log.info("mWWPanel.local_state_change: unknown button %s" % bn)
@@ -553,7 +553,7 @@ class MappedSwitchClass:
         )
         self.md = mapped_display
         self.fn_buttons_def = (("Examine", "Read In", "Order-by-Order", "Start at 40", "Start Over", "Restart", "Stop", "Clear"),
-                               ("Stop-on-Addr", "Stop-on-CK", "Stop-on-S1", "F-Scope", "D-Scope", "unused", "unused", "Rotary Push"))
+                               ("Stop on Addr", "Stop on CK", "Stop on S1", "F-Scope", "D-Scope", "unused", "unused", "Rotary Push"))
         self.ff_preset_state = [0, 0]        # ff2 and ff3 preset values
         self.encoder_state = [0,0]
 
