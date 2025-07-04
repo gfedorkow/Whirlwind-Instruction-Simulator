@@ -80,6 +80,10 @@ class OneToggleClass:  # make a toggle switch
         self.rect.setFill(fill_color)
         self.rect.draw(self.win)
 
+    def read_toggle(self):
+        return self.current_state
+
+
     def test_for_hit(self, x, y):
         if x > self.bbox.min_x and x < self.bbox.max_x and y > self.bbox.min_y and y < self.bbox.max_y:
             return True
@@ -529,13 +533,16 @@ class CPUControlClass:
             if hit:
                 # print("Hit switch %s" % cbl.switch_name)
                 self.local_state_machine(cbl)
-                self.sim_state_machine(cbl.switch_name, cb, self.panel.pc_toggle_sw.read_button_vector())
+                cpu_control_switches = {"PC Preset": self.panel.pc_toggle_sw.read_button_vector()}
+                for sw in ("Stop on CK", "Stop on SI-1", "Stop on Addr"):
+                    cpu_control_switches[sw] = self.dispatch[sw].button_object.read_toggle()
+                self.sim_state_machine(cbl.switch_name, cb, cpu_control_switches)
 
     # this small routine manages local interactions in the buttons and lights
     def local_state_machine(self, cbl):
         sw = cbl.switch_name
         # reverse the state of a toggle switch if there was a hit
-        if sw == "Stop on CK" or sw == "Stop on SI-1":
+        if sw == "Stop on CK" or sw == "Stop on SI-1" or sw == "Stop on Addr":
             self.dispatch[sw].button_object.draw_toggle(None)
             return
 
@@ -547,122 +554,6 @@ class CPUControlClass:
         self.dispatch["Restart"].lamp_object.set_lamp(run)
         self.dispatch["Stop"].lamp_object.set_lamp(~run)
 
-# =================
-# the following class serves as a dispatcher for the two possible Panel technologies, one
-# with the xwindow emulated buttons and one with the I2C buttons and lights
-# Both can be enabled at once, but the results probably aren't too predictable.
-class PanelClass:
-    def __init__(self, cb, panel_xwin, panel_blinken, left_init=0, right_init=0):
-        self.panel_xwin = None
-        self.panel_blinken = None
-        if panel_xwin:
-            self.panel_xwin = PanelXwinClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
-        if panel_blinken:
-            self.panel_blinken = BlinkenLightsClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
-
-    # Check the mouse, and update any buttons.  The only return from this call should be True or False to say
-    # whether the Exit box was clicked or not.
-    # As a side effect, the simulator run state in cb is updated
-    # Return True for normal operation, False if the user indicates that the sim should be halted
-    def update_panel(self, cb, bank, alarm_state=0, standalone=False, init_PC=None):
-        ret_xwin = True
-        ret_blinken = True
-        if self.panel_xwin:
-            ret_xwin = self.panel_xwin.update_panel(cb, bank, alarm_state=0, standalone=False, init_PC=init_PC)
-        if self.panel_blinken:
-            ret_blinken = self.panel_blinken.update_panel(cb, bank, alarm_state=0, standalone=False, init_PC=init_PC)
-        if ret_xwin == False or ret_blinken == False:
-            return False
-        return True
-
-    # read a register from the switches and lights panel.
-    # It would normally be called with a string giving the name, so an FF Reg number can also be used
-    # The read routine simply returns an integer value
-    # Not obvious what to do if _both_ panel types are enabled at the same time
-    def read_register(self, which_one):
-        if self.panel_blinken:
-            return(self.panel_blinken.read_register(which_one))
-        if self.panel_xwin:
-            return(self.panel_xwin.read_register(which_one))
-
-    # write a register to the switches and lights panel.
-    # there's no error return signal
-    def write_register(self, which_one, value):
-        if self.panel_blinken:
-            self.panel_blinken.write_register(which_one, value)
-        if self.panel_xwin:
-            self.panel_xwin.write_register(which_one, value)
-
-    # assemble all the known activate bits into a single word
-    # Not obvious what to do if _both_ panel types are enabled at the same time
-    # def activate_reg_read(self):
-    #     if self.panel_blinken:
-    #         return(self.panel_blinken.activate_reg_read())
-    #     if self.panel_xwin:
-    #         return(self.panel_xwin.activate_reg_read())
-
-    # write activate register; no return value
-    # def activate_reg_write(self, val):
-    #     if self.panel_blinken:
-    #         self.panel_blinken.activate_reg_write(val)
-    #     if self.panel_xwin:
-    #         self.panel_xwin.activate_reg_write(val)
-
-    def reset_ff_registers(self, function, log=None, info_str=''):
-        if self.panel_blinken:
-            self.panel_blinken.reset_ff_registers(function, log=None, info_str='')
-        if self.panel_xwin:
-            self.panel_xwin.reset_ff_registers(function, log=None, info_str='')
-
-    # This state machine is used to control the flow of execution for the simulator
-    def sim_state_machine(self, switch_name, cb, pc_switch_register):
-        sw = switch_name
-        if sw == "Stop":
-            cb.sim_state = cb.SIM_STATE_STOP
-            # self.dispatch["Stop"].lamp_object.set_lamp(True)
-            # self.dispatch["Start at 40"].lamp_object.set_lamp(False)
-            return
-
-        if sw == "Restart":   # don't mess with the PC, just pick up from the last address
-            cb.sim_state = cb.SIM_STATE_RUN
-            cb.first_instruction_after_start = True
-            return
-
-        if sw == "Start at 40":
-            cb.sim_state = cb.SIM_STATE_RUN
-            cb.first_instruction_after_start = True
-            cb.cpu.PC = 0o40
-            return
-
-        if sw == "Start Over":  # start executing at the address in the PC switch register
-            cb.sim_state = cb.SIM_STATE_RUN
-            cb.first_instruction_after_start = True
-            # cb.cpu.PC = self.panel.pc_toggle_sw.read_button_vector()
-            cb.cpu.PC = pc_switch_register
-            return
-
-        if sw == "Order-by-Order":  # don't mess with the PC, just pick up from the last address
-            cb.sim_state = cb.SIM_STATE_SINGLE_STEP
-            cb.first_instruction_after_start = True
-            return
-
-        if sw == "Examine":  # don't mess with the PC, just pick up from the last address
-            if cb.sim_state == cb.SIM_STATE_RUN:
-                cb.log.warn("Examine button may only be used when the machine is stopped")
-            addr = pc_switch_register
-            cb.cpu.cm.rd(addr)   # simply reading the register has the side effect of updating MAR and PAR/MDR
-            return
-
-        if sw == "Read In":  # Start all over again from reading in the "tape"
-            cb.sim_state = cb.SIM_STATE_READIN
-            popup = DialogPopup()
-            filename = popup.get_text_entry("Filename: ", "foo.acore")
-            print("filename:%s" % filename)
-            cb.CoreFileName = filename
-            return
-
-        print("Unhandled Button %s" % sw)
-        return
 
 class PanelXwinClass:
     def __init__(self, cb, sim_state_machine_arg=None, left_init=0, right_init=0):
@@ -807,6 +698,9 @@ class PanelXwinClass:
             # This test checks for hit of the Red X in the top right corner
             if pt[0].x > self.PANEL_X_SIZE - self.XBOX and pt[0].y < self.XBOX:
                 return False
+        if self.cpu_control.dispatch["Stop on Addr"].button_object.read_toggle():
+#        if self.cpu_control.dispatch["StopOnAddr"][0]():
+            cb.cpu.stop_on_address = self.pc_toggle_sw.read_button_vector()  # if activated, set the address for the cpu to watch
 
         # update all the blinkenlights
         if not standalone:
@@ -962,7 +856,7 @@ class PanelClass:
             self.panel_mWW.reset_ff_registers(function, log=None, info_str='')
 
     # This state machine is used to control the flow of execution for the simulator
-    def sim_state_machine(self, switch_name, cb, pc_switch_register=None, set_scope_selector_leds=None):
+    def sim_state_machine(self, switch_name, cb, cpu_control_switches=None, set_scope_selector_leds=None):
         sw = switch_name
         if sw == "Stop":
             cb.sim_state = cb.SIM_STATE_STOP
@@ -972,27 +866,31 @@ class PanelClass:
 
         if sw == "Restart":   # don't mess with the PC, just pick up from the last address
             cb.sim_state = cb.SIM_STATE_RUN
+            cb.first_instruction_after_start = True
             return
 
         if sw == "Start at 40":
             cb.sim_state = cb.SIM_STATE_RUN
+            cb.first_instruction_after_start = True
             cb.cpu.PC = 0o40
             return
 
         if sw == "Start Over":  # start executing at the address in the PC switch register
             cb.sim_state = cb.SIM_STATE_RUN
+            cb.first_instruction_after_start = True
             # cb.cpu.PC = self.panel.pc_toggle_sw.read_button_vector()
-            cb.cpu.PC = pc_switch_register
+            cb.cpu.PC = cpu_control_switches["PC Preset"]
             return
 
         if sw == "Order-by-Order":  # don't mess with the PC, just pick up from the last address
             cb.sim_state = cb.SIM_STATE_SINGLE_STEP
+            cb.first_instruction_after_start = True
             return
 
         if sw == "Examine":  # don't mess with the PC, just pick up from the last address
             if cb.sim_state == cb.SIM_STATE_RUN:
                 cb.log.warn("Examine button may only be used when the machine is stopped")
-            addr = pc_switch_register
+            addr = cpu_control_switches["PC Preset"]
             cb.cpu.cm.rd(addr)   # simply reading the register has the side effect of updating MAR and PAR/MDR
             return
 
@@ -1003,6 +901,19 @@ class PanelClass:
             filename = popup.get_text_entry("Filename: ", cb.CoreFileName)
             cb.log.info("ReadIn Filename:%s" % filename)
             cb.CoreFileName = filename
+            return
+
+        if sw == "Stop on Addr":  # Flip the selector for the D-Scope
+            if cpu_control_switches[sw]:
+                cb.cpu.stop_on_address = cpu_control_switches["PC Preset"]  # if activated, set the address for the cpu to watch
+            else:
+                cb.cpu.stop_on_address = None  # if inactivated, turn it off
+            return
+
+        if sw == "Stop on SI-1":  # Flip the selector for the D-Scope
+            return
+
+        if sw == "Stop on CK":  # Flip the selector for the D-Scope
             return
 
         if sw == "D-Scope":  # Flip the selector for the D-Scope

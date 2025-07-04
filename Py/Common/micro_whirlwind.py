@@ -13,8 +13,8 @@ try:
 except ModuleNotFoundError:
 #    print("no GPIO library found")
     import smbus_replacement as smbus2
-    import gpio_replacement as gpio
-#    gpio = gpio_replacement.gpioClass()
+    import gpio_replacement   # as gpio
+    gpio = gpio_replacement.gpioClass()
 #    import msvcrt
     RasPi = False
 
@@ -139,10 +139,13 @@ class PanelMicroWWClass:
         if bn:
             if bn in self.local_state_change_buttons:
                 self.local_state_change(bn)
-            else:
-                presets = self.md.read_preset_switch_leds()
-                pc_preset = presets["pc"]
-                self.sim_state_machine(bn, cb, pc_preset, set_scope_selector_leds=self.md.set_scope_selector_leds) # the third arg should be the PC Preset switch register
+            cpu_control_switches = \
+                 {"PC Preset": self.md.read_preset_switch_leds()["pc"],
+                 "Stop on Addr": self.md.stop_on_addr_state,
+                 "Stop on CK": self.md.check_alarm_special_state,
+                 "Stop on SI-1": self.md.stop_on_s1_state
+                 }
+            self.sim_state_machine(bn, cb, cpu_control_switches, set_scope_selector_leds=self.md.set_scope_selector_leds) # the third arg should be the PC Preset switch register
 
         if init_PC:
             self.write_register("PC", init_PC)
