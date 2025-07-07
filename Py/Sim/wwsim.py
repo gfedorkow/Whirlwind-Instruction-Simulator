@@ -2229,7 +2229,7 @@ def main():
     parser.add_argument("-b", "--BlinkenLights",
                         help="Activate a physical Whirlwind Manual Intervention Panel", action="store_true")
     parser.add_argument("-m", "--MicroWhirlwind",
-                        help="Activate a physical Whirlwind Model", action="store_true")
+                        help="Activate the MicroWhirlwind Model", action="store_true")
     parser.add_argument("--NoZeroOneTSR",
                         help="Don't automatically return 0 and 1 for locations 0 and 1", action="store_true")
     parser.add_argument("--SynchronousVideo",
@@ -2246,6 +2246,8 @@ def main():
                         help="Cycle through states endlessly for museum display", action="store_true")
     parser.add_argument("-d", "--Debugger",
                         help="Start simulation under the debugger", action="store_true")
+    parser.add_argument("--ZeroizeCore",
+                        help="Return zero for uninitialized core memory", action="store_true")
 
     args = parser.parse_args()
 
@@ -2261,6 +2263,9 @@ def main():
 
     if args.AutoClick:
         cb.argAutoClick = True
+
+    if args.ZeroizeCore:
+        cb.ZeroizeCore = True
 
     if args.BlinkenLights and BlinkenLightsModule == False:
         cb.log.warn("No BlinkenLights Hardware available")

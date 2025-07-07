@@ -512,6 +512,7 @@ class ConstWWbitClass:
         self.decimal_addresses = False  # default is to print all addresses in Octal; this switches to decimal notation
         self.TraceCoreLocation = None
         self.NoZeroOneTSR = False
+        self.ZeroizeCore = False
         self.TraceDisplayScope = False
         self.PETRAfilename = None
         self.PETRBfilename = None
@@ -1060,8 +1061,14 @@ class CorememClass:
         else:
             ret = self._coremem[self.MemGroupA][addr & self.cb.WWBIT6_15]
             bank = self.MemGroupA
-        if fix_none and (ret is None):
-            self.cb.log.warn("Reading Uninitialized Memory at location 0o%o, bank %o" % (addr, bank))
+
+        # if the memory location reads back Null, it's uninitialized.  Most calls to .rd() ask that
+        # the Null be returned as a Zero, and ordinarily that produces a warning.
+        # But I added a command line arg to suppress the message for original WW programs that
+        # happen to read uninitialed core (e.g. Vibrating String)
+        if (fix_none or self.cb.ZeroizeCore) and (ret is None):
+            if not self.cb.ZeroizeCore:
+                self.cb.log.warn("Reading Uninitialized Memory at location 0o%o, bank %o" % (addr, bank))
             ret = 0
         if self.cb.TraceCoreLocation == addr:
             self.cb.log.info("Read from core memory; addr=0o%05o, value=%s" % (addr, octal_or_none(ret)))
