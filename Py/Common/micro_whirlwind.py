@@ -554,7 +554,6 @@ class MappedSwitchClass:
         self.md = mapped_display
         self.fn_buttons_def = (("Examine", "Read In", "Order-by-Order", "Start at 40", "Start Over", "Restart", "Stop", "Clear"),
                                ("Stop on Addr", "Stop on CK", "Stop on S1", "F-Scope", "D-Scope", "unused", "unused", "Rotary Push"))
-        self.ff_preset_state = [0, 0]        # ff2 and ff3 preset values
         self.encoder_state = [0,0]
 
 
@@ -609,12 +608,12 @@ class MappedSwitchClass:
 
     def fn_ff2_sw(self, row, col):
         if MwwPanelDebug: self.log.info("ff2 switch row %d, col %d" %(row, col))
-        self.ff_preset_flip_bit(0, row, col)
+        self.ff_preset_flip_bit("ff2", row, col)
         return None
 
     def fn_ff3_sw(self, row, col):
         if MwwPanelDebug: self.log.info("ff3 switch row %d, col %d" %(row, col))
-        self.ff_preset_flip_bit(1, row, col)
+        self.ff_preset_flip_bit("ff3", row, col)
         return None
 
     def fn_pc_sw(self, row, col):
@@ -630,11 +629,12 @@ class MappedSwitchClass:
         bit_num = row
         if col & 1 == 0:  # even-numbered registers are the most-significant bits of Column numbers
             bit_num += 8
-        reg = self.ff_preset_state[ff]
+
+        presets = self.md.read_preset_switch_leds()
+        reg = presets[ff]
         regf = reg ^ (1 << bit_num)         # flip the designated bit
-        self.ff_preset_state[ff] = regf
         if MwwPanelDebug: self.log.info("ff flip bit: ff=%d, bit_num=%d, reg=0o%o, regf=0o%o" % (ff, bit_num, reg, regf))
-        if ff == 0:
+        if ff == "ff2":
             self.md.set_preset_switch_leds(pc=None, pc_bank=None, ff2=regf, ff3=None, bank_test=False)
         else:
             self.md.set_preset_switch_leds(pc=None, pc_bank=None, ff2=None, ff3=regf, bank_test=False)
