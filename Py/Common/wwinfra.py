@@ -1359,10 +1359,15 @@ def write_core(cb, corelist, offset, byte_stream, ww_filename, ww_tapeid,
     else:
         filetype = "Tape Bytestream"
         tag = "@T"  # lines that start with %T are simply streams of bytes at an offset from the tape start
+
     if output_file is None:
         fout = sys.stdout
     else:
-        fout = open(output_file, 'wt')
+        cb.log.info("Output Core File Name: %s" % output_file)
+        try:
+            fout = open(output_file, 'wt')
+        except IOError:
+            cb.log.fatal("can't open output file %s" % output_file)
         print("%s %d(d) words, output to file %s" % (filetype, file_size, output_file))
     fout.write("\n; *** %s ***\n" % filetype)
     if block_msg is not None:
@@ -1593,7 +1598,7 @@ class FlexoClass:
                 ret = ''
             elif ret == '\b':
                 ret = ' '
-            elif ret[0] == '<':   # if we're making a file name, ignore all the control functions in the table above
+            elif len(ret) and ret[0] == '<':   # if we're making a file name, ignore all the control functions in the table above
                 ret = ''
         elif show_unprintable:
             if ret == '\n':
