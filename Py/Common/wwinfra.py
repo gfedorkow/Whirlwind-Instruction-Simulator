@@ -843,6 +843,14 @@ class WWSwitchClass:
             else:
                 return self.SwitchNameDict[name][0]
         return None
+    
+    def dump_switches(self):
+        for name in self.SwitchNameDict:
+            val = self.SwitchNameDict[name][0]
+            if val is not None:
+                print("  Switch %s: 0o%o" % (name, val))
+            else:
+                print("  Switch %s: None" % (name))
 
 # collect a histogram of opcode frequency
 class OpCodeHistogram:
@@ -1114,23 +1122,27 @@ class CorememClass:
 
 
     # integration with the Control Panel is kinda crude here...
+    # By default, Reset FF copies any pre-configured flip-flop switches into the FF registers
+    # If we have a Panel in operation, the second step is to copy any panel presets overtop of
+    # the specific FF registers.
+    #  Note that the different panels implement different numbers of FF registers.
     def reset_ff(self, cpu):
         reset_info_string = "Reset FF%02o at address 0o%o to %s"
+        for addr in range(0, self._toggle_switch_mask + 1):
+            val = cpu.cpu_switches.read_switch("FlipFlopPreset%02o" % addr)
+            if val is not None:
+                # [addr][1] is True for Read-only addrs, False for FF Reg
+                if self._toggle_switch_mem_default[addr][1] is True and \
+                    self._toggle_switch_mem_default[addr][0] != val:
+                    self.cb.log.warn("Resetting 'read-only' toggle-switch register %02o from %o to %o" %
+                                        (addr, self._toggle_switch_mem_default[addr][0], val))
+                self.write_ff_reg(addr, val)  # None for switches not found in the .acore file
+                val_str = "0o%o" % val
+                self.cb.log.info(reset_info_string % (addr, addr, val_str))
+
         if self.cb.panel:
             self.cb.panel.reset_ff_registers(self.write_ff_reg, self.cb.log, reset_info_string)
 
-        else:
-            for addr in range(0, self._toggle_switch_mask + 1):
-                val = cpu.cpu_switches.read_switch("FlipFlopPreset%02o" % addr)
-                if val is not None:
-                    # [addr][1] is True for Read-only addrs, False for FF Reg
-                    if self._toggle_switch_mem_default[addr][1] is True and \
-                        self._toggle_switch_mem_default[addr][0] != val:
-                        self.cb.log.warn("Resetting 'read-only' toggle-switch register %02o from %o to %o" %
-                                         (addr, self._toggle_switch_mem_default[addr][0], val))
-                    self.write_ff_reg(addr, val)  # None for switches not found in the core file
-                    val_str = "0o%o" % val
-                    self.cb.log.info(reset_info_string % (addr, addr, val_str))
 
 
     # this callback is here specifically to manage the Light Gun used in the 1952 Track and Scan,

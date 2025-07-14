@@ -193,8 +193,8 @@ class PanelMicroWWClass:
             case "StopOnAddr":
                 ret = self.md.stop_on_addr_state
             case _:
-                self.log.warn("Panel.read_register: unknown register %s" % which_one)
-                exit()
+                self.log.info("mWWPanel.read_register: unknown register %s" % which_one)
+                ret = None
         return ret
 
 
