@@ -1964,6 +1964,10 @@ def main_run_sim(args, cb):
     if cb.panel:
         cb.panel.update_panel(cb, 0, init_PC=cpu.PC, alarm_state=alarm_state)  # I don't think we can miss a mouse clicks on this call
 
+    # this was here to debug a panel/no-panel inconsistency
+    print("Dump Switch Values:")
+    cpu.cpu_switches.dump_switches()
+
     # LAS
     if UseDebugger:
         # Refactoring and hoisting up at least the cpu class is something we should
