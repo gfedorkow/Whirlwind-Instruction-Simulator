@@ -834,11 +834,13 @@ class WWSwitchClass:
         return 0
 
     def read_switch(self, name):
+        print("debug: read_switch(%s)" % name)
         if name in self.SwitchNameDict:
             if self.cb.panel and name in self.SwitchNameDict and self.SwitchNameDict[name][2]:
                 # call the Panel object to read switches, should it be present, and if it's a switch
                 # that's represented on the panel.  Use the internal name string (i.e., offset 2 in the dict)
                 ret = self.cb.panel.read_register(self.SwitchNameDict[name][2])
+            if ret:
                 return ret
             else:
                 return self.SwitchNameDict[name][0]
