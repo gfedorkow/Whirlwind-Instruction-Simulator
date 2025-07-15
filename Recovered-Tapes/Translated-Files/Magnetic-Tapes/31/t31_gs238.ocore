@@ -1,0 +1,20 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\31\t31.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\31\t31_gs238.ocore
+%TapeID: 
+%Stats: Covariance=0.003552, Size=88, Display-Ops, 1, 
+%Blocknum 0o0
+@T00000: 0000127 0100000 0101016 0126422 0100000 0101400 0126417 0100000  ; si ca ca sa ca ca sa ca  :     7\0ud\0\02\0 :        \0tt#tt#t
+@T00010: 0101427 0126417 0100000 0101755 0126414 0100000 0102242 0126412  ; ca sa ca ca sa ca ca sa  :       72\0#i\0zs :         t#tt#t##
+@T00020: 0100000 0103267 0126404 0100000 0102651 0126607 0100000 0103001  ; ca ca sa ca ca sa ca ca  :     \0##\0\n3\0# :         t##t##t#
+@T00030: 0126606 0100000 0103131 0126605 0100000 0103663 0126601 0100000  ; sa ca ca sa ca ca sa ca  :      a\0,|\0##\0 :         #t##t##t
+@T00040: 0103671 0126601 0100000 0133560 0127062 0100000 0133674 0127061  ; ca sa ca ao sa ca ao sa  : <cntl>#\0OB\0V<stop> :         ##T##T##
+@T00050: 0100000 0134314 0127056 0100000 0135163 0127051 0100000 0135262  ; ca dm sa ca dm sa ca dm  :     \0IQ\0#\n\0B :         TQ#TQ#TQ
+@T00060: 0127050 0100000 0135643 0127045 0000000 0063400 0000000 0014500  ; sa ca dm sa si ab si rd  : H\0<bs>\t\0\0\0\0 :       #TQ#\0(\0A
+@T00070: 0001422 0000000 0000001 0063400 0000000 0014500 0002122 0000500  ; si si si ab si rd si si  :    D\0#\0\0\0D\0 :    \0\0\0(\0A#\0
+@T00100: 0000002 0063400 0000000 0014500 0002362 0077277 0000003 0063400  ; si ab si rd si sp si ab  : E\0\0\0B<del>8\0 :      \0(\0A##\0(
+@T00110: 0000000 0014500 0001422 0003600 0000004 0063400 0000000 0014500  ; si rd si si si ab si rd  :   \0\0D\0#\0\0\0 :     \0A\0#\0(\0A
+@T00120: 0002122 0003100 0000005 0063400 0000000 0014500 0002362 0004300  ; si si si ab si rd si .word  :    D\0_\0\0\0B\0 :       ##\0(\0A#E
+
+%Hash: 0c5759-dff099-88

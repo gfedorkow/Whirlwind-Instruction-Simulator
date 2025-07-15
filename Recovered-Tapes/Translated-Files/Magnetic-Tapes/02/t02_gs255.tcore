@@ -1,0 +1,45 @@
+
+; *** Core Image ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\02\t02.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\02\t02_gs255.tcore
+%TapeID: 
+%Stats: Covariance=0.002552, Size=272, Display-Ops, 7, 
+%Blocknum 0o0
+@C02400:  None    None    None    None    None    None   0040002 0007406  ;                ts .word  :               ea :             <color>8
+@C02410: 0001463 0000101 0000000 0040042 0007407 0001464 0000101 0000000  ; si si si ts .word si si si  :       ##\0z3g#\0 : \0\0\0<color>8\0\0\0
+@C02420: 0040042 0007410 0001465 0000101 0000000 0040042 0007411 0001466  ; ts .word si si si ts .word si  :        z ##\0z=9 : <color>8\0\0\0<color>8\0
+@C02430: 0000101 0000000 0040042 0007412 0001467 0000101 0000000 0040042  ; si si ts .word si si si ts  :       #\0zs##\0z : \0\0<color>8\0\0\0<color>
+@C02440: 0007413 0001470 0000101 0000000 0040042 0007414 0001471 0000101  ; .word si si si ts .word si si  :   4m#\0zi<cntl># : 8\0\0\0<color>8\0\0
+@C02450: 0000000 0040042 0007415 0001472 0000101 0000000 0040042 0007416  ; si ts .word si si si ts .word  :       \0Z/X#\0ZU : \0<color>8\0\0\0<color>8
+@C02460: 0001473 0000101 0000000 0040042 0007417 0001474 0000101 0000000  ; si si si ts .word si si si  :       ##\0Z2V#\0 : \0\0\0<color>8\0\0\0
+@C02470: 0040042 0007420 0001475 0000101 0000000 0040042 0007421 0001476  ; ts .word si si si ts .word si  : Z<color><cntl>#\0z.0 : <color>8\0\0\0<color>8\0
+@C02500: 0000101 0000000 0040042 0007422 0001477 0000101 0000000 0040042  ; si si ts .word si si si ts  :   #\0zd<del>#\0z : \0\0<color>8\0\0\0<color>
+@C02510: 0007423 0001500 0000101 0000000 0040042 0007424 0001501 0000101  ; .word si si si ts .word si si  :       5\0#\0zr## : 8\0\0\0<color>8\0\0
+@C02520: 0000000 0040042 0007425 0001502 0000101 0000000 0040042 0007426  ; si ts .word si si si ts .word  :       \0z1e#\0zj : \0<color>8\0\0\0<color>8
+@C02530: 0001503 0000101 0000000 0040042 0007427 0001504 0000101 0000000  ; si si si ts .word si si si  :       8#\0z7##\0 : \0\0\0<color>8\0\0\0
+@C02540: 0040042 0007430 0001505 0000101 0000000 0040042 0007431 0001506  ; ts .word si si si ts .word si  :        zn|#\0z,a : <color>8\0\0\0<color>8\0
+@C02550: 0000101 0000000 0040042 0006001 0001507 0000101 0000000 0040042  ; si si ts .word si si si ts  :       #\0z#3#\0z : \0\0<color>8\0\0\0<color>
+@C02560: 0002401 0001510 0000101 0000000 0062041 0000000 0020041 0001570  ; si si si si ab si bo si  :       # #\0#\0#m :    #\0\0\0,\0 \0
+@C02570: 0040042 0000401 0001570 0000101 0000000 0062041 0000000 0020041  ; ts si si si si ab si bo  :       z#m#\0#\0# : <color>\0\0\0\0,\0 
+@C02600: 0001617 0040042 0012001 0001617 0000101 0000000 0062041 0000000  ; si ts bi si si si ab si  :       2z#2#\0#\0 : \0<color>|\0\0\0,\0
+@C02610: 0020041 0001677 0040042 0004002 0001677 0000101 0000000 0062041  ; bo si ts .word si si si ab  : #<del>ze<del>#\0# :  \0<color>e\0\0\0,
+@C02620: 0000000 0020041 0002037 0040042 0004003 0002037 0000101 0000000  ; si bo si ts .word si si si  :       \0##z8##\0 : \0 #<color>e#\0\0
+@C02630: 0062041 0000000 0020041 0002177 0040042 0004001 0002177 0000101  ; ab si bo si ts .word si si  : #\0#<del>z#<del># : ,\0 #<color>e#\0
+@C02640: 0000000 0020041 0003531 0016041 0171000 0020041 0003534 0016041  ; si bo si rd CL bo si rd  :       \0#,#\0#c# :        \0 #3v #3
+@C02650: 0171000 0020041 0003540 0016041 0171000 0020041 0003543 0016041  ; CL bo si rd CL bo si rd  :    \0#t#\0#<bs># :         v #3v #3
+@C02660: 0171000 0020041 0003551 0016041 0171000 0020041 0003553 0016041  ; CL bo si rd CL bo si rd  :      \0#\n#\0### :         v #3v #3
+@C02670: 0171000 0020041 0003556 0016041 0171000 0020041 0003570 0016041  ; CL bo si rd CL bo si rd  :       \0#q#\0#m# :         v #3v #3
+@C02700: 0171000 0020041 0003533 0016042 0001404 0074000 0020101 0003542  ; CL bo si rd si sp bo si  :       \0#6z#\0#z :        v #3\0k #
+@C02710: 0016042 0001404 0074000 0020101 0003560 0016042 0001404 0074000  ; rd si sp bo si rd si sp  :       z#\0#oz#\0 :       3\0k #3\0k
+@C02720: 0020101 0003562 0016042 0001404 0074000 0020101 0003564 0016042  ; bo si rd si sp bo si rd  :        #bz#\0#gz :         #3\0k #3
+@C02730: 0001404 0074000 0020101 0003565 0016042 0001404 0074000 0020101  ; si sp bo si rd si sp bo  :       #\0##z#\0# :       \0k #3\0k 
+@C02740: 0003567 0016042 0001404 0074000 0020101 0003606 0016042 0001404  ; si rd si sp bo si rd si  :        #z#\0#az# :       #3\0k #3\0
+@C02750: 0074000 0020101 0003650 0016042 0001404 0074000 0020101 0003665  ; sp bo si rd si sp bo si  :       \0#hz#\0## :        k #3\0k #
+@C02760: 0016042 0001404 0074000 0020101 0003726 0016042 0001404 0074000  ; rd si sp bo si rd si sp  :       z#\0#jz#\0 :       3\0k #3\0k
+@C02770: 0020101 0003450 0040042 0001404 0003450 0016101 0053452 0016041  ; bo si ts si si rd ta rd  :         #hz#h#y# :   #<color>\0#313
+@C03000: 0034345 0016041 0074000 0040042 0001405 0003453 0016102 0001406  ; cf rd sp ts si si rd si  :       \t#\0z|#ea : u3k<color>\0#3\0
+@C03010: 0100000 0016101 0034745 0040042 0001406 0003455 0006101 0000032  ; ca rd cf ts si si .word si  :       \0#\tza##f : t3u<color>\0#8\0
+@C03020: 0060043 0177777 0001405 0000000 0000140  None    None    None    ;    ab md si si si        : <bs><del>|\0t       : n<del>\0\0\0      
+@C03600:  None    None    None   0074002  None    None    None    None    ;              sp          :        e         :        k        
+
+%Hash: bcddf4-4a674b-272

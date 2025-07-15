@@ -1,0 +1,21 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\31\t31.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\31\t31_gs451.ocore
+%TapeID: 
+%Stats: Covariance=0.003902, Size=91, Display-Ops, 1, 
+%Blocknum 0o0
+@T00000: 0000132 0100000 0124551 0126334 0100000 0126055 0126323 0100000  ; si ca sa sa ca sa sa ca  :     f\0\nc\0#5\0 :        \0ty#t##t
+@T00010: 0126543 0126320 0100000 0127700 0126311 0100000 0130126 0126307  ; sa sa ca sa sa ca ao sa  : <bs><color>\0\0=\0j3 :         ##t##tp#
+@T00020: 0100000 0130375 0126305 0100000 0130007 0126510 0100000 0131501  ; ca ao sa ca ao sa ca ao  : \0<cntl>|\03 \0# :         tp#tp#tp
+@T00030: 0126476 0100000 0132105 0126473 0100000 0133061 0126465 0100000  ; sa ca ao sa ca ao sa ca  : 0\0|#\0<stop>#\0 :         #t##t##t
+@T00040: 0133120 0126465 0100000 0133446 0126463 0100000 0133542 0126662  ; ao sa ca ao sa ca ao sa  : <color>#\0w#\0zb :         ##t##t##
+@T00050: 0100000 0134753 0126652 0100000 0135150 0126651 0100000 0135523  ; ca dm sa ca dm sa ca dm  :     \0#y\0h\n\05 :         tq#tq#tq
+@T00060: 0126646 0100000 0135624 0126645 0100000 0136077 0126643 0000000  ; sa ca dm sa ca dm sa si  : w\0r\t\0<del><bs>\0 :        #tq#t##\0
+@T00070: 0063400 0000000 0014500 0066711 0074141 0000001 0063400 0000000  ; ab si rd ex sp si ab si  :    \0\0\0=##\0\0 :      ,\0a6k\0,\0
+@T00100: 0014500 0065743 0000500 0000002 0063400 0000000 0014500 0066203  ; rd ex si si ab si rd ex  : \0<bs>\0e\0\0\08 :      af\0\0,\0a6
+@T00110: 0077277 0000003 0063400 0000000 0014500 0065243 0003600 0000004  ; sp si ab si rd ex si si  : <del>8\0\0\0<bs>\0# :      #\0,\0af#\0
+@T00120: 0063400 0000000 0014500 0065743 0003100 0000005 0063400 0000000  ; ab si rd ex si si ab si  : \0\0\0<bs>\0|\0\0 :      ,\0af#\0,\0
+@T00130: 0014500 0066203 0004300  ;             rd ex .word  :            \08\0 :              a6e
+
+%Hash: c265c4-a65291-91

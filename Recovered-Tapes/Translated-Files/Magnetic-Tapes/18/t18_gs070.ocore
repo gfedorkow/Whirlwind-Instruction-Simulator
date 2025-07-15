@@ -1,0 +1,21 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\18\t18.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\18\t18_gs070.ocore
+%TapeID: 
+%Stats: Covariance=0.004083, Size=91, 
+%Blocknum 0o0
+@T00000: 0000132 0100000 0101451 0126217 0100000 0102617 0126207 0100000  ; si ca ca sa ca ca sa ca  :     f\0\n2\023\0 :        \0tt#t##t
+@T00010: 0131611 0126275 0100000 0133733 0126260 0100000 0100663 0126423  ; ao sa ca ao sa ca ca sa  :  =<cntl>\06o\0#5 :         p#t##tt#
+@T00020: 0100000 0101164 0126421 0100000 0101537 0126416 0100000 0102174  ; ca ca sa ca ca sa ca ca  :      \0g.\0#u\0v :         tt#tt#t#
+@T00030: 0126413 0100000 0102723 0126407 0100000 0134371 0126455 0100000  ; sa ca ca sa ca dm sa ca  : 4\053\0<cntl>#\0 :         #t##tQ#T
+@T00040: 0135734 0126444 0100000 0102760 0126606 0100000 0103303 0126604  ; dm sa ca ca sa ca ca sa  :       CL\0OA\08# :         Q#T##T##
+@T00050: 0100000 0103651 0126601 0100000 0136603 0126637 0100400 0136510  ; ca ca sa ca dm sa ca dm  :     \0\n#\08#\0  :         T##T##T#
+@T00060: 0127040 0000000 0016777 0000002 0017110 0072156 0011300 0000001  ; sa si rd si rd cp bi si  :   T\0<del>E Q\0# :      #\03\03-#\0
+@T00070: 0000002 0061000 0017110 0067177 0006561 0000002 0065302 0065303  ; si ab rd ex .word si ex ex  : E\0 <del><stop>EE8 :       \0N368\0FF
+@T00100: 0017110 0002006 0010206 0000003 0065302 0065303 0017110 0002506  ; rd si bi si ex ex rd si  :          AA8E8 A :        3##\0FF3#
+@T00110: 0007006 0000004 0065302 0065303 0017110 0003206 0005606 0000005  ; .word si ex ex rd si .word si  :         A#E8 AA_ :       8\0FF3#E\0
+@T00120: 0065302 0065303 0017110 0003706 0004406 0000006 0065302 0065303  ; ex ex rd si .word si ex ex  :         E8 AAAE8 :        FF3#E\0FF
+@T00130: 0017110 0004406 0003206  ;             rd .word si  :               AA :              3E#
+
+%Hash: 14a835-86adcb-91

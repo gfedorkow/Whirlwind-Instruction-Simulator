@@ -1,0 +1,832 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302395_box36\102663722_fc1343-m500_4-16-59.7ch
+fc TAPE 1343 m500 HELWIG-FEY
+OCTAL<del>	pa2=480
+pa1=2004
+pa3=2002
+pa4=2003
+pa5=2000
+pb1=40
+pb2=42
+pb3=44
+[1;31m40|[0mspb1		|Start of read tape routine
+[1;31m41|[0mspb2		|Start of read deck routine
+[1;31m42|[0mspd13		|obtain char. entry for cf1
+[1;31m<del><del><del>b1,[0mcac7+20
+cf610
+cac7+5		|9
+tsc7		|BCD card no. reset
+tsc7+1
+tsc7+2
+tsc7+3
+cac7+16		|9999
+tsc7+13		|binary card no. reset
+ca0
+tsc7+17		|punch sd sum
+tsa2+1		|m ctr
+|read title
+si211		|select petr
+ca0		|reset for run no. conversion and 256 test
+tsg4+4
+tsg4+10
+|read run number
+[1;31mg7,[0mspg1		|get next char.
+spg5
+spg8		|go if comma
+spe14		|go if carr ret, error
+0.00001
+sppb2
+<del><del><del><del><del><del><del><del>cag4+4		|conversion mod 32768
+mhg4+1
+slh17
+sag4+3
+tsg4+4
+ca0		|clear sum
+spg7
+[1;31mg8,[0mca0		|reset for word conversion
+tsg4+2
+csg4+5
+tsg4+6
+<del>[1;31mg8+4,[0mspg1		|get next char
+spg5<del>
+spg11		|go if comma
+spg12		|go if carr ret
+cag4+3
+ck0
+spg10		|go if 0
+ck1
+spg9		|go if 1
+sp<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>e14	|illegal
+0.00003
+sppb2
+[1;31mg5,[0mtag6		|test for comma and carr ret
+cag4+3
+ckh1+31
+spg6		|go if comma
+aog6
+cag4+3
+ckh1+51
+spg6		|go if carr ret
+aog6
+[1;31mg6,[0msp		|exit
+[1;31mg9,[0mcag4+2		|form binary word sent
+clh1
+sd1
+[1;31mg9+3,[0mtsg4+2
+aog4+6
+cpg<del>8+4		|go if fewer than 17 digits
+sp<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>e14	|illegal
+0.00003
+sppb2
+[1;31mg10,[0mcag4+2		|form binary word sent
+clh1
+spg9+3
+[1;31mg11,[0mcag4+6		|comma terminated
+ckg4+7
+sph2		|go if exactly 16 digits
+sp<del><del><del><del><del><del><del><del><del><del><del><del><del>e14	|illegal
+0.00004
+sppb2
+[1;31mg12,[0mcag4+6		|carr ret. terminated
+ckg4+7
+sph6+2		|go if exactly 16 digits
+sp<del><del><del>e14
+0.00004
+sppb2
+[1;31mg1,[0mtag2		|get next character
+[1;31mg1+1,[0mrd
+a<del>dg4
+tdg1+4
+[1;31mg1+4,[0mca		|pick up character code
+cpg3		|go if illegal
+tsg4+3		|save character code
+clh1
+cpg1+1		|go if ignorable
+[1;31mg2,[0msp		|exit
+[1;31mg3,[0m<del><del>spe14
+0.00000
+sppb2
+[1;31mg4,[0msih1		|flexo table key
+[1;31mg4+1,[0m+10	<del>	|constant
+[1;31mg4+2,[0m+0		|word sent
+[1;31mg4+3,[0m+0		|char code
+[1;31mg4+4,[0m+0		|run number
+[1;31mg4+5,[0m+16		|constant
+[1;31mg4+6,[0m+0		|binary digit counter
+[1;31mg4+7,[0m-0		|constant
+[1;31mg4+10,[0m+0		|256 ind.
+[1;31mg4+11,[0mts0		|constant
+[1;31mg4+12,[0m1.37777
+[1;31mh1,[0mts		|ts = ignored
+ca		|ca = ille<del><del><del>gal
+ts		|e
++8		|8
+ca
+ts		|slash
+ts		|a
++3		|3
+[1;31mh1+10,[0mts		|space
+ts<del><del><del>
+ts		|s
++4		|4
+ts		|i
+ts		|+
+ts		|u
+[1;31mh1+17,[0m+2		|2
+[1;31mh1+20,[0mts		|color
+ts		|.
+ts		|d
+[1;31mh1+23,[0m+5		|5
+ts		<del>|r
++1		|1
+ts		|j
++7		|7
+[1;31mh1+30,[0mts		|n
+[1;31mh1+31,[0m0.00031		|,
+ts		|f
+[1;31mh1+33,[0m+6		|6
+ts		|c
+ts		|-
+ts		|k
+ca
+[1;31mh1+40,[0mts		|t
+ca
+ts		|z
+ts		|back space
++1		|l
+ts		|tab
+ts		|w
+ca
+[1;31mh1+50,[0mts		|h
+[1;31mh1+51,[0m0.00051		|c<del>arr ret
+ts		|y
+ca<del><del><del>
+ts		<del><del><del><del><del><del><del><del><del><del><del>|p
+ca
+ts		|q
+ca
+[1;31mh1+60,[0mts<del><del><del><del><del><del><del><del><del><del>		|o
+ts		<del><del><del><del><del>|stop
+ts		|b
+ca
+ts		|g
+ca
++<del>9		|9
+ca
+[1;31mh1+70,[0mts		|m
+ts		|upper
+ts		|x
+ca
+ts		|v
+ts		|lower
++0		|0
+ts		|nullify
+[1;31mh2,[0mspg1	|get next char
+spg5
+sph2
+sph7
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>cag4+3
+ckh1+17
+sph3		|go if 2
+sp<del><del><del><del><del><del><del><del><del><del><del><del><del>e14	|illegal
+0.00005
+sppb2
+[1;31mh3,[0mspg1		|get next char
+cag4+3
+ckh1+23
+sph4		|go if 5
+sp<del><del><del><del><del><del><del><del><del><del><del><del><del><del>e14	|illegal
+0.00005
+sppb2
+[1;31mh4,[0mspg1		|get next c<del>har
+cag4+3
+ckh1+33
+sph5		|go if 6
+spg3		|illegal
+[1;31mh5,[0mspg1		|get next char
+cag4+3<del><del>
+ckh1+51
+sph6		|go if carr ret
+spg3		|illegal
+[1;31mh6,[0maog4+10		|set 256 ind
+aog4+10
+[1;31mh7<del><del><del><del><del>,[0msi630		|deselect petr
+si17		|clear card image
+cac2+6		|60
+bic4
+cag4+11		|special card punch
+tsc4
+ca1		|col bin punch
+tsc4+4
+cag4+2		|word sent to card image
+clh20
+adg4+10		|256 ind to card image
+clh16
+tsc4+5
+ex0
+clh20
+tsc4+6
+<del><del><del><del><del><del><del><del><del><del><del><del><del>cag4+4		|run number to card image
+clh40-2		|crh 5
+sdc4
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>tsc4
+ex0
+clh20
+tsc4+1
+spc12
+cac4		|wipe out special bit
+mdg4+12
+tsc4
+[1;31ma1,[0mspp1		|get next char.
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>cpe1		|jump if error code
+ckk1<del>
+spa6		|stop code
+cka2
+spa3		|m code o<del>nly
+clh1
+cpa4		|m is punched
+[1;31ma5,[0mclh2
+mdc2+7		|land g bits
+clh40-10		|crh8
+sda2+1
+<del><del><del><del><del><del><del><del><del>mda2+3
+tsa2+1		|m counter
+spa7		|enter  card image
+spa1
+[1;31ma2,[0m0.40000		|constant
+[1;31ma2+1,[0m+0		|n counter
+[1;31ma2<del><del>+2,[0m+59		|constant
+[1;31ma2+3,[0m0.00777
+[1;31ma2+4,[0mca0
+[1;31ma7,[0mtaa12		|enter card image
+spa11+4
+[1;31ma11,[0mtaa12		|index n ctr.
+aoa2+1
+sua2+2		|59
+cpa12		|exit if less than 60
+[1;31ma11+4,[0mcac7+5		|store code in card image
+tst1+3
+caa2+1
+tst1+2
+spm1
+ca0		|reset m counter
+tsa2+1
+[1;31ma12,[0msp		|exit
+[1;31ma3,[0mspa11		|index m counter
+spa1
+[1;31ma4,[0mtsc7+10
+spa11		|index m counter
+cac7+10
+spa5
+[1;31ma6,[0mcaa2+1
+ck0
+spa6+4		|m count is zero
+spa7		|insert m count
+[1;31ma6+4,[0mcat1
+ckc7+7		|5
+spa8		|8 row
+[1;31ma9,[0mspc12		|punch card
+[1;31ma10,[0msi17		|clear card image
+cac2+6		|60
+bic4
+caa2+4		|term card
+tsc4
+<del><del><del><del><del><del><del>cs0
+tsc7+17
+spc12		|punch term card
+ca0
+tsc4
+<del><del><del><del>spc12		|punch blank cards
+spc12
+spc12
+spc12
+[1;31mz3,[0m
+[1;31mb2,[0msi246		|read card
+cac2+6
+bic4
+cac4		|check for title card
+clh1
+cpr6
+[1;31mz5,[0m
+[1;31mr3,[0msi246		|read card
+cac2+6
+bic4
+cac4
+cpz7		|go if end card
+[1;31mr6,[0mspr1		|form sd sum
+ca0
+ckc1		|check sd sum
+spr4
+[1;31mz6,[0m
+[1;31mr4,[0mckc1+1
+spr5
+spz6
+[1;31mr5,[0mckc1+2
+spr3
+spz6
+[1;31mz7,[0m
+[1;31me1,[0mclh1
+tse4+12		|save m bit
+caa2+1
+ck0
+spe3		|m ctr is zero
+spa7		|punch m count
+[1;31me3,[0mcae4+12
+clh40-13		|crh11
+mde4		|store control bits in e4+1
+ade4+11		|0.00020
+tse4+1
+spp1		|store word in e4+2
+tse4+2
+spp1
+clh40-6		|crh6
+sde4+2
+tse4+2
+spp1
+clh40-14		|crh12
+sde4+2
+tse4+2
+spp1		|store sync in e4+3
+tse4+3
+spp1
+clh40-6		|crh6
+sde4+3
+tse4+3
+spp1
+clh40-14		|crh12
+sde4+3
+clh40-3		|crh3
+tse4+3
+ex0		|store e in e4+4
+clh5
+tse4+4
+cat1+1		|move to beginning of quarter - row
+cke4+5
+spe5		|9
+cke4+6
+spe5		|27
+cke4+7
+spe5		|45
+cke4+10
+spe6		|63
+[1;31me8,[0mcat1		|insure space for error words
+ckk2+5
+spe10		|jump if 12 row
+[1;31me13,[0mcae4+1		|enter control word into card image
+tst1+2
+cak2+4		|5
+tst1+3
+spm1		|enter image
+cae4+3		|enter sync into card image
+tst1+2
+cae9+5		|13
+tst1+3
+spm1		|enter image
+cae4+4		|36
+ck0
+spf1		|jump if e = 0
+cae9+2
+cpf2		|jump if no e field
+ao1
+spf5		|enter e control bits into card image
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>cat1		|save row and col nos.
+tse9+6
+cat1+1
+tse9+7
+cae9		|row and col nos for e field
+tst1
+cae9+1
+tst1+1
+adk2+4		|new col no for e field
+tse9+1
+cae9+2
+ck1
+spf9		|jump if e field to be exhausted
+su1		|count e field entries
+[1;31mf10,[0mtse9+2
+spf7		|enter e into card image
+cae9+6		|restore row and col nos.
+tst1
+cae9+7
+tst1+1
+<del><del><del><del><del>spf3		|enter word into card image
+spa1
+[1;31me4,[0m0.00017		|constant
+[1;31me4+1,[0m+0		|control word
+[1;31me4+2,[0m+0		|error word
+[1;31me4+3,[0m+0		|sync
+[1;31me4+4,[0m+0		|e
+[1;31me4+5,[0m+9		|constants
+[1;31me4+6,[0m+27		|
+[1;31me4+7,[0m+45		|
+[1;31me4+10,[0m+63		|
+[1;31me4+11,[0m0.00020		|
+[1;31me4+12,[0m+0		|temp
+[1;31me5,[0made4+5		|9
+tst1+1		|set to quater row
+spe8
+[1;31me6,[0mca0		|col 0
+tst1+1
+cat1
+ckk2+5		|55
+spe7		|go if full card
+adk2+4		|5
+tst1		|next row
+spe8
+[1;31me7,[0mspc12		|punch card
+spe8
+[1;31me10,[0mcae4+4		|e
+ck0
+spe11		|e=0
+cse9+2
+cpe11		|jump if e field exists
+cat1+1		|col. no.
+sue9+3		|18
+[1;31me12,[0mcpe13		|jump if space available
+spc12		|punch card
+spe13
+[1;31me11,[0mcat1+1		|col. no.
+sue9+4		|36
+spe12
+[1;31me9,[0m+0		|e field row
+[1;31me9+1,[0m+0		|e field col.
+[1;31me9+2,[0m-0		|neg means no e field, otherwise 2 or 1
+[1;31me9+3,[0m+18		|constants
+[1;31me9+4,[0m+36		|
+[1;31me9+5,[0m+13		|
+[1;31me9+6,[0m+0		|temp
+[1;31me9+7,[0m+0		|temp
+[1;31me9+10,[0m+3		|constants
+[1;31me9+11,[0m+72		|
+[1;31mf1,[0mca0		|enter e control bits into card image
+spf5
+spf3		|enter error word into card image
+spa1
+[1;31mf2,[0mao1
+spf5		|enter e control bits into card image
+spf3		|enter error word into card image
+cat1+1		|col no
+ade9+3		|18
+cke9+11		|72
+spf11		|e will fill row
+tse9+7		|save col no
+cat1		|save row no
+spf12
+[1;31mf3,[0mtaf4		|enter error word into card image
+cae4+2
+tst1+2
+cak2+1		|16
+tst1+3
+spm1		|enter word
+[1;31mf4,[0msp
+[1;31mf5,[0mtaf6		|enter e control bits into card image
+clh17		|enter m bit
+exe4+12
+clh17
+ex0
+clh2
+tst1+2		|store control bits
+ao1		|2
+tst1+3
+spm1		|enter word
+[1;31mf6,[0msp
+[1;31mf7,[0mtaf8		|enter e into card image
+cae4+4		|e
+tst1+2
+cak2+4		|5
+tst1+3
+spm1		|enter word
+[1;31mf8,[0msp
+[1;31mf11,[0mca0		|new col no is 0
+tse9+7
+cat1
+ckk2+<del><del><del><del><del><del><del><del><del><del><del><del>5		|55
+spf15		|e fills card
+adk2+4		|5
+[1;31mf12,[0mtse9+6		|new col no.
+spf13		|enter e into e field
+ao1
+tse9+2		|set e fi<del><del><del><del>eld indicated
+cat1		|e field row no.
+tse9
+cat1+1		|e field col no
+tse9+1
+cae9+6		|row no
+tst1
+cae9+7		|col no
+tst1+1
+spa1
+[1;31mf15,[0mspf13		|enter e into e field
+spc12		|punch card
+spa1
+[1;31mf13,[0mtaf14		|enter first e into e field
+cat1+1		|col no
+ade9+10		|3
+tst1+1
+spf7		|enter e
+[1;31mf14,[0msp		|exit
+[1;31mp1,[0mtap3		|next char is char table to ac
+cap2
+cf610
+clc20
+[1;31mp3,[0msp
+[1;31mp2,[0mpb2
+|Recovery
+[1;31md13,[0mca2r
+cf610
+[1;31m2d13,[0mpb3
+[1;31mm1,[0mtam7		|enter item into card image, update row and col locs.
+cat1+1		|c = col. ctr. r = row ctr.
+srh4		|c/16
+adt1		|r+c/16
+adc2+2		|<del>loc of image
+tdm3		|addresses of registers involved in card image
+aom3
+<del>tam2+2
+tam2+3
+tdm5
+ex0		|first unfilled digit position in register involved.
+slh4
+tst1+5
+adt1+3		|first available digit pos. af<del>ter word is inserted.
+suk2+1		|16
+cpm4		|jump if only one register involved
+tst1+4		|no. of digits to go in second register = i
+cak2+2
+sut1+4
+tdm2+1		|crh i = clh 32-i
+cat1+2
+spm2		|enter first register
+clh20		|enter second register
+[1;31mm3,[0msd
+[1;31mm5,[0mts
+spm6
+[1;31mm2,[0mtam2+4		|enter first reg
+[1;31mm2+1,[0mclc		|split between ac and br
+[1;31mm2+2,[0msd		|enter first reg
+[1;31mm2+3,[0mts
+[1;31mm2+4,[0msp		|exit
+[1;31mm4,[0mcak2+1
+sut1+5		|number of unfilled bits in register
+sut1+3
+adk2+3
+tdm2+1		|number of left shifts required
+cat1+2		|enter first register
+spm2
+[1;31mm6,[0mcat1+1		|update col. no.
+adt1+3
+tst1+1
+suk2
+cpm7		|jump if <del><del><del>row not full
+ca0		|reset col. no.
+tst1+1
+cat1		|update row no.
+a<del>dk2+4
+tst1
+suk2+5
+cpm7		|jump if card not full
+spc12		|punch card
+[1;31mm7,[0msp
+[1;31mt1,[0m+5		|0(5)55  current row
+[1;31mt1+1,[0m+0		|0(1)71  current unfilled col.
+[1;31mt1+2,[0m+0		|word to be inserted, zeros on left
+[1;31mt1+3,[0m+0		|no. dig. in word 1,...,16
+[1;31mt1+4,<del><del><del>[0m+0		|temp
+[1;31mt1+5,[0m+0		|
+[1;31mk2,[0m+71		|constants
+[1;31mk2+1,[0m+16		|
+[1;31mk2+2,[0m+512+32		|
+[1;31mk2+3,[0m+512		|
+[1;31mk2+4,[0m+5		|
+[1;31mk2+5,[0m+55		|
+[1;31mc12,[0mtac11		|punch card
+cac7+4		|set to index bcd card number<del>
+tdc8
+tdc8+2
+tdc8+6
+[1;31mc8,[0mca		|index bcd card number
+ad1		|index digit by 1
+[1;31mc8+2,[0mts
+suc7+5
+cpc14		|jump if no carrg
+ca0
+[1;31mc8+6,[0mts		|digit = 0
+aoc8<del>
+aoc8+2
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>aoc8+6
+suc7+6
+cpc8		|up to 4 carries
+[1;31mc14,[0mcac7+4		|enter bcd card no. into card image
+tdc9		|initialize
+cac2+5
+tdc10
+[1;31mc9,[0mca		|digit = d
+mhc7+7		|5d
+slh17
+tsc7+10
+cac7+11		|compute register in card image in <del>which
+suc7<del>+10		|digit belongs
+tdc10+1
+tdc10+2
+ca1		|enter digit
+[1;31mc10,[0mslr
+[1;31mc10+1,[0msd
+[1;31mc10+2,[0mts
+aoc10
+aoc9
+suc7+12
+cpc9		|4 digits
+cac7+17		|go if no sd sum wanted
+cpm8
+aoc7+13		|store binary card number in card image
+suc7+16
+cpc1<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>7
+ca0
+tsc7+13
+[1;31mc16,[0mclh40-4
+tsc7+10
+clh20
+tsc4+2
+cac4+1
+mdc7+15
+sdc7+10
+tsc4+1
+spr1
+cac1		|check sum to card
+clh40-4		|crh 4
+s<del>dc4+2
+tsc4+2
+ex0
+clh40-14		|crh 12
+adc1+1
+clh40-4		|crh 4
+tsc4+3
+ex0
+clh10
+adc1+2
+clh10
+<del>sdc4+4
+tsc4+4
+[1;31mm8,[0msi247		|punch card
+cac2+6
+boc4
+cac4+1		|clear card image except run no.
+mdc2+7
+tsc4+1
+si17
+cac2+10
+bic4+2
+ca1		|9 row, col. 80 contains a punch
+tsc4+4
+cac7+7		|row 8
+tst1
+ca0		|col 1
+tst1+1
+cs0		|set to no e fields on card.
+tse9+2
+[1;31mc11,[0msp		|exit
+[1;31mc17,[0mcac7+13
+spc16
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>[1;31mc7,[0m+9
+[1;31mc7+1,[0m+9
+[1;31mc7+2,[0m+9
+[1;31mc7+3,[0m+9
+<del><del><del><del><del><del>[1;31mc7+4,[0m<del><del><del><del>sic7		|constants
+[1;31mc7+5,[0m+9		|
+[1;31mc7+6,[0mtsc7+3		|
+[1;31mc7+7,[0m+5<del>		|
+[1;31mc7+10,[0m+0		|temp
+[1;31mc7+11,[0msic6-12		|constants
+[1;31mc7+12,[0mcac7+3		|
+[1;31mc7+13,[0m+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>9999
+[1;31mc7+14,[0m+0		|temp
+[1;31mc7+15,[0m1.70000		|constant
+[1;31mc7+16,[0m+9999
+[1;31mc7+17,[0m+0
+[1;31mc7+20,[0mp61
+[1;31mc1,[0m+0		|sd temp
+[1;31mc1+1,[0m+0		|
+[1;31mc1+2,[0m+0		|
+[1;31mc1+3,[0m+0		|
+[1;31mc1+4,[0m+0		|
+[1;31mc2,[0msic1		|constants
+[1;31mc2+1,[0mtsc1+4		|
+[1;31mc2+2,[0msic4		|
+[1;31mc2+3,[0mcac6<del>		|
+[1;31mc2+4,[0m+36<del>		|
+[1;31mc2+5,[0m+4
+[1;31mc2+6,[0m+60		|
+[1;31mc2+7,[0m1.40000		|
+[1;31mc2+10,[0m+58		|
+[1;31mc2+11,[0m0.00017		|
+[1;31mc4,[0m+0		|9 row
++0
++0
++0
+[1;31mc4+4,[0m+1
+[1;31m0r,[0m+0
+DITTO
+[1;31m62r|[0m+0		|12 row
++0
++0
++0
+[1;31mc6,[0m+0
+[1;31ma8,[0mcat1+1		|col no
+ck0
+spa10		|null card
+spa9
+[1;31mf9,[0m<del>cs0
+spf10
+[1;31mr1,[0mtar2
+cac2		|reset registers which contain 16 bit sd sums
+tdc3+1
+[1;31mc3,[0mca0
+[1;31mc3+1,[0mts
+aoc3+1
+suc2+1
+cpc3
+cac2+2		|form 16 digit sd sums
+tdc5		|in c1+i i=0,...,4
+[1;31mc13,[0mcac2
+tdc5+1
+tdc5+2
+[1;31mc5,[0mca
+[1;31mc5+1,[0msd
+[1;31mc5+2,[0mts
+aoc5
+aoc5+1
+aoc5+2
+suc2+1
+cpc5
+cac5
+suc2+3
+cpc13
+cac1+3		|form 36 digit sd sum
+clh20
+adc1+2
+clh4
+sdc1
+tsc1
+clh40-4		|crh 4
+ex0
+adc1+4
+clh20+4
+sdc1+1
+tsc1+1
+clh20
+sdc1+2
+clh40-14		|crh 12
+mdc2+11
+tsc1+2
+[1;31mr2,[0msp
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>|E<del><del><del><del><del><del>rror Routine in A Field
+[1;31me16,[0mtae19		|address of error number
+ts3e18		|number of incorrect card
+ca5e18
+ts11e14		|e16 initialization
+sp1e15
+[1;31me15,[0mtae19		|address of error number
+ca6e18
+ts10e14		|e15 initialization
+sp1e14
+[1;31me14,[0mtae19		|address of error number
+cf1000		|test B field
+md4e18		|mask 0.00007
+tse18		|original B field
+cf103		|bring in error remark field
+cae19
+td2e18
+ao2e18		|return after RESTART
+[1;31m10e14,[0mclh0		|e15 initialization
+[1;31m11e14,[0mclh0		|e16 initialization
+[1;31me19,[0mca+
+ts1e18		|error number
+sppa1		|error print out
+cae20		|return from print out
+ade18		|original B field
+tse20
+[1;31me20,[0mcf100		|restore original B field
+ca2e18		|return after RESTART
+tde21
+[1;31me21,[0msp+		|return to program after error
+[1;31me22,[0mta5e22<del>
+ca3e18
+tspa3		|number of incorrect card
+ca10e18
+tspa4		|set e16 error indicator
+sp+
+[1;31me23,[0mta3e23
+ca7e18
+tspa5		|disable halt
+sp+		|EXIT
+[1;31me18,[0m0		|original B field
+[1;31m1e18,[0m0		|error number
+[1;31m2e18,[0m0		|return af<del>ter RESTART
+[1;31m3e18,[0m0		|number of incorrect card
+[1;31m4e18,[0m0.00007		|mask
+[1;31m5e18,[0mspe22<del>		|e16 initialization
+[1;31m6e18,[0mspe23		|e15 initialization
+[1;31m7e18,[0mclh0		|do nothing
+[1;31m10e18,[0m1.00000		|e16 indicator
+[1;31m1777|[0mz2,
+[1;31m2000|[0mz1,
+START AT 32

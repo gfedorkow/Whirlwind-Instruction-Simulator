@@ -1,0 +1,463 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302369_box12\102663442_fc126-269-25c_4-1-59.7ch
+fc TAPE 126-269-25<del><del>c DC-25 WALSH
+[1;31m0.03100|[0msps1
++0
+[1;31m<del><del><del><del><del><del><del><del><del>s1,[0mspk10		|s1, dolo, s2.
+[1;31ms2,[0mspk1		|s2, dol1, s3<del>.
+[1;31ms3,[0mspk7		|s3, dol7, s8.
+sps8
+[1;31ms4,[0mspk10		|s4, dol0, s3.
+sps3
+[1;31ms5,[0mspk10		|s5, dol0, s6.
+[1;31ms6,[0mspk1		|s6, dol1, s8.
+sps8
+[1;31ms7,[0mspk10		|s7, dol0, s8.
+[1;31ms8,[0mcat11		|s8, if l0=n, s18, s9.
+cps1<del>8
+[1;31ms9,[0mca7t11		|s9, if l7=n, s39, s10.
+cps39
+[1;31ms10,[0mdmt11		|s10, if l7 g l0, s39, s11.
+cps11
+sps39
+[1;31ms11,[0mca1t11		|s11, if l1=n, s38, s12.
+cps38
+[1;31ms12,[0mdmt11		|s12, if l1 g l0, s38, s13.
+cps13
+sps38
+[1;31ms13,[0mdm0		|s13, if l1=l0, s14, s15.
+cps14
+sps15
+[1;31ms14,[0mcaz7		|s14, if z7+l1=14, k24, s15.
+ad1t11
+sdn14
+dm0
+cpk24
+[1;31ms15,[0mca7t11		|s15, if 17=1<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>0, s16, s17.
+sdt11
+dm0
+cps16
+sps17
+[1;31ms16,[0mcaz7		|s16, if z7-1=l7, k25, s17.
+su1
+sd7t11
+dm0
+cpk25
+[1;31ms17,[0mcat11		|s17, if l0=0, s128, s18,
+dm0
+cps128
+[1;31ms18,[0mcaz5		|s18, if z5=0, s35, s19.
+su0
+cps35
+[1;31ms19,[0msu1		|s19, if z5=1, s27, s20,
+cps27
+[1;31ms20,[0msu<del>1		|s20, if z5=2, s29, s21,
+cps29
+[1;31ms21,[0msun3		|s21, if z5=<del>3, =4, =5, - , s22
+cp0<del>
+[1;31ms22,[0msu1		|s22, if z5=<del>6, s32, s23.
+cps32
+[1;31ms23,[0mca1t11		|s23, if l1=0s25, s24.
+dm0
+cps25
+[1;31ms24,[0mspm1		|s24, do m1, s1.
+sps1
+[1;31ms25,[0mspm2		|s25, do m2, s26.
+[1;31ms26,[0mspm7		|s26, do m7, s1.
+sps1
+[1;31ms27,[0mca7t11		|s27, if l7=0, s28, s26.
+dm0
+cps28
+sps26
+[1;31ms28,[0mspm6		|s28, do m6, s24<del><del>.
+sps24
+[1;31ms29,[0mca7t11		|s29, if l7=0, s30, s26.
+dm0
+cps<del><del>30
+sps26
+[1;31ms30,[0mca1t11		|s30, if l1=0, s28, s31.
+dm0
+cps28
+[1;31ms31,[0mspm10		|s31, do m0, s31a.
+spm<del>2		|s31a, do m2, s1.
+sps1
+[1;31ms32,[0m<del>ca1t11		|s32, if l1=0, s33, s24.
+dm0
+cps33
+sps24
+[1;31ms33,[0mca7t11		|s33, if l7=0, s25, s34.
+dm0
+cps25
+[1;31ms34,[0mspm10		|s34, do m0, s34a.
+spm6		|s34a, do m6, s1.
+sps1
+[1;31ms35,[0mcaz7		|s35, if z7 g7, s36, s37.
+dmn7
+cps36
+sps37
+[1;31ms36,[0mca7t11		|s36, if l7=0, s37, s26.
+dm0
+cps37
+sps26
+[1;31ms37,[0mca1t11		|s37, if l1=0, s36, s24.
+dm0
+cps<del>36
+sps24
+[1;31ms38,[0mcan8		|s38, do set for up, 1s39.
+sp1<del><del><del><del><del><del><del><del>s39
+[1;31ms39,[0mca0		|s39, do set for down, s40.
+tsk19
+ca0
+tsk26
+[1;31ms40,[0mcaz5		|s40, if z5=0, <del><del><del><del><del><del><del><del>s63, s41.
+suk19
+dm0
+<del><del><del><del><del><del><del><del>mdn7
+su0
+cps63
+[1;31ms41,[0msu1		|s41, if z5=1, s116, s42.
+cps116
+[1;31ms42,[0msu1		|s42, if z5=2, s119, s43.
+cps119
+[1;31ms43,[0msun<del>3		|s43, if z5=3,=4,=5, -, s44.
+cp0
+[1;31ms44,[0msu1		|s44, if z5=6, s119, s45.
+cps119
+[1;31ms45,[0mca1		|s45, if il1 go, s46, s<del>7<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>3.
+spk20
+su0
+cps73
+[1;31ms46,[0mcat11		|s46,<del><del><del><del> if l0 g1, s47, s73.
+dm1
+cps73
+[1;31ms47,[0mspm11		|s47, do im1, s48.
+[1;31ms48,[0mspk17		|s48, do il7, s49.
+[1;31ms49,[0msut11		|s49, if il7, g l0-1, s50, s51.
+ad1
+cps51
+[1;31ms50,[0mspm16		|s50, do im6, s1.
+sps1
+[1;31ms51,[0mcat11		|s51, if l0=2, s52, s107.
+dmn2
+cps52
+sps107
+[1;31ms52,[0mspm17		|s52, do i m7, s53.
+[1;31ms53,[0mspm15		|s53, <del><del><del><del><del>do im5, s54.
+[1;31ms54,[0mspk16		|s54, do il6, s55.
+[1;31ms55,[0mdm1		|s55, if il6 g1, s56, s67.
+cps67
+[1;31ms56,[0mspm17		|s56, do im7, s57.
+[1;31ms57,[0mspk10		|s57, <del><del><del>do l0, s58<del>.
+[1;31ms58,[0mdm0		|s58, if lo=0<del>, s59, s66.
+cps59
+sps66
+[1;31ms59,[0mspm15		|s59, do im5, s60.
+[1;31ms60,[0mspk17		|s60, <del><del>do il7, s61.
+[1;31ms61,[0mdm0		|s61, if il7=0, s62, s64.
+cps62
+sps64
+[1;31ms62,[0mspm11		|s62, do im1, s63<del>.
+[1;31ms63,[0mspm17		|s63, do im7, s1.
+sps1
+[1;31ms64,[0mspm17		|s64, do im7, s65.
+[1;31ms65,[0mspm11		|s65, do im1, s1.
+sps1
+[1;31ms66,[0mspm12		|s66, do im2, s63.
+sps63
+[1;31ms67,[0mspm10		|s67, do m0, s68.
+[1;31ms68,[0mcan6		|s68, if il6=1, s69, s72.
+spk20
+dm0
+cps72
+[1;31ms69,[0mspk27		|s69, if z7 g 2, s70, s72.
+dmn2
+cps72
+[1;31ms70,[0mspm15		|s70, do im5, s71.
+[1;31ms71,[0mspm10		|s71, do m0, s50.
+sps50
+[1;31ms72,[0mspm16		|s72, do im6, s63.
+sps63
+[1;31ms73,[0mcat11		|s73, if l0=1, s74, s92.
+su0
+cps92
+[1;31ms74,[0mspk16<del>		<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>|s74, do il6, s75.
+[1;31ms75,[0mdm0		|s75, if il6=0, s76, s82.
+cps76
+sps82
+[1;31ms76,[0mspm12		|s76, do im2, s77.
+[1;31ms77,[0mspm16		|s77, do im6, s78.
+[1;31ms78,[0mspm10		|s78, do m0, s79.
+[1;31ms79,[0mspm16		|s79, do im6, s80.
+[1;31ms80,[0mspk10		|s80, do l0, s81.
+[1;31ms81,[0mdm0		|s81, if l0=0, s63, s71.
+cps63
+sps71
+[1;31ms82,[0mdm1		|s82, if l6=1, s83, s98.
+cps83
+sps98
+[1;31ms83,[0mspm12		|s83, do im2, s84.
+[1;31ms84,[0mspm17		|s84, do im7, s85.
+[1;31ms85,[0mspm15		|s85, do im5, s86.
+[1;31ms86,[0mspk10		|s86, do l0, s87.
+[1;31ms87,[0mdm1		|s87, if l0 g1, s64, s88.
+cps88
+sps64
+[1;31ms88,[0mspm10		|s88, do m0, s89.
+[1;31ms89,[0mspk27		|s89, if z7 g1, s90, s72.
+dm1
+cps72
+[1;31ms90,[0mspm16		|s90, do im6, s71.
+sps71
+[1;31ms91,[0mcat11		|s91, if l0=0, s92, s107.
+dm0
+cps92
+sps107
+[1;31ms92,[0mspk15		|s92, do il5, s93.
+[1;31ms93,[0mdm0		|s93, if il5=0, s96, s94.
+cps96
+[1;31ms94,[0mspm15		|s94, do im5, s95.
+[1;31ms95,[0mspk27		|s95, if z7=0, s62, s64.
+dm0
+cps62
+sps64
+[1;31ms96,[0mspk27		|s96, if z7 g1, s90, s97.
+dm1
+cps97
+sps90
+[1;31ms97,[0mspm12		|s97, do im2, s72.
+sps72
+[1;31ms98,[0mspk15		|s98, do il5, s99.
+[1;31ms99,<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>[0mdm0		|<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>s99, if il5=0, s100, s106.
+cps1<del><del><del><del><del><del><del><del><del><del><del>00<del>
+sps106
+[1;31ms100,[0mspm12		|s100, do im2, s101.
+[1;31ms101,[0mspm17		|s101, do im7, s102.
+[1;31ms102,[0mspm15		|s102, do im5, s103.
+[1;31ms103,[0ms<del>pm17		|s103, do im7, s104.
+[1;31ms104,[0mspk11		|s104, do il1, s105.
+[1;31ms105,[0mdm0		|s105, if il1=0, s64, s66.
+cps66
+sps6<del><del>5
+[1;31ms106,[0mspm15		|s106, do im5, s64.
+sps64
+[1;31ms107,[0mspm16		|s107, do im6, s107a
+spm10		|s107a, do m0, s<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>108.
+[1;31ms108,[0mspm16		|s108, do im6, s109.
+[1;31ms109,[0mspk17		|s109, do il7, s110.
+[1;31ms110,[0mspm10		|s110, do m0, s111.
+[1;31ms11<del><del>1,[0mspk10		|s111, do l0, s112.
+[1;31ms112,[0mdm0		|s112, if lo=0, s113, s108.
+cps53
+<del><del><del><del><del><del><del>sps1<del>08
+[1;31ms116,[0mcat11		|s116, if l0=1, s117, s63.
+sd1
+dm0
+cps117
+sps63
+[1;31ms117,[0mspk16		|s117, do il6, s118.
+[1;31ms118,[0msd1		|s118, if il6=1, s50, s63.
+dm0
+cps50
+sps63
+[1;31ms119,[0mcat11		|s119, if l<del> 0=0, -, si120.
+su0
+cp0
+[1;31ms120,[0msu1		|s120, if l 0=<del><del>1, s71, s121.
+cps121
+sps71
+[1;31ms121,[0mspm10		|s121, do<del> m<del>o, s122.
+[1;31m<del>s122,[0mspk17<del><del><del><del><del><del><del><del><del><del><del><del>		|s122, do i l 7, s123.
+[1;31ms123,[0m<del><del><del>dm0		|s123, if i l 7<del><del>=0, s124, s71.
+cps124
+sps50
+[1;31ms124,[0mspk15		|s124, do i l 5, s125.
+[1;31ms125,[0mdm0		|s125, if i l 5 =0, s72, s126.
+cps72
+[1;31ms126,[0mspm15		|s126, d o i m 5, s127.
+[1;31ms127,[0mspm17		|s127, d o i m 7, s66.
+sps66
+[1;31ms128,[0mcsk26		|s128, do test no set, up, down, s129, s130, s131.
+ad4s128
+ts3s128
+sp0
+sp7s128
+sps130
+sps131
+[1;31ms129,[0mcaz7		|s129, if z7 g n7, s130, s131.
+dmn7
+cps130
+sps131
+[1;31ms130,[0mcan8		|s130, do set for up, s131+1.
+sp1s131
+[1;31ms131,[0mca0		|s131, do set for down, s132.
+tsk19
+ca0		|clear set register
+tsk26
+[1;31ms132,[0mspk16		|s132, di i l 6, s133.
+[1;31ms133,[0mdm1		|s133, if i l 6 g1, s134, s142.
+cps143
+[1;31ms134,[0mspk15		|s134, d o i l 5, s135
+[1;31ms135,[0mdm0		|s135, if i l 5=0, s14<del><del><del><del><del><del><del><del><del>6, s136.
+cps14<del><del>6
+[1;31ms136,[0mspm15		|s136, d o i m 5, s137.
+[1;31ms137,[0mspk17		|s137, d o i l 7, s138.
+[1;31ms138,[0mdm1		|s138, if i l 7 g 1, s121, s139.
+cps139
+sps121
+[1;31ms139,[0mspm17		|s139, d o i m 7, s132.
+sps132
+[1;31ms140,[0mspm16		|s140, d o i m 6, s141.
+[1;31ms141,[0msp<del>k17		|s141, d o i l 7, s142.
+[1;31ms142,[0mdm0		|s142, if i l 7 =0, s132, s63.
+cps132
+sps63
+[1;31ms143,[0mspk10		|s143, do l0, s144.
+[1;31ms144,[0mdm0		|s144, if l<del>o=0, s1<del><del><del><del><del><del><del><del><del>45, s66.
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del>cps145
+sps66
+[1;31ms145,[0mcak19		|s145, <del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>do change up for down, s132.
+adn8
+mdn15
+tsk19
+sps132
+[1;31ms146,[0mspk14		|s146, <del>do i l 4, s147.
+[1;31ms147,[0mdm0		|s14<del>7, if i l 4=0, s140, s148.
+cps140
+[1;31ms148,[0mspm14		|s148, do i m 4, s149.
+[1;31ms149,[0mspm10		|s149, do i m 0, s140.
+sps140
+[1;31mk1,[0mtak9		|LOOK 1
+ca1
+[1;31m<del>k8,[0mspp13
+spp4
+[1;31mk9,[0msp0
+[1;31mk2,[0mtak9		|LOOK 2
+can2
+spk8
+[1;31mk3,[0mtak9		|LOOK 3
+can3
+spk8
+[1;31mk4,[0mtak9		|LOOK 4
+can4
+spk8
+[1;31mk5,[0mtak9		|LOOK 5
+can5
+spk8
+[1;31mk6,[0mtak9		|LOOK 6
+can6
+spk8
+[1;31mk7,[0mtak9		|LOOK 7
+can7
+spk8
+[1;31mk10,[0mtak9		|LOOK 0
+ca0
+spk8
+[1;31mk11,[0mtak9		|i LOOK 1
+ca1
+[1;31mk18,[0msuk19
+dm0
+spk8
+[1;31mk19,[0m+0
+[1;31mk12,[0mtak9		|i LOOK 2
+can2
+spk18
+[1;31mk13,[0mtak9		|i LOOK 3
+can3
+spk18
+[1;31mk14,[0m<del>tak9		|i LOOK 4
+can4
+spk18
+[1;31mk15,[0mtak9		|i LOOK <del>5
+can5
+spk18
+[1;31mk16,[0mtak9		|i LOOK 6
+can6
+spk18
+[1;31mk17,[0mtak9		|i LOOK 7
+can7
+spk18
+[1;31mm1,[0mtam9		|MOVE 1
+ca1
+[1;31mm8,[0mspp5
+[1;31mm9,[0msp0
+[1;31mm2,[0mtam9		|MOVE 2
+can2
+spm8
+[1;31mm3,[0mtam9		|MOVE 3
+can3
+spm8
+[1;31mm4,[0mtam9		|MOVE 4
+can4
+spm8
+[1;31mm5,[0mtam9		|MOVE 5
+can5
+spm8
+[1;31mm6,[0mtam9		|MOVE 6
+can6
+spm8
+[1;31mm7,[0mtam9		|MOVE 7
+can7
+spm8
+[1;31mm10,[0mtam9		|MOVE 0
+ca0
+spm8
+[1;31mm11,[0mtam9		|i MOVE 1
+ca1
+[1;31mm18,[0msuk19
+dm0
+spm8
+[1;31mm12,[0mtam9		|i MOVE 2
+can2
+spm18
+[1;31mm13,[0mtam9		|i MOVE 3
+can3
+spm18
+[1;31mm14,[0mtam9		|i MOVE 4
+can4
+spm18
+[1;31mm15,[0mtam9		|i MOVE 5
+can5
+spm<del><del>18
+[1;31mm16,[0mtam9		|i MOVE 6
+can6
+spm<del><del>18
+[1;31mm17,[0mtam9		|i MOVE 7
+can7
+spm18
+[1;31mk20,[0mtak22		|OBTAIN INTERPETIVE LOOK FROM TABLE
+suk19
+dm0
+adk23
+tsk21
+[1;31mk21,[0mca0
+[1;31mk22,[0msp0
+[1;31mk23,[0mcat11
+[1;31mk24,[0mca1		|SET INDICATOR TO UP
+tsk26
+sps17
+[1;31mk25,[0mcan2		|SET INDICATOR TO DOW<del>N<del>
+sp1k24
+[1;31mk26,[0m+0
+[1;31mk27,[0mtak29
+cak19
+dm0
+cpk28
+can15
+[1;31mk28,[0msuz7
+[1;31mk29,[0msp0
+[1;31mn14,[0m+14
+[1;31mn15,[0m+15
+OCTAL
+[1;31m72|n2,[0m
+[1;31m73|n3,[0m
+[1;31m74|n4,[0m
+[1;31m75|n5,[0m
+[1;31m76|n6,[0m
+[1;31m77|n7,[0m
+[1;31m61|n8,[0m
+[1;31m2172|p4,[0m
+[1;31m2340|p5,[0m
+[1;31m2525|p13,[0m
+[1;31m202|t11,
+47|z5,
+51|z7,[0m
+START AT 0

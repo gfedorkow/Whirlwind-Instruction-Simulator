@@ -1,0 +1,19 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\03\t03.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\03\t03_gs259_fb.ocore
+%TapeID: _fb
+%JumpTo 02030
+%Stats: Covariance=0.004585, Size=40, 
+%Blocknum 0o0
+@T00000: 0177761 0003200 0112766 0074103 0112755 0130003 0113033 0070247  ; md si ad sp ad ao ad cp  :   <stop>\098#86# :  <del>#\tk\tp\tc
+@T00010: 0110000 0074000 0113033 0050260 0110000 0100000 0110000 0024000  ; ad sp ad ta ad ca ad rc  :   \0\06o\0\0\0\0 :        lk\trltls
+@T00020: 0002766 0054005 0017065 0074002 0076030  ;          si ck rd sp sp  :            9|#en :            #j3k#
+%Blocknum 0o1
+@T00000: 0177763 0003200 0112766 0074103 0113033 0074235 0110000 0074000  ; md si ad sp ad sp ad sp  :      #\0986-\0\0 :   <del>#\tk\tklk
+@T00010: 0113033 0050264 0112747 0100017 0110000 0024000 0002766 0054005  ; ad ta ad ca ad rc si ck  :       6g#2\0\09| :       \tr\ttls#j
+@T00020: 0163062 0074002 0076030  ;                SR sp sp  :              bEN :         <cntl>K#
+
+%Hash: e27921-cb789c-40
+
+%String: ltls

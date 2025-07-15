@@ -1,0 +1,110 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302397_box38\102663748_fc1211p003_to_1211m12_correctins.7ch
+fc TAPE l2l1 p003 BENNETT
+OCTAL
+DA44123|123|si630
+157|si 630
+1132|sp 3775
+2374|sp 3775
+3775|ta 3777
+cf 345
+|kill skip
+211|sp 440
+ts<del><del> 2151
+clh 0
+|muliple cr
+125|cp 135
+|space replaces slash
+1522|si 10
+|correct recognition of comma or slash on symbolic address
+2066|sp 2436
+2436|td 2102	|w81
+ca 2107		|w83
+sp 2067
+|b7 patch
+175|sp 3640
+sp 3650
+3640|sp 440	|r4
+ts 2152		|c4
+cs 0
+ts 2153		|1c4
+sp 176
+3650|ca 2151	|c3
+dm 2152		|c4
+dm 0
+cp 200
+sp 217
+2150|si 1040
+|r4 correction
+451|cp 464	|x19
+sp 2441
+2441|clh 35
+cp 462		|u1
+clh 37
+cp 2447		|u2
+ao 2144		|c1
+sp 445
+ca 2453	<del><del><del><del><del>	|2c4
+ad 470		|x21
+ts 470
+sp 464		|x19
+461|sp 2445
+clh 30
+sp 453
+ca 473
+ts 2144		|c1
+ca 470		|x21
+|r22 correction
+2051|cp 3700
+3700|ca 2107	|w83
+ts 2144		|c1
+ca 0
+ts 3752		|m1
+ts 3753		|1m1
+cs 0
+sp 361		|r3
+sp 237		|r1
+clh 3
+cp 3737
+clh 37
+cp 3720
+clh 4
+cp 3732		|m4
+ao 2144
+sp 3705
+cs 0
+ts 3753
+sp 3716
+md 471
+ts 3754	<del>	|2m1
+ca 3752		|m1
+clh 3
+ad 3754		|2m1
+ts 3752		|m1
+sp 3716
+clh 6
+cp 3746
+clh 37
+cp 3744		|m6
+sp 3716	
+ts 3754
+ca 3753		|1m1
+cp 3716
+ca 3754
+sp 3761
+ao 2144<del>	|c1
+sp 3702
+ca 2151		|c3
+su 3752		|m1
+ts 2453		|2c4
+sp 2065
+50|sp 3755
+3755|ca 50
+ts<del><del> 3777
+ca 0
+sp<del><del> 51
+clh 30
+sp 3723
+|r15 replaces r27
+164|sp 1354	|rl5<del><del><del>
+171|sp<del> l354	|rl5
+STA <del><del><del>0

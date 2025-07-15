@@ -1,0 +1,148 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302394_box35\102663717_fc1303m0_tape_dump_7-16.7ch
+fc TAPE 1303 m0 STEPHENSON
+OCTAL
+[1;31mk1,[0msi10		|Reset FFs
+ca2		|SIMULATION NUMBER
+clc1
+srh1
+MOAp123x215c
+ca0
+tsx7		|INITIALIZE S F COUNT
+tsx17		|INITIALIZE
+spb3		|ADDRESSES
+[1;31mb1,[0mcaf1		<del><del>|ADDRESS OF 6
+td2b4
+cas3
+tdx17
+spb4
+sps4		<del>|RET<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>URN TO FINISH JF
+[1;31mb2,[0mcaf2
+td2b4
+cas3
+tdx17
+spb4
+sps4		|RETURN TO FINISH SF
+[1;31mb3,[0mca0		|FINISHED SF
+td2b4
+cax3		|INITIAL ADDRESS OF DATA
+tdx17
+spb4		|INITIALIZE ADDRESSES
+sps2
+[1;31mb4,[0mtab5		|RETURN ADDRESS
+cax17
+ad0		|<del>3, 6, <del>or 0
+tds3
+tdt1		|x1 ADDRESSES
+ad1
+tdt2
+tdd4<del>		|x1+1
+ad1
+td1d1
+tdt3		|x1+2
+ad1
+tdt4<del>		|x1+3
+td4t4
+ad1
+tdt5		|x1+4
+ad1
+tdt6		|x1+5
+[1;31mb5,[0msp0		|RETURN TO PROGRAM
+[1;31ms2,[0maox7		|SF COUNT
+MOAp123x215sss
+si122		<del>|READ MT2 FWD.
+rd0		|IOR TO AC
+cks1		|CK FOR  1.77777
+spk2		|END OF SIM
+ck0		|CK FOR 0
+sps2		|ZERO WORD SF
+tsx2		|N WORDS THIS SF
+bix1		|BLOCK IN N WORDS
+si6<del>30		|DESELECT MT2
+csx2		|COMPLIMENT N
+tsx2
+aox2		|RE<del>DUCE N BY 1
+[1;31ms4,[0mMOAc		|CARRIAGE RETURN
+[1;31ms3,[0mcax1
+cpd1		|AZIMUTH OR JF DATA
+MOAttt		|TAB 3 PLACES
+[1;31mt1,[0mcax1
+MOAp123x215ss		|TRN OUT
+aox2		|REDUCE WORD COUNT
+[1;31mt2,[0mca1x1		|x DOT
+clc1		|GET SIGN
+MOA-p123.12x27x101ss
+aox2
+[1;31mt3,[0mca2x1		|y DOT
+clc1
+MOA
+aox2
+[1;31mt4,[0mca3x1		|SPEED AND HT
+clc1		|SPEED
+mdx4
+MOA
+ca3x1
+clc10		|HEIGHT
+mdx4		|MASK 0.77400
+MOAp12345.1x26x103ss
+aox2
+[1;31mt5,[0mca4x1		|x POSITION
+clc1		|FOR SIGN
+MOA-p123.12x29ss
+aox2
+[1;31mt6,[0mca5x1		|y POSITION
+clc1
+MOA
+aox2
+cpb1		|NOT FIN SF, SET FOR 6
+MOAc
+spb3		|READ NEXT SF
+[1;31md1,[0maox2
+ca2x1		|MESSAGE LABEL
+tsx11		|TEMP STORE
+mdx12		|0.34000
+srh13
+sux13<del><del>		|EQUAL 5
+dm0
+cpd2		|AZIMUTH
+aox2		|JF DATA
+aox2
+cpb2		|NOT FIN SF
+spd3		|FIN<del>ISHED SF
+[1;31md2,[0mcax11
+slh4
+md<del>x12		|RADAR N 0.34000
+MOAp1<del>.x24ss
+cax11		|TIME DELAY
+mdx14		|0.00174
+slh10
+MOAp1.12x23ss
+aox2
+[1;31md4,[0mca1x1		|AZIMUTH (REVOLUTIONS)
+slh1
+mdx16		|0.77770
+mrx15
+MOAp123.12x29ss
+aox2
+cpb2		|NOT FIN SF
+[1;31md3,[0mMOAc
+spb3		|READ NEXT SF
+[1;31mk2<del><del><del><del><del>,[0msi0		|PREPARE FOR
+spk1		<del>|RESTART
+[1;31mx2,[0m+0		|N WORDS IN SF
+[1;31ms1,[0m1.77777		|END OF TEST CK
+[1;31mx3,[0mx1		|ADDRESS OF DATA
+[1;31mx4,[0m0.7<del>7400
+[1;31mx5,[0m+6
+[1;31mx6,[0m+3
+[1;31mx7,[0m+0		|SF COUNT
+[1;31mx11,[0m+0
+[1;31mx12,[0m0.34000
+[1;31mx13,[0m+5
+[1;31mx14,[0m0.00174
+[1;31mx15,[0m+360.0x2-9
+[1;31mx16,[0m0.77770
+[1;31mx17,[0m+0
+[1;31mf1,[0mx5
+[1;31mf2,[0mx6
+[1;31mx1,[0m+0
+START AT 40

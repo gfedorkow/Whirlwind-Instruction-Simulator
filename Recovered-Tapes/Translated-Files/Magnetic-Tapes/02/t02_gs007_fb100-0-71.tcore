@@ -1,0 +1,59 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o100071; xsum=good
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\02\t02.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\02\t02_gs007_fb100-0-71.tcore
+%TapeID: _fb100-0-71
+%JumpTo 040
+%Stats: Covariance=0.002069, Size=314, 
+%Blocknum 0o0
+@C00040: 0000225 0100463 0044065 0044057 0044060 0044061 0044070 0100464  ; si ca td td td td td ca  :    1###o<stop>mg :        \0tdddddt
+@C00050: 0044066 0044071 0104000 0040461 0100341 0024000 0024000 0104001  ; td td cs ts ca rc rc cs  : 9<cntl>\0<stop>#\0\0# :   dDZ<color>TSSZ
+@C00060: 0064001 0140001 0070207 0074232 0070217 0100001 0141005 0070113  ; ex mr cp sp cp ca mr cp  :         ##3F2#_4 :         FOCKCTOC
+@C00070: 0100001 0135005 0134000 0070075 0074113 0130065 0130066 0130057  ; ca dm dm cp sp ao ao ao  :   #_\0<cntl>4#9# :         TQQckppp
+@C00100: 0130060 0130061 0130070 0130071 0114450 0070057 0104461 0070000  ; ao ao ao ao su cp cs cp  : o<stop>m<cntl>H#<stop>\0 :         pppPWCZC
+@C00110: 0100303 0020304 0074000 0100066 0044134 0100065 0044123 0174451  ; ca bo sp ca td ca td md  :       8#\09C#5\n :         T KTDTD0
+@C00120: 0074151 0100263 0020264 0100000 0040462 0074161 0100263 0020274  ; sp ca bo ca ts sp ca bo  :  \n#G\0B<stop>#V :   KT T<color>KT 
+@C00130: 0100273 0020264 0100264 0024000 0100000 0074161 0100462 0070145  ; ca bo ca rc ca sp ca cp  : #GG\0\0<stop>B\t :         T TSTKTC
+@C00140: 0134000 0070143 0074145 0100342 0020343 0100341 0024000 0024000  ; dm cp sp ca bo ca rc rc  : \0<bs>\tZ<bs>#\0\0 :         QCKT TSS
+@C00150: 0074075 0050160 0144457 0074177 0155017 0144460 0074177 0130461  ; sp ta mh sp SL mh sp ao  : <cntl>o#<del>2o<del><stop> :         krbk9bkp
+@C00160: 0074000 0050176 0171021 0074177 0064454 0024000 0064454 0064000  ; sp ta CL sp ex rc ex ex  :  \00.<del>p\0p\0 :         krvkfsff
+@C00170: 0171003 0074177 0130453 0070167 0100452 0040453 0074000 0050206  ; CL sp ao cp ca ts sp ta  :    8<del>##y#\0a :   vkpct<color>kr
+@C00200: 0110455 0044203 0044205 0064000 0024000 0064000 0074000 0074232  ; ad td td ex rc ex sp sp  :     #8|\0\0\0\0f :         lddfsfkk
+@C00210: 0070075 0074221 0100421 0020422 0100426 0020427 0074075 0074221  ; cp sp ca bo ca bo sp sp  : <cntl>..dj7<cntl>. :         ckt t kk
+@C00220: 0074214 0050231 0100065 0174451 0074151 0100264 0024000 0100465  ; sp ta ca md sp ca rc ca  :      i,#\n\ng\0# :         krt0ktst
+@C00230: 0020275 0074000 0050246 0100065 0044456 0100247 0044240 0100456  ; bo sp ta ca td ca td ca  :   <cntl>\0w#q#tq :          krtdtdt
+@C00240: 0134000 0134000 0070246 0130240 0114250 0070237 0074000 0001000  ; dm dm cp ao su cp sp si  :     \0\0wth#\0\0 :        qqcpwck\0
+@C00250: 0135004 0174000 0052000 0036000 0016000 0026000 0046000 0066000  ; dm md ta cf rd rc td ex  :  #\0\0\0\0\0\0\0 :         q0123456
+@C00260: 0056000 0006000 0154000 0000007 0020000 0050000 0004000 0014000  ; ck .word SL si bo ta .word rd  :  \0\0\03\0\0\0\0 :        789\0 rea
+@C00270: 0044000 0024000 0020000 0000005 0112000 0024000 0120000 0140000  ; td rc bo si ad rc cm mr  :  \0\0\0|\0\0\0\0 :       ds \0\tsho
+@C00300: 0034000 0110000 0044000 0000036 0162000 0100000 0172000 0004000  ; cf ad td si SR ca CL .word  :  \0\0\0k\0\0\0\0 : uld\0<cntl>T<cntl>e
+@C00310: 0024000 0100000 0020000 0024000 0100000 0140000 0050000 0014000  ; rc ca bo rc ca mr ta rd  : \0\0\0\0\0\0\0\0 :         st stora
+@C00320: 0150000 0004000 0020000 0070000 0120000 0004000 0070000 0074000  ; dv .word bo cp cm .word cp sp  : \0\0\0\0\0\0\0\0 :         ge check
+@C00330: 0020000 0070000 0140000 0160000 0130000 0110000 0004000 0100000  ; bo cp mr SR ao ad .word ca  : \0\0\0\0\0\0\0\0 :          complet
+@C00340: 0004000 0122000 0000056 0112000 0162000 0062000 0070000 0172000  ; .word cm si ad SR ab cp CL  :  \0\0q\0\0\0\0\0 : e\n\0\t<cntl>(C<cntl>
+@C00350: 0120000 0004000 0070000 0074000 0020000 0114000 0120000 0004000  ; cm .word cp sp bo su cm .word  : \0\0\0\0\0\0\0\0 :         heck whe
+@C00360: 0100000 0120000 0004000 0050000 0020000 0162000 0064000 0064000  ; ca cm .word ta bo SR ex ex  : \0\0\0\0\0\0\0\0 :    ther <cntl>FF
+@C00370: 0172000 0072000 0162000 0100000 0024000 0172000 0020000 0024000  ; CL cp SR ca rc CL bo rc  : \0\0\0\0\0\0\0\0 : <cntl>-<cntl>TS<cntl> s
+@C00400: 0114000 0030000 0100000 0070000 0120000 0020000 0030000 0024000  ; su sd ca cp cm bo sd rc  : \0\0\0\0\0\0\0\0 :         witch is
+@C00410: 0020000 0140000 0060000 0020000 0162000 0100000 0024000 0042000  ; bo mr ab bo SR ca rc ts  : \0\0\0\0\0\0\0\0 :     on <cntl>TS)
+@C00420: 0172000 0000004 0020000 0060000 0140000 0100000 0000021 0020000  ; CL si bo ab mr ca si bo  :   \0#\0\0\0\0.\0 :  <cntl>\0 not\0 
+@C00430: 0144000 0004000 0020000 0014000 0020000 0064000 0110000 0030000  ; mh .word bo rd bo ex ad sd  : \0\0\0\0\0\0\0\0 :         be a fli
+@C00440: 0130000 0072000 0064000 0110000 0140000 0130000 0122000 0122000  ; ao cp ex ad mr ao cm cm  : \0\0\0\0\0\0\0\0 :       p-flop\n\n
+@C00450: 0135043 0003777 0177773 0177773 0042000 0000251 0000000 0006315  ; dm si md md ts si si .word  : <bs><del>##\0\n\0+ : q#<del><del>.\0\08
+@C00460: 0000012 0177777 0000000 0000001 0001005 0000006  None    None    ;   si md si si si si      :  s<del>\0#|a     : \0<del>\0\0\0\0    
+@C01000: 0000002 0000003 0000005 0000007 0000024 0000001 0000000 0000000  ; si si si si si si si si  :       e8|3r#\0\0 : \0\0\0\0\0\0\0\0
+@C01010: 0100065 0000000 0014174 0000000 0130007 0130003 0150006 0040024  ; ca si rd si ao ao dv ts  :       #\0v\038ar : t\0a\0ppg<color>
+@C01020: 0050002 0130024 0000337 0014000 0134003 0070001 0074002 0040024  ; ta ao si rd dm cp sp ts  :        er#\08#er :  rp\0aqck<color>
+@C01030: 0000000 0074007 0144036 0104023 0074036 0050003 0100032 0000707  ; si sp mh cs sp ta ca si  :        \03k5k8f3 :       \0kbzkrt\0
+@C01040: 0020032 0110026 0000703 0010036  None    None    None    None    ;     bo ad si bi          :     fj8k         :     l\0#        
+
+%Hash: 0a5fdb-f9635f-314
+
+%String: fsfk
+%String: 0123456789
+%String:  reads 
+%String: should
+%String: test storage check complete
+%String: ,check whether ff-ts switch is on ts.
+%String:  not
+%String:  be a flip-flop

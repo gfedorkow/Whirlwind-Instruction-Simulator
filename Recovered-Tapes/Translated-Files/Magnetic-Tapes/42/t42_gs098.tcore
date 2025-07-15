@@ -1,0 +1,23 @@
+
+; *** Core Image ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\42\t42.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\42\t42_gs098.tcore
+%TapeID: 
+%Stats: Covariance=0.005904, Size=96, 
+%Blocknum 0o0
+@C00440:  None    None    None   0074002  None    None    None    None    ;              sp          :        e         :        k        
+@C02400:  None    None    None    None    None    None   0064002 0000030  ;                   ex si  :               en :              f\0
+@C02410: 0000006 0020101 0002530 0160046 0000000 0000000 0000000 0000000  ; si bo si SR si si si si  :     a#nw\0\0\0\0 :    \0 #m\0\0\0\0
+@C02420: 0000000 0177776 0160306 0000000 0000000 0000000 0000000 0000000  ; si md SR si si si si si  :   \00a\0\0\0\0\0 : \0<del>m\0\0\0\0\0
+@C02430: 0177776 0160306 0000000 0000000 0000000 0000000 0000000 0177776  ; md SR si si si si si md  :    0a\0\0\0\0\00 : <del>m\0\0\0\0\0<del>
+@C02440: 0160306 0000000 0000000 0000000 0000000 0000000 0177776 0160306  ; SR si si si si si md SR  :    a\0\0\0\0\00a : m\0\0\0\0\0<del>m
+@C02450: 0000000 0000000 0000000 0000000 0000000 0177776 0160306 0000000  ; si si si si si md SR si  :   \0\0\0\0\00a\0 : \0\0\0\0\0<del>m\0
+@C02460: 0000000 0000000 0000001 0000000 0000000 0160306 0000000 0000000  ; si si si si si SR si si  :   \0\0#\0\0a\0\0 :  \0\0\0\0\0m\0\0
+@C02470: 0000000 0000000 0000000 0177776 0160306 0000000 0000000 0000000  ; si si si md SR si si si  :   \0\0\00a\0\0\0 : \0\0\0<del>m\0\0\0
+@C02500: 0000002 0000000 0177776 0160306 0000000 0000000 0000000 0000000  ; si si md SR si si si si  :    e\00a\0\0\0\0 : \0\0<del>m\0\0\0\0
+@C02510: 0000000 0177776 0160306 0000000 0000000 0003762 0040252 0000000  ; si md SR si si si ts si  :     \00a\0\0by\0 : \0<del>m\0\0#<color>\0
+@C02520: 0177767 0160306 0000000 0000000 0000000 0000000 0000000 0177776  ; md SR si si si si si md  :    #a\0\0\0\0\00 : <del>m\0\0\0\0\0<del>
+@C02530: 0160306 0000000 0000000 0000000 0000000 0000000 0177776 0006301  ; SR si si si si si md .word  :    a\0\0\0\0\00# : m\0\0\0\0\0<del>8
+@C02540: 0020000 0060042 0177777 0000000 0000100  None    None    None    ;    bo ab md si si        : \0z<del>\0\0       :  n<del>\0\0      
+
+%Hash: 689b42-fe515e-96

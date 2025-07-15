@@ -1,0 +1,18 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o100372; xsum=good
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\02\t02.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\02\t02_gs102_fb.tcore
+%TapeID: _fb
+%JumpTo 02030
+%Stats: Covariance=0.005971, Size=60, 
+%Blocknum 0o0
+@C02300: 0111537 0070124 0111461 0100004 0111537 0070125 0111461 0104004  ; ad cp ad ca ad cp ad cs  : #r<stop>##1<stop># :         lcltlclz
+@C02310: 0177775 0111453 0040033 0100005 0110000 0024000 0111537 0074141  ; md ad ts ca ad rc ad sp  :  <cntl>#6|\0\0## : <del>l<color>tlslk
+@C02320: 0110000 0006315 0111461 0120004 0111537 0144302 0111453 0110003  ; ad .word ad cm ad mh ad ad  :   \0+<stop>##e#8 :         l8lhlbll
+@C02330: 0111537 0040324 0177775 0110000 0064000 0154017 0177775 0111453  ; ad ts md ad ex SL md ad  : #r<cntl>\0\02<cntl># : l<color><del>lf9<del>l
+@C02340: 0144001 0110003 0111537 0040326 0111461 0104004 0177773 0111537  ; mh ad ad ts ad cs md ad  :    #8#j<stop>### : bll<color>lz<del>l
+@C02350: 0070320 0100331 0074321 0100332 0177770 0110000 0024000 0171010  ; cp ca sp ca md ad rc CL  : <color>,.fm\0\0  :     ctkt<del>lsv
+@C02360: 0024000 0000000 0024000 0000000 0024000 0111454 0074045 0177775  ; rc si rc si rc ad sp md  : \0\0\0\0\0p\t<cntl> :   s\0s\0slk<del>
+@C02370: 0110000 0013066 0013166 0101452  None    None    None    None    ;     ad bi bi ca          :    \099y         :     l||t        
+
+%Hash: 9a2261-3a17e7-60

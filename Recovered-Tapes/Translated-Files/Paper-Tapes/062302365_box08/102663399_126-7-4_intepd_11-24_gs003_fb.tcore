@@ -1,0 +1,40 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o3; xsum=good
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302365_box08\102663399_126-7-4_intepd_11-24.7ch/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Paper-Tapes\062302365_box08\102663399_126-7-4_intepd_11-24_gs003_fb.tcore
+%TapeID: _fb
+%JumpTo 032
+%Stats: Covariance=0.000642, Size=207, Display-Ops, 5, 
+%Blocknum 0o0
+@C03100: 0077110 0000001 0000000 0000000 0000000 0000000 0000000  None    ;  sp si si si si si si    :    #\0\0\0\0\0   :  #\0\0\0\0\0\0  
+@C03110: 0103101 0076050 0003400 0043102 0073131 0161011 0113123 0043122  ; ca sp si ts cp SR ad ts  :        #h\0e,=5d :        ###.-m\t.
+@C03120: 0064000 0171003 0074000 0077620 0103102 0177130 0043101 0077110  ; ex CL sp sp ca md ts sp  : \08\0<color>en#  :     fvk##<del>.#
+@C03130: 0000077 0171001 0073136 0161001 0047135 0074000 0161001 0047140  ; si CL cp SR td sp SR td  :    <del>#k#-\0#t :        \0v-m5km5
+@C03140: 0100000 0043103 0133140 0043144 0100000 0043104 0103102 0171002  ; ca ts ao ts ca ts ca CL  :       \08tl\0#ee :         t.#.t.#v
+@C03150: 0073157 0103103 0161006 0113156 0043155 0074000 0077640 0103103  ; cp ca SR ad ts sp sp ca  :        #8aq#\0t8 :        -#m\t.k##
+@C03160: 0077220 0043105 0103104 0077220 0117105 0043106 0103102 0171003  ; sp ts ca sp su ts ca CL  : <color>|#<color>|ae8 :         #.###.#v
+@C03170: 0073204 0171001 0073176 0103105 0073214 0077216 0103106 0073201  ; cp CL cp ca cp sp ca cp  :         ##0|iua# :         -v-#-##-
+@C03200: 0077216 0110001 0073216 0077214 0171001 0073211 0133106 0073214  ; sp ad cp sp CL cp ao cp  :         u#ui#=ai :         #l-#v-#-
+@C03210: 0077216 0103106 0073216 0077214 0103103 0077125 0103104 0077125  ; sp ca cp sp ca sp ca sp  :         uaui81#1 :         ##-#####
+@C03220: 0053235 0043236 0073237 0161011 0076050 0003600 0047234 0103236  ; ta ts cp SR sp si td ca  :        -k#=h\0ck :         1.-m##5#
+@C03230: 0161006 0174077 0113234 0043234 0100000 0074000 0000000 0161006  ; SR md ad ts ca sp si SR  :  a<del>cc\0\0\0a :       m0\t.tk\0m
+@C03240: 0174077 0076532 0171006 0043250 0103236 0177251 0033250 0077221  ; md sp CL ts ca md sd sp  :    <del>fahk\nh. :     0#v.#<del>+#
+@C03250: 0000000 0077000 0076340 0077124 0076532 0076340 0077124 0076525  ; si sp sp sp sp sp sp sp  :       \0\0trftr1 :        \0#######
+@C03260: 0076172 0077124 0076172 0077124 0076057 0077124 0076675  None    ;  sp sp sp sp sp sp sp    :   xrxr#r<cntl>   :        #######  
+@C03400: 0000000 0004002 0163500 0002001 0003005 0163502 0001001 0003110  ; si .word SR si si SR si si  :       \0e\0#_E#  : \0e<cntl>##<cntl>\0#
+@C03410: 0163504 0001101 0003713 0163506 0001701 0173510 0001101 0173512  ; SR si si SR si CL si CL  :         ##4A# #s : <cntl>\0#<cntl>\0<cntl>\0<cntl>
+@C03420: 0001701 0173514 0001001 0167516 0163520 0001001 0002001 0000000  ; si CL si sf SR si si si  :  #i#u<color>##\0 : \0<cntl>\0#<cntl>\0#\0
+@C03430: 0167522 0003632 0167524 0167526 0001631 0001701 0000000 0000000  ; sf si sf sf si si si si  :       DFRJ(#\0\0 :     ####\0\0\0\0
+@C03440: 0000000 0003242 0167530 0147532 0103700 0001177  None    None    ;   si si sf mh ca si      : \0ZNF\0<del>     :     \0####\0    
+@C03470:  None    None    None    None    None    None    None   0006000  ;                   .word  :               \0 :                8
+@C03500: 0103003 0000004 0003006 0000007 0003111 0000012 0003714 0000015  ; ca si si si si si si si  :         8#A3:SI/ :     #\0#\0#\0#\0
+@C03510: 0003116 0003017 0003720 0003021 0003022 0003123 0003030 0000024  ; si si si si si si si si  :   U2<color>)D5NR :        #######\0
+@C03520: 0002025 0000026 0002731 0000741 0003643 0000044 0003734 0000035  ; si si si si si si si si  :      1J(#<bs>LC- :     #\0#\0#\0#\0
+@C03530: 0003233 0000043 0000144 0000045  None    None    None    None    ;     si si si si          : 6<bs>L\t         :  #\0\0\0        
+@C03600: 0000070 0000042 0000052 0000202  None    None    None    None    ;     si si si si          :     MZYE         : \0\0\0\0        
+@C03620: 0077124 0077252 0077254 0077257 0077262 0077264 0077266  None    ;  sp sp sp sp sp sp sp    :        RYP#BG9   :        #######  
+@C03640: 0000000 0077710  None    None    None    None    None    None    ;       si sp              :  \0              :  \0#            
+@C03700: 0100072 0076340 0100001 0043101 0077110  None    None    None    ;    ca sp ca ts sp        :      XT##        :      T#T)#      
+@C03710: 0100203 0134000 0073214 0077216  None    None    None    None    ;     ca dm cp sp          :    8\0IU         :     TQ-#        
+
+%Hash: 3da691-681dcb-207

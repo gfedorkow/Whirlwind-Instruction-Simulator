@@ -1,0 +1,275 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302396_box37\102663732_fc1519p010_program_list_3-23-59.7ch
+fc TAPE 1519 p0<del><del><del>10 PROGRAM LIST CROSSOVER
+OCTAL
+[1;31m|Program Order<del>[0m
+[1;31m1400|[0msi55		|CR-B<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>
+si50		|JTDS
+si23		|Subframe A
+si51		|TST-A, TST-B
+si10		|<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>Jamtrac Light <del>Gun
+ca51		|TST-A, TST-B
+si31		|TNS and Display
+ca56		|TNS
+si6		|Azimuth Display
+si57		|Weapons Direction Subroutine
+si34		|Simulation
+si6		|Azimuth Display
+si52		|TDS 7-15, TP-CR
+si54		|LGAS, CTDS, AT
+si56		|TNS
+si11		|Monitor Display
+si12		|Monitor Light Gun Actions
+si13		|Monitor Activate Actions
+si14		|Monitor Assignment
+ca54		|LGAS, CTDS, AT
+si6		|Azimuth Display
+si116		|Data Input and Display
+si30		|Simulated Azimuth Inputs
+si1		|Azimuth Computation
+si7		|Azimuth Correlation
+si51		|TST-A, TST-B
+si24		|Azimuth Initiation
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>si53		|TDS 2-6
+si117		|Correlation
+si26		|Subframe Smoothing
+si6		|Azimuth Display
+si21		|Track Sort
+ca51		|TST-A, TST-B
+ca53		|TDS 2-6
+si6		|Azimuth Display
+si54		|LGAS, CTDS, AT
+si122		|Radar Data Display and Light Gun Actions
+ca<del><del>52		|<del>TDS 7-15, TP-C<del>R
+ca54		|LGAS, CTDS, AT
+si37		|Recording
+si6		|Azimuth Display
+si15		|Analogue Azimuth Display
+si23		|Subframe B
+si51		|TST-A TST,B
+si10		|Jamtrac<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del> Light Gun
+ca51		|TST-A, TST, B
+si31		|TNS and Display
+ca56		|TNS
+si6		|Azimuth Display
+si57		|Weapons Direction Subroutines
+si34		|Simulation
+si4		|Geography
+si<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>6		|Azimuth Display
+si52		|TDS 7-15, TP-CR
+si54		|LGAS, CTDS, AT
+si56		|TNS
+si11		|Monitor Display
+si12		|Monitor Light Gun Actions
+si13		|Monitor Activate Actions
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>ca54		|LGAS, CTDS, AT
+si6		|Azimuth Display
+si116		|Data Input and Display
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>si30<del><del><del><del>		|Simulated Azimuth Inputs
+si1		|Azimuth C<del><del><del><del><del><del>omputation
+<del>si7		|Azimuth Correlation
+si51		|TST-A, TST-B
+si24		|Azimuth Initiation
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>si53		|TDS 2-<del><del><del><del><del><del><del><del><del><del><del><del><del><del>6
+si117		|Correlation
+si26		|Subframe Smoothing
+si<del>6		|Azimuth Display
+si25		|Tentative and Lost Track Processing
+si127		|Frame Smoothing
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del>ca51		|TST-A, TST-B
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>ca53		|TDS 2-<del><del><del><del><del><del><del><del><del><del><del><del><del><del>6
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>si6		|Azimuth Display
+si54		|LGAS, CTDS, AT
+si122		|Radar Data Display and Light Gun Actions
+ca52		|TDS 7-15, TP-CR
+ca54		|LGAS, CTDS, AT
+si37		|Recording
+si6		|Azimuth Display
+ca55		|CR-B
+si15		|Analogue Azimuth Display
+ca50		|JTDS
+-0
+
+		|[1;31mProgram Names and Drum Address[0m
+[1;31m1001|[0m0.35440		|Azimuth Computation
+[1;31m1004|[0m0.52640	|Geography
+[1;31m1006|[0m0.16440		|Azimuth Display
+0.<del>36040		|Azimuth Correlation
+
+
+
+[1;31m1010|[0m0.40040		|Jamtrac Light Gun
+0.31740	|Monitor Display
+0.26300		|Monitor Light Gun Actions
+0.33150		|Monitor Activate Actions
+0.25100		|Monitor Assignment
+0.42040		|Jamtrack Display
+
+0.14040		|Data Input and Display
+0.30040		|Correlation
+
+[1;31m1021|[0m0.24040		|Track Sort
+0.15640		|Radar Data Display and Light Gun Actions
+0.20040		|Subframe Timing
+0.20740		|Azimuth Initiation
+
+0.50040	|Tentative and Lost Track Processing
+0.31440		|Subframe Smoothing
+0.34040		|Frame Smoothing
+
+[1;31m1030|[0m0.17040		|Simulated Azimuth Inputs
+0.43340	<del><del><del>|TNS and Display
+0.16440		|Azimuth Display
+
+[1;31m1034|[0m0.51200		|Simulation
+[1;31m1037|[0m0.22240		|Recording
+
+[1;31m1050|[0m0.11010	|JTDS
+0.05630		|TST-A, TST-B
+0.04440		|TDS 7-15, TP-CR
+0.04060		|TDS 2-<del><del><del>6<del><del><del><del><del><del><del><del><del>
+0.05400		|LGAS, CTDS, AT
+0.11610		|CR-B
+0.10000		|TNS
+0.10632		|Weapons Direction Subroutines
+
+
+[1;31m1077|[0m0.44040		|M<del>aster Control
+		|[1;31mCore Address[0m
+
+[1;31m1101|[0msi40		|Azimuth Computation
+[1;31m1104|[0msi40		|Geography
+[1;31m1106|[0msi40		|Azimuth Display
+si40		|Azimuth Correlation
+
+
+
+[1;31m1110|[0msi40		|J<del>amtrac Light Gun
+<del>[1;31m1111|[0msi40		|Monitor Display
+si40		|Monitor Light Gun Actions
+si344		|Monitor Activate Actions
+si40		|Monitor Assignment
+si40		|Jamtrac Display
+
+
+
+<del>si40		|Data Input and Display
+si40		|Correlation
+
+[1;31m1121|[0msi40		|Track Sort
+si<del>40		|Radar Display and Light Gun Actions
+<del>si40		|Subframe Timing
+si40		|Azimuth Initiation
+
+si40		|Tentative and Lost Track Processing
+si40		|Subframe Smoothing
+si40		|Frame Smoothing
+
+[1;31m1130|[0msi40		|Simulated Azimuth <del><del><del><del><del><del><del><del><del><del>Inputs
+<del><del><del><del><del><del><del>si40		|TNS and Display
+si40		|Azimuth Display
+<del><del><del><del><del><del><del><del><del><del>[1;31m1134|[0msi200		|Simulation
+[1;31m1137|[0m<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>si40		|Recording
+
+[1;31m1150|[0msi3120		|JTDS
+si1360		|TST-A, TST-B
+si2160		|TDS 7-15, TP-CR
+si1600		|TDS 2-6
+si1730		|LGAS, CTDS, AT
+si3720		|CR-B
+si1660		|TNS
+si2742		|Weapons Direction Subroutines
+
+
+[1;31m1177|[0msi40		|Master Control
+		|[1;31mProgram Length[0m
+
+
+[1;31m1201|[0msi240		|Azimuth Computation
+
+[1;31m1204|[0msi1030		|Geography
+[1;31m1206|[0msi400		|Azimuth Display
+si1715		|Azimuth Correlation
+
+
+[1;31m1210|[0msi1320		|Jamtrac Light Gun
+[1;31m1211|[0msi1210	|Monitor Display
+si1500		|Monitor Light Gun Actions
+si630		|Monitor Activate Actions
+si1200		|Monitor Assignment
+si1240		|Jamtrac Display
+
+si1600	|Data Input and Display
+si1320		|Correlation
+
+[1;31m1221|[0msi650		|Track Sort
+si<del><del><del><del><del><del>600		|Radar Data Display and Light Gun Actions
+si640		|Subframe Timing
+si700		|Azimuth Initiation
+
+si1000	|Tentative and Lost Track Processing
+si240		|Subframe Smoothing
+si1320		|Frame Smoothing
+
+[1;31m1230|[0msi700		|Simulated Azimuth Inputs
+<del><del><del><del><del><del><del>si400		|TNS and Display
+si1000		|Azimuth Display
+[1;31m1234|[0msi1430		|Simulation
+[1;31m1237|[0msi1540		|Recording
+
+[1;31m1250|[0msi600	|JTDS
+si220		|TST-A, TST-B
+si740		|TDS 7-15, TP-CR
+si<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>360		<del>|TDS 2-6
+si230		|LGAS, CTDS, AT
+si22		|CR-B
+si40		|TNS
+si156		|Weapons Direction Subroutines
+
+
+
+[1;31m1277|[0msi2540		|Master Control
+		|[1;31mDynamic Start Points[0m
+[1;31m1301|[0msi40		|Azimuth Computation
+[1;31m1304|[0msi40		|Geography
+[1;31m1306|[0msi40		|Azimuth Display
+si40		|Azimuth Correlation
+
+
+
+[1;31m1310|[0msi40		|Jamtrac Light Gun
+[1;31m1311|[0msi40		|Monitor Display
+si344		|Monitor Light Gun Actions
+si344		|Monitor Activate Actions
+si40		|Monitor Assignment
+si40		|Jamtrac Display
+
+si40		|Data Input and Display
+si40		|Correlation
+
+[1;31m1321|[0msi40		|Track Sort
+si40		|Radar Data Display and Light Gun Actions
+si40		|Subframe Timing
+si40		|Azimuth Initiation
+
+si40		|Tentative and Lost Track Processing
+<del>si40		|Subframe Smoothing
+si40		|Frame Smoothing
+
+[1;31m1330|<del>[0msi40		|Simulated Azimuth I<del>nputs
+<del><del><del><del><del><del><del><del>si50		|TNS and Display
+si40		|Azimuth Display
+[1;31m1334|[0msi200		|Simulation
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>[1;31m1337|[0msi40		|Recording
+
+[1;31m1350|[0msi4		|JTDS
+si4		|TST-A, TST-B
+si4		|TDS 7-15, TP-CR
+si4		|TDS 2-6
+si4		|LGAS, CTDS, AT
+si4		|CR-B
+si4		|TNS
+si4		|Weapons Direction Subroutines
+
+
+START AT 0
+<stop>

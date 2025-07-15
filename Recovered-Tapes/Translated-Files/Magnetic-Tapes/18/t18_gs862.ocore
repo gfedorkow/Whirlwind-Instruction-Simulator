@@ -1,0 +1,22 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\18\t18.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\18\t18_gs862.ocore
+%TapeID: 
+%Stats: Covariance=0.004804, Size=97, 
+%Blocknum 0o0
+@T00000: 0000140 0100000 0102570 0126210 0100000 0103123 0126205 0100300  ; si ca ca sa ca ca sa ca  :      t\0m \05|\0 :        \0t##t##t
+@T00010: 0103574 0126202 0100000 0133442 0126263 0100100 0134010 0126260  ; ca sa ca ao sa ca dm sa  :       ve\0z#\0 o :         ##t##tq#
+@T00020: 0100000 0134277 0126256 0100000 0134651 0126253 0100000 0100124  ; ca dm sa ca dm sa ca ca  : \0<del>q\0\n#\0r :         tq#tq#tt
+@T00030: 0127027 0000000 0004150 0065651 0013110 0067531 0012571 0000001  ; sa si .word ex bi ex bi si  :  7\0h\n ,<cntl># :       #\0ef|6_\0
+@T00040: 0004150 0065651 0013110 0067771 0013771 0000002 0004150 0065651  ; .word ex bi ex bi si .word ex  : H\n <cntl><cntl>EH\n :        EF_6_\0EF
+@T00050: 0013110 0070471 0013031 0000003 0004150 0065651 0013110 0071171  ; bi cp bi si .word ex bi cp  :  <cntl>(8H\n <cntl> :        _C_\0EF_C
+@T00060: 0015171 0000004 0004150 0065651 0013110 0071431 0013271 0000005  ; rd si .word ex bi cp bi si  : <cntl>#H\n (<cntl>_ :       A\0EF_C_\0
+@T00070: 0004150 0065651 0013110 0072371 0013531 0000006 0073626 0065652  ; .word ex bi cp bi si cp ex  :   H\n <cntl>(AJY :        EF_-_\0-F
+@T00100: 0013110 0005406 0013771 0000007 0073626 0065652 0013110 0006106  ; bi .word bi si cp ex bi .word  :     A<cntl>3JY A :        _E_\0-F_8
+@T00110: 0013271 0000010 0073626 0065652 0013110 0006606 0012571 0000011  ; bi si cp ex bi .word bi si  : <cntl> JY A<cntl>: :       _\0-F_8_\0
+@T00120: 0073626 0065652 0013110 0007306 0013131 0000012 0073626 0065652  ; cp ex bi .word bi si cp ex  :         JY A(SJY :        -F_8_\0-F
+@T00130: 0013110 0010006 0013471 0000013 0073626 0065652 0013110 0010506  ; bi bi bi si cp ex bi bi  :     A<cntl>4JY A :        _#_\0-F_#
+@T00140: 0014031  ;                      rd  :                ( :                A
+
+%Hash: 40b0f7-3a981a-97

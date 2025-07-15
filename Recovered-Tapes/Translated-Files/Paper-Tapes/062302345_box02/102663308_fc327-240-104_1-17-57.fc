@@ -1,0 +1,107 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302345_box02\102663308_fc327-240-104_1-17-57.7ch
+fc TAPE 327-240-104 HUTCHESON
+[1;31mDA6144|732|[0m+1.	+0.	+0.	+0.	+0.	+0.	+0.	+1.	+0.	+0.	+0.
++0.	+0.	+0.	+1.	+0.	+0.	+0.	+0.	+0.	+0.	+1.	+0.
++0.	+0.	+0.	+0.	+0.	+1.	+0.	+0.	+0.	+0.	+0.	+0.
++1.	[1;31m804|[0m+0.	+0.	[1;31m808|[0m+0.	+0.
+[1;31m812|[0m
+LSR MA6 CROUT METHOD
+[1;31m0r,[0mta133r	ao133r	ta16r	ao133r	ta8r	ao133r	ta12r	ta123r
+ca	ts6t	[1;31m10r,[0mad6t	ts7t	cs	su6t	ts9t	ts15t
+ca	td8r	td12r	td16r	[1;31m20r,[0mtd47r	td77r	tst	cs9t
+mh7t	slh15	ad8r	td55r	td136r	td137r	[1;31m30r,[0mcs6t	ad1	ts6t
+ts11t	ts13t	ts14t	ao9t	sp42r	aot	aot	[1;31m40r,[0mtd47r
+ca9t	ts12t	ca147r	srh9	ts2042	IN	iad	OUT	ca47r
+[1;31m50r,[0mad7t	td47r	ao12t	cp46r	IN	its	OUT	ao55r	ao55r
+ao13t	[1;31m60r,[0mcp38r	ca55r	td139r	ca85r	td186r	ao82r	ao1	ts8t
+sp71r	ca149r	[1;31m70r,[0msp151r	ca147r	ts5t	ao77r	ta75r	ca
+ts2t	ca	ts3t	ca148r	[1;31m80r,[0msp151r	sp134r	sp83r	sp87r
+ta82r	ca200r	td186r	ca77r	ad8t	td77r	[1;31m90r,[0mao77r	ao11t
+cp69r	cs7t	ts7t	ad7t	ad55r	td136r	td137r	ca16r	[1;31m100r,[0mtd139r
+ca150r	ts201r	cs8t	ts8t	ca9t	ad1	ts11t	ca12r	td8r
+[1;31m110r,[0mad8t	td16r	ca147r	ts5t	ca7t	dm0	ab12r	td185r
+td205r	ab16r	[1;31m120r,[0mca8r	td47r	td188r	cs	ts12t	ca9t
+||||||||||
+su11t	ad1	ts13t	sp179r	[1;31m130r,[0msp134r	ao11t	cp112r	sp
+ta146r	IN	ica	iad	isu4t	its	[1;31m140r,[0mOUT	ca7t	dm0
+ab136r	ab137r	ab139r	sp	1.00777	idv2t	isp205r	[1;31m150r,[0misp202r
+ta178r	ts201r	ca14t	ex15t	ts14t	ca16r	ex8r	ts16r	ca8t
+[1;31m160r,[0mex7t	ts8t	dm0	ab12r	td185r	td205r	ab8r	td47r
+td188r	ao14t	[1;31m170r,[0mts12t	ca6t	ex9t	ts6t	ad1	su12t
+ts13t	sp179r	sp	ta215r	[1;31m180r,[0mca13t	ts10t	ca16r	td189r
+IN	ica	sp	itst	ics	imr	[1;31m190r,[0miadt	OUT
+ca188r	ad7t	td188r	ca189r	ad8t	td189r	ao10t	cp186r	[1;31m200r,[0mIN
++0	iex4t	iad4t	iex4t	its	OUT	cm8t	dm0	ab185r
+[1;31m210r,[0mab205r	ab47r	td188r	ao12t	cp180r	sp
+END OF SUBROUTINE
+||||||||||
+<stop>[1;31my4,[0mca1	ts4i1	sp812	n5	6	6	spf7	72n5	n6	n5	6	6
+1	IN	ica36z1	isun5	its792	ica22z1	isu2n5	its794	ica20z1	isu4n5	its796	ica24z1
+isu6n5	its798	ica18z1	isu8n5	its800	ica14z1	isu10n5	its802	OUT	ca3i1	cpy6	[1;31my7,[0mIN
+ica802	isp1a1	its22y8	ica802	ispa1	its24y8	ica794	imr794	iad33	imr792	its20y8
+ispc4	OUT	[1;31my9,[0mca8y9	tdi2	td1i2	ca7y9	si451	ca9y9	spi2	8192	812	y10-812
+[1;31mc4,0r,[0mita35r	ica20y8	isu33	idv794	imr35	ispa5	isu47	imr35	iad796	its12z1	ispa1
+its38z1	imr24y8	imr35	ispa5	isu49	imr35	its48z1	isu4r7	its806	ica12z1	isp1a1	idv38z1
+idv22y8	ispa4	imr35	iad800	its38z1	ica4r7	isp1a1	its10t	ica38z1	isu6r7	imr10t	its804
+[1;31m35r,[0misp	[1;31my6,[0mIN	ispy8	ica34z1	its20y8	ica44z1	its22y8	ica32z1	its24y8
+ispc4	ica804	its808	ica806	its810	ispy8	ispy7	[1;31my8,[0mita19y8	ica792
+iex36z1	its792	ica794	iex22z1	its794	ica796	iex20z1	its796	ica798	iex24z1	its798	ica800
+iex18z1	its800	ica802	iex14z1	its802	isp	+0.	+0.	+0.	[1;31my5,[0m
+[1;31mDA8192|812|[0m	ca1y25	si451	ca2y25	bih1	ca3i1	cpy17	IN	ica804	isu808	itst
+imrt	itst	ica806	isu810	its2t	imr2t	iadt	isu13y24	icpy14	OUT	ao3i1	ad1
+suy25	cpy12	IN	ica804	isph1	ica806	isph1	isp120h1	OUT	[1;31my29,[0mca0	ts3i1	ca10y24
+ad1	su1p3	cpy13	ca0	ts10y24	IN	icay24	idv22p2	ispy16	isp110h1	ica2y24
+idv22p2	ispy16	isp110h1	icay24	isu6y24	its6t	imr6t	its8t	ica8y24	iad8y24	its10t
+imr10t	iad8t	ispa3	itsy11	iad6t	its2y11	icsy11	iad6t	itsy11	OUT	cs1
+ts4y11	[1;31my19,[0mIN	icay11	idv8y24	its6t	imr6t	imr4y24	iady11	iady11	iad6y24	its6t
+icay11	imry11	its8t	ica10t	imr10t	iad8t	its8t	ica6t	imr10t	imr10t	idv8t
+idv22p2	ispa3	its5y11	ispy16	isp110h1	OUT	ca4y11	cpy18	IN	ica7y11	isu5y11
+icpy20	icsy11	[1;31my21,[0midv10t	ispa4	ispa6	isp120h1	ispy22	[1;31my20,[0mics2y11	ispy21
+[1;31my18,[0mca1	ts4y11	IN	icay11	iex2y11	itsy11	ica7y11	iex5y11	its7y11	ispy19	[1;31my22,[0mica37
+itsy24	its2y24	its4y24	its6y24	its8y24	spy15	sp4h5	[1;31my13,[0mspy15	ca13y25	tdi2	td1i2
+ca3y25	si451	ca4y25	spi2	[1;31my12,[0mica804	isph1	ica806	isph1	ica804	its808
+ica806	its810	ica792	its36z1	ica794	its22z1	ica796	its20z1	ica798	its24z1	ica800
+||||||||||
+its18z1	ica802	its14z1	OUT	ca5y25	si455	ca6y25	bo808	ca7y25	tdi2	ca8y25
+td1i2	ca9y25	si451	ca10y25	spi2	[1;31my16,[0mita3y16	imr4h4	isph1	isp	[1;31my15,[0mta5y15	ca11y25
+si455	ca12y25	boy24	sp	[1;31my14,[0micay24	iad804	itsy24	ica2y24	iad806	its2y24	ica804
+imr804	iad4y24	its4y24	ica806	imr806	iad6y24	its6y24	ica804	imr806	iad8y24	its8y24
+isp120h1	ica804	isph1	ica806	isph1	isp120h1	OUT	ca10y24	dm0	cp9y11	IN
+ispy23	ao10y24	spy29	[1;31my17,[0mIN	ica808
+ispy16	ica810	ispy16	isp818	[1;31my24,[0m+0.	+0.	+0.	+0.	+0.	0	+1.
++0.	[1;31my11,[0m+0.	+0.	1	+0.	+0.	si4	sp29y14	[1;31my23,[0mitay26	ica804	iad804	OUT	ca2042	cpy27
+dm0	cpy27	spy26	[1;31my27,[0mcs2042	td3y27	ca2043	srr0	tst	IN	ica806	iad806
+OUT	ca2042	cpy28	dm0	cpy28	spy26	[1;31my28,[0mcs2042	td3y28	ca2043	srr0	ts1t
+||||||||||
+cat	si384	ca1t	rc0	[1;31my26,[0msp	[1;31my25,[0m5	2211	147	3027	189	6220	4
+792	c3	4450	y2-792	7380+y24	11	q6	[1;31my10,[0m
+[1;31mDA4096|792|[0m	[1;31m1087|[0mca5f5
+[1;31mDA4500|842|[0m	[1;31m8c6|[0midv794	[1;31m1610|[0mimr26b1
+[1;31mDA8192|812|[0m	[1;31m838|[0mispy16	[1;31m840|[0mispy16
+[1;31m1y12|[0mispy16	[1;31m3y12|[0mispy16
+[1;31m20y14|[0mispy16	[1;31m22y14|[0mispy16
+[1;31mDA6144|732|[0m	[1;31m1070|[0mics794	[1;31m1112|[0mimr33
+[1;31mDA4500|842|[0m	[1;31m1628|[0mca1633	si451	ca3y3	bi938	sp938	10240
+[1;31mDA10240|938|[0mao4i1	sup3	cp954	ca2y3	si451	ca3y3	bi72n5
+ca1639	tdi2	ca1640	td1i2	ca2y3	ad3y3	si451	ca4y3
+spi2	IN	ica37	its4n3	its8n3	its10n3	its20n3	its22n3	its28n3
+its32n3	its34n3	its40n3	its44n3	its46n3	its48n3	its50n3	its52n3
+its54n3	its58n3	its60n3	its62n3	its64n3	its66n3	its68n3	itsn2
+its4n2	its6n2	its16n2	its18n2	its20n2	its28n2	its30n2	its32n2
+its44n2	spc3	[1;31mDA4096|792|[0m	[1;31m1087|[0mca5f5
+[1;31mDA4500|842|[0m	[1;31m8c6|[0midv794
+[1;31m5c8|[0msp29y1
+[1;31m13y1|[0midv619	[1;31m18y1|[0mica619	isp24y1	ad23y1
+td17c3	sp881	2
+[1;31m27y1|[0mica621	isp36y1	ca12c3
+td8c6	ca3c5	td7c6
+td9c6	IN	isp6c8
+[1;31m11f3|[0mca17c3	ad23y1	td11c3	ad23y1
+td13c3	ad23y1	td15c3	sp20y1
+||||||||||
+[1;31mDA8192|812|[0m	[1;31my17-3|[0mOUT	[1;31m9y11|[0mOUT	[1;31m860|[0mica4y24
+[1;31mDA6144|732|[0m	[1;31m1070|[0mics794
+[1;31m1112|[0mimr33
+[1;31m1076|[0mOUT
+[1;31mDA4500|842|[0m	[1;31m3y1|[0mIN
+START AT h5

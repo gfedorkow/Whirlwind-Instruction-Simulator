@@ -1,0 +1,547 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_10\102782018_fc1001.7ch
+fc TAPE 1001 FORGIE
+OCTAL
+	si126	|set for beginning reading
+	si126
+	si126
+	si126
+	si126
+	si12<del><del>4
+	ca0
+	tsy1
+c7,	caz11	|word set
+	tda5
+	csb8
+	tsb6
+	caz12
+	tsa30
+a15,	cf101
+	si430
+a12,	rd0	|find 10 kc
+	suz1
+	cpa12
+	rd0
+	suz2
+	cpa1
+	spa12
+a1,	rd0	|wait for 10 kc to go
+	suz1
+	cpa1
+	rd0
+	suz2
+	cpa21
+a2,	rd0	|2nd check
+	suz1
+	cpa2
+	rd0
+	suz2
+	cpa20
+	rd0
+	caz9
+	tsa7
+a8,	caz15
+a5,	bi1000	|read
+	tda10
+	tda5
+	tda6
+	rd0
+	caa5
+	suz4
+	cpb3	|not field end
+	rd0	|is field end
+	caz6
+	tda10
+	tda5
+	rd0
+	aoa30
+	suz7
+	cpa30-3
+	spa3
+	rd0
+	caz5
+a6,	ts0
+a30,	cf101
+	spb5
+b3,	rd0	|mark time between reads
+	rd0
+	rd0
+b5,	rd0
+	rd0
+	aob6
+	cpb7
+	csb8
+	tsb6
+	spa7
+b7,	rd0
+	spa8
+b6,	1.77775
+b8,	si2
+a3,	si600	|end of word
+	cs0
+a10,	ts0
+	caz11	|check for neg
+	tdj8
+	caz12
+	tsj13
+	cf101
+j8,	ca1000
+	cpj9
+	suz1
+	cpj10
+	si0	|neg pulse
+j10,	aoj8	|index check
+	suj11
+	cpj8
+j16,	aoj13
+	suz7
+	cpj13
+j14,	si1
+	spg1
+j13,	cf101
+	caz6
+	tdj8
+	spj8
+j9,	ad1
+	cpj16
+	spj14
+j11,	ca3776
+a7,	sp1a7	|check for end
+	rd0
+	suz1
+	cpa29
+	rd0
+	suz8
+	cpa4
+a11,	rd0	|not end
+	spa8-2
+a4,	caz10	|10 kc found once
+	tsa7
+	rd0
+	suz13
+	cpa8-2
+	spa8
+a9,	rd0	|end once more
+	suz1
+	cpa29
+	rd0
+	suz8
+	cpa3
+	spa11
+a29,	si0
+z1,	si3000	|sync check
+z2,	si1000	|initial 10 kc
+z3,	si154	|cycle length
+z4,	bi3710	|end
+z5,	ca0	|field mark
+z6,	si2000	|new field set
+z7,	cf105	|end check
+z8,	si400	|final 10 kc
+z9,	sp1a7
+z10,	spa9
+z11,	si 1300	|initial set
+z12,	cf101	|initial set
+z13,	si1100	|9 kc lelel
+z14,	cpa8-2
+z15,	si44	|read length
+a14,	caz20	|initial set, cont. read
+	tsj14
+	caz19
+	tsa17
+	caa2
+	ts6a2
+	caz21
+	ad1
+	ts2a20
+	sp40
+a28,	caa2	|initial set, word read
+	ts6a2
+	ca1
+	tsj14
+	caz14
+	ts2a20
+	sp40
+a20,	rd0	|check 9 kc
+	suz13
+	cpa8-2
+	spa1
+a21,	rd0	|check 9 kc
+	suz13
+	cpa2
+	spa1
+a17,	caz23	|adjust after readcont.
+	tsz22
+	aoa17
+	caz21
+	ts6a2
+	ad1
+	ts2a20
+	si1
+	spg1
+a16,	rd0	|mark time before cont. read
+	aoz22
+	cpa1
+	spa8-2
+z19,	caz23
+z20,	spa17
+z21,	spa16
+z22,	si0
+z23,	1.77577	|ks for continuous speech
+	1.77374
+	1.77171
+	1.76766
+	1.76563
+	1.76360
+	1.76155
+	1.75752
+	1.75547
+	1.75344
+g1,	caz12	|drum store
+	tsg3
+	cav1
+	tsv4
+	adv2
+	tsv5
+	cav4
+	cf101
+	si1707
+	cav2
+	bo1300
+	suz11
+	adv4
+	tsv4
+g2,	aog3
+	suz7
+	cpg3
+	cav2	|find end
+	tsv6
+	caa30
+	suz12
+	cpa29
+	su1
+	cpg5
+g4,	tsv7
+	cav6
+	adv3
+	tsv6
+	cav7
+	su1
+	cpg5
+	spg4
+g3,	cf101
+	cav4
+	si1707
+	cav3
+	bo2000
+	suz6
+	adv4
+	tsv4
+	spg2
+g5,	caa10
+	suv8
+	adv6
+	suz3
+	tsv6
+	adv1
+	si1707	|store corrected end
+	cs0
+	rc0
+	spf11
+v1,	0.04000	|drum field
+v2,	si2<del>420	|words field 1
+v3,	si1714	|words/field
+v4,	0.04000	|current write drum address
+v5,	0.06750	|current read drum address
+v6,	si0	|end address
+v7,	si0	|temp and looks
+v8,	ts0
+v9,	0.01616	|looks k
+v10,	si0	|store print  no.
+f11,	ca0
+	tss1
+	tss2
+	tss3
+	cf101
+	cav1
+	tsv4
+f6,	caz11
+	tdf4
+	tdf5
+f4,	cs1000
+	cp3f4
+	spf10	|end mark
+	mdk1
+f5,	ts1000
+	suk2
+	cpf1
+	aos1	|ocerload
+	spf3
+f1,	adk3
+	cpf2
+	aos2	|over 34
+	spf3
+f2,	adk4
+	cpf3
+	aos3	|over 1/2
+f3,	aof4
+	tdf5
+	suk5
+	cpf4
+f21,	cav4
+	si1707
+	cav2
+	bo1300
+	suz11
+	adv4
+	tsv4
+	cav5
+	si1703	|read from drum
+	cav2
+	bi1300
+	suz11
+	adv5
+	tsv5
+	spf6
+f10,	su1
+	cpf20
+	spf21
+f20,	cav4
+	si1707
+	cav2
+	bo1300
+	suz11
+		adv4
+	tsv4
+f7,	cas1	|store toggles
+	ts2
+	cas2
+	ts3
+	cas3
+	ts24
+	cav6
+	mrv9
+	tsv7
+	ts5
+	si225
+	cak13	|print setup
+	rc0
+	rc0
+	cas1
+	spf8
+	cas2
+	spf8
+	cas3
+	spf8
+	cav7
+	spf8
+	si1
+	spc12
+f8,	taf9	|print + cr routine
+	tsv10
+	cak13
+	rc0
+	sp2f12
+f12,	taf9	|print rountine
+	tsv10
+	cav10
+f14,	mdk8
+	srh14
+	adk9
+	tdf13
+f13,	ca0
+	rc0
+	ca1f14
+	suk10
+	td1f14
+	aof14
+	suk11
+	cp2f12
+	cak7
+	tsf14
+	cak14
+	ts1f14
+f9,	sp0
+k1,	si3777	|mask
+k2,	si3776	|overloads
+k3,	si377	|over 3/3
+k4,	si400	|over 1/2
+k5,	cs3776	|end
+k6,	1.12000	|tab
+k7,	mdk8
+k8,	0.70000	|masks
+	0.07000	
+	0.00700
+	0.00070
+	0.00007
+k9,	cak12
+k10,	si3
+k11,	md4k8
+k12,	1.74000	|numbers
+	0.52000
+	0.36000
+	0.16000
+	0.26000
+	0.46000
+	0.66000
+	0.56000
+k13,	1.22000	|cr
+k14,	srh14
+k15,	0.42000	|period
+s1,	si0	|counters
+s2,	si0
+s3,	si0
+c12,	si10
+	ca24
+	ady1
+	ts7	|tag
+	si225	|print recorded tag
+	cak6
+	rc0
+	ca7
+	cpc6
+	cak12
+c8,	rc0
+	cak15
+	rc0
+	ca7
+	spf12
+	cav1
+	tsv5
+c5,	cav5	|bring from drum
+	si1703
+	cav3
+	bi1300
+	tdc14
+	suz11
+	adv5
+	tsv5
+	caz5
+c14,ts0
+	si126
+	caz11
+	tdc1
+c2,	ca7	|record tape tags
+	rc0
+	tsy6
+	cav7
+	rc0
+	say6
+	tsy6
+	ca0
+c1,	ca1000	|record words
+	cpc13
+	suz6
+	cpc3
+	adz6
+c4,	rc0
+	say6
+	tsy6
+	aoc1
+	suj11
+	cpc1
+	si0
+c6,	ca1k12
+	spc8
+c10,	caz5	|end of record
+	rc0
+	say6
+	rc0
+	ca0
+	si124
+	spc5
+c3,	caz6
+	spc4
+y1,	si0	|word count
+y6,	si0	|check sum
+c13,	ad1
+	cpc10
+	caz5	|end of word
+	rc0
+	say6
+	rc0
+	ca0
+	si126	|rc end of word block
+	ca7
+	rc0
+	tsy6
+	cav7
+	rc0
+	say6
+	tsy6
+	ca0
+	cs0
+	rc0
+	say6
+	rc0
+	ca0
+	aoy1	|add to counter
+	si126	|record end of tape mark
+	cs0
+	rc0
+	rc0
+	rc0
+	rc0
+	si126
+	si123
+	rd0
+	rd0
+	rd0
+	rd0
+	cp1c9
+c9,	si0
+	ad1
+	cpc9
+	si124
+	si1
+	spc7
+d5,	tad6	|back tape rountine
+d1,	si123
+	rd0
+	rd0
+	cpd2
+	spd1
+d2,	ad1
+	cpd1
+	rd0
+	rd0
+	si122
+	rd0
+	rd0
+	rd0
+	cpd3
+d4,	si0
+d3,	ad1
+	cpd4
+d6,	sp0
+d7,	spd5	|go back one record
+	si1
+	spc7
+d10,	ca5	|set 10 kc levels
+	tsz2
+	add14
+	tsz13
+	ca7
+	tsz8
+	sp40
+d14,	si100
+3764|	spd5	|back one record
+d11,	cad12	|put self on tape
+	adz6
+	si1707
+	caz11
+	bo40
+	cad12	|bring program in
+	si1703
+	caz11
+	bi40
+	sp40
+d12,	0.34000
+3750|	cad12
+	adz6
+	si1703
+	caz11
+	bi40
+	si1
+	sp50
+START AT 40
+
+qSTART AT 40

@@ -1,0 +1,73 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302375_box18\102663521_fc126-52-571_12-18.7ch
+fc TAPE 126-52-5<del><del>7<del>1 SLURP HAMILTON
+tan1	tst6
+|[1;31mBLOCK IN W.W. ADDRESS AND LENGTH OF BLOCKED INFORMATION[0m
+[1;31ms1,[0mcah10	si451	cad1	bin2	can2	td4s2
+|[1;31mBLOCK IN BLOCKED INFORMATION[0m
+[1;31ms2,[0mcah10	add1	si451	ca1n2	bi
+|[1;31mSET UP TABLE ADDRESSES[0m
+[1;31ms3,[0mcan2	tdf11	td1f2	ad1	td7f11	ad1	td2f2	ad1	td5f2	td1j7	add1	td11f2	td4j7	td1j11
+ad1	td1f3
+|[1;31mINITIAL SET UP[0m
+[1;31mf1,[0mcah6	td-1a8	ca0	tse6
+|[1;31mFIND CODE VALUE IN CODE TAG TABLE[0m
+[1;31mf11,[0mca	td3f11	cat6	sd	dm0	cpf2	ao3f11	su	cp2f11	sp0
+|[1;31mPICK UP CORRESPONDING st[0m
+[1;31mf2,[0mca3f11	su	ad	td4f2
+|[1;31mSET tt FROM ST AND SET CC.[0m
+ca	ad	td10f2	clh20	adh2	tda5
+|[1;31mSET ci FROM TT[0m
+ca	ad	tda1	spa1
+|[1;31mSET ci + TEST FOR LENGTH[0m
+[1;31mf3,[0maoa1	su	cpa1	sp0
+|[1;31mSTORE INSTRUCTION AND TEST FOR FLEXO[0m
+[1;31ma1,[0mca	tst7	[1;31ma5,[0mcpm1
+|[1;31mPICK UP FLEXO CHARACTERS[0m
+dm0	cpf3	aoa1	td5a5	ca	ts1t7	cp0	cat7	mdg1	spf6	cat7	srh6	mdg1	spf6	cat7
+srh15	ad1t7	slh3	mdg1	spf6	ca1t7	srh3	mdg1	spf6	ca1t7	srh9	spf6	spf3
+|[1;31mEXAMINE FLEXO CODE FOR STOP CHARACTER[0m
+[1;31mf6,[0mta1a2	tst6	sdd4	dm0	cpa6
+|[1;31mGO TO OUTPUT[0m
+cat6	[1;31ma2,[0msp	sp
+|[1;31mPICK UP OPERATION AND EXAMINE FOR JUMP AND TERMINATION[0m
+[1;31ma6,[0mca4f7	md2d1	su1d1	cpa3	su1g2	cpf3	cae6	cpf4	spf3	[1;31ma3,[0mcae6	cpf4	ca5a6	tdf13
+spj6	[1;31mf4,[0mcan1	tdf13
+|[1;31mSET FOR RETURN JUMP[0m
+[1;31mj6,[0mca17j1	su<del>h6	cpf13	ca17j1	td7j6	su1	ts17j1	ca	cpj6	tda1	clh20	adh2	tda5	spa1
+[1;31mf13,[0msp
+|[1;31mEXAMINE COMPUTER TYPE[0m
+[1;31mm1,[0mspf16	spm2	spm3	[1;31mm2,[0mclh2	cpf16	spf3	[1;31mm3,[0mclh3	sp1m2	[1;31mf16,[0mcst7	clh1	cpf7	cs1	ts<del><del>
+spf7	[1;31mf15,[0mca0
+tse6	spf3
+|[1;31mSET UP TO PICK UP OPERATION[0m
+[1;31mf7,[0mcat7	mdg2	adh1	td4f7	ca	clh1	cpf8	clh1	cpf9	clh1	cpf12	sp0
+|[1;31mGO TO OPERATION WITH SUBROUTINE NO IN ACC.[0m
+[1;31mf8,[0mclh31	sp1f9
+|[1;31mGO TO OPERATION WITH PARAMETER IN ACC[0m
+[1;31mf9,[0mclh30	td5f9	cat7	clh26	mdg1	sp
+|[1;31mGO TO OPERATION WITH TAG NO IN ACC[0m
+[1;31mf12,[0mclh29	td10f12	cat7	clh26	mdg1	tst3	clh7	mdg3	adt3	tst3	sp	[1;31mf14,[0mta2f14	ca0	sp
+[1;31mf5,[0mtan1	tst6	spf1
+|[1;31mJUMP A,B,C.[0m
+[1;31mj8,[0mca0	td6j7	spj7	[1;31mj9,[0mca1	sp1j8	[1;31mj10,[0mcah7	sp1j8
+|[1;31mSET MEMORY[0m
+[1;31mj11,[0mcat3	ad	tdt9	caa1	td1j1	spj1	spf3
+|[1;31mRETURN JUMP[0m
+[1;31mj12,[0mcaa5	suh2	cpf15	ca4d1	tdf13	spj6
+|[1;31mREMEMBER JUMP A,B,C.[0m
+[1;31mj3,[0mca1	sp1j2	[1;31mj4,[0mcah7	sp1j2	[1;31mj5,[0mta5j5	caa1	td1j1	ad1	tdt9	spj1	[1;31mj7,[0mcat3	ad	td3j7
+ca	ad	tda1	ca	adh2	tda5	spa1	[1;31mj2,[0mca0	td6j7	spj5	[1;31mj1,[0mtaa8	ca	clh1	cp6j1	ca0
+sp8j1	ca1
+clh3	tst8	spr14	adt8	clh12	tst8	ao-1a8	cat9	tdt8	cat8	ts-1d3	[1;31ma8,[0msp
+|[1;31mPRINT OR PUNCH[0m
+[1;31mp2,[0msrh1	td3p3	slh1	md1	td5p3	cah3	tda2	spf3	[1;31mp3,[0msi94	cat6	clh1	ad	clh1	ad
+clh8	rc	si92	sp1a2	[1;31mr14,[0mta4r14	caa5	suh2	cpf14	sp
+|[1;31mCONSTANTS[0m
+[1;31md1,[0m+2	[1;31m1d1,[0m2e5	[1;31m2d1,[0m0.03777	+3<del>	[1;31m4d1,[0mtsf3	[1;31md3,[0m+0	10r|[1;31md4,[0m+49	[1;31mg1,[0m0.00077	[1;31mg2,[0m0.00037	+3	[1;31mg3,[0m0.00100
+[1;31mh1,[0me5
+[1;31mh2,[0mcpm1	[1;31mh3,[0mp3	[1;31mh6,[0mts-1d3	<del><del><del><del><del><del><del>[1;31mh7,[0md1	[1;31mh10,[0m0.04000	[1;31mn1,[0m+0	[1;31mn2,[0m+0	[1;31m1n2,[0m+0	[1;31mn8,[0mca0	[1;31mt3,[0m+0	[1;31mt6,[0m+0	[1;31mt7,[0m+0<del><del>
++0
+[1;31mt8,[0m+0	[1;31mt9,[0m+0	[1;31me5,[0m0.10000+j2	0.10000+j3	0.10000+j4	0.10000+j8	0.10000+j9
+0.10000+j10	0.40000+j12	0.40000+p2	e6,+0
+OCTAL
+START AT 0

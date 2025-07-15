@@ -1,0 +1,192 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_09\102781916_fc126-50-1608_2-2-57.7ch
+fc TAPE 126-50-160<del>8 ROSS MIV GROUP ZERO
+(24,6)	DECIMAL
+[1;31m|Preset Parameter Assignments
+[0mpp1=0.30000	pp2=+20	pp3=+9	pp4=+24	pp5=+24	pp6=+4	pp7=+24	pp8=+4	pp9=+2	pp10=0
+pp11=+6	pp12=+6	pp13=+12	pp14=0.04001	pp15=pp14+1408	pp16=pp15+1408	pp17=pp16+1153
+pp18=pp17+300	pp19=pp18+1409	pp20=pp19+321	pp21=pp20+1220	pp22=pp21+0	pp23=pp22+540
+pp24=pp23+540	pp25=pp14+2	pp26=pp15+5	pp27=pp16+20	pp28=pp17+5	pp29=pp18+10
+pp30=pp19+10	pp31=pp20+20	pp32=0
+[1;31m|Set Call Address Listings
+[0m[1;31mDApp14+1|[0m0.04000+2s<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>1+1	0.14000+16x4+1	[1;31mDApp16+10|[0mb3+1	[1;31mDApp1<del><del><del><del><del><del><del><del><del>6+12|[0m5q6+1	[1;31mDApp17+2|[0m2d19+1
+[1;31m|Set Section Address Listings
+[0mDApp25+1|<del><del><del>3s1	a8	[1;31mDApp27+9|[0mp7
+[1;31m|Main Evaluation Program[0m
+[1;31mDA32|32|[0msps1	sp32	capp25-pp14+35	0.04000+2s1+1	0.14000+16x4+1	3s1	a8	[1;31mDApp14|[0mcapp25-pp14+35
+[1;31m|0-0 Pre-Loop Setup[0m
+[1;31mDApp14+5|39|r13,[0msp1a13	IN	isc1	icr4	isc2	icr3	isc4	isc3	icr9
+icah2	idvh7	idvk8	its26b1	icap11	isp1z3	itsb1
+icap11	ispz3	its4b1	ics4b1	its4b1	ica2p11	imr4b1	itsb2	ics2p11	imrb1	its4b2
+icam2	its2b2	its2b1	sps1
+[1;31m|0-1 Check Initial Conditions Data[0m
+[1;31mp7,[0mca2i1	td2r6	ca1a14	tsv10	ca3a14	tsd4	ca5a14	tss14	ca7a14	tsq3
+ca9a14	td3d5	ca0	tsn8	cac2	su2a3	cpy1	mha3	slr14
+ts17<del><del><del>09	su3a3	cpy2	[1;31my1,[0mcac2	ts2a3	mha3	slr15	adf2	0.01703	ca1a3	bia1
+cac2	mhu4	slr15	adi5	0.01703	ca4a3	bia4	ca0	ts1709
+[1;31m|0-2 Launching Velocity[0m
+[1;31my2,[0mIN	isc0	icab2	iada1+c	itsu6	imru6	its20b1	ica2b2	iad2a1+c	its2u6	imr2u6
+iad20b1	its20b1	ica4b2	iad4a1+c	its4u6	imr4u6	iad20b1	spz2	its6u6
+[1;31m|0-3 Yaw Angle Correction[0m
+icaa1+c	imru6	itsv2	ica2a1+c	imr2u6	iadv2	itsv2	ica4a1+c	imr4u6	iadv2	itsv2
+idvh4	idv6u6	isp6z4	its2v2	[1;31md6,[0mica6u6	idvk8	its20b1	OUT	cag10
+sps5	itsa10	imr2i7	idv20b1	iexa10	imrk7	imr2v2	imr2v2	its22b1
+[1;31m|0-4 Windage Jump Correction[0m
+ica2b2	imr4u6	its12b1	ics4b2	imr2u6	iad12b1	its12b1	imr12b1	its18b1	icsb2	imr4u6
+its14b1	ica4b2	imru6	iad14b1	its14b1	imr14b1	iad18b1	its18b1	icab2	imr2u6	its16b1
+ics2b2	imru6	iad16b1	its16b1	imr16b1	iad18b1	spz2	its4v2	ica2v2	idv4v2	imrj4
+its18b1	ica12b1	imr18b1	iadu6	its6b1	imr6b1	iex14b1	imr18b1	iad2u6	its8b1	imr8b1
+iad14b1	iex16b1	imr18b1	iad4u6	its10b1	imr10b1	iad16b1	spz2	its18b1	ica6b1	idv18b1
+itsu7	ica8b1	idv18b1	its2u7	ica10b1	idv18b1	its4u7
+||||||||||
+[1;31m|0-5 Yaw Correction[0m
+icah4	idv6u6	its12b1	imr12b1	imrh1	idvh7	isu2i7	its18b1	isu2i7	imrh2	imrh3
+iada10	iex18b1	imr22b1	idv18b1	iad20b1	[1;31md1,[0mits18b1	isuw6	itsw7	icpn7	icsw7
+[1;31mn7,[0miad2w6	icpn9
+[1;31m|0-6 Linearization for Uo1/a[0m
+icaw7	imr2w8	iad2w9	itsa10	icaw7	imr4w8	iad4w9	itsa11	icaw7
+imrw8	iadw9	its18b1	icaw7	imr8w8	iad6w9	itsa12	ica2c2	[1;31mq1,[0misuw1	itsw2	icpn1
+icsw2	[1;31mn1,[0miad2w1	icpn3
+[1;31m|0-8 Linearization for u/a[0m
+icaw2	imrk6	iadq7	itsq15	icaw2	imr2w3	iad2w4	OUT	ca2w2	tsd3	ts5d3
+[1;31mn2,[0mIN	isua10	imr26b1	its8c2	OUT	ca17c2	0.01703	caa3	bim1	IN	isc2
+icac6+c	imr8c2	iadm1+c	its6c6+c
+[1;31m|0-11 Projectile Velocity[0m
+[1;31md7,[0mica2c2	imrk8	its2a2	imru7	iexq15	isua12	imr2c2	imr26b1	itsa2	imrb1	iadq15
+its6b1	imr6b1	itsq15	ica2a2	imr2u7	its8b1	imr8b1	iadq15	iexa2	imr4b1	iex2a2
+imr4u7	iad2a2	its10b1	imr10b1	iada2	spz2	itsq15
+[1;31m|0-12 Projectile Position[0m
+[1;31md3,[0mispn5	imrw3	iadw4	isu18b1	its24b1	ispn6	imr4w3	iad4w4	isua11	its20b1	ics24b1
+imra12	iad20b1	imr26b1	imr26b1	its20b1	imrb1	iex24b1	imr26b1	imrk8	its22b1	imru7
+iad24b1	itsa2
+[1;31m|0-13 Miss Vector and Distance[0m
+isu6c6	itsm1	imr6b1	its24b1	ica22b1	imr2u7	its2a2	isu8c6	its8c6<del><del><del><del><del><del>	imr8b1
+iad24b1	its24b1	ica22b1	imr4u7	iex20b1	imr4b1	iad20b1	its4a2	isu10c6	its4m1
+imr10b1	iad24b1	idvq15	its6a2	[1;31mr6,[0mits4c2	icpq8	isui1
+[1;31m|0-14 Check Iterations[0m
+[1;31mq6,[0mits22b1	OUT	aon8	suw5	cpd18	spp2	[1;31md18,[0m0.00335	rd
+cps1
+[1;31m|0-15 Check Criterion[0m
+IN	ica22b1	[1;31md2,[0micps12
+[1;31m|0-16 Continue Iteration, Find New u/a[0m
+isc0	icaa4+c	isua2	imr6b1	its22b1	ica2a4+c	isu2a2	imr8b1	iad22b1	its22b1	ics4a4+c
+iad4a2	imr10b1	isu22b1	idvq15	isu6a2	idv8c2	isuq15	iex6a2	idv6a2	iad8c2	idv26b1
+iada10	OUT	cat5	sps5	its2c2	[1;31ms15,[0mispq1
+[1;31m|0-7 Plynomials for Uo1/a[0m
+[1;31mn9,[0mica18b1	itsw6	OUT	cag10	sps5	itsw8	icsk4	idvw8	itsw8	idv18b1
+its2w8	idv18b1	imrw11	its8w8	ica18b1	OUT	caq12	sps5	its6w9	itsa12	imrw8
+its4w8	ica18b1	OUT	cat10	sps5	its2w9	itsa10	ica18b1	OUT	cap10	sps5
+itsw9	iex18b1	OUT	caq10	sps5	its4w9	itsa11	isp-1q1
+[1;31m|0-9 Polynomials for u/a[0m
+[1;31mn3,[0mica2c2	itsw1	OUT	ca3w2	tsd3	ca4w2	ts5d3	cag10	sps5	itsw3	icsk4
+idvw3	itsw3	idv2c2	its2w3	idvw1	imrw11	itsk6	ica2c2	OUT	caq12	sps5
+itsq7	itsq15	imrw3	its4w3	ica2c2	OUT	cat10	sps5	its2w4	isp1n2
+[1;31m|0-17 Range[0m
+[1;31ms12,[0micaa2	imra2	itsr3	ica2a2	imr2a2	iadr3	itsr3	ica4a2	imr4a2	iadr3	spz2
+its6c2	its2r3	[1;31mv10,[0mspr11
+[1;31m|0-18 Gun-Aiming Criterion, Z[0m
+icau6+c	idv6u6	its12b1+c	ict1v10	imr4m1	its20b1	ica12b1	imrm1	iad20b1	its20b1	ics14b1
+imr2m1	isu20b1	its20b1	imr12b1	iadm1	idv6c2	its6b1	imr6b1	its22b1	ica20b1	imr14b1
+iad2m1	idv6c2	its8b1	imr8b1	iad22b1	iex20b1	imr16b1	iad4m1	idv6c2	its10b1	imr10b1
+iad20b1	spz2	its4c2	isu10a3
+[1;31m|Check Z iterations[0m
+its20b1	OUT	ao1n8	suw5	cpv3	sp5q6	[1;31mv3,[0m0.00335	rd	cps1
+[1;31m|Check Z Criterion[0m
+IN	ica20b1	icps13	[1;31mv4,[0mspv5	ca0	tsn8
+|[1;31mNew Firing Conditions[0m
+IN	ica6b1	imrb2	its20b1	ica8b1
+imr2b2	iad20b1	its20b1	ica10b1	imr4b2	iad20b1
+imr6u6	idv4v2	its22b1	imr6u6	its20b1	imr6u6	idvv2	isu22b1	iad2v2
+iex2v2	imr20b1	iex6u6	isu6u6	its6u6	imr6u6	its22b1	ics6b1	iad12b1	imr6u6	itsu6	imrb2
+itsv2	ics8b1	iad14b1
+imr6u6	its2u6	imr2b2	iadv2	itsv2	ics10b1	iad16b1	imr6u6	its4u6	imr4b2
+iadv2	iex22b1	isu22b1	itsv2	ispd6
+[1;31m|0-19 Store Target Results[0m
+[1;31mr11,[0mcan3	td2r11	ca2c2	tsa6	ao3r11	ao2r11	su7a3	cp2r11	ca3r11	ad5a3	ts3r11
+IN
+[1;31m|0-20 Find Error Components[0m
+[1;31md10,[0mica2c2	iexe3	its2c2	ica2a2	imrm1	its18b1	icsa2	imr2m1	iad18b1	its18b1	[1;31md4,[0mispd5
+imrh4	its2r3	icaa2	imra2	itsr3	ica2a2	imr2a2	iadr3	itsr3	[1;31md5,[0micar3	spz2	iex18b1
+idv18b1	its14c2	icaa2	imr4a2	imrm1	its24b1	ica2a2	imr4a2	imr2m1	iad24b1
+its24b1	icar3	imr4m1	isu24b1	idv18b1	idv2r3	its16c2
+[1;31m|0-21 Target Error Components[0m
+[1;31ms14,[0midv2r3	its12c2	ica14c2	idv2r3	its10c2	OUT	[1;31md19,[0m0.00331	rd	cpp1
+IN	ica14c2	spd16	ts19d16	IN	ica16c2	spd16	0.00655	ca19d16	rc	ca0
+0.01655	ca0	rc17d16	rc20d16	rc21d16	rc22d16	sps1
+[1;31m|Set Z loop[0m
+ca0	ts1n8	caa14	tdv4	ca2a14	tsv10	ca8a14	tsq3	IN	ispv10
+[1;31m|Set for Gun Iteration[0m
+[1;31mv5,[0mtav4	ca5i1	td2r6	ca4a14	tsd4	ca6a14	tss14	ca10a14	td3d5	sp1v4
+[1;31m|0-23 Store Gun Results[0m
+[1;31mr12,[0mcas8	tde1	[1;31me1,[0mca8c2	ts8a6	ao1e1	aoe1	su8a3	cpe1	ca4c2	sp8e1	ta12e1
+ts18a6	ao9e1	ca5c2	sp	ca1e1	ad6a3	ts1e1	ad15a3	td9e1	cac2	ts1c2	[1;31me4,[0msp1r1
+ao1a7	dm12a3
+cpd8	spa8	[1;31md8,[0msps1	IN	icat1	iadk4	itst1	OUT	aoc2
+suc1	cpp7	[1;31mb3,[0mspp2
+[1;31m|0-24 Set for Gun Errors[0m
+[1;31ms13,[0misc0	icsu6	iadb2	itsa2	iada1+c	itsm1	ics2u6	iad2b2	its2a2	iad2a1+c	its2m1
+ics4u6	iad4b2	its4a2	iad4a1+c	its4m1	ispd10
+[1;31m|0-25 Polynomials for u/a[0m
+[1;31mn5,[0mica2c2	OUT	cap10	sps5	itsw4	isp3d3	[1;31mn6,[0mica2c2	OUT	caq10	sps5
+its4w4	isp8d3
+[1;31mq8,[0mics6a2	isp2r6
+[1;31m|0-26 DOB Subroutine[0m
+[1;31ma8,[0mtaa13	caa7	mh13a3	slr15	ad14a3	0.01707	ca1a7	mh13a3	slr15	[1;31ma9,[0mboa6
+ca0	ts1a7	[1;31mr1,[0msp5r1	tae4	cac2	tsa7	sp1e4
+tae4	caa9	td3r11	ad16a3	td1e1	ad6a3	td9e1	[1;31ma13,[0msp	taa13	spr1
+[1;31m|0-27 Scope Coordinates[0m
+[1;31md16,[0mta11d16	cs2042	cp6d16	cm2042	ad18d16	sp8d16	ad18d16	cp12d16	td10d16	ca2043
+srr0	sp	dm0	cp15d16	sp11d16	ca2043	sp11d16	0.76000	+6	+0	0.00174
+1.00000	0.00200
+[1;31m|0-28 Polynomial Subroutine[0m
+[1;31ms5,[0mta17r	td6r	ad1	td12r
+ad18r	td14r	ca0	td11r	IN	its6a2	icxj3	icr	ica	imr6a2	iad+c
+ictl3r	icxj3	isp	+2
+[1;31m|0-29 Sine-Cosine Subroutine[0m
+[1;31mz3,[0miad46r	ita32r	imr40r	its12b1	icp6r	ics12b1	iad42r	icp6r	isu44r	icp33r	isu44r
+icp17r	isu44r	icp35r	isu44r	its14b1	ics14b1	its14b1	ica12b1	icp37r	ica14b1	imr14b1
+its12b1	imr48r	iad50r	imr12b1	iad52r	imr12b1	iad54r	imr12b1	iad56r	imr14b1	isp
+iad44r	isp15r	iad44r	isp17r	ics14b1	its14b1	isp21r	+.636619772	+4.	+1.
++1.570796327	+.00015148419	-.00467376557	+.07968967928	-.64596371106	+1.57079631847
+||||||||||
+[1;31m|0-30 Arcsine-Arccosine Subroutine[0m
+[1;31mz4,[0mita5r	isp6r	its12b1	ics12b1	iad46z3	isp	ita25r	its12b1	icp45r	its16b1	ica44z3
+isu16b1	spz2	its14b1	icxj3	icr7	ica29r	imr16b1	iad31r+c	ict17r	imr14b1
+iex12b1	icp26r	ica12b1	icxj3	isp	ics12b1	iadk1	isp24r	-.0012624911	+.0066700901
+-.0170881256	+.0308918810	-.0501743046	+.0889789874	-.2145988016	+1.5707963050
+ics12b1	isp9r
+[1;31m|0-31 Square Root Subroutine[0m
+[1;31mz2,[0mta2019	ca2043	dm0	cp34r	ab0	cp	mr44r	ad45r	mr2043	ad46r	ts2037
+ts1835	cm2042	clc15	cp35r	ca2042	srr1	ts2036	ts1821	ca49r	ts2018	ca2044
+ts24b1	sp1924	ca1821	ts2036	ca1835	ts2037	ca24b1	sp42r	su1	ts2042	ca48r
+ts2018	sp2019	ca2037	mr47r	ts2037	ts1835	ca2042	ad1	sp16r	ta2018	sp1969
+1.63061	0.70660	0.24036	0.55203	ao2019	sp24r
+[1;31m|0-32 Constants and Storage[0m
+[1;31ma2,[0m+0	DITTO	[1;31m10r|[0m+.1285714328	[1;31ma3,[0mpp12	pp4	+1000	pp3	pp5	+12	+10
+ca9c2	ca17c2	+0	+.0005	pp8-1	pp2	pp1	+9	+8	[1;31ma10,[0m+.0	[1;31ma11,[0m+.0
+[1;31ma12,[0m+.0	[1;31ma14,[0mv5	spr11	isc2	ispd5
+icah4	idv2r3	spr12	0.00333	0.00334	18b1	r3	[1;31mb1,[0m+0	DITTO	<del><del><del><del><del><del>
+[1;31m28r|<del>f2,[0mpp22	[1;31mf3,[0m+16	[1;31mf4,[0m-6f1	[1;31mg10,[0m1g10	+5	-.26360580x10-17	+.29363176x10-13	-.12962703x10-9
++.27300916x10-6	-.22400791x10-3	+.14416338	[1;31mh1,[0m+1.92	[1;31mh2,[0m+.367	[1;31mh3,[0m+.0043286	[1;31mh4,[0m+2870.
+[1;31mh7,[0m+.4	[1;31mi1,[0m+2.5	i1	+10.	3i1	[1;31mi2,[0m+200	[1;31mi5,[0mpp23	[1;31mi7,[0m-.166666667	+.5	-.5	+.166666667	[1;31mj3,[0m+0
++0	[1;31mj4,[0m+62.635504	[1;31mk1,[0m+3.1415926535	[1;31mk2,[0m-2047	[1;31mk4,[0m+1.	[1;31mk5,[0m+2.	[1;31mk6,[0m+.0	[1;31mk7,[0m-8.2	[1;31mk8,[0m+.94161763
+[1;31mm1,[0m+0	DITTO	[1;31m8r|m2,[0m+.0	[1;31mp10,[0m1p10	+5	-.65911606x10-13	+.81634201x10-9	-.43078770x10-5
++.012630531	-26.996788	+39173.2387	[1;31mp11,[0m+.13	+440.	[1;31mq7,[0m+.0	[1;31mq10,[0m1q10	+5
+-.58666128x10-13	+.69185197x10-9	-.33459018x10-5	+.84343688x10-2	-11.403677	+6883.4012
+[1;31mq12,[0m1q12	+5	-.96116495x10-17	+.11290374x10-12	-.54272871x10-9	+.13537084x10-5	-.18049075x10-2
++1.088621892	[1;31mq15,[0m+.0	[1;31mr3,[0m+.0	+.0	[1;31mt5,[0m1t5	+3	-2.88504374	+67.37679583	-692.3300090
++3959.854157	[1;31mt10,[0m1t10	+5	-.20096037x10-15	+.23946791x10-11	-.11813740x10-7
++.30949600x10-4	-.046246085	+35.6170362	[1;31mu1,[0m+2	[1;31mu2,[0m+.0	[1;31mu3,[0mpp7	[1;31mu4,[0mpp12	[1;31mu5,[0mpp6-3
+[1;31mu6,[0m+.0	+.0	+.0	+.0	[1;31mv2,[0m+.0	+.0	+.0
+[1;31mw1,[0m+.0	+.0	[1;31mw2,[0m+.0	icaw2	ispn5	ispn6	[1;31mw3,[0m+.0	DITTO	[1;31m8r|w4,[0m+.0	DITTO
+[1;31m6r|w5,[0m+4	[1;31mw6,[0m+.0	+.0	[1;31mw7,[0m+.0	[1;31mw8,[0m+.0	DITTO	[1;31m10r|w9,[0m+.0	DITTO	[1;31m8r|w10,[0m+0	[1;31mw11,[0m+32.172
+u7,+.0	+.0	+.0	+.0	
+[1;31m|0-33 Input-Outout Blocks[0m
+[1;31ma1,[0m+.0	DITTO	[1;31m24r|a4,+.0	DITTO	[0m24r|a6,[1;31m+.0	DITTO
+[0m8r|e3,[1;31m+1853.	[0me2,[1;31m
+[0m|Invariant Storage Flads[1;31m
+OCTAL
+[0m2640|c1,[1;31m	[0m2641|n8,[1;31m	[0m2643|a7,[1;31m	[0m2645|c2,[1;31m	[0m2667|t1,[1;31m	[0m2671|s1,[1;31m	[0m2675|q2,[1;31m	[0m2702|q5,[1;31m	[0m2706|q3,[1;31m	[0m2711|x4,[1;31m
+[0m2733|q4,[1;31m	[0m2740|s4,[1;31m	[0m2754|s6,[1;31m	[0m2760|q14,[1;31m	[0m2765|q13,[1;31m	[0m2767|q11,[1;31m	[0m3001|p1,[1;31m
+[0m3005|p2,[1;31m	[0m3012|p3,[1;31m	[0m3153|t2,[1;31m	[0m3173|c5,[1;31m	[0m3207|c6,b2,[1;31m
+OCTAL
+START AT 0

@@ -1,0 +1,738 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302370_box13\102663457_126-52-110_2-6.7ch
+fc TAPE 126-52-1<del><del>10 HAMILTON
+(24,6)
+|[1;31mcontrol program[0m
+[1;31mu1,[0mcsp1	|[1;31mset up for initial sigma squared (S2)[0m
+tsf15	ts1f15	cs1	|[1;31mreset counter[0m
+tsf16
+spu10
+caf5
+td4r8
+spu7
+[1;31mu2,[0mIN
+icr28	|[1;31mset counter for print out[0m
+icxn1
+icr6	|[1;31mset counter for carriage return[0m
+icxn1
+icam1+c
+ictu3
+isp120z6	|[1;31mcarriage return[0m
+OUT
+caq12	|[1;31mcount on degree of polynomial[0m
+suf10
+cpu5
+[1;31mu4,[0mspu9
+[1;31mf17,[0m1.42000
+[1;31mu5,[0mIN
+icak4	|[1;31mmax error[0m
+isug7	|[1;31mmax error minus tolerance[0m
+icpu4
+icak2	|[1;31mclear k4[0m
+itsk4
+ica2m2	|[1;31mS2n+1[0m
+iexf15	|[1;31mSn2[0m
+isu2m2	|[1;31mSn2-S2n+1[0m
+icpu6
+OUT
+aoq12	|[1;31mincrease degree of polynomial[0m
+[1;31mu16,[0mcs1	|[1;31mReset[0m
+tsf16
+caf6	|[1;31mtake errors as final values[0m
+td4r8
+spp1
+[1;31mu3,[0mispz6	|[1;31mprint out[0m
+isp110z6	|[1;31mtabulate[0m
+icxn1	|[1;31mcount on 6[0m
+ict4u2
+isp120z6	|[1;31mcarriage return[0m
+isp4u2
+[1;31mu6,[0mOUT
+aof16
+cp6u1
+aoq12
+spu16
+|[1;31mProgram to compute moments - part 2[0m
+[1;31mf4,[0msi50
+[1;31mx1,[0m+.3111111111	|[1;31mcoefficients for 5 points[0m
++1.4222222222
++.5333333333
++1.4222222222
++.3111111111
+[1;31mq2,[0mq1
+[1;31mq3,[0mf1
+[1;31mn1,[0msi0
+si0
+[1;31mk2,[0m+.0
++.3298611111	|[1;31mcoefficients for 6 points[0m
++1.3020833333
++.8680555555
++.8680555555
++1.3020833333
++.3298611111
+[1;31mn2,[0msi0
+si0
+[1;31mf5,[0mf2
+[1;31mf11,[0mm2
++.2928571428	|[1;31mcoefficients for 7 points[0m
++1.5428571428
++.1928571428
++1.9428571428
++.1928571428
++1.5428571428
++.2928571428
+[1;31mx3,[0msi3
+[1;31mj2,[0m2b1
++.3042245370	|[1;31mcoefficients for 8 points[0m
++1.449016203
++.5359375000
++1.210821759
++1.210821759
++.5359375000
++1.449016203
++.3042245370
+[1;31mq7,[0micak2
+itsb1
+icxn1	|[1;31mset count as[0m
+[1;31mq12,[0micr12	|[1;31mset count c s[0m
+[1;31mr1,[0micxn2	|[1;31mset buffer=0[0m
+icr1	|[1;31mset count n s[0m
+OUT
+ao1r1
+IN
+[1;31mr2,[0micxn1	|[1;31mpick up counter[0m
+icaa1+c	|[1;31mLegendre coefficient[0m
+ici1	|[1;31mincrease a<bs>_ counter[0m
+icxn1	|[1;31mpick up m<bs>_ counter[0m
+imrm1+c	|[1;31mmultiply by moment[0m
+iadb1
+itsb1	|[1;31mform sum in buffer[0m
+ictr2	|[1;31mcount on m s[0m
+icxn2	|[1;31mpick up c counter[0m
+itsc2+c	|[1;31mstore intemediate coefficients[0m
+icak2	|[1;31mcount on c s[0m
+itsb1
+ictr1
+icxn1
+icr12
+isp1r3
+[1;31mr3,[0micxn1	|[1;31mpick up a<bs>_ counter[0m
+ici0	|[1;31mskip initial a<bs>_ s and middle s a<bs>_ s[0m
+OUT
+ao1r3	|[1;31mset to increase skip[0m
+IN
+[1;31mr4,[0micaa1+c	|[1;31mLegendre coefficients(a<bs>_)[0m
+icxn1	|[1;31mpick up c<bs>_ counter[0m
+imrc2+c	|[1;31mmultiply by int coefficient[0m
+iadb1	|[1;31mform sum in buffer[0m
+itsb1
+ictr3	|[1;31mcount on c s[0m
+[1;31mr5,[0mici0	|[1;31mincrease to store[0m
+iadc1+c
+itsc1+c	|[1;31mstore final coefficient b<bs>_[0m
+ictr6	|[1;31mcount on c<bs>_ s[0m
+spr7	|[1;31mSTOP[0m
+[1;31mr6,[0mOUT
+ao1j3
+td1r3	|[1;31mreset skips[0m
+su1
+tdr5
+adj3	|[1;31maccumulate initial skip-1[0m
+tsj3
+IN
+icxn1	|[1;31mpick up a<bs>_ counter[0m
+icr78	|[1;31mreset a<bs>_ counter[0m
+ici1	|[1;31mset index to skip initial a s[0m
+iatj3
+icak2
+itsb1	|[1;31mset buffer=0[0m
+ispr4
+|[1;31mprogram to find errors and plot on scope[0m
+[1;31mr7,[0mcaf5	|[1;31mset up for final values in[0m
+td4r8
+caf11
+td7r8
+ca0	|[1;31mset block counters to zero[0m
+tsf7
+tsf8
+spr8	|[1;31mBlock read in[0m
+caf6	|[1;31mset up for errors out[0m
+td4q6
+caq2	|[1;31mset up for instructions[0m
+ad1
+td1s16
+caq1	|[1;31mset delta xc1 and length of interval[0m
+td1s14
+srr11
+tds10
+IN
+icak2	|[1;31mset 2t to +.0[0m
+its2t1
+icxn1	|[1;31mset to count coefficients[0m
+icr25	|[1;31mset counter for final values in[0m
+icxn2
+[1;31ms10,[0micr0	|[1;31mset counter[0m
+icxn2	|[1;31mcounter for block[0m
+[1;31ms1,[0micxn1	|[1;31mcounter for coefficients[0m
+icsk2	|[1;31mset buffer to 0[0m
+itsb1
+icsk3	|[1;31mset for x[0m
+[1;31ms2,[0mitst1
+imrc1+c	|[1;31mmultiply by coefficient[0m
+iadb1	|[1;31mform and store sum[0m
+itsb1
+icts8	|[1;31mcount on coefficients[0m
+icxn1	|[1;31mcounter for block[0m
+iadm2+c	|[1;31mfind error[0m
+itsf1+c	|[1;31mstore[0m
+itsb1	|[1;31mstore error in buffer[0m
+icps11
+[1;31ms6,[0misuk4
+icps7	|[1;31mcompare with old maximum error[0m
+icab<del>1
+itsk4	|[1;31mmaximum error stored[0m
+[1;31ms7,[0mict1s12
+spr8	|[1;31mfinal values in[0m
+spq6	|[1;31merrors out[0m
+[1;31ms12,[0mIN
+icxn2	|[1;31mcount on points[0m
+icts14
+[1;31ms16,[0mOUT
+ca1q1	|[1;31mnext instruction[0m
+cpr11	|[1;31mif done, go to scope[0m
+td1s14	|[1;31mdelta xi address[0m
+IN
+icxn3
+OUT
+ca1q1
+srr11	|[1;31mnumber of points[0m
+td1n3	|[1;31mtransfer to criterium register of counter[0m
+ao1s16	|[1;31mset up for following instruction[0m
+IN
+icxn3
+isp2s12
+[1;31ms14,[0mica2t1	|[1;31mform next Xk[0m
+iad0
+its2t1
+icxn2	|[1;31mcounter for block[0m
+isps1
+[1;31ms8,[0micat1
+imr2t1
+isps2
+[1;31mr11,[0mIN
+icr26
+icak4
+spr12
+[1;31mr12,[0mca0	|[1;31mset up for errors in[0m
+tsf7
+tsj5
+caf6
+td4r8
+spq6
+cs2042
+tsg4
+spr8
+[1;31mr10,[0msi4
+caf12	|[1;31mset up for horizontal counter[0m
+tsf13
+car12	|[1;31mset up for border[0m
+ts1t1
+ts2t1
+sps13
+car12	|[1;31mborder[0m
+srr11
+ts2t1
+csr12
+ts1t1
+sps13
+ca0	|[1;31mhorizontal axis[0m
+ts1t1
+sps13
+[1;31mr9,[0mIN
+icam2+c	|[1;31merror[0m
+icts9
+spr8
+spr9
+[1;31ms9,[0mOUT
+cs2042	|[1;31mset up for scale factor[0m
+sug4
+dmr12
+tds5
+ca2043	|[1;31mordinate[0m
+[1;31ms5,[0msrr0
+si384
+ao2t1	|[1;31mabscissa[0m
+[1;31ms17,[0mslr11
+rc4s5	|[1;31mrecord[0m
+rc5s5
+rc6s5
+rc7s5
+aoj5	|[1;31mcount on N[0m
+adj4
+cps4
+spd1	|[1;31mgo to statistics[0m
+[1;31mf2,[0m0.04000
+|[1;31mprogram for delayed print out[0m
+[1;31mz6,[0mita99r
+OUT
+ca2043
+ts114r
+cp7r
+ca141r
+sp8r
+ca142r
+sp115r
+clc8
+[1;31m10r,[0msp115r
+ca0
+ts91r
+ca109r
+ts29r
+ca2042
+ts44r
+cp20r
+ao29r
+ao29r
+[1;31m20r,[0mca2044
+ts89r
+sa129r
+cp124r
+cs2042
+su106r
+cp31r
+ao91r
+IN
++0
+[1;31m30r,[0msp24r
+ad105r
+cp27r
+ad119r
+ex44r
+ts2042
+cp39r
+cs91r
+ts91r
+ca104r
+[1;31m40r,[0mex89r
+ex2044
+srh15
+ad2043
++0
+ts44r
+slh15
+ex114r
+ts2043
+ca107r
+[1;31m50r,[0msp53r
+ao91r
+ca108r
+ts67r
+cm114r
+mh146r
+ts29r
+slr15
+ts114r
+cm44r
+[1;31m60r,[0mmh146r
+ts70r
+slr15
+sa29r
+ts44r
+ca70r
+su0
++0
+ad102r
+ts70r
+[1;31m70r,[0m+0
+sp115r
+ao89r
+cp52r
+cm91r
+mh145r
+ad102r
+ex89r
+slr15
+mh146r
+[1;31m80r,[0mad102r
+ex91r
+cp85r
+ca144r
+sp86r
+ca143r
+sp115r
+clc8
+sp115r
++0
+[1;31m90r,[0msp115r
++0
+sp115r
+clc8
+sp115r
+si94
+si95
+si408
+IN
+isp0
+[1;31m100r,[0mita99r
+sp102r
+ca131r
+sp93r
+<del><del>-7
++4
++3
+cp51r
+sp68r
+imr126r
+[1;31m110r,[0mita99r
+sp112r
+ca130r
+sp94r
++0
+ta118r
+si94
+rc117r
+sp0
+srr511
+[1;31m120r,[0mita99r
+sp122r
+ca130r
+sp93r
+ao2044
+sp24r
+0.50000
+0.04000
+0.63146
+1.74462
+[1;31m130r,[0m1.13246
+1.75042
+0.53042
+0.37042
+0.17042
+0.27042
+0.47042
+0.67042
+0.57042
+0.07042
+[1;31m140r,[0m1.55042
+0.33106
+0.73106
+0.13066
+0.13166
+0.06315
++10
+[1;31mf1,[0msi0	DITTO	[1;31m49r|[0msi0	|[1;31mfunctional values[0m
+[1;31mq4,[0msi0	DITTO	[1;31m39r|[0msi0
+|[1;31mprogram for computing moments-part 1[0m
+[1;31mp1,[0mca0	|[1;31mset up block read in and matrix program[0m
+tsf7
+tsj3
+td1r3
+tdr5
+ad1
+ts1j3
+td1r1
+caq3
+td7r8
+spr8
+IN
+icak2	|[1;31mset buffer to 0[0m
+itsb1
+icaf1	|[1;31mpick up y0[0m
+itst1
+icr26	|[1;31mset up block count[0m
+ici1	|[1;31mcount y0[0m
+icxn2
+OUT
+caq2	|[1;31mset up for instruction[0m
+tdp2
+[1;31mp2,[0mcaq1
+cpq10	|[1;31mSTOP[0m
+td1p7	|[1;31mset delta xi[0m
+td1p3
+srr7	|[1;31mset coefficients[0m
+tdp3
+srr4	|[1;31mset icr[0m
+tdp4
+aop2	|[1;31mset p2 for next instruction[0m
+IN
+[1;31mp4,[0micr0	|[1;31mset type of integration[0m
+icat1	|[1;31mpick up yj[0m
+[1;31mp3,[0mimr0+c	|[1;31mform ak yj[0m
+imr0	|[1;31mform ak yj delta Xi[0m
+icxn1	|[1;31mstore integration counter[0m
+icr12	|[1;31mset moment counter[0m
+OUT
+caj2	|[1;31mset buffer[0m
+tdp6
+td1p6
+td2p6
+IN
+[1;31mp6,[0miex2b1	|[1;31msummation (ax yj delta XiXM)[0m
+iad2b<del>1
+iex2b<del>1
+ictp5	|[1;31mcount on moments[0m
+icxn1
+ictp7	|[1;31mcount on integration counter[0m
+spp2
+[1;31mq10,[0mcaj2	|[1;31mset up for buffer 1[0m
+td5q10
+IN
+icr12
+icak2	|[1;31mtransfer moments to storage[0m
+iex2b1
+itsm1+c
+ictq9
+ispq7
+[1;31mp7,[0micab1
+iad0
+itsb1
+icxn2
+[1;31mp8,[0micaf1+c
+itst1
+ictp9
+spr8
+IN
+ispp8
+[1;31mq9,[0mOUT
+ao5q10	|[1;31mchange to next buffer[0m
+ao5q10
+IN
+isp4q10
+[1;31mp9,[0micxn2
+ispp3
+[1;31mp5,[0mOUT
+aop6	|[1;31mchange to next buffer[0m
+aop6
+ao1p6
+a<del>o1p6
+ao2p6
+ao2p6
+IN
+imrb1	|[1;31mak yj delta i (x)M[0m
+ispp6
+[1;31mr8,[0mta8r8
+caf7	|[1;31mblock read in[0m
+adf4
+tsf7
+adf2
+si451
+caf4
+bif1
+sp
+[1;31mq6,[0mta8q6	|[1;31mblock read out[0m
+caf8
+adf4
+tsf8
+adf3
+si455
+caf4
+bof1
+sp0
+|[1;31mprogram for computing mean and variance of errors and for classifying the errors and plotting the resulting histogram on the scope[0m
+[1;31md1,[0mca0
+tsw1	|[1;31mclear w1 block[0m
+ao1d1
+suh1
+cpd1
+ca0	|[1;31mset up for block in[0m
+tsf7
+caf6
+td4r8
+spr8	|[1;31mblock in[0m
+cav3	|[1;31mset up for histogram[0m
+ad1
+tdd8
+td1d1
+IN
+icak4	|[1;31mmaximum error -<bs>: 10= B
+idvv1
+itsv2
+[0md11,[1;31micr0	|[0mcounter for N[1;31m
+icxn1
+icak2	|[0mreset e2,2e2,n2[1;31m
+itsc2
+its2c2
+itsn2
+icr25	|[0mcounter for block[1;31m
+[0md2,[1;31micam2+c	|[0mXi[1;31m
+itsb1	|[0mXi storage[1;31m
+iadc2	|[0msum i[1;31m
+itsc2	|store sum xi[0m
+icab1	|[1;31mXi[0m
+imrb1	|[1;31mXi2[0m
+iad2c2	|[1;31msum Xi2[0m
+its2c2	|[1;31mstore sum Xi2[0m
+icsk4	|[1;31mnegative of absolute value of a[0m
+isub1	|[1;31mvalue above minus Xi[0m
+icxn2
+[1;31md3,[0mici1	|[1;31mcounter for histogram[0m
+iadv2	|[1;31mneg. absolute value of minus Xi plus B[0m
+icpd3
+icxn3
+sp<del>5d3
+can3	|[1;31madd 1 to proper w1,---20w1-pick up index of counter[0m
+adv3
+tdd4
+[1;31md4,[0mao0
+IN
+icxn3
+icr0	|[1;31mclear counter[0m
+icxn2	|[1;31mreset counter for histogram[0m
+icxn1	|[1;31mcount on N[0m
+icte1
+[1;31md5,[0micac2	|[1;31msum of Xi[0m
+imrk1	|[1;31mX=sum of Xi-<bs>: N[0m
+itsm2	|[1;31mstore x[0m
+imrm2	|[1;31mx2[0m
+its4m2	|[1;31mstore x2[0m
+ica2c2	|[1;31msum Xi2[0m
+imrk1	|[1;31msum Xi2x[0m
+isu4m2	|[1;31mdelta2=  x sum xi2-X2[0m
+its2m2	|[1;31mstore delta2[0m
+OUT
+[1;31md6,[0mcah4	|[1;31mset up for segment[0m
+ts2t1
+csh3	|[1;31mset up for absussa[0m
+ts1t1
+ca1
+slr7	|[1;31mset up for 27[0m
+tst1
+[1;31md7,[0msi4	|[1;31mindex camera[0m
+csh2	|[1;31mordinate for horizontal axis[0m
+si384
+ca1t1	|[1;31mabsussa for horizontal axis[0m
+rc4d7	|[1;31mrecord[0m
+[1;31md8,[0mcaw1	|[1;31mrecord histogram data[0m
+slr11
+suh2
+si384
+ca1t1
+rc5d8
+adt1	|[1;31mnext dot[0m
+ts1t1
+cpe2
+suh5	|[1;31mcount on dots[0m
+cpe2
+[1;31md9,[0mcsh2	|[1;31mset up for vertical axis[0m
+ts1t1
+ca1t1
+si384
+adt1	|[1;31mnext dot on vertical axis[0m
+ts1t1
+cpe3
+suh5	|[1;31mcount on vertical axis[0m
+cpe3
+spu2	|[1;31mback to control program[0m
+[1;31me1,[0micxn1	|[1;31mcount on 1b[0m
+ictd2
+spr8	|[1;31mblock in[0m
+IN
+ispd2
+[1;31me2,[0mao2t1	|[1;31mcount on segment[0m
+cp1d7
+aod8	|[1;31mnext segment[0m
+cah4	|[1;31mreset segment counter[0m
+ts2t1
+sp1d7
+[1;31me3,[0mca0	|[1;31mrecord[0m
+rc1e3
+sp2d9
+|[1;31mConstants[0m
+[1;31mh2,[0m0.20200
+[1;31mh3,[0m0.74000
+[1;31mh4,[0m1.77750
+[1;31mh5,[0m0.77200
+[1;31mv1,[0m+10.
+[1;31mv2,[0m+.0
+[1;31mw1,[0msi0	DITTO	[1;31m20r|[0msi0	|[1;31mrecord of errors[0m
+[1;31mh1,[0mts20w1	[1;31mv3,[0m-1w1	[1;31ma1,[0m+1.0	+1.732050807	-3.464101614	+2.236067977	-13.416407862	+13.416407862	+2.645751311
+-31.749015732	+79.37253933	-52.91502622	+3.0	-60.0	+270.0	-420.0	+210.0	+3.316624790	-99.4987437
++696.4912059	-1857.3098824	+2089.4736177	-835.78944708	+3.605551275	-151.43315355	+1514.3315355
+-6057.326142	+11357.48651625	-9994.5881343	+3331.5293781	+3.872983346	-216.887067376	+2927.975409576
+-16266.5300532	+44732.9576463	-64415.459010672	+46522.275952152	-13292.078843472	+4.123105626	-296.863605072
++5195.11308876	-38097.49598424	+142865.6099409	-297160.468677072	+346687.213456584	-212257.47762648	+53064.36940662
++4.358898944	-392.30090496	+8630.61990912	-80552.45248512	+392693.20586496	-1099540.976421888	+1832568.29403648
+-1795168.94109696	+953683.49995776	-211929.66665728	+4.582575695	-504.08332645	+13610.24981415	-157273.9978524
++963303.23684595	-3467891.65264542	+7706425.8947676	-10694631.8539632	+9023595.62678145	-4233291.775271	+846658.35510542
++4.795831523	-633.049761036	+20574.11723367	-288037.64127138	+2160282.30953535	-9678064.746718368	+27421183.449035376
+-50365438.98802416	+59808958.79827869	-44302932.4431694	+18607231.626131148	-3383133.022932936	[1;31mc2,[0msi0	DITTO	[1;31m23r|[0msi0
+|[1;31m12 interimediate coefficients of column matrix c[0m
+[1;31mj3,[0msi0	si1	[1;31mm1,[0msi0	DITTO	[1;31m23r|[0msi0	|[1;31m12 moments of column matrix m[0m
+[1;31mc1,[0msi0	DITTO	[1;31m23r|[0msi0	[1;31mk4,[0m+.0	[1;31mm2,[0msi0	DITTO	[1;31m49r|[0msi0
+[1;31mf15,[0m+.0
+[1;31mg7,[0m+.0	|[1;31mtolerance[0m
+[1;31mg4,[0msi0
+[1;31mf12,[0m-3<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>0
+[1;31mf13,[0msi0
+[1;31mj4,[0msi0	|[1;31m-n+1[0m
+[1;31mf3,[0m0.10000
+[1;31mf6,[0mf3
+[1;31mf7,[0msi0
+[1;31mf8,[0msi0
+[1;31mk3,[0m+1.0
+[1;31mk1,[0m+.0	[1;31m|1/n[0m
+[1;31mu14,[0mIN
+icxn3
+OUT
+ca0
+tsf8
+caf5
+td4q6
+[1;31mu15,[0mspq6
+sp26
+[1;31mu7,[0mIN
+icr12	|[1;31mreset coefficients[0m
+icak2
+itsc1+c
+ict3u7
+[1;31mu8,[0mspp1
+[1;31ms13,[0mta7s15
+car12
+srr6
+tst1
+srr1
+ts3t1
+[1;31ms15,[0mca1t1
+si384
+ao3t1
+slr7
+rc4s15
+aot1
+cps15
+sp0
+[1;31ms4,[0maof13
+cpr9
+spr10
+[1;31ms11,[0micsb<del>1
+itsb1
+isps6
+[1;31mf16,[0msi0
+[1;31mf10,[0micr11
+[1;31mj5,[0msi0
+[1;31mu10,[0mcaj2	|[1;31mreset buffers[0m
+tdu11
+IN
+icr12
+[1;31mu13,[0micak2
+[1;31mu11,[0mits2b<del>1
+ictu12
+sp6u1
+[1;31mu12,[0mOUT
+aou11
+aou11
+IN
+ispu13
+[1;31mu9,[0msi4	|[1;31mindex camera- put stop character on mag. tap[0m
+caf17
+sp115z6
+si92
+IN
+icxn3
+sp0	|[1;31mstop program[0m
+[1;31mt1,[0m+0	+0	+0<del>	+0
+[1;31mb1,[0m+0
+[1;31m27r|[0m+0
+[1;31mn3,[0m+0	+0
+<del>+0
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>[1;31m1216|q1,[0msi0
+OCT8L
+START AT 0

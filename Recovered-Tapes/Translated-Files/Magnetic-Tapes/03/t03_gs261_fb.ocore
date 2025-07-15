@@ -1,0 +1,31 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\03\t03.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\03\t03_gs261_fb.ocore
+%TapeID: _fb
+%JumpTo 02030
+%Stats: Covariance=0.005809, Size=144, 
+%Blocknum 0o0
+@T00000: 0177713 0003200 0112763 0050007 0112450 0050004 0112763 0074010  ; md si ad ta ad ta ad sp  :        4\0#3h##  :  <del>#\tr\tr\tk
+@T00010: 0110000 0077776 0110000 0134000 0112763 0124055 0112450 0074007  ; ad sp ad dm ad sa ad sp  :      \00\0\0##h3 :       l#lq\ty\tk
+@T00020: 0112763 0130007 0112763 0130007 0112450 0044013 0110000 0077776  ; ad ao ad ao ad td ad sp  :        #3#3h4\00 :      \tp\tp\tdl#
+@T00030: 0110000 0134000 0112763 0124061 0112450 0074016 0177775 0112763  ; ad dm ad sa ad sp md ad  : \0\0#<stop>hu<cntl># :  lq\ty\tk<del>\t
+@T00040: 0130007 0130007 0112450 0100027 0112776 0044004 0112450 0100031  ; ao ao ad ca ad td ad ca  :         33h70#h, :      pp\tt\td\tt
+@T00050: 0112762 0044004 0112450 0100030 0112762 0044017 0112763 0074000  ; ad td ad ca ad td ad sp  :        b#hnb2#\0 :     \td\tt\td\tk
+@T00060: 0112751 0074000 0112777 0044003 0112777 0074000 0102452 0054005  ; ad sp ad td ad sp ca ck  : \n\0<del>8<del>\0y| :      \tk\td\tk#j
+@T00070: 0166120 0074002 0076030  ;                sf sp sp  :        <color>en :              #k#
+%Blocknum 0o1
+@T00000: 0177676 0003200 0112452 0050001 0110000 0100000 0112763 0040053  ; md si ad ta ad ca ad ts  :      0\0y#\0\0## : <del>#\trlt\t<color>
+@T00010: 0177772 0112452 0130001 0130002 0114043 0070001 0100001 0112763  ; md ad ao ao su cp ca ad  :      xy#e<bs>### :   <del>\tppwct\t
+@T00020: 0044007 0112452 0100047 0112452 0044002 0112763 0074010 0110000  ; td ad ca ad td ad sp ad  :        3y#ye# \0 :      d\tt\td\tkl
+@T00030: 0077776 0177761 0112763 0134055 0150053 0124047 0134051 0144051  ; sp md ad dm dv sa dm mh  :  0<stop>####\n\n :    #<del>\tqgyqb
+@T00040: 0160047 0124047 0134061 0150057 0124045 0134051 0144051 0160045  ; SR sa dm dv sa dm mh SR  : ##<stop>#\t\n\n\t :         myqgyqbm
+@T00050: 0124045 0112452 0074034 0112452 0100044 0112776 0044004 0112452  ; sa ad sp ad ca ad td ad  :        \tycyl0#y :     y\tk\tt\td\t
+@T00060: 0100045 0112762 0044004 0112452 0100046 0112762 0044017 0112763  ; ca ad td ad ca ad td ad  :        \tb#ywb2# :     t\td\tt\td\t
+@T00070: 0074000 0112763 0040062 0112752 0074000 0112772 0074000 0112772  ; sp ad ts ad sp ad sp ad  :      \0#by\0x\0x : k\t<color>\tk\tk\t
+@T00100: 0044005 0112763 0040053 0102454 0054005 0163112 0074002 0076030  ; td ad ts ca ck SR sp sp  :         |##p|sEN : d\t<color>#j<cntl>K#
+%Blocknum 0o2
+@T00000: 0177771 0003200 0112776 0050003 0112763 0050007 0112776 0074002  ; md si ad ta ad ta ad sp  :   <cntl>\008#30E :  <del>#\tR\tR\tK
+@T00010: 0102776 0054005 0163174 0074002 0076030  ;          ca ck SR sp sp  :            0_VEN :       #J<cntl>K#
+
+%Hash: 12820d-db698c-144

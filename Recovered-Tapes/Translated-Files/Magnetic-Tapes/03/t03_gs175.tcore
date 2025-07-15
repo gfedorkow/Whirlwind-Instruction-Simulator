@@ -1,0 +1,35 @@
+
+; *** Core Image ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\03\t03.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\03\t03_gs175.tcore
+%TapeID: 
+%Stats: Covariance=0.006331, Size=194, Display-Ops, 1, 
+%Blocknum 0o0
+@C02400:  None    None    None    None    None    None   0142001 0000000  ;                   mr si  :              #\0 :             <stop>\0
+@C02410: 0040042 0010401 0001110 0016102 0011401 0050000 0016102 0004004  ; ts bi si rd bi ta rd .word  :        z# e#\0e# :  <color>#\03#r3e
+@C02420: 0100000 0016101 0040024 0016041 0100000 0016042 0004007 0040000  ; ca rd ts rd ca rd .word ts  :      \0#r#\0z3\0 : t3<color>3t3e<color>
+@C02430: 0016102 0004012 0040000 0016102 0004013 0040000 0016102 0004010  ; rd .word ts rd .word ts rd .word  :       es\0e4\0e  : 3e<color>3e<color>3e
+@C02440: 0100000 0016102 0010402 0044000 0040102 0010402 0001121 0016101  ; ca rd bi td ts bi si rd  :       \0ee\0ee.# :  t3#d<color>#\03
+@C02450: 0100000 0016042 0001407 0030000 0016102 0010404 0070000 0016102  ; ca rd si sd rd bi cp rd  :      \0z3\0e#\0e :        t3\0i3#c3
+@C02460: 0004014 0040000 0016101 0171020 0016042 0004014 0040001 0016102  ; .word ts rd CL rd .word ts rd  :  i\0#<color>zi#e : e<color>3v3e<color>3
+@C02470: 0004003 0100000 0016101 0000600 0016042 0004004 0100000 0016101  ; .word ca rd si rd .word ca rd  :      8\0#\0z#\0# :        et3\03et3
+@C02500: 0024000 0016041 0014000 0016042 0011402 0070000 0016102 0004014  ; rc rd rd rd bi cp rd .word  :      \0#\0ze\0ei :         s3a3#c3e
+@C02510: 0100001 0016101 0171020 0016042 0004014 0064000 0040102 0010404  ; ca rd CL rd .word ex ts bi  :  ##<color>zi\0e# :   t3v3ef<color>#
+@C02520: 0001140 0016101 0171001 0016042 0004014 0040000 0016101 0171020  ; si rd CL rd .word ts rd CL  :  t##zi\0#<color> :  \03v3e<color>3v
+@C02530: 0016042 0004014 0040001 0016102 0004013 0130000 0016102 0001402  ; rd .word ts rd .word ao rd si  :        zi#e4\0ee :  3e<color>3ep3\0
+@C02540: 0134000 0016101 0134000 0016042 0010403 0070000 0016102 0004004  ; dm rd dm rd bi cp rd .word  :      \0#\0z8\0e# :         q3q3#c3e
+@C02550: 0100000 0016101 0110003 0016042 0004004 0040000 0016102 0004012  ; ca rd ad rd .word ts rd .word  :       \0#8z#\0es :   t3l3e<color>3e
+@C02560: 0130000 0016102 0001401 0134000 0016101 0134000 0040041 0001156  ; ao rd si dm rd dm ts si  :      \0e#\0#\0#q : p3\0q3q<color>\0
+@C02570: 0016041 0071160 0016042 0010405 0074000 0016102 0004003 0100000  ; rd cp rd bi sp rd .word ca  :       #oz|\0e8\0 :         3c3#k3et
+@C02600: 0016101 0110002 0016042 0004003 0040000 0016101 0100024 0016042  ; rd ad rd .word ts rd ca rd  :        #ez8\0#rz :   3l3e<color>3t3
+@C02610: 0004004 0040000 0016101 0100000 0016042 0004012 0040000 0040102  ; .word ts rd ca rd .word ts ts  :      #\0#\0zs\0e : e<color>3t3e<color><color>
+@C02620: 0010405 0001167 0016102 0004014 0100001 0016101 0171020 0016042  ; bi si rd .word ca rd CL rd  :   |#ei##<color>z :        #\03et3v3
+@C02630: 0004014 0064000 0016102 0010402 0074002 0040102 0010403 0001173  ; .word ex rd bi sp ts bi si  :        i\0eeee8# :  ef3#k<color>#\0
+@C02640: 0016102 0010402 0130000 0016101 0100000 0016042 0004013 0040000  ; rd bi ao rd ca rd .word ts  :      ee\0#\0z4\0 :   3#p3t3e<color>
+@C02650: 0016102 0004007 0130000 0016102 0001403 0134000 0016101 0134000  ; rd .word ao rd si dm rd dm  :      e3\0e8\0#\0 :        3ep3\0q3q
+@C02660: 0040042 0011401 0001201 0016101 0070000 0016042 0004012 0130000  ; ts bi si rd cp rd .word ao  :       z###\0zs\0 :  <color>#\03c3ep
+@C02670: 0016102 0004004 0100000 0016101 0110003 0016042 0004004 0040000  ; rd .word ca rd ad rd .word ts  :       e#\0#8z#\0 :   3et3l3e<color>
+@C02700: 0016102 0010402 0074000 0060102 0177777 0000000 0000100  None    ;  rd bi sp ab md si si    : ee\0e<del>\0\0   :  3#kn<del>\0\0  
+@C02770:  None   0074002  None    None    None    None    None    None    ;          sp              :    e             :    k            
+
+%Hash: b16acc-b03122-194

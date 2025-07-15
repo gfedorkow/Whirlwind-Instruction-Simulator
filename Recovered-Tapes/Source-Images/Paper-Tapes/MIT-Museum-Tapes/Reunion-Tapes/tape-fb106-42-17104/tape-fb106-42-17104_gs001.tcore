@@ -1,0 +1,13 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o1; xsum=none
+%File: tape-fb106-42-17104.7ch/tape-fb106-42-17104_gs001.tcore
+%TapeID: 
+%JumpTo 00
+%Blocknum 0o0
+@C00600: 0000007 0000004 0000001 0000004 0000007 0000012 0000015 0000020  ; si si si si si si si si  :   3###3s+<color> : \0\0\0\0\0\0\0\0
+@C00610: 0000023  None    None    None    None    None    None    None    ;        si                :  5               : \0              
+@C00620:  None    None    None    None    None    None    None   0000037  ;                      si  :                # :               \0
+@C00630: 0000000 0000001 0000002 0000003 0000004  None    None    None    ;    si si si si si        :     \0#e8#       : \0\0\0\0\0      
+
+%Hash: 358b2c-93e971-15

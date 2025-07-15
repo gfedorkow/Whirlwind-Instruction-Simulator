@@ -1,0 +1,22 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\31\t31.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\31\t31_gs270.ocore
+%TapeID: 
+%Stats: Covariance=0.003886, Size=97, Display-Ops, 3, 
+%Blocknum 0o0
+@T00000: 0000140 0100000 0101575 0126216 0100000 0132765 0126266 0100000  ; si ca ca sa ca ao sa ca  : t\0<cntl>u\0#9\0 :        \0tt#t##t
+@T00010: 0100305 0126426 0100000 0100410 0126425 0100000 0100463 0126424  ; ca sa ca ca sa ca ca sa  :       |j\0 1\0#r :         t#tt#tt#
+@T00020: 0100000 0101231 0126420 0100000 0137737 0126430 0100000 0137761  ; ca ca sa ca dm sa ca dm  : \0,<color>\0#n\0<stop> :         tt#t##t#
+@T00030: 0126430 0100000 0102171 0126613 0100000 0102356 0126611 0100000  ; sa ca ca sa ca ca sa ca  : n\0<cntl>4\0Q:\0 :         #t##T##T
+@T00040: 0102461 0126610 0100000 0103170 0126605 0100000 0103202 0126604  ; ca sa ca ca sa ca ca sa  :  <stop> \0M_\0E# :         ##T##T##
+@T00050: 0100000 0103627 0126601 0100000 0132746 0127066 0100000 0133010  ; ca ca sa ca ao sa ca ao  :      \07#\0W9\0  :         T##T##T#
+@T00060: 0127066 0100000 0133445 0127063 0100000 0134425 0127055 0100000  ; sa ca ao sa ca dm sa ca  :     9\0\t#\01#\0 :         #T##TQ#T
+@T00070: 0134456 0127054 0100000 0135052 0127052 0000000 0067114 0067115  ; dm sa ca dm sa si ex ex  :       QP\0YY\0I/ :        Q#TQ#\066
+@T00100: 0014500 0077740 0077664 0000001 0063400 0000000 0014500 0000402  ; rd sp sp si ab si rd si  :     \0TG#\0\0\0E :      A##\0(\0A\0
+@T00110: 0000500 0000002 0063400 0000000 0014500 0000642 0077277 0000003  ; si si ab si rd si sp si  : \0E\0\0\0Z<del>8 :    \0\0(\0A\0#\0
+@T00120: 0063400 0000000 0014500 0077701 0003600 0000004 0063400 0000000  ; ab si rd sp si si ab si  :   \0\0\0#\0#\0\0 :      (\0A##\0(\0
+@T00130: 0014500 0000402 0003100 0000005 0063400 0000000 0014500 0000642  ; rd si si si ab si rd si  :    \0E\0_\0\0\0Z :     A\0#\0(\0A\0
+@T00140: 0004300  ;                   .word  :               \0 :                E
+
+%Hash: 657e05-8b5d39-97

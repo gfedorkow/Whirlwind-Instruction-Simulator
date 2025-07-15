@@ -1,0 +1,49 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_08\102766902_f2r126-34-1_McAvinn.7ch
+f2r TAPE 126-34-1 MCAVINN GROUP CONTROL TEST
+[1;31m|ip screen<del>[0m
+base 10
+[1;31m1|tv0,[0ma	stf56,q	lqq,15	tuq,a53	[1;31ma53,[0mtp0,b58	tpf51,q	qtb58,b54	zja39,0	[1;31ma39,[0mtjf52,a51
+msa39+1
+[1;31m|GP. control ip[0m
+[1;31ma51,[0matf53,a33	atf54,a54	[1;31ma54,[0mtp0,q	qtb52,b53	ccb52,b53	tnb54,a
+atf13,a13	tpf<del>56,b10	[1;31ma13,[0mlqb10,0	lab58,50+a	sja52,a14	[1;31ma52,[0mqsq,b57
+[1;31ma14,[0mqtb52,a	zja19,<del>a12	[1;31ma17,[0mtpb10,q	qsq,b52	[1;31ma19,[0mtvb58,a18
+[1;31m|jump to start[0m
+[1;31ma18,[0mmj
+[1;31m|group transf<del>ers[0m
+[1;31ma12,[0mtpb53,q	qtb57,b59	ccb57,b59	qtg11,q	qsq,b59	tpf18,a45	cca,b16	tjf16,a44
+[1;31ma43,[0msfb59,b12	lqb12,15	rsa45,b12	atf19,a45	tjf17,a44	[1;31m|bring in group[0m
+[1;31ma33,[0mtp0,b55	tpf20,q	lab55,15	tua,a34	lab55,42	<del>qsa,a34	tpf14,q	lab55,5	qsa,a36	[1;31ma36,[0mrp3,0,a17
+[1;31ma34,[0mtp
+[1;31m|save groups[0m
+[1;31ma44,[0mccb59,f16	tpf14,q	[1;31ma45,[0mtpb51,b56	lab56,62	qsa,a28	[1;31ma29,[0mtpf10,q	lab56,10	qsa,a31
+[1;31ma28,[0mrp3,0,a43	[1;31ma31,[0mtp
+[1;31m|constants[0m
+base 8
+[1;31mf51,[0m7700000	[1;31mf52,[0m500000	[1;31mf53,[0mtpb51-1,b55	[1;31mf54,[0m+43:215+q	[1;31mf56,[0m+1	[1;31mf10,[0m177777777	[1;31mf13,[0mlqb10,43
+[1;31mf14,[0m1777:215	[1;31mf16,[0m1:234	[1;31mf17,[0mtpb51+4,b56	[1;31mf18,[0mtpb51,b56	[1;31mf19,[0m110<del><del><del><del><del><del><del>:215	[1;31mf20,[0m1777
+[1;31m|variables[0m
+[1;31mb52,[0m0	[1;31mb53,[0m0	[1;31mb54,[0m0	[1;31mb55,[0m0	[1;31mb56,[0m0	[1;31mb57,[0m0	[1;31mb58,[0m0	[1;31mb59,[0m0	[1;31mb10,[0m0	[1;31mb12,[0m0
+[1;31m|group save parameter[0m
+[1;31mg11,[0m1:234	[1;31m|group parameters[0m
+[1;31mb51,[0m3640000442	5040000461	2442600505	3641400524	[1;31m|overlap parameters[0m
+[1;31m43+b51|b61,[0m12:230	22:230	6:230	36:230
+[1;31m|test control[0m
+base 10
+[1;31m200|e51,[0mip0,0,0,714	tpb58,e58	tpb52,e52	tpb57,e57	ip0,1,0,f11
+[1;31me53,[0mip0<del><del>,3,0,d13+6	[1;31me54,[0mlqf56,3+q	ccb61+3,<del>q	ccb52,q	ccb57,q	ip0,4,0,d12<del>
+[1;31me52,[0m0	[1;31m7+e52|e57,[0m0	[1;31m7+e57|e58,[0m0	[1;31m256|d11,[0m	[1;31m268|d12,[0m	[1;31m278|d13,[0m
+[1;31m|group one[0m
+[1;31m290|[0mtpb58,e58<del>+1	tpb52,e52+1	tpb57,e57+1	rp1,9,d11+5	tpb56,d11+6	ip0,2,0,d11
+[1;31m|group two[0m
+[1;31m305|[0mtpb58,e58+2	tpb52,e52+2	tpb57,e57+2	tpd11+<del>5,d11+15	ip0,67,0,d13	tpb58,e58+4
+[1;31m321|[0mtpb52,e52+4	tpb57,e57+4	mje53
+[1;31m|group three[0m
+[1;31m325|[0mtpb58,e58+3	tpb52,e52+3	tpb57,e<del>57+3	tpd13+5,d13+9	ip0,2,0,d11+15	msd13+9<del>
+tpb58,e58+5	tpb52,e52+5	tpb57,e57+5	mje54
+[1;31m|group four[0m
+[1;31m340|[0mtpb58,e58+6	tpb52,e52+6	tpb57,e57+6	ip0,30,0,d11	base 8
+[1;31m6+a12|[0mcca,f16
+[1;31m4+e51|[0mip0,1,0,d11
+[1;31m446|[0mtpf56,d11+6
+<del>start at<del> e51

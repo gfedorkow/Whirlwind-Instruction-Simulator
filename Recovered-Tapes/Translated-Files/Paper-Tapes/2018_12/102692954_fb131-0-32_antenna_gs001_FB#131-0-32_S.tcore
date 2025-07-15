@@ -1,0 +1,40 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o1; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_12\102692954_fb131-0-32_antenna.7ch/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Paper-Tapes\2018_12\102692954_fb131-0-32_antenna_gs001_FB#131-0-32_S.tcore
+%TapeID: _FB131-0-32_S
+%JumpTo 00
+%Stats: Covariance=0.015026, Size=34, 
+%Blocknum 0o0
+@C00000: 0030042  None    None    None    None    None    None    None    ;        sd                :  z               :  i              
+@C00010:  None    None   0000036  None    None    None    None    None    ;            si            :      k           :     \0          
+@C00040: 0007052  None    None    None    None    None    None    None    ;     .word                :  y               :  8              
+@C00120:  None    None   0016036  None    None    None    None    None    ;            rd            :      k           :      3          
+@C00140:  None    None    None    None   0013460 0040002  None    None    ;               bi ts      :           oe     :         |<color>    
+@C00340:  None    None    None    None   0005220  None    None    None    ;             .word        :         <color>       :          e      
+@C00620: 0004636  None    None    None   0011140  None    None    None    ;    .word       bi        :   k      t       :   e      #      
+@C00720: 0006040  None    None    None    None    None    None    None    ;     .word                :  t               :  8              
+@C01020: 0006150  None    None    None    None    None    None    None    ;     .word                :  h               :  8              
+@C01040:  None    None    None    None   0011120  None    None    None    ;                bi        :         <color>       :          #      
+@C01140: 0005236  None    None    None    None    None    None    None    ;     .word                :  k               :  e              
+@C01230:  None    None    None    None    None    None   0007734  None    ;                 .word    :              c   :              8  
+@C01260: 0005166  None    None    None    None    None    None    None    ;     .word                :  9               :  e              
+@C01300:  None    None    None    None    None    None   0005734  None    ;                 .word    :              c   :              e  
+@C01360: 0005166  None    None    None    None    None   0000436  None    ;    .word           si    :   9          k   :  e          \0  
+@C01440:  None    None    None    None   0006062  None    None    None    ;             .word        :          b       :          8      
+@C01460: 0013446  None    None    None   0006166  None    None    None    ;    bi       .word        :   w      9       :   |      8      
+@C01620: 0005514  None    None    None    None    None    None    None    ;     .word                :  i               :  e              
+@C02030:  None    None   0006146  None    None    None    None    None    ;         .word            :      w           :      8          
+@C02050: 0006020  None    None    None    None    None    None    None    ;     .word                : <color>               :  8              
+@C02060:  None    None    None    None    None    None   0000136  None    ;                    si    :              k   :             \0  
+@C02140:  None    None    None    None   0005734  None    None    None    ;             .word        :          c       :          e      
+@C02170: 0000044  None    None    None    None    None    None    None    ;        si                :  l               : \0              
+@C02320: 0005440  None    None    None    None    None    None    None    ;     .word                :  t               :  e              
+@C02330:  None    None    None    None   0011446  None    None    None    ;                bi        :          w       :          #      
+@C02530:  None    None    None    None   0011446  None    None    None    ;                bi        :          w       :          #      
+@C02540:  None    None   0006136  None    None    None    None    None    ;         .word            :      k           :      8          
+@C03320: 0005442  None    None    None    None    None    None    None    ;     .word                :  z               :  e              
+@C03460:  None    None   0005466  None    None    None    None    None    ;         .word            :      9           :      e          
+@C03730:  None    None    None    None    None    None   0007642  None    ;                 .word    :              z   :              8  
+
+%Hash: 457504-ff7b5f-34

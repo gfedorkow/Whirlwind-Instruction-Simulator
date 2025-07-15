@@ -1,0 +1,60 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_06\102766845_display_ck.7ch
+fc TAPE 3432 m410 DISPLAY CHECK  MORRISON
+OCTAL
+[1;31mDA7000|40|z2,[0mcs0	ts6	ts7	tss9	ca6	dms9	dm0	cpz6	ca7
+dms9	dm0	cpz7	si0	[1;31mz6,[0mca2s9	ts1z8	spz10	[1;31mz8,[0mta2z8	si0	sp0	[1;31mz7,[0mca3s9	ts1z8	[1;31mz10,[0mcas10	tsz10
+sp3500
+|||||ROUTINE CONTROL
+[1;31mz1,[0msi10	ca2	cpz4	[1;31mz3,[0mcas20	ts20s1	ca1s20	ts14b2	ca2s20	ts6a1	ca3s20	ts6m1	sps1
+[1;31mz4,[0mca5	clc17	cpz3	ca4s20	ts20s1	cas20	ts14b2	ca1s20	ts6a1	ca2s20	ts6m1
+ca3561	cpm1	clc1	cpa1	clc1	cpt3	sps1
+[1;31ms10,[0mspz1	[1;31ms20,[0mspt3	spa1	spm1	spz1	sps1	[1;31ms9,[0m0	0	ca6	ca7
+|||||||||||DIAGONAL LINE TEST
+[1;31ms1,[0msi10	ca5	clc16	cpt3	cas5	tss2	cas2	si600	rc	ads3
+tss2	cp6s1	ads4	cp6s1	si10	si3767	spt3
+||||||||||VECTOR TEST
+[1;31mt3,[0msi10	ca5	clc15	cpa1	ca1c3	tsc3
+[1;31mb1,[0mcac2	tsb2	ca1c2	ts2b2	ca2c2	ts3b2	ca0	tsc1	[1;31mb2,[0mcay1	si1600	ca1	rcz5	aob2
+ao2b2	ao3b2	aoc1	su1c1	cpb2	aoc3	cpb1	spa1	[1;31mc1,[0msi0	si27	[1;31mc2,[0mcay1	cax1	rcz5	[1;31mc3,[0m1.77771
+1.77771
+[1;31my1,[0m0.77777	0.75750	0.67342	0.55245	0.40035	0.21043	0.00000	1.57316	1.37742	1.22532	1.10435	1.02027	1.00000
+1.02027	1.10435	1.22532	1.37742	1.56734	0.00000	0.21043	0.40035	0.55245	0.67342	0.75750	0.77777
+[1;31mx1,[0m0.00000	0.21043	0.40035	0.55245	0.67342	0.75750	0.77777	0.75750	0.67342	0.55245	0.40035	0.21043	0.00000
+1.57316	1.37742	1.22532	1.10435	1.02027	1.00000	1.02027	1.10435	1.22532	1.37742	1.57316	0.00000
+||||||||||
+[1;31mz5,[0m0.76000	0.74334	0.66274	0.54244	0.40220	0.20204	0.00200	1.56204	1.36220	1.22244	1.10274	1.02334
+1.00000	1.02040	1.10100	1.22130	1.36154	1.56170	0.00174	0.20170	0.40154	0.54130	0.66100
+0.74040	0.76000
+||||||||||CHAR TEST
+[1;31ma1,[0msi10	ca5	clc14	cpm1	si15	spa2	spm1	[1;31ma2,[0mta2a11	ca3a11	tsa11	ca4a11	ts1a11	ca5
+cpa4	spz8	cpa3	[1;31ma11,[0mspw8	spa10	sp0	spw8	spa10	[1;31ma4,[0mta3a4	ca4a4	td1a11	sp0	spe2
+||||||||||int delay
+[1;31mw8,[0mta5w8	ca1w1	tsw1	aow1	cp3w8	sp0	[1;31mw1,[0m1.77740	1.77740
+|||||||||||ext delay
+[1;31md2,[0mtad4	spz8	tsd3		cad3	aod3	cp3d2	[1;31md4,[0msp0	[1;31md3,[0m0
+|||||||display int char
+[1;31ma10,[0mtaa14	ca0	tsv3	tsh6	cav3	si2600	ca1a14	cpa15	cah6	rcv5	cs0	ts1a14
+[1;31ma14,[0msp0	0	[1;31ma15,[0mca0	ts1a14	rc0	spa14
+||||||||||display ext char
+[1;31me2,[0mtae14	si10	ca0	tsv3	tsh6	cav3	si2600	ca5	mde3	ts1e3	cah6	rc1e3
+[1;31me14,[0msp0	[1;31me3,[0m0.77400	0	[1;31ma3,[0mta3a3	ca4a3	tda11	sp0	sid2
+||||MINICHAR display
+[1;31mm1,[0msi10	ca5	clc13	cpz1	si14	spa2	spm1
+||||||||||
+[1;31mv3,[0m0	[1;31mh6,[0m0	[1;31ms2,[0m0	[1;31ms3,[0msi40	[1;31ms4,[0mca40	[1;31ms5,[0mca0	[1;31mv5,[0m0.77400
+|||||||||KEY
+
+[1;31m1036|[0m0.22070	0.26006
+|||||||MC LINES
+[1;31mDA34600|[0m0.02006	0.02007	0.02010	0.02026	0.02042	0.02047	0.02066	0.02067	0.02070	0.02071	0.02151	0.02163
+0.02166	0.02201	0.02227	0.02230	0.02231	0.02400	0.02401	0.02402	0.02403	0.02404	0.02441	0.02442
+0.02443	0.02460	0.02461	0.02525	0.02526	0.02527	0.02530	0.02531	0.02540	0.02541	0.02542
+0.02543	0.02544	0.02545	0.02546	0.02547	0.02622	0.03006<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>	0.22043	0.22444	0.22570	0.22571<del><del><del><del><del><del><del><del>
+0.42162	0.42444	0.42570	0.42571	0.42631	0.43000
+1.02162	1.02444	1.02570	1.02571	1.02631	1.03000
+|||||||||||TITLE
+[1;31mDA50300|[0m0.51071	0.22014	0.12054	0.44006	0.52010	0.34036	0.45045	0.40010	0.75007	0.13007	0.17010
+0.70010	0.13025	0.76051	0.71040	0.16024	0.30010	0.60030	0.10022	0.14012	0.54044	0.06052
+0.10012	0.46075	1.51051
+
+START AT 3500

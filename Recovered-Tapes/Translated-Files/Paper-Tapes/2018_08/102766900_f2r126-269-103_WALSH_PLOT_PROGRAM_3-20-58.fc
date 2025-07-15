@@ -1,0 +1,339 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_08\102766900_f2r126-269-103_WALSH_PLOT_PROGRAM_3-20-58.7ch
+F2R TAPE 126-269-103 WALSH PLOT PROGRAM
+base 10
+0|mj0,b
+[1;31m|[0mUSE FLEXOWRITER TO OBTAIN AN INITIAL AND FINAL COMPUTER FRAME NUMBER
+<del>4|[1;31md11,[0mefd92	tpd90,j13	qtd80,d21	er1,a	[1;31mj13,[0mejd81,d14	ejd81+1,d11+2	[1;31md12,[0mrp2,12,d11+3	ejd81,d12+2	qtd81+1,d23
+mpd21,d80+10	atd23,d21	mjd11+3	[1;31md14,[0mtpd21,d74	rjj13,d11+2	tpd21,e83
+rjj13,d11+2	tpd21,d93
+|SET MEANING TO FUNCTION BUTTONS
+[1;31md57,[0mefd92+2	er1,q	lqq,9	qtd80+7,j12	laj12,15	atd78,j26
+|SET MASK FOR FUNCTION BUTTONS
+<del>raj12,d91+2	[1;31mj12,[0mtpe11+,d72
+|CLEAR MEMORY OF FUNCTIONS STARTED AND FUNCTIONS THAT OVERFLOWED
+tpd80,d83+1
+[1;31m|[0mREAD FUNCTION BUTTONS
+[1;31md20,[0mefd92+1	er1,q
+[1;31m|[0mMASK FUNCTION BUTTONS
+qtd72,d72+1	tve80+5,e23+5	rp1,4,e23<del><del>	tpd80,e82	[1;31me23,[0mtpe83,d75	tpd74,d74+3	tpd93,d87
+tvd75+1,d<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>47+2	tpd72+1,a
+[1;31m|[0mTEST FOR COMPLETED PLOT
+zje24,d34
+[1;31m|[0mFIND FUNCTIONS POSITION
+[1;31me24,[0msfa,e25
+[1;31m|[0mBRING RECORD OF FUNCTION STARTED UP TO DATE
+[1;31me25,[0m<del><del>[1;31mspd72+2,0	tpa,d78+1	ccd72+1,d78+1
+[0m|[1;31mFIND FUNCTION NUMBER
+tpe25,a	ssd90+1,15
+[0m|[1;31mFIND POSITION OF FUNCTION PARAMETERS
+[0mj26,[1;31matd76,j21
+[0m|[1;31mBRING IN FUNCTION PARAMETERS
+[0mj21,[1;31mtpd76+,a<del>	<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>ate80,a	tua,e27	laa,15	tua,e27+1	sje27-2,e27-1	rae27+1,d80+2	rje27-1,e27	[0me27,[1;31mrp0,0,e27+2
+tpb,d82+2	sje61,e28
+[0m|[1;31mBREAK DOWN FIRST REGISTER OF PARAMETERS FOR
+[0me28<del>,[1;31mtpd82+2,q
+[0m|[1;31mADDRESS OF COMPUTER FRAME ZERO
+qtd72+5,d82+2
+[0m|[1;31mNUMBER OF REGISTERS BETWEEN SUCCESSIVE POINTS OF A FUNCTION
+qtd72+6,e12	<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>tpa,d82+1
+[0m|[1;31mSET FOR + OR - FUNCTION PL<del>OT
+qte80+1,a	atd90+4,d90+3	[0me60,[1;31mrje60,e60+1<del>
+[0m|[1;31mLOCATION OF THE X-AXIS FOR GRAPH
+lqq,3	qtd80+7,d82
+[0m|[1;31mDOES THIS FUNCTION HA<del><del>VE OPTIONAL AXIS
+tjd80+7,e28	rse29,d80+6
+[0m|[1;31mLOCATION OF X-AXIS FOR TRANSLATION OF POINTS
+[0me30,[1;31mmpd82,d73	std71,d77+2
+|FIND + or - 10 N FOR LABEL
+mpd82,d80+10	tna,d93+1	rjd15-1,d15
+[0m|[1;31mREAD PANEL
+[0md15,[1;31mefd92+1	<del>er1,q
+[0m|[1;31mIS OVERFLOW WANTED
+lqq,4	qjd60,d60+2	[0md60,[1;31mtpd90+6,d35-1	mjd60+3	tpd90+5,d35-1
+[0m|[1;31mSHIFT AND MASK FOR NUMBER OF FRAMES BETWEEN SUCCESSIVE POINTS
+lqq,<del><del>19
+qtd80+7,d21
+[0m|[1;31mTEST LEGALITY
+tjd80+4,d16+1
+[0m|[1;31mALARM-NUMBER OF FRAMES BETWEEN SUCCESSIVE POINTS TOO LARGE
+[0md16,[1;31mms0,d16,d15
+[0m|[1;31mSTORE FOR USE
+tva,d18+1	tva,d18+<del><del>4	tpd72+4,a	std21,a	tva,d24+7	tva,d38
+[0m|[1;31mSHIFT AND MASK FOR VARIATION IN X CO-ORDINATES
+lqq,6	qtd8<del><del><del><del><del><del><del><del>0+7,d19
+[0m|[1;31mTEST LEGALITY
+tjd80+3,d17+1
+[0m|[1;31mALARM-ILLEGAL NUMBER OF POINTS PER FRAME OF FILM
+[0md17,[1;31mms0,d17,d15
+[0m|[1;31mSTORE FOR USE
+atd21,a	tva,d18
+[0m|[1;31mSET NUMBER OF DATA FRAMES PER FRAME OF FILM
+tpd77,d21	[0md18,[1;31mlad21,0
+[0m|[1;31mSET NUMBER OF REGISTERS BETWEEN SUCCESSIVE POINTS ON FILM
+[0md18+1,[1;31mlad82+1,0<del>	atd80+1,d82+1
+[0m|[1;31mSET NUMBER OF DATA FRAMES BETWEEN SUCCESSIVE POINTS ON FILM
+tpd80+1,d87+2	<del><del><del><del><del><del><del><del>lad87+2,0
+[0m|[1;31mSET DELTA X
+tnd19,a	atd91+1,j19	[0mj19,[1;31mlad77+1,a+72	tna,d70+2
+[0m|[1;31mSET |DELTA X|
+tma,d70+3
+[0m|[1;31mSHIFT AND MASK FOR VARIATION IN Y CO-ORDINATE
+lqq,6	qtd80+7,d19
+|SET |k| FOR VERTICAL UNITS
+atd90+2,j23	tpd80+1,d87+3	[0mj23,[1;31mlad87+3,0
+[0m|[1;31mMASK TO DETERMINE IF Y CO-ORDINATES ARE TO BE STRETCHED OR SHRUNK
+qtd80+8,a	zjd22,d22+2
+[0m|[1;31mY CO-ORDINATE TO BE SHRUNK
+[0md22,[1;31mtnd19,d19
+tnd87+3,d87+3	rjd22+2,d22+3
+[0m|[1;31mSET CONVERSION FACTOR FOR TRANSLATION OF POINTS
+sfd82+3,d73+1	tpa,d23	spd80+5,66	dvd23,d23	tnd73+1,a	atd74+1,a	atd19,d74+2
+[0m|[1;31mSET FIRST COMPUTER FRAME FOR PLOT OF FUNCTION
+[0md24,[1;31mtpd87+2,a	std80+1,a	tna,q
+[0m|[1;31mFIND THE NUMBER OF POINTS ON FRAME OF FILM AND INITIAL POINT ON X-AXIS
+qtd87,a	rsa,d21	sjd24+6,d24+4	tna,d13	laa,72-
+tna,d74+4	mpa,d70+3	atd71,d73+3
+|SET COUNTER MEMORY AND FINAL FRAME NUMBER OF GRAPH
+tpd75,a	std74+3,a	tjd13,d38-1	mjd38+2	tpa,d13	[0md38,[1;31mlaa,72-
+tpa,d74+4	tpd74+4,d87+1	rad87+1,d87
+[0m|[1;31mFIND DRUM ADDRESS OF FIRST POINT
+tpd90+3,j25	spd82+2,15	mae12,d74+3	tua,j25
+[0m|[1;31mSET COUNTER
+tpd74+4,d19
+[0m|[1;31mBRING IN POINTS
+[0mj25,[1;31mtp0,d95	raj25,d82+1	ijd19,j25
+[0m|[1;31mOPTIONAL AXIS SE<del>CTION
+[0me29,[1;31mmje29+7	tpd95,a	sje29+4,e29+3	rsd82,d80+2	rsd82,d80+4	rje30+4,e30	rje29,e29+7
+[0m|[1;31mSET UP FOR TRANSLATION OF POINTS
+tud90+4,d61	tvd90+4,d28
+[0m|[1;31mSET COUNTER
+tpd74+4,d19
+[0m|[1;31mTRANSLATE POINTS
+[0m|[1;31mSCALE FACTOR POINT AND STORE IN Q
+[0md61,[1;31msfd95,d73+1	tpa,q
+[0m|[1;31mFIND THE NUMBER OF SHIFTS NECESSARY FOR TRANSLATION
+tpd74+2,a	atd73+1,a
+[0m|[1;31mARE THE NUMBER OF SHIFTS LESS THAN 36 -=YES, POINT=ZERO
+tjd72+3,d33
+[0m|[1;31mARE THE NUMBER OF SHIFTS GREATER THAN 72 +=YES, POINT=Yn
+tjd72+4,d26
+[0m|[1;31mSET POINT =+ or -Ym
+[0md62,[1;31mqjd62+1,d62+3	tnd71+3,d25	mjd28	tmd71+3,d25	mjd28
+[0m|[1;31mSET POINT =ZERO
+[0md33,[1;31mtpd80,a	mjd27+1
+[0m|[1;31mSET TO SHIFT POINT
+[0md26,[1;31mtva,d27
+[0m|[1;31mMULTIPLY SCALE FACTORED POINT TIMES CONVERSION FACTOR
+mpq,d23	laa,36	tpa,a
+[0m|[1;31mSHIFT POINT
+[0md27,[1;31mlaa,0	tpa,a
+[0m|[1;31mADD POSITION OF THE AXIS
+atd77+2,d25
+[0m|[1;31mTEST IF POINT IS GREATER THAN MAXIMUM OR MINIMUM ALLOWED
+tma,a	tjd71+3,d28	mjd62
+[0m|[1;31mSTORE POINT
+[0md28,[1;31mtpd25,d95
+[0m|[1;31mINDEX REFERENCES TO THE POINT
+rad28,d80+1	rad61,d72+7
+[0m|[1;31mARE ALL POINTS OF THIS PLOT TRANSLATED
+ijd19,d61	rje31-<del>2,e31<del>	mje31
+|SET UP FOR OVERFLOW
+[0me31,[1;31mip19,e3+1	tpd49,d31+4	tpd80,d89	tpd80,d89+1		tpd89+4,d42+1	tpd93+1,d93+2	tpd93+1,d93+3
+tvd90+7,d86	tvd90+7,d86+1
+|SET TO DRAW GRID ETC.
+spd93+1,15	atd82,<del>e54
+|READ MIV 1
+[0md49,[1;31mefd92+1	er1,q	lqq,4
+|Is Film to be Indexed
+qjd49+4,d49+8	efd92+6	tvd80+9,d92+4	tvd80+12,d92+3
+mjd56-2	tvd80+1,d92+4	tvd80+4,d92+3	tpe54,a	rjd56-1,d56
+<del>|JUMP TO SUBROUTINE THAT DRAWS GRID ECT.
+[0md56,[1;31mrjd59,d58<del><del><del><del><del><del><del><del><del><del><del>
+
+|SET UP TO PLOT POINTS
+tpd74+4,d19	tud90+4,d31+3	tpd91,d29
+tpd73+3,d73+2
+|Plot Points and Draw Vectors
+rjd46,d31
+|Index reference to Yn+1
+rad31+3,d72+7
+|Is The Graph Complete
+ijd19,d31
+|Is the graph to be Repeated
+[0me53,[1;31mefd92+5	er1,q	lqq,2	qje52,e50	[0me50,[1;31mqje16,e50+1	ccd83,q	laa,1	tpa,a	sje51,e51+1	[0me51,[1;31mqje51+2,e51+3
+qje51+4,e51+2	rae52,d80+1	rae52,d80+1	rae52,d80+1	[0me52,[1;31mrje52,e52+1	mjd49+4	ip18,e23	mjd56-3
+|Is there Any Positive Y Overflow to be plotted
+tpd89,a	zjd67,d69-2
+|Is there Any Negative Y Overflow to be Plotted
+tpd89+1,a	zjd68,d69
+|Increase Initial Frame number by Number of Points Plotted
+[0md69,[1;31mrad87,d13	rad74+3,d13	atd87+2,a
+|Is the Function Complete
+tjd75,<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>e16+1	ip18,e23
+|Positive Y Overflow
+[0md67,[1;31mrad86,d80+1	tpa,d31+4	tpd80,d89	tud42+3,d42+1	tvd89+4,d42+1	rad93+2,d77	laa,15	atd80+5,<del><del><del><del><del><del><del><del>e54	mjd49
+|Negative Y Overflow
+[0md68,[1;31mrad86+1,d80+1	tpa,d31+4	tvd42+3,d42+1	tud89+4,d42+1	tpd80,d89+1	rsd93+3,d77	mjd67+6
+|set Xn
+[0md31,[1;31mtpd73+2,d70
+|Index x-co-ordinate
+rad73+2,d70+<del><del>3
+|Set Yn
+tpd25,d79
+|Pick up Yn+1
+tpd95,d79+1
+|Register f<del>or Positive and Negative Overflow
+rad79+1,d80
+|Set <del><del><del>Yn=Yn+1 and Xn+1<del>=Xn for the first point
+[0md29,[1;31mmjd29+1	rsd73+2,d70+3	tpd79+1,d79	rjd29,d29+4
+|Set Xn+1
+[0md29+4,[1;31mtpd73+2,d70+1
+|Set DELTA Y
+tpd79,a	std79+1,d79+2
+|Set <del><del>|DELTA Y|
+tma,d79+3
+|Save Yn+1 for the next Point
+tpd79+1,d25
+||Yn+1| Greater th<del>an Ym
+tmd79+1,a	std78+2,q	sjd35,d64
+||Xn+1| Greater than Xm
+[0md35,[1;31mtmd70+1,a	std78+2,q	sjd35+3,d41
+|Plot Point
+[0md35+3<del>,[1;31mefd92+4	<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>rjd47+<del>5,d47+1
+||Yn Greater than Ym
+[0md36,[1;31mtmd79,a	tjd78+2,d40+2
+|Find a x-intercept from + or-Ym
+tpd79,a	rjd54,d53
+||x-intercept| Greater than Xm
+sjd40,d45
+|Indicate the direction of y Overflow
+[0md42,[1;31mtpd79+1,a	sjd42+2,d42+4	rad89+1,d80+1	mj0,d42+5,d42+5	rad89,d80+1
+||Yn+1|-Ym Greater than |DELTA Y|
+rsq,d79+3	sjd43,d46
+|Find a X-intercept from + or-Ym
+[0md43,[1;31mtpd79+1,a	rjd54,d53
+|Is the |X-intercept| Greater than Xm
+sjd40,d44
+||Xn+1| Greater than Xm
+[0md44,[1;31mtpd70+1,a	std78+2,q	sjd46,d41
+|Indicate Direction of X overflow
+[0md41,[1;31mtpd70+1,a	sjd41+<del>2,d41+4	rad89+2,d80+1	mj0,d41+5,d<del>41+5	rad89+3,d80+1
+||Xn+1| -Xm Greater than |DELTA X|
+rsq,d70+3	sjd<del><del><del><del><del><del><del>39,d46
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>|Find a Y-intercept From + or - Xm
+[0md39,[1;31mtpd70+1,a	rjd54,d55
+||Y-intercept| Greater than Ym
+sjd40,d46
+|Set + or-Xm or Ym and X or Y intercept = Xn+1 and Yn+1
+[0md40,[1;31mtpd84,d70+1	tpd84+1,d79+1
+||Xn| Greater than Xm
+tmd70,a	tjd78+2,d37
+|Find a Y-intercept from + or-Ym
+tpd70,a	rjd54,d55
+||Y-intercept| Greater than Ym
+sjd45,d36+2
+|Set + or - Xm or Ym and the X or Y intercept = Xn and Yn
+[0md45,[1;31mtpd84,d70	tpd84+1,d79
+|Set Xn-Xn+1 = DELTA X1
+[0md37,[1;31mrsd70,d70+1
+|Set |DELTA X1|
+tma,d79+2
+|Set Yn-Yn+1 = DELTA Y1
+rsd79,d79+1
+|Set |DELTA Y1|
+tma,a
+|Is |DELTA Y1| Greater than |DELTA X1|: Set the lager = DELTA
+tjd79+2,d65	mjd65<del><del>+1
+[0m|[1;31mSET <del><del>|DELTA X1| = DELTA
+[0md65,[1;31mtpd79+2,a
+|Is DELTA Greater than Xv
+tjd85,d66-1
+|Find DELTA + Xv / Xv
+atd85,a	dvd85,d79+3
+|Find DELTA X11
+tpd70,a	dvd79+3,d70
+|Find DELTA Y11
+tpd79,a	dvd79+3,d79<del>	mjd66	tpd80+1,d79+3
+|Set TO DRAW A VECTOR OF LENGTH (DELTA X11, DELTA Y11)
+[0md66,[1;31mefd92+3	tpd75+3,q	tpd70,a	sje20,e20+1	[0me20,[1;31mcca,d85	qta,d75+4	<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>lad75+4,15	tpd79,a	sje21,e21+1
+[0me21,[1;31mcca,d85	qta,a	<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>atd75+4,d75+4	lqd75+4,35	ccd75+4,d77+3
+||DELTA X1| Greater than or = (n+1) |DELTA X11|
+[0md52,[1;31mijd79+3,d47	[0md46,[1;31mmjb
+|DRAW Vector from (Xn+1, Yn+1)
+[0md47,[1;31mew1,d75+4	lad70+1,15+a	ate84,a	atd79+1,d75+2	ew1,d75+2	rjd47+5,d47+6
+|Set Xn+1 = Xn+1 + n(DELTA X11): Yn+1 = Yn+1+n (DELTA Y11)
+rad70+1,d70	rad79+1,d79	mjd52
+|Find a X-intercept
+[0md53,[1;31msjd53+1,d53+3	tnd71,a	mjd53+4	tpd71,a	tpa,d84+1	std79+1,a	mpa,d79+2	dvd70+2,a
+atd70+1,d84	tjd70,e14+1	tjd70+1,e14+2	[0me14,[1;31mmjd46	tjd70+1,d46	tma,a	std71,a	[0md54,[1;31mmjb
+|Find a Y-intercept
+[0md55,[1;31msjd55+1,d55+3	tnd71,a	mjd55+4	tpd71,a	tpa,d84	std70+1,a	mpa,d70+2	dvd79+2,a	atd79+1,d84+1	tjd79,e15
+tjd79+1,e14+2	mjd46	[0me15,[1;31mtjd79+1,d46	mje14+2
+|Remember the function that Overflowed
+[0md64,[1;31mccd83+1,d78+1	rjd35-1,d64+2	mjd42+5
+|WAS TRERE ANY OVERFLOW NOT PLOTTED
+[0md34,[1;31mtpd83+1,a	zjd34+2,<del>e17+1	tpd83+1,d83+2	tpd83+3,d20+1	ms0,d34+4,d20-2
+|GET INITIAL AND FINAL COMPUTER FRAME NUMBERS AND INITIAL FRAME NUMBER FROM DRUM
+[0md48,[1;31mtpb,d74	tpb, d75	tpb,d93	tpb,a	mjd57+3
+[0m|MULPIPLE <del><del>PLOT[1;31m
+[0me61,[1;31mlqq,6	qtd80+7,d82	tpd78+1,e81+2	<del><del>rje30+4,e30	tve73+1,e45+1	tve80+3,e23+5	tve80+4,e44-3
+tpd72+1,e81	tpd82+2,e81+1	[0me63,[1;31mtve80+2,e62	tpe81+1,d72+1	[0me64,[1;31mrjd22+2,d15	rjd56-1,d49	rje27-1,e23+4
+tue80+2,e27	rje60,e27	rje31-1,d22+3	[0me62,[1;31mtpd82+4,e82	rae62,d80+1	[0me40,[1;31mtpd80,d79	tvd<del>90+4,e43
+tud90+4,e41+1	tpd74+4,d19	tpd73+3,d70+1	[0me41,[1;31mefd92+4	tpd95,d25	tmd25,a	tjd78+2,e42	mje44
+ccd83+1,e81+2	rje44-3,e44	[0me44,[1;31mrad70+1,d70+3	rae41+1,d72+7	ijd19,e41+1	rad47+2,d72+7	spd80+3,12
+sad79,15	tua,e45	[0me45,[1;31mrp0,0,e46	tpd95,b	[0me46,[1;31mrae45+1,d79	<del>ip18,e64+1	<del><del><del><del><del><del><del><del>[0me42,[1;31mrjd47+5,d47+1	[0me43,[1;31mtpd75+2,d95
+rad79,d80+1	rae43,d80+1	mje44	[0me48,[1;31mip19,e48+1	tpe54,a	rjd59,d58	rje52,e53	mje70	mje72	mje71
+rad87,d13	rad74+3,d13	atd87+2,a	tjd75,e63	[0me72,[1;31mtpe81,d72+1	ip18,e23<del>-3	[0me70,[1;31mrjd56-1,d49+4
+mje71+1	[0me71,[1;31mrjd56-1,d49+8	efd92+4	tpe45+1,q	qte83,a	laa,15	ate83+1,e73	[0me73,[1;31mrp0,0,e48+1	ew1,31744
+[0me16,[1;31mip18,d57	ip18,e63
+[0m|TEST END OF PLOT[1;31m
+[0me17,[1;31mefd92+6	efd92+4	rp1,8,e17+4	ew1,e18	efd92+5	er1,q	lqq,3	qje19+1,e19	[0me19,[1;31mqjd57,e17+1	efd92+7<del>
+ms0,e19+2,e19+2
+|CONSTANTS AND STORAGE
+[0md70,[1;31m+0	+0	+0	+0
+[0md71,+400	+1200	[1;31m+2000	+2800	+800	+1600	+2400	+3200
+[0md72,[1;31m+0	+0	+1:234	+36	+72	+32767	+63:215	+1:215
+[0md73,[1;31m+200	+0	+0	+0	+0
+[0md74,[1;31m+0	+4<del><del>4	+0	+0	+0
+[0md75,[1;31m+0<del>	e84
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>+0	+254	+0
+[0md76,[1;31mtpi10,a	tpi11,a	tpi12,a	tpi13,a	tpi14,a	tpi15,<del>a	tpi16,a	tpi17,a
+[0me11,[1;31m+511	+2047	+4095	+16383	+4194303	+16383	+20<del><del><del><del><del><del><del>47	+15
+[0md77,[1;31m+40	+20	+0	ad64,64
+[0md78[1;31m,atd76,d21	+0	+401
+[0md79,[1;31m+0	+0	+0	+0
+[0md80,[1;31m+0	+1	+2	+3	+4	+5	+6	+7	+8	+9	+10	+11<del>	+12
+[0md81,[1;31m+37	+63	+27	+48	+58	+54	+50	+52	+56	+60	+42	+31
+[0md82,[1;31m+0	+0	+0	+0
+[0md88,[1;31m+0	+0	+0	+0	+0	+0	+0	+0<del>	+0
+[0md83,[1;31m+0	+0	+0	tpd83+2,q
+[0md84,[1;31m+0	+0
+[0md85,[1;31m+126
+[0md86,[1;31mrsd79<del><del><del>+1,d71+3	rad79+1,d71+3
+[0md87,[1;31m+0	+0	+0	+0
+[0md89,[1;31m+0	+0	+0	+0	sjd42+2,d42+4
+[0md90,[1;31mejd81-1,d14	spd72+2,38<del><del><del><del><del><del><del><del><del><del>	lad87+3,0	+0	tpd95,d95	sjd35,d64	sjd35,d42	rad79,d71+3
+[0md91,[1;31mmjd29+1	lad77+1,a+72	tpe11,d72
+[0md92,[1;31mada,64	ada,1024	ada,512	ada,4	ada,1	ada,256	ada,32
+[0md93,[1;31m+0	+0	+0	+0
+
+84e,0,3pr	3201+[0m,38e[1;31m
+0+	0+	0+	0+[0m,<del>28e[1;31m
+0+	0+	0+[0m,18e[1;31m
+43<del>d	2-44e	84e	28e,3+bda	032=2	722=3[0m(08E[1;31m
+0/[0m(45E[1;31m[0mD13([1;31m/0	[0mE12([1;31m/0	[0mE26([1;31m/0	[0mD21([1;31m/0	[0mD19([1;31m/0	[0mD23([1;31m<del>/0	[0mD25([1;31m/0
+BASE 8
+[0mE84([1;31m430100001000	560100001000	630100001000	620100001000
+[0mD95([1;31m/0
+[0mD95/237_E13([1;31m/0
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>[0mE18([1;31m710072000740
+330074000740
+240076000740
+660100000740
+500104000740
+300106000740
+720110000740
+660112000740
+[0mD/1_[1;31mRP3(D95-D11(D11<del>	TPD11(73<del>100
+RP3(D95-D11(D11	<del><del><del><del><del><del><del><del><del><del><del><del><del>TP73100(D11
+START AT D/1

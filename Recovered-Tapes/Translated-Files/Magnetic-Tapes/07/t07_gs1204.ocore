@@ -1,0 +1,27 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\07\t07.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\07\t07_gs1204.ocore
+%TapeID: 
+%Stats: Covariance=0.005182, Size=125, Display-Ops, 1, 
+%Blocknum 0o0
+@T00000: 0000146 0177777 0137214 0000000 0000000 0001600 0177777 0000000  ; si md dm si si si md si  : w<del>i\0\0\0<del>\0 : \0<del>#\0\0\0<del>\0
+@T00010: 0000000 0000000 0120000 0000000 0000000 0070000 0000000 0000000  ; si si cm si si cp si si  : \0\0\0\0\0\0\0\0 :   \0\0h\0\0c\0\0
+@T00020: 0000000 0164000 0040001 0115062 0000001 0115066 0000000 0140000  ; si sf ts su si su si mr  :     \0\0#b#9\0\0 : \0x<color>w\0w\0o
+@T00030: 0000000 0000100 0000001 0000006 0174770 0006240 0100000 0000172  ; si si si si md .word ca si  :      \0\0#amt\0x :    \0\0\0\008t\0
+@T00040: 0001000 0000000 0027120 0000000 0000024 0000000 0000000 0000000  ; si si rc si si si si si  : \0\0<color>\0r\0\0\0 :  \0\04\0\0\0\0\0
+@T00050: 0000000 0100000 0000000 0177735 0177734 0005344 0045777 0045710  ; si ca si md md .word td td  :  \0\0\0-cl<del>  : \0t\0<del><del>edd
+@T00060: 0177777 0177777 0000031 0177777 0177777 0177777 0177777 0177777  ; md md si md md md md md  : <del><del>,<del><del><del><del><del> : <del><del>\0<del><del><del><del><del>
+@T00070: 0177777 0177777 0177777 0002000 0000000 0000000 0000000 0000000  ; md md md si si si si si  : <del><del><del>\0\0\0\0\0 : <del><del><del>#\0\0\0\0
+@T00100: 0100000 0000000 0000040 0000000 0000000 0000000 0000000 0000000  ; ca si si si si si si si  :  \0\0t\0\0\0\0\0 :  t\0\0\0\0\0\0\0
+@T00110: 0000000 0000000 0000000 0000000 0000000 0000000 0000000 0000000  ; si si si si si si si si  : \0\0\0\0\0\0\0\0 : \0\0\0\0\0\0\0\0
+@T00120: 0000000 0000000 0000000 0000000 0000003 0100000  ;       si si si si si ca  :      \0\0\0\08\0 :      \0\0\0\0\0t
+%Blocknum 0o1
+@T00000: 0000060 0000215 0001754 0003710 0140771 0000060 0000215 0005127  ; si si si si mr si si .word  :    o+p <cntl>O/7 :    \0\0\0#O\0\0E
+@T00010: 0003016 0145375 0000060 0000215 0013532 0000131 0142352  ;    si mh si si bi si mr  :     U<cntl>o+f,y :  #b\0\0|\0<stop>
+%Blocknum 0o2
+@T00000: 0152453 0000027 0000001 0000000 0000000 0000000 0000001 0000000  ; dv si si si si si si si  :     #7#\0\0\0#\0 :  #\0\0\0\0\0\0\0
+@T00010: 0000000 0000000 0000000 0000000 0000000 0000002 0000000 0000000  ; si si si si si si si si  :  \0\0\0\0\0e\0\0 : \0\0\0\0\0\0\0\0
+@T00020: 0000000 0001413 0005265 0001753 0002011 0000062 0013557 0026560  ; si si .word si si si bi rc  :        \04##=b#o :     \0\0e\0#\0|4
+
+%Hash: 2e0b90-1e878f-125

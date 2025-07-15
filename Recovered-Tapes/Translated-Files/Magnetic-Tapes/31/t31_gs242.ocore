@@ -1,0 +1,20 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\31\t31.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\31\t31_gs242.ocore
+%TapeID: 
+%Stats: Covariance=0.003552, Size=88, Display-Ops, 1, 
+%Blocknum 0o0
+@T00000: 0000127 0100000 0100712 0126423 0100000 0101303 0126420 0100000  ; si ca ca sa ca ca sa ca  : 7\0s5\08<color>\0 :        \0tt#tt#t
+@T00010: 0101317 0126420 0100000 0101561 0126416 0100000 0102076 0126413  ; ca sa ca ca sa ca ca sa  : 2<color>\0<stop>u\004 :         t#tt#t##
+@T00020: 0100000 0103114 0126405 0100000 0102606 0126607 0100000 0102740  ; ca ca sa ca ca sa ca ca  :      \0i|\0a3\0t :         t##t##t#
+@T00030: 0126606 0100000 0103067 0126605 0100000 0103613 0126601 0100000  ; sa ca ca sa ca ca sa ca  :      a\0#|\04#\0 :         #t##t##t
+@T00040: 0103625 0126601 0100000 0133473 0127062 0100000 0133571 0127062  ; ca sa ca ao sa ca ao sa  :  1#\0#b\0<cntl>B :         ##t##t##
+@T00050: 0100000 0134220 0127056 0100000 0135103 0127051 0100000 0135175  ; ca dm sa ca dm sa ca dm  : \0<color>Q\08\n\0<cntl> :         TQ#TQ#Tq
+@T00060: 0127051 0100000 0135561 0127046 0000000 0063400 0000000 0014500  ; sa ca dm sa si ab si rd  : \n\0<stop>w\0\0\0\0 :       #tq#\0,\0a
+@T00070: 0001250 0000000 0000001 0063400 0000000 0014500 0001750 0000500  ; si si si ab si rd si si  :    h\0#\0\0\0h\0 :   \0\0\0,\0a\0\0
+@T00100: 0000002 0063400 0000000 0014500 0002210 0077277 0000003 0063400  ; si ab si rd si sp si ab  : e\0\0\0 <del>8\0 :      \0,\0a##\0,
+@T00110: 0000000 0014500 0001250 0003600 0000004 0063400 0000000 0014500  ; si rd si si si ab si rd  :   \0\0h\0#\0\0\0 :     \0a\0#\0,\0a
+@T00120: 0001750 0003100 0000005 0063400 0000000 0014500 0002210 0004300  ; si si si ab si rd si .word  :    h\0|\0\0\0 \0 :      \0#\0,\0a#e
+
+%Hash: 1eb9f3-6cf786-88

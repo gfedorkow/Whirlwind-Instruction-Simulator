@@ -1,0 +1,49 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_04\102766805_fc1316m1_sim_data_duplicator.7ch
+fc TAPE 1316 m1 CROWTHER
+OCTAL
+si10		[1;31m|Set Mag Tape instruction No s[0m
+ca2		[1;31m|No of Tape to be read is in Word 2[0m
+clh3
+ads1		[1;31m|s1 has si102=read[0m
+tds1
+tdr1
+ca3		[1;31m|No of Tape to be written on is in Word 3[0m
+clh3
+ads2		[1;31m|s2 has si106=write[0m
+tds2
+tdw1
+tde1
+[1;31ms1,[0msi102		[1;31m|Read Test No.[0m
+cac1		[1;31m|Set Program Parameter.-c1 has[0m
+td3r1		[1;31m|location of free space in[0m
+tdw3		[1;31m|core storage[0m
+ad1
+tdr2
+rd		[1;31m|Read Test No[0m
+[1;31ms2,[0msi106		[1;31m|Write Test No[0m
+rc		[1;31m|Write Test No[0m
+[1;31mr1,[0msi102		[1;31m|Read[0m
+rd		[1;31m|read Number of Words in Record[0m
+cpe1		[1;31m|Transfer to End if (-0)[0m
+td		[1;31m|store Number of Words in Record[0m
+dm0
+cpw1
+[1;31mr2,[0mbi		[1;31m|No-block in[0m
+[1;31mw1,[0msi106		[1;31m|Write[0m
+ca0		[1;31m|Set Count to zero[0m
+tst1
+cac1		[1;31m|Reset location of free space in Core-[0m
+tdw2		[1;31m|Storage[0m
+[1;31mw2,[0mca		[1;31m|Select Data Word[0m
+rc		[1;31m|Write Data Word[0m
+aow2		[1;31m|Advance Write[0m
+aot1		[1;31m|Advance Count[0m
+[1;31mw3,[0msu		[1;31m|Is this Record done[0m
+cpw2		[1;31m|No[0m
+spr1		[1;31m|Yes-advance to Next Record[0m
+[1;31me1,[0msi106
+rc		[1;31m|Write (-0) at en<del>d[0m
+si0		[1;31m|STOP[0m
+[1;31mt1,[0m7
+[1;31mc1,[0mc1
+START AT 40

@@ -1,0 +1,133 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_07\102766883_fc22-103-6_11-4-58.7ch
+fc TAPE 22-103-6    H PETERSON  BOOLEAN FUNCTION GENERATOR (SQUARE ROOT) (TCB)
+OCTAL
+(24,6)
+ca0
+cf1000
+srh3
+ck1
+cf107	|program was read into c f 1
+ck0
+cf107
+ex 0
+slh3
+ck1
+cf107	|program was read into c f 1
+ck0
+cf107
+ad5b9	
+tsb2-1	|set to return to these program feilds
+ts1b8
+<del><del><del><del><del><del><del>ca1b9
+tsb8
+ca1b9
+ts1b1	|reset clear program
+ca0
+tsb9	|reset inputs
+si10	|ff reset
+ca24
+sfb14	|set so largest input is one increment short of pi/2
+ca3
+clc24
+td1b4	|amount output is to be rounded
+td2b4
+ca3
+clc4
+cpb15	|ones generator| zero generator--
+ca0
+[1;31mb16,[0mts6b9
+ca3
+md7b9
+td1b5	|column being generated
+cf101
+[1;31mb1,[0mcab11	|make table empty
+[1;31m1b1,[0mts2000+
+ao1b1
+su4b9
+cpb1
+[1;31m-1b2,[0mcf100+
+[1;31mb2,[0mca0
+ts3774	|minor part of mantissa
+cab9
+[1;31mb14,[0mslr0+
+sf3b9
+ts3773	|major part of mantissa
+cs3b9
+ts3772	|scale factor
+IN
+isp64<del><del><del><del><del><del><del><del><del><del>b13	|sine subroutine
+OUT
+cs3772
+tdb3	|sf of sine
+ca3773
+sa1	|check if rounding would loose most significant bit
+cs0
+cpb12
+
+
+ca3773
+<del>[1;31mb3,[0msrr0+
+dm0
+cpb11	|if zero make a postive zero
+ab0	|restore
+b4,clc0	|clead BR
+[1;31m1b4,[0msrr0+
+[1;31m2b4,[0mslr0+
+dm0	|did rounding make number zero
+cpb10	|yes--  no |
+ab0
+[1;31mb5,s[0md6b9	|leave alone if ones desired compliment if zeros desired
+[1;31m1b5,[0mclc0+
+cpb7	|store in table-- omit |
+[1;31mb6,[0maob9	|next input
+su24	|all inputs checked
+cpb2	|n0 --  yes |
+si1	|conditional stop
+sps1
+[1;31mb7,[0mcab9
+cf101
+[1;31mb8,[0mts2000
+[1;31m1b8,[0mcf100+
+aob8
+td<del><del><del><del><del><del>4c1
+spb6
+[1;31mb9,[0msi0	|input
+ts2000	|start of table
+si40	|start of reduction program
+si0	|scale factor
+ts3777	|end of table
+cf100	|restore to proper feilds
+si0	|0 if ones generator  1s if zero generator
+si17	|mask
+[1;31mb10,[0mcs0	|make out put all ones
+spb5
+[1;31mb11,[0mca0	|be sure zero is a plus zero
+spb5
+[1;31mb12,[0mca3774
+srh17	|round bit 15 if next bit was a 1
+ad3773
+srr0
+spb3
+[1;31mb15,[0mcs0	|mask for zero generator
+spb16
+DECIMAL
+[1;31mb13,[0m
+<del><stop>t=c3
+LSR FU 6a ARC SINE
+<del><del>za1=<stop><del>c3	za2=<stop>2c3	za3=<del><stop>4c3
+[1;31m0,[0mita26r	itsza3	icp47r	[1;31m3,[0mimr29r	iad31r	imrza3	iad33r	imrza3	iad35r	imrza3
+iad37r	imrza3	iad39r	imrza3	iad41r	itsza1	ica27r	isuza3	isp52r	imrza1	iad43r
+imr45r	itsza3	ica27r	its45r	icaza3	[1;31m26,[0misp	[1;31m27,[0m+1.	[1;31m29,[0m-.0022959648	[1;31m31,[0m+0.0111462294
+[1;31m33,[0m-.0268999482	[1;31m35,[0m+.0488025043	[1;31m37,[0m-.0887556286	[1;31m39,[0m+.2145852647	[1;31m41,[0m-1.5707961728	[1;31m43,[0m+1.570796327
+[1;31m45,[0m+1.	[1;31m47,[0mics27r	its45r	icsza3	itsza3	isp3r
+[1;31m52,[0m
+[1;31m0r,[0mita26r	its+za3	OUT	ca2043	dm0	cp25r	ab0	cp0
+ao2042	srh1	ts2042	sp12r	ta22r	IN	its+za2	ica+za3	idv+za2
+iad+za2	OUT	ca2042	su1	ts2042	sp	sp12r	sp12r	IN
+isp
+END OF SUBROUTINE
+<stop>c3,o
+DITTO
+8r|0
+OCTAL
+START AT 40

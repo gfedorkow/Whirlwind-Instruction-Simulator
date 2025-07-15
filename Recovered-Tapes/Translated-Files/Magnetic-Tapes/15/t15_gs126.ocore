@@ -1,0 +1,43 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\15\t15.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\15\t15_gs126.ocore
+%TapeID: 
+%Stats: Covariance=0.018028, Size=266, 
+%Blocknum 0o0
+@T00000: 0124040 0023020 0177777 0122740 0177777 0177777 0177777 0177777  ; sa bo md cm md md md md  : t<color><del>t<del><del><del><del> : y=<del>\n<del><del><del><del>
+@T00010: 0177777 0123400 0022420 0177777 0177777 0177777 0177777 0177777  ; md cm bo md md md md md  : <del>\0<color><del><del><del><del><del> : <del>\n=<del><del><del><del><del>
+@T00020: 0177777 0177777 0177777 0177777 0177777 0177777 0177777 0177777  ; md md md md md md md md  : <del><del><del><del><del><del><del><del> : <del><del><del><del><del><del><del><del>
+@T00030: 0121460 0177777 0177777 0177777 0121260 0177777 0121160 0177777  ; cm md md md cm md cm md  : o<del><del><del>o<del>o<del> : h<del><del><del>h<del>h<del>
+@T00040: 0177777 0177777 0177777 0177777 0177777 0177777 0120540 0177777  ; md md md md md md cm md  : <del><del><del><del><del><del>t<del> : <del><del><del><del><del><del>h<del>
+@T00050: 0120440 0020440 0177777 0120340 0177777 0120240 0177777 0177777  ; cm bo md cm md cm md md  : tt<del>t<del>t<del><del> : h <del>h<del>h<del><del>
+@T00060: 0177777 0177777 0177777 0177777 0177777 0177777 0177777 0177777  ; md md md md md md md md  : <del><del><del><del><del><del><del><del> : <del><del><del><del><del><del><del><del>
+@T00070: 0177777 0177777 0177777 0177777 0177777 0177777 0177777 0117120  ; md md md md md md md su  : <del><del><del><del><del><del><del><color> : <del><del><del><del><del><del><del>#
+@T00100: 0177777 0177777 0177777 0177777 0177777 0116600 0016600 0177777  ; md md md md md su rd md  : <del><del><del><del><del>\0\0<del> : <del><del><del><del><del>#3<del>
+@T00110: 0116500 0177777 0177777 0177777 0177777 0177777 0116160 0177777  ; su md md md md md su md  : \0<del><del><del><del><del>o<del> : #<del><del><del><del><del>#<del>
+@T00120: 0116060 0016040 0177777 0115740 0177777 0177777 0177777 0177777  ; su rd md su md md md md  : ot<del>t<del><del><del><del> : #3<del>w<del><del><del><del>
+@T00130: 0177777 0177777 0177777 0177777 0177777 0177777 0177777 0177777  ; md md md md md md md md  : <del><del><del><del><del><del><del><del> : <del><del><del><del><del><del><del><del>
+@T00140: 0177777 0177777 0177777 0114660 0177777 0114560 0177777 0177777  ; md md md su md su md md  : <del><del><del>o<del>o<del><del> : <del><del><del>w<del>w<del><del>
+@T00150: 0114340 0177777 0177777 0177777 0177777 0177777 0114040 0014020  ; su md md md md md su rd  : t<del><del><del><del><del>t<color> : w<del><del><del><del><del>wa
+@T00160: 0177777 0177777 0177777 0177777 0177777 0177777 0177777 0177777  ; md md md md md md md md  : <del><del><del><del><del><del><del><del> : <del><del><del><del><del><del><del><del>
+@T00170: 0113400 0177777 0177777 0177777 0177777 0113100 0177777 0112760  ; ad md md md md ad md ad  : \0<del><del><del><del>\0<del>o : \t<del><del><del><del>\t<del>\t
+@T00200: 0177777 0112660 0177777 0112560 0177777 0177777 0177777 0112340  ; md ad md ad md md md ad  : <del>o<del>o<del><del><del>t : <del>\t<del>\t<del><del><del>\t
+@T00210: 0012340 0177777 0112240 0012240 0177777 0177777 0177777 0112020  ; bi md ad bi md md md ad  : t<del>tt<del><del><del><color> : |<del>\t|<del><del><del>\t
+@T00220: 0177777 0111720 0177777 0111600 0011660 0177777 0111540 0177777  ; md ad md ad bi md ad md  : <del><color><del>\0o<del>t<del> : <del>l<del>l#<del>l<del>
+@T00230: 0111400 0177777 0177777 0177777 0177777 0177777 0177777 0177777  ; ad md md md md md md md  : \0<del><del><del><del><del><del><del> : l<del><del><del><del><del><del><del>
+@T00240: 0110740 0177777 0110640 0177777 0177777 0177777 0110420 0005700  ; ad md ad md md md ad .word  : t<del>t<del><del><del><color>\0 : l<del>l<del><del><del>le
+@T00250: 0177777 0110320 0177777 0110220 0177777 0110100 0177777 0110000  ; md ad md ad md ad md ad  : <del><color><del><color><del>\0<del>\0 : <del>l<del>l<del>l<del>l
+@T00260: 0177777 0107700 0177777 0107600 0177777 0177777 0177777 0107360  ; md cs md cs md md md cs  : <del>\0<del>\0<del><del><del>o : <del><bs><del><bs><del><del><del><bs>
+@T00270: 0177777 0107260 0177777 0177777 0177777 0177777 0177777 0106740  ; md cs md md md md md cs  : <del>o<del><del><del><del><del>t : <del><bs><del><del><del><del><del><bs>
+@T00300: 0177777 0106640 0177777 0106540 0177777 0106440 0177777 0106340  ; md cs md cs md cs md cs  : <del>t<del>t<del>t<del>t : <del><bs><del><bs><del><bs><del><bs>
+@T00310: 0177777 0106240 0177777 0106140 0177777 0177777 0177777 0177777  ; md cs md cs md md md md  : <del>t<del>t<del><del><del><del> : <del><bs><del><bs><del><del><del><del>
+@T00320: 0177777 0105620 0177777 0105520 0177777 0105420 0177777 0105340  ; md cs md cs md cs md cs  : <del><color><del><color><del><color><del>t : <del>z<del>z<del>z<del>z
+@T00330: 0177777 0105240 0177777 0177777 0177777 0177777 0177777 0104740  ; md cs md md md md md cs  : <del>t<del><del><del><del><del>t : <del>z<del><del><del><del><del>z
+@T00340: 0177777 0104640 0177777 0104560 0177777 0104460 0177777 0104360  ; md cs md cs md cs md cs  : <del>t<del>o<del>o<del>o : <del>z<del>z<del>z<del>z
+@T00350: 0177777 0104300 0177777 0177777 0177777 0177777 0177777 0104020  ; md cs md md md md md cs  : <del>\0<del><del><del><del><del><color> : <del>z<del><del><del><del><del>z
+@T00360: 0177777 0103740 0103660 0177777 0103600 0177777 0177777 0103520  ; md ca ca md ca md md ca  : <del>to<del>\0<del><del><color> : <del>##<del>#<del><del>#
+@T00370: 0103440 0177777 0103360 0177777 0103320 0177777 0103240 0177777  ; ca md ca md ca md ca md  : t<del>o<del><color><del>t<del> : #<del>#<del>#<del>#<del>
+@T00400: 0103200 0177777 0177777 0177777 0177777 0177777 0177777 0177777  ; ca md md md md md md md  : \0<del><del><del><del><del><del><del> : #<del><del><del><del><del><del><del>
+@T00410: 0177777 0177777  ;                   md md  :       <del><del> :       <del><del>
+
+%Hash: e942cf-79c410-266

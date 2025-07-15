@@ -1,0 +1,267 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_07\102766885_fc22-107-1.7ch
+fc TAPE 22-107-<del>1 PETERSON
+OCTAL
+cac1
+si713
+rd0		|block in
+su1c1
+tst1
+aoc1
+si713
+cat1
+bik1
+su1
+tdc2
+ca24<del>		|Set clc
+sf7c1
+ao7c1
+si17
+cf103
+ca15c1
+bi2000
+cf102
+[1;31ma1,[0mca1a26		|Term
+sdk1		|Implicant
+md1k1		|Mask
+ck0
+spa26		|count
+[1;31ma31,[0mao1a26		|next term
+md24		|all checked
+ck0
+spa23		|YES-
+spa1		|NO-
+[1;31ma23,[0mca1c2		|reset term
+ts1a26
+ao2a1		|index next implicant
+td1a1
+ao2a1
+suc2		|thru
+cpa1		|NO-YES|
+cf101
+[1;31ma3,[0mca2000
+cf102
+cp1a2
+ck0
+cf107		|term not covered
+tst1		|count
+caa3		|term
+[1;31ma24,[0msdk1		|implicant
+md1k1		|mask
+ck0
+[1;31ma2,[0mspa27		|agree
+<del>aoa3		|in<del>dex
+md24
+ck0		|done
+spa25		|YES-
+<del>spa3-1		|NO-
+[1;31ma25,[0mca5c2<del>		|reset to check for<del> 1
+tsa2
+ca4c2<del>		|reset start of table
+tsa3
+ao1a24
+tda24		|index
+tda10
+ao1a24
+suc2		|thru
+cpa3-1		|NO-YES<del>|
+ca2c2<del>		|reset checker
+tsa10
+ca0
+ts1t1		|reset counter
+[1;31ma6,[0msi11
+si245
+ca1
+bo2c1		|top of page
+si5
+rd
+su3c1
+cpa6
+ca3c2		|reset sp
+<del>tda17
+cf101
+[1;31ma5,[0mcs2000
+cf102
+cpa9<del>		|something to check
+[1;31ma7,[0maoa5
+ts2t1
+md24
+ck0
+sp6a7		|done
+spa5-1		|nope-
+ca6c2
+tsa5		|reset
+ca0
+ts1t1
+cf103
+ca3c2
+cka17
+spb1
+tsa17
+si245
+ca16c1
+bo2000
+[1;31mb1,[0msi17
+ca16c1		|clear
+bi2000
+cf102
+[1;31ma8,[0mao1a10
+tda10		|index
+ao1a10
+suc2		|done
+cpa5-<del>1		|NO-YES|
+ca2c2
+tda10
+ad1		|reset prime check
+td1a10
+ca2t1		|reset inputs start
+tsa5
+ts6c2
+md24
+ck0		|done
+sp0		|yes
+<del>spa6-2		|no
+[1;31ma9,[0mao1t1		|count terms to be checked
+<del>su4c1<del>		|whole page wide so far
+cpa10-1
+sp6a7		|NO-YES|
+caa5<del>		|term
+[1;31ma10,[0msdk1		|impli<del><del><del><del><del><del>cant
+[1;31m1a10,[0mmd1k1		|mask
+ck0
+[1;31m3a10,[0mspa17		|a match
+<del><del><del><del><del><del><del><del><del><del><del><del><del>cac3
+sp2a17		|ind<del>ex
+[1;31ma17,[0mspa11-2		|print impli<del>cant
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>ca7c2
+tsa20
+ca1t1
+[1;31ma18,[0mdm5c1		|+15
+cpa19
+ts3t1
+aoa20
+ca3t1
+spa18
+[1;31ma19,[0mab0
+ad6c1		|srh1
+tsa21
+[1;31ma20,[0mca0+
+tsa22		|address of x in matrix
+ca1
+[1;31ma21,[0msrh2+
+cf103
+[1;31ma22,[0mab0+
+cf102
+spa7
+[1;31ma26,[0mcf101
+ao2000
+cp0
+cf102
+spa31
+[1;31ma27,[0mcat1
+ck1
+spa28		|a single covered term-
+<del>sp1a2<del>		|nope<del>-
+[1;31ma28,[0mspa11-1		|set up matrix
+si244
+ca17c1<del>		|print
+cf103
+bo2000
+si17
+ca17c1		|clear
+bi2000
+cf102
+ca4c2		|reset and select register to clear
+exa3
+spa29
+caa3		|reset and sele<del>ct register to clear
+sp1a29
+[1;31ma29,[0mtaa2		|clear from now on
+tda30
+cs0
+cf101<del>		|clear
+[1;31ma30,[0mts0+
+cf102
+<del>sp1a2
+taa17
+taa16
+[1;31ma11,[0mcaa10
+tda32
+ad1
+tda12
+ca7c1		|reset clc
+ts1a12
+ts1a32
+ca10c1		|reset srh2
+tsa14
+[1;31ma12,[0mca0+
+ck0+
+cpa32
+ca11c1
+[1;31ma13,[0mtsa15
+ca1
+[1;31ma14,[0msrh2
+cf103
+[1;31ma15,[0mab0+
+cf102
+aoa14
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>ao1a12
+ts1a32
+su14c1		|clc17
+cpa12
+[1;31ma16,[0msp0
+[1;31ma32,[0mca0+
+clc0+
+cpa33
+ca12c1
+spa13
+[1;31ma33,[0mca13c1
+spa13
+[1;31mc1,[0m1.10000
+1.10001
+1.40400
+si1
+<del>+105
++15
+srh1
+clc0
+srh2
+ab2046		|x
+ab2051		|0
+ab2052		|1
+clc17
+si700
+si700
+si67
+[1;31mc2,[0mmd0
+ao2000
+sdk1
+spa11-2
+ca2000
+spa27
+cs2000
+ca10c2
+<del><del><del><del><del><del><del>ab2136
+ab2226
+ab2316
+ab2406
+ab2476
+ab2566
+ab2656
+[1;31mc3,[0mca1c3
+<del><del><del><del><del><del><del><del><del><del><del>ab2157
+ab2247
+ab2337
+ab2427
+ab2517
+ab2607
+ab2677
+[1;31mt1,[0m+0
++0
++0
++0
+[1;31mk1,[0m+0
+ca3k1
+cf745
+si32
+START AT 1k1
+<stop>

@@ -1,0 +1,92 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_07\102766872_22-10-2_8-1.7ch
+fc TAPE 22-10-<del><del>2 WELLS
+(24,6)
+t=6k2
+[1;31mDA33|33|[0m+1.	-1.	+0.	+.5	+57.295780	+.07453293	+3.1415927	+4.7123890	+1.5707963
+[1;31m51|p2,[0m+0.	[1;31m2p2,[0m+0.	[1;31m4p2,[0m+0.	[1;31m6p2,[0m+0.	[1;31m8p2,[0m+0.	[1;31m10p2,[0m+0.	[1;31m12p2,[0m+1.0	[1;31m14p2,[0m+0.	[1;31m67|16p2,[0m+0.
+[1;31mz1,[0m+0.	[1;31m2z1,[0m+0.	[1;31m4z1,[0m+0.	[1;31m6z1,[0m+0.	[1;31ms1,[0m+0.	[1;31m2s1,[0m+0.	[1;31m4s1,[0m+0.	[1;31m6s1,[0m+0.	[1;31ms2,[0m+0.	[1;31m2s2,[0m+0.	[1;31m4s2,[0m+0.	[1;31m6s2,[0m+0.	[1;31mz2,[0m+0.	[1;31m2z2,[0m+0.
+[1;31m4z2,[0m+0.	[1;31m6z2,[0m+0.	[1;31m8z2,[0m+0.	[1;31m120|[0mspb1	[1;31m121|[0mspb3	[1;31m122|[0mspb5	[1;31mb1,[0mcab2	tdr7	spr1	[1;31mb2,[0mspd1	[1;31md1,[0mIN	icr4
+ica37	iexs1+c	itss2+c	ict2d1	icr5	ica37	itsz2+c	ict7d1
+isp1024
+OUT	cad4	cf467	[1;31md4,[0m+34	[1;31mb3,[0mcab4	tdr7	spr1	[1;31mb4,[0mspd2
+[1;31md2,[0mIN	ica6s1	isu6s2	itsz1	ica4s2	isp1a1	imrz1	imr12p2	itsz1	iadz2	itsz2	[1;31md3,[0mica4s1	isu4s2	imr12p2
+its2z1	iad2z2	its2z2	icaz1	imrz1	iad4z2	its4z2	ica2z1	
+<del><del>imr2z1	iad6z2	its6z2	icaz1	imr2z1	iad8z2	its8z2
+icap5	iadc3	itsp5	<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>isp1024	OUT	cad5
+cf467	[1;31md5,[0m+35	[1;31mr1,[0mIN	ics8p2	imr8p2	iad33	imr6p2	isu12p2	
+idv12p2	idv8p2	imr35	ispa5	imr35	iad47	iad4p2	itss1
+ispa1	itsz1	icap2	ispa1	its2z1	imr35	imrz1	ispa5	
+imr35	iad49	its4s1	isp1a1	itsz1	ica4s1	ispa1
+idvz1	itsz1	icap2	isp1a1	idv2z1	imrz1	ispa5	
+imr35	iad49	icpr2	[1;31mr3,[0mitsz1	ispr4	[1;31mr2,[0mimr35	ispr3	[1;31mr4,[0mica2p2
+isu45	icpr5	ica2p2	isuz1	isp2r5	[1;31mr5,[0mica2p2	iadz1	its6s1	[1;31mr7,[0msp
+[1;31ma1,[0m
+LSR FU4a RAPID SIN-COS
+[1;31m0r,[0miad64r	imr66r	OUT	ca2042	su0	cp32r	su1	cp57r	su59r	cp11r
+[1;31m[0m10r,[1;31msp0	ad61r	ts18r	cm2043	ts2043	cm2044	srh15	ad2043	+0	clh1
+[0m20r,[1;31mts18r	md63r	clh1	cp47r	sf2042	ts2043	slh15	ex2044	sd18r	cp52r
+[0m30r,[1;31mcs2042	ts2042	IN	ita46r	its2t	imr2t	itst	imr68r	iad70r	imrt
+[0m40r,[1;31miad72r	imrt	iad74r	imrt	iad76r	imr2t	isp	sd62r	clh16	sd62r
+[0m50r,[1;31mclh16	sp24r	cs2043	ts2043	cs2044	ts2044	sp30r	ca60r	sp12r	+28
+[0m60r,[1;31msrh1	slh27	1.77777	0.77777	MULTIPLE	+1.570796327	+.636619772	+.0001514842
+[0m70r,[1;31m-.0046737656	+.0796896793	-.6459637111	+1.570796318
+END OF SUBROUTINE
+[0ma3,
+LSR FU 2b (30-j,j) SQUARE ROOT
+[1;31mza1=2k2	za2=4k2
+0r,ita26r	its+za1	OUT	ca2043	dm0	cp25r	ab0	cp0
+ao2042	srh1	ts2042	sp12r	ta22r	IN	its+za2	ica+za1	idv+za2
+iad+za2	OUT	ca2042	su1	ts2042	sp	sp12r	sp12r	IN
+isp
+END OF SUBROUTINE
+<del><del><del><del><del><del><del><del><del><del>
+a4,[0m
+LSR FU 7 ARC TAN
+[1;31m0r,[0mita33r	its4t	[1;31m2r,[0mitst	ic[1;31mp34r	iad54r	[0m5r,[1;31micp32r
+icat	iad38r	iext	isu38r	[0m10r,[1;31midvt	itst	imrt	its2t
+imr54r	[0m15r,[1;31miad52r	imr2t	iad50r	imr2t	iad48r	[0m20r,[1;31mimr2t
+iad46r	imr2t	iad44r	imr2t	[0m25r,[1;31miad42r	imr2t	iad40r
+imrt	iad56r	[0m30r,[1;31miex4t	icp36r	ica4t	[0m33r,[1;31misp0	[0m34r,[1;31mics4t
+[0m35r,[1;31misp2r	[0m36r,[1;31mics4t	[0m37r,[1;31misp33r	[0m38r,[1;31m+1.	[0m40r,[1;31m+.9999993329
+[0m42r,[1;31m-.3332985605	[0m44r,[1;31m+.1994653599	[0m46r,[1;31m-.1390853351	[0m48r,[1;31m+.0964200441
+[0m50r,[1;31m-.0559098861	[0m52r,[1;31m+.0218612288	[0m54r,[1;31m-.004054058	[0m56r,[1;31m+.7853981634
+END OF SUBROUTINE
+[0ma5,[1;31m
+
+LSR FU6 arc sin x
+M<del>ULTIPLE
+0,ita15r	itsb	ica18r	icx32r	icr6	5,imrb	iad20r+c	ict5r	its4t	ica16r	isub	isp36r
+imr4t	iad34r	icx32r		15,isp		16,+1.		18,-.0022959648	+0.0111462294
+-.0268999482		24,+.0488025043	-.0887556286	+.2145852647	-1.5707961728
+32,+0	+0		34,+1.570796327
+36,
+0r,ita26r	its2t	OUT	ca2043	dm0	cp31r	ao2042	srh1
+ts2042	ca29r		10r,ts2044	ex2043	cp0	IN	itst
+ica2t	idvt	iadt	imr27r	iext		20r,isut	idvt
+isu29r	icp25r	isp15r	icat	isp	0.40000	+0	0.77777
+	30r,1.51000	IN	isp26r
+||
++0	+0	
++15	[0mb5,[1;31mca16p2	sf-2b5	ts16p2	cs-2b5	adb5-1	slr9	ts17p2
+<del>IN	icr5	[0mb8,[1;31micaz2+c	idv16p2	itsz2+c	ictb8
+[0mb6,[1;31micsz2	imrz2	iad4z2	its4z2	ics2z2	imr2z2	iad6z2	its6z2	icsz2	imr2z2	iad8z2	its8z2
+[0mb7,[1;31mica4z2	isu6z2	itsk1	imrk1	its2k1	[0mf1,[1;31mica8z2	idv39	
+its4k1	imr4k1	its6k1	iad2k1	ispa3	iadk1	idv4k1
+ispa4	[0mf2,[1;31mitsk1	isp1a1	its2k1	imr2k1	its4k1	icak1	
+ispa1	its6k1	imr6k1	its8k1	imr6z2	its10k1	ica4k1	imr4z2
+<del>iad10k1	its10k1	ica2k1	imr6k1	idv39	imr8z2	iad10k1		
+ispa3	[0mf3,[1;31mits12k1	ica4k1	imr6z2	its10k1	ica8k1
+imr4z2	iad10k1	its10k1	ics2k1	imr6k1	idv39	imr8z2	
+iad10k1	ispa3	[0mf4,[1;31mits10k1	ica2k1	imrz2
+its4k1	ica6k1	imr2z2	iad4k1	its4k1	ica6k1	imrz2	
+its8k1	ics2k1	imr2z2	iad8k1	its8k1	ica4k1	ispf5	ica8k1	ispf5
+ica12k1	ispf5	ica10k1	ispf5	icak1	imr41	iTOA+n1.2345678cc	
+iSTOP	[0mf5,[1;31mitaf6	imrk2	iTOA+n1.2345678ssss
+f6,[0misp	k1,[1;31m+0.	DITTO	14r|[0mk2,[1;31m+3440.<del>	DITTO	20r|
+[0mc1,[1;31mita2c2	icpc2	isuc3	icp2c2	isp1024	isp2c2	[0mc2[1;31m,iadc3	icp1024	isp	[0mc3,[1;31m+1.
+[0m1024|[1;31mitap4	OUT	cs2	MOAp123.x215c	0.34305	IN	iFOR	+5	+4	+38	icr4
+[0me1,[1;31mica44+c	iMOA+n1.2345678f	icte1
+icr11	[0mp1,[1;31mica98+c	iMOA+n1.2345678f	ictp1	icr21	[0mp3,[1;31mica200+c	iMOA+n1.2345678f	ictp3<del>
+OUT	0.34345	IN	icaz1	iMOA+n1.2345678f
+<del>ica2z1	iMOA+n1.2345678f	[0mp4,[1;31misp	[0mp5,[1;31m+.
+START AT 26

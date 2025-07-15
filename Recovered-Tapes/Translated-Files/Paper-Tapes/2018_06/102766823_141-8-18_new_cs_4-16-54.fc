@@ -1,0 +1,67 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_06\102766823_141-8-18_new_cs_4-16-54.7ch
+||||||||||
+TAPE 141-8-17 VAN
+||||||||||
+(24,6)	t=700
+c1,+.01	+.1	+.2	+.5	+1.	+10.	-5.		c2,icr7
+icac1+c	ispe1	ispp1	OUT	cac3	rc	IN	ict1c2
+sp		c3,1.22000	si149	IN	ispc2
+||||||||||
+e1,
+||||||||||
+LSR lnx 141-8-16
+za1=<stop>
+0r,ita35r	OUT	cs2043	cp5r	si0		5r,ca36r
+ex2042	su36r	sf38r	tst		10r,cs38r	ad37r
+slh15-za1	ts1t	IN		15r,isu39r	its2t
+imr43r	iad45r	imr2t		20r,iad47r	imr2t	iad49r
+imr2t	iad51r		25r,imr2t	iad53r	imr2t	iad55r
+imr2t		30r,iad57r	imr2t	iext	imr41	iadt
+35r,isp0	+1	+15	+0	+1.		41r,+.6931471806
+43r,-.0064535442		45r,+.0360884937		47r,-.0953293897
+49r,+.1676540711		51r,-.2407338084		53r,+.3317990258
+55r,-.4998741238		57r,+.9999964239
+<del>END OF SUBROUTINE
+||||||||||
+<stop>p1,
+|||||||||||||||||||||||||
+LSR OT 1 (24,6) PRINT
+pa1=	pa2=
+0,ita97r	OUT	si149	ca2043	ts127r	cp8r
+|||||||||||||||||||||||||
+ca114r	sp9r	ca115r	rc0	clc6	rc0
+ca0	ts92r	ca128r	ts30r	ca2042	ts45r
+||||||||||||||||||||||||||
+cp21r	ao30r	ao30r	ca2044	ts90r	sa126r
+cp121r	cs2042	su103r	cp32r	ao92r	IN
+||||||||||||||||||||||||||
++0	sp25r	ad102r	cp28r	ad98r	ex45r
+ts2042	cp40r	cs92r	ts92r	ca101r	ex90r
+||||||||||||||||||||||||||
+ex2044	srh15	ad2043	+0	ts45r	slh15
+ex127r	ts2043	ca118r	sp54r	ao92r	ca119r
+||||||||||||||||||||||||||
+ts68r	cm127r	mh100r	ts30r	slr15	ts127r
+cm45r	mh100r	ts71r	slr15	sa30r	ts45r
+||||||||||||||||||||||||||
+ca71r	su0	+0	ad120r	ts71r	+0
+rc0	ao90r	cp53r	cm92r	mh99r	ad120r
+||||||||||||||||||||||||||
+ex90r	slr15	mh100r	ad120r	ex92r	cp86r
+ca117r	sp87r	ca116r	rc0	clc6	rc0
+||||||||||||||||||||||||||
++0	rc0	+0	rc0	clc6	rc0
+IN	isp0	srr511	0.06315	+10	-7+pa1
+||||||||||||||||||||||||||
++4	+3	1.75220+pa2	0.53220+pa2	0.37220+pa2
+0.17220+pa2	0.27220+pa2	0.47220+pa2	0.67220+pa2	0.57220+pa2	0.07220+pa2
+||||||||||||||||||||||||||
+1.55220+pa2	0.32420	0.72420	0.12320	0.12720
+cp52r	sp69r	ca104r	ao2044	sp25r	0.50000
+|||||||||||||||||||||||||||
+0.04000	0.63146	1.74462	+0	imr123r
+|||||||||||||||||||||||||||
+END OF SUBROUTINE
+<stop>||||||||||
+START AT 1c3
+||||||||||

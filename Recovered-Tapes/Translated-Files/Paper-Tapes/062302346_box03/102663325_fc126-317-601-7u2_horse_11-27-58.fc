@@ -1,0 +1,156 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302346_box03\102663325_fc126-317-601-7u2_horse_11-27-58.7ch
+fc 126 317 601 m2 PRINT IDENT AND FUNCT    MORSE 
+(24,6)
+OCTAL
+
+t=40
+
+<del>[1;31m500|m6,[0m	m1-1	m2	m3-1	m4	m5
+	+7	+5	+6	+9	+1
+[1;31mm1,[0m	c4	c5	c6	c7	c10	c11	c12
+	-7	-7	-<del>7	-6	-6	-6<del><del>	-6
+[1;31mm2,[0m	c14	c15	c16	c17	c20
+	-4	-4	-4	-7	-6
+[1;31mm3,[0m	c21	c22	c23	c24	c25	c26
+	-2	-2	-2	-2	-3	-2<del>
+[1;31mm4,[0m	d1	d2	d3	d4	d5	d6	d7	d10	d12
+	-3	-3	-2	-1	-1	-1	-1	-1	-1
+[1;31mm5,[0m	c13	-5
+[1;31mm10,[0m	+0	+0	+0
+
+[1;31mc4,[0m	1.22051	1.22071	1.60014	1.10022	0.20006<del>
+	0.30044	0<del><del><del><del><del><del><del><del>.04024
+[1;31mc5,[0m	1.22051	1.22071	<del><del>1.60060	0.44010	0.14014
+	1.10002	0.50000
+[1;31mc6,[0m	1.22051	1.22071	0.24002	1.70010	0.14014
+	1.10002	0.50000
+[1;31mc7,[0m	1.22051	1.22071	1.60060	0.44010	0.<del><del>04044<del><del><del><del><del><del><del>	0.04074
+[1;31mc10,[0m	1.22051	<del>1.22071	1.60014	1.10022	0.20024	0.34022
+[1;31mc11,[0m	1.22051	1.22071	1.60060	0.44010	0.50016	0.44000
+[1;31mc12,[0m	1.22051	1.2207<del>1	0.24002	1.70010	0.50016	0.44000
+
+[1;31mc13,[0m	1.22051	1.720<del>74	0.14024	0.30006	1.44044	0.04011
+
+[1;31mc14,[0m	1.12024	0.0<del><del><del><del><del>4034	1.00045	1.72050	0.22015
+[1;31mc15,[0m	1.12040	0<del><del><del><del><del><del><del>.50006	1.30045	1.72050	0.22015
+[1;31mc16,[0m	1.120<del><del>54	0.14024	0<del>.14045	1.72050	0.22015
+[1;31mc17,[0m	1.12036	0.34040	1.00006	0.200<del>64	0.30044
+	1.10045	1.72050	0.22015
+[1;31mc20,[0m	1.12070	1.40022	0.20064	0.34024	0.74045
+	1.72050	0.22015
+
+[1;31mc21,[0m	0.42000	0.52051	1.62000
+[1;31mc22,[0m	0.42000	1.74013	1.22071
+[1;31mc23,[0m	0.42000	1.74017	1.22071
+[1;31mc24,[0m	<del>0.42000<del>	1.74025	1.22071
+c25,[1;31m	0.42000	1.74076	0.46051	1.62000
+[0mc26,[1;31m	<del>0.42000	1.74033	1.22071
+
+<del>[0md1,[1;31m	1.62006	1.10054	1.20006	1.72051
+[0md2,[1;31m	1.62062	0.04040	0.14075	1.22000
+[0md3,[1;31m	1.62054	1.20014	1.72051
+[0md4,[1;31m	1.62002	1.72051
+[0md<del>5,<del>[1;31m	1.62050	1.72051
+[0md6,[1;31m	1.72054	1.22000
+[0md7,[1;31m	1.72056	1.22000
+[0md10,[1;31m	1.72024	1.22000
+[0md11,[1;31m	1.60006	1.64011<del>	0.30030
+[0md12,[1;31m	1.72016	1.22000
+
+[0m62|<del><del>s1,[1;31m	+0.	+0.	+0.
+[0m40|[1;31m	si700	rd	ca44	cf701	sp35
+
+[0m1010<del><del><del><del><del>|r10,[1;31m	si225
+	spp1
+	iTOA+1.2345t
+	spp12+1
+	iTOA+1.2345cc
+	OUT
+[0mr11,[1;31m	si176
+	spp1
+	iMOA+1.2345t
+	spp12+1
+	iMOA+1.2345ccc
+	spg5
+	si134
+	IN
+	icas1+4
+	itss1
+	itss1+2
+	sp0
+	+0
+	+0
+	+0
+	+0<del>
+	+0
+[0mp1,[1;31m	tap12	ca5	srh14	adm6	tdk1+<del>1	adm6+5	tdk1+3	spk1
+[0mp2,[1;31m	ca5	slh14	srh14	adm6+1	tdk1+1	adm6+6	tdk1+3	spk1
+[0mp3,[1;31m	ca5	slh6	srh14	adm6+2	tdk1+1	adm6+7	tdk1+3	spk1
+[0mp4,[1;31m	ca7	slh14	srh14	adm6+1	tdk1+1	adm6+6	tdk1+3	spk1
+[0mp5,[1;31m	ca7	slh6	srh14	adm6+2	tdk1+1	adm6+7	tdk1+3	spk1
+[0mp6,[1;31m	cam6+4				tdk1+1	adm6+11	tdk1+3	spk1
+[0mp7,[1;31m	ca24			adm6+3	tdk1+1	adm6+10	tdk1+3	spk1
+
+[0mp10,[1;31m	cad11	rc
+	clh12	rc
+	cad11+1	rc
+	clh12	rc
+	IN	icas1
+[0mp12,[1;31m	sp
+	t<del><del><del><del><del><del><del>ap13
+	cad11	rc
+	cad11+2	rc
+	clh12	rc
+	cad11+1	clh12	rc
+	IN	icas1+2
+[0mp13,[1;31m	sp
+	ca0<del>	cf701
+
+[0mk1,[1;31m	tak3<del>
+	ca
+	<del><del><del>tdk2
+	ca
+	tsm10
+[0mk2,[1;31m	ca
+	rc
+	clh12
+	rc
+	aok2
+	aom10
+	cpk2
+<del>[0mk3,[1;31m	sp
+
+[0mg5,[1;31m
+LSR OD 12 CS(30-j,j)Block Print (preset para.  MORSE MOD)
+pa1=64<del>	pa2=g6	pa3=100	pa4=2	pa5=5	
+[0m0r,[1;31mta22r	ca46r	td10r	cs47r	ad1	ts6t	cs48r	ad1	ts5t	IN
+[0m10r,[1;31mica	sppa2	ao10r	ao10r	ao6t	cp23r	ca45r	rc	rc	rc
+[0m20r,[1;31mrc	rc	sp	ao5t	cp28r	ca45r	rc	sp6r	cs49r	ad42r
+[0m30r,[1;31mcp39r	sa42r	ts4t	ao4t	cp36r	sp9r	ca44r	rc	sp33r	ca43r
+[0m40r,[1;31mrc	sp9r	+5	1.13000	0.21000	1.23000	pa1	pa3	pa4	pa5
+END OF SUBROUTINE
+
+
+[0mg6,[1;31m
+LSR OD10 (30-j,j) DECIMAL CS PRINT
+pa1=4
+[0m0r,[1;31mta92r	ca2043	ts99r	cp6r	ca117r	[0m5r,[1;31msp7r	ca118r	rc0	clc8	rc0
+[0m10r,[1;31mca0	ts90r	ca98r	ts28r	ca2042	[0m15r,[1;31mts43r	cp19r	ao28r	ao28r	ca2044
+[0m20r,[1;31mts88r	sa106r	cp101r	cs2042	su95r	[0m25r,[1;31mcp30r	ao90r	IN	+0	sp23r
+[0m30r,[1;31mad94r	cp26r	ad100r	ex43r	ts2042	[0m35r,[1;31mcp38r	cs90r	ts90r	ca93r	ex88r
+[0m40r,[1;31mex2044	srh15	ad2043	+0	ts43r	[0m45r,[1;31mslh15	ex99r	ts2043	ca96r	sp52<del>r
+[0m50r,[1;31mao90r	ca97r	ts66r	cm99r	mh122r	[0m55r,[1;31mts28r	slr15	ts99r	cm43r	mh122r
+[0m60r,[1;31mts69r	slr15	sa28r	ts43r	ca69r	[0m65r,[1;31msu0	+0	ad123r	ts69r	+0
+[0m70r,[1;31mrc0	ao88r	cp51r	cm90r	mh121r	[0m75r,[1;31mad123r	ex88r	slr15	mh122r	ad123r
+||||||||||
+[0m80r,[1;31mex90r	cp84r	ca120r	sp85r	ca119r	[0m85r,[1;31mrc0	clc8	rc0	+0	rc0
+[0m90r,[1;31m+0	rc0	sp0	-7+pa1	+4	[0m95r,[1;31m+3	cp50r	sp67r	imr103r	+0
+[0m100r,[1;31msrr511	ao2044	sp23r	+10.	[0m105r,[1;31m+.10	1.75226	0.53246	0.37042
+[0m110r,[1;31m0.17042	0.27042	0.47042	0.67042	0.57042	[0m115r,[1;31m0.07042	1.55042	0.33106	0.73106	0.13066
+[0m120r,[1;31m0.13166	0.06315	+10	ca107r
+|EXIT
+
+
+
+START AT 32
+
