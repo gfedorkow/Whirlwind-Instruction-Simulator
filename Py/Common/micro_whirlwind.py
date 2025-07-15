@@ -161,6 +161,12 @@ class PanelMicroWWClass:
         return True
 
 
+    # The Panels contain a subset of the Flip Flop Register Preset switches; this method returns
+    # this list of names supported by this panel
+    def get_ff_preset_list(self):
+        return ["FF02Sw", "FF03Sw"]
+
+
    # read a register from the switches and lights panel.
     # It would normally be called with a string giving the name.  Inside the simulator
     # sometimes it's easier to find a number for the flip-flop registers

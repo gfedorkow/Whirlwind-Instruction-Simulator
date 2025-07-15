@@ -21,6 +21,7 @@
 from graphics import *
 from blinkenlights import BlinkenLightsClass
 from micro_whirlwind import PanelMicroWWClass
+import re
 
 
 # ###########################################
@@ -648,10 +649,16 @@ class PanelXwinClass:
                     "FF05Sw": [self.ffreg[2].read_switch_register, self.ffreg[2].set_switch_register],
                     "FF06": [self.ffreg[3].read_ff_register, self.ffreg[3].write_ff_register],
                     "FF06Sw": [self.ffreg[3].read_switch_register, self.ffreg[3].set_switch_register],
-                    # "FF06": [self.ffreg[4].read_ff_register, self.ffreg[4].write_ff_register],
-                    # "FF06Sw": [self.ffreg[4].read_switch_register, self.ffreg[4].set_switch_register],
                     }
 
+    # The Panels contain a subset of the Flip Flop Register Preset switches; this method returns
+    # this list of names supported by this panel
+    def get_ff_preset_list(self):
+        ret = []
+        for sw in self.dispatch:
+            if re.match("FF[0-9][0-9]Sw", sw):
+                ret.append(sw)
+        return ret
 
     # Check the mouse, and update any buttons.  The only return from this call should be True or False to say
     # whether the Exit box was clicked or not.
@@ -796,15 +803,18 @@ def compensate_justification(txt, font=9):
 # Both can be enabled at once, but the results probably aren't too predictable.
 class PanelClass:
     def __init__(self, cb, panel_xwin=False, panel_blinken=False, panel_microWW=False, left_init=0, right_init=0):
+        self.ff_preset_list = []
         self.panel_xwin = panel_xwin
         self.panel_blinken = panel_blinken
         self.panel_mWW = panel_microWW
         if panel_xwin:
             self.panel_xwin = PanelXwinClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
-        if panel_blinken:
-            self.panel_blinken = BlinkenLightsClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
+            self.ff_preset_list = self.panel_xwin.get_ff_preset_list()  # obtain a list of all the FF presets on this panel
         if panel_microWW:
             self.panel_mWW = PanelMicroWWClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
+            self.ff_preset_list = self.panel_mWW.get_ff_preset_list()  # obtain a list of all the FF presets on this panel
+        if panel_blinken:
+            self.panel_blinken = BlinkenLightsClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
 
     # Check the mouse, and update any buttons.  The only return from this call should be True or False to say
     # whether the Exit box was clicked or not.
