@@ -721,7 +721,7 @@ class PanelXwinClass:
         if type(which_one) is int:
             which_one = "FF%02oSw" % which_one
         if which_one not in self.dispatch:
-            self.cb.log.info("XWinPanel.read_register: unknown register %s" % which_one)
+            self.cb.log.warn("XWinPanel.read_register: unknown register %s" % which_one)
             return(None)
         # element zero in the dispatch is the Read entry; element one is the Set entry
         return self.dispatch[which_one][0]()

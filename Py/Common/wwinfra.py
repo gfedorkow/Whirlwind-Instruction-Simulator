@@ -834,18 +834,11 @@ class WWSwitchClass:
         return 0
 
     def read_switch(self, name):
-        print("debug: read_switch(%s)" % name)
-        if name in self.SwitchNameDict:
-            if self.cb.panel and name in self.SwitchNameDict and self.SwitchNameDict[name][2]:
-                # call the Panel object to read switches, should it be present, and if it's a switch
-                # that's represented on the panel.  Use the internal name string (i.e., offset 2 in the dict)
-                ret = self.cb.panel.read_register(self.SwitchNameDict[name][2])
-            if ret:
-                return ret
-            else:
-                return self.SwitchNameDict[name][0]
-        return None
-    
+        if self.cb.panel and name in self.cb.panel.ff_preset_list:
+            return self.cb.panel.read_register(self.SwitchNameDict[name][2])
+        else:
+            return self.SwitchNameDict[name][0]
+
     def dump_switches(self):
         for name in self.SwitchNameDict:
             val = self.SwitchNameDict[name][0]
@@ -1130,7 +1123,7 @@ class CorememClass:
     #  Note that the different panels implement different numbers of FF registers.
     def reset_ff(self, cpu):
         reset_info_string = "Reset FF%02o at address 0o%o to %s"
-        for addr in range(0, self._toggle_switch_mask + 1):
+        for addr in range(2, self._toggle_switch_mask + 1):
             val = cpu.cpu_switches.read_switch("FlipFlopPreset%02o" % addr)
             if val is not None:
                 # [addr][1] is True for Read-only addrs, False for FF Reg
