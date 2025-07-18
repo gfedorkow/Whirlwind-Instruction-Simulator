@@ -667,7 +667,29 @@ class DbgCmd_wr (DbgCmd):
                 self.error()
         else:
             self.error()
-            
+
+# syms -- print all symbols and their values
+class DbgCmd_syms (DbgCmd):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+        pass
+    def helpStrs (self) -> [str]:
+        r = [
+            "syms",
+            "Print all symbols and their values."
+            ]
+        return r
+    def execute (self):
+        (h, v) = os.get_terminal_size()
+        print ("LAS42", h, v)
+        maxSymLen = 0
+        for sym in self.dbg.symToAddrTab:
+            if len (sym) > maxSymLen:
+                maxSymLen = len (sym)
+        for sym in self.dbg.symToAddrTab:
+            val = self.dbg.symToAddrTab[sym]
+            print ("%s%s 0o%o" % (sym, " "*(maxSymLen - len (sym)), val))
+
 # h -- help
 class DbgCmd_h (DbgCmd):
     def __init__ (self, *args):

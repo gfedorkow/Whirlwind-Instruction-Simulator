@@ -467,7 +467,7 @@ class CpuClass:
             return None
 
     # Another debugger helper, for the "i" (instruction) format and other purposes
-    def get_inst_info (self, addr: int) -> (int, str, int, str):
+    def get_inst_info (self, addr: int) -> (int, str, int, str, int , int):
         global CoreMem
         instruction = CoreMem.rd (addr, fix_none=False) # ?? fix_none?
         if instruction is None:
@@ -638,7 +638,7 @@ class CpuClass:
                 output_str += flex_ascii
             elif fmt == "%i":
                 addr = self.rl (argList.pop(0))
-                (opcode, short_opcode, address, label) = self.get_inst_info (addr)
+                (opcode, short_opcode, address, label, ac, br) = self.get_inst_info (addr)
                 output_str += "%s 0o%o%s" % (short_opcode, address, label)
             else:
                 output_str += fmt

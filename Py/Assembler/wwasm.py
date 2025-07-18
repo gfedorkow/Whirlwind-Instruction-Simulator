@@ -625,11 +625,11 @@ class AsmDotFloatInst (AsmDotWordsInst):
                     if abs (fracMant) >= 1.0:
                         exp += 1
                         fracMant = v/2**exp
-
-                    # print ("LAS42", decMant, decExp, v, exp, fracMant)
-                        
-                    # Use floor rather than round to avoid going over 2^24 - 1
-                    mant = int (math.floor (fracMant * 2**24)) # Mag is full 24-bit resolution, host rep
+                    # The math class doesn't have round, so we'll use floor after adding 0.5.
+                    mant = int (math.floor (fracMant * 2**24 + 0.5)) # Mag is full 24-bit resolution, host rep
+                    if abs (mant) > 2**24 - 1:
+                        self.error ("Float out of range")
+                        mant = 0
                     wwExp = self.intToSignedOnesCompInt (exp, 7)
                     if wwExp is None:
                         self.error ("Float out of range")
@@ -872,7 +872,7 @@ class AsmDotPpInst (AsmPseudoOpInst):
                     else:
                         self.prog.presetTab[varExpr.exprData] = val
                 else:
-                    aelf.operandTypeError (val)
+                    self.operandTypeError (val)
             else:
                 self.error ("Binding target (first operand) of a preset must be a variable")
         else:
@@ -950,7 +950,7 @@ class AsmDotWwTapeIdInst (AsmPseudoOpInst):
         if val.type == AsmExprValueType.String:
             self.prog.wwTapeId = val.value
         else:
-            aelf.operandTypeError (val)
+            self.operandTypeError (val)
 
 class AsmDotIsaInst (AsmPseudoOpInst):
     def __init__ (self, *args):

@@ -1,11 +1,11 @@
 a = 1.0594632,
 PRINT a.
+n = -25,
 y = 220,
-x = -24,
-1 y = ay,
-z = y^2,
+1 z = y^2,
 t = 1/z,
 PRINT y,z,t.
-x = x + 1,
+y = ay,
+n = n + 1,
 CP 1,
 STOP

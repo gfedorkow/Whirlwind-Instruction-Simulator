@@ -14,11 +14,13 @@
 
                         ; Note we don't set .org since this file can be included in others
 
-                        .pp do_print, 0
+                        .pp do_print, 1
+                        .pp do_floathack, 0      ; Whether to use the workaround to using "ca 0" as -32767/32768
                         .pp f24, 1               ; Whether to apply mask to srh for 24,6 floats
                         .pp main_sep_param, 1
 
                    max: .word 0o037777
+
 
              floathack: ta fhrtn
                         ts ac_save
@@ -111,8 +113,8 @@
                         mh r97                   ; -|
                         su r72                   ;  |
                         slh 15                   ;  |
-                        su r17                   ;  |- Form (2**-2/x**2)' (Use Euclid's algorithm)  ; [LAS Looks like this should say (2**-2/x2)' -- Uses remainder arith, hence the Euclid ref]
-                        ; sp floathack           ;                                                  ; [LAS 3/30/25 Using r17 broke dv, but looks like it works now in more cases than before.
+ .if (1 - do_floathack)   su r17                   ;  |- Form (2**-2/x**2)' (Use Euclid's algorithm)  ; [LAS Looks like this should say (2**-2/x2)' -- Uses remainder arith, hence the Euclid ref]
+                                     .if do_floathack       sp floathack             ;                                                  ; [LAS 3/30/25 Using r17 broke dv, but looks like it works now in more cases than before.
                         ;                        ;                                                  ; Still breaks e.g. on sqrt2 test.
                         ;                        ;                                                  ; Can't find what changed to enable this, but we'll switch between the original
                         ;                        ;                                                  ; and floathack as needed.
@@ -126,7 +128,8 @@
 
                    r50: .word 1
                         sp r73                   ; "ts"
-                   r52: ca r02                   ; -|- complement x1
+                   r52: cs r02                   ; -|- complement x1                                ; [LAS Was ca r02. Transcription error.
+                        ;                        ;                                                  ;  Caught late, needed to zoom in and closely examine original text 6/16/25.]
                         sp r164                  ; -|
                    r54: .word 2
                         ca r201                  ; "ta" -|                                          ; from 196r-->
@@ -155,6 +158,7 @@
 
                    r73: ca r03                   ; -|                                               ; from 51r,61r->
                         srr 6                    ;  |- Round off x1' and store x1' * 2**-6
+ .if f24                md float24_low_mant_mask
                         ts r03                   ; -|
 
                         srh 9                    ; -|
@@ -183,12 +187,15 @@
                    r93: ca r97                   ; -|- ts n + k or ex n + k                         ; from 88r->
                         ad sep_param             ; -|
 
-                   r95: ts r102                  ; Store ts, ex, ca, cs or cm n+k                   ; from 8r->
-
+                   r95: ts r102                  ; Store ts, ex, ca, cs or cm n+k                   ; from 8r->                                        ; [LAS Issue no-lower-cm: When branched-to,
+                        ;                        ;                                                  ;                                                  ; does not load a possible cm from r97 at r93,
+                        ;                        ;                                                  ;                                                  ; so we get no mag of low end. But that would not
+                        ;                        ;                                                  ;                                                  ; be completely right either, as it's a packed
+                        ;                        ;                                                  ;                                                  ; word with an exp.]
                         ca r02
                    r97: .word 0                  ; -|                                               ; from (180r)
                         ex r03                   ;  |
-                                    .if (1-f24)     srh 9                    ;  |
+ .if (1-f24)            srh 9                    ;  |
 
  .if f24                ts float24_tmp
 
@@ -337,8 +344,7 @@
                         ts tmp                   ;  |
                         slh 15                   ; -|
 
-
- .if do_print           .print "3 dis='%i' inst='%i' tmp=x2=%o r102=y2=%o AC=x2'=0o%ao r02=x1=%o r03=x1'=%o r04=y1=%o", dispatch, r97, tmp, r102, r02, r03, r04
+ .if do_print           .print "1 dis='%i' inst='%i' tmp=x2=%o r102=y2=%o AC=x2'=0o%ao r02=x1=%o r03=x1'=%o r04=y1=%o t=%fl r189=%o mra=%fm mra-oct=%o %o %o", dispatch, r97, tmp, r102, r02, r03, r04, t, r189, mra, mra + 0, mra + 1, mra + 2
               dispatch: .word 0                  ; Go to part of I.S. for particular instruction    ; (188r)
                   r197:
              sep_param: .word main_sep_param     ; Separation parameter                             ; [LAS There is a note in Subroutines.pdf pdf-page 25 that says r197 is "pax2"

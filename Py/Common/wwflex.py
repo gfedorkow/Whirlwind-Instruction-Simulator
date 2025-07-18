@@ -3,8 +3,11 @@ import sys
 import argparse
 import datetime
 import time
+import math
 from enum import Enum
 import graphics as gfx
+from tkinter import TclError
+import wwinfra 
 
 #
 # Flexowriter support library
@@ -16,6 +19,8 @@ import graphics as gfx
 # Use this class multiple-inheritance-style to hold common utilities
 
 class AsciiFlexBase:
+    def __init__ (self):
+        self.cb = wwinfra.ConstWWbitClass (get_screen_size=True)
     def error (self, msg: str):
         # self.cb.log.error (msg)
         print ("Error!", msg)
@@ -45,7 +50,7 @@ class AsciiFlexBase:
 
 # This level just gets tokens; they're checked at the next level up.
 
-FlasciiTokenType = Enum ("AsciiToFlexTokenType",
+FlasciiTokenType = Enum ("FlasciiTokenType",
                          ["Character",
                           "Super",
                           "Bracketed",
@@ -163,8 +168,8 @@ class AsciiFlex (AsciiFlexBase):
             return False
 
 # Provide a string, then use getFlex to get the resulting list of flex codes.
-# If addStopCode is True, automatically add the <stop> char to the end of the
-# resulting set of flex codes.
+# If addStopCode is True, add the <stop> char to the end of the resulting set
+# of flex codes.
 
 class FlasciiToFlex (AsciiFlex):
     def __init__ (self, asciiIn: str, addStopCode: bool = False):
@@ -295,7 +300,7 @@ class FlexToFlexoWin (FlexToSomething):
             self.upcase = False
         elif ascii == "<color change>":
             self.colorRed = not self.colorRed
-        elif self.isDigit (ascii):
+        elif self.isDigit (ascii) or ascii == "-":
             if self.upcase:
                 self.flexoWin.writeChar (ascii, super = True, colorRed = self.colorRed)
             else:
@@ -383,17 +388,35 @@ class AsciiFlexCodes:
 # Tabulation and carriage return:
 #       200 to 900 milliseconds
 
-class FlexoWin:
+class FlexoWin (AsciiFlexBase):
     def __init__(self):
+        super().__init__()
         self.crTime = 50e-3         # Set these based on the times above for "authentic" timing
         self.charTime = 10e-3
-        self.h = 1000
-        self.v = 1500
+        (self.screen_h, self.screen_v, self.gfx_scale_factor) = self.cb.get_display_size()
+        # The factors used to size the window are based on LAS's desktop monitor.
+        self.h = math.floor ((1000/3840) * self.screen_h)
+        self.v = math.floor ((1500/2160) * self.screen_v)
         self.win = gfx.GraphWin ("Flexowriter", self.h, self.v)
         self.win.setBackground ("cornsilk")     # A color that really looks old-fashioned
         imageName = os.path.normpath (os.environ["PYTHONPATH"] + "/" + "flexowriter-scaled-cropped.gif")
-        # imageName = os.path.normpath ("flexowriter-scaled-cropped.gif")
-        self.image = gfx.Image (gfx.Point (0, 0), [imageName])
+        
+        # Here we try each filename format, after os-norm, first using the
+        # normed format, and if that fails, trying forward-slash-based
+        # pathnames. There is something funny about Tcl or Cygwin or both,
+        # where on Cygwin it only accepts Unix pathnames, so Windows-based
+        # pathnames produce file-not-found. So the norm is Windows-based, but
+        # tk wants Unix. Note could use os.exists but that accepts Windows
+        # format and says yes the file exists (but Tcl thinks it doesn't) so we
+        # really need to intercept the Tcl error. Also note that since this is
+        # a system file clean error messages and such are not needed.
+
+        try:
+            self.image = gfx.Image (gfx.Point (0, 0), [imageName])
+        except TclError as e:
+            imageName = imageName.replace ("\\", "/")
+            self.image = gfx.Image (gfx.Point (0, 0), [imageName])
+            
         self.imageH = self.image.getWidth()
         self.imageV = self.image.getHeight()
         self.image = gfx.Image (gfx.Point (self.h/2, self.v - self.imageV/2), [imageName])

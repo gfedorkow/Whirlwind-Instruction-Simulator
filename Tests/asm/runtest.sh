@@ -30,9 +30,9 @@ else
 	grep -v "AsmExpr-" test1.log >FilteredTest1.log
 	grep -v "AsmExpr-" test2.log >FilteredTest2.log
 
-	diff -s FilteredTest1.log TestRefs/FilteredTest1.log
+	diff -s TestRefs/FilteredTest1.log FilteredTest1.log
 	status1=$?
-	diff -s FilteredTest2.log TestRefs/FilteredTest2.log
+	diff -s TestRefs/FilteredTest2.log FilteredTest2.log
 	status2=$?
 
 	status=$(($status1 + $status2))
@@ -61,7 +61,7 @@ else
 	# Error message test.
 	echo "Test asm error messages. The ww program has an error in each line..."
 	python $asm ErrorTest.ww >&ErrorTest.log
-	diff -s ErrorTest.log TestRefs/ErrorTest.log
+	diff -s TestRefs/ErrorTest.log ErrorTest.log
 	status4=$?
 	if [ "$status4" == "0" ];
 	then
@@ -74,7 +74,7 @@ else
 	echo "Test .include..."
 	rm -f inc1.acore inc1.lst includetest.log
 	python $asm --OmitAutoComment inc1.ww >&includetest.log
-   	diff -s inc1.lst TestRefs/inc1.lst
+   	diff -s TestRefs/inc1.lst inc1.lst
 	status5=$?
 	if [ "$status5" == "0" ];
 	then
@@ -89,7 +89,7 @@ else
 	rm -f flextest.lst flextest.acore flextest.sim.log 
 	python $asm --OmitAutoComment flextest.ww >&flextest.asm.log
 	python $sim -q flextest.acore |& grep -v cycles >flextest.sim.log 
-   	diff -s flextest.lst TestRefs/flextest.lst
+   	diff -s TestRefs/flextest.lst flextest.lst
 	status6=$?
 	diff -s flextest.sim.log TestRefs/flextest.sim.log
 	status7=$?

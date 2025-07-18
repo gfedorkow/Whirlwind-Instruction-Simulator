@@ -97,9 +97,6 @@
                ao digit_cntr            ; -|- Have enough digits been printed?
                cp 17mfp                 ; -|
 
-			   ; ca newlinemfp	 		;; LAS The description says no cr, but there does not seem to be one emitted at any level
-			   ; rc 0
-
                sp ax                    ; -|- Return control to int. subroutine
         37mfp: sp 0                     ; -|
 
