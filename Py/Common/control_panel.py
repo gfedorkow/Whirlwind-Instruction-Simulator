@@ -751,6 +751,7 @@ class PanelXwinClass:
 
         # I _think_ Upper/Lower (i.e. left/right) Activate buttons return the top two bits or ActReg0
         ret = left_activate << 15 | (right_activate << 14)
+
         return ret
 
     def activate_reg_write(self, val):

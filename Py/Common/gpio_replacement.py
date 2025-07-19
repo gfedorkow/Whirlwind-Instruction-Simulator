@@ -5,7 +5,6 @@ class gpioClass:
         self.OUT = 0
         self.IN = 0
         self.PUD_UP = 0
-        print("gpio init")
 
     def setmode(self, mode):
         print("set gpio mode")

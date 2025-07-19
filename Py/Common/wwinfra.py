@@ -834,7 +834,8 @@ class WWSwitchClass:
         return 0
 
     def read_switch(self, name):
-        if self.cb.panel and name in self.cb.panel.ff_preset_list:
+        # go to the panel if it's anything but a Flip Flop Register Preset, or if it's an FF Preset that's in the list
+        if self.cb.panel and (name in self.cb.panel.ff_preset_list or not re.match("FlipFlopPreset", name)):
             return self.cb.panel.read_register(self.SwitchNameDict[name][2])
         else:
             return self.SwitchNameDict[name][0]
