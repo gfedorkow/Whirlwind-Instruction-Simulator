@@ -1141,7 +1141,7 @@ class LexedLine:
 
     # line#  Address Word  Label: operator  operand ; Comment
     def listing(self, cb):
-        fc = wwinfra.FlexoClass(None)
+        fc = wwinfra.FlexoClass(cb)
 
         # special-case the lines which are blank or have nothing but comments
         if (len(self.label) == 0) & (len(self.operand) == 0) & (len(self.operator) == 0):
