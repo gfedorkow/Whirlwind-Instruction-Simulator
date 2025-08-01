@@ -26,7 +26,7 @@ WW_Root_Win = "c:\\Users\\guyfe\\Documents\\guy\\History-of-Computing\\Whirlwind
 WW_Root_Linux = "/home/guyfe/History-of-Computing/Whirlwind/GitHub"
 WW_Root = None
 Sim_Path = "/Py/Sim/wwsim.py"
-default_args = ["-q"]
+default_args = ["-q", "--Zero", "--Quick"]
 
 
 Use_RMIR = False
