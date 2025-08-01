@@ -280,43 +280,56 @@ class AnaScope:
         if not self.wasPoint:
             return 0
 
+
+        # Jul 31, 2025 -- It appears that micro-whirlwind overloads self.pin_isGun1on = 26 and pin_tca_reset = 26
+        # I've added these two terms to disable the light guns one at a time and make sure I've got the bug.
+        use_gun_1 = False
+        use_gun_2 = True
         mask = 0
         
         # check if this is the first light gun pulse
-        if not self.wasGunPulse1 and gpio.input(self.pin_isGun1) == 0:
+        if use_gun_1 and not self.wasGunPulse1 and gpio.input(self.pin_isGun1) == 0:
             mask = 1
             self.wasGunPulse1 = True
-            if DebugGun: print("first pulse, Gun 1: isGun1=%d, PushButton=%d" %
-                    (gpio.input(self.pin_isGun1on), gpio.input(self.pin_isIntercept)))
-        if not self.wasGunPulse2 and gpio.input(self.pin_isGun2) == 0:
+            if DebugGun: print("first pulse, Gun 1: isGun1=%d, isGun1on=%d, isGun2=%d, isGun2on=%d, PushButton=%d" %
+                    (gpio.input(self.pin_isGun1), gpio.input(self.pin_isGun1on),
+                     gpio.input(self.pin_isGun2), gpio.input(self.pin_isGun2on),
+                      gpio.input(self.pin_isIntercept)))
+        if use_gun_1 and not self.wasGunPulse2 and gpio.input(self.pin_isGun2) == 0:
             mask = mask | 2
             self.wasGunPulse2 = True
-            if DebugGun: print("first pulse, Gun 2")
+            if DebugGun: print("first pulse, Gun 2: isGun1=%d, isGun1on=%d, isGun2=%d, isGun2on=%d, PushButton=%d" %
+                    (gpio.input(self.pin_isGun1), gpio.input(self.pin_isGun1on),
+                     gpio.input(self.pin_isGun2), gpio.input(self.pin_isGun2on),
+                      gpio.input(self.pin_isIntercept)))
 
         if mask != 0:
             return mask
 
         # print("lg:", gpio.input(self.pin_isGun1on), gpio.input(self.pin_isGun2on))
         # debounce switch 1
-        if gpio.input(self.pin_isGun1on) == 0:
-            # while switch is on, restart timer
-            self.gunTime1 = time.time()
-        else:
-            # switch must be off some time (debounce)
-            delta = time.time() - self.gunTime1
-            if delta > self.debounceGunTime:
-                self.wasGunPulse1 = False
+        if use_gun_1:
+            if gpio.input(self.pin_isGun1on) == 0:
+                # while switch is on, restart timer
+                self.gunTime1 = time.time()
+            else:
+                # switch must be off some time (debounce)
+                delta = time.time() - self.gunTime1
+                if delta > self.debounceGunTime:
+                    self.wasGunPulse1 = False
+                    if DebugGun: print("Debounced Gun 1")
 
         # debounce switch 2
-        if gpio.input(self.pin_isGun2on) == 0:
-            # while switch is on, restart timer
-            self.gunTime2 = time.time()
-        else:
-            # switch must be off some time (debounce)
-            delta = time.time() - self.gunTime2
-            if delta > self.debounceGunTime:
-                self.wasGunPulse2 = False
-
+        if use_gun_2:
+            if gpio.input(self.pin_isGun2on) == 0:
+                # while switch is on, restart timer
+                self.gunTime2 = time.time()
+            else:
+                # switch must be off some time (debounce)
+                delta = time.time() - self.gunTime2
+                if delta > self.debounceGunTime:
+                    self.wasGunPulse2 = False
+                    if DebugGun: print("Debounced Gun 2")
         return 0
 
     def checkGun(self):
