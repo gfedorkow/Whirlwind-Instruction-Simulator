@@ -1,0 +1,22 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o1; xsum=good
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_14\102782386_fb1635p2_sim_daa_generation_9-20.7ch/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Paper-Tapes\2018_14\102782386_fb1635p2_sim_daa_generation_9-20_gs001_fb1635p2.tcore
+%TapeID: _fb1635p2
+%JumpTo 00
+%Stats: Covariance=0.001142, Size=93, 
+%Blocknum 0o0
+@C00040: 0000005 0014000 0174120 0040121 0100135 0110121 0030122 0040145  ; si rd md ts ca ad sd ts  : |\0<color>.-.d\t : \0a0<color>tli<color>
+@C00050: 0100136 0110121 0030122 0040150 0100141 0110121 0030122 0040154  ; ca ad sd ts ca ad sd ts  :         k.dh#.dp : tli<color>tli<color>
+@C00060: 0100142 0110121 0030122 0040157 0100137 0110121 0030122 0040161  ; ca ad sd ts ca ad sd ts  :    z.d##.d<stop> : tli<color>tli<color>
+@C00070: 0100140 0110121 0030122 0040164 0100143 0114121 0030122 0040170  ; ca ad sd ts ca su sd ts  :      t.dg<bs>.dm : tli<color>twi<color>
+@C00100: 0100144 0114121 0030122 0040173 0100125 0000717 0100123 0020145  ; ca su sd ts ca si ca bo  :        l.d#125\t :  twi<color>t\0t 
+@C00110: 0100107 0110123 0044107 0130104 0054124 0074117 0074104 0074004  ; ca ad td ao ck sp sp sp  :         353#r2## :         tldpjkkk
+@C00120: 0037777 0000000 0100000 0000003 0100135 0000002 0001002 0004002  ; cf si ca si ca si si .word  :   <del>\0\08-eee :     2\0t\0t\0\0e
+@C00130: 0005002 0002002 0003002 0006002 0007002 0000000 0000000 0000000  ; .word si si .word .word si si si  :      eeeee\0\0\0 :      e##88\0\0\0
+@C00140: 0000000 0000000 0020000 0000000 0020000 0000000 0110000 0111000  ; si si bo si bo si ad ad  : \0\0\0\0\0\0\0\0 :     \0\0 \0 \0ll
+@C00150: 0000000 0130000 0111000 0120000 0000000 0101000 0104000 0000000  ; si ao ad cm si ca cs si  : \0\0\0\0\0\0\0\0 :      \0plh\0tz\0
+@C00160: 0101000 0000000 0110000 0111000 0000000 0130000 0111000 0120000  ; ca si ad ad si ao ad cm  : \0\0\0\0\0\0\0\0 :       t\0ll\0plh
+@C00170: 0000000 0101000 0104000 0000000 0101000  None    None    None    ;    si ca cs si ca        : \0\0\0\0\0       :    \0tz\0t      
+
+%Hash: bfe519-7a51b4-93

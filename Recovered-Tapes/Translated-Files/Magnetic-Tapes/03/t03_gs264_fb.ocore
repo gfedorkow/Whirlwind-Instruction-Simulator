@@ -1,0 +1,45 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\03\t03.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\03\t03_gs264_fb.ocore
+%TapeID: _fb
+%JumpTo 02030
+%Stats: Covariance=0.003752, Size=182, 
+%Blocknum 0o0
+@T00000: 0177705 0003200 0112750 0050001 0110000 0103773 0177775 0112747  ; md si ad ta ad ca md ad  :  |\0h#\0#<cntl># : <del>#\trl#<del>\t
+@T00010: 0040026 0040035 0112750 0100001 0110000 0110001 0177775 0112510  ; ts ts ad ca ad ad md ad  :   j-h#\0#<cntl>  : <color><color>\ttll<del>\t
+@T00020: 0044010 0044014 0177774 0110000 0100000 0161010 0113772 0112755  ; td td md ad ca SR ad ad  :        iv\0\0 x# :   dd<del>ltm\t\t
+@T00030: 0040002 0177774 0110000 0100000 0171010 0161010 0112755 0040003  ; ts md ad ca CL SR ad ts  :       ev\0\0  #8 : <color><del>ltvm\t<color>
+@T00040: 0110000 0103774 0112755 0040001 0112747 0124005 0177775 0112510  ; ad ca ad ts ad sa md ad  :   \0v###|<cntl>  : l#\t<color>\ty<del>\t
+@T00050: 0070025 0074027 0177775 0112755 0130001 0130001 0177775 0112766  ; cp sp md ad ao ao md ad  : 17<cntl>###<cntl>9 : ck<del>\tpp<del>\t
+@T00060: 0100147 0040104 0113033 0074000 0177775 0112766 0100032 0040104  ; ca ts ad sp md ad ca ts  :   ##6\0<cntl>9f# : t<color>\tk<del>\tt<color>
+@T00070: 0177775 0110000 0077776 0164000 0102511 0054005 0163524 0074002  ; md ad sp sf ca ck SR sp  :  <cntl>\00\0=|rE : <del>l#x#j<cntl>K
+@T00100: 0076030  ;                      sp  :                N :                #
+%Blocknum 0o1
+@T00000: 0177755 0003200 0112750 0050001 0112747 0040026 0177775 0112766  ; md si ad ta ad ts md ad  :   #\0H##J<cntl>9 : <del>#\tR\t<color><del>\t
+@T00010: 0100147 0040104 0112771 0074000 0177775 0112766 0100032 0040104  ; ca ts ad sp md ad ca ts  : ##<cntl>\0<cntl>9f# : t<color>\tK<del>\tt<color>
+@T00020: 0112747 0100026 0110000 0074000 0102557 0054005 0120306 0074002  ; ad ca ad sp ca ck cm sp  :       #j\0\0#|ae :        \ttlk#jhk
+@T00030: 0076030  ;                      sp  :                n :                #
+%Blocknum 0o2
+@T00000: 0177772 0003200 0177774 0112766 0050050 0100127 0074011 0102560  ; md si md ad ta ca sp ca  :        x\0v9h7=o : <del>#<del>\trtk#
+@T00010: 0054005 0165155 0074002 0076030  ;             ck sf sp sp  :             |#en :             jxk#
+%Blocknum 0o3
+@T00000: 0177767 0003200 0112560 0100003 0112766 0074000 0177775 0110000  ; md si ad ca ad sp md ad  : #\0o89\0<cntl>\0 : <del>#\tt\tk<del>l
+@T00010: 0077742 0042000 0102561 0054005 0001477 0074002 0076030  ;    sp ts ca ck si sp sp  : z\0<stop>|<del>en :         #.#j\0k#
+%Blocknum 0o4
+@T00000: 0177772 0003200 0177774 0112766 0050050 0100143 0074011 0102562  ; md si md ad ta ca sp ca  :     x\0v9h<bs>=b : <del>#<del>\trtk#
+@T00010: 0054005 0165173 0074002 0076030  ;             ck sf sp sp  :             |#en :             jxk#
+%Blocknum 0o5
+@T00000: 0177767 0003200 0112562 0100003 0112766 0074000 0177775 0110000  ; md si ad ca ad sp md ad  : #\0b89\0<cntl>\0 : <del>#\tt\tk<del>l
+@T00010: 0077742 0072000 0102563 0054005 0131502 0074002 0076030  ;    sp cp ca ck ao sp sp  :         z\0#|een :          #-#jpk#
+%Blocknum 0o6
+@T00000: 0177772 0003200 0177774 0112766 0050050 0100123 0074011 0102564  ; md si md ad ta ca sp ca  :        x\0v9h5=g : <del>#<del>\trtk#
+@T00010: 0054005 0165155 0074002 0076030  ;             ck sf sp sp  :             |#en :             jxk#
+%Blocknum 0o7
+@T00000: 0177767 0003200 0112564 0100003 0112766 0074000 0177775 0110000  ; md si ad ca ad sp md ad  : #\0g89\0<cntl>\0 : <del>#\tt\tk<del>l
+@T00010: 0077742 0032000 0102565 0054005 0171506 0074002 0076030  ;    sp sd ca ck CL sp sp  :         z\0#|aen :          #+#jvk#
+%Blocknum 0o10
+@T00000: 0177773 0003200 0177775 0112766 0050050 0074044 0102566 0054005  ; md si md ad ta sp ca ck  :   #\0<cntl>9hl9| : <del>#<del>\trk#j
+@T00010: 0165067 0074002 0076030  ;                sf sp sp  :              #en :              xk#
+
+%Hash: 2283f4-c3a88f-182

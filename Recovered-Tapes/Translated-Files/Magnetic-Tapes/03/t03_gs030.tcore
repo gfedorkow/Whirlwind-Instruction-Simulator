@@ -1,0 +1,32 @@
+
+; *** Core Image ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\03\t03.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\03\t03_gs030.tcore
+%TapeID: 
+%JumpTo 01667
+%Stats: Covariance=0.005415, Size=164, Display-Ops, 1, 
+%Blocknum 0o0
+@C02400:  None    None    None    None    None    None   0020001 0000040  ;                   bo si  :               #t :               \0
+@C02410: 0016041 0075000 0020041 0000041 0016041 0040000 0016041 0040000  ; rd sp bo si rd ts rd ts  :      #\0###\0#\0 : 3k \03<color>3<color>
+@C02420: 0020041 0000136 0016041 0040000 0020041 0000140 0016041 0040000  ; bo si rd ts bo si rd ts  :       #k#\0#t#\0 :  \03<color> \03<color>
+@C02430: 0020041 0000215 0006041 0177752 0020041 0000220 0006041 0130000  ; bo si .word md bo si .word ao  :  #+#y#<color>#\0 :    \08<del> \08p
+@C02440: 0020041 0000222 0016041 0003000 0020041 0000223 0006041 0014000  ; bo si rd si bo si .word rd  :       #d#\0#5#\0 :        \03# \08a
+@C02450: 0020041 0000211 0016041 0002400 0020041 0000234 0016041 0000000  ; bo si rd si bo si rd si  :       #=#\0#c#\0 :       \03# \03\0
+@C02460: 0020041 0000236 0016041 0002200 0020041 0001000 0016041 0000337  ; bo si rd si bo si rd si  :       #k#\0#\0## :       \03# \03\0
+@C02470: 0016041 0014000 0016041 0175007 0016041 0111010 0016041 0045005  ; rd rd rd md rd ad rd td  :        #\0#3# #| :         3a303l3d
+@C02500: 0016041 0074000 0016041 0000007 0020041 0001010 0016041 0001040  ; rd sp rd si bo si rd si  :        #\0#3# #t :      3k3\0 \03\0
+@C02510: 0016041 0101016 0016041 0040604 0016041 0101017 0016041 0044620  ; rd ca rd ts rd ca rd td  :   #u###2#<color> :   3t3<color>3t3d
+@C02520: 0016041 0074560 0016041 0130574 0016041 0000600 0020041 0001007  ; rd sp rd ao rd si bo si  :        #o#v#\0#3 :       3k3p3\0 \0
+@C02530: 0016041 0000007 0020041 0001020 0016041 0100040 0016041 0040604  ; rd si bo si rd ca rd ts  :   #3#<color>#t## : 3\0 \03t3<color>
+@C02540: 0016041 0000336 0016041 0014000 0016041 0175030 0016041 0111017  ; rd si rd rd rd md rd ad  :        #k#\0#n#2 :        3\03a303l
+@C02550: 0016041 0044620 0016041 0074560 0020041 0001030 0016041 0000077  ; rd td rd sp bo si rd si  : #<color>#o#n#<del> :       3d3k \03\0
+@C02560: 0020041 0001040 0016041 0075100 0016041 0074041 0016041 0074250  ; bo si rd sp rd sp rd sp  :        #t#\0###h :         \03k3k3k
+@C02570: 0016041 0074520 0016041 0075011 0016041 0075020 0020041 0001100  ; rd sp rd sp rd sp bo si  : #<color>#=#<color>#\0 :        3k3k3k \0
+@C02600: 0016041 0075134 0016041 0075136 0016041 0075140 0016041 0075142  ; rd sp rd sp rd sp rd sp  :         #c#k#t#z :         3k3k3k3k
+@C02610: 0016041 0075130 0020041 0001130 0016041 0101133 0016041 0045100  ; rd sp bo si rd ca rd td  :        #n#n#6#\0 :        3k \03t3d
+@C02620: 0016041 0075100 0016041 0075134 0016041 0051100 0016041 0074041  ; rd sp rd sp rd ta rd sp  :       #\0#c#\0## :         3k3k3r3k
+@C02630: 0016041 0051100 0016041 0074250 0020041 0001140 0016041 0051100  ; rd ta rd sp bo si rd ta  :       #\0#h#t#\0 :        3r3k \03r
+@C02640: 0016041 0074520 0016041 0051100 0016041 0075020 0060042 0177777  ; rd sp rd ta rd sp ab md  : #<color>#\0#<color>z<del> :     3k3r3kn<del>
+@C02650: 0001000 0000100  None    None    None    None    None    None    ;       si si              : \0\0             : \0\0            
+
+%Hash: 3c71a8-5957f3-164

@@ -1,0 +1,39 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_01\102766752_fc131-238-925_csII_7-29.7ch
+fc TAPE 131-238-925 ABRAMOWITZ MODIFIED BESSEL FUNCTION K0(X)
+(24,6)
+[1;31ma1,[0m+0.1	[1;31ma2,[0m+0.0000001	[1;31ma3,[0m+0.1	[1;31ma4,[0m+0.05	[1;31ma5,[0m+5.0	[1;31ma6,[0m+0.0	[1;31ma7,[0m+0.0	[1;31ma8,[0m+0.0	[1;31ma9,[0m+0.0
+[1;31ma10,[0m+1.0	[1;31ma11,[0m+0.0	[1;31ma12,[0m+0.0	[1;31mq1,[0m+0.0	[1;31mq2,[0m+0.0	[1;31ma15,[0m+0.0	[1;31ma17,[0m+0.5	[1;31ma18,[0m+0.0
+[1;31mq3,[0m+0.0	[1;31mq4,[0micaq3	itsa8	[1;31mb2,[0micaa1	isua5
+icpb1	STOP	[1;31mb1,[0micaa7	ispm1+5	imra1	ispk1	itsa11	icaa10	idva11	itsa12
+icaa8	iada12	itsa8	icaa2	isua7	icpa13	icaa12	imra2	itsa6	icsa12	imra17
+iada8	itsa8	[1;31ma13,[0micsa6	iada12	icpa14	icaa7	iada4	itsa7	ispb1
+[1;31ma14,[0micaa1	iTOAp28.123t	icaa8	imra4	iTOAp28.1234567c	icaa1	iada3	itsa1
+ispq4
+[1;31mk1,[0m
+LSR FU1 EXPONENTIAL SUBROUTINE
+||||||||||
+za1=q2
+0r,ita38r	OUT	cs2042	su39r	ts54r	cp7r	sp9r	cs39r	ts2042	IN
+10r,its+za1	idv52r	iad40r	imr+za1	idv50r	iad40r	imr+za1	idv48r	iad40r	imr+za1
+20r,imr46r	iad40r	imr+za1	idv44r	iad40r	imr+za1	imr42r	iad40r	imr+za1	iad40r
+30r,isp33r	IN	imr+za1	its+za1	OUT	ao54r	cp31r	IN	isp	+2
+40r,+1.		+.5		+3.		+.25		+5.	
+50r,+6.		+7.		+0
+||||||||||
+END OF SUBROUTINE
+<stop>[1;31mm1,[0m
+LSR FU5 HYPERBOLIC FUNCTIONS
+za1=q1
+[1;31m0r,[0mita53r	OUT	ca87r	sp8r	+0	ita53r	OUT	ca86r
+ts51r	cs2042	[1;31m10r,[0msu88r	ts4r	cp17r	cs51r	ad87r	cp54r
+sp19r	cs88r	ts2042	IN	[1;31m20r,[0mits+za1	idv84r	iad72r	imr+za1
+idv82r	iad72r	imr+za1	idv80r	iad72r	imr+za1	[1;31m30r,[0mimr78r	iad72r
+imr+za1	idv76r	iad72r	imr+za1	imr74r	iad72r	imr+za1	iad72r	[1;31m40r,[0misp43r
+IN	imr+za1	its+za1	OUT	ao4r	cp41r	IN	ica72r	idv+za1
+[1;31m50r,[0miex+za1	+0	imr74r	isp	IN	its+za1	imr+za1
+idv82r	idv84r	iad72r	[1;31m60r,[0mimr+za1	imr+za1	imr78r	idv80r	iad72r
+imr+za1	imr+za1	imr74r	idv76r	iad72r	[1;31m70r,[0mimr+za1	isp53r	+1.
++.5	+3.	+.25	[1;31m80r,[0m+5.	+6.	+7.	iad+za1	isu+za1	+2
+END OF SUBROUTINE
+||||||||||
+<stop>i START AT b2

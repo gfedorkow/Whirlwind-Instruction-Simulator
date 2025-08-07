@@ -1,0 +1,28 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_06\102766834_fc141-228-10_csII_2-25.7ch
+fc TAPE 141-228-10 EXPOTENTIAL SUBROUTINE ROSEMAN
+(24,6)
+[1;31mt1,[0m+0.	+0.	+0.	+0.	+0.	+0.	[1;31ma2,[0m+0.	+.1	+2.	+.5
+[1;31mc1,[0m
+t=t1
+LSR FU1 EXPONENTIAL SUBROUTINE
+||||||||||
+za1=t1
+0r,ita38r	OUT	cs2042	su39r	ts54r	cp7r	sp9r	cs39r	ts2042	IN
+10r,its+za1	idv52r	iad40r	imr+za1	idv50r	iad40r	imr+za1	idv48r	iad40r	imr+za1
+20r,imr46r	iad40r	imr+za1	idv44r	iad40r	imr+za1	imr42r	iad40r	imr+za1	iad40r
+30r,isp33r	IN	imr+za1	its+za1	OUT	ao54r	cp31r	IN	isp	+2
+40r,+1.		+.5		+3.		+.25		+5.	
+50r,+6.		+7.		+0
+||||||||||
+<del>END OF SUBROUTINE
+<stop>t=t1
+[1;31ma1,0r,[0mita50r	itst	imrt	imr59r	its2t	icat	idv55r	its4t	iad51r	its6t	[1;31m10r,[0mics4t
+iad51r	its4t	ica51r	itst	its8t	IN	ica8t	imr2t	its10t	[1;31m20r,[0mica53r	iad55r
+its53r	imr6t	iad10t	iex6t	its8t	ica53r	imr4t	its10t	[1;31m30r,[0mica2t	imrt	iad10t
+iex4t	itst	OUT	ao57r	cp16r	ca58r	ts57r	[1;31m40r,[0mIN	ica51r	its53r	ica8t	idvt
+itst	ica6t	idv4t	iadt	idv55r	[1;31m50r,[0misp	+1.	+1.	+2.	-9	-9	+.25
+[1;31ma3,[0micr20	icaa2	iad2a2	itsa2	ispa1	its1000+c	icaa2	ispc1	its900+c	icta3+1	[1;31mb1,[0micr20	ica4a2
+ica4a2	iad6a2	its4a2	ispa1	its1050+c	icaa2	ispc1	its950+c	ict<del>b1+1	icr50
+[1;31mx1,[0mica900+c	isu1000+c	its1100+c	ictx1	iSTOP
+7b1|ica4a2
+i START AT a3

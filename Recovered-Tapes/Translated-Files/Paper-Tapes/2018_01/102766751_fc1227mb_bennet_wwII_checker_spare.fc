@@ -1,0 +1,733 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_01\102766751_fc1227mb_bennet_wwII_checker_spare.7ch
+fc 1227 m6 WHIRLWIND CHECKER BENNETT
+OCTAL
+40|sp
+ca 43
+cf 723	|read in aux
+26
+44|cf320
+sp 32	|read in pre-checker
+46|si 0
+sp a1
+2340|[1;31mp8,[0m	|temp stor for compare memory
+|[1;31mAUXILLIARY A[0m
+DA2000|400|[1;31mb49,[0mspr7	|read in tape
+0.67105
+0.02200
+0.22700
+0.50060
+1.13634
+sp r28	|cr
+ca k9	|cf 323
+ts 5
+ca 4a9	|bi 2000, block in aux
+ts 6
+ca 3k3	|1000
+si 703
+sp b41
+ca w15+2000-b49	|2400
+si 703
+ca 3k3	|1000
+cf 230
+bi 1000
+cf 220
+sp 32	|read in tape
+[1;31mw15,[0msi 2400
+|[1;31mSET INDEX NUMBER[0m
+[1;31mb37,[0msp r7	|xn
+1.60700
+sp r26
+su 1
+sd k5	|-0
+ts 1p6	|control register
+sp b21-1
+[1;31mb12,	pa1=2000-b12[0m	spr7	|perfvrm special function
+0.67160
+0.12151
+0.02600
+0.15256
+0.07211
+1.36734
+sp r28	|cr
+sp p7	|special function, control returned to b21
+[1;31m|CHECK REGISTERS
+pa1=2000-b15
+b15,[0mspr7
+0.66150
+0.12153
+0.01105
+0.16463
+0.50262
+0.47736
+0.31617
+0.06064
+0.22756
+0.73541
+0.70164
+0.52054
+0.73545
+0.71420
+0.12164
+1.12236
+sp r28	|dsp r34	|deselect
+sp c1-1
+md 2k2	|77
+sd k5	<del><del><del>|-0
+ad 1
+ts c2	|area ctr
+ca k11	|p5
+td b28+pa1
+td b34+pa1
+ca 1k11	|p4
+td b22+pa1
+[1;31mb22,[0mca	|p4
+ts c3	|addr ctr
+ao b22+pa1
+td b29+pa1
+ca 1
+ts 1c3	|number of registers
+[1;31mb29,[0msu	|1p4
+ts 1c2	|register ctr
+[1;31mb30,[0msp r18	|obtain block
+sp r1	|select output
+ca c3
+sp r8	|of, tab
+ca p9
+[1;31mb28,[0msd	|p5
+cp 4b28+pa1
+su 0
+cp b33+pa1	|match
+4b28,ca p9
+sp r8	|print contents
+[1;31mb34,[0mca	|p5
+sp r8
+[1;31mb35,[0msp r28	|cr
+ao b28+pa1
+ao b34+pa1
+ao c3
+ao 1c2
+cp b30+pa1
+ao b22+pa1
+ao c2
+cp b22+pa1
+sp b21
+[1;31mb33,[0mspr7	|ok
+0.66753
+1.71674
+sp b34+pa1
+[1;31mp4,[0m	|check register areas
+20r|[1;31mp5,[0m	|check register contents
+30r|	|HALT	pa1=2000-b20
+[1;31mb20,[0mspr7
+0.66401
+1.31234
+sp r28	|cr
+ca 1p6
+si 0
+sp b21
+[1;31mpa1=2000-b48
+b48,[0mspr7
+0.66401
+1.31234
+<del>spr7
+0.00756
+0.01151
+1.00634
+sp r28
+ca 1p6
+si 1
+sp b21
+[1;31mb42,[0m	|STORE	pa1=2000-b42
+sp r7	|store at
+0.67164
+0.37105
+0.00064
+1.01634
+sp r26	|core address
+ts 2d1
+sp r7	|comma, space
+1.76034
+ao c1
+sp c1-1
+ts 1d1
+sp r13	|o.f.
+sp r2	|plant register
+sp b21-1
+|[1;31mPRESERVE MEMORY[0m	pa1=2000-b14
+[1;31mb14,[0msp r7	|pr
+0.67022
+0.13145
+0.45305
+0.00645
+0.32762
+1.63636
+sp c1-1
+md 2k2	|77
+sd k5	|-0
+ad 1
+ts c2	|area ctr
+ts d2
+ca k3	|p3
+td x8+pa1
+su c2
+su c2
+td x2+pa1
+ca 5k7	|40
+ts 1c3
+sp r1
+[1;31mx8,[0mca	|p3
+sp r13	|o.f.
+spr7	|comma, space
+1.76034
+ao x8+pa1
+td x9+pa1
+[1;31mx9,[0mca	 |1p3
+sp r16	|pr 5 digits
+sp r28
+ao x8+pa1
+[1;31mx2,[0mca 	|initial addr
+ts t1
+ao x2+pa1
+td x1+pa1
+[1;31mx1,[0mca 	|no. regs
+su 1
+ts t2
+md 5k6	|0.77740
+ad t1	|initial addr
+ts c3	|initial addr of last block
+[1;31mx3,[0mca t2	|number of registers
+md k2	|37
+sd k5	|-0
+ts 1c2
+[1;31mx6,[0msp r18	|obtain block
+ca 11k6	|p9
+su 1c2
+td x4+pa1
+si 116	|mt 1, rec fwd
+ca 0
+ts t2
+[1;31mx4,[0mca	|p9
+rc
+sd t2
+ts t2
+ca x4+pa1
+su 1
+ts x4+pa1
+ao 1c2
+cp x4+pa1
+cat2
+rc
+si116
+si114	|stop
+ca c3
+su 5k7	|40
+ts c3
+cs k2	|37
+ts 1c2
+[1;31mx5,[0mca t1	|initial addr of area
+su c3	|tinital address of block
+cp x6+pa1	|area not done
+[1;31mx7,[0mcs 3k1	|3
+dm 0
+ab x2+pa1
+ao c2
+cp x8-1+pa1
+sp b21
+|[1;31mPERM BLOCK A[0m
+DA2400|2400|[1;31mp1,[0m	|program location table
+170r|[1;31mp7,[0m	|special function
+40r|[1;31ma14,[0mca 0
+ts 24	|set mark counter to zero
+[1;31ma3,[0mad 1k3	|p2
+td c1
+[1;31ma11,[0msp c1-1	|pick up exec instr
+cp a5	|checker
+sp a12	|block in ccs
+ca k6	|sp 200
+ts 6
+sp b41
+sp b21
+[1;31ma12,[0mta 3777	|block in ccs
+sp c1-1
+md 2k2	|77
+td 3
+mh 3k1
+slh 17
+ad 2k3	|p1
+td a4	
+ad 1
+td 2a4
+ad 1
+td 4a4
+ca k9	|cf 323
+ts 5
+ca 4a9	|bi
+ts 6
+[1;31ma4,[0mca	|da
+sp a10	|execute drum si
+ca 	|cor addr
+td 6
+ca 	|length
+sp 5
+[1;31ma5,[0mmd 5k6	|0.77740
+dm 0
+cp a2	|fast instruction
+ca c1	|executive program counter
+md 2k2	|77
+si 510	|indicator lights
+rc
+sp r1
+sp r4	|print no
+ca 2k7	|space
+sp r10	|pr
+spc1-1	|checker
+clh25
+mdk10	|17
+ad1k10	|a8
+tda9
+[1;31ma9,[0mca
+spr34	|des.
+si703
+ca5k3	|400
+4a9,bi 2000
+sp r1
+sp 2000
+[1;31ma8,[0mb1
+b2
+b3
+b4
+b47
+b6
+b42
+b37
+[1;31m2b7,[0mb36
+b8
+b57
+b12
+b13
+b14
+10r,b15
+b46
+b9
+b17
+14r,b18
+b19
+b39
+b40
+20r,b20
+b48
+b49
+b50
+24r,b51
+b55
+[1;31mr15,[0mta w14	|block out aux
+ca k9	|cf323
+ts 5
+ca w16	|bo 2000
+ts 6
+ca 5k3	|400
+si 707
+[1;31mw16,[0mbo 2000
+ca 13k6	|1400
+sp b41
+cf 230
+ca 3k3	|1000
+bo 1000
+ca 5k3	|400
+bo 2400
+[1;31mw14,[0msp
+[1;31m|PERMANENT B[0m
+[1;31m3000|p2,[0m	|executive program
+1.02000
+DITTO
+[1;31m100r|p3,[0m 1.44000	|cf 2,3
+1.04000
+1.42000	|cf 1
+si 2000
+1.50000	|cf 4,5
+si 4000
+0	|main drum
+0.44000
+1.14000	|buffer drum
+0.24000	|compare memory areas
+[1;31m20r|a10,[0mtaa13	|executive drum si
+cp1a13
+si1703
+[1;31ma13,[0msp
+si1713
+spa13
+[1;31m2k1,[0m2
+3
+4
+5
+[1;31mk2,[0msi37
+si3777
+si77
+[1;31mk3,[0mp3
+p2
+p1
+si1000
+4k3,si2000
+si400
+[1;31mk5,[0m-0
+[1;31mk9,[0mcf323
+1.00000
+sp
+ex
+4k9,0.40000
+[1;31ma2,[0msp c1-1
+clh 16
+[1;31m0r,[0mcp 2r	|not branch to zero
+sp 1a1
+clh 1
+srh 17
+sd 3
+md 4k7	|1.10000
+sd 3
+ts 3
+sp b21
+[1;31ma7,[0mta a6	|start at
+ca 1d12	|br
+clh 20
+ad d12	|ac
+sp b41
+ts d12	|ac
+clh 20
+ts 1d12	|br
+[1;31ma6,[0msp
+[1;31mk10,[0msi17
+a8
+b7
+si70
+4r,si1777
+0.77777
+[1;31mk4,[0msp7
+1.20000
+cf320
+cf303
+4k4,cf1000
+[1;31mk11,[0mp5+2000-b15
+p4+2000-b15
+si3770
+si21
+4r,si51
+si7
+si35
+si24
+[1;31mk6,[0msp 200
+si3000
+si4000
+r13
+4k6,r14
+0.77740
+b26
+clc40
+10k6,p8
+p9
+si3400
+si1400
+[1;31mk7,[0m1.40000
+1.60000
+si10
+si45
+4k7,1.10000
+si40
+si3740
+0.77776
+[1;31mr1,[0mta2r	|select output
+si176
+sp
+[1;31mr2,[0mta7r	|plant reg.
+ca2d1	|location
+ad3k9	|ex
+ts6
+ca1d1
+spb41
+ts1d1
+7r,sp
+[1;31mr3,[0mtaw4	|print 4 digits (core address)
+md1k2	|3777
+tst2
+sf3t2
+ao 3t2
+dv1k6	|si3000
+slh11
+mh3k1
+slh17
+ad7k11	|24
+tdw2
+su5k7	|40
+cpw2-1	|non-zero
+ca5k7	|40
+tdw2
+cat2
+[1;31mw2,[0mclc
+md5k11	|7
+spr11	|pr.
+caw2
+ad3k1	|3
+tsw2
+su7k6	|clc40
+cpw2-1
+cat2
+[1;31mw4,[0msp
+w6
+[1;31mr4,[0mtaw4	|print 2 digits
+md2k2	|77
+tst2
+ca6k11	|35
+tdw2
+spw2-1
+[1;31mr10,[0mta4r	|print char.
+clc0
+clh12
+rc
+4r,sp
+[1;31mr11,[0mta5r	|print digit
+ad10w1
+td3r
+ca
+4r,spr10
+sp
+[1;31mw1,[0m0.00076	|0
+0.00025	|1
+0.00017	|2
+0.00007	|3
+0.00013	|4
+0.00023	|5
+0.00033	|6
+0.00027	|7
+10w1,w1
+[1;31mr13,[0mtaw4	|print o.f.
+tst2
+clh21
+md1
+spr11
+ca3k11	|period
+spr10
+<del><del>ca 7k11	|24
+td w2
+sp w2-1
+[1;31mr16,[0mtaw4	|print 5 digits
+md 5k10	|0.77777
+sp 2r3
+[1;31mr14,[0mtaw4	|print instruction
+tst2
+clh25
+mdk2	|37
+ad1w4	|w6
+0r,td1r
+ca
+ts 4r
+sp r7
+4r, 0
+ca t2
+sp1r3
+[1;31mw6,[0m1.46440	|si
+1.22600	|il
+1.04440	|bi
+1.44200	|rd
+1.04740	|bo
+1.44140	|rc
+1.46200	|sd
+1.06300	|cf
+1.51140	|ts
+1.50200	|td
+1.50040	|ta
+1.06540	|ck
+1.02100	|ab
+1.13400	|ex
+1.07000	|cp
+1.47000	|sp
+1.06040	|ca
+1.07140	|cs
+1.02200	|ad
+1.47240	|su
+1.06640	|cm
+1.46040	|sa
+1.02740	|ao
+1.10640	|dm
+1.33100	|mr
+1.32400	|mh
+1.11300	|dv
+1.46600	|sl
+1.47100	|sr
+1.46300	|sf
+1.06600	|cl
+1.32200	|md
+[1;31mr26,[0mtaw4	|print 4 digit addr.
+spc1-1
+sp1r3
+[1;31mr41,[0mtaw4	|print 2 digit addr.
+spc1-1
+sp1r4
+[1;31mr5,[0mta 3r	|print tab
+ca 3k7	|tab
+sp r10
+sp
+[1;31mr7,[0mta1r	|generalized print
+ca
+tsw17
+clh26
+spw18
+caw17
+clh33
+spw18
+caw17
+spw18
+ao1r
+td w20
+csw17
+cp1r
+[1;31mw20,[0msp
+[1;31mw18,[0mtaw19
+mdk2	|37
+clh37
+ad1w17	|w21
+tdw22
+tdw23
+clh20
+cpw23	|odd
+[1;31mw22,[0mca
+clc32
+sp1w23
+[1;31mw23,[0mca
+spr10
+[1;31mw19,[0msp
+[1;31mw17,[0m0
+w21
+[1;31mw21,[0m0.01006	|space,a
+0.06234
+0.02202
+0.03264
+0.05014
+0.02636
+0.04470
+0.03060
+0.05456
+0.02412
+0.04016
+0.07446
+0.07252
+0.04271	|z, upper
+0.07545	|lower, tab
+<del>0.05131	|cr, comma
+[1;31mr8,[0mta 3r	|print o.f., tab
+sp r13	|o.f.
+sp r5	|tab
+sp[1;31mr18,[0mta w10	|obtain block
+ca c3
+ts t2
+cp 1w10	|core field
+[1;31mw13,[0mca c3
+sp a10	|execute si
+ca 1c3	|no. words
+bi p9
+[1;31mw10,sp
+[0m1w10,ad 4k9	|0.40000
+cp w13	|not core field
+ca 1k9	|ca
+ts 6
+cs 1c3
+ad 1
+ts 2t2
+ca 11k6	|p9
+td w11
+ca 5
+ts 1t2
+[1;31mw12,[0mcat2
+clc 26
+md 5k11	|7
+ad 2k4	|cf 320
+ts 5
+md 2k1	|2
+clh 3
+ad 5
+ts 5
+ca t2
+md 4k10	|1777
+ad 4k3	|2000
+td 6
+sp b41
+[1;31mw11,[0mts	|p9
+ao t2
+ao w11
+ao 2t2
+cp w12
+ca 1t2
+ts 5
+sp w10
+[1;31mr28,[0mta 3r	|cr and deselect
+sp r67	|cr
+sp r34	|deselect
+3r, sp
+[1;31mr34,[0mta 2r	|deselect output
+<del>si 134
+sp
+[1;31mr45,[0m
+[1;31mr67,ta [0m3r	|print cr
+ca 4k11
+sp r10
+sp
+[1;31m3646|[0mc1-1,ta1c1
+[1;31mc1,[0mca	|exec. addr. ctr.
+sp
+[1;31mc2,[0m0	|ctr., areas
+0	|ctr., registers
+[1;31mc3,[0m0	|addr. ctr. for area
+0	|no. registers in area
+[1;31md1,[0m0	|exit plant ind.
+0	|orig. contents
+0	|location
+[1;31md2,[0m0	|1-no. areas preserved
+[1;31md3,[0m0	|mode ind.
+[1;31md4,[0mca	|program counter
+[1;31md5,[0m0	|initial addr. of area-1
+0	|area length
+0	|instruction type
+[1;31md7,[0msi37	|active region, initial addr.-1
+si3740	|length
+[1;31md9,[0m0	|branch ind.(for conditional branches)
+[1;31md12,[0m0	|current AC
+0	|current BR
+[1;31mt1,[0m0
+[1;31mb10,[0mca 0
+td x23-2
+spx35
+[1;31ma1,[0msp r15	|block out aux
+sp a14
+b21-1,sp r28
+[1;31mb21,[0mao c1
+sp a11
+[1;31mb23,[0msi 337	|RMIR, startover at new exec. instr
+rd
+md 2k2	|77
+sp a3
+[1;31mb24,[0mca 22b7	|b49, startover, read in tape
+sp 2a9
+[1;31mb25,[0msp r1	|print PC
+sp r7
+0.75560	|PC
+1.07600
+ca d4
+sp r3	|core address
+sp r28
+sp 0
+[1;31mb27,[0msp r15	|b=ock out aux
+sp b21
+[1;31mb31,[0msp r15
+sp b23
+[1;31mb41,[0mta3777
+sp5
+3730|[1;31mp9,[0m	|storage table
+36r|[1;31md6,[0m0	|lp ctr
+0	|instr for print
+3770|[1;31mt2,[0m0
+0
+0
+0	|Use only digits portion, leave rest zeros
+[1;31mp6,[0m8	|no. of branches check for loop
+0	|control register
+0.77776	|lp lim
+[1;31m3777|[0msp a1
+START AT 41

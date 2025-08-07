@@ -1,0 +1,75 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302365_box08\102663399_fc126-7-6a_11-17-58_11-24.7ch
+fc TAPE 126-7-6a INTERPRETER - MARCUS
+DECIMAL
+|STORAGE
+[1;31m0.03100|[0mspb10	[1;31m<del><del><del><del><del><del><del><del><del>b6,[0m<del><del>1<del>	[1;31mb7,[0m0	[1;31m1b7,[0m0	[1;31m2b7,[0m0	[1;31mb8,[0m0	[1;31m1b8,[0m0
+|GET STATEMENT
+[1;31m0.03110|b10,[0mcab<del>6	spp1	b31	tsb7	cpb11	srh9	adb14	tsb13	ex0	clh3
+[1;31mb13,[0msp
+[1;31mb14,[0mspb34
+|NE<del>W STATEM<del>ENT NO.
+[1;31mb15,[0mcab7
+[1;31m1b15,[0mmdb16	tsb6	spb10
+[1;31mb16,[0m0.00077
+|IF OR WW
+[1;31mb11,[0mclh1	cpb17	srh1	tdb18
+[1;31mb18,[0msp
+|IF
+[1;31mb17,[0msrh1	tdb19
+[1;31mb19,[0mca	ts1b7	aob19	tsb20
+[1;31mb20,[0mca	ts2b7	cab7	clh2	cpb21
+|CONDITION
+ca1b7	srh6	adb22	tsb23
+[1;31mb23,[0msp
+[1;31mb22,[0mspb35
+|TEST
+[1;31mb21,[0mca1b7	spb27	tsb8	ca2b7	spb27	sub8<del>	ts1b8<del><del><del>	ca<del>b7	clh3	cpb28	clh1	cpb29
+|TEST NEGATIVE
+cab8	cpb30	spb36
+|TEST EQUAL
+[1;31mb29,[0mca1b8	cpb37	spb36
+[1;31mb37,[0mad1	cpb36	spb30
+|TEST GREATER OR LESSER
+[1;31mb28,[0mclh1	cpb38	ao1b8	cpb30	spb36
+|TEST LESSER
+[1;31mb38,[0mca1b8	cpb36	spb30
+|TEST = YES
+[1;31mb30,[0mca1b7	sp1b15
+|TEST = NO
+[1;31mb36,[0mca2b7	sp1b15
+|GET VARIABLE
+[1;31mb27,[0mtab26
+[1;31m1b27,[0mtsb24	cpb48<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>	srh9	spp1	b33	tdb25	cab24	srh6	mdn7	adb25	tsb25
+[1;31mb25,[0mca
+[1;31mb26,[0msp
+[1;31mb24,[0m0
+|TAG RELATIVE TO ABSOLUTE
+[1;31mb<del>48,[0msrh6	mdn7	spp14	clh6	tsb47	cab24	mdb41	sdb47	sp1b27
+[1;31mb47,[0m0
+[1;31mb41,[0m0.77000
+||ACTIONS
+|MOVE ABSOLUTE
+[1;31mb42,[0mspp5	spb15
+|MOVE RELATIVE
+[1;31mb39,[0mspp14	spp5	spb15
+|LOOK ABSOLUTE
+[1;31mb40,[0mspp13	spp4	spb15
+|LOOK RELATIVE
+[1;31mb43,[0mspp4	spb15
+|AI<del>M
+[1;31mb44,[0mspp2	spb15
+|MIV
+[1;31mb46,[0mspp17
+|TABLES
+[1;31m0.03400|b31,[0m0
+[1;31m0.03477|<del><del><del><del><del><del>[0m0.06000
+<del>
+[1;31m0.03500|b3<del>2,[0m
+
+[1;31m0.03600|b33,[0m0.00070	[1;31m1b33,[0m0.00042	[1;31m2<del>b33,[0m0.00052	[1;31m3b33,[0mt11
+
+[1;31m0.03620|b34,[0mspb15	[1;31m1b34,[0mspb42	[1;31m2b34,[0mspb39	[1;31m3b34,[0mspb40	[1;31m4b34,[0mspb43	[1;31m5b34,[0mspb<del>44	[1;31m6b34,[0mspb46
+
+[1;31m0.0<del>3640|<del><del>b35,[0m<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>0	[1;31m1b35,[0msp0.03710
+OCTAL
+STA 32

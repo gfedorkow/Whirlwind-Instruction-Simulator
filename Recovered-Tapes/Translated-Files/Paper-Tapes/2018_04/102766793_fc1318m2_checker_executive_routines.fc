@@ -1,0 +1,802 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_04\102766793_fc1318m2_checker_executive_routines.7ch
+fc 1318m<del><del>2 CHECKER EXECUTIVE ROUTINES bennett
+OCT
+|[1;31mexecutive routines[0m
+[1;31mDA1.12540|12540|[0m[1;31mb49,[0mspr7	|read in tape
+0.<del>73105	|uc R E
+0.02200<del>	|A D sp
+0.70700	|I N sp
+0.50060	|T A P
+1.13736	|E lc lc
+sp r28	|cr
+sp 31	|read in tape
+0	|lmr
+0	|rmir
+sp b21
+|[1;31mSET INDEX NUMBER[0m
+[1;31mb37,[0msp r7	|xn
+1.60700	|s n sp
+sp r26<del>	|print 4 digit address
+su 1
+sd k5	|-0
+ts 1p6	|control register
+sp b21-1
+[1;31mb12,	pa1=2000-b12[0m	spr7	|perfvrm special function
+0.<del>73160	|uc S P
+0.12174		|E C I
+0.02600<del>	|A L sp
+0.15256	|F U N 
+0.07234	|C T I
+1.66736	|O N lc
+sp r28	|cr
+sp p7	|special function, control returned to b21
+|HALT	pa1=2000-b20
+[1;31mb20,[0mspr7
+0.72401	|uc HA
+1.3123<del>6	|L T lc
+sp r28	|cr
+ca 1p6
+si 0
+sp b21
+[1;31m|halt on si 1
+[0m[1;31mpa1=2000-b48
+b48,[0mspr7
+0.72401	|uc H A
+0.31236	|L T lc
+0.0<del>1556	|sp o n
+0.01174	|sp s i
+0.01556	|sp o n
+1.12000	|e sp sp
+sp r28
+ca 1p6
+si 1
+sp b21
+[1;31mb42,[0m	|STORE	pa1=2000-b42
+sp r7	|store at
+0.<del>73164	|uc S T
+0.67105<del>	|O R E
+0.00064<del>	|sp A T
+1.01736<del>	|sp lc cl
+sp r26	|core address
+t<del><del><del>d<del><del>2d1
+sp r<del>39	|comma, space
+ao c1
+sp c1-1
+ts 1d1
+sp r<del>30	|wi + of
+sp r2	|plant register
+sp b21-1
+|[1;31mPRESERVE MEMORY[0m	pa1=2000-b14
+[1;31mb14,[0msp r7	|pr
+0.<del>73022	|uc P R
+0.13145	|E S E
+0.45305	|R V E
+0.00645	|sp M E
+0.33562	|MO R
+1.63717	|Y lc cr
+sp c1-1
+clc 12
+cp x50+pa1	|same as last time
+clh 26
+sd k5	|-0
+ad 1
+ts c2	|area ctr
+ts d2
+ao c1
+td x8+pa1
+<del><del>td 1d2
+su c2
+su c2
+td x2+pa1
+ad 1
+td c1
+[1;31mx5,[0mca <del><del><del><del><del><del>7<del><del><del><del><del><del>k<del>5	|40
+ts 1c3
+sp r1
+[1;31mx8,[0mca	|p3
+sp r13	|o.f.
+spr39	|comma, space
+ao x8+pa1
+td x9+pa1
+[1;31mx9,[0mca
+spr42<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>	|pr 5 digits
+sp r28
+ao x8+pa1
+[1;31mx2,[0mca 	|initial addr
+ts t1
+ao x2+pa1
+td x1+pa1
+[1;31mx1,[0mca	|no. regs
+su1
+ts2t3
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>ad t1	|initial addr
+md k3	|<del><del><del><del><del><del><del><del>1.77740
+[1;31mx3,[0mts c3	|initial addr of last block
+cs k2	|37
+ts 1c2	|counter for 40
+sp r18	|obtain block
+ca 11k6	|p9
+su 1c2
+td x4+pa1
+si 116	|mt 1, rec fwd
+ca 0<del>	|zero
+ts t3	|check sum
+ts 1t3	|scramble ts
+
+[1;31mx4,[0mca	|p9
+sp r27+pa1	|record scrambled
+sd t3
+ts t3<del>
+ca x4+pa1
+su 1
+ts x4+pa1
+ao 1c2
+cp x4+pa1
+cat<del>3
+rc
+si116
+si114	|stop
+ca c3	|initial address of current block
+su t1	|initial address of area
+cp x6+pa1	|all done
+ca c3
+su 7k5	|40
+sp x3<del>+pa1
+[1;31mx50,[0mca0
+dmd2
+ts d2
+ts c2
+ca 1d2
+td x8+pa1
+su d2
+su d2
+td x2+pa1
+sp x5+p<del>a1
+[1;31mx6,[0msi 116
+ca <del>2<del><del><del><del><del><del><del>t3	|n-1
+sp r2<del><del><del><del><del><del>7+pa1
+ex t1	|initial addr.
+sp r27+pa1
+sd t1
+rc
+si 116
+si 114
+cs 3k1	|3
+dm 0
+ab x2+pa1
+ao c2
+cp x5+pa1
+sp b21
+|record scrambled
+[1;31mr27,[0mta 14r+pa1
+clh 2
+ad 1
+3,ex1t3
+4,clh 36
+ex 1t3
+clh 2
+ck 0
+10,sp 12r<del><del><del><del><del>27+pa1
+sp 3r<del><del><del><del><del><del>27+pa1
+12,ex 1t3
+rc
+14,sp
+pa1=2000-b47
+[1;31m|ACTIVE REGION
+b47,[0mspr7	|pr
+0.<del>72043	|uc A C
+0.51626	|T I V
+0.12022	|E sp R
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>0.12374	|E G I
+0.66700	|O N sp
+1.<del>75736	|lc lc lc
+sp r26	|core address
+su 1
+ts d7
+c<del>s2k3	|50
+sp r11	|print dash
+ao c1
+sp c1-1
+ts 1d7
+ad d7
+sp r3	|pr no
+sp b21-1
+|[1;31mBRANCHES[0m
+pa1=2000-b39
+[1;31mb39,[0msp r17+pa1	|conditional
+sp r19+pa1	|branch to
+sp r12+pa1	|pr
+spr7	|type a
+0.51420
+1.12001
+sp r28
+si300
+rd
+cpb10<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>+pa1	|set
+sp b21
+[1;31mb10,[0msi 337
+rd
+cp 3b13+pa1	|branch
+sp b21
+[1;31mb40,[0m	pa1=2000-b40
+sp r17+pa1	|conditional
+sp r19+pa1	|branch to
+sp r<del>12+pa1	|2 digit addr
+spr7	|type b
+0.51420
+1.12002
+sp r28
+si 300
+rd
+clh 1
+[1;31mb8,[0mcpb11<del><del><del><del><del><del><del><del>+pa1
+ca d9
+cp 3b13+pa1
+sp b21
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>[1;31mb11,[0msi336
+rd
+tsd9
+sp1b8<del><del><del><del><del>+pa1
+[1;31mb51,[0m	pa1=2000-b51
+spr17+pa1	|conditional
+sp r19+pa1	|branch to
+sp r12+pa1	|2 digit addr
+spr7	|type c
+0.51420
+1.12003
+sp r28
+ca 1p6	|control reg
+cp 3b13+pa1
+sp b21
+[1;31mpa1=2000-b13[0m
+[1;31mb13,[0msp r19+pa1	|branch to
+sp r<del>12+pa1<del>	|two digit addr
+sp r28
+3b13,sp c1-1
+md 2k8	|177
+sp a3
+[1;31mr19,[0mta 3777
+spr7
+0.72122	|uc B R<del>
+0.02703<del>	|A N C
+0.20024<del>	|H sp T
+<del><del><del><del><del><del><del><del><del><del>1.66036	|O sp lc
+sp 3777
+[1;31mr17,[0mta 3777
+spr7
+0.72173	|uc C O
+0.34234	|N D I
+0.51633	|T I O
+0.34054	|n A L
+1.01675	|sp uc uc
+sp 3777
+|print address of executive instruction, space, comma
+[1;31mr12,[0mta 3777
+sp c1-1
+sp r4	|print no. to 177
+sp r39	|comma, space
+sp 3777
+1.00036	|sp sp lc
+[1;31m|SET CONTROL REGISTER
+b50,[0mao c1
+sp c1-1
+<del><del><del><del><del><del><del><del><del><del><del><del><del>ts c3
+sp r<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>13	|o.f.
+sp r7
+0.00401	|sp h a
+1.46036	|s sp lc
+sp r34
+ca 1
+ts 1c3
+sp r18	|obtain block
+ca p9
+ts 1p6	|control reg
+sp r1
+sp r30	|wi+o.f.
+sp r7
+0.37145	|cr s e
+0.50003	|t sp c
+0.66724	|o n t
+0.45554	|r o l
+0.01105	|sp r e
+0.17623	|g is
+1.50262	|t e r
+sp b21-1
+|[1;31mCOMPARE MEMORY[0m
+pa1=2000-b46
+[1;31mb46,[0mspr7
+0.72173	|uc C O
+0.33001	|M P A
+0.44240	|R E <del><del>sp
+0.32255<del>	|M E M
+0.67131	|O R Y
+0.36754	|<del><del><del><del><del>cr cr L
+0.66141	|O C A
+<del><del><del>0.51633	|T I O
+0.34037	|N sp ss
+<del>0.00037	|sp sp ss
+0.01554	|sp O L
+0.<del>10037	|D sp ss
+0	|3 spaces
+0
+0.00016	|sp sp N
+1.13376	|E W cr
+sp r28
+ca <del><del><del>d2	|preserver memory ind
+cp x11+pa1
+sp r1
+spr7	|memory not preserved
+0.72645	|uc M E
+0.33562	|M O R
+0.62016	|Y sp N
+0.<del><del>67200	|O T sp
+0.41105<del>	|P R E
+0.46262	|S E R
+0.54244	|V E D
+1.75736	|lc lc lc
+sp b21-1
+[1;31mx11-1,[0mb56
+[1;31mx11,[0mts c2	|area ctr
+cs d2
+ts d2	|clear ind
+ca <del><del><del><del><del><del><del>7k5	|40
+ts 1c3	|n<del><del>
+pa2=x11<del>-1<del>+pa1
+ca pa2	|<del><del><del><del>b56
+sp2<del><del><del><del>a9<del>	|block in main routine
+[1;31m|main routine[0m
+<del><del>pa1=2000-b56
+[1;31mb56,[0msp r34	|deselect
+[1;31mx10,[0msi113
+rd
+ts t3	|ck sum
+rd
+ts c3	|initial address
+sd t3
+ts t3
+rd
+si 630
+ts3t3<del><del><del><del><del>	|n-1
+ck t3
+spb24<del><del><del><del><del><del><del><del><del>+pa1	|ok
+sp r29<del>+<del>pa1	|ng
+[1;31mb24,[0mca3t3<del><del><del><del><del><del><del>	|n-1
+ad c3	|initial address
+ts3t3<del><del><del><del><del>	|final address
+ca c3
+md k3	|0.77740
+ex c3
+ts t1	|initial address
+su c3
+ts 1t3	|initial excess
+[1;31mx17,[0msp r<del>6	|check for <del>halt
+cs k2	|37
+ts 1c2
+ca p8+pa1	|<del><del><del><del>p<del>1
+td 1x13+pa1
+ad 1t3	|initail excess
+td x14+pa1
+ca 11k6	|p9
+ad 1t3	|initial excess
+td 2x14+pa1
+td x7+pa1
+si 113
+rd
+ts t3	|check sum
+[1;31mx13,[0mrd
+[1;31m1x13,[0mts	|1p8
+sd t3
+ts t3
+ao 1x13+pa1
+ao 1c2
+cp x13+pa1
+si 630
+ca t3
+ck 0
+spb28<del><del><del><del><del><del><del>+pa1	|ok
+sp r29+pa1	|ng
+[1;31mb28,[0m<del><del>sp r18	|obtain block
+ca 0
+ex 1t3	|initial excess
+su k2	|37
+ts 1c2	|adjust ctr for excess
+[1;31mx14,[0mca	|1p8
+ts 2t3	|old
+[1;31m2x14,[0mck	|p9, new
+sp x16+pa1	|identi<del>cal
+sp r1
+ca t1	|address ctr
+sp r13	|of
+ca 12k5	|41
+sp r10	|print slash
+sp r7	|print 3 spaces
+1.00000
+ca 2t3	|old
+sp r30	|wi+ of
+sp r7	|3 spaces
+1.00000
+[1;31mx7,[0mca	|p9, new
+sp r30	|wi + of
+sp r28
+[1;31mx16,[0mao x14+pa1
+ao 2x14+pa1
+ao x7+pa1
+ao t<del>1	|current addr
+su3t3<del><del><del><del><del>	|final addr.
+cpb29<del><del><del><del><del><del><del>+pa1	|end of area| not-
+sp x12+pa1
+[1;31mb29,[0m<del><del>ao 1c2
+cp x14+pa1
+ca c3
+ad 7k<del><del><del><del><del><del>5	|40
+ts c3
+sp x17+pa1	|area not done
+[1;31mx12,[0mao c2
+cp x10+pa1
+sp r1
+sp b21-1
+[1;31mr29,[0mta 7r+pa1
+sp r1
+sp r7
+0.47255	|s u m
+0.00153	|sp c k
+1.00707	|sp n g
+sp r28
+7,sp
+[1;31mp8,[0m<del><del><del><del>p<del>1
+
+
+[1;31mb1,[0msp c1-1	|redisptatch
+<del><del><del><del><del><del><del><del><del><del><del>clh 31
+ad 10k3	|b7
+td a9
+sp a9
+|[1;31mSET UP EXIT[0m
+[1;31mb2,[0msp r7
+0.72270	|uc E X
+0.71200	|I T sp
+0.03200<del>	|A T sp
+1.75736	|lc lc lc
+spr26	|core addr
+td<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del> 2d1
+cs 0
+ts d1
+ca 6k3	|sp7
+ts 1d1
+sp r2
+sp b21-1
+|[1;31mSTART AT[0m
+pa1=2000-b3
+[1;31mb3,[0msp r7	|start at
+0.47201	|sta
+0.45200	|r t sp
+1.03200	|a t sp
+sp r26	|pr addr.
+td d4
+sp r28
+cs d3	|mode
+cp b45+pa1	|direct operation
+sp r1
+ca 11k1	|11
+sp r1<del>0	|print tab
+ca p6
+sp r25+pa1	|jumps checked for loop
+sp r7	|loc, order
+0.7<del><del><del>2633	|uc L O
+0.06037	|C sp ss
+0.00<del>033	|sp sp O
+0.44205	|R D E
+1.44000	|R sp sp
+csd3
+clh2
+<del><del>cp <del><del>b30<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>+pa1	|changed reg
+sp r7	|ac, br
+0	|3 s1	|sp sp A
+0.07740	|C s<del>s sp
+0	|3 spaces
+0
+2	|sp sp B
+0.45740	|R ss sp
+1.00000	|3 sp
+[1;31mb30,[0m<del><del><del>sp r7	|contents
+0.00173	|sp C O
+0.35205	|N T E
+0.35223	|N T S
+1.74757	|lc cg cr
+sp r34
+ca d3	|mode
+clh 2
+cp x15+pa1	|not changed reg.
+ca k2	|37
+<del>ts d5	|initial addr.
+ca 3k2	|3740
+ts 1d5	|length
+ts 2d5	|store type
+[1;31mx15,[0mca 1b44+pa1	|bi 2000
+si17
+ts 2000
+cak<del><del>2
+bip9
+ca b44+pa1	|da of interpretive
+si 1713
+ca 10k6<del>	|length of perma
+ad k8	|length of executive routines
+sp 2000	
+[1;31mb44,[0mb26	|da of interpretive
+bi 2000
+[1;31mb45,[0mca d4
+<del><del><del><del><del><del>sd 3k3	|1.74000, convert to sp
+ts 6
+sp a7	|start
+sp r1
+<del><del><del>5b45,sp r7	|exit with
+0.72270	|uc E X
+0.71200	|I T sp
+0.5<del><del><del>7624	|W I T
+0.20036	|H sp lc
+0.00037	|sp sp ss
+1.00000	|3 sp
+ca d12	|ac
+sp r30	|wi + of
+sp r7
+1.00000	|3 sp
+ca 1d12	|br
+sp r13	|o f
+sp r7	|from
+0.00322	|sp f r
+1.66640	|o m sp
+ca 2
+su 1
+sp r3	|pr no
+ca 0
+ex d1	|exit ind
+cp r2	|restore exit
+cf 1000
+srh 3
+sd 5
+md 7k1
+ck 0
+sp b21-1	|a=b, ignore
+cf 1000
+sd 5
+md2k5<del><del><del><del><del><del><del>	|70
+sd 5	|deposit a field
+ts 5
+sp b21-1
+|[1;31mSET NUMBER OF JUMPS CHECKED FOR LOOP[0m
+pa1=2000-b57
+[1;31mb57,[0msp c1-1
+md 1k5	|17
+ts p6
+sp r<del>25+pa1	|pr, jumps checked for loop
+sp r<del>34
+sp b21
+[1;31mr25,[0mta 3777
+sp r4	|print number
+sp r7
+0.00525	|sp j u
+0.33023	|m p s
+0.00150	|sp c h
+0.12153<del>	|e c k
+0.12200	|e d sp
+0.15562	|f o r
+0.00633	|sp l o
+1.67017	|o p cr
+sp 3777
+|[1;31mBLOCK IN SPECIAL PROGRAM
+[0mpa1=2000-b4
+[1;31mb4,[0msp r7
+0.72114	|uc B L
+0.66153	|O C K
+0.01616	|sp I N
+0.01233	|sp TO<del>
+1.01736	|sp lc lc
+ca 4a9	|bi
+ts6
+sp r26	|pr addr.
+td 6
+spr7	|pr from
+0.00322	|sp f r
+1.<del>66<del><del><del><del><del><del><del><del><del><del><del>640	|o m sp
+ao c1
+spc1-1
+spr13	|of
+spr28	|cr
+spc1-1
+spa10	|execute si
+aoc1
+spc1-1
+spb41	|block-in
+spb21
+|[1;31mSET MODE[0m
+pa1=2000-b6
+[1;31mb6,[0mspr31+pa1
+sp r7	|interested area
+0.70724	|i n t
+0.13105	|e r e
+0.47205	|s t e
+0.10001	|d sp a
+0.44241	|r e a
+spr26	|core address
+su1
+tsd5
+ca1b16+pa1	|1.20000
+tsd3	|set mode
+cs<del><del> 2k3	|50
+sp r11	|print dash
+ao c1
+sp c1-1
+ts 2d5
+md 1k2	|3777
+ts 1d5
+ad d5
+sp r3
+<del><del><del><del><del><del><del><del><del><del>sp r9	|cr
+sp c1-1
+clh1
+sd2d5
+<del><del><del>cpb32+<del>pa1
+spr7	|store
+0.47233	|s t o
+1.44276	|r e lc
+cs 2d5
+cp b38+pa1
+sp r7
+0.00056	|sp a n
+1.10036	|d sp lc
+[1;31mb32,[0mcs 2d5
+<del><del><del>cp <del><del>b38+pa1
+spr7	|emps
+0.12660	|e m p
+1.31571	|l o y
+[1;31mb38,[0mspr7	|type instructions
+0.01231	|sp t y
+0.40240	|p e sp
+0.70723	|i n s
+0.51125	|t r u
+0.07234	|c t i
+1.66723	| o n s
+sp b21-1
+[1;31mpa1=2000-b18
+b18,[0msp r31+pa1
+spr7	|trace
+0.51101	|t r a
+1.06240	|c e sp
+ca 1k11	|1.60000
+sp 5b19+pa1
+[1;31mpa1=2000-b17
+b17,[0msp r31+pa1	|set mode
+spr7	|changed register
+0.72150	|uc C H
+0.02707	|A N G
+0.12200	|E D sp
+0.44247	|R E G
+0.71164	|I S T<del>
+1.13136	|E R lc
+ca b16+pa1	|1.40000
+sp 5b19+pa1
+[1;31mb16,[0m1.40000
+
+1.20000
+pa1[1;31m=2000-b19
+b19,[0msp r31+pa1	|set mode
+spr7	|direct
+0.11622	|d i r
+1.12164	|e c t
+ca 0
+<del>5b19,tsd3
+sp b21-1
+[1;31mr31,[0mta 3777
+spr7
+0.73145	|uc S E
+0.50015	|T sp M
+0.66205	|O D E
+1.74000	|lc sp sp
+sp 3777
+[1;31mb55,[0m<del><del><del><del>	|<del><del><del><del><del>set AC, BR
+spr7
+0.73145	|uc S E
+0.50001	|Tsp A
+0.06002	|C sp B
+1.440<del><del><del><del><del>36	|R sp lc
+aoc1
+spc1-1
+tsd12	|AC
+spr30	<del><del><del><del><del><del><del>
+sp r7
+1.00000	|3 sp
+aoc1
+spc1-1
+ts1d12	|BR
+spr13	|of
+spb21-1
+[1;31m|LOOP LIMIT
+pa1=2000-b9
+b9,[0mspr7
+0.72171	|uc C Y
+0.06605	|C L E
+0.00634	|sp L I
+0.33624	|M I T
+1.74036	|lc sp lc
+ao c1
+sp c1-1
+ts  2p6
+sp r42	|5 digits
+sp b21-1
+[1;31m|INDEX CONTROL REGISTER[0m
+[1;31mb36,[0msp r7
+1.60140	|xc
+ao 1p6	|control register
+sp b21-1
+|Change fields
+pal = 2000 - b22
+[1;31mb22,[0msp r7
+0.72150	|uc C H
+0.02707	|A N G
+0.12006	|E sp F
+0.70254	|I E L
+0.11176	|D S lc
+0.00322	|sp f o
+1.66640<del><del><del><del><del><del><del>	|m sp lc
+sp r5+pal	|print fields
+sp r34	|deselect
+sp c1-1
+sd k5	|-0
+ts t1
+clh 10
+cpw1<del><del><del><del><del><del><del><del><del>+pal	|not A field
+ca 2k5	|70
+sp r8+pal	|process A field
+[1;31mw1,[0m<del><del><del><del>ca t1
+clh 11
+cpw3<del><del><del><del><del><del><del><del><del>+pal	|not B field
+ca 7k1	|7
+sp r8+pal	|process B field
+[1;31mw<del>3,[0msp r1	|select
+sp r7
+0.01233	|sp t o
+1.01736	|sp lc lc
+sp r5+pal	|print fields
+sp b21-1
+[1;31mr5,[0mta 3777
+ca 2d12
+srh 3
+md 7k1
+spr11<del><del><del><del><del><del>	|print digit
+cs 3k8	|45
+sp r1<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>1	|comma
+ca 2d12
+md 7k1
+spr11<del><del><del><del><del><del>
+sp 3777
+[1;31mr8,[0mta 3777
+ts t2
+sp c1-1
+sd 2d12
+md t2
+sd 2d12
+ts 2d12
+ts 5
+sp 3777
+|utility program request
+pa1=200<del>0-b15
+[1;31mb15,[0msp r7
+1.53000<del>	|u p sp
+ao c1
+sp c1-1
+4,ts 15r+pa1
+sp r13	|o f
+sp r39	|comma, space
+ao c1
+10,sp c1-1
+ts 16r +pa1
+sp r13
+sp r28
+14,sp 31
+15,+	|lmir
+16,<del>+	|rmir
+sp b21
+|filler
+DITTO
+<del><del><del><del><del><del>14200|	|start of pre-checker
+STA 32

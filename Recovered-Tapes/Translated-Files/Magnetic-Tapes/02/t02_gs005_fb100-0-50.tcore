@@ -1,0 +1,28 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o100050; xsum=good
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\02\t02.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\02\t02_gs005_fb100-0-50.tcore
+%TapeID: _fb100-0-50
+%JumpTo 040
+%Stats: Covariance=0.003603, Size=140, Display-Ops, 6, 
+%Blocknum 0o0
+@C00040: 0100230 0000600 0104234 0040002 0100242 0024045 0110231 0040242  ; ca si cs ts ca rc ad ts  :       n\0cez\t,z : t\0z<color>tsl<color>
+@C00050: 0130002 0070044 0104235 0040002 0100243 0024055 0110232 0040243  ; ao cp cs ts ca rc ad ts  :   el-e<bs>#f<bs> : pcz<color>tsl<color>
+@C00060: 0130002 0070054 0104234 0040002 0100244 0024065 0124231 0040244  ; ao cp cs ts ca rc sa ts  :         epcel#,l : pcz<color>tsy<color>
+@C00070: 0130002 0070064 0104233 0040002 0100245 0110231 0040245 0000600  ; ao cp cs ts ca ad ts si  :      eg6e\t,\t\0 : pcz<color>tl<color>\0
+@C00100: 0100230 0024101 0100245 0024103 0120245 0024105 0120230 0024107  ; ca rc ca rc cm rc cm rc  :       n#\t8\t|n3 :         tstshshs
+@C00110: 0130002 0070074 0104235 0040002 0100246 0110232 0040246 0000600  ; ao cp cs ts ca ad ts si  :        ev-ewfw\0 : pcz<color>tl<color>\0
+@C00120: 0100230 0024121 0100246 0024123 0104246 0024125 0120230 0024127  ; ca rc ca rc cs rc cm rc  :         n.w5w1n7 :         tstszshs
+@C00130: 0130002 0070114 0104233 0040002 0100247 0110231 0040247 0000600  ; ao cp cs ts ca ad ts si  :        ei6e#,#\0 : pcz<color>tl<color>\0
+@C00140: 0100230 0024141 0100247 0024143 0104247 0024145 0120230 0024147  ; ca rc ca rc cs rc cm rc  :     n##<bs>#\tn# :         tstszshs
+@C00150: 0130002 0070134 0120230 0000600 0104234 0040002 0100250 0024157  ; ao cp cm si cs ts ca rc  :        ecn\0ceh# :  pch\0z<color>ts
+@C00160: 0110231 0040250 0130002 0070156 0104235 0040002 0100251 0024167  ; ad ts ao cp cs ts ca rc  :        ,heq-e\n# : l<color>pcz<color>ts
+@C00170: 0110232 0040251 0130002 0070166 0104234 0040002 0100252 0024177  ; ad ts ao cp cs ts ca rc  :    f\ne9cey<del> : l<color>pcz<color>ts
+@C00200: 0124231 0040252 0130002 0070176 0100230 0040242 0040245 0040250  ; sa ts ao cp ca ts ts ts  :        ,ye0nz\th : y<color>pct<color><color><color>
+@C00210: 0100236 0040243 0040251 0100237 0040244 0040252 0100240 0040246  ; ca ts ts ca ts ts ca ts  :     k<bs>\n#lytw : t<color><color>t<color><color>t<color>
+@C00220: 0100241 0040247 0100230 0000600 0104253 0110001 0070225 0074042  ; ca ts ca si cs ad cp sp  :        ##n\0##1z :  t<color>t\0zlck
+@C00230: 0100000 0000200 0000400 0000077 0000100 0000276 0120377 0057760  ; ca si si si si si cm ck  : \0\0\0<del>\00<del>o :    t\0\0\0\0\0h7
+@C00240: 0117777 0057560 0100000 0120377 0057760 0100000 0117777 0057560  ; su ck ca cm ck ca su ck  : <del>o\0<del>o\0<del>o :         #7th7t#7
+@C00250: 0100000 0120377 0057760 0007637  None    None    None    None    ;  ca cm ck .word          : \0<del>o#         :     th78        
+
+%Hash: a21f79-66d5a7-140

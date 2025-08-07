@@ -79,6 +79,7 @@ class csii_statement_class:
         # it is possible to have both of these address assignments on a single instruction
         self.address_assignment = ''  # this makes a .ORG to set the current location in core
         self.drum_address_assignment = ''  # this makes a (weird kind of) .ORG to set the location on the drum
+        self.current_relative_base = None
 
 
     # in the case of a Program Parameter, I'm going to make an assember directive ".PP", followed by what
@@ -100,9 +101,6 @@ class csii_statement_class:
         # There actually could be two address assignments, one for where to put the thing on the drum
         # (starting with 'DA'), and one to say where to put it in Core
 
-        if line_number == "13d":
-            breakp()
-
         operation = ''
         # find comments, record them and dispose of them for the rest of the process
         if csii_statement[0] == '|':
@@ -122,6 +120,9 @@ class csii_statement_class:
             instruction = ns
             print("Line %s: add in a .ORG '%s' for %s" % (line_number, addr, csii_statement))
 
+        if line_number == "8b":
+            breakp()
+
         #check for directives, e.g. OCTAL, DECIMAL, START AT
         if (p_op := self.check_for_pseudo_op(cs_ii_pgm, instruction)) is not None:
              self.psuedo_op = p_op
@@ -132,10 +133,14 @@ class csii_statement_class:
                 split_instruction = instruction.split(',')
                 if len(split_instruction) == 2:
                     (self.label, operation) = split_instruction
+                    cs_ii_pgm.current_relative_base
+                    print("Found Label %s in stmt %s, line %s" % (self.label, self.statement, line_number))
                 elif len(split_instruction) == 3:
                     (self.label, self.label2, operation) = split_instruction
+                    print("Found double Label %s %s in stmt %s, line %s" % (self.label, self.label2, self.statement, line_number))
                 else:
-                    cb.log.warn("Line %s: can't parse %s", line_number, instruction)
+                    cb.log.warn("Line %s: can't parse %s" % (line_number, instruction))
+
             else:
                 operation = instruction
 
@@ -169,7 +174,8 @@ class csii_statement_class:
                     self.operand = operation
                     self.opcode = ".word"
 
-#        print("label:%s opcode:%s operand:%s pseudo-op:%s comment:%s" %
+
+    #        print("label:%s opcode:%s operand:%s pseudo-op:%s comment:%s" %
 #              (self.label, self.opcode, self.operand, self.psuedo_op, self.comment))
         if len(self.operand):
             self.operand = self.operand_fixer(cs_ii_pgm, self.operand, line_number)
@@ -230,7 +236,7 @@ class csii_statement_class:
         return ret
 
 
-    # check M-2539-2 VIII-8 for a run-down of floating, temporary and relative addressing for labels.
+    # check M-2539-2 VIII-8 [XIV-19?] for a run-down of floating, temporary and relative addressing for labels.
     # This routine standardizes the use of labels in a more-modern format.
     #   I'm also classifying numbers... if the number can be read unambiguously by wwasm, don't
     # mess with it.  But where the rules are vague, convert to a modern standard format.
@@ -238,9 +244,6 @@ class csii_statement_class:
     # as a label (like "0r") except that the book says "Variables are one letter except for oh and ell"
     def operand_fixer(self, cs_ii_pgm, operand_arg, line_number):
         global cb
-
-        if line_number == "44e":
-            breakp()
 
         print_it = False
         got_it = 0
@@ -315,6 +318,8 @@ class csii_statement_class:
         return(operand)
 
 
+    # This short routine parses a '<number><letter> operand to convert it to separate strings
+    # e.g. "2r" becomes label, offset = 'r' and '2'
     def offset_label_fixer(self, operand):
         global cb
         ret = operand  # by default, do nothing

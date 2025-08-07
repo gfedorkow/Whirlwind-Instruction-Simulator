@@ -1,0 +1,310 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302395_box36\102663723_fc1343-m501_4-16.7ch
+fc TAPE 1343 m501 ERROR PRINT PROGRAM - FEY
+OCTAL
+[1;31m2000|[0msi0		|halt in pa5
+sp		|EXIT to A field
+[1;31m2002|[0m0		|error card no. in pa3
+[1;31m2003|[0m0		|e16 error indicator in pa4
+[1;31m2004|[0mta2001<del><del><del><del>
+tsc1		|error number
+spa1		|start of print program
+[1;31m2007|[0mspt1		|remark block read in routine
+[1;31ma1,[0mcac3
+adc1
+tda3
+tda11
+[1;31ma3,[0mca+		|puts location of remark in ac
+tda4
+ca2003		|test e16 error indicator
+cpa2
+[1;31ma4,[0mca+		|select remark char. register
+cpa5		|print two characters
+clh1
+cpa6		|print left character
+sp2000		|halt in 2000
+[1;31ma5,[0msi225		|select direct flexo
+clh4
+rc		|print left character
+clh6
+rc		|print right char.
+si630		|deselect direct flexo
+aoa4
+spa4		|return to select remark
+<del>[1;31ma6,[0msi225		|select direct flexo
+clh3
+rc		|print left character
+si630		|deselect direct flexo
+sp2000		|halt in 2000
+[1;31ma2,[0mtaa14
+cac10
+td<del><del><del><del>a7		|initialize clh instruction
+cac11
+tda9		|initialize storage loc.
+csc6
+ad1
+tsc5		|initialize counter
+|convert octal card no. to flexo code and store in 5 reg.
+[1;31ma10,[0mca2002		|error card number
+[1;31ma7,[0mclh+
+mdc4		|mask 0.00007
+adc7		|address of flexo table
+tda8
+[1;31ma8,[0mca+		|obtain flexo code
+[1;31ma9,[0mtsc9		|store flexo code
+aoa9		|index stor. reg.
+aoc5		|index number ctr
+aoa7		|index clh
+aoa7		|index clh
+aoa7		|index clh
+cac5
+c<del>pa10		|not finished
+|prepare to pack numbers in remark block
+[1;31ma11,[0mca+
+tda12
+[1;31ma12,[0mca+
+clh2
+cpa13<del>		|first remark reg.
+aoa12
+spa12		|return to search
+[1;31ma13,[0mclh1
+cpa16		|pack right char. first
+spa15		|pack left char. first
+|pack card number in remark block
+[1;31ma15,[0mca0
+tsc15
+ts1c15
+ts2c15
+cac14
+tsa20		|plant exit
+aoa16<del><del>
+aoa17
+aoa18
+aoa19		|end of initialization
+cac9
+clh6
+mdc12		|0.07700
+tsc15		|store 1st char.
+[1;31ma16,[0mcac9
+mdc13		|0.00077
+adc15
+tsc15		|store 2nd char.
+[1;31ma17,[0mca1c9
+clh6
+mdc12		|0.07700
+ts1c15		|store 3rd char.
+<del><del><del><del><del>[1;31ma18,[0mca2c9<del>
+mdc13		|0.00077
+ad1c15
+ts1c15		|store 4th char.
+[1;31ma19,[0mca3c9<del>
+clh6
+mdc12
+ts2c15		|store 5th char.
+[1;31ma20,[0mclh0
+ca4c9
+mdc13		|0.00077
+ad2c15
+ts2c15		|store last word
+[1;31ma21,[0mcsc1<del>6
+ad1
+tsc17
+caa12
+tda22
+td2a22
+[1;31ma22,[0mca+
+[1;31m1a22,[0madc15
+[1;31m2a22,[0mts+		|pack double word
+aoa22
+ao1a22
+ao2a22
+aoc17
+cac17
+cpa22		|not finished packing remarks
+[1;31ma14,[0msp+		|EXIT
+[1;31mc1,[0m0		|error number
+[1;31mc2,[0md1		|address of initial rem. char. e0
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>DITTO
+16r|[1;31mc3,[0m<del><del><del><del><del>c2		|table of remark locations
+[1;31mc5,[0m0
+[1;31mc10,[0m0.00024		|initial clh argument
+[1;31mc11,[0mc9		|initial storage loc. for 5 numbers
+[1;31mc6,[0m0.00005		|number of numbers
+[1;31mc4,[0m0.00004		|mask
+[1;31mc7,[0mc8		|address of flexo table
+[1;31mc8,[0m0.00076		|0 flexo
+[1;31m1c8,[0m0.00025		|1 flexo
+[1;31m2c8,[0m0.00017		|2 flexo
+[1;31m3c8,[0m0.00007		|3 flexo
+[1;31m4c8,[0m0.00013		|4 flexo
+[1;31m5c8,[0m0.00<del>023		|5 flexo
+[1;31m6c8,[0m0.00033		|6 flexo
+[1;31m7c8,[0m0.00027		|7 flexo
+[1;31mc9,[0m0		|stor. first no.
+[1;31m1c9,[0m0		|st<del>or. sec. no.
+[1;31m2c9,[0m0		|stor. third no.
+[1;31m3c9,[0m0		|stor. 4<del>th no.
+[1;31m4c9,[0m0		|stor. 5th no.
+[1;31mc12,[0m0.07700		|mask
+[1;31mc13,[0m0.00077		|mask
+[1;31mc14,[0mspa21<del><del>
+[1;31mc15,[0m0		|stor. double word
+<del>[1;31m1c15,[0m0		|stor. double word
+[1;31m2c15,[0m0		|stor. double word
+[1;31mc16,[0m0.00003		|number of reg. for 5 words
+[1;31mc17,[0m0		|reg. ctr.
+|Trailer Read-In
+[1;31mt1,[0mcs1
+tsk6
+si211		|select PETR
+[1;31mg1,[0mspg2		|read char.
+ckk4		|nullify
+spg1
+ckk1		|stop code
+sp<del>g3		|end of remark block
+ckk2		|color shift
+spg4		|en<del>d of error remark
+ckk3		|slash
+spg5		|error card no. storage
+spg6		|store char.
+[1;31mg2,[0mta2g2		|re<del>ad routine
+rd
+[1;31m2g2,[0msp+		|EXIT
+[1;31m<del>g3,[0mcak6		|end of remar<del>k block
+cpg7		|next char. goes in left pos.
+cak8		|set indicators in last reg.
+tdg8
+td2g8
+[1;31mg8,[0mca+
+adk9
+[1;31m2g8,[0mts+
+[1;31mg9,[0msi630		|deselect PETR
+sp0		|HALT
+[1;31mg7,[0mcak8		|next char. goes in left pos.
+su1
+tdg10
+td2g10
+[1;31mg10,[0mca+
+adk10		|set indicators in last reg.
+[1;31m2g10,[0mts+<del>
+spg9		|exit to halt
+[1;31mg11,[0mcak5
+cpg1		|c<del>ommemt not long, read next char.
+<del><del><del><del><del><del><del>si630		|deselect PETR
+cag12
+si225		|select di<del>rect pri<del>nter
+bo1g12
+si630		|deselect printer
+sp0		|HALT
+[1;31mg12,[0m0.00026		|remark length
+[1;31m1g12,[0m1.22000		|cr
+0.50000		|r
+0.04000		|e
+1.60000		|m
+0.14000		|a
+0.50000		|r
+0.74000		|k
+0.20000		|space
+1.00000		|t
+0.14000		|a
+1.30000		|p
+0.04000		|e
+0.20000		|space<del>
+1.00000		|t
+1.40000		|<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>o
+1.40000		|o
+0.20000		|space
+1.10000		|l
+1.40000		|o
+0.60000		|n
+1.50000		|g
+1.22000		|cr
+[1;31mg4,[0mcak6		|color code detected
+cpr1		|next char. goes in left pos.
+aok11
+tdr2
+cak8
+td2r3
+tdr3
+ad1
+[1;31mr2,[0mts+		|store addreee of 1st char. of rem.
+aok8		|reset storage loc. c<del>tr.
+cs1
+tsk6		|reset rt - left ind.
+[1;31mr3,[0mca+
+<del><del><del><del><del><del><del>adk9		|set storage reg. indicators<del>
+[1;31m2r3,[0mts+
+spg11		|return to read char.
+[1;31mr1,[0maok11
+tdr4
+cak8
+[1;31mr4,[0mts+		|store address <del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>of 1st char. of rem.
+cak8
+su1
+tdr5
+td2r5
+[1;31mr5,[0mca+
+adk10
+[1;31m2r5,[0mts+		|set storage reg. indicators
+spg11		|return to read char.
+[1;31mg5,[0mcak6		|slash detected
+cps1<del>		|next char. goes in left pos.
+cak8
+tds2
+tds3
+[1;31ms2,[0mca+
+adk13
+[1;31ms3,[0mts+		|set card <del>no. storage ind.
+spg11		|return to re<del>ad char.
+[1;31ms<del><del>1,[0mcak8
+tds4
+tds5
+[1;31ms4,[0mca+
+adk12
+[1;31ms5,[0mts+		|set card no. storage ind.
+spg11		|return to read char.
+|store character
+[1;31mg6,[0mtsk14
+cak6
+cpn1		|this char. goes in left pos.
+cak8
+tdn2
+tdn3
+cak14
+mdk4		|0.00077
+[1;31mn2,[0mad+
+[1;31mn3,[0mts+		|store in right pos.
+aok8		|index storage location
+cs1
+tsk6		|reset rt - left store ind.
+spg11		|<del>return to read char.
+[1;31mn1,[0mcak8
+tdn4
+tdn5
+cak14
+clh6
+mdc12		|0.07700
+[1;31mn4,[0mad+
+[1;31mn5,[0mts+		|store in left pos.
+<del>ca1
+tsk6		|reset rt - left store ind.
+spg11		|return to read char.
+[1;31mk1,[0m0.00061		|stop code
+[1;31mk2,[0m0.00020		|color shift
+[1;31mk3,[0m0.00005		|slash
+[1;31mk4,[0m0.00077		|nullify
+[1;31mk5,[0m3770-d1		|remark - block - length - remaining counter
+[1;31mk6,[0m0		|right - left store ind.
+[1;31mk7,[0mc2		|location of 1st word in rem. table
+[1;31mk8,[0md1		|present store register counter
+[1;31mk9,[0m1.40000<del>
+<del><del><del><del>[1;31mk10,[0m1.00000
+[1;31mk11,[0md1		|location of next 1st word in error rem.
+[1;31mk12,[0m0.30000
+[1;31mk13,[0m0.20000
+[1;31mk14,[0m0		|buffer storage for character
+[1;31md2,[0m
+[1;31m100r|d1,[0m		|remark block start
+[1;31m3775|[0mca3777<del>
+[1;31m3776|[0mcf610		|read in recovery program
+[1;31m3777|[0m0.00032
+START AT 3775

@@ -1,0 +1,74 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o100245; xsum=good
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\68\t68.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\68\t68_gs045_fb100-0-245.tcore
+%TapeID: _fb100-0-245
+%JumpTo 032
+%Stats: Covariance=0.007984, Size=512, Display-Ops, 1, 
+%Blocknum 0o0
+@C01000: 0107771 0170001 0071170 0101541 0041204 0101543 0041537 0111176  ; cs CL cp ca ts ca ts ad  : <cntl>#M##<bs>#0 : <bs>VCT<color>T<color>L
+@C01010: 0045172 0114001 0045361 0103767 0155013 0175540 0041536 0107767  ; td su td ca SL md ts cs  :    X#<stop>#4TK# : DWD#90<color><bs>
+@C01020: 0071170 0101542 0041174 0041351 0000004 0104000 0042220 0101536  ; cp ca ts ts si cs ts ca  : MZV\n#\0<color>K : CT<color><color>\0Z)T
+@C01030: 0000703 0101537 0011560 0101377 0041514 0104001 0041516 0101536  ; si ca bi ca ts cs ts ca  :     8#O<del>I#UK : \0T#T<color>Z<color>T
+@C01040: 0041524 0075530 0075221 0101514 0111522 0041514 0101560 0041524  ; ts sp sp ca ad ts ca ts  :         RN)IDIOR : <color>KKTL<color>T<color>
+@C01050: 0071217 0101475 0075220 0101476 0075416 0105535 0041525 0105505  ; cp ca sp ca sp cs ts cs  : 2<cntl><color>0u-1| :   Ctktkz<color>z
+@C01060: 0041144 0101524 0170001 0171023 0041526 0155017 0041524 0101525  ; ts ca CL CL ts SL ts ca  :         lr#5j2r1 : <color>tvv<color>9<color>t
+@C01070: 0161003 0111526 0071464 0111506 0045241 0100000 0075416 0131144  ; SR ad cp ad td ca sp ao  :        8jga#\0ul :         mlcldtkp
+@C01100: 0071225 0131516 0071207 0131212 0131536 0131507 0071207 0101515  ; cp ao cp ao ao ao cp ca  :         1u3sk33+ :         cpcpppct
+@C01110: 0041507 0101401 0045335 0101212 0115403 0075321 0101212 0075337  ; ts ca td ca su sp ca sp  :         3#-s8.s# :   <color>tdtwktk
+@C01120: 0071405 0075362 0105404 0071467 0075177 0101212 0075337 0071405  ; cp sp cs cp sp ca sp cp  :     |b##<del>s#| :         ckzcktkc
+@C01130: 0101402 0045335 0101325 0075261 0101536 0111403 0041536 0101325  ; ca td ca sp ca ad ts ca  :    e-1<stop>k8k1 :   tdtktl<color>t
+@C01140: 0045212 0075337 0101325 0075321 0075362 0075362 0101212 0115403  ; td sp ca sp sp sp ca su  :         s#1.bbs8 :         dktkkktw
+@C01150: 0041212 0101536 0115403 0041536 0075177 0051331 0045325 0101515  ; ts ca su ts sp ta td ca  :     sk8k<del>,1+ : <color>tw<color>krdt
+@C01160: 0041336 0100000 0071331 0134000 0071332 0074000 0131325 0131336  ; ts ca cp dm cp sp ao ao  :      k\0,\0f\01k :   <color>tcqckpp
+@C01170: 0071325 0074000 0000000 0051360 0041170 0105540 0175536 0134000  ; cp sp si ta ts cs md dm  :      1\0\0omtk\0 :  ck\0r<color>z0q
+@C01200: 0071360 0101170 0115361 0071357 0101536 0000703 0101537 0011560  ; cp ca su cp ca si ca bi  :    om<stop>#k8#o :        ctwct\0t#
+@C01210: 0101353 0045212 0045325 0100000 0074000 0102217 0051373 0131510  ; ca td td ca sp ca ta ao  :       #s1\0\02#  :         tddtk#rp
+@C01220: 0071374 0000004 0105377 0041511 0101513 0041510 0041404 0074000  ; cp si cs ts ca ts ts sp  :    v#<del>=4 #\0 : c\0z<color>t<color><color>k
+@C01230: 0101511 0115523 0041511 0100000 0075372 0001271 0001300 0000010  ; ca su ts ca sp si si si  :  =5=\0x<cntl>\0  : tw<color>tk\0\0\0
+@C01240: 0000000 0000004 0101544 0040002 0101545 0040003 0101546 0000703  ; si si ca ts ca ts ca si  :       \0#LE\t8W8 : \0\0T<color>T<color>T\0
+@C01250: 0101547 0074002 0051534 0040003 0105365 0041527 0101511 0000600  ; ca sp ta ts cs ts ca si  :        #EC8#7:\0 : TKR<color>Z<color>T\0
+@C01260: 0040002 0101514 0064003 0170001 0071433 0064003 0075435 0064003  ; ts ca ex CL cp ex sp ex  :         EI8#68-8 :   <color>TFVCFKF
+@C01270: 0024000 0111520 0064003 0170001 0071443 0064003 0075445 0064003  ; rc ad ex CL cp ex sp ex  : \0<color>8#<bs>8\t8 :         SLFVCFKF
+@C01300: 0024000 0111520 0064003 0170001 0071453 0064003 0075455 0064003  ; rc ad ex CL cp ex sp ex  :  \0<color>8##8#8 :         SLFVCFKF
+@C01310: 0024000 0131527 0071461 0041525 0075531 0100002 0115520 0075423  ; rc ao cp ts sp ca su sp  : \07<stop>1(E<color>5 :   SPC<color>KTWK
+@C01320: 0075530 0131525 0075243 0101536 0171014 0134000 0071177 0101517  ; sp ao sp ca CL dm cp ca  : N1<bs>KI\0<del>2 :         KPKTVQCT
+@C01330: 0075211 0075557 0026227 0071747 0071317 0055711 0074717 0064757  ; sp sp rc cp cp ck sp ex  :         :#7#2:2# :         KK4CCJKF
+@C01340: 0071222 0000004 0001475 0177770 0177734 0077777 0077777 0177734  ; cp si si md md sp sp md  : D#<cntl>mc<del><del>c : C\0\0<del><del>##<del>
+@C01350: 0100000 0177770 0177776 0116000 0000400 0000005 0002000 0003400  ; ca md md su si si si si  :    \0m0\0\0|\0\0 : t<del><del>#\0\0##
+@C01360: 0000000 0000000 0000000 0000000 0051534 0101514 0111522 0041514  ; si si si si ta ca ad ts  :     \0\0\0\0cidi : \0\0\0\0rtl<color>
+@C01370: 0074000 0000003 0000040 0000440 0174000 0075213 0000713 0000400  ; sp si si si md sp si si  :      \08tt\044\0 :    k\0\0\00k\0\0
+@C01400: 0010040 0074610 0054037 0003727 0000000 0000000 0000000 0000000  ; bi sp ck si si si si si  :     t #7\0\0\0\0 :     #kj#\0\0\0\0
+@C01410: 0000000 0000000 0000000 0000000 0000000 0077777 0077777 0077777  ; si si si si si sp sp sp  : \0\0\0\0\0<del><del><del> :    \0\0\0\0\0###
+@C01420: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01430: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01440: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01450: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01460: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01470: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01500: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01510: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01520: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01530: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01540: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01550: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01560: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01570: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01600: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01610: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01620: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01630: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01640: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01650: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01660: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01670: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01700: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01710: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01720: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01730: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01740: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01750: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01760: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+@C01770: 0077777 0077777 0077777 0077777 0077777 0077777 0077777 0077777  ; sp sp sp sp sp sp sp sp  : <del><del><del><del><del><del><del><del> :         ########
+
+%Hash: ea3428-3eeb1b-512

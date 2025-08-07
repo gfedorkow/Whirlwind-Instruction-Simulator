@@ -1,0 +1,131 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\x1\tx1_invertreverse.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\x1\tx1_invertreverse_gs025.ocore
+%TapeID: 
+%Stats: Covariance=0.006123, Size=976, 
+%Blocknum 0o0
+@T00000: 0030013 0000002 0020020 0170020 0154020 0044020 0150020 0000020  ; sd si bo CL SL td dv si  : 4e<color><color><color><color><color><color> :       i\0 v9dg\0
+@T00010: 0170020 0070020 0170020 0010020 0140020 0000020 0140020 0010020  ; CL cp CL bi mr si mr bi  : <color><color><color><color><color><color><color><color> :        vcv#o\0o#
+@T00020: 0010020 0010020 0010020 0140020 0010020 0140020 0140020 0140020  ; bi bi bi mr bi mr mr mr  : <color><color><color><color><color><color><color><color> :         ###o#ooo
+@T00030: 0000020 0140020 0000020 0140020 0140020 0140020 0140020 0140020  ; si mr si mr mr mr mr mr  : <color><color><color><color><color><color><color><color> :       \0o\0ooooo
+@T00040: 0140020 0140020 0140020 0140020 0140020 0140020 0130020 0142020  ; mr mr mr mr mr mr ao mr  : <color><color><color><color><color><color><color><color> :    oooooop<stop>
+@T00050: 0136020 0040420 0060020 0140020 0162020 0162020 0072020 0150020  ; dm ts ab mr SR SR cp dv  : <color><color><color><color><color><color><color><color> : #<color>no<cntl><cntl>-G
+@T00060: 0140020 0140020 0140020 0050020 0050020 0050020 0050020 0010020  ; mr mr mr ta ta ta ta bi  : <color><color><color><color><color><color><color><color> :         OOORRRR#
+@T00070: 0110020 0110020 0010020 0140020 0140020 0140020 0010020 0000020  ; ad ad bi mr mr mr bi si  : <color><color><color><color><color><color><color><color> :        LL#OOO#\0
+@T00100: 0140020 0010020 0010020 0140020 0140020 0140020 0140020 0140020  ; mr bi bi mr mr mr mr mr  : <color><color><color><color><color><color><color><color> :         O##OOOOO
+@T00110: 0140020 0140020 0162020 0052020 0022420 0014420 0160020 0110020  ; mr mr SR ta bo rd SR ad  : <color><color><color><color><color><color><color><color> :    OO<cntl>1:AML
+@T00120: 0074020 0174020 0174020 0120020 0140020 0140020 0140020 0140020  ; sp md md cm mr mr mr mr  : <color><color><color><color><color><color><color><color> :         K00HOOOO
+@T00130: 0010020 0140020 0140020 0010020 0010020 0010020 0140020 0140020  ; bi mr mr bi bi bi mr mr  : <color><color><color><color><color><color><color><color> :         #OO###OO
+@T00140: 0140020 0000020 0100020 0010020 0140020 0140020 0140020 0140020  ; mr si ca bi mr mr mr mr  : <color><color><color><color><color><color><color><color> :        O\0T#OOOO
+@T00150: 0140020 0140020 0140020 0140020 0000020 0100020 0034020 0042020  ; mr mr mr mr si ca cf ts  : <color><color><color><color><color><color><color><color> :        OOOO\0TU)
+@T00160: 0011020 0023020 0120020 0070020 0050420 0060420 0036020 0160020  ; bi bo cm cp ta ab cf SR  : <color><color><color><color><color><color><color><color> :         #:HCRN2M
+@T00170: 0140020 0140020 0140020 0140020 0140020 0140020 0140020 0000020  ; mr mr mr mr mr mr mr si  : <color><color><color><color><color><color><color><color> :        OOOOOOO\0
+@T00200: 0010020 0140020 0140020 0140020 0000020 0100020 0000020 0140020  ; bi mr mr mr si ca si mr  : <color><color><color><color><color><color><color><color> :       #OOO\0T\0O
+@T00210: 0140020 0140020 0140020 0140020 0140020 0140020 0140020 0140020  ; mr mr mr mr mr mr mr mr  : <color><color><color><color><color><color><color><color> :         OOOOOOOO
+@T00220: 0140020 0140020 0140420 0012020 0047020 0037020 0120020 0102020  ; mr mr mr bi td cf cm ca  : <color><color><color><color><color><color><color><color> :         OOO_52H#
+@T00230: 0122420 0162420 0140420 0160020 0010020 0050020 0010020 0050020  ; cm SR mr SR bi ta bi ta  : <color><color><color><color><color><color><color><color> :   \n<cntl>OM#R#R
+@T00240: 0050020 0050020 0050020 0010020 0050020 0050020 0010020 0140020  ; ta ta ta bi ta ta bi mr  : <color><color><color><color><color><color><color><color> :         RRR#RR#O
+@T00250: 0140020 0140020 0010020 0000020 0140020 0140020 0140020 0140020  ; mr mr bi si mr mr mr mr  : <color><color><color><color><color><color><color><color> :        OO#\0OOOO
+@T00260: 0140020 0140020 0140020 0140020 0140020 0140020 0104420 0042020  ; mr mr mr mr mr mr cs ts  : <color><color><color><color><color><color><color><color> :         OOOOOOZ)
+@T00270: 0077420 0117420 0160020 0122020 0024420 0064420 0140420 0120020  ; sp su SR cm rc ex mr cm  : <color><color><color><color><color><color><color><color> :        ##M\nSFOH
+@T00300: 0010020 0050020 0050020 0150020 0020020 0150020 0110020 0010020  ; bi ta ta dv bo dv ad bi  : <color><color><color><color><color><color><color><color> :         #RRG GL#
+@T00310: 0050020 0050020 0010020 0010020 0140020 0140020 0140020 0050020  ; ta ta bi bi mr mr mr ta  : <color><color><color><color><color><color><color><color> :         RR##OOOR
+@T00320: 0140020 0140020 0140020 0140020 0140020 0140020 0000020 0140020  ; mr mr mr mr mr mr si mr  : <color><color><color><color><color><color><color><color> :        OOOOOO\0O
+@T00330: 0000020 0100020 0051020 0142020 0054120 0172120 0170020 0144020  ; si ca ta mr ck CL CL mh  : <color><color><color><color><color><color><color><color> : \0TR<stop>J<cntl>vb
+@T00340: 0174420 0106420 0110420 0120020 0110020 0050020 0150020 0060020  ; md cs ad cm ad ta dv ab  : <color><color><color><color><color><color><color><color> :      0<bs>lhlrgn
+@T00350: 0060020 0150020 0110020 0050020 0150020 0110020 0140020 0140020  ; ab dv ad ta dv ad mr mr  : <color><color><color><color><color><color><color><color> :         nglrgloo
+@T00360: 0140020 0140020 0140020 0140020 0140020 0140020 0140020 0140020  ; mr mr mr mr mr mr mr mr  : <color><color><color><color><color><color><color><color> :         oooooooo
+@T00370: 0140020 0140020 0140020 0140020 0140020 0140020 0047020 0002020  ; mr mr mr mr mr mr td si  : <color><color><color><color><color><color><color><color> :         oooooo5#
+@T00400: 0054520 0040520 0002020 0154020 0044420 0174420 0070420 0070020  ; ck ts si SL td md cp cp  : <color><color><color><color><color><color><color><color> :   j<color>#9d0cc
+@T00410: 0110020 0110020 0160020 0170020 0170020 0150020 0150020 0150020  ; ad ad SR CL CL dv dv dv  : <color><color><color><color><color><color><color><color> :         llmvvggg
+@T00420: 0060020 0060020 0110020 0010020 0010020 0140020 0010020 0140020  ; ab ab ad bi bi mr bi mr  : <color><color><color><color><color><color><color><color> :         nnl##o#o
+@T00430: 0140020 0140020 0140020 0140020 0140020 0140020 0000020 0140020  ; mr mr mr mr mr mr si mr  : <color><color><color><color><color><color><color><color> :        oooooo\0o
+@T00440: 0140020 0140020 0137020 0052020 0153120 0111120 0022020 0114020  ; mr mr dm ta dv ad bo su  : <color><color><color><color><color><color><color><color> :         oo#1#l=w
+@T00450: 0130420 0062420 0122420 0012020 0150020 0110020 0160020 0170020  ; ao ab cm bi dv ad SR CL  : <color><color><color><color><color><color><color><color> :        p,\n|glmv
+@T00460: 0130020 0150020 0150020 0020020 0160020 0160020 0150020 0010020  ; ao dv dv bo SR SR dv bi  : <color><color><color><color><color><color><color><color> :         pgg mmg#
+@T00470: 0140020 0140020 0140020 0110020 0140020 0140020 0140020 0140020  ; mr mr mr ad mr mr mr mr  : <color><color><color><color><color><color><color><color> :         oooloooo
+@T00500: 0140020 0140020 0140020 0000020 0140020 0140020 0163420 0030020  ; mr mr mr si mr mr SR sd  : <color><color><color><color><color><color><color><color> :   ooo\0oo<cntl>I
+@T00510: 0003120 0036520 0042020 0044020 0154420 0034420 0146420 0112020  ; si cf ts td SL cf mh ad  : <color><color><color><color><color><color><color><color> :        #2)D9U#\t
+@T00520: 0150020 0020020 0130020 0012020 0142020 0150020 0150020 0060020  ; dv bo ao bi mr dv dv ab  : <color><color><color><color><color><color><color><color> :    G P_<stop>GGN
+@T00530: 0070020 0030020 0110020 0140020 0140020 0140020 0000020 0140020  ; cp sd ad mr mr mr si mr  : <color><color><color><color><color><color><color><color> :        CILOOO\0O
+@T00540: 0140020 0140020 0140020 0000020 0140020 0140020 0140020 0140020  ; mr mr mr si mr mr mr mr  : <color><color><color><color><color><color><color><color> :        OOO\0OOOO
+@T00550: 0140020 0010020 0135420 0012020 0161520 0045120 0142020 0144020  ; mr bi dm bi SR td mr mh  : <color><color><color><color><color><color><color><color> :    O#Q_MD<stop>B
+@T00560: 0117020 0117020 0143020 0142020 0110020 0150020 0030020 0152020  ; su su mr mr ad dv sd dv  : <color><color><color><color><color><color><color><color> : ##<stop><stop>LGI#
+@T00570: 0112020 0160020 0020020 0060020 0070020 0160020 0150020 0010020  ; ad SR bo ab cp SR dv bi  : <color><color><color><color><color><color><color><color> :        \tM NCMG#
+@T00600: 0010020 0140020 0140020 0140020 0140020 0140020 0140020 0140020  ; bi mr mr mr mr mr mr mr  : <color><color><color><color><color><color><color><color> :         #OOOOOOO
+@T00610: 0140020 0140020 0140020 0140020 0010020 0010020 0147420 0002020  ; mr mr mr mr bi bi mh si  : <color><color><color><color><color><color><color><color> :         OOOO####
+@T00620: 0161520 0077120 0112020 0074020 0147420 0047420 0157020 0152020  ; SR sp ad sp mh td SL dv  : <color><color><color><color><color><color><color><color> :        M#\tK#5##
+@T00630: 0020020 0150020 0030020 0112020 0022020 0070020 0120020 0020020  ; bo dv sd ad bo cp cm bo  : <color><color><color><color><color><color><color><color> :         GI\t:CH 
+@T00640: 0120020 0150020 0110020 0010020 0140020 0140020 0140020 0050020  ; cm dv ad bi mr mr mr ta  : <color><color><color><color><color><color><color><color> :         HGL#OOOR
+@T00650: 0140020 0140020 0000020 0140020 0140020 0140020 0000020 0140020  ; mr mr si mr mr mr si mr  : <color><color><color><color><color><color><color><color> :       OO\0OOO\0O
+@T00660: 0140020 0140020 0002120 0170020 0131520 0155120 0012020 0160420  ; mr mr si CL ao SL bi SR  : <color><color><color><color><color><color><color><color> :         OO#VP9_M
+@T00670: 0076120 0036120 0123420 0032020 0160020 0030020 0170020 0152020  ; sp cf cm sd SR sd CL dv  : <color><color><color><color><color><color><color><color> :        #2\n/MIV#
+@T00700: 0022020 0160020 0160020 0030020 0130020 0160020 0110020 0140020  ; bo SR SR sd ao SR ad mr  : <color><color><color><color><color><color><color><color> :         :MMIPMLO
+@T00710: 0140020 0000020 0140020 0010020 0140020 0140020 0140020 0140020  ; mr si mr bi mr mr mr mr  : <color><color><color><color><color><color><color><color> :        O\0O#OOOO
+@T00720: 0140020 0140020 0140020 0140020 0010020 0010020 0062120 0170020  ; mr mr mr mr bi bi ab CL  : <color><color><color><color><color><color><color><color> :         OOOO##(V
+@T00730: 0150220 0023520 0142020 0172420 0041120 0141120 0125420 0032020  ; dv bo mr CL ts mr sa sd  : <color><color><color><color><color><color><color><color> : G:<stop><cntl><color>oy+
+@T00740: 0020020 0060020 0012020 0162020 0062020 0160020 0120020 0070020  ; bo ab bi SR ab SR cm cp  : <color><color><color><color><color><color><color><color> :     n|<cntl>(MHC
+@T00750: 0042020 0002020 0150020 0050020 0010020 0010020 0010020 0140020  ; ts si dv ta bi bi bi mr  : <color><color><color><color><color><color><color><color> :         )#GR###O
+@T00760: 0010020 0010020 0140020 0140020 0140020 0140020 0140020 0140020  ; bi bi mr mr mr mr mr mr  : <color><color><color><color><color><color><color><color> :         ##OOOOOO
+@T00770: 0050020 0050020 0170520 0062020 0067520 0171520 0130020 0046420  ; ta ta CL ab ex CL ao td  : <color><color><color><color><color><color><color><color> :         RRV(6VP5
+@T01000: 0155120 0177120 0160120 0072020 0130020 0170020 0152020 0032020  ; SL md SR cp ao CL dv sd  : <color><color><color><color><color><color><color><color> :     9<del>M-PV#/
+@T01010: 0022020 0020020 0150020 0070020 0102020 0042020 0150020 0050020  ; bo bo dv cp ca ts dv ta  : <color><color><color><color><color><color><color><color> :         : GC#)GR
+@T01020: 0010020 0140020 0010020 0050020 0010020 0140020 0140020 0140020  ; bi mr bi ta bi mr mr mr  : <color><color><color><color><color><color><color><color> :         #O#R#OOO
+@T01030: 0140020 0140020 0140020 0010020 0050020 0050020 0051120 0070020  ; mr mr mr bi ta ta ta cp  : <color><color><color><color><color><color><color><color> :         OOO#RRRC
+@T01040: 0032220 0003520 0042020 0126420 0013520 0015520 0164120 0044020  ; sd si ts sa bi rd sf td  : <color><color><color><color><color><color><color><color> :         /#)#_AXD
+@T01050: 0142020 0102020 0052020 0162020 0152020 0150020 0150020 0102020  ; mr ca ta SR dv dv dv ca  : <color><color><color><color><color><color><color><color> : <stop>#1<cntl>#GG#
+@T01060: 0152020 0142020 0150020 0010020 0140020 0140020 0140020 0010020  ; dv mr dv bi mr mr mr bi  : <color><color><color><color><color><color><color><color> :    #<stop>G#OOO#
+@T01070: 0140020 0140020 0140020 0140020 0140020 0140020 0140020 0010020  ; mr mr mr mr mr mr mr bi  : <color><color><color><color><color><color><color><color> :         OOOOOOO#
+@T01100: 0050020 0050020 0134520 0112020 0156220 0060220 0052020 0136420  ; ta ta dm ad SL ab ta dm  : <color><color><color><color><color><color><color><color> :        RRQ\t#N1#
+@T01110: 0140220 0177520 0156120 0054020 0052020 0012020 0012020 0122020  ; mr md SL ck ta bi bi cm  : <color><color><color><color><color><color><color><color> :    O<del>#J1__\n
+@T01120: 0052020 0150020 0060020 0052020 0162020 0062020 0060020 0050020  ; ta dv ab ta SR ab ab ta  : <color><color><color><color><color><color><color><color> :    1GN1<cntl>(NR
+@T01130: 0010020 0010020 0010020 0140020 0140020 0140020 0140020 0010020  ; bi bi bi mr mr mr mr bi  : <color><color><color><color><color><color><color><color> :         ###OOOO#
+@T01140: 0140020 0140020 0140020 0050020 0150020 0150020 0166520 0002020  ; mr mr mr ta dv dv sf si  : <color><color><color><color><color><color><color><color> :         OOORGG##
+@T01150: 0022220 0067520 0052020 0151020 0070220 0066220 0010520 0164020  ; bo ex ta dv cp ex bi sf  : <color><color><color><color><color><color><color><color> :         :61GC6#X
+@T01160: 0162020 0062020 0002020 0012020 0142020 0110020 0060020 0052020  ; SR ab si bi mr ad ab ta  : <color><color><color><color><color><color><color><color> : <cntl>(#_<stop>LN1
+@T01170: 0072020 0162020 0160020 0050020 0010020 0140020 0010020 0050020  ; cp SR SR ta bi mr bi ta  : <color><color><color><color><color><color><color><color> :    -<cntl>MR#O#R
+@T01200: 0010020 0010020 0010020 0010020 0140020 0140020 0000020 0140020  ; bi bi bi bi mr mr si mr  : <color><color><color><color><color><color><color><color> :        ####OO\0O
+@T01210: 0050020 0050020 0114520 0012020 0052620 0002220 0052020 0173020  ; ta ta su bi ta si ta CL  : <color><color><color><color><color><color><color><color> :    RRW_1#1<cntl>
+@T01220: 0066220 0044620 0012520 0124020 0104020 0004020 0042020 0012020  ; ex td bi sa cs .word ts bi  : <color><color><color><color><color><color><color><color> :         6d|yze.|
+@T01230: 0042020 0150020 0020020 0102020 0022020 0152020 0160020 0050020  ; ts dv bo ca bo dv SR ta  : <color><color><color><color><color><color><color><color> :         .g #=#mr
+@T01240: 0010020 0140020 0010020 0010020 0010020 0050020 0010020 0010020  ; bi mr bi bi bi ta bi bi  : <color><color><color><color><color><color><color><color> :         #o###r##
+@T01250: 0010020 0140020 0140020 0050020 0110020 0150020 0055120 0170020  ; bi mr mr ta ad dv ck CL  : <color><color><color><color><color><color><color><color> :         #oorlgjv
+@T01260: 0152620 0074220 0112020 0175020 0156620 0134620 0146520 0164020  ; dv sp ad md SL dm mh sf  : <color><color><color><color><color><color><color><color> :        #k\t0#q#x
+@T01270: 0034020 0124020 0052020 0052020 0102020 0160020 0030020 0062020  ; cf sa ta ta ca SR sd ab  : <color><color><color><color><color><color><color><color> :         uy11#mi,
+@T01300: 0104020 0172020 0070020 0110020 0050020 0050020 0110020 0050020  ; cs CL cp ad ta ta ad ta  : <color><color><color><color><color><color><color><color> :    z<cntl>clrrlr
+@T01310: 0050020 0050020 0010020 0010020 0140020 0140020 0140020 0050020  ; ta ta bi bi mr mr mr ta  : <color><color><color><color><color><color><color><color> :         rr##ooor
+@T01320: 0150020 0020020 0063520 0152020 0040620 0060220 0102020 0047020  ; dv bo ab dv ts ab ca td  : <color><color><color><color><color><color><color><color> :   g ,#<color>n#5
+@T01330: 0003220 0155220 0076520 0174020 0136020 0066020 0062020 0052020  ; si SL sp md dm ex ab ta  : <color><color><color><color><color><color><color><color> :         #9#0#6,1
+@T01340: 0142020 0070020 0130020 0152020 0172020 0032020 0070020 0150020  ; mr cp ao dv CL sd cp dv  : <color><color><color><color><color><color><color><color> : <stop>cp#<cntl>+cg
+@T01350: 0010020 0010020 0050020 0050020 0050020 0050020 0050020 0050020  ; bi bi ta ta ta ta ta ta  : <color><color><color><color><color><color><color><color> :         ##rrrrrr
+@T01360: 0010020 0140020 0140020 0050020 0150020 0150020 0140220 0130020  ; bi mr mr ta dv dv mr ao  : <color><color><color><color><color><color><color><color> :         #oorggop
+@T01370: 0131220 0136220 0052020 0117020 0005220 0113620 0173120 0026020  ; ao dm ta su .word ad CL rc  : <color><color><color><color><color><color><color><color> :   p#1#e\t<cntl>4
+@T01400: 0150420 0100420 0062020 0152020 0052020 0002020 0170020 0052020  ; dv ca ab dv ta si CL ta  : <color><color><color><color><color><color><color><color> :         gt,#1#v1
+@T01410: 0132020 0072020 0142020 0060020 0010020 0010020 0050020 0110020  ; ao cp mr ab bi bi ta ad  : <color><color><color><color><color><color><color><color> :    #-<stop>n##rl
+@T01420: 0110020 0050020 0050020 0050020 0010020 0010020 0140020 0050020  ; ad ta ta ta bi bi mr ta  : <color><color><color><color><color><color><color><color> :         lrrr##or
+@T01430: 0020020 0060020 0113520 0142020 0116620 0050620 0052020 0067020  ; bo ab ad mr su ta ta ex  : <color><color><color><color><color><color><color><color> :    n\t<stop>#r16
+@T01440: 0041620 0113620 0141520 0140420 0160420 0140420 0062020 0162020  ; ts ad mr mr SR mr ab SR  : <color><color><color><color><color><color><color><color> : <color>\toomo,<cntl>
+@T01450: 0062020 0052020 0102020 0012020 0032020 0072020 0142020 0120020  ; ab ta ca bi sd cp mr cm  : <color><color><color><color><color><color><color><color> :    (1#_/-<stop>H
+@T01460: 0110020 0110020 0150020 0020020 0150020 0150020 0110020 0050020  ; ad ad dv bo dv dv ad ta  : <color><color><color><color><color><color><color><color> :         LLG GGLR
+@T01470: 0010020 0140020 0140020 0050020 0020020 0060020 0045520 0002020  ; bi mr mr ta bo ab td si  : <color><color><color><color><color><color><color><color> :         #OOR ND#
+@T01500: 0174620 0134220 0022020 0027020 0145620 0017620 0141520 0010420  ; md dm bo rc mh rd mr bi  : <color><color><color><color><color><color><color><color> :         0Q:4B3O#
+@T01510: 0042420 0120420 0162020 0022020 0022020 0012020 0142020 0062020  ; ts cm SR bo bo bi mr ab  : <color><color><color><color><color><color><color><color> : )H<cntl>::_<stop>(
+@T01520: 0104020 0004020 0052020 0120020 0110020 0050020 0150020 0150020  ; cs .word ta cm ad ta dv dv  : <color><color><color><color><color><color><color><color> :         ZE1HLRGG
+@T01530: 0150020 0150020 0150020 0110020 0050020 0010020 0140020 0050020  ; dv dv dv ad ta bi mr ta  : <color><color><color><color><color><color><color><color> :         GGGLR#OR
+@T01540: 0020020 0060020 0163520 0142020 0017220 0006620 0122020 0137020  ; bo ab SR mr rd .word cm dm  : <color><color><color><color><color><color><color><color> :  N<cntl><stop>38\n#
+@T01550: 0017620 0154320 0073520 0120420 0052420 0012420 0054020 0172020  ; rd SL cp cm ta bi ck CL  : <color><color><color><color><color><color><color><color> :    39-H1_J<cntl>
+@T01560: 0162020 0052020 0142020 0052020 0172020 0172020 0052020 0120020  ; SR ta mr ta CL CL ta cm  : <color><color><color><color><color><color><color><color> : <cntl>1<stop>1<cntl><cntl>1h
+@T01570: 0110020 0050020 0150020 0020020 0150020 0110020 0110020 0050020  ; ad ta dv bo dv ad ad ta  : <color><color><color><color><color><color><color><color> :         lrg gllr
+@T01600: 0010020 0140020 0140020 0150020 0160020 0160020 0064220 0130020  ; bi mr mr dv SR SR ex ao  : <color><color><color><color><color><color><color><color> :         #oogmmfp
+@T01610: 0071220 0152620 0062020 0071420 0037620 0010720 0027520 0110420  ; cp dv ab cp cf bi rc ad  : <color><color><color><color><color><color><color><color> :         c#,c2#4l
+@T01620: 0032420 0022420 0164020 0154020 0044020 0062020 0052020 0112020  ; sd bo sf SL td ab ta ad  : <color><color><color><color><color><color><color><color> :        +=x9d,1\t
+@T01630: 0104020 0054020 0032020 0030020 0150020 0150020 0020020 0060020  ; cs ck sd sd dv dv bo ab  : <color><color><color><color><color><color><color><color> :         zj+igg n
+@T01640: 0020020 0150020 0150020 0050020 0010020 0140020 0140020 0150020  ; bo dv dv ta bi mr mr dv  : <color><color><color><color><color><color><color><color> :          ggr#oog
+@T01650: 0060020 0060020 0072620 0052020 0005220 0010620 0152020 0021420  ; ab ab cp ta .word bi dv bo  : <color><color><color><color><color><color><color><color> :         nn-1e## 
+@T01660: 0054320 0146320 0070220 0100420 0044420 0132420 0174020 0074020  ; ck mh cp ca td ao md sp  : <color><color><color><color><color><color><color><color> :         j#ctd#0k
+@T01670: 0154020 0152020 0112020 0102020 0004020 0114020 0072020 0070020  ; SL dv ad ca .word su cp cp  : <color><color><color><color><color><color><color><color> :        9#\t#ew-c
+@T01700: 0110020 0110020 0020020 0060020 0020020 0110020 0110020 0110020  ; ad ad bo ab bo ad ad ad  : <color><color><color><color><color><color><color><color> :         ll n lll
+@T01710: 0050020 0010020 0140020 0150020 0060020 0060020 0111000 0044110  ; ta bi mr dv ab ab ad td  : <color><color><color><color><color><color>\0  :         r#ognnld
+
+%Hash: 8f0f11-d27f0d-976

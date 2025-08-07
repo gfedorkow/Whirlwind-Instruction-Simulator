@@ -1,0 +1,88 @@
+
+; *** Core Image ***
+; WW Tape Block Numbers: Flexo-Block-Num=0o100200, 556-Block-Num= None ; xsum=good
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\53\t53_pt1.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\53\t53_pt1_gs001_fb1538p7.tcore
+%TapeID: _fb1538p7
+%JumpTo 061
+%Stats: Covariance=0.002402, Size=564, 
+%Blocknum 0o0
+@C00040: 0000301 0014000 0000010 0100004 0174306 0170003 0110202 0044231  ; si rd si ca md CL ad td  :        #\0 #a8e, :       \0a\0t0vld
+@C00050: 0044072 0110001 0044075 0044113 0044067 0100002 0041122 0074061  ; td ad td td td ca ts sp  : x#<cntl>4#ed<stop> :   dldddt<color>k
+@C00060: 0074151 0000301 0014000 0100000 0040320 0041130 0040317 0000132  ; sp si rd ca ts ts ts si  : \n#\0\0<color>n2f : k\0at<color><color><color>\0
+@C00070: 0014000 0070247 0000131 0100076 0044077 0000132 0014307 0030307  ; rd cp si ca td si rd sd  :    \0#,0<del>f33 :       ac\0td\0ai
+@C00100: 0070103 0114000 0070106 0074322 0000000 0074061 0130077 0114312  ; cp su cp sp si sp ao su  : 8\0ad\0<stop><del>s :        cwck\0kpw
+@C00110: 0070076 0100001 0041121 0000132 0100000 0041131 0041127 0100213  ; cp ca ts si ca ts ts ca  :        0#.f\0,74 : ct<color>\0t<color><color>t
+@C00120: 0044216 0014000 0041123 0030313 0070127 0114000 0070223 0014000  ; td rd ts sd cp su cp rd  :      u\0547\05\0 :   da<color>icwca
+@C00130: 0041124 0125123 0041125 0014717 0041126 0125125 0041125 0014707  ; ts sa ts rd ts sa ts rd  :         r512j113 : <color>y<color>a<color>y<color>a
+@C00140: 0031125 0070144 0114000 0070151 0074673 0131121 0114306 0070230  ; sd cp su cp sp ao su cp  :       1l\0\n#.an :         icwckpwc
+@C00150: 0074673 0101126 0070240 0175122 0134000 0070111 0105124 0070236  ; sp ca cp md dm cp cs cp  :        #jtd\0=rk :         ktc0qczc
+@C00160: 0041124 0100133 0044211 0100320 0124001 0040320 0040007 0040006  ; ts ca td ca sa ts ts ts  : r6=<color>#<color>3a : <color>tdty<color><color><color>
+@C00170: 0100000 0134000 0070177 0100321 0040320 0040007 0040006 0131131  ; ca dm cp ca ts ts ts ao  : \0\0<del>.<color>3a, : tqct<color><color><color>p
+@C00200: 0115123 0070215 0014101 0031127 0070144 0114000 0070210 0074144  ; su cp rd sd cp su cp sp  :        5+#7l\0 l :         wcaicwck
+@C00210: 0101124 0000000 0101123 0021132 0074111 0014000 0041132 0125127  ; ca si ca bo sp rd ts sa  :       r\05f=\0f7 :  t\0t ka<color>y
+@C00220: 0041127 0130216 0074163 0101130 0134000 0070227 0074501 0074532  ; ts ao sp ca dm cp sp sp  :        7u#n\07#f :   <color>pktqckk
+@C00230: 0100317 0110001 0040317 0040005 0000131 0074113 0100137 0074162  ; ca ad ts ts si sp ca sp  :         2#2|,4#b : tl<color><color>\0ktk
+@C00240: 0174314 0115122 0134000 0070245 0074111 0131130 0074156 0041132  ; md su dm cp sp ao sp ts  :       id\0\t=nqf :   0wqckpk<color>
+@C00250: 0054316 0074067 0014000 0070072 0135132 0134000 0070260 0074072  ; ck sp rd cp dm dm cp sp  :       u#\0xf\0ox :         jkacqqck
+@C00260: 0014000 0041123 0011132 0000225 0100262 0044271 0105123 0110001  ; rd ts bi si ca td cs ad  :   \05f1b<cntl>5# :  a<color>#\0tDZL
+@C00270: 0041123 0101132 0024000 0130271 0131123 0070271 0101122 0075034  ; ts ca rc ao ao cp ca sp  : 5F\0<cntl>5<cntl>DC :   <color>TSPPCTK
+@C00300: 0100315 0021105 0100305 0024000 0074073 0122000 0000003 0170712  ; ca bo ca rc sp cm si CL  :       /__\0#\08S :       T TSK\n\0V
+@C00310: 0105730 0165314 0030311 0053535 0077777 0000007 0100777 0000000  ; cs sf sd ta sp si ca si  : NI:-<del>3<del>\0 :       ZXI1#\0T\0
+@C00320: 0000000 0100000 0050330 0100076 0044077 0000225 0100331 0020332  ; si ca ta ca td si ca bo  :   \0\0N0<del>1(F :       \0TRTD\0T 
+@C00330: 0074000 0000147 0162000 0014000 0060000 0020000 0034000 0060000  ; sp si SR rd ab bo cf ab  :  \0#\0\0\0\0\0\0 :   K\0<cntl>AN UN
+@C00340: 0024000 0034000 0070000 0070000 0004000 0024000 0024000 0064000  ; rc cf cp cp .word rc rc ex  : \0\0\0\0\0\0\0\0 :         SUCCESSF
+@C00350: 0034000 0110000 0020000 0024000 0004000 0014000 0050000 0070000  ; cf ad bo rc .word rd ta cp  : \0\0\0\0\0\0\0\0 :         UL SEARC
+@C00360: 0120000 0020000 0030000 0060000 0020000 0100000 0014000 0130000  ; cm bo sd ab bo ca rd ao  : \0\0\0\0\0\0\0\0 :         H IN TAP
+@C00370: 0004000 0020000 0140000 0070000 0070000 0034000 0050000 0050000  ; .word bo mr cp cp cf ta ta  : \0\0\0\0\0\0\0\0 :         E OCCURR
+@C00400: 0004000 0044000 0020000 0050000 0004000 0024000 0100000 0014000  ; .word td bo ta .word rc ca rd  : \0\0\0\0\0\0\0\0 :         ED RESTA
+@C00410: 0050000 0100000 0020000 0100000 0140000 0020000 0050000 0004000  ; ta ca bo ca mr bo ta .word  : \0\0\0\0\0\0\0\0 :         RT TO RE
+@C00420: 0014000 0044000 0020000 0060000 0004000 0164000 0100000 0020000  ; rd td bo ab .word sf ca bo  : \0\0\0\0\0\0\0\0 :         AD NEXT 
+@C00430: 0144000 0110000 0140000 0070000 0074000 0020000 0140000 0050000  ; mh ad mr cp sp bo mr ta  : \0\0\0\0\0\0\0\0 :         BLOCK OR
+@C00440: 0020000 0024000 0100000 0014000 0050000 0100000 0140000 0170000  ; bo rc ca rd ta ca mr CL  : \0\0\0\0\0\0\0\0 :          STARTOV
+@C00450: 0004000 0050000 0020000 0014000 0100000 0172000 0020000 0052000  ; .word ta bo rd ca CL bo ta  : \0\0\0\0\0\0\0\0 :    ER AT<cntl> 1
+@C00460: 0052000 0052000 0020000 0162000 0100000 0140000 0020000 0070000  ; ta ta bo SR ca mr bo cp  : \0\0\0\0\0\0\0\0 :    11 <cntl>TO C
+@C00470: 0140000 0060000 0100000 0030000 0060000 0034000 0004000 0172000  ; mr ab ca sd ab cf .word CL  : \0\0\0\0\0\0\0\0 :    ONTINUE<cntl>
+@C00500: 0122000 0000225 0100531 0020505 0074532 0020000 0162000 0064000  ; cm si ca bo sp bo SR ex  :     \01,|f\0\0\0 :  \n\0t k <cntl>F
+@C00510: 0140000 0050000 0020000 0024000 0004000 0100000 0020000 0034000  ; mr ta bo rc .word ca bo cf  : \0\0\0\0\0\0\0\0 :         OR SET U
+@C00520: 0130000 0020000 0130000 0050000 0140000 0150000 0172000 0042000  ; ao bo ao ta mr dv CL ts  : \0\0\0\0\0\0\0\0 :    P PROG<cntl>.
+@C00530: 0020000 0000024 0100317 0075034 0000225 0100670 0020562 0100671  ; bo si ca sp si ca bo ca  :   \0r2c1mb<cntl> :        \0tk\0t T
+@C00540: 0021105 0100320 0075034 0000225 0100672 0020650 0100671 0021105  ; bo ca sp si ca bo ca bo  : _<color>C1XH<cntl>_ :         TK\0T T 
+@C00550: 0100500 0024000 0034105 0000017 0100555 0012000 0100561 0034701  ; ca rc cf si ca bi ca cf  : \0\0_2#\0<stop># :        TSU\0T_TU
+@C00560: 0000000 0000035 0162000 0070000 0050000 0140000 0024000 0024000  ; si si SR cp ta mr rc rc  :  \0-\0\0\0\0\0\0 :  \0\0<cntl>CROSS
+@C00570: 0140000 0170000 0004000 0050000 0020000 0050000 0004000 0014000  ; mr CL .word ta bo ta .word rd  : \0\0\0\0\0\0\0\0 :         OVER REA
+@C00600: 0044000 0020000 0030000 0060000 0020000 0070000 0140000 0160000  ; td bo sd ab bo cp mr SR  : \0\0\0\0\0\0\0\0 :         D IN COM
+@C00610: 0130000 0110000 0004000 0100000 0004000 0020000 0100000 0140000  ; ao ad .word ca .word bo ca mr  : \0\0\0\0\0\0\0\0 :         PLETE TO
+@C00620: 0100000 0014000 0110000 0020000 0070000 0120000 0004000 0070000  ; ca rd ad bo cp cm .word cp  : \0\0\0\0\0\0\0\0 :         TAL CHEC
+@C00630: 0074000 0020000 0024000 0034000 0160000 0020000 0064000 0014000  ; sp bo rc cf SR bo ex rd  : \0\0\0\0\0\0\0\0 :         K SUM FA
+@C00640: 0030000 0110000 0034000 0050000 0004000 0024000 0172000 0022000  ; sd ad cf ta .word rc CL bo  : \0\0\0\0\0\0\0\0 :    ILURES<cntl>=
+@C00650: 0162000 0020000 0114000 0140000 0050000 0044000 0020000 0070000  ; SR bo su mr ta td bo cp  : \0\0\0\0\0\0\0\0 :    <cntl> WORD C
+@C00660: 0140000 0034000 0060000 0100000 0004000 0050000 0172000 0022000  ; mr cf ab ca .word ta CL bo  : \0\0\0\0\0\0\0\0 :    OUNTER<cntl>=
+@C00670: 0000066 0000007 0000020 0101124 0075034 0000225 0100713 0020714  ; si si si ca sp si ca bo  :   93<color>rc14i :     \0\0\0tk\0t 
+@C00700: 0100712 0021105 0100711 0024000 0000132 0000000 0100001 0041123  ; ca bo ca rc si si ca ts  :       s|=\0f\0#5 : t ts\0\0t<color>
+@C00710: 0074230 0122000 0000007 0000117 0162000 0070000 0120000 0004000  ; sp cm si si SR cp cm .word  :    n\032\0\0\0\0 : k\n\0\0<cntl>CHE
+@C00720: 0070000 0074000 0020000 0024000 0034000 0160000 0020000 0004000  ; cp sp bo rc cf SR bo .word  : \0\0\0\0\0\0\0\0 :         CK SUM E
+@C00730: 0050000 0050000 0140000 0050000 0022000 0020000 0050000 0004000  ; ta ta mr ta bo bo ta .word  : \0\0\0\0\0\0\0\0 :         RROR: RE
+@C00740: 0024000 0100000 0014000 0050000 0100000 0020000 0100000 0140000  ; rc ca rd ta ca bo ca mr  : \0\0\0\0\0\0\0\0 :         START TO
+@C00750: 0020000 0100000 0050000 0124000 0020000 0014000 0150000 0014000  ; bo ca ta sa bo rd dv rd  : \0\0\0\0\0\0\0\0 :          TRY AGA
+@C00760: 0030000 0060000 0020000 0140000 0050000 0020000 0024000 0100000  ; sd ab bo mr ta bo rc ca  : \0\0\0\0\0\0\0\0 :         IN OR ST
+@C00770: 0014000 0050000 0100000 0020000 0014000 0100000 0172000 0020000  ; rd ta ca bo rd ca CL bo  : \0\0\0\0\0\0\0\0 :    ART AT<cntl> 
+@C01000: 0066000 0174000 0020000 0162000 0100000 0140000 0020000 0070000  ; ex md bo SR ca mr bo cp  : \0\0\0\0\0\0\0\0 :    60 <cntl>TO C
+@C01010: 0140000 0060000 0100000 0030000 0060000 0034000 0004000 0020000  ; mr ab ca sd ab cf .word bo  : \0\0\0\0\0\0\0\0 :         ONTINUE 
+@C01020: 0162000 0044000 0050000 0034000 0160000 0020000 0014000 0044000  ; SR td ta cf SR bo rd td  : \0\0\0\0\0\0\0\0 :    <cntl>DRUM AD
+@C01030: 0044000 0172000 0042000 0022000 0041070 0051067 0171021 0111071  ; td CL ts bo ts ta CL ad  : \0\0\0\0m#.<cntl> : D<cntl>.=<color>rvL
+@C01040: 0045051 0174000 0171003 0111071 0045053 0131044 0131044 0115120  ; td md CL ad td ao ao su  : \n\08<cntl>#LL<color> :         D0VLDPPW
+@C01050: 0071041 0100000 0041105 0100000 0041107 0100000 0041110 0100000  ; cp ca ts ca ts ca ts ca  :     #\0_\03\0 \0 : CT<color>T<color>T<color>T
+@C01060: 0041111 0100000 0041112 0100000 0041113 0101117 0045044 0074000  ; ts ca ts ca ts ca td sp  :      :\0S\042L\0 : <color>T<color>T<color>TDK
+@C01070: 0000000 0001072 0174000 0052000 0036000 0016000 0026000 0046000  ; si si md ta cf rd rc td  :  \0X\0\0\0\0\0\0 :       \0\0012345
+@C01100: 0066000 0056000 0000000 0000000 0000000 0020000 0042000 0000000  ; ex ck si si si bo ts si  : \0\0\0\0\0\0\0\0 :     67\0\0\0 )\0
+@C01110: 0000000 0000000 0000000 0000000 0000000 0000000 0000000 0001053  ; si si si si si si si si  :  \0\0\0\0\0\0\0# : \0\0\0\0\0\0\0\0
+@C01120: 0045063 0000001 0000001  None    None    None    None    None    ;      td si si            :    ###           :  D\0\0          
+@C01130:  None    None   0000000  None    None    None    None    None    ;            si            :     \0           :     \0          
+
+%Hash: c85dba-c5d7ed-564
+
+%String: an unsuccessful search in tape occurred restart to read next block or startover at 111 to continue
+%String:  for set up prog. 
+%String: crossover read in complete total check sum failures: word counter:
+%String: check sum error: restart to try again or start at 60 to continue drum add.:
+%String: 01234567

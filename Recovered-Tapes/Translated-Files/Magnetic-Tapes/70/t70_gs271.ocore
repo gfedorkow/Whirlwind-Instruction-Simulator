@@ -1,0 +1,21 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\70\t70.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\70\t70_gs271.ocore
+%TapeID: 
+%Stats: Covariance=0.004633, Size=94, 
+%Blocknum 0o0
+@T00000: 0000135 0100000 0103106 0126205 0100000 0103362 0126203 0100000  ; si ca ca sa ca ca sa ca  :      -\0a|\0b8\0 :        \0t##t##t
+@T00010: 0133353 0126263 0100000 0133714 0126261 0100000 0134315 0126256  ; ao sa ca ao sa ca dm sa  :  ##\0i<stop>\0+q :         ##t##tq#
+@T00020: 0100000 0134652 0126253 0100000 0135165 0126251 0100000 0102002  ; ca dm sa ca dm sa ca ca  :     \0y#\0#\n\0e :         tq#tq#t#
+@T00030: 0126414 0100000 0135347 0126447 0100000 0135612 0126445 0100000  ; sa ca dm sa ca dm sa ca  :     i\0##\0s\t\0 :         #tq#tq#t
+@T00040: 0136063 0126443 0100000 0100526 0127024 0100000 0137622 0127031  ; dm sa ca ca sa ca dm sa  :    #<bs>\0jr\0d, :         ##tt#t##
+@T00050: 0000000 0004150 0065651 0013110 0070361 0011645 0000001 0004150  ; si .word ex bi cp bi si .word  : \0h\n <stop>\t#h :       \0ef|c#\0e
+@T00060: 0065651 0013110 0071321 0012105 0000002 0004150 0065651 0013110  ; ex bi cp bi si .word ex bi  :       \n .|eh\n  :        f|c|\0ef|
+@T00070: 0072261 0012345 0000003 0004150 0065651 0013110 0072521 0013305  ; cp bi si .word ex bi cp bi  :  <stop>\t8h\n .| :        -|\0ef|-|
+@T00100: 0000004 0004150 0065651 0013110 0072761 0014245 0000005 0073626  ; si .word ex bi cp rd si cp  :  #h\n <stop>\t|j :       \0ef|-a\0-
+@T00110: 0065652 0013110 0005516 0011645 0000006 0073626 0065652 0013110  ; ex bi .word bi si cp ex bi  :        y u\tajy  :        f|e#\0-f|
+@T00120: 0006216 0013545 0000007 0073626 0065652 0013110 0010116 0011645  ; .word bi si cp ex bi bi bi  :       u\t3jy u\t :        8|\0-f|##
+@T00130: 0000010 0073626 0065652 0013110 0010616 0013045  ;       si cp ex bi bi bi  :           jy u\t :          \0-f|#|
+
+%Hash: 4b6227-a17e54-94

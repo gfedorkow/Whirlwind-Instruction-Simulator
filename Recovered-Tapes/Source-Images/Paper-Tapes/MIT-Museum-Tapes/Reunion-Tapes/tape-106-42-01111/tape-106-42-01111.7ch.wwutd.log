@@ -1,0 +1,20 @@
+no GPIO library found
+Info: input file: tape-106-42-01111.7ch, type: 7ch, basename: tape-106-42-01111
+Info: FileName: tape-106-42-01111.7ch
+Info: block_array contains 10 elements
+Core Image 2048(d) words, output to file tape-106-42-01111_gs001.tcore
+Core Image 2048(d) words, output to file tape-106-42-01111_gs002.tcore
+Core Image 2048(d) words, output to file tape-106-42-01111_gs003.tcore
+Core Image 2048(d) words, output to file tape-106-42-01111_gs004.tcore
+Core Image 2048(d) words, output to file tape-106-42-01111_gs005.tcore
+Info: Block Type Summary: 
+  loader: 000(d): b556,b556wc, b556,jumpto, 
+  loader: 002(d): b556,b556wc, b556,jumpto, 
+  loader: 004(d): b556,b556wc, b556,jumpto, 
+  loader: 006(d): b556,b556wc, b556,jumpto, 
+  loader: 008(d): b556,b556wc, b556,jumpto, 
+     end: 010(d): end, 
+Info: 10(d) Loader Block Chains, 0(d) Data Block Chains
+Info: Completed Every Last Byte of tape tape-106-42-01111
+Info:    Wrote 5 files; Ignored 0 files due to size less than 30 words
+Info: 556 Checksum summary: Good=0(d), Bad=0(d), Missing=5(d), Jump_To's=5(d), Non_556_blocks=0(d)

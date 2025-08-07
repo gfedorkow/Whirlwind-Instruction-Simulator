@@ -1,0 +1,91 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302374_box17\102663506_fc1313m4m2p1.7ch
+fc TAPE 1313m4m2p1 HOLST/TEST FOR TAPE 1313m4 <del><del><del><del>WITHOUT CARDS
+OCTAL
+
+[1;31mx1,[0m	si176	|MTU 3
+	cax7
+	spx8	|2 crs
+	spx8
+	ca1x7
+	spx8	|lc
+	cax5	|rc 12
+	tsx4	|set row ctr.
+[1;31mx2,[0m	cax4	|row ctr.
+	su1
+	mh1x5	|rc 5
+	slh17
+	adx6	|rc cai1
+	tsx3	|set address for beginning of row
+	cs1x5	|rc 5
+	<del>ad1
+	ts1x4	|set ctr. for words in row
+[1;31mx3,[0m	cai1+	|get word
+	ts2x4	|hold
+	clh21
+	spx9	|print sign 0 or 1
+	ca2x7
+	spx8	|print .
+	ca2x4	|word again
+	clh24
+	spx9	|5 octads
+	spx9
+	spx9
+	spx9
+	spx9
+	ca3x7
+	spx8	|2 spaces
+	spx8
+	aox3	|index address
+	ao1x4	|ctr.
+	cpx3	|jump if not finished this row
+	cax7
+	spx8	|cr
+	cax4
+	su1	|index row ctr.
+	tsx4
+	cpx10	|jump when done all rows
+	spx2
+[1;31mx10,[0m	si134	|stop magtape
+	spp2	|return to main pgm.
+
+[1;31mx4,[0m	0	|row ctr.
+	0	|word ctr.
+	0	|word
+[1;31mx5,[0m	12	|no. of rows
+	5	|no. of words per row
+[1;31mx6,[0m	cai1	|address of image
+[1;31mx7,[0m	41	|cr
+	61	|lc
+	17	|.
+	8	|space
+[1;31mx8,[0m	ta4r
+	cl<del>h12
+	rc0
+	clh26
+[1;31m4r,[0m	sp0
+[1;31mx9,[0m	ta12r
+	md20r
+	ad14r
+	td6r
+	ab0
+	ts13r
+[1;31m6r,[0m	ca15r+
+	spx8
+	ca13r
+	clh23
+[1;31m12r,[0m	sp0
+[1;31m13r,[0m	0
+[1;31m14r,[0m	15r
+[1;31m15r,[0m	62
+	21
+	15
+[1;31m20r,[0m	7
+	11
+	19
+	27
+	23
+
+1p1|	spx1	|patch instead of si for punch
+
+START AT 0
+<stop>

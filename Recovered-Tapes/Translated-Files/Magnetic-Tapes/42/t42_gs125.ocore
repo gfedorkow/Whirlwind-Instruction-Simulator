@@ -1,0 +1,89 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\42\t42.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\42\t42_gs125.ocore
+%TapeID: 
+%Stats: Covariance=0.004916, Size=634, Display-Ops, 2, 
+%Blocknum 0o0
+@T00000: 0176614 0042406 0064002 0000030 0000006 0020101 0001142 0160046  ; md ts ex si si bo si SR  :         iaena#zw :  <del>.f\0\0 \0m
+@T00010: 0000000 0000000 0000657 0045270 0000000 0177770 0160306 0000000  ; si si si td si md SR si  :     \0\0#m\0ma\0 : \0\0\0d\0<del>m\0
+@T00020: 0000000 0001020 0132703 0000000 0177770 0160306 0000000 0000000  ; si si ao si md SR si si  : \0<color>8\0ma\0\0 : \0\0#\0<del>m\0\0
+@T00030: 0001353 0136316 0000000 0177770 0160306 0000000 0000000 0000104  ; si dm si md SR si si si  :      #u\0ma\0\0# : \0#\0<del>m\0\0\0
+@T00040: 0017244 0000000 0177771 0160306 0000000 0000000 0000140 0040246  ; rd si md SR si si si ts  : l\0<cntl>A\0\0TW : 3\0<del>M\0\0\0<color>
+@T00050: 0000000 0177771 0160306 0000000 0000000 0000057 0156166 0000000  ; si md SR si si si SL si  : \0<cntl>A\0\0#9\0 : \0<del>M\0\0\0#\0
+@T00060: 0177771 0160306 0000000 0000000 0000102 0110725 0000000 0177771  ; md SR si si si ad si md  : <cntl>A\0\0E1\0<cntl> : <del>M\0\0\0L\0<del>
+@T00070: 0160306 0000000 0000000 0000000 0000017 0000000 0177776 0160306  ; SR si si si si si md SR  :     A\0\0\02\00A : M\0\0\0\0\0<del>M
+@T00100: 0000000 0000000 0000053 0046133 0000000 0177771 0160306 0000000  ; si si si td si md SR si  : \0\0#6\0<cntl>A\0 : \0\0\05\0<del>M\0
+@T00110: 0000000 0001420 0057155 0000000 0177770 0160306 0000000 0000000  ; si si ck si md SR si si  : \0<color>#\0MA\0\0 : \0\07\0<del>M\0\0
+@T00120: 0000120 0120410 0000000 0177771 0160306 0000000 0000000 0000162  ; si cm si md SR si si si  : <color> \0<cntl>A\0\0B : \0H\0<del>M\0\0\0
+@T00130: 0164046 0000000 0177771 0160306 0000000 0000000 0001437 0010643  ; sf si md SR si si si bi  : W\0<cntl>A\0\0#<bs> : X\0<del>M\0\0\0#
+@T00140: 0000000 0177770 0160306 0000000 0000000 0000161 0000760 0000000  ; si md SR si si si si si  : \0MA\0\0<stop>O\0 : \0<del>M\0\0\0\0\0
+@T00150: 0177771 0160306 0000000 0000000 0000000 0000113 0000000 0177775  ; md SR si si si si si md  : <cntl>A\0\0\04\0<cntl> : <del>M\0\0\0\0\0<del>
+@T00160: 0160306 0000000 0000000 0000000 0000066 0000000 0177775 0160306  ; SR si si si si si md SR  : a\0\0\09\0<cntl>a : m\0\0\0\0\0<del>m
+@T00170: 0000000 0000000 0000000 0000070 0000000 0177775 0160306 0000000  ; si si si si si md SR si  : \0\0\0m\0<cntl>a\0 : \0\0\0\0\0<del>m\0
+@T00200: 0000000 0001533 0120737 0000000 0177770 0160306 0000000 0000000  ; si si cm si md SR si si  :     \06#\0ma\0\0 : \0\0h\0<del>m\0\0
+@T00210: 0000171 0132440 0000000 0177771 0160306 0000000 0000000 0000626  ; si ao si md SR si si si  : <cntl>T\0<cntl>A\0\0J : \0#\0<del>M\0\0\0
+@T00220: 0071525 0000000 0177770 0160306 0000000 0000000 0000763 0030164  ; cp si md SR si si si sd  :      1\0MA\0\0#G : C\0<del>M\0\0\0I
+@T00230: 0000000 0177770 0160306 0000000 0000000 0000134 0036437 0000000  ; si md SR si si si cf si  :     \0MA\0\0C#\0 : \0<del>M\0\0\02\0
+@T00240: 0177771 0020301 0001217 0040041 0001217 0016041 0051244 0016041  ; md bo si ts si rd ta rd  :    <cntl>#2#2#L# : <del> \0<color>\03R3
+@T00250: 0101222 0016041 0075226 0016041 0010703 0016041 0020707 0016041  ; ca rd sp rd bi rd bo rd  :         D#J#8#3# :         T3K3#3 3
+@T00260: 0051244 0016041 0101223 0016041 0045246 0016041 0041261 0016041  ; ta rd ca rd td rd ts rd  :    L#5#W#<stop># :   R3T3D3<color>3
+@T00270: 0131244 0016041 0051236 0016041 0131244 0016041 0051240 0016041  ; ao rd ta rd ao rd ta rd  :         L#K#L#T# :         P3R3P3R3
+@T00300: 0131244 0016041 0051242 0016041 0120000 0016041 0045261 0016041  ; ao rd ta rd cm rd td rd  :   L#Z#\0#<stop># :         P3R3H3D3
+@T00310: 0120000 0016041 0041266 0016041 0120000 0016041 0114000 0016041  ; cm rd ts rd cm rd su rd  :      \0#9#\0#\0# :   H3<color>3H3W3
+@T00320: 0070000 0016041 0065266 0016041 0000000 0016041 0045265 0016041  ; cp rd ex rd si rd td rd  :       \0#9#\0### :        C3F3\03D3
+@T00330: 0115265 0016041 0110001 0016041 0065266 0016041 0111265 0016041  ; su rd ad rd ex rd ad rd  :         ####9### :         W3L3F3L3
+@T00340: 0114001 0016041 0071257 0016041 0171020 0016041 0115265 0016041  ; su rd cp rd CL rd su rd  :   ####<color>### :         W3C3V3W3
+@T00350: 0110001 0000041 0000000 0016041 0045261 0016041 0170020 0016041  ; ad si si rd td rd CL rd  : ##\0#<stop>#<color># :       L\0\03D3V3
+@T00360: 0075243 0016041 0174000 0000041 0000000 0020041 0001271 0016041  ; sp rd md si si bo si rd  : <bs>#\0#\0#<cntl># :      K30\0\0 \03
+@T00370: 0075217 0000041 0000704 0000041 0010144 0000041 0000050 0016041  ; sp si si si bi si si rd  :         2###L#H# :    K\0\0\0#\0\03
+@T00400: 0077776 0004041 0134704 0004041 0144704 0004041 0124040 0004041  ; sp .word dm .word mh .word sa .word  :         0#####T# :         #EQEBEYE
+@T00410: 0134704 0004041 0144710 0004041 0124044 0004041 0134710 0004041  ; dm .word mh .word sa .word dm .word  :         ## #L# # :         QEBEYEQE
+@T00420: 0144710 0004041 0124052 0004041 0134704 0004041 0144716 0004041  ; mh .word sa .word dm .word mh .word  :          #Y###U# :         BEYEQEBE
+@T00430: 0124062 0004041 0134710 0004041 0144716 0004041 0124074 0004041  ; sa .word dm .word mh .word sa .word  :         B# #U#V# :         YEQEBEYE
+@T00440: 0134716 0004041 0144716 0004041 0124110 0004041 0134704 0004041  ; dm .word mh .word sa .word dm .word  :         U#U# ### :         QEBEYEQE
+@T00450: 0144726 0004041 0124126 0004041 0134710 0004041 0144726 0004041  ; mh .word sa .word dm .word mh .word  :         J#J# #J# :         BEYEQEBE
+@T00460: 0124146 0004041 0134716 0004041 0144726 0004041 0124170 0004041  ; sa .word dm .word mh .word sa .word  :         W#U#J#M# :         YEQEBEYE
+@T00470: 0134726 0004041 0144726 0004041 0124214 0004041 0134706 0004041  ; dm .word mh .word sa .word dm .word  :         J#J#I#A# :         QEBEYEQE
+@T00500: 0124072 0004041 0124144 0004041 0155142 0004041 0124042 0004041  ; sa .word sa .word SL .word sa .word  :         X#L#Z#Z# :         YEYE9EYE
+@T00510: 0124050 0004041 0134712 0004041 0124066 0004041 0124164 0004041  ; sa .word dm .word sa .word sa .word  :         H#S#9#G# :         YEQEYEYE
+@T00520: 0155142 0004041 0124054 0004041 0124104 0004041 0134714 0004041  ; SL .word sa .word sa .word dm .word  :         Z#P###I# :         9EYEYEQE
+@T00530: 0124056 0004041 0124166 0004041 0155142 0004041 0124070 0004041  ; sa .word sa .word SL .word sa .word  :         Q#9#Z#M# :         YEYE9EYE
+@T00540: 0124106 0004041 0134720 0004041 0124132 0004041 0124156 0004041  ; sa .word dm .word sa .word sa .word  :   A#<color>#F#Q# :         YEQEYEYE
+@T00550: 0155142 0004041 0124112 0004041 0124206 0004041 0134722 0004041  ; SL .word sa .word sa .word dm .word  :         Z#S#A#D# :         9EYEYEQE
+@T00560: 0124114 0004041 0124160 0004041 0155142 0004041 0124210 0004041  ; sa .word sa .word SL .word sa .word  :         I#O#Z# # :         YEYE9EYE
+@T00570: 0124134 0004041 0134724 0004041 0124120 0004041 0124140 0004041  ; sa .word dm .word sa .word sa .word  :   C#R#<color>#T# :         YEQEYEYE
+@T00600: 0155142 0004041 0124162 0004041 0124212 0004041 0134730 0004041  ; SL .word sa .word sa .word dm .word  :         Z#B#S#N# :         9EYEYEQE
+@T00610: 0144730 0004041 0124242 0004041 0134730 0004041 0144734 0004041  ; mh .word sa .word dm .word mh .word  :         N#Z#N#C# :         BEYEQEBE
+@T00620: 0124272 0004041 0134730 0004041 0144742 0004041 0124360 0004041  ; sa .word dm .word mh .word sa .word  :         X#N#Z#O# :         YEQEBEYE
+@T00630: 0134734 0004041 0144734 0004041 0124324 0004041 0134734 0004041  ; dm .word mh .word sa .word dm .word  :         C#C#R#C# :         QEBEYEQE
+@T00640: 0144742 0004041 0124416 0004041 0134742 0004041 0144742 0004041  ; mh .word sa .word dm .word mh .word  :         Z#U#Z#Z# :         BEYEQEBE
+@T00650: 0124456 0004041 0134732 0004041 0124414 0004041 0155142 0004041  ; sa .word dm .word sa .word SL .word  :         Q#F#I#Z# :         YEQEYE9E
+@T00660: 0124270 0004041 0124322 0004041 0134736 0004041 0124410 0004041  ; sa .word sa .word dm .word sa .word  :         M#D#K# # :         YEYEQEYE
+@T00670: 0155142 0004041 0124352 0004041 0124452 0004041 0134740 0004041  ; SL .word sa .word sa .word dm .word  :         Z#Y#Y#T# :         9EYEYEQE
+@T00700: 0124354 0004041 0155142 0004041 0124412 0004041 0124454 0004041  ; sa .word SL .word sa .word sa .word  :         P#Z#S#P# :         YE9EYEYE
+@T00710: 0134744 0004041 0144744 0004041 0124520 0004041 0134744 0004041  ; dm .word mh .word sa .word dm .word  :   L#L#<color>#L# :         QEBEYEQE
+@T00720: 0144750 0004041 0124564 0004041 0134750 0004041 0144750 0004041  ; mh .word sa .word dm .word mh .word  :         H#G#H#H# :         BEYEQEBE
+@T00730: 0124632 0004041 0134746 0004041 0155142 0004041 0124562 0004041  ; sa .word dm .word SL .word sa .word  :         F#W#Z#B# :         YEQE9EYE
+@T00740: 0124630 0004041 0134752 0004041 0144752 0004041 0124702 0016041  ; sa .word dm .word mh .word sa rd  :         N#Y#Y#E# :         YEQEBEY3
+@T00750: 0075217 0000041 0000704 0006041 0014000 0000041 0000156 0016041  ; sp si si .word rd si si rd  :        2###\0#Q# :     K\0\08A\0\03
+@T00760: 0077776 0004041 0134704 0004041 0144040 0004041 0124040 0004041  ; sp .word dm .word mh .word sa .word  :         0###T#T# :         #EQEBEYE
+@T00770: 0134706 0004041 0155142 0004041 0144042 0004041 0124042 0004041  ; dm .word SL .word mh .word sa .word  :         A#Z#Z#Z# :         QE9EBEYE
+@T01000: 0134710 0004041 0124046 0004041 0144712 0004041 0144044 0004041  ; dm .word sa .word mh .word mh .word  :          #W#S#L# :         QEYEBEBE
+@T01010: 0124044 0004041 0134714 0004041 0155142 0004041 0144050 0004041  ; sa .word dm .word SL .word mh .word  :         L#I#Z#H# :         YEQE9EBE
+@T01020: 0124050 0004041 0134716 0004041 0144052 0004041 0124052 0004041  ; sa .word dm .word mh .word sa .word  :         H#U#Y#Y# :         YEQEBEYE
+@T01030: 0134720 0004041 0155142 0004041 0144054 0004041 0124054 0004041  ; dm .word SL .word mh .word sa .word  :   <color>#Z#P#P# :         QE9EBEYE
+@T01040: 0134722 0004041 0144730 0004041 0144056 0004041 0124056 0004041  ; dm .word mh .word mh .word sa .word  :         D#N#Q#Q# :         QEBEBEYE
+@T01050: 0134732 0004041 0155142 0004041 0124060 0004041 0134726 0004041  ; dm .word SL .word sa .word dm .word  :         F#Z#O#J# :         QE9EYEQE
+@T01060: 0124076 0004041 0144742 0004041 0144062 0004041 0124062 0004041  ; sa .word mh .word mh .word sa .word  :         0#Z#B#B# :         YEBEBEYE
+@T01070: 0134722 0004041 0155142 0004041 0124064 0004041 0134724 0004041  ; dm .word SL .word sa .word dm .word  :         D#Z#G#R# :         QE9EYEQE
+@T01100: 0144732 0004041 0144066 0004041 0124066 0004041 0134734 0004041  ; mh .word mh .word sa .word dm .word  :         F#9#9#C# :         BEBEYEQE
+@T01110: 0155142 0004041 0144070 0004041 0124070 0004041 0134736 0004041  ; SL .word mh .word sa .word dm .word  :         Z#M#M#K# :         9EBEYEQE
+@T01120: 0144744 0004041 0144072 0004041 0124072 0004041 0134740 0004041  ; mh .word mh .word sa .word dm .word  :         L#X#X#T# :         BEBEYEQE
+@T01130: 0124102 0004041 0144746 0004041 0144074 0004041 0124074 0004041  ; sa .word mh .word mh .word sa .word  :         E#W#V#V# :         YEBEBEYE
+@T01140: 0134736 0004041 0155142 0004041 0124100 0004041 0134750 0004041  ; dm .word SL .word sa .word dm .word  :        K#Z#\0#H# :         QE9EYEQE
+@T01150: 0155142 0004041 0144104 0004041 0124104 0004041 0134752 0004041  ; SL .word mh .word sa .word dm .word  :         Z#####Y# :         9EBEYEQE
+@T01160: 0155142 0004041 0144106 0004041 0124106 0000040 0057755 0114353  ; SL .word mh .word sa si ck su  :         Z#A#AT## :        9EBEY\07W
+@T01170: 0074002 0075667  ;                   sp sp  :               E# :               KK
+
+%Hash: 61d197-a43be0-634

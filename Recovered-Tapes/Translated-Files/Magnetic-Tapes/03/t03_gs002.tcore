@@ -1,0 +1,63 @@
+
+; *** Core Image ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\03\t03.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\03\t03_gs002.tcore
+%TapeID: 
+%Stats: Covariance=0.004725, Size=413, Display-Ops, 3, 
+%Blocknum 0o0
+@C00510:  None    None    None    None   0074002  None    None    None    ;                sp        :          e       :          k      
+@C02400:  None    None    None    None    None    None   0040002 0013401  ;                   ts bi  :               e# :             <color>|
+@C02410: 0000040 0016102 0007002 0100000 0016102 0007001 0040000 0016102  ; si rd .word ca rd .word ts rd  :       tee\0e#\0e :  \038t38<color>3
+@C02420: 0006403 0100000 0016102 0006401 0040000 0016102 0007403 0100000  ; .word ca rd .word ts rd .word ca  :      8\0e#\0e8\0 :   8t38<color>38t
+@C02430: 0016102 0000401 0040000 0016102 0007403 0100001 0016102 0010002  ; rd si ts rd .word ca rd bi  :        e#\0e8#ee :  3\0<color>38t3#
+@C02440: 0044000 0016102 0013401 0100002 0016102 0013404 0044000 0016102  ; td rd bi ca rd bi td rd  :       \0e#ee#\0e :         d3|t3|d3
+@C02450: 0010001 0074000 0040102 0013402 0000053 0016102 0010002 0130000  ; bi sp ts bi si rd bi ao  :       #\0ee#ee\0 :  #k<color>|\03#p
+@C02460: 0016102 0007403 0134002 0016101 0134000 0016042 0013403 0070000  ; rd .word dm rd dm rd bi cp  :       e8e#\0z8\0 :         38q3q3|c
+@C02470: 0016102 0006401 0100000 0016102 0007403 0110003 0016102 0006401  ; rd .word ca rd .word ad rd .word  :        e#\0e88e# :         38t38l38
+@C02500: 0040000 0016102 0010002 0074000 0040102 0013403 0000063 0016102  ; ts rd bi sp ts bi si rd  :       \0ee\0e8#e : <color>3#k<color>|\03
+@C02510: 0000401 0130000 0016102 0007403 0134004 0016101 0134000 0016042  ; si ao rd .word dm rd dm rd  :       #\0e8##\0z :        \0p38q3q3
+@C02520: 0013401 0070000 0016102 0007403 0100001 0016102 0010002 0044000  ; bi cp rd .word ca rd bi td  :       #\0e8#ee\0 :         |c38t3#d
+@C02530: 0016102 0000401 0100000 0016102 0007403 0134005 0016101 0134000  ; rd si ca rd .word dm rd dm  :       e#\0e8|#\0 :        3\0t38q3q
+@C02540: 0016042 0013405 0070000 0040102 0013404 0000075 0016102 0006403  ; rd bi cp ts bi si rd .word  :   z|\0e#<cntl>e8 :  3|c<color>|\038
+@C02550: 0100000 0016102 0006401 0040000 0016102 0007001 0100000 0016102  ; ca rd .word ts rd .word ca rd  :      \0e#\0e#\0e :   t38<color>38t3
+@C02560: 0007403 0114006 0016102 0007001 0040000 0016102 0010001 0074000  ; .word su rd .word ts rd bi sp  :       8ae#\0e#\0 :   8w38<color>3#k
+@C02570: 0040102 0013405 0000103 0016102 0007403 0100006 0016102 0006401  ; ts bi si rd .word ca rd .word  :         e|8e8ae# :  <color>|\038t38
+@C02600: 0040000 0016102 0007002 0100000 0016102 0007001 0040000 0016102  ; ts rd .word ca rd .word ts rd  :      \0ee\0e#\0e : <color>38t38<color>3
+@C02610: 0013405 0100000 0016102 0013404 0044000 0016102 0010001 0074000  ; bi ca rd bi td rd bi sp  :      |\0e#\0e#\0 :         |t3|d3#k
+@C02620: 0040102 0010001 0000112 0016102 0000401 0100000 0016101 0161006  ; ts bi si rd si ca rd SR  :        e#se#\0#a : <color>#\03\0t3m
+@C02630: 0016042 0004402 0040000 0016101 0174000 0016041 0155003 0016042  ; rd .word ts rd md rd SL rd  :       ze\0#\0#8z :   3e<color>30393
+@C02640: 0004403 0040000 0016101 0174000 0016041 0155003 0016042 0004404  ; .word ts rd md rd SL rd .word  :       8\0#\0#8z# :   e<color>30393e
+@C02650: 0040000 0040102 0010002 0000123 0016102 0004402 0100000 0016102  ; ts ts bi si rd .word ca rd  :       \0ee5ee\0e : <color><color>#\03et3
+@C02660: 0004405 0110000 0016102 0010003 0044002 0016101 0100000 0016042  ; .word ad rd bi td rd ca rd  :       |\0e8e#\0z :         el3#d3t3
+@C02670: 0004406 0040000 0040102 0012401 0000130 0016102 0004406 0100000  ; .word ts ts bi si rd .word ca  :       a\0e#nea\0 : e<color><color>|\03et
+@C02700: 0016102 0012401 0164006 0016102 0004407 0050000 0016101 0114000  ; rd bi sf rd .word ta rd su  :       e#ae3\0#\0 :         3|x3er3w
+@C02710: 0016042 0013402 0070000 0016102 0002401 0174000 0016101 0160000  ; rd bi cp rd si md rd SR  :      ze\0e#\0#\0 :         3|c3#03m
+@C02720: 0016042 0004406 0040000 0040102 0013001 0000140 0016101 0100000  ; rd .word ts ts bi si rd ca  :       za\0e#t#\0 : 3e<color><color>|\03t
+@C02730: 0016042 0004410 0040000 0040102 0004001 0000142 0016102 0004407  ; rd .word ts ts .word si rd .word  :        z \0e#ze3 : 3e<color><color>e\03e
+@C02740: 0100000 0016102 0005003 0114000 0016102 0003001 0070000 0016102  ; ca rd .word su rd si cp rd  :      \0e8\0e#\0e :         t3ew3#c3
+@C02750: 0004407 0040000 0016102 0004410 0130000 0016102 0004001 0074000  ; .word ts rd .word ao rd .word sp  :      3\0e \0e#\0 :   e<color>3ep3ek
+@C02760: 0040102 0003002 0000150 0016101 0110001 0016042 0010401 0070000  ; ts si si rd ad rd bi cp  :        eeh##z#\0 :  <color>#\03l3#c
+@C02770: 0016102 0004410 0130000 0016101 0100000 0016042 0004407 0040000  ; rd .word ao rd ca rd .word ts  :      e \0#\0z3\0 :   3ep3t3e<color>
+@C03000: 0016102 0010401 0074000 0040102 0010401 0000156 0016102 0004407  ; rd bi sp ts bi si rd .word  :        e#\0e#qe3 :  3#k<color>#\03e
+@C03010: 0100000 0016102 0007402 0144000 0016101 0155017 0016042 0006401  ; ca rd .word mh rd SL rd .word  :       \0ee\0#2z# :         t38b3938
+@C03020: 0110000 0016102 0006402 0040000 0016102 0004410 0100000 0016102  ; ad rd .word ts rd .word ca rd  :      \0ee\0e \0e :   l38<color>3et3
+@C03030: 0007402 0144000 0016101 0155017 0016042 0007001 0110000 0040102  ; .word mh rd SL rd .word ad ts  :       e\0#2z#\0e :   8b3938l<color>
+@C03040: 0000401 0000167 0016101 0000600 0016042 0006402 0100000 0016101  ; si si rd si rd .word ca rd  :       ###\0ze\0# :      \0\03\038t3
+@C03050: 0024000 0016042 0012401 0074000 0040102 0004402 0000173 0016101  ; rc rd bi sp ts .word si rd  :       \0z#\0ee## :  s3|k<color>e\03
+@C03060: 0000000 0040042 0004403 0000174 0016101 0000000 0040042 0004404  ; si ts .word si rd si ts .word  :       \0z8v#\0z# : \0<color>e\03\0<color>e
+@C03070: 0000175 0016101 0000000 0040042 0004405 0000176 0016102 0007401  ; si rd si ts .word si rd .word  :   <cntl>#\0z|0e# : \03\0<color>e\038
+@C03100: 0000000 0040102 0004406 0000177 0016101 0000000 0040042 0004407  ; si ts .word si rd si ts .word  :   \0ea<del>#\0z3 : \0<color>e\03\0<color>e
+@C03110: 0000200 0016101 0000000 0040042 0004410 0000201 0016101 0000000  ; si rd si ts .word si rd si  :      \0#\0z ##\0 : \03\0<color>e\03\0
+@C03120: 0040042 0002401 0000202 0006101 0037777 0040042 0005003 0000203  ; ts si si .word cf ts .word si  :     z#e#<del>z88 : <color>#\082<color>e\0
+@C03130: 0016101 0000003 0040042 0006401 0000204 0016101 0000000 0040042  ; rd si ts .word si rd si ts  :        #8z###\0z : 3\0<color>8\03\0<color>
+@C03140: 0006402 0000205 0016101 0000000 0040042 0007001 0000206 0016101  ; .word si rd si ts .word si rd  :        e|#\0z#a# : 8\03\0<color>8\03
+@C03150: 0000000 0040042 0007002 0000207 0006101 0070000 0040042 0006403  ; si ts .word si .word cp ts .word  :       \0ze3#\0z8 : \0<color>8\08c<color>8
+@C03160: 0000210 0006101 0100000 0040042 0007403 0000211 0016101 0000600  ; si .word ca ts .word si rd si  :        #\0z8=#\0 : \08t<color>8\03\0
+@C03170: 0016041 0000501 0016041 0100504 0016041 0002200 0016041 0000700  ; rd si rd ca rd si rd si  :       #####\0#\0 :       3\03t3#3\0
+@C03200: 0016041 0000640 0016041 0000000 0016041 0003200 0040042 0007401  ; rd si rd si rd si ts .word  :       #t#\0#\0z# : 3\03\03#<color>8
+@C03210: 0000221 0006101 0075557 0006041 0022222 0006041 0074717 0006041  ; si .word sp .word bo .word sp .word  :         .###d#2# :        \08k8=8k8
+@C03220: 0071717 0006041 0011755 0006041 0071747 0006041 0075747 0006041  ; cp .word bi .word cp .word sp .word  :         2####### :         c8#8c8k8
+@C03230: 0011117 0040042 0007402 0000231 0016101 0000400 0060042 0177777  ; bi ts .word si rd si ab md  :    2ze,#\0z<del> : #<color>8\03\0n<del>
+@C03240: 0000000 0000100  None    None    None    None    None    None    ;       si si              : \0\0             : \0\0            
+
+%Hash: 8ede16-567739-413

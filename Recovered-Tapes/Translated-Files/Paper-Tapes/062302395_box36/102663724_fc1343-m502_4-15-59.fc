@@ -1,0 +1,297 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302395_box36\102663724_fc1343-m502_4-15-59.7ch
+fc TAPE 1343 m502 RECOVERY PROGRAM - BENNETT
+OCTAL<del>	pa1=2004		|lo<del>cation of print out program
+pa2=480		|number of char. for comparison
+pa3=2002		|error card number location
+pa4=2003		|e16 type error indicator
+pa5=2000		|halt location
+pa6=2007		|remark trailer read-in routine entry
+pb1=2000		|location of char. storage
+[1;31m40|[0mtaa2		|initialize entry
+spa1
+[1;31m42|[0mtap3		|obtain char. entry
+spp1
+[1;31m44|[0mspr1		|recovery entry
+|initialization
+[1;31ma1,[0mcak1+5		|caz2
+tdp2
+tds1+4
+tsd2+3		|last register of current field
+cad26+4		|cf104
+tsd1
+tsd<del>41
+ca0
+tsd2+2
+cs0
+tsd2
+caa2
+cf620
+[1;31ma2,[0m0		|return address
+|obtain character
+[1;31mp1,[0maop2
+[1;31md1,[0mcf104
+sud2+3
+cpp2		|jump if there is a next char
+sps4		|fill char table
+[1;31md15,[0mcak1+3		|reset to pick up first char.
+tdp2<del><del><del>
+[1;31mp2,[0mca
+clh20
+adp3
+cf620
+[1;31mp3,[0m0		|return address
+[1;31mn6,[0mtan5		|fill char table
+cak1+3		|reset to fill char. table
+tss1+1
+si211		|petr, line by line
+[1;31mn3,[0mspn7		|char. to char. table
+cpn1		|jump if error code
+ckk1
+spd6		|stop code
+spn4		|not stop code
+[1;31md7,[0msi630		|deselect petr
+[1;31mn5,[0msp		|exit
+[1;31md6,[0mcs0
+tsd2+2		|set final<del><del><del><del><del><del><del><del><del> ind.
+spe14
+6
+spd7
+[1;31mn1,[0mspn7		|char. to char. table
+spn7
+spn7
+mdk1+4		|check for 00
+ck0
+spn2		|success
+[1;31mz4,[0mcad2		|init. ind.
+cpd40		|set
+spe14
+7
+spr1		|recovery
+[1;31md40,[0mspe14
+15		|cant recover
+sp0
+[1;31mn2,[0mspn7		|char. to char. table
+spn7
+spn7
+[1;31mn4,[0mcas1+1
+suk1+2
+cpn3		|jump if char. table unfilled
+spd7		|full table, exit
+[1;31mn7,[0mtan7+5		|read a char and store in char table
+clc0
+rd		|read a char
+clh12		|move to s, 1,...,5
+sps1		|store char in char table
+[1;31mn7+5,[0msp		|exit
+[1;31ms1,[0mtas1+5		|store char in char table
+[1;31ms1+1,[0mts
+aos1+1		|set for next entry
+tas1+<del>4		|exit with char in ac
+[1;31ms1+4,[0mcaz2		|z1-1
+[1;31ms1+5,[0msp		|exit
+[1;31mk1,[0m0.76000		|constants
+[1;31mk1+1,[0m0.00003		|
+[1;31mk1+2,[0mts3770		|
+[1;31mk1+3,[0mtsz1<del>		|
+[1;31mk1+4,[0m0.06000
+[1;31mk1+5,[0mcaz2
+|recovery
+<del><del><del><del><del><del><del><del><del><del><del><del><del>[1;31mr1,[0mca0
+tsd2+2		|clear final ind.
+cad26+1		|tsd27+pa2
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>tdd24		|initialize s1
+cad10
+tsr5		|reserve cf
+[1;31mr5,[0mcf		|reserve cf
+[1;31mr6,[0mca0		|zero
+tsd2+4		|comparison counter
+[1;31mr7,[0msps7		|obtain word
+ckz1		|first reg. of table
+spr8		|c<del>hecks
+spr7		|no check, try next word
+[1;31mr8,[0mcad24		|reference
+tsd2+7
+cad26		|d27
+tdr9
+spr10
+[1;31mr11,[0msps7		|obtain word
+[1;31mr9,[0mck
+spr10		|c<del>hecks
+spr12		|fails
+[1;31mr10,[0maor9
+aod2+4		|comparison ctr.
+sud26+2		|pa2-1
+cpr11		|repeat
+|perfect match for <del><del>all pa2 characters
+aod24		|last register used
+tdd2+6		|ts
+cad2+6
+exk1+3		|temporary change of initial register of char. table
+tsd2+6
+cs0<del><del><del>
+tsd2		|<del>s<del>et initial indicator to fill both data fields
+car5		|reserve cf
+ts<del>d41		|set up as initial fi<del><del><del><del>eld
+sps4		|fill remainder of char. table
+cad2+6<del>
+tsk1+3		|restore initial contents
+spd15		|return to p1
+[1;31mr12,[0mcad2+7		|reference
+tdd24		|restore s1 for c<del>ontinued search
+spr7
+|obtain word from bin, for recovery
+[1;31ms7,[0mtad19
+aod24
+sud26+7		|cad27+pa2-1
+cpd24		|next char. in bin
+sp<del>s2		|fill bin
+cad26		|d27
+tdd24		|reset
+[1;31md24,[0mca		|pick up next c<del>har
+[1;31md19,[0msp		|exit
+|Fill bin, for recovery
+[1;31ms2,[0mtad25
+csd2+4		|comparison ctr.
+ad1
+tsd2+5		|Move ctr.
+[1;31m2r,[0mcad26		|d27
+tdd28		|initialze
+exd2+7		|reference
+tdd29
+csd2+5
+cpd30		|no more
+[1;31md29,[0mca
+[1;31md28,[0mts
+aod28
+aod29
+aod2+5		|move ctr.
+cpd29
+[1;31md30,[0mcad28		|Ne<del>xt register
+tdd35		|initialize for storage
+si211
+[1;31md32,[0msps3		|read char.
+sps5		|store char.
+spd32		|Not full, repeat
+si630
+[1;31md25,[0msp		|Full, exit
+|Read char
+[1;31ms3,[0mtad33
+clc0
+rd
+clc12		|cycle to left of AC
+[1;31md33,[0msp
+|Store char. in bin, for recovery
+[1;31ms5,[0mtad34
+[1;31md35,[0mts
+aod35
+ckd26+1		|tsd27+pa2
+aod34		|full
+[1;31md34,[0msp
+|Set core fields and fill character table
+[1;31ms4,[0mtad3
+csd2		|Initial Ind.
+cpd5		|not first time
+[1;31md41,[0mcf
+spn6		|fill initial cf
+ca0
+tsd2		|clear initial ind.
+cad41
+ckd26+4		|cf104
+cs0
+tsd2+1		|Set first cf ind.
+[1;31md5,[0mcas1+4		|last reg. of former reserve
+tsd2+3		|store for current use
+cad2+1		|First cf ind.
+cpd9		|first cf in reserve
+cad26+5		|second cf becomes current
+clh20
+add26+4		|first cf for reserve
+[1;31md11,[0mtsd10		|cf for reserve
+clc20
+tsd12		|cf which becomes active
+[1;31md10,[0mcf		|for reserve
+cad2+2		|final <del>ind.
+cpd8		|dont read more tape
+spn6		|Fill new reserve
+[1;31md8,[0mcad12		|Active cf
+tdd1		|set cf or<del>der in p1
+csd2+1
+tsd2+1		|reverse first cf ind.
+[1;31md12,[0mcf
+[1;31md3,[0msp
+[1;31md9,[0mcad26+4		|First cf becomes active
+clh20
+add26+5		|Second cf for reserve
+spd11
+|error print routine
+[1;31me16,[0mtae19		|address of error number
+ts3e18		|number of incorrect card
+ca5e18
+ts11e14		|<del>e16 initialization
+sp1e15
+[1;31me15,[0mtae19		|address of error number
+ca6e18
+ts10e14		|e15 initialization
+sp1e14
+[1;31me14,[0mtae19		|address of error number
+cf1000		|test B field
+md4e18		|0.00007
+tse18		|original B field
+cf103		|bring in error remark field
+cae19
+t<del>d2e18
+ao2e18		|return after RESTART
+[1;31m10e14,[0mclh0		|e15 initialization
+[1;31m11e14,[0mclh0		|e16 initializatio<del>n
+[1;31me19,[0mca
+ts1e18		|error number
+sppa1		|error print out
+cae20		|return after print out
+ade18		|original B fi<del>eld
+tse20
+[1;31me20,[0mcf100		|restore original B field
+ca2e18		|return after RESTART
+tde21
+[1;31me21,[0msp		|return after print <del>out
+[1;31me22,[0mta5e22<del><del>
+ca3e18
+tspa3		|number of incorrect card
+ca10e18
+tspa4		|set e16 error indicator
+sp
+[1;31me23,[0mta3e23
+ca7e18
+tspa5		|disable halt
+sp		|EXIT
+[1;31me18,[0m0		|origi<del>nal B fi<del>eld
+[1;31m1e18,[0m0		|error number
+[1;31m2e18,[0m0		|return after RESTART
+[1;31m3e18,[0m0		|number of incorrect ca<del>rd
+[1;31m4e18,[0m0<del><del>.00007		|mask
+[1;31m5e18,[0mspe22		|e16 initialization
+<del><del><del><del><del><del><del>[1;31m6e18,[0mspe23		|e15 initialization
+[1;31m7e18,[0mclh0		|do nothing
+[1;31m10e18,[0m1.00000		|e16 indicator set
+[1;31md2,[0m0		|initial indicator
+[1;31md2+1,[0m0		|first <del><del>cf reserve indicator
+[1;31md2+2,[0m0		|final indicator
+[1;31md2+3,[0m0		|last register of current field
+[1;31md2+4,[0m0		|comparison counter, for recovery
+[1;31md2+5,[0m0		|move ctr, for recovery
+[1;31md2+6,[0mts		|reset initial loc. for loading char. table
+[1;31md2+7,[0m0		|reference for renewing search
+pz1=pa2-1
+[1;31md26,[0md27
+[1;31md26+1,[0mtsd27+pa2
+[1;31md26+2,[0mpa2-1		|number of regs. for comparison
+[1;31md26+3,[0mts
+[1;31md26+4,[0mcf104		|first data cf
+[1;31md26+5,[0mcf105		|second data cf
+[1;31md<del>26<del><del>+6,[0md27-1
+[1;31md26+7,[0mcad27+pz1
+[1;31md27,[0m0		|storage for comparison
+[1;31mf1,[0mcaf2		|address of remark read in program
+cf723
+[1;31mf2,[0mpa6		|address of remark read in program
+pa2+r1
+START AT f1

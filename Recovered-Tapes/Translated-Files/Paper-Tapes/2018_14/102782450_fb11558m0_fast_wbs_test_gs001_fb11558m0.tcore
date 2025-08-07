@@ -1,0 +1,38 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o1; xsum=good
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_14\102782450_fb11558m0_fast_wbs_test.7ch/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Paper-Tapes\2018_14\102782450_fb11558m0_fast_wbs_test_gs001_fb11558m0.tcore
+%TapeID: _fb11558m0
+%JumpTo 040
+%Stats: Covariance=0.001523, Size=207, 
+%Blocknum 0o0
+@C00040: 0104000 0040500 0130041 0114070 0070040 0100071 0040041 0100000  ; cs ts ao su cp ca ts ca  : \0\0#mt<cntl>#\0 : z<color>pwcT<color>T
+@C00050: 0041500 0130050 0114072 0070047 0100073 0040050 0000001 0100000  ; ts ao su cp ca ts si ca  :       \0HX##H#\0 : <color>PWCT<color>\0T
+@C00060: 0040153 0100074 0040132 0040206 0100232 0040227 0000001 0074075  ; ts ca ts ts ca ts si sp  :    #VFAF7#<cntl> : <color>T<color><color>T<color>\0k
+@C00070: 0041477 0040500 0042477 0041500 0170000 0000010 0100003 0000001  ; ts ts ts ts CL si ca si  : <del>\0<del>\0\0 8# : <color><color>.<color>v\0t\0
+@C00100: 0070157 0074102 0100114 0040254 0100115 0040255 0100116 0040267  ; cp sp ca ts ca ts ca ts  :         #eip+#u# : ckt<color>t<color>t<color>
+@C00110: 0100117 0040270 0000001 0074120 0000707 0000704 0000703 0000700  ; ca ts si sp si si si si  :  2m#<color>3#8\0 : t<color>\0k\0\0\0\0
+@C00120: 0100153 0040252 0100153 0110155 0040153 0114154 0070130 0074145  ; ca ts ca ad ts su cp sp  :        #y###pn\t : t<color>tl<color>wck
+@C00130: 0000010 0100002 0170000 0070136 0130132 0074233 0130132 0074140  ; si ca CL cp ao sp ao sp  :         e\0kf6ft :        \0tvcpkpk
+@C00140: 0000001 0000010 0100003 0070057 0074120 0000001 0100000 0040153  ; si si ca cp sp si ca ts  :  # 8#<color>#\0# : \0\0tck\0t<color>
+@C00150: 0100156 0040132 0074140 0000000 0054000 0004000 0170000 0100171  ; ca ts sp si ck .word CL ca  : qft\0\0\0\0<cntl> :  t<color>k\0jevT
+@C00160: 0040254 0100172 0040255 0100173 0040267 0100174 0040270 0000001  ; ts ca ts ca ts ca ts si  :         PX###VM# : <color>T<color>T<color>T<color>\0
+@C00170: 0074175 0000717 0000714 0000713 0000711 0100227 0040252 0110231  ; sp si si si si ca ts ad  :    <cntl>2i4=7y, : k\0\0\0\0t<color>l
+@C00200: 0040227 0114230 0070204 0074221 0000010 0100002 0170000 0070212  ; ts su cp sp si ca CL cp  :        7n#. e\0s :  <color>wck\0tvc
+@C00210: 0130206 0074233 0130206 0074214 0000001 0000010 0100003 0070175  ; ao sp ao sp si si ca cp  :    a6ai# 8<cntl> :       pkpk\0\0tc
+@C00220: 0074057 0000001 0100232 0040227 0100156 0040206 0074214 0010000  ; sp si ca ts ca ts sp bi  :        ##f7qai\0 : k\0t<color>t<color>k#
+@C00230: 0040000 0004000 0010000 0000001 0100000 0040005 0040275 0040317  ; ts .word bi si ca ts ts ts  : \0\0\0#\0|<cntl>2 : <color>e#\0t<color><color><color>
+@C00240: 0040335 0100250 0040257 0100251 0040301 0100320 0040302 0074253  ; ts ca ts ca ts ca ts sp  :  -h#\n#<color>e# : <color>t<color>t<color>t<color>k
+@C00250: 0020500 0104000 0000000 0100252 0000707 0000704 0100274 0020500  ; bo cs si ca si si ca bo  :     \0\0\0y3#v\0 :       z\0t\0\0t 
+@C00260: 0130275 0114276 0070255 0100000 0040275 0000001 0100252 0000703  ; ao su cp ca ts si ca si  : <cntl>0#\0<cntl>#y8 : pwct<color>\0t\0
+@C00270: 0000700 0100277 0013000 0074300 0000500 0000000 0000007 0001000  ; si ca bi sp si si si si  : \0<del>\0\0\0\03\0 :    \0t|k\0\0\0\0
+@C00300: 0000001 0104000 0057000 0074340 0114316 0070301 0100320 0040302  ; si cs ck sp su cp ca ts  : #\0\0tu#<color>e :  \0z7kwct<color>
+@C00310: 0130317 0114321 0070270 0100000 0040317 0074322 0057776 0000000  ; ao su cp ca ts sp ck si  :       2.m\02d0\0 :  pwct<color>k7\0
+@C00320: 0057000 0000003 0000001 0100335 0030337 0040335 0070330 0074343  ; ck si si ca sd ts cp sp  :     \08#-#-n<bs> : 7\0\0ti<color>ck
+@C00330: 0100336 0040257 0100337 0040301 0074253 0000000 0021500 0100000  ; ca ts ca ts sp si bo ca  :      k####\0\0\0 : t<color>t<color>k\0 t
+@C00340: 0130005 0130302 0074304 0100254 0170014 0070347 0074353 0000010  ; ao ao sp ca CL cp sp si  :         |e#pi##  :        ppktvck\0
+@C00350: 0100003 0070175 0074057 0000010 0100003 0070057 0074120  None    ;  ca cp sp si ca cp sp    : 8<cntl># 8#<color>   :       tck\0tck  
+
+%Hash: 22d288-026409-207
+
+%String: jev

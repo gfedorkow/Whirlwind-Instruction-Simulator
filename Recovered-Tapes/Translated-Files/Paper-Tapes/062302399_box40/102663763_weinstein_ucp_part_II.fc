@@ -1,0 +1,719 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302399_box40\102663763_weinstein_ucp_part_II.7ch
+fc
+OCTAL
+[1;31mv2,[0mtsbi2g1		|nuri
+mrbig1		|nupbt,stb
+mrbix1		|e exm
+mrbi12x2		|8 wst<del>
+mrbie6		|nu erd
+tssi0		|bar papm
+mrbia1		|a dm<del>p
+mrbix3		|3 sta
+tsbie1		|space nu
+mrbie1		|= nu
+mrbix4		|s log
+mrbix5		|4 nlg
+mrbie1		|i nu
+mrbie1		|+ nu
+mrbii3		|u lck
+mrbie1		|2 nu
+[1;31m20v2,[0mtsbie1		|color nu
+mrbie1		|. nu
+mrsi6		|d <del>ckr
+mrbib1		|5 br<del>i
+mrbib10		|r cri
+mrbib14		|1 dri
+mrbie1		|j nu
+mrbie1		|7 nu
+mrbo30		|n drc
+mrbie1		|, nu
+cabie1		|f nu
+mrsi0		|6 xfp
+sibie1		|c nu
+mrbie1		|<del><del>- nu
+mrbie1		|k nu
+mrbie1		|nu nu
+[1;31m40v2,[0mmrbo40		|t mtc
+mrbie1		|nu nu
+mrbie1		|z nu
+tsbie1		|back nu
+mrbid6		|l dtd
+tsbie1		|tab nu
+mrbie1		|w nu
+mrbie1		|n<del><del>u nu
+mrbo50		|h scc
+tsbie1		|car nu
+mrbie1		|y nu
+mrbie1		|nu nu
+sibiei		|p nu
+mrsi2		|nu ppp
+mrbie1		|<del>q nu
+mrbie1		|nu nu
+mrbo60		|o ptc
+tsbie1		|stop nu
+sibiu4		|b sup
+mrbiu5		|nu nu<del>p
+mrbib19		|g rmt
+mrbie1		|nu nu
+mrbie1		|9 nu
+mrbie1		|nu nu
+mrbie1		|m nu
+tsbo71		|upper tsc
+mrbie1		|x nu
+mrbie1		|nu nu
+mrbie1		|v nu
+tsbie1		|lower nu
+mrbih10		|0 set
+tsbiz1		|mll nop
+[1;31mw2,[0mta11r
+spn6		|print 3 letters space
+sp3n2		|space
+ca42v1		|lm
+spn5		|print 2 letters
+sp3n2		|space
+ca3767		|LMIR
+spn1		|octal fraction
+sp3n2		|space
+[1;31m11w2,[0msp
+[1;31mh1,[0mta12n2
+ca1h7		|hours
+spn3		|2 digits
+ca2h7		|minutes
+spn3		|2 digits
+cs		|+39
+spn8		|pan+
+cmh7		|.1 minutes
+spn8		|1 digit
+sp11n2		|space
+[1;31mh2,[0mta12n2
+ca3h7		|month
+spn<del>4		|print
+cs45b3		|+40
+spn8		|hyphen
+ca4h7		|day
+spn4		|print
+cs45b3		|+40
+spn8		|hy<del><del>phen
+ca5h7		|year
+spn4		|print
+sp11n2		|space
+[1;31mh3,[0mtah6<del>
+ad3762		|standard time
+tsh7		|time in .1 min
+<del>		|+14400
+su3f12
+ts1h7		|time-24 hrs
+ca3763		|date
+clh24		|month
+tdh4		|set
+ts3h7		|save
+ex0
+clh5		|day
+ts4h7		|save
+clh7		|year
+ts5h7		|save
+ca1h7		|time-24 hrs
+cph5		|new<del> day|no-
+tsh7		|save time
+ca3h7		|month
+ck3b3		|+2
+sp1h6		|Feb special
+ca		|+30
+ts1h7		|criterion
+ca		<del><del><del><del><del><del><del>|0.05120
+[1;31mh4,[0mclc
+[1;31m1h4,[0mcp3h4		|long month|short-
+ao1h7		|criterion
+[1;31m3h4,[0mao4h7		|day
+su1h7		|criterion
+cph5		|new month|no-
+ts4h7		|day=1
+ao3h7		|month
+su		|+12
+cph5		|n<del>ew year|no-
+ts3h7		|month=1
+ao5h7		|year
+[1;31mh5,[0mca0		|initialize
+ts1h7		|hours
+ts2h7		|minutes
+[1;31m3h5,[0mca		|+600
+dmh7		|.1 min
+cp7h6		|less than whole hour|
+[1;31m6h5,[0mcab3		|+10
+<del><del>dmh7		|.1 min
+cp12h6		|less than whole min|
+[1;31m11h5,[0mca3h7		|month
+clc5		|repack date
+ad4h7		|day
+clc7
+ad5h7		|year
+[1;31mh6,[0msph9+
+[1;31m<del>1h6,[0mca25b3		|+28
+ts1h7		|criterion
+cs5h7		|year
+md60v1		|3
+su363		|+2
+sp1h4		|AC+ on leap year only
+[1;31m7h6,[0mtsh7		|r<del><del>educed .1 min
+ao1h7		|index hours
+sp3h5
+[1;31m12h6,[0mtsh7		|reduced .1 min
+ao2h7		|index min.
+sp6h5
+[1;31mh10,[0m1.10446		|set
+[1;31m1h10,[0mspw2		|<del><del><del>log
+sps7		|desel
+si11		|reset clock
+ca0		|reset
+ts3761		|last time
+ts3762
+ca3767		|LMIR
+clh21
+spn12		|save BR
+mh46v1		|+5
+sph8		|add to time
+cat6
+clh26		|hoars
+spn12		|save BR
+mh		<del>|+600
+sph8		|add to time
+cat6
+clh23		|10 min
+spn12		|save BR
+mh		|+100
+sph8		|add to time
+cat6
+clh26		|min
+mhb3		|+10
+sph8		|add to <del>time
+sph3		|set up time
+sps2		|sel log
+sph1		|log time
+sps7		|desel
+cs3773<del>
+cp1f7		|return to prog. entry-
+ca3163		|sp0
+spf10		|set to come<del><del>bade on restart
+spm3		|read LMIR
+<del><del>clh24
+ts3h7		|month
+ex0
+clh6		|day
+ts4h7
+ex0
+<del>clh6
+ad		|+50
+ts5h7		|year
+sp11h5		|set up for log
+[1;31mh9,[0mts3763		|se<del>t standard
+sps2		|sel log
+sph2		|log date
+sps7		|desel
+sp1f7		|finished
+[1;31mz1,[0m0.64446		|nop
+[1;31m1z1,[0mspn6		|log nop
+sps7		|des
+sp1f7		|end
+[1;31mh8,[0mta4r
+slr17		|product to AC
+ad3762
+ts3762		|accumulate
+[1;31m4h8,[0msp
+[1;31mx1,[0m0.22730		|exm
+[1;31m1x1,[0mspw2		|log
+[1;31m2x1,[0mspn7		|car ret
+ca3767		|LMIR
+spn1		|octal fract
+ca21a9
+spn11		|slash
+[1;31m7x1,[0msps7		|desel
+ca3767		|test for
+spj1		|legal DA
+ca3767<del>
+sps5		|sel drum
+rd
+ts3770		|save word
+si510
+rc		|display
+sps2		|sel log
+ca<del><del><del>3770
+spa5		|print ds wi, of
+sps7		|desel
+cs3773
+cp1f7		|if Prog entry finished
+ca31b3		|sp0
+spf10		|set to return
+spm3		|read LMIR
+<del>ex3767
+ck3767		|compare
+spz3		|=, insert
+sps2		|sel log
+sp2x1		|examine
+[1;31mz3,[0mspm3		|read RMIR
+ts3770
+ca3767		|DA
+sps6		|sel drum
+ca3770
+rc		|record
+sps2		|sel log
+ca		|ins
+spn6		|print
+sp7x1		|examine new contents
+[1;31mx2,[0m1.32246		|wst
+[1;31m<del>1x2,[0mspn6		|log
+sps7		|desel
+si176		|sel MT3 del flexo
+ao4n10
+ts2n11		|insure set for flexo
+ca0
+ts41
+spn7		<del><del>|insure print not punch
+spn7		|car ret + l.c.
+ca
+rc		|stop
+rc
+si134		|del
+sp1f7		|finished
+[1;31mx3,[0m1.12300		|sta
+[1;31m1x3,[0mspw2		|log
+ca3767
+cp1s10		|use LMIR|last program-
+tdz3		|in save sp
+caz<del>3
+ts2		|spx to 2
+spa5		|print
+cf1000
+sp5s10		|get core fields
+[1;31ms10,[0msps2		|sel log entry after ri
+[1;31m1s10,[0mca3766		|sp x last <del>prog
+ts2
+spa5		|print sp
+ca3765		|core field last prog
+[1;31m5s10,[0mts3		|to 3
+ca3773		|prog entry.
+cp7z4		|YES|NO-
+ca2		|spx
+ck31b3		|sp0
+spz4		|check for return to master
+ca3773		|set up
+ts3757		|master
+ca3774		|program
+ts3760
+sp7z4
+[1;31mz4,[0mcs0		|set no master
+ex3757		|master <del>now
+cp7z4		|YES|NO-
+ts3		|set
+ca3760		|to
+ts2		|return to master
+spa5		|log new sp x
+[1;31m7z4,[0mca
+ts3777		|reset dispatcher
+ca3
+ad11b3		|form
+ts3		|cf7ab
+spa5		|log<del>
+sps7		|deselect log
+sp4f10		|sav<del>e par + restore cores
+[1;31mf4,[0mca7a10
+ex1n8
+ts2n11
+ca2s2
+ts1<del>s2
+sp20f3
+[1;31m6f4,[0mca
+ts3s7
+sp20f3
+[1;31m11f4,[0mca3771
+mdf12
+dm0
+cp16f4
+spw1
+[1;31m16f4,[0mta22f4
+ca1f2
+mdf12
+dm0
+[1;31m22f4,[0mc<del>p
+ao1f6
+spf6
+[1;31m25f4,[0mca2s1
+ts1s1
+ca2r1
+ts1r1
+sp10f3
+[1;31mf12,[0m1.40000
+1.60000
+0.13301
++1<del>44<del>00
+[1;31m4f12,[0m+600
++12
++30
+si336
+[1;31m10f12,[0msi326
+si222
+cp31
+sp31
+[1;31m14f12,[0m+4
+si3564
+si3742
+[1;31mf2,[0msi7		|rd clock
+rd		|coarse
+[1;31m2f2,[0msrh4		|unpack
+ex2f2
+srh1
+ab2f2
+mr2f12		|0.13301
+ex3761		|time in .1 min
+su3761		|last time
+cpf3		|flip...YES|NO-
+ca2f12		|0.13301
+sph3		|index date if necessary
+ts3763		|new date
+ca2f12		|0.13301
+ad37<del>62		|index time
+ts3762		|clock=0
+su3f12		|+14400
+cpf3		|keep l<del>ess
+ts3762		|than 24 hrs
+[1;31mf3,[0mca3761		|compute
+sph3		|date and time
+ca3775		|set
+ts1s8		|flexo reader
+ca3747		|set
+ts1s1		|binary reader
+clc1		|cards
+cp25f4		|NO|YES-
+[1;31m10f3,[0mca3756		|set
+td1s2		|log select
+clh1		|ANELEX
+cpf4		|NO|YES-
+srh5		|set
+ts41		|for delayed punch if needed.
+clc6		|delayed
+cp6f4		|NO|YES-
+[1;31m20f3,[0mca3771		|set to
+td1m3		|use proper MIR s
+si301		|read ALT
+rd		|in ROOM 222
+ts1f2		|save
+si300		|read ACT
+rd
+tsf2		|save
+md1f12		|1.60000
+dm0		|An<del>y pertinent bit
+cpf5		|YES|NO-
+[1;31mf6,[0mab0
+[1;31m1f6,[0mad7f12		|si336
+ts3771		|set ACT
+cs0
+ts3757		|no master prog
+ts3772		|no DP
+ts3773		|no prog entry
+ca3771
+td1m3
+spm3		|Read LM
+ts3767		|save
+spn3		|Read RD
+ts3770		|save
+ck11f12		|0.00222
+sp11f4
+[1;31mw1,[0mca3770		|RMIR
+md1f12		|1.6000
+dm<del>0		|PMR
+cp6w1		|YES|NO-
+[1;31m4w1,[0mcf1000		|log
+sp13<del>w1		|fields
+[1;31m6w1,[0mca3770		|RMIR
+[1;31m7w1,[0mclc4
+clc26		|core fields
+su0
+cp4w1		|selected|NO-
+[1;31m13w1,[0msp1j3		|switch fields + log
+sps2		|select logger
+sph1		|time
+sps7		|desel
+ca3770		|RMIR
+md1f12		|1.60000
+dm0		|PMR
+cp6w3		|YES|NO-
+[1;31m23w1,[0mca<del>v3+		|DA of drum prog. pars
+sps5		|sel drum
+ca36b3		|+9
+bia7		|read pars
+sps2		|sel log
+ca		|dup
+spw2		|3 letters space lm sp. LMIR
+ao23w1
+tsw3
+[1;31mw3,[0mcav2+		|block number
+ts3753		|block number
+spu3		|sum parameters
+ck10a7
+sp1u1		|= sum prog
+sp21u1		|read in prog. from mag tape
+[1;31m6w3,[0mca3770		|RMIR
+md1b3		|0.00077
+adw3		|cav2
+ts12w3
+[1;31m12w3,[0m+0
+td3753		|block number
+td4f15		|address
+clc2
+cp24w3		|mtp type 1, 2 category
+clc1
+[1;31m20w3,[0mcpf15		|enter type 0 category
+ca20w3		|type 3, 4 category
+ad23w1		|set for entry
+td23w1		|in dup table
+sp23w1		|enter dup program
+[1;31m2<del><del>3,[0mclc1
+ts24w3
+ca
+spw2		|mtp
+cs2yw3
+cpe2		|erase if erase button on type 2
+ca24w3
+cp25u1
+ca3753
+spm1
+sp
+[1;31mv3,[0m1.37733
+ca262
++0
++0
+1.20277
+ca250
++0
++0
++0
++0
++0
++0
++0
++0
++0
++0
+[1;31mf5,[0msi337
+rd
+ck11f12
+sp16f4
+ca3
+td3774
+md43b3
+su1
+md43b3
+td22f4
+td11f4
+si703
+ca46v1
+bif3
+caf3
+ck12f12
+spf11
+ck13f12
+sp6f11
+s<del><del><del><del>i17
+ca<del><del>60v1
+bi3767
+cs0
+ts3773
+spw1
+[1;31mf11,[0mca53v1
+ts2f3
+ca0
+ts1f3
+ts5f3
+sp5f13
+[1;31m6f11,[0mca3774
+ck7b3
+[1;31m10f11,[0msp3777
+ca2f3
+md1b3
+ck1b3
+sp17f11
+ca3b3
+sp20f11
+[1;31m17f11,[0mcs14f12
+ts5f3
+ca15f12
+si703
+rd
+ck22f4
+spf13
+sp5f13
+[1;31mf13,[0mca16f12
+si703
+rd
+ck11f4
+sp10f13
+[1;31m5f13,[0mcm5f3
+sa3774
+spf14
+[1;31m10f13,[0mca16f12
+si707
+cm5f3
+ad11f4
+rc
+ca10f11
+[1;31mf14,[0mtd<del>3774
+cf1000
+ts3773
+ca5f3
+cp12f14
+ca1f3
+ts3767
+ca2f3
+ts3770
+spw1
+[1;31m12f14,[0mca3f3
+ts3767
+ca4f3
+es3770
+ca2<del>f3
+sp7w1
+[1;31mf15,[0msps7
+ao4f15
+ta3f15
+[1;31m3f15,[0mca
+[1;31m4f15,[0msp
+si30
+si220
+[1;31mg1,[0mca10f11		|sp3777
+sp3g1
+[1;31m2g1,[0mcs0
+[1;31m3g1,[0mts3776
+cs3770
+clc3
+cp12g1
+cs30b3		|ts0
+md3776
+ts3776
+[1;31m12g1,[0mca3767
+md53v1		|7
+ck1
+spg2
+ca3767
+clc7
+clh23
+su0
+td3776
+ex0
+clh3
+adr3
+cf400
+[1;31mg<del>3,[0mad36b3		|PETR     si11
+su5f15		|MTR     si30
+ad40v1		|KEY B D     si10
+ad6f15		|MTR RM222     si220
+su0
+su0
+su0
+su<del>0
+cpe1
+ts3775
+ts1s8
+sph2
+ca3767
+spn1
+sps7
+sps8
+[1;31mr3,[0mrdg3<del><del>
+adw3
+td3r3
+[1;31m3r3,[0mca
+clc22
+ad15r3
+cf400
+[1;31m7r3,[0mspe1		|b, c, p
+spr3
+[1;31m11r3,[0msp13r3		|f
+spe1		|ill
+[1;31m13r<del>,[0mta11r3
+ca
+td7r3
+spr3
+si630
+[1;31m17r<del>,[0mca3r3
+ck1r4
+sp2r4
+ckr4
+sp4r4
+ca3775
+ad3b3
+ts3747
+ts1s1
+cs0
+ts3750
+ts3752
+ca0
+ts3754
+ts3751
+spe2
+sps8
+sp12b12
+[1;31mr4,<del>[0mca34v2
+ca54v2
+[1;31m2r4,[0mcs0
+sp6r4
+[1;31m4r4,[0mspe2
+ca3b3
+[1;31m6r4,[0mtss4
+|Direct read in, enter 7m2 with AC +, unit selected, positioned.
+[1;31mm2,[0mrd
+[1;31m1m2,[0mts+		|store in CM
+sa34m2		|add to check sum
+ts34m2
+<del><del><del><del>[1;31m4,[0mao1m2		|index
+ao36m2		|count
+cpm2		|loop
+[1;31m7m2,[0mts36m2		|set-n+1
+[1;31m10m2,[0mrd		|read control word (CW)
+td1m2		|set if address
+ex34m2		|initialize check sum
+ts35m2		|save old check sum
+[1;31m14,[0mca34m2		|CW
+cp7m2		|-n+1....NO|YES-
+su0
+cp10m2		|si0...NO|YES-ignore
+[1;31m20,[0mclh2
+cp31m2		|sp....NO|YES-   Note:  must not address 4-7
+clh1
+cp25m2		|ck....NO|YES-   Note:  must not address 2, <del>3, 10, 11
+spm2		|address
+[1;31m25m2,[0mrd		|ck, read sum
+ck35m2		|compare
+sp10m2		|=.ok
+sp		|error
+[1;31m31m2,[0mrd		|read start
+ts2		|into 2
+si630		|stop mag. tape or PETR
+[1;31m34m2,[0m		|execute CW sp1 or sp2<del>[1;31m35m2,[0m<del>[1;31m36m2,[0m
+[1;31m3744|[0m0.65073+f1		|check sum
+[1;31m3745|[0m+0		|not used
+[1;31m3746|[0msp26		|used to set 40
+[1;31m3747|[0msi102		|bin reader
+[1;31m3750|[0m-0		|comp n<del><del>ew interlock
+[1;31m3751|[0m+0		|+ck1, -ck0
+[1;31m3752|[0m-0		<del>|+sig
+[1;31m3753|[0mca0		|block number
+[1;31m3754|[0m-0		|dig 0 MT/paper 1 prog/rec 2 auto/mir rup
+[1;31m3755|[0m0.57777		|DA of DP
+[1;31m3756|[0msi225		|logger do nsl 1 AN 2 del 3 pn
+[1;31m3757|[0m-0		|cf master prog
+[1;31m3760|[0msp0		|sp master
+[1;31m3761|[0m+0		|last tine<del>
+[1;31m3762|[0m+0		|tine clock=0
+[1;31m3763|[0m+0		|date clock=0
+[1;31m3764|[0m+0		|interlock
+[1;31m3765|[0m+1		|cf last tape
+[1;31m3766|[0msp0		|start last tape
+[1;31m3767|[0m+0		|LMIR
+[1;31m3770|[0m+0		|RMIR
+[1;31m3771|[0msi336		|ACT, MIR si
+[1;31m3<del><del>772|[0m-0		|+DP, +0 si1 switch on
+[1;31m3773|[0m-0		|cf prog entry
+[1;31m3774|[0msp0		|sp prog entry
+[1;31m3775|[0msi211		|flexo reader
+[1;31m3776|[0m-0		|d0 norm/pbt, stb d1 <del>del out/dir out d2/sft
+[1;31m3777|[0mspf1		|dispatcher for re-entry
+STA32

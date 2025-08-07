@@ -1,0 +1,1086 @@
+                  .ORG 0
+@0000:000000  zero:  .word 0
+@0001:000001  one:   .word 1
+               .ORG 0o00000
+@0000:000000   i0000: .word 0o0 @@ JumpedToBy: i0276 w0347 w0430 w0475 w0525 w0627 w0651 w0710 w0716 w0747 w1103 w1225 w1337 w1445 w1543 w1633 w1715 w1774 w2053 ReadBy: i0527 a0530 a0531 a0532 a0533 a0534 a0535 a0536 a0537 a0540 a0541 a0542 a0543 a0544 a0545 a0546 a0547 a0550 a0551 a0552 a0553 a0554 a0555 a0556 a0557 a0560 a0561 a0562 a0563 a0564 a0565 a0566 a0567 a0570 a0571 a0572 a0573 a0574 a0575 a0576 a0577 a0600 a0601 a0602 a0603 a0604 a0605 a0606 a0607 a0610 a0611 a0612 a0613 a0614 a0615 a0616 a0617 a0620 a0621 a0622 a0623 a0624 i0751 a0752 a0753 a0754 a0755 a0756 a0757 a0760 a0761 a0762 a0763 a0764 a0765 a0766 a0767 a0770 a0771 a0772 a0773 a0774 a0775 a0776 a0777 a1000 a1001 a1002 a1003 a1004 a1005 a1006 a1007 a1010 a1011 a1012 a1013 a1014 a1015 a1016 a1017 a1020 a1021 a1022 a1023 a1024 a1025 a1026 a1027 a1030 a1031 a1032 a1033 a1034 a1035 a1036 a1037 a1040 a1041 a1042 a1043 a1044 a1045 a1046 a1047 a1050 a1051 a1052 a1053 a1054 a1055 a1056 a1057 a1060 a1061 a1062 a1063 a1064 a1065 a1066 a1067 a1070 a1071 a1072 a1073 a1074 a1075 a1076 a1077 a1100 i1105 a1106 a1107 a1110 a1111 a1112 a1113 a1114 a1115 a1116 a1117 a1120 a1121 a1122 a1123 a1124 a1125 a1126 a1127 a1130 a1131 a1132 a1133 a1134 a1135 a1136 a1137 a1140 a1141 a1142 a1143 a1144 a1145 a1146 a1147 a1150 a1151 a1152 a1153 a1154 a1155 a1156 a1157 a1160 a1161 a1162 a1163 a1164 a1165 a1166 a1167 a1170 a1171 a1172 a1173 a1174 a1175 a1176 a1177 a1200 a1201 a1202 a1203 a1204 a1205 a1206 a1207 a1210 a1211 a1212 a1213 a1214 a1215 a1216 a1217 a1220 a1221 a1222 i1227 a1230 a1231 a1232 a1233 a1234 a1235 a1236 a1237 a1240 a1241 a1242 a1243 a1244 a1245 a1246 a1247 a1250 a1251 a1252 a1253 a1254 a1255 a1256 a1257 a1260 a1261 a1262 a1263 a1264 a1265 a1266 a1267 a1270 a1271 a1272 a1273 a1274 a1275 a1276 a1277 a1300 a1301 a1302 a1303 a1304 a1305 a1306 a1307 a1310 a1311 a1312 a1313 a1314 a1315 a1316 a1317 a1320 a1321 a1322 a1323 a1324 a1325 a1326 a1327 a1330 a1331 a1332 a1333 a1334 i1341 a1342 a1343 a1344 a1345 a1346 a1347 a1350 a1351 a1352 a1353 a1354 a1355 a1356 a1357 a1360 a1361 a1362 a1363 a1364 a1365 a1366 a1367 a1370 a1371 a1372 a1373 a1374 a1375 a1376 a1377 a1400 a1401 a1402 a1403 a1404 a1405 a1406 a1407 a1410 a1411 a1412 a1413 a1414 a1415 a1416 a1417 a1420 a1421 a1422 a1423 a1424 a1425 a1426 a1427 a1430 a1431 a1432 a1433 a1434 a1435 a1436 a1437 a1440 a1441 a1442 i1447 a1450 a1451 a1452 a1453 a1454 a1455 a1456 a1457 a1460 a1461 a1462 a1463 a1464 a1465 a1466 a1467 a1470 a1471 a1472 a1473 a1474 a1475 a1476 a1477 a1500 a1501 a1502 a1503 a1504 a1505 a1506 a1507 a1510 a1511 a1512 a1513 a1514 a1515 a1516 a1517 a1520 a1521 a1522 a1523 a1524 a1525 a1526 a1527 a1530 a1531 a1532 a1533 a1534 a1535 a1536 a1537 a1540 i1545 a1546 a1547 a1550 a1551 a1552 a1553 a1554 a1555 a1556 a1557 a1560 a1561 a1562 a1563 a1564 a1565 a1566 a1567 a1570 a1571 a1572 a1573 a1574 a1575 a1576 a1577 a1600 a1601 a1602 a1603 a1604 a1605 a1606 a1607 a1610 a1611 a1612 a1613 a1614 a1615 a1616 a1617 a1620 a1621 a1622 a1623 a1624 a1625 a1626 a1627 a1630 i1635 a1636 a1637 a1640 a1641 a1642 a1643 a1644 a1645 a1646 a1647 a1650 a1651 a1652 a1653 a1654 a1655 a1656 a1657 a1660 a1661 a1662 a1663 a1664 a1665 a1666 a1667 a1670 a1671 a1672 a1673 a1674 a1675 a1676 a1677 a1700 a1701 a1702 a1703 a1704 a1705 a1706 a1707 a1710 a1711 a1712 i1717 a1720 a1721 a1722 a1723 a1724 a1725 a1726 a1727 a1730 a1731 a1732 a1733 a1734 a1735 a1736 a1737 a1740 a1741 a1742 a1743 a1744 a1745 a1746 a1747 a1750 a1751 a1752 a1753 a1754 a1755 a1756 a1757 a1760 a1761 a1762 a1763 a1764 a1765 a1766 a1767 a1770 a1771 i1776 a1777 a2000 a2001 a2002 a2003 a2004 a2005 a2006 a2007 a2010 a2011 a2012 a2013 a2014 a2015 a2016 a2017 a2020 a2021 a2022 a2023 a2024 a2025 a2026 a2027 a2030 a2031 a2032 a2033 a2034 a2035 a2036 a2037 a2040 a2041 a2042 a2043 a2044 a2045 a2046 a2047 a2050  
+@0001:000001   r0001: .word 0o1 @@ ReadBy: a0041  @@Flexo:'#'
+               .ORG 0o00040
+@0040:000010   i0040:  si   0o10   ; select I/O: unknown i/o device @@ JumpedToBy: a0250  @@Flexo:' '
+@0041:130001           ao  r0001   ; add one  
+@0042:040002           ts  0o0002   ; transfer to storage  
+@0043:155002          slh  0o00002   ; shift left and hold  
+@0044:040003           ts  0o0003   ; transfer to storage  
+@0045:104024           cs  0o0024   ; clear and subtract  
+@0046:042064           ts  w2064   ; transfer to storage  
+@0047:074631           sp  i0631   ; sub-program @@ Jump to Subroutine  
+@0050:074631           sp  i0631   ; sub-program @@ Jump to Subroutine  
+@0051:074652           sp  i0652   ; sub-program @@ Jump to Subroutine  
+@0052:074711           sp  i0711   ; sub-program @@ Jump to Subroutine  
+@0053:074717           sp  i0717   ; sub-program @@ Jump to Subroutine  
+@0054:102063           ca  r2063   ; clear and add  
+@0055:161002          srh  0o00002   ; shift right and hold  
+@0056:075716           sp  i1716   ; sub-program @@ Jump to Subroutine  
+@0057:102064           ca  w2064   ; clear and add  
+@0060:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0061:102062           ca  r2062   ; clear and add  
+@0062:161002          srh  0o00002   ; shift right and hold  
+@0063:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0064:102064           ca  w2064   ; clear and add  
+@0065:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0066:102062           ca  r2062   ; clear and add  
+@0067:161002          srh  0o00002   ; shift right and hold  
+@0070:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0071:102062           ca  r2062   ; clear and add  
+@0072:161003          srh  0o00003   ; shift right and hold  
+@0073:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0074:102064           ca  w2064   ; clear and add  
+@0075:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0076:102062           ca  r2062   ; clear and add  
+@0077:161003          srh  0o00003   ; shift right and hold  
+@0100:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0101:102064           ca  w2064   ; clear and add  
+@0102:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0103:102062           ca  r2062   ; clear and add  
+@0104:161002          srh  0o00002   ; shift right and hold  
+@0105:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0106:102064           ca  w2064   ; clear and add  
+@0107:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0110:102061           ca  r2061   ; clear and add  
+@0111:161002          srh  0o00002   ; shift right and hold  
+@0112:075544           sp  i1544   ; sub-program @@ Jump to Subroutine  
+@0113:102064           ca  w2064   ; clear and add  
+@0114:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0115:102061           ca  r2061   ; clear and add  
+@0116:161002          srh  0o00002   ; shift right and hold  
+@0117:075544           sp  i1544   ; sub-program @@ Jump to Subroutine  
+@0120:102064           ca  w2064   ; clear and add  
+@0121:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0122:102062           ca  r2062   ; clear and add  
+@0123:161002          srh  0o00002   ; shift right and hold  
+@0124:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0125:102064           ca  w2064   ; clear and add  
+@0126:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0127:102061           ca  r2061   ; clear and add  
+@0130:161001          srh  0o00001   ; shift right and hold  
+@0131:075544           sp  i1544   ; sub-program @@ Jump to Subroutine  
+@0132:100002           ca  0o0002   ; clear and add  
+@0133:155001          slh  0o00001   ; shift left and hold  
+@0134:040002           ts  0o0002   ; transfer to storage  
+@0135:102055           ca  r2055   ; clear and add  
+@0136:075104           sp  i1104   ; sub-program @@ Jump to Subroutine  
+@0137:102064           ca  w2064   ; clear and add  
+@0140:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0141:100002           ca  0o0002   ; clear and add  
+@0142:161001          srh  0o00001   ; shift right and hold  
+@0143:040002           ts  0o0002   ; transfer to storage  
+@0144:074631           sp  i0631   ; sub-program @@ Jump to Subroutine  
+@0145:074631           sp  i0631   ; sub-program @@ Jump to Subroutine  
+@0146:074652           sp  i0652   ; sub-program @@ Jump to Subroutine  
+@0147:074711           sp  i0711   ; sub-program @@ Jump to Subroutine  
+@0150:074717           sp  i0717   ; sub-program @@ Jump to Subroutine  
+@0151:102063           ca  r2063   ; clear and add  
+@0152:161002          srh  0o00002   ; shift right and hold  
+@0153:075716           sp  i1716   ; sub-program @@ Jump to Subroutine  
+@0154:102064           ca  w2064   ; clear and add  
+@0155:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0156:102062           ca  r2062   ; clear and add  
+@0157:161002          srh  0o00002   ; shift right and hold  
+@0160:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0161:102064           ca  w2064   ; clear and add  
+@0162:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0163:102062           ca  r2062   ; clear and add  
+@0164:161002          srh  0o00002   ; shift right and hold  
+@0165:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0166:102064           ca  w2064   ; clear and add  
+@0167:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0170:102062           ca  r2062   ; clear and add  
+@0171:161003          srh  0o00003   ; shift right and hold  
+@0172:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0173:102064           ca  w2064   ; clear and add  
+@0174:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0175:102062           ca  r2062   ; clear and add  
+@0176:161003          srh  0o00003   ; shift right and hold  
+@0177:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0200:102064           ca  w2064   ; clear and add  
+@0201:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0202:100002           ca  0o0002   ; clear and add  
+@0203:155001          slh  0o00001   ; shift left and hold  
+@0204:040002           ts  0o0002   ; transfer to storage  
+@0205:102055           ca  r2055   ; clear and add  
+@0206:161001          srh  0o00001   ; shift right and hold  
+@0207:075104           sp  i1104   ; sub-program @@ Jump to Subroutine  
+@0210:102064           ca  w2064   ; clear and add  
+@0211:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0212:102055           ca  r2055   ; clear and add  
+@0213:161001          srh  0o00001   ; shift right and hold  
+@0214:075104           sp  i1104   ; sub-program @@ Jump to Subroutine  
+@0215:102064           ca  w2064   ; clear and add  
+@0216:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0217:100002           ca  0o0002   ; clear and add  
+@0220:161001          srh  0o00001   ; shift right and hold  
+@0221:040002           ts  0o0002   ; transfer to storage  
+@0222:102063           ca  r2063   ; clear and add  
+@0223:161002          srh  0o00002   ; shift right and hold  
+@0224:075716           sp  i1716   ; sub-program @@ Jump to Subroutine  
+@0225:102064           ca  w2064   ; clear and add  
+@0226:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0227:102061           ca  r2061   ; clear and add  
+@0230:161002          srh  0o00002   ; shift right and hold  
+@0231:075544           sp  i1544   ; sub-program @@ Jump to Subroutine  
+@0232:102064           ca  w2064   ; clear and add  
+@0233:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0234:102060           ca  r2060   ; clear and add  
+@0235:161001          srh  0o00001   ; shift right and hold  
+@0236:075446           sp  i1446   ; sub-program @@ Jump to Subroutine  
+@0237:102060           ca  r2060   ; clear and add  
+@0240:161002          srh  0o00002   ; shift right and hold  
+@0241:075446           sp  i1446   ; sub-program @@ Jump to Subroutine  
+@0242:102064           ca  w2064   ; clear and add  
+@0243:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0244:074277           sp  i0277   ; sub-program @@ Jump to Subroutine  
+@0245:074350           sp  i0350   ; sub-program @@ Jump to Subroutine  
+@0246:074277           sp  i0277   ; sub-program @@ Jump to Subroutine  
+@0247:074431           sp  i0431   ; sub-program @@ Jump to Subroutine  
+@0250:074040           sp  i0040   ; sub-program  
+
+@0251:050276   i0251:  ta  i0276   ; transfer address @@ Subroutine Entry JumpedToBy: r0305 a0323  
+@0252:102055           ca  r2055   ; clear and add  
+@0253:161002          srh  0o00002   ; shift right and hold  
+@0254:075104           sp  i1104   ; sub-program @@ Jump to Subroutine  
+@0255:102064           ca  w2064   ; clear and add  
+@0256:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0257:102062           ca  r2062   ; clear and add  
+@0260:161002          srh  0o00002   ; shift right and hold  
+@0261:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0262:102064           ca  w2064   ; clear and add  
+@0263:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0264:102061           ca  r2061   ; clear and add  
+@0265:161002          srh  0o00002   ; shift right and hold  
+@0266:075544           sp  i1544   ; sub-program @@ Jump to Subroutine  
+@0267:102064           ca  w2064   ; clear and add  
+@0270:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0271:102060           ca  r2060   ; clear and add  
+@0272:161002          srh  0o00002   ; shift right and hold  
+@0273:075446           sp  i1446   ; sub-program @@ Jump to Subroutine  
+@0274:102064           ca  w2064   ; clear and add  
+@0275:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0276:074000   i0276:  sp  i0000   ; sub-program @@ Return from Subroutine JumpedToBy: a0516 WrittenBy: i0251 i0476  
+
+@0277:050347   i0277:  ta  w0347   ; transfer address @@ Subroutine Entry JumpedToBy: a0244 a0246  
+@0300:102055           ca  r2055   ; clear and add  
+@0301:161002          srh  0o00002   ; shift right and hold  
+@0302:075104           sp  i1104   ; sub-program @@ Jump to Subroutine  
+@0303:102064           ca  w2064   ; clear and add  
+@0304:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0305:074251   r0305:  sp  i0251   ; sub-program @@ Jump to Subroutine ReadBy: a2054  
+@0306:102055           ca  r2055   ; clear and add  
+@0307:161001          srh  0o00001   ; shift right and hold  
+@0310:075104           sp  i1104   ; sub-program @@ Jump to Subroutine  
+@0311:102055           ca  r2055   ; clear and add  
+@0312:161002          srh  0o00002   ; shift right and hold  
+@0313:075104           sp  i1104   ; sub-program @@ Jump to Subroutine  
+@0314:102064           ca  w2064   ; clear and add  
+@0315:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0316:102055           ca  r2055   ; clear and add  
+@0317:161002          srh  0o00002   ; shift right and hold  
+@0320:075104           sp  i1104   ; sub-program @@ Jump to Subroutine  
+@0321:102064           ca  w2064   ; clear and add  
+@0322:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0323:074251           sp  i0251   ; sub-program @@ Jump to Subroutine  
+@0324:102056           ca  r2056   ; clear and add  
+@0325:161001          srh  0o00001   ; shift right and hold  
+@0326:075226           sp  i1226   ; sub-program @@ Jump to Subroutine  
+@0327:102056           ca  r2056   ; clear and add  
+@0330:161002          srh  0o00002   ; shift right and hold  
+@0331:075226           sp  i1226   ; sub-program @@ Jump to Subroutine  
+@0332:102064           ca  w2064   ; clear and add  
+@0333:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0334:102056           ca  r2056   ; clear and add  
+@0335:161002          srh  0o00002   ; shift right and hold  
+@0336:075226           sp  i1226   ; sub-program @@ Jump to Subroutine  
+@0337:102064           ca  w2064   ; clear and add  
+@0340:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0341:102056           ca  r2056   ; clear and add  
+@0342:161002          srh  0o00002   ; shift right and hold  
+@0343:075226           sp  i1226   ; sub-program @@ Jump to Subroutine  
+@0344:102064           ca  w2064   ; clear and add  
+@0345:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0346:074476           sp  i0476   ; sub-program @@ Jump to Subroutine  
+@0347:074000   w0347:  sp  i0000   ; sub-program @@ Return from Subroutine WrittenBy: i0277  
+
+@0350:050430   i0350:  ta  w0430   ; transfer address @@ Subroutine Entry JumpedToBy: a0245  
+@0351:100630           ca  r0630   ; clear and add  
+@0352:161001          srh  0o00001   ; shift right and hold  
+@0353:074526           sp  i0526   ; sub-program @@ Jump to Subroutine  
+@0354:100630           ca  r0630   ; clear and add  
+@0355:161002          srh  0o00002   ; shift right and hold  
+@0356:074526           sp  i0526   ; sub-program @@ Jump to Subroutine  
+@0357:102064           ca  w2064   ; clear and add  
+@0360:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0361:100630           ca  r0630   ; clear and add  
+@0362:161002          srh  0o00002   ; shift right and hold  
+@0363:074526           sp  i0526   ; sub-program @@ Jump to Subroutine  
+@0364:102064           ca  w2064   ; clear and add  
+@0365:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0366:100002           ca  0o0002   ; clear and add  
+@0367:155001          slh  0o00001   ; shift left and hold  
+@0370:040002           ts  0o0002   ; transfer to storage  
+@0371:102055           ca  r2055   ; clear and add  
+@0372:161001          srh  0o00001   ; shift right and hold  
+@0373:075104           sp  i1104   ; sub-program @@ Jump to Subroutine  
+@0374:102064           ca  w2064   ; clear and add  
+@0375:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0376:102055           ca  r2055   ; clear and add  
+@0377:161001          srh  0o00001   ; shift right and hold  
+@0400:075104           sp  i1104   ; sub-program @@ Jump to Subroutine  
+@0401:102064           ca  w2064   ; clear and add  
+@0402:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0403:100002           ca  0o0002   ; clear and add  
+@0404:161001          srh  0o00001   ; shift right and hold  
+@0405:040002           ts  0o0002   ; transfer to storage  
+@0406:102063           ca  r2063   ; clear and add  
+@0407:161002          srh  0o00002   ; shift right and hold  
+@0410:075716           sp  i1716   ; sub-program @@ Jump to Subroutine  
+@0411:102064           ca  w2064   ; clear and add  
+@0412:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0413:102061           ca  r2061   ; clear and add  
+@0414:161002          srh  0o00002   ; shift right and hold  
+@0415:075544           sp  i1544   ; sub-program @@ Jump to Subroutine  
+@0416:102064           ca  w2064   ; clear and add  
+@0417:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0420:102062           ca  r2062   ; clear and add  
+@0421:161001          srh  0o00001   ; shift right and hold  
+@0422:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0423:102062           ca  r2062   ; clear and add  
+@0424:161002          srh  0o00002   ; shift right and hold  
+@0425:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0426:102064           ca  w2064   ; clear and add  
+@0427:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0430:074000   w0430:  sp  i0000   ; sub-program @@ Return from Subroutine WrittenBy: i0350  
+
+@0431:050475   i0431:  ta  w0475   ; transfer address @@ Subroutine Entry JumpedToBy: a0247  
+@0432:100002           ca  0o0002   ; clear and add  
+@0433:155001          slh  0o00001   ; shift left and hold  
+@0434:040002           ts  0o0002   ; transfer to storage  
+@0435:074517           sp  i0517   ; sub-program @@ Jump to Subroutine  
+@0436:074517           sp  i0517   ; sub-program @@ Jump to Subroutine  
+@0437:074517           sp  i0517   ; sub-program @@ Jump to Subroutine  
+@0440:074517           sp  i0517   ; sub-program @@ Jump to Subroutine  
+@0441:102056           ca  r2056   ; clear and add  
+@0442:161001          srh  0o00001   ; shift right and hold  
+@0443:075226           sp  i1226   ; sub-program @@ Jump to Subroutine  
+@0444:102064           ca  w2064   ; clear and add  
+@0445:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0446:074517           sp  i0517   ; sub-program @@ Jump to Subroutine  
+@0447:100002           ca  0o0002   ; clear and add  
+@0450:161001          srh  0o00001   ; shift right and hold  
+@0451:040002           ts  0o0002   ; transfer to storage  
+@0452:102063           ca  r2063   ; clear and add  
+@0453:161002          srh  0o00002   ; shift right and hold  
+@0454:075716           sp  i1716   ; sub-program @@ Jump to Subroutine  
+@0455:102064           ca  w2064   ; clear and add  
+@0456:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0457:102061           ca  r2061   ; clear and add  
+@0460:161002          srh  0o00002   ; shift right and hold  
+@0461:075544           sp  i1544   ; sub-program @@ Jump to Subroutine  
+@0462:102064           ca  w2064   ; clear and add  
+@0463:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0464:102060           ca  r2060   ; clear and add  
+@0465:161001          srh  0o00001   ; shift right and hold  
+@0466:075446           sp  i1446   ; sub-program @@ Jump to Subroutine  
+@0467:102060           ca  r2060   ; clear and add  
+@0470:161002          srh  0o00002   ; shift right and hold  
+@0471:075446           sp  i1446   ; sub-program @@ Jump to Subroutine  
+@0472:102063           ca  r2063   ; clear and add  
+@0473:161002          srh  0o00002   ; shift right and hold  
+@0474:075716           sp  i1716   ; sub-program @@ Jump to Subroutine  
+@0475:074000   w0475:  sp  i0000   ; sub-program @@ Return from Subroutine WrittenBy: i0431  
+
+@0476:050276   i0476:  ta  i0276   ; transfer address @@ Subroutine Entry JumpedToBy: a0346  
+@0477:102063           ca  r2063   ; clear and add  
+@0500:161002          srh  0o00002   ; shift right and hold  
+@0501:075716           sp  i1716   ; sub-program @@ Jump to Subroutine  
+@0502:102064           ca  w2064   ; clear and add  
+@0503:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0504:102062           ca  r2062   ; clear and add  
+@0505:161002          srh  0o00002   ; shift right and hold  
+@0506:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0507:102064           ca  w2064   ; clear and add  
+@0510:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0511:102061           ca  r2061   ; clear and add  
+@0512:161002          srh  0o00002   ; shift right and hold  
+@0513:075544           sp  i1544   ; sub-program @@ Jump to Subroutine  
+@0514:102064           ca  w2064   ; clear and add  
+@0515:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0516:074276           sp  i0276   ; sub-program  
+
+@0517:050525   i0517:  ta  w0525   ; transfer address @@ Subroutine Entry JumpedToBy: a0435 a0436 a0437 a0440 a0446  
+@0520:102055           ca  r2055   ; clear and add  
+@0521:161001          srh  0o00001   ; shift right and hold  
+@0522:075104           sp  i1104   ; sub-program @@ Jump to Subroutine  
+@0523:102064           ca  w2064   ; clear and add  
+@0524:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0525:074000   w0525:  sp  i0000   ; sub-program @@ Return from Subroutine WrittenBy: i0517  
+
+@0526:050627   i0526:  ta  w0627   ; transfer address @@ Subroutine Entry JumpedToBy: a0353 a0356 a0363  
+@0527:030000   i0527:  sd  i0000   ; sum digits - XOR @@ JumpedToBy: a0626  
+@0530:030000           sd  i0000   ; sum digits - XOR  
+@0531:030000           sd  i0000   ; sum digits - XOR  
+@0532:030000           sd  i0000   ; sum digits - XOR  
+@0533:030000           sd  i0000   ; sum digits - XOR  
+@0534:030000           sd  i0000   ; sum digits - XOR  
+@0535:030000           sd  i0000   ; sum digits - XOR  
+@0536:030000           sd  i0000   ; sum digits - XOR  
+@0537:030000           sd  i0000   ; sum digits - XOR  
+@0540:030000           sd  i0000   ; sum digits - XOR  
+@0541:030000           sd  i0000   ; sum digits - XOR  
+@0542:030000           sd  i0000   ; sum digits - XOR  
+@0543:030000           sd  i0000   ; sum digits - XOR  
+@0544:030000           sd  i0000   ; sum digits - XOR  
+@0545:030000           sd  i0000   ; sum digits - XOR  
+@0546:030000           sd  i0000   ; sum digits - XOR  
+@0547:030000           sd  i0000   ; sum digits - XOR  
+@0550:030000           sd  i0000   ; sum digits - XOR  
+@0551:030000           sd  i0000   ; sum digits - XOR  
+@0552:030000           sd  i0000   ; sum digits - XOR  
+@0553:030000           sd  i0000   ; sum digits - XOR  
+@0554:030000           sd  i0000   ; sum digits - XOR  
+@0555:030000           sd  i0000   ; sum digits - XOR  
+@0556:030000           sd  i0000   ; sum digits - XOR  
+@0557:030000           sd  i0000   ; sum digits - XOR  
+@0560:030000           sd  i0000   ; sum digits - XOR  
+@0561:030000           sd  i0000   ; sum digits - XOR  
+@0562:030000           sd  i0000   ; sum digits - XOR  
+@0563:030000           sd  i0000   ; sum digits - XOR  
+@0564:030000           sd  i0000   ; sum digits - XOR  
+@0565:030000           sd  i0000   ; sum digits - XOR  
+@0566:030000           sd  i0000   ; sum digits - XOR  
+@0567:030000           sd  i0000   ; sum digits - XOR  
+@0570:030000           sd  i0000   ; sum digits - XOR  
+@0571:030000           sd  i0000   ; sum digits - XOR  
+@0572:030000           sd  i0000   ; sum digits - XOR  
+@0573:030000           sd  i0000   ; sum digits - XOR  
+@0574:030000           sd  i0000   ; sum digits - XOR  
+@0575:030000           sd  i0000   ; sum digits - XOR  
+@0576:030000           sd  i0000   ; sum digits - XOR  
+@0577:030000           sd  i0000   ; sum digits - XOR  
+@0600:030000           sd  i0000   ; sum digits - XOR  
+@0601:030000           sd  i0000   ; sum digits - XOR  
+@0602:030000           sd  i0000   ; sum digits - XOR  
+@0603:030000           sd  i0000   ; sum digits - XOR  
+@0604:030000           sd  i0000   ; sum digits - XOR  
+@0605:030000           sd  i0000   ; sum digits - XOR  
+@0606:030000           sd  i0000   ; sum digits - XOR  
+@0607:030000           sd  i0000   ; sum digits - XOR  
+@0610:030000           sd  i0000   ; sum digits - XOR  
+@0611:030000           sd  i0000   ; sum digits - XOR  
+@0612:030000           sd  i0000   ; sum digits - XOR  
+@0613:030000           sd  i0000   ; sum digits - XOR  
+@0614:030000           sd  i0000   ; sum digits - XOR  
+@0615:030000           sd  i0000   ; sum digits - XOR  
+@0616:030000           sd  i0000   ; sum digits - XOR  
+@0617:030000           sd  i0000   ; sum digits - XOR  
+@0620:030000           sd  i0000   ; sum digits - XOR  
+@0621:030000           sd  i0000   ; sum digits - XOR  
+@0622:030000           sd  i0000   ; sum digits - XOR  
+@0623:030000           sd  i0000   ; sum digits - XOR  
+@0624:030000           sd  i0000   ; sum digits - XOR  
+@0625:110002           ad  0o0002   ; add  
+@0626:070527           cp  i0527   ; conditional program  
+
+@0627:074000   w0627:  sp  i0000   ; sub-program @@ Return from Subroutine WrittenBy: i0526  
+
+@0630:172677   r0630: .word 0o172677 @@ ReadBy: a0351 a0354 a0361  
+@0631:050651   i0631:  ta  w0651   ; transfer address @@ Subroutine Entry JumpedToBy: a0047 a0050 a0144 a0145  
+@0632:102062           ca  r2062   ; clear and add  
+@0633:161002          srh  0o00002   ; shift right and hold  
+@0634:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0635:102064           ca  w2064   ; clear and add  
+@0636:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0637:102062           ca  r2062   ; clear and add  
+@0640:161002          srh  0o00002   ; shift right and hold  
+@0641:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0642:102064           ca  w2064   ; clear and add  
+@0643:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0644:102062           ca  r2062   ; clear and add  
+@0645:161001          srh  0o00001   ; shift right and hold  
+@0646:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0647:102064           ca  w2064   ; clear and add  
+@0650:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0651:074000   w0651:  sp  i0000   ; sub-program @@ Return from Subroutine WrittenBy: i0631  
+
+@0652:050710   i0652:  ta  w0710   ; transfer address @@ Subroutine Entry JumpedToBy: a0051 a0146  
+@0653:102062           ca  r2062   ; clear and add  
+@0654:161002          srh  0o00002   ; shift right and hold  
+@0655:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0656:102064           ca  w2064   ; clear and add  
+@0657:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0660:100002           ca  0o0002   ; clear and add  
+@0661:155001          slh  0o00001   ; shift left and hold  
+@0662:040002           ts  0o0002   ; transfer to storage  
+@0663:102055           ca  r2055   ; clear and add  
+@0664:161001          srh  0o00001   ; shift right and hold  
+@0665:075104           sp  i1104   ; sub-program @@ Jump to Subroutine  
+@0666:102064           ca  w2064   ; clear and add  
+@0667:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0670:100002           ca  0o0002   ; clear and add  
+@0671:161001          srh  0o00001   ; shift right and hold  
+@0672:040002           ts  0o0002   ; transfer to storage  
+@0673:102060           ca  r2060   ; clear and add  
+@0674:161002          srh  0o00002   ; shift right and hold  
+@0675:075446           sp  i1446   ; sub-program @@ Jump to Subroutine  
+@0676:102060           ca  r2060   ; clear and add  
+@0677:161003          srh  0o00003   ; shift right and hold  
+@0700:075446           sp  i1446   ; sub-program @@ Jump to Subroutine  
+@0701:102064           ca  w2064   ; clear and add  
+@0702:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0703:102061           ca  r2061   ; clear and add  
+@0704:161003          srh  0o00003   ; shift right and hold  
+@0705:075544           sp  i1544   ; sub-program @@ Jump to Subroutine  
+@0706:102064           ca  w2064   ; clear and add  
+@0707:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0710:074000   w0710:  sp  i0000   ; sub-program @@ Return from Subroutine WrittenBy: i0652  
+
+@0711:050716   i0711:  ta  w0716   ; transfer address @@ Subroutine Entry JumpedToBy: a0052 a0147  
+@0712:102062           ca  r2062   ; clear and add  
+@0713:075634           sp  i1634   ; sub-program @@ Jump to Subroutine  
+@0714:102064           ca  w2064   ; clear and add  
+@0715:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0716:074000   w0716:  sp  i0000   ; sub-program @@ Return from Subroutine WrittenBy: i0711  
+
+@0717:050747   i0717:  ta  w0747   ; transfer address @@ Subroutine Entry JumpedToBy: a0053 a0150  
+@0720:102063           ca  r2063   ; clear and add  
+@0721:161002          srh  0o00002   ; shift right and hold  
+@0722:075716           sp  i1716   ; sub-program @@ Jump to Subroutine  
+@0723:102064           ca  w2064   ; clear and add  
+@0724:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0725:102063           ca  r2063   ; clear and add  
+@0726:161002          srh  0o00002   ; shift right and hold  
+@0727:075716           sp  i1716   ; sub-program @@ Jump to Subroutine  
+@0730:102064           ca  w2064   ; clear and add  
+@0731:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0732:102063           ca  r2063   ; clear and add  
+@0733:161002          srh  0o00002   ; shift right and hold  
+@0734:075716           sp  i1716   ; sub-program @@ Jump to Subroutine  
+@0735:102063           ca  r2063   ; clear and add  
+@0736:161003          srh  0o00003   ; shift right and hold  
+@0737:075716           sp  i1716   ; sub-program @@ Jump to Subroutine  
+@0740:102064           ca  w2064   ; clear and add  
+@0741:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0742:102063           ca  r2063   ; clear and add  
+@0743:161003          srh  0o00003   ; shift right and hold  
+@0744:075716           sp  i1716   ; sub-program @@ Jump to Subroutine  
+@0745:102064           ca  w2064   ; clear and add  
+@0746:075775           sp  i1775   ; sub-program @@ Jump to Subroutine  
+@0747:074000   w0747:  sp  i0000   ; sub-program @@ Return from Subroutine WrittenBy: i0717  
+
+@0750:051103           ta  w1103   ; transfer address  
+@0751:030000   i0751:  sd  i0000   ; sum digits - XOR @@ JumpedToBy: a1102  
+@0752:030000           sd  i0000   ; sum digits - XOR  
+@0753:030000           sd  i0000   ; sum digits - XOR  
+@0754:030000           sd  i0000   ; sum digits - XOR  
+@0755:030000           sd  i0000   ; sum digits - XOR  
+@0756:030000           sd  i0000   ; sum digits - XOR  
+@0757:030000           sd  i0000   ; sum digits - XOR  
+@0760:030000           sd  i0000   ; sum digits - XOR  
+@0761:030000           sd  i0000   ; sum digits - XOR  
+@0762:030000           sd  i0000   ; sum digits - XOR  
+@0763:030000           sd  i0000   ; sum digits - XOR  
+@0764:030000           sd  i0000   ; sum digits - XOR  
+@0765:030000           sd  i0000   ; sum digits - XOR  
+@0766:030000           sd  i0000   ; sum digits - XOR  
+@0767:030000           sd  i0000   ; sum digits - XOR  
+@0770:030000           sd  i0000   ; sum digits - XOR  
+@0771:030000           sd  i0000   ; sum digits - XOR  
+@0772:030000           sd  i0000   ; sum digits - XOR  
+@0773:030000           sd  i0000   ; sum digits - XOR  
+@0774:030000           sd  i0000   ; sum digits - XOR  
+@0775:030000           sd  i0000   ; sum digits - XOR  
+@0776:030000           sd  i0000   ; sum digits - XOR  
+@0777:030000           sd  i0000   ; sum digits - XOR  
+@1000:030000           sd  i0000   ; sum digits - XOR  
+@1001:030000           sd  i0000   ; sum digits - XOR  
+@1002:030000           sd  i0000   ; sum digits - XOR  
+@1003:030000           sd  i0000   ; sum digits - XOR  
+@1004:030000           sd  i0000   ; sum digits - XOR  
+@1005:030000           sd  i0000   ; sum digits - XOR  
+@1006:030000           sd  i0000   ; sum digits - XOR  
+@1007:030000           sd  i0000   ; sum digits - XOR  
+@1010:030000           sd  i0000   ; sum digits - XOR  
+@1011:030000           sd  i0000   ; sum digits - XOR  
+@1012:030000           sd  i0000   ; sum digits - XOR  
+@1013:030000           sd  i0000   ; sum digits - XOR  
+@1014:030000           sd  i0000   ; sum digits - XOR  
+@1015:030000           sd  i0000   ; sum digits - XOR  
+@1016:030000           sd  i0000   ; sum digits - XOR  
+@1017:030000           sd  i0000   ; sum digits - XOR  
+@1020:030000           sd  i0000   ; sum digits - XOR  
+@1021:030000           sd  i0000   ; sum digits - XOR  
+@1022:030000           sd  i0000   ; sum digits - XOR  
+@1023:030000           sd  i0000   ; sum digits - XOR  
+@1024:030000           sd  i0000   ; sum digits - XOR  
+@1025:030000           sd  i0000   ; sum digits - XOR  
+@1026:030000           sd  i0000   ; sum digits - XOR  
+@1027:030000           sd  i0000   ; sum digits - XOR  
+@1030:030000           sd  i0000   ; sum digits - XOR  
+@1031:030000           sd  i0000   ; sum digits - XOR  
+@1032:030000           sd  i0000   ; sum digits - XOR  
+@1033:030000           sd  i0000   ; sum digits - XOR  
+@1034:030000           sd  i0000   ; sum digits - XOR  
+@1035:030000           sd  i0000   ; sum digits - XOR  
+@1036:030000           sd  i0000   ; sum digits - XOR  
+@1037:030000           sd  i0000   ; sum digits - XOR  
+@1040:030000           sd  i0000   ; sum digits - XOR  
+@1041:030000           sd  i0000   ; sum digits - XOR  
+@1042:030000           sd  i0000   ; sum digits - XOR  
+@1043:030000           sd  i0000   ; sum digits - XOR  
+@1044:030000           sd  i0000   ; sum digits - XOR  
+@1045:030000           sd  i0000   ; sum digits - XOR  
+@1046:030000           sd  i0000   ; sum digits - XOR  
+@1047:030000           sd  i0000   ; sum digits - XOR  
+@1050:030000           sd  i0000   ; sum digits - XOR  
+@1051:030000           sd  i0000   ; sum digits - XOR  
+@1052:030000           sd  i0000   ; sum digits - XOR  
+@1053:030000           sd  i0000   ; sum digits - XOR  
+@1054:030000           sd  i0000   ; sum digits - XOR  
+@1055:030000           sd  i0000   ; sum digits - XOR  
+@1056:030000           sd  i0000   ; sum digits - XOR  
+@1057:030000           sd  i0000   ; sum digits - XOR  
+@1060:030000           sd  i0000   ; sum digits - XOR  
+@1061:030000           sd  i0000   ; sum digits - XOR  
+@1062:030000           sd  i0000   ; sum digits - XOR  
+@1063:030000           sd  i0000   ; sum digits - XOR  
+@1064:030000           sd  i0000   ; sum digits - XOR  
+@1065:030000           sd  i0000   ; sum digits - XOR  
+@1066:030000           sd  i0000   ; sum digits - XOR  
+@1067:030000           sd  i0000   ; sum digits - XOR  
+@1070:030000           sd  i0000   ; sum digits - XOR  
+@1071:030000           sd  i0000   ; sum digits - XOR  
+@1072:030000           sd  i0000   ; sum digits - XOR  
+@1073:030000           sd  i0000   ; sum digits - XOR  
+@1074:030000           sd  i0000   ; sum digits - XOR  
+@1075:030000           sd  i0000   ; sum digits - XOR  
+@1076:030000           sd  i0000   ; sum digits - XOR  
+@1077:030000           sd  i0000   ; sum digits - XOR  
+@1100:030000           sd  i0000   ; sum digits - XOR  
+@1101:110002           ad  0o0002   ; add  
+@1102:070751           cp  i0751   ; conditional program  
+
+@1103:074000   w1103:  sp  i0000   ; sub-program @@ Return from Subroutine WrittenBy: a0750  
+
+@1104:051225   i1104:  ta  w1225   ; transfer address @@ Subroutine Entry JumpedToBy: a0136 a0207 a0214 a0254 a0302 a0310 a0313 a0320 a0373 a0400 a0522 a0665  
+@1105:030000   i1105:  sd  i0000   ; sum digits - XOR @@ JumpedToBy: a1224  
+@1106:030000           sd  i0000   ; sum digits - XOR  
+@1107:030000           sd  i0000   ; sum digits - XOR  
+@1110:030000           sd  i0000   ; sum digits - XOR  
+@1111:030000           sd  i0000   ; sum digits - XOR  
+@1112:030000           sd  i0000   ; sum digits - XOR  
+@1113:030000           sd  i0000   ; sum digits - XOR  
+@1114:030000           sd  i0000   ; sum digits - XOR  
+@1115:030000           sd  i0000   ; sum digits - XOR  
+@1116:030000           sd  i0000   ; sum digits - XOR  
+@1117:030000           sd  i0000   ; sum digits - XOR  
+@1120:030000           sd  i0000   ; sum digits - XOR  
+@1121:030000           sd  i0000   ; sum digits - XOR  
+@1122:030000           sd  i0000   ; sum digits - XOR  
+@1123:030000           sd  i0000   ; sum digits - XOR  
+@1124:030000           sd  i0000   ; sum digits - XOR  
+@1125:030000           sd  i0000   ; sum digits - XOR  
+@1126:030000           sd  i0000   ; sum digits - XOR  
+@1127:030000           sd  i0000   ; sum digits - XOR  
+@1130:030000           sd  i0000   ; sum digits - XOR  
+@1131:030000           sd  i0000   ; sum digits - XOR  
+@1132:030000           sd  i0000   ; sum digits - XOR  
+@1133:030000           sd  i0000   ; sum digits - XOR  
+@1134:030000           sd  i0000   ; sum digits - XOR  
+@1135:030000           sd  i0000   ; sum digits - XOR  
+@1136:030000           sd  i0000   ; sum digits - XOR  
+@1137:030000           sd  i0000   ; sum digits - XOR  
+@1140:030000           sd  i0000   ; sum digits - XOR  
+@1141:030000           sd  i0000   ; sum digits - XOR  
+@1142:030000           sd  i0000   ; sum digits - XOR  
+@1143:030000           sd  i0000   ; sum digits - XOR  
+@1144:030000           sd  i0000   ; sum digits - XOR  
+@1145:030000           sd  i0000   ; sum digits - XOR  
+@1146:030000           sd  i0000   ; sum digits - XOR  
+@1147:030000           sd  i0000   ; sum digits - XOR  
+@1150:030000           sd  i0000   ; sum digits - XOR  
+@1151:030000           sd  i0000   ; sum digits - XOR  
+@1152:030000           sd  i0000   ; sum digits - XOR  
+@1153:030000           sd  i0000   ; sum digits - XOR  
+@1154:030000           sd  i0000   ; sum digits - XOR  
+@1155:030000           sd  i0000   ; sum digits - XOR  
+@1156:030000           sd  i0000   ; sum digits - XOR  
+@1157:030000           sd  i0000   ; sum digits - XOR  
+@1160:030000           sd  i0000   ; sum digits - XOR  
+@1161:030000           sd  i0000   ; sum digits - XOR  
+@1162:030000           sd  i0000   ; sum digits - XOR  
+@1163:030000           sd  i0000   ; sum digits - XOR  
+@1164:030000           sd  i0000   ; sum digits - XOR  
+@1165:030000           sd  i0000   ; sum digits - XOR  
+@1166:030000           sd  i0000   ; sum digits - XOR  
+@1167:030000           sd  i0000   ; sum digits - XOR  
+@1170:030000           sd  i0000   ; sum digits - XOR  
+@1171:030000           sd  i0000   ; sum digits - XOR  
+@1172:030000           sd  i0000   ; sum digits - XOR  
+@1173:030000           sd  i0000   ; sum digits - XOR  
+@1174:030000           sd  i0000   ; sum digits - XOR  
+@1175:030000           sd  i0000   ; sum digits - XOR  
+@1176:030000           sd  i0000   ; sum digits - XOR  
+@1177:030000           sd  i0000   ; sum digits - XOR  
+@1200:030000           sd  i0000   ; sum digits - XOR  
+@1201:030000           sd  i0000   ; sum digits - XOR  
+@1202:030000           sd  i0000   ; sum digits - XOR  
+@1203:030000           sd  i0000   ; sum digits - XOR  
+@1204:030000           sd  i0000   ; sum digits - XOR  
+@1205:030000           sd  i0000   ; sum digits - XOR  
+@1206:030000           sd  i0000   ; sum digits - XOR  
+@1207:030000           sd  i0000   ; sum digits - XOR  
+@1210:030000           sd  i0000   ; sum digits - XOR  
+@1211:030000           sd  i0000   ; sum digits - XOR  
+@1212:030000           sd  i0000   ; sum digits - XOR  
+@1213:030000           sd  i0000   ; sum digits - XOR  
+@1214:030000           sd  i0000   ; sum digits - XOR  
+@1215:030000           sd  i0000   ; sum digits - XOR  
+@1216:030000           sd  i0000   ; sum digits - XOR  
+@1217:030000           sd  i0000   ; sum digits - XOR  
+@1220:030000           sd  i0000   ; sum digits - XOR  
+@1221:030000           sd  i0000   ; sum digits - XOR  
+@1222:030000           sd  i0000   ; sum digits - XOR  
+@1223:110002           ad  0o0002   ; add  
+@1224:071105           cp  i1105   ; conditional program  
+
+@1225:074000   w1225:  sp  i0000   ; sub-program @@ Return from Subroutine WrittenBy: i1104  
+
+@1226:051337   i1226:  ta  w1337   ; transfer address @@ Subroutine Entry JumpedToBy: a0326 a0331 a0336 a0343 a0443  
+@1227:030000   i1227:  sd  i0000   ; sum digits - XOR @@ JumpedToBy: a1336  
+@1230:030000           sd  i0000   ; sum digits - XOR  
+@1231:030000           sd  i0000   ; sum digits - XOR  
+@1232:030000           sd  i0000   ; sum digits - XOR  
+@1233:030000           sd  i0000   ; sum digits - XOR  
+@1234:030000           sd  i0000   ; sum digits - XOR  
+@1235:030000           sd  i0000   ; sum digits - XOR  
+@1236:030000           sd  i0000   ; sum digits - XOR  
+@1237:030000           sd  i0000   ; sum digits - XOR  
+@1240:030000           sd  i0000   ; sum digits - XOR  
+@1241:030000           sd  i0000   ; sum digits - XOR  
+@1242:030000           sd  i0000   ; sum digits - XOR  
+@1243:030000           sd  i0000   ; sum digits - XOR  
+@1244:030000           sd  i0000   ; sum digits - XOR  
+@1245:030000           sd  i0000   ; sum digits - XOR  
+@1246:030000           sd  i0000   ; sum digits - XOR  
+@1247:030000           sd  i0000   ; sum digits - XOR  
+@1250:030000           sd  i0000   ; sum digits - XOR  
+@1251:030000           sd  i0000   ; sum digits - XOR  
+@1252:030000           sd  i0000   ; sum digits - XOR  
+@1253:030000           sd  i0000   ; sum digits - XOR  
+@1254:030000           sd  i0000   ; sum digits - XOR  
+@1255:030000           sd  i0000   ; sum digits - XOR  
+@1256:030000           sd  i0000   ; sum digits - XOR  
+@1257:030000           sd  i0000   ; sum digits - XOR  
+@1260:030000           sd  i0000   ; sum digits - XOR  
+@1261:030000           sd  i0000   ; sum digits - XOR  
+@1262:030000           sd  i0000   ; sum digits - XOR  
+@1263:030000           sd  i0000   ; sum digits - XOR  
+@1264:030000           sd  i0000   ; sum digits - XOR  
+@1265:030000           sd  i0000   ; sum digits - XOR  
+@1266:030000           sd  i0000   ; sum digits - XOR  
+@1267:030000           sd  i0000   ; sum digits - XOR  
+@1270:030000           sd  i0000   ; sum digits - XOR  
+@1271:030000           sd  i0000   ; sum digits - XOR  
+@1272:030000           sd  i0000   ; sum digits - XOR  
+@1273:030000           sd  i0000   ; sum digits - XOR  
+@1274:030000           sd  i0000   ; sum digits - XOR  
+@1275:030000           sd  i0000   ; sum digits - XOR  
+@1276:030000           sd  i0000   ; sum digits - XOR  
+@1277:030000           sd  i0000   ; sum digits - XOR  
+@1300:030000           sd  i0000   ; sum digits - XOR  
+@1301:030000           sd  i0000   ; sum digits - XOR  
+@1302:030000           sd  i0000   ; sum digits - XOR  
+@1303:030000           sd  i0000   ; sum digits - XOR  
+@1304:030000           sd  i0000   ; sum digits - XOR  
+@1305:030000           sd  i0000   ; sum digits - XOR  
+@1306:030000           sd  i0000   ; sum digits - XOR  
+@1307:030000           sd  i0000   ; sum digits - XOR  
+@1310:030000           sd  i0000   ; sum digits - XOR  
+@1311:030000           sd  i0000   ; sum digits - XOR  
+@1312:030000           sd  i0000   ; sum digits - XOR  
+@1313:030000           sd  i0000   ; sum digits - XOR  
+@1314:030000           sd  i0000   ; sum digits - XOR  
+@1315:030000           sd  i0000   ; sum digits - XOR  
+@1316:030000           sd  i0000   ; sum digits - XOR  
+@1317:030000           sd  i0000   ; sum digits - XOR  
+@1320:030000           sd  i0000   ; sum digits - XOR  
+@1321:030000           sd  i0000   ; sum digits - XOR  
+@1322:030000           sd  i0000   ; sum digits - XOR  
+@1323:030000           sd  i0000   ; sum digits - XOR  
+@1324:030000           sd  i0000   ; sum digits - XOR  
+@1325:030000           sd  i0000   ; sum digits - XOR  
+@1326:030000           sd  i0000   ; sum digits - XOR  
+@1327:030000           sd  i0000   ; sum digits - XOR  
+@1330:030000           sd  i0000   ; sum digits - XOR  
+@1331:030000           sd  i0000   ; sum digits - XOR  
+@1332:030000           sd  i0000   ; sum digits - XOR  
+@1333:030000           sd  i0000   ; sum digits - XOR  
+@1334:030000           sd  i0000   ; sum digits - XOR  
+@1335:110002           ad  0o0002   ; add  
+@1336:071227           cp  i1227   ; conditional program  
+
+@1337:074000   w1337:  sp  i0000   ; sub-program @@ Return from Subroutine WrittenBy: i1226  
+
+@1340:051445           ta  w1445   ; transfer address  
+@1341:030000   i1341:  sd  i0000   ; sum digits - XOR @@ JumpedToBy: a1444  
+@1342:030000           sd  i0000   ; sum digits - XOR  
+@1343:030000           sd  i0000   ; sum digits - XOR  
+@1344:030000           sd  i0000   ; sum digits - XOR  
+@1345:030000           sd  i0000   ; sum digits - XOR  
+@1346:030000           sd  i0000   ; sum digits - XOR  
+@1347:030000           sd  i0000   ; sum digits - XOR  
+@1350:030000           sd  i0000   ; sum digits - XOR  
+@1351:030000           sd  i0000   ; sum digits - XOR  
+@1352:030000           sd  i0000   ; sum digits - XOR  
+@1353:030000           sd  i0000   ; sum digits - XOR  
+@1354:030000           sd  i0000   ; sum digits - XOR  
+@1355:030000           sd  i0000   ; sum digits - XOR  
+@1356:030000           sd  i0000   ; sum digits - XOR  
+@1357:030000           sd  i0000   ; sum digits - XOR  
+@1360:030000           sd  i0000   ; sum digits - XOR  
+@1361:030000           sd  i0000   ; sum digits - XOR  
+@1362:030000           sd  i0000   ; sum digits - XOR  
+@1363:030000           sd  i0000   ; sum digits - XOR  
+@1364:030000           sd  i0000   ; sum digits - XOR  
+@1365:030000           sd  i0000   ; sum digits - XOR  
+@1366:030000           sd  i0000   ; sum digits - XOR  
+@1367:030000           sd  i0000   ; sum digits - XOR  
+@1370:030000           sd  i0000   ; sum digits - XOR  
+@1371:030000           sd  i0000   ; sum digits - XOR  
+@1372:030000           sd  i0000   ; sum digits - XOR  
+@1373:030000           sd  i0000   ; sum digits - XOR  
+@1374:030000           sd  i0000   ; sum digits - XOR  
+@1375:030000           sd  i0000   ; sum digits - XOR  
+@1376:030000           sd  i0000   ; sum digits - XOR  
+@1377:030000           sd  i0000   ; sum digits - XOR  
+@1400:030000           sd  i0000   ; sum digits - XOR  
+@1401:030000           sd  i0000   ; sum digits - XOR  
+@1402:030000           sd  i0000   ; sum digits - XOR  
+@1403:030000           sd  i0000   ; sum digits - XOR  
+@1404:030000           sd  i0000   ; sum digits - XOR  
+@1405:030000           sd  i0000   ; sum digits - XOR  
+@1406:030000           sd  i0000   ; sum digits - XOR  
+@1407:030000           sd  i0000   ; sum digits - XOR  
+@1410:030000           sd  i0000   ; sum digits - XOR  
+@1411:030000           sd  i0000   ; sum digits - XOR  
+@1412:030000           sd  i0000   ; sum digits - XOR  
+@1413:030000           sd  i0000   ; sum digits - XOR  
+@1414:030000           sd  i0000   ; sum digits - XOR  
+@1415:030000           sd  i0000   ; sum digits - XOR  
+@1416:030000           sd  i0000   ; sum digits - XOR  
+@1417:030000           sd  i0000   ; sum digits - XOR  
+@1420:030000           sd  i0000   ; sum digits - XOR  
+@1421:030000           sd  i0000   ; sum digits - XOR  
+@1422:030000           sd  i0000   ; sum digits - XOR  
+@1423:030000           sd  i0000   ; sum digits - XOR  
+@1424:030000           sd  i0000   ; sum digits - XOR  
+@1425:030000           sd  i0000   ; sum digits - XOR  
+@1426:030000           sd  i0000   ; sum digits - XOR  
+@1427:030000           sd  i0000   ; sum digits - XOR  
+@1430:030000           sd  i0000   ; sum digits - XOR  
+@1431:030000           sd  i0000   ; sum digits - XOR  
+@1432:030000           sd  i0000   ; sum digits - XOR  
+@1433:030000           sd  i0000   ; sum digits - XOR  
+@1434:030000           sd  i0000   ; sum digits - XOR  
+@1435:030000           sd  i0000   ; sum digits - XOR  
+@1436:030000           sd  i0000   ; sum digits - XOR  
+@1437:030000           sd  i0000   ; sum digits - XOR  
+@1440:030000           sd  i0000   ; sum digits - XOR  
+@1441:030000           sd  i0000   ; sum digits - XOR  
+@1442:030000           sd  i0000   ; sum digits - XOR  
+@1443:110002           ad  0o0002   ; add  
+@1444:071341           cp  i1341   ; conditional program  
+
+@1445:074000   w1445:  sp  i0000   ; sub-program @@ Return from Subroutine WrittenBy: a1340  
+
+@1446:051543   i1446:  ta  w1543   ; transfer address @@ Subroutine Entry JumpedToBy: a0236 a0241 a0273 a0466 a0471 a0675 a0700  
+@1447:030000   i1447:  sd  i0000   ; sum digits - XOR @@ JumpedToBy: a1542  
+@1450:030000           sd  i0000   ; sum digits - XOR  
+@1451:030000           sd  i0000   ; sum digits - XOR  
+@1452:030000           sd  i0000   ; sum digits - XOR  
+@1453:030000           sd  i0000   ; sum digits - XOR  
+@1454:030000           sd  i0000   ; sum digits - XOR  
+@1455:030000           sd  i0000   ; sum digits - XOR  
+@1456:030000           sd  i0000   ; sum digits - XOR  
+@1457:030000           sd  i0000   ; sum digits - XOR  
+@1460:030000           sd  i0000   ; sum digits - XOR  
+@1461:030000           sd  i0000   ; sum digits - XOR  
+@1462:030000           sd  i0000   ; sum digits - XOR  
+@1463:030000           sd  i0000   ; sum digits - XOR  
+@1464:030000           sd  i0000   ; sum digits - XOR  
+@1465:030000           sd  i0000   ; sum digits - XOR  
+@1466:030000           sd  i0000   ; sum digits - XOR  
+@1467:030000           sd  i0000   ; sum digits - XOR  
+@1470:030000           sd  i0000   ; sum digits - XOR  
+@1471:030000           sd  i0000   ; sum digits - XOR  
+@1472:030000           sd  i0000   ; sum digits - XOR  
+@1473:030000           sd  i0000   ; sum digits - XOR  
+@1474:030000           sd  i0000   ; sum digits - XOR  
+@1475:030000           sd  i0000   ; sum digits - XOR  
+@1476:030000           sd  i0000   ; sum digits - XOR  
+@1477:030000           sd  i0000   ; sum digits - XOR  
+@1500:030000           sd  i0000   ; sum digits - XOR  
+@1501:030000           sd  i0000   ; sum digits - XOR  
+@1502:030000           sd  i0000   ; sum digits - XOR  
+@1503:030000           sd  i0000   ; sum digits - XOR  
+@1504:030000           sd  i0000   ; sum digits - XOR  
+@1505:030000           sd  i0000   ; sum digits - XOR  
+@1506:030000           sd  i0000   ; sum digits - XOR  
+@1507:030000           sd  i0000   ; sum digits - XOR  
+@1510:030000           sd  i0000   ; sum digits - XOR  
+@1511:030000           sd  i0000   ; sum digits - XOR  
+@1512:030000           sd  i0000   ; sum digits - XOR  
+@1513:030000           sd  i0000   ; sum digits - XOR  
+@1514:030000           sd  i0000   ; sum digits - XOR  
+@1515:030000           sd  i0000   ; sum digits - XOR  
+@1516:030000           sd  i0000   ; sum digits - XOR  
+@1517:030000           sd  i0000   ; sum digits - XOR  
+@1520:030000           sd  i0000   ; sum digits - XOR  
+@1521:030000           sd  i0000   ; sum digits - XOR  
+@1522:030000           sd  i0000   ; sum digits - XOR  
+@1523:030000           sd  i0000   ; sum digits - XOR  
+@1524:030000           sd  i0000   ; sum digits - XOR  
+@1525:030000           sd  i0000   ; sum digits - XOR  
+@1526:030000           sd  i0000   ; sum digits - XOR  
+@1527:030000           sd  i0000   ; sum digits - XOR  
+@1530:030000           sd  i0000   ; sum digits - XOR  
+@1531:030000           sd  i0000   ; sum digits - XOR  
+@1532:030000           sd  i0000   ; sum digits - XOR  
+@1533:030000           sd  i0000   ; sum digits - XOR  
+@1534:030000           sd  i0000   ; sum digits - XOR  
+@1535:030000           sd  i0000   ; sum digits - XOR  
+@1536:030000           sd  i0000   ; sum digits - XOR  
+@1537:030000           sd  i0000   ; sum digits - XOR  
+@1540:030000           sd  i0000   ; sum digits - XOR  
+@1541:110002           ad  0o0002   ; add  
+@1542:071447           cp  i1447   ; conditional program  
+
+@1543:074000   w1543:  sp  i0000   ; sub-program @@ Return from Subroutine WrittenBy: i1446  
+
+@1544:051633   i1544:  ta  w1633   ; transfer address @@ Subroutine Entry JumpedToBy: a0112 a0117 a0131 a0231 a0266 a0415 a0461 a0513 a0705  
+@1545:030000   i1545:  sd  i0000   ; sum digits - XOR @@ JumpedToBy: a1632  
+@1546:030000           sd  i0000   ; sum digits - XOR  
+@1547:030000           sd  i0000   ; sum digits - XOR  
+@1550:030000           sd  i0000   ; sum digits - XOR  
+@1551:030000           sd  i0000   ; sum digits - XOR  
+@1552:030000           sd  i0000   ; sum digits - XOR  
+@1553:030000           sd  i0000   ; sum digits - XOR  
+@1554:030000           sd  i0000   ; sum digits - XOR  
+@1555:030000           sd  i0000   ; sum digits - XOR  
+@1556:030000           sd  i0000   ; sum digits - XOR  
+@1557:030000           sd  i0000   ; sum digits - XOR  
+@1560:030000           sd  i0000   ; sum digits - XOR  
+@1561:030000           sd  i0000   ; sum digits - XOR  
+@1562:030000           sd  i0000   ; sum digits - XOR  
+@1563:030000           sd  i0000   ; sum digits - XOR  
+@1564:030000           sd  i0000   ; sum digits - XOR  
+@1565:030000           sd  i0000   ; sum digits - XOR  
+@1566:030000           sd  i0000   ; sum digits - XOR  
+@1567:030000           sd  i0000   ; sum digits - XOR  
+@1570:030000           sd  i0000   ; sum digits - XOR  
+@1571:030000           sd  i0000   ; sum digits - XOR  
+@1572:030000           sd  i0000   ; sum digits - XOR  
+@1573:030000           sd  i0000   ; sum digits - XOR  
+@1574:030000           sd  i0000   ; sum digits - XOR  
+@1575:030000           sd  i0000   ; sum digits - XOR  
+@1576:030000           sd  i0000   ; sum digits - XOR  
+@1577:030000           sd  i0000   ; sum digits - XOR  
+@1600:030000           sd  i0000   ; sum digits - XOR  
+@1601:030000           sd  i0000   ; sum digits - XOR  
+@1602:030000           sd  i0000   ; sum digits - XOR  
+@1603:030000           sd  i0000   ; sum digits - XOR  
+@1604:030000           sd  i0000   ; sum digits - XOR  
+@1605:030000           sd  i0000   ; sum digits - XOR  
+@1606:030000           sd  i0000   ; sum digits - XOR  
+@1607:030000           sd  i0000   ; sum digits - XOR  
+@1610:030000           sd  i0000   ; sum digits - XOR  
+@1611:030000           sd  i0000   ; sum digits - XOR  
+@1612:030000           sd  i0000   ; sum digits - XOR  
+@1613:030000           sd  i0000   ; sum digits - XOR  
+@1614:030000           sd  i0000   ; sum digits - XOR  
+@1615:030000           sd  i0000   ; sum digits - XOR  
+@1616:030000           sd  i0000   ; sum digits - XOR  
+@1617:030000           sd  i0000   ; sum digits - XOR  
+@1620:030000           sd  i0000   ; sum digits - XOR  
+@1621:030000           sd  i0000   ; sum digits - XOR  
+@1622:030000           sd  i0000   ; sum digits - XOR  
+@1623:030000           sd  i0000   ; sum digits - XOR  
+@1624:030000           sd  i0000   ; sum digits - XOR  
+@1625:030000           sd  i0000   ; sum digits - XOR  
+@1626:030000           sd  i0000   ; sum digits - XOR  
+@1627:030000           sd  i0000   ; sum digits - XOR  
+@1630:030000           sd  i0000   ; sum digits - XOR  
+@1631:110002           ad  0o0002   ; add  
+@1632:071545           cp  i1545   ; conditional program  
+
+@1633:074000   w1633:  sp  i0000   ; sub-program @@ Return from Subroutine WrittenBy: i1544  
+
+@1634:051715   i1634:  ta  w1715   ; transfer address @@ Subroutine Entry JumpedToBy: a0063 a0070 a0073 a0100 a0105 a0124 a0160 a0165 a0172 a0177 a0261 a0422 a0425 a0506 a0634 a0641 a0646 a0655 a0713  
+@1635:030000   i1635:  sd  i0000   ; sum digits - XOR @@ JumpedToBy: a1714  
+@1636:030000           sd  i0000   ; sum digits - XOR  
+@1637:030000           sd  i0000   ; sum digits - XOR  
+@1640:030000           sd  i0000   ; sum digits - XOR  
+@1641:030000           sd  i0000   ; sum digits - XOR  
+@1642:030000           sd  i0000   ; sum digits - XOR  
+@1643:030000           sd  i0000   ; sum digits - XOR  
+@1644:030000           sd  i0000   ; sum digits - XOR  
+@1645:030000           sd  i0000   ; sum digits - XOR  
+@1646:030000           sd  i0000   ; sum digits - XOR  
+@1647:030000           sd  i0000   ; sum digits - XOR  
+@1650:030000           sd  i0000   ; sum digits - XOR  
+@1651:030000           sd  i0000   ; sum digits - XOR  
+@1652:030000           sd  i0000   ; sum digits - XOR  
+@1653:030000           sd  i0000   ; sum digits - XOR  
+@1654:030000           sd  i0000   ; sum digits - XOR  
+@1655:030000           sd  i0000   ; sum digits - XOR  
+@1656:030000           sd  i0000   ; sum digits - XOR  
+@1657:030000           sd  i0000   ; sum digits - XOR  
+@1660:030000           sd  i0000   ; sum digits - XOR  
+@1661:030000           sd  i0000   ; sum digits - XOR  
+@1662:030000           sd  i0000   ; sum digits - XOR  
+@1663:030000           sd  i0000   ; sum digits - XOR  
+@1664:030000           sd  i0000   ; sum digits - XOR  
+@1665:030000           sd  i0000   ; sum digits - XOR  
+@1666:030000           sd  i0000   ; sum digits - XOR  
+@1667:030000           sd  i0000   ; sum digits - XOR  
+@1670:030000           sd  i0000   ; sum digits - XOR  
+@1671:030000           sd  i0000   ; sum digits - XOR  
+@1672:030000           sd  i0000   ; sum digits - XOR  
+@1673:030000           sd  i0000   ; sum digits - XOR  
+@1674:030000           sd  i0000   ; sum digits - XOR  
+@1675:030000           sd  i0000   ; sum digits - XOR  
+@1676:030000           sd  i0000   ; sum digits - XOR  
+@1677:030000           sd  i0000   ; sum digits - XOR  
+@1700:030000           sd  i0000   ; sum digits - XOR  
+@1701:030000           sd  i0000   ; sum digits - XOR  
+@1702:030000           sd  i0000   ; sum digits - XOR  
+@1703:030000           sd  i0000   ; sum digits - XOR  
+@1704:030000           sd  i0000   ; sum digits - XOR  
+@1705:030000           sd  i0000   ; sum digits - XOR  
+@1706:030000           sd  i0000   ; sum digits - XOR  
+@1707:030000           sd  i0000   ; sum digits - XOR  
+@1710:030000           sd  i0000   ; sum digits - XOR  
+@1711:030000           sd  i0000   ; sum digits - XOR  
+@1712:030000           sd  i0000   ; sum digits - XOR  
+@1713:110002           ad  0o0002   ; add  
+@1714:071635           cp  i1635   ; conditional program  
+
+@1715:074000   w1715:  sp  i0000   ; sub-program @@ Return from Subroutine WrittenBy: i1634  
+
+@1716:051774   i1716:  ta  w1774   ; transfer address @@ Subroutine Entry JumpedToBy: a0056 a0153 a0224 a0410 a0454 a0474 a0501 a0722 a0727 a0734 a0737 a0744  
+@1717:030000   i1717:  sd  i0000   ; sum digits - XOR @@ JumpedToBy: a1773  
+@1720:030000           sd  i0000   ; sum digits - XOR  
+@1721:030000           sd  i0000   ; sum digits - XOR  
+@1722:030000           sd  i0000   ; sum digits - XOR  
+@1723:030000           sd  i0000   ; sum digits - XOR  
+@1724:030000           sd  i0000   ; sum digits - XOR  
+@1725:030000           sd  i0000   ; sum digits - XOR  
+@1726:030000           sd  i0000   ; sum digits - XOR  
+@1727:030000           sd  i0000   ; sum digits - XOR  
+@1730:030000           sd  i0000   ; sum digits - XOR  
+@1731:030000           sd  i0000   ; sum digits - XOR  
+@1732:030000           sd  i0000   ; sum digits - XOR  
+@1733:030000           sd  i0000   ; sum digits - XOR  
+@1734:030000           sd  i0000   ; sum digits - XOR  
+@1735:030000           sd  i0000   ; sum digits - XOR  
+@1736:030000           sd  i0000   ; sum digits - XOR  
+@1737:030000           sd  i0000   ; sum digits - XOR  
+@1740:030000           sd  i0000   ; sum digits - XOR  
+@1741:030000           sd  i0000   ; sum digits - XOR  
+@1742:030000           sd  i0000   ; sum digits - XOR  
+@1743:030000           sd  i0000   ; sum digits - XOR  
+@1744:030000           sd  i0000   ; sum digits - XOR  
+@1745:030000           sd  i0000   ; sum digits - XOR  
+@1746:030000           sd  i0000   ; sum digits - XOR  
+@1747:030000           sd  i0000   ; sum digits - XOR  
+@1750:030000           sd  i0000   ; sum digits - XOR  
+@1751:030000           sd  i0000   ; sum digits - XOR  
+@1752:030000           sd  i0000   ; sum digits - XOR  
+@1753:030000           sd  i0000   ; sum digits - XOR  
+@1754:030000           sd  i0000   ; sum digits - XOR  
+@1755:030000           sd  i0000   ; sum digits - XOR  
+@1756:030000           sd  i0000   ; sum digits - XOR  
+@1757:030000           sd  i0000   ; sum digits - XOR  
+@1760:030000           sd  i0000   ; sum digits - XOR  
+@1761:030000           sd  i0000   ; sum digits - XOR  
+@1762:030000           sd  i0000   ; sum digits - XOR  
+@1763:030000           sd  i0000   ; sum digits - XOR  
+@1764:030000           sd  i0000   ; sum digits - XOR  
+@1765:030000           sd  i0000   ; sum digits - XOR  
+@1766:030000           sd  i0000   ; sum digits - XOR  
+@1767:030000           sd  i0000   ; sum digits - XOR  
+@1770:030000           sd  i0000   ; sum digits - XOR  
+@1771:030000           sd  i0000   ; sum digits - XOR  
+@1772:110002           ad  0o0002   ; add  
+@1773:071717           cp  i1717   ; conditional program  
+
+@1774:074000   w1774:  sp  i0000   ; sub-program @@ Return from Subroutine WrittenBy: i1716  
+
+@1775:052053   i1775:  ta  w2053   ; transfer address @@ Subroutine Entry JumpedToBy: a0060 a0065 a0075 a0102 a0107 a0114 a0121 a0126 a0140 a0155 a0162 a0167 a0174 a0201 a0211 a0216 a0226 a0233 a0243 a0256 a0263 a0270 a0275 a0304 a0315 a0322 a0333 a0340 a0345 a0360 a0365 a0375 a0402 a0412 a0417 a0427 a0445 a0456 a0463 a0503 a0510 a0515 a0524 a0636 a0643 a0650 a0657 a0667 a0702 a0707 a0715 a0724 a0731 a0741 a0746  
+@1776:030000   i1776:  sd  i0000   ; sum digits - XOR @@ JumpedToBy: a2052  
+@1777:030000           sd  i0000   ; sum digits - XOR  
+@2000:030000           sd  i0000   ; sum digits - XOR  
+@2001:030000           sd  i0000   ; sum digits - XOR  
+@2002:030000           sd  i0000   ; sum digits - XOR  
+@2003:030000           sd  i0000   ; sum digits - XOR  
+@2004:030000           sd  i0000   ; sum digits - XOR  
+@2005:030000           sd  i0000   ; sum digits - XOR  
+@2006:030000           sd  i0000   ; sum digits - XOR  
+@2007:030000           sd  i0000   ; sum digits - XOR  
+@2010:030000           sd  i0000   ; sum digits - XOR  
+@2011:030000           sd  i0000   ; sum digits - XOR  
+@2012:030000           sd  i0000   ; sum digits - XOR  
+@2013:030000           sd  i0000   ; sum digits - XOR  
+@2014:030000           sd  i0000   ; sum digits - XOR  
+@2015:030000           sd  i0000   ; sum digits - XOR  
+@2016:030000           sd  i0000   ; sum digits - XOR  
+@2017:030000           sd  i0000   ; sum digits - XOR  
+@2020:030000           sd  i0000   ; sum digits - XOR  
+@2021:030000           sd  i0000   ; sum digits - XOR  
+@2022:030000           sd  i0000   ; sum digits - XOR  
+@2023:030000           sd  i0000   ; sum digits - XOR  
+@2024:030000           sd  i0000   ; sum digits - XOR  
+@2025:030000           sd  i0000   ; sum digits - XOR  
+@2026:030000           sd  i0000   ; sum digits - XOR  
+@2027:030000           sd  i0000   ; sum digits - XOR  
+@2030:030000           sd  i0000   ; sum digits - XOR  
+@2031:030000           sd  i0000   ; sum digits - XOR  
+@2032:030000           sd  i0000   ; sum digits - XOR  
+@2033:030000           sd  i0000   ; sum digits - XOR  
+@2034:030000           sd  i0000   ; sum digits - XOR  
+@2035:030000           sd  i0000   ; sum digits - XOR  
+@2036:030000           sd  i0000   ; sum digits - XOR  
+@2037:030000           sd  i0000   ; sum digits - XOR  
+@2040:030000           sd  i0000   ; sum digits - XOR  
+@2041:030000           sd  i0000   ; sum digits - XOR  
+@2042:030000           sd  i0000   ; sum digits - XOR  
+@2043:030000           sd  i0000   ; sum digits - XOR  
+@2044:030000           sd  i0000   ; sum digits - XOR  
+@2045:030000           sd  i0000   ; sum digits - XOR  
+@2046:030000           sd  i0000   ; sum digits - XOR  
+@2047:030000           sd  i0000   ; sum digits - XOR  
+@2050:030000           sd  i0000   ; sum digits - XOR  
+@2051:110003           ad  0o0003   ; add  
+@2052:071776           cp  i1776   ; conditional program  
+
+@2053:074000   w2053:  sp  i0000   ; sub-program @@ Return from Subroutine WrittenBy: i1775  
+
+@2054:174305           md  r0305   ; multiply digits no roundoff (AND)  
+@2055:173737   r2055: .word 0o173737 @@ ReadBy: a0135 a0205 a0212 a0252 a0300 a0306 a0311 a0316 a0371 a0376 a0520 a0663  
+@2056:173371   r2056: .word 0o173371 @@ ReadBy: a0324 a0327 a0334 a0341 a0441  
+@2057:173131          .word 0o173131  
+@2060:172443   r2060: .word 0o172443 @@ ReadBy: a0234 a0237 a0271 a0464 a0467 a0673 a0676  
+@2061:171755   r2061: clh  0o00755   ; cycle left and hold @@ ReadBy: a0110 a0115 a0127 a0227 a0264 a0413 a0457 a0511 a0703  
+@2062:171161   r2062: clh  0o00161   ; cycle left and hold @@ ReadBy: a0061 a0066 a0071 a0076 a0103 a0122 a0156 a0163 a0170 a0175 a0257 a0420 a0423 a0504 a0632 a0637 a0644 a0653 a0712  
+@2063:170613   r2063: clc  0o00613   ; cycle left and clear @@ ReadBy: a0054 a0151 a0222 a0406 a0452 a0472 a0477 a0720 a0725 a0732 a0735 a0742  
+@2064:161427   w2064: srh  0o00427   ; shift right and hold @@ WrittenBy: a0046 ReadBy: a0057 a0064 a0074 a0101 a0106 a0113 a0120 a0125 a0137 a0154 a0161 a0166 a0173 a0200 a0210 a0215 a0225 a0232 a0242 a0255 a0262 a0267 a0274 a0303 a0314 a0321 a0332 a0337 a0344 a0357 a0364 a0374 a0401 a0411 a0416 a0426 a0444 a0455 a0462 a0502 a0507 a0514 a0523 a0635 a0642 a0647 a0656 a0666 a0701 a0706 a0714 a0723 a0730 a0740 a0745  
+                       .JumpTo 0o40
+                       .WW_File "102766748_100-6-900_jingle_bells.7ch/jingle_gs001_FB100-6-900.tcore"
+                       .WW_TapeID "_FB100-6-900"

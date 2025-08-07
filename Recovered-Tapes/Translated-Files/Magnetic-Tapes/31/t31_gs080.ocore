@@ -1,0 +1,16 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\31\t31.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\31\t31_gs080.ocore
+%TapeID: 
+%Stats: Covariance=0.002300, Size=52, Display-Ops, 1, 
+%Blocknum 0o0
+@T00000: 0000063 0100000 0101717 0127015 0100000 0102175 0127013 0100000  ; si ca ca sa ca ca sa ca  : #\02+\0<cntl>4\0 :        \0tt#t##t
+@T00010: 0102312 0127012 0100000 0103142 0127005 0100000 0103233 0127004  ; ca sa ca ca sa ca ca sa  :       ss\0z|\06# :         ##t##t##
+@T00020: 0000000 0063400 0000000 0014500 0011555 0000000 0000001 0063400  ; si ab si rd bi si si ab  :   \0\0\0\0#\0#\0 :     \0,\0a#\0\0,
+@T00030: 0000000 0014500 0012255 0000500 0000002 0063400 0000000 0014500  ; si rd bi si si ab si rd  :   \0\0#\0e\0\0\0 :     \0a|\0\0,\0a
+@T00040: 0012515 0077277 0000003 0063400 0000000 0014500 0011555 0003600  ; bi sp si ab si rd bi si  : +<del>8\0\0\0#\0 :       |#\0,\0a##
+@T00050: 0000004 0063400 0000000 0014500 0012255 0003100 0000005 0063400  ; si ab si rd bi si si ab  :    #\0\0\0#\0|\0 :      \0,\0a|#\0,
+@T00060: 0000000 0014500 0012515 0004300  ;          si rd bi .word  :          \0\0+\0 :            \0a|e
+
+%Hash: 4bc029-04c84b-52

@@ -1,0 +1,15 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\07\t07.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\07\t07_gs492.ocore
+%TapeID: 
+%Stats: Covariance=0.031272, Size=44, 
+%Blocknum 0o0
+@T00000: 0007124 0007130 0007134 0007124 0007130 0007130 0007130 0007124  ; .word .word .word .word .word .word .word .word  :         rncrnnnr :         88888888
+@T00010: 0007130 0007130 0007130 0007130 0007134 0007124 0007124 0007124  ; .word .word .word .word .word .word .word .word  :         nnnncrrr :         88888888
+@T00020: 0007134 0007124 0007124 0007130 0007134 0007130 0007130 0007134  ; .word .word .word .word .word .word .word .word  :         crrncnnc :         88888888
+@T00030: 0007124 0007134 0007130 0007134 0007124 0007130 0007134 0007130  ; .word .word .word .word .word .word .word .word  :         rcncrncn :         88888888
+@T00040: 0007134 0007124 0007124 0007134 0007124 0007130 0007130 0007124  ; .word .word .word .word .word .word .word .word  :         crrcrnnr :         88888888
+@T00050: 0007130 0016020 0015060 0023220  ;          .word rd rd bo  : n<color>o<color> :             83a=
+
+%Hash: 7c4a0e-3d59ca-44

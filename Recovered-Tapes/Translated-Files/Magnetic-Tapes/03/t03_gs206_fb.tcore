@@ -1,0 +1,23 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o100657; xsum=good
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\03\t03.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\03\t03_gs206_fb.tcore
+%TapeID: _fb
+%JumpTo 02030
+%Stats: Covariance=0.004238, Size=99, Display-Ops, 2, 
+%Blocknum 0o0
+@C03200: 0112762 0044013 0112763 0074010 0110000 0077776 0110000 0134000  ; ad td ad sp ad sp ad dm  :      b4# \00\0\0 :       \td\tkl#lq
+@C03210: 0112777 0074000 0112763 0074020 0112762 0040072 0110000 0077776  ; ad sp ad sp ad ts ad sp  : <del>\0#<color>bx\00 : \tk\tk\t<color>l#
+@C03220: 0112762 0134070 0112763 0074020 0112762 0040073 0110000 0074000  ; ad dm ad sp ad ts ad sp  : bm#<color>b#\0\0 : \tq\tk\t<color>lk
+@C03230: 0112762 0050022 0177775 0112763 0130007 0130007 0112777 0044003  ; ad ta md ad ao ao ad td  : bd<cntl>#33<del>8 :  \tr<del>\tpp\td
+@C03240: 0177775 0112763 0130007 0130007 0110000 0074000 0177761 0112762  ; md ad ao ao ad sp md ad  : <cntl>#33\0\0<stop>b : <del>\tpplk<del>\t
+@C03250: 0100075 0040074 0104100 0040077 0100072 0040103 0074042 0100075  ; ca ts cs ts ca ts sp ca  : <cntl>v\0<del>x8z<cntl> : t<color>z<color>t<color>kt
+@C03260: 0040074 0104100 0040077 0100073 0040102 0074054 0112763 0074000  ; ts cs ts ca ts sp ad sp  :   v\0<del>#ep#\0 : <color>z<color>t<color>k\tk
+@C03270: 0112762 0050053 0112762 0100103 0110000 0000600 0112762 0100077  ; ad ta ad ca ad si ad ca  :   b#b8\0\0b<del> :     \tr\ttl\0\tt
+@C03300: 0112460 0024011 0177773 0112762 0110067 0040077 0130074 0070045  ; ad rc md ad ad ts ao cp  :    o=#b#<del>v\t : \ts<del>\tl<color>pc
+@C03310: 0110000 0074000 0112762 0050066 0112762 0100077 0110000 0000600  ; ad sp ad ta ad ca ad si  : \0\0b9b<del>\0\0 :      lk\tr\ttl\0
+@C03320: 0177770 0112762 0100102 0024023 0100077 0110067 0040077 0130074  ; md ad ca rc ca ad ts ao  : mbe5<del>#<del>v : <del>\ttstl<color>p
+@C03330: 0070055 0177767 0110000 0074000 0000376 0000000 0000000 0000000  ; cp md ad sp si si si si  :    ##\0\00\0\0\0 : c<del>lk\0\0\0\0
+@C03340: 0000000 0000000 0177376  None    None    None    None    None    ;      si si md            :  \0\00           : \0\0<del>          
+
+%Hash: 481372-230f71-99

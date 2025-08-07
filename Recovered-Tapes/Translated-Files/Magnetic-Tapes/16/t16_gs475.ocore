@@ -1,0 +1,21 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\16\t16.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\16\t16_gs475.ocore
+%TapeID: 
+%Stats: Covariance=0.004420, Size=91, Display-Ops, 1, 
+%Blocknum 0o0
+@T00000: 0000132 0100000 0124501 0126334 0100000 0131600 0126276 0100000  ; si ca sa sa ca ao sa ca  :     f\0#c\0\00\0 :        \0ty#tp#t
+@T00010: 0126572 0126520 0100000 0126771 0126516 0100000 0131444 0126477  ; sa sa ca sa sa ca ao sa  : x<color>\0<cntl>U\0L<del> :         ##t##TP#
+@T00020: 0100000 0135157 0126451 0100000 0136263 0126442 0100000 0101017  ; ca dm sa ca dm sa ca ca  :     \0#\n\0#Z\02 :         TQ#T##TT
+@T00030: 0126622 0100000 0101374 0126617 0100000 0102507 0126610 0100000  ; sa ca ca sa ca ca sa ca  :      D\0V2\03 \0 :         #TT#T##T
+@T00040: 0130132 0126707 0100000 0130160 0126707 0100000 0130224 0126706  ; ao sa ca ao sa ca ao sa  :       F3\0O3\0RA :         P#TP#TP#
+@T00050: 0100000 0130333 0126705 0000000 0070726 0070727 0012100 0054043  ; ca ao sa si cp cp bi ck  :   \06_\0J7\0<bs> :        TP#\0CC_J
+@T00060: 0071243 0000001 0070726 0070727 0012100 0056743 0071243 0000002  ; cp si cp cp bi ck cp si  : <bs>#J7\0<bs><bs>E :       C\0CC_7C\0
+@T00070: 0070726 0070727 0012100 0061643 0071243 0000003 0070726 0070727  ; cp cp bi ab cp si cp cp  :  J7\0<bs><bs>8J7 :        CC_NC\0CC
+@T00100: 0012100 0064543 0071243 0000004 0070726 0070727 0012100 0075103  ; bi ex cp si cp cp bi sp  : \0<bs><bs>#J7\08 :        _FC\0CC_K
+@T00110: 0004444 0000005 0070726 0070727 0012100 0075103 0000644 0000006  ; .word si cp cp bi sp si si  :        L_J7\08LA :      E\0CC_K\0\0
+@T00120: 0070726 0070727 0012100 0075103 0075043 0000007 0070726 0070727  ; cp cp bi sp sp si cp cp  :     J7\08<bs>3J7 :        CC_KK\0CC
+@T00130: 0012100 0075103 0071243  ;                bi sp cp  :          \08<bs> :              _KC
+
+%Hash: dacd0e-cedcae-91

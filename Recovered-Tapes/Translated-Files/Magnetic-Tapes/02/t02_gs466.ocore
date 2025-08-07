@@ -1,0 +1,24 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\02\t02.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\02\t02_gs466.ocore
+%TapeID: 
+%Stats: Covariance=0.002098, Size=114, 
+%Blocknum 0o0
+@T00000: 0004400 0002161 0004104 0040740 0000161 0004040 0002740 0006401  ; .word si .word ts si .word si .word  : \0<stop>#t<stop>tt# :  e#e<color>\0e#8
+@T00010: 0004074 0002016 0044161 0002000 0176160 0104074 0006000 0000401  ; .word si td si md cs .word si  :  vu<stop>\0ov\0# :    e#d#<del>z8\0
+@T00020: 0004074 0002016 0044161 0004074 0006000 0024161 0002000 0036400  ; .word si td .word .word rc si cf  : vu<stop>v\0<stop>\0\0 :         e#de8s#2
+@T00030: 0104074 0002016 0044161 0004110 0004000 0000161 0004110 0006000  ; cs si td .word .word si .word .word  : vu<stop> \0<stop> \0 :        z#dee\0e8
+@T00040: 0000401 0004074 0002016 0044061 0002017 0010060 0102036 0010400  ; si .word si td si bi ca bi  :   #vu<stop>2ok\0 :        \0e#d####
+@T00050: 0104074 0002016 0044061 0002017 0012060 0102036 0012400 0104074  ; cs si td si bi ca bi cs  :   vu<stop>2ok\0v :         z#d#|#|z
+@T00060: 0002016 0044061 0002017 0014060 0102036 0014400 0104074 0002016  ; si td si rd ca rd cs si  :   u<stop>2ok\0vu :         #d#a#az#
+@T00070: 0044161 0002003 0176060 0102500 0000400 0104074 0002016 0044061  ; td si md ca si cs si td  : <stop>8o\0\0vu<stop> :    d#<del>#\0z#d
+@T00100: 0002400 0000160 0102000 0032400 0104074 0002016 0044161 0002000  ; si si ca sd cs si td si  : \0o\0\0vu<stop>\0 :        #\0#+z#d#
+@T00110: 0044160 0102000 0144400 0104074 0002016 0044161 0004044 0012000  ; td ca mh cs si td .word bi  : o\0\0vu<stop>l\0 :         d#bz#de|
+@T00120: 0000061 0003000 0000400 0104074 0002016 0044161 0002000 0076160  ; si si si cs si td si sp  : <stop>\0\0vu<stop>\0o :       \0#\0z#d##
+@T00130: 0102001 0176400 0104074 0002016 0044161 0002000 0036160 0102000  ; ca md cs si td si cf ca  : #\0vu<stop>\0o\0 :     #<del>z#d#2#
+@T00140: 0054400 0104074 0002016 0044161 0002000 0024060 0102020 0000400  ; ck cs si td si rc ca si  : \0vu<stop>\0o<color>\0 :        jz#d#s#\0
+@T00150: 0104074 0002016 0044161 0004530 0004000 0000001 0000577 0132366  ; cs si td .word .word si si ao  : vu<stop>n\0#<del>9 :       z#dee\0\0#
+@T00160: 0126740 0004756  ;                sa .word  :               tq :               #e
+
+%Hash: bd1498-34fcce-114

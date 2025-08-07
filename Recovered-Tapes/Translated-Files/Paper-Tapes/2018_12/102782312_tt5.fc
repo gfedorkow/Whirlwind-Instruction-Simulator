@@ -1,0 +1,37 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_12\102782312_tt5.7ch
+s1, do lr0, s2.
+s2, if lr0 n, s3,s4.
+s3, do mr0, s1.
+s4, do l0, s5.
+s5, if l0 n, s6,s7.
+s6, do m0, s1.
+s7, do l1, s10.
+s10, if l1 n, s11, s12.
+s11, do m1, s1.
+s12, do l7, s13.
+s13, if l7 n, s14, s15.
+s14, do m7, s1.
+s15, if l1 g l0, s16, s17.
+s16, do m1, s1.
+s17, if l7 g l0, s20, <del>s21.
+s20, do m7, s1.
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>s21, if l0 g l1, s22, s23.
+s22, do m0, s1.
+s32, if l6 = 0, s51, s5<del>0.
+s23, if l0 = 0, s30, s24.
+s24, if z8 n, s25, s26.
+s25, do m0, s1.
+s26, do mr0, s1.
+s30, if z7 g 7, s31, s41.
+s31, do l<del>6, s32.
+s50, do l7, s33.
+s33, if l7 = 0, s34, s35.
+s34, do m6, s31.
+s35, do m7, s1.
+s41, do l2, s42.
+s42, if l2 = 0, s50, s51.
+s43, if 
+s51, do l1, s43.
+s43, if c1, s44, s45.
+s44, w<del><del>3700.
+s45, do m1, s77.

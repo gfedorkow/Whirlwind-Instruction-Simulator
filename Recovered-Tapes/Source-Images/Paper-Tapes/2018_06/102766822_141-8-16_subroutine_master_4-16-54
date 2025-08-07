@@ -1,0 +1,17 @@
+%File 102766822_141-8-16_subroutine_master_4-16-54.7ch
+||||||||||
+LSR lnx 141-8-16
+za1=<stop>
+0r,ita35r	OUT	cs2043	cp5r	si0		5r,ca36r
+ex2042	su36r	sf38r	tst		10r,cs38r	ad37r
+slh15-za1	ts1t	IN		15r,isu39r	its2t
+imr43r	iad45r	imr2t		20r,iad47r	imr2t	iad49r
+imr2t	iad51r		25r,imr2t	iad53r	imr2t	iad55r
+imr2t		30r,iad57r	imr2t	iext	imr41	iadt
+35r,isp0	+1	+15	+0	+1.		41r,+.6931471806
+43r,-.0064535442		45r,+.0360884937		47r,-.0953293897
+49r,+.1676540711		51r,-.2407338084		53r,+.3317990258
+55r,-.4998741238		57r,+.9999964239
+<del>END OF SUBROUTINE
+||||||||||
+<stop>

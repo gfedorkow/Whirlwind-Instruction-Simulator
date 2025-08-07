@@ -1,0 +1,1322 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302399_box40\102663764_fc_to_pc_1211m13.7ch
+fc TAPE 1211 m1<del>4 BENNETT<del><del><del><del><del><del>  PROGRAM PRINT PROGRAM
+OCTAL		[1;31mDA1.10000|[0m
+[1;31m40|[0mca44		|Return to UCP
+si703
+ca45
+bi44
+0.54043
+0.03700
+siw6<del>0
+si0
+ta52		|Anelex Communication link<del>
+cf+
+sp+
+53|[1;31ma1,[0m<del><del><del><del><del>caa2		|[1;31mStart of Initialization[0m
+tsc3		|Set c3=32(d)
+spr2		|[1;31mSearch for start of Program[0m
+ca3767
+clh32
+mdz4
+ts47		|Number of Tapes
+cs47
+ad1
+tsz5		|Set tape counter
+c<del>a3767
+mdz4
+ad46
+cf400
+[1;31mw60,[0mspz9		|Anelex
+spz6		|Direct Flexo
+sp4z7		|Delayed Flexo
+spz7		|Delayed Punch
+spz8		|Direct Punch
+spz9		|Anelex
+spz9		|Anelex
+spz9		|Anelex
+[1;31mw61,[0mca0
+tsd1		|[1;31mall done ind[0m
+ts1c4		|[1;31mDitto Counter Ind[0m
+tsd5		|[1;31mStart of Tape[0m
+tsc1		|[1;31mCell counter[0m
+ca1a2		|[1;31m1.00000 Core Image[0m
+tsc5		|core image block designator
+[1;31ma3,[0msi 337	|check for manual halt
+rd
+ck 3k1
+0,sp 2r
+sp 13r
+2,si 300
+rd
+cp 6r
+sp 13r
+6,sp r27<del>	|select
+ca 20z4	|stop
+sp r10	|record
+sp r28<del>	<del>|deselect
+si 0
+13,<del><del><del><del><del>si211		|[1;31mselect PETR[0m
+[1;31ma4,[0mrd
+ts2a2		|[1;31mT.S[0m
+ck3a2		|comparison, si77 for nullify
+spa4		|branch to a4 if nullify
+cac2		|total number of cells
+suc1	|cell ctr.
+su1
+cpa5	|[1;31mLast cell[0m
+ca2a2	|flexo
+spr1	|translate
+spr5
+cpa5	|START AT
+ca2a2
+spr3	|store
+[1;31ma6,[0maoc1
+spa4
+[1;31ma5,[0msi630	|[1;31mStop PETR[0m
+ca2a2
+spr3	|store
+spb1
+csd1		|[1;31mAll done Ind.[0m
+cpa3		|[1;31mNot all done[0m
+ca1z5		|[1;31mFinishing <del>routine[0m, Anelex indicator
+cpx22
+aoz5		|Tape counter
+cpx30
+sp40		|<del>[1;31mEXIT to UCP[0m
+[1;31mx22,[0mta7x22		|[1;31mAnelex Page Ejection[0m
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del>1,ca1r
+2x22,ad1
+cp2x22
+si245
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>ca1z4
+bo1<del>7<del><del><del><del><del>z4	|1.70010
+7x22,sp+
+[1;31mx30,[0mcs3773
+cp3x30		|[1;31mManual or Program Entry[0m
+si<del><del>1
+3x30,ca0		|[1;31mHalt, manual entry[0m
+tsc1	|[1;31mCell Counter[0m
+tsd1	|[1;31mAll Done Ind.[0m
+tsd5	|[1;31mStart of Tape[0m
+spa3
+[1;31ma2,[0m32	|[1;31m(d)[0m
+[1;31m1a2,[0m1.00000	|[1;31mCore image[0m
+[1;31m2a2,[0m0	|[1;31mT.S.[0m
+3a2,si77	|flexo for nullify
+[1;31mb1,[0mtab6		|process cells
+spr8		|find last C<del>R
+spr27		|Select output unit
+cad5		|Start of Tape ind
+cpb15		|Set, not first time thru
+spr26		|print tape feed
+ca1b2	|fc for lower case
+spr10	|[1;31mPrint[0m
+spr15	|[1;31mPrint cells thru CR.[0m
+spr15	|[1;31mPrint cells thru CR.[0m
+cs0	|[1;31mneg.[0m
+tsd5	|[1;31mSet Start of Tape[0m
+[1;31mb15,[0mspr20	|check for empty line
+cpb16	|empty line
+[1;31mb3,[0mcad2	|[1;31mDitto/Skip Ind.[0m
+cpb7	|[1;31mSet[0m
+spr6	|[1;31mCheck for DITTO or START AT[0m
+cpb9	|[1;31mEither DIT or STA[0m
+spr24	|comment
+cpb13
+spr16	|check for skip
+cpb10
+[1;31mb4,[0mspr17	|Print addr. and reg.
+[1;31mb5,[0mspr22	|print addr. if one is assigned
+spr15	|[1;31mPrint thru CR.[0m
+[1;31mb12,[0maoc3	|addr. ctr.
+1b12,cac1	|[1;31mCell no. past CR.[0m
+su1c1	|[1;31mCell no. of last CR.[0m
+cpb17	|not last CR
+spr26	|print tape feed
+[1;31mb18,[0mspr28		|Deselect
+cad1	|[1;31mAll Done Ind.[0m
+cpb6
+spr19
+[1;31mb6,[0msp	|EXIT
+[1;31mb16,[0mspr15	|print line
+spb15
+[1;31mb17,[0mspr20	|check for empty line
+[1;31m0r,[0mcp2r	|empty line
+spb3
+2r,spr15	|print line
+sp1b12
+[1;31mb7,[0mca1c4	|[1;31mneg. if Ditto termination set[0m
+cpb8	|[1;31mSet[0m
+spr4		|read slash address
+tsc4		|set DITTO termination
+cs0
+ts1c4		|Restore 1c4
+[1;31mb8,[0mcac3
+ckc4
+sp4b8		|End of DITTO
+spb11		|Not end of DITTO
+4b8,ca0
+ts1c4
+tsd2
+spb4
+[1;31mb9,[0mclh1
+cpb14	|[1;31mSTA[0m
+cs0
+tsd2	|[1;31mSet Ditto/Skip Ind.[0m
+spb4
+[1;31mb10,[0mspr4
+tsc3	|set c3 to address for slash assignment
+spb4
+[1;31mb11,[0mspr17	|[1;31mPrint addr. and reg.[0m
+cab2	|[1;31mfc. for CR.[0m
+spr10	|[1;31mPrint[0m
+spb12
+[1;31mb13,[0mca1x31	|si45, fc for tab
+spr10	|punch flexo
+ca1x31
+spr10
+<del><del><del><del><del><del><del><del><del><del><del><del><del>ca1x31
+spr10
+spr15
+sp1b12
+[1;31mb14,[0mtsd1	|[1;31mSet all Done Ind.[0m
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>spr15
+sp1b12<del><del><del><del><del>
+[1;31mb2,[0m0.00051	|<del>C.R.<del>
+[1;31m1b2,[0m0.00075	|Lower Case
+[1;31mr1,[0mta1w5	|translate flexo code
+ad2w5	|[1;31mf1[0m
+tdw5
+[1;31mw5,[0mca
+sp
+f1
+[1;31mf1,[0m0.40040
+1.00000
+0.20005
+0.10400
+1.00000
+0.01020
+0.20001
+0.10140
+[1;31m10f1,[0m0.40020
+0.01400
+0.20023
+0.10200
+0.20011
+0.01004
+0.20065
+0.10100
+[1;31m20f1,[0m0.40010
+0.01001
+0.20004
+0.10240
+0.20122
+0.30054
+0.20012
+0.10340
+[1;31m30f1,[0m0.20016
+0.01010
+0.20006
+0.10300
+0.20103
+0.01002
+0.20013
+1.<del>00000
+[1;31m40f1,[0m0.20224
+1.00000
+0.20072
+0.40004
+0.30054
+0.04000
+0.20027
+0.10000
+[1;31m50f1,[0m0.20110
+0.04001
+0.20031
+1.00000
+0.20060
+1.00000
+0.20021
+1.00000
+[1;31m60f1,[0m0.30017
+0.40002
+0.20002
+1.00000
+0.20007
+1.00000
+0.10440
+1.00000
+[1;31m70f1,[0m0.20015
+0.02001
+0.20030
+1.00000
+0.20026
+0.02000
+0.30017
+0.40001
+[1;31mr2,[0mtaw50	|search for start of program
+[1;31mw49,[0mcac3
+spr7
+ck0
+spw51
+[1;31mw50,[0msp	|[1;31mEXIT[0m
+[1;31mw51,[0maoc3
+su5w79	|si3777
+cpw49
+spr25	|print Core Image Empty
+sp0
+[1;31mr3,[0mtaw6	|pack or pick up flexo char.
+tsw7	|AC
+cac1	|cell ctr.
+srh1
+adw8	|f2
+td1w10<del><del>
+td3w10
+td4w10
+tdw14
+cac1
+clh17
+cpw9	|odd
+<del><del>ca3w8	|6
+t<del>dw10
+ca4w8<del><del>	|si32
+tdw1<del>3
+ca1w8	|0.07700
+spw15
+[1;31mw9,[0mca0
+tdw10
+tdw13
+ca2w8	|0.00077
+[1;31mw15,[0mts1w7	|mask
+caw7
+cpw11	|pick up
+[1;31mw10,[0mclc
+sd
+md1w7	|mask
+<del>sd
+4w10,ts
+[1;31mw6,[0msp
+[1;31mw11,[0mcac2
+suc1
+cpw12	|cell no. too large
+[1;31mw14,[0mca
+md1w7	|mask
+[1;31mw13,[0mclc
+spw6
+[1;31mw12,[0mca0
+spw6
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>[1;31mw7,[0m0	|AC
+0	|mask
+[1;31mw8,[0mf2
+0.07700
+0.00077
+6
+4w8,si32
+[1;31mr4,[0mtax20	|[1;31mset c3 to address for slash assignment[0m
+cac1
+ts3x21
+ca0
+tsx21	|storage register for address
+[1;31mx18,[0mcs0	|neg. for pick-up
+spr3	|pick up flexo char.
+spr1	|translate to logical word
+clh6
+cpx19	|punc.
+clh35
+cp1x20		|number...
+clh37
+cp9x20		<del>|letter...
+[1;31m9x18,[0maoc1
+spx18
+[1;31mx19,[0mca3x21
+tsc1		|Restore cell counter
+cax21		|Obtain address
+[1;31mx20,[0msp+		|EXIT
+[1;31m1x20,[0mclh30
+md1x21
+ts2x21
+cax21
+clh3
+ad2x21
+tsx21		|store number
+sp9x18
+[1;31m9x20,[0mca2c4		|relative location counter
+adx21
+tsx21		|store relative address
+spx19
+[1;31mx21,[0m0
+[1;31m1x21,[0m0.00007
+[1;31m2x21,[0m0
+[1;31m3x21,[0m0
+[1;31mr5,[0mtaw42	|check for START AT
+tsw39
+clh1
+cpw41	|Ignore
+clh3
+cpw43	|Tab/CR
+clh1
+cpw45	|Shift case
+ca1w39	|No match Ind.
+cpw41	|Set
+caw39	|Logical word
+clh2
+cpw46	|Letter
+[1;31mw40,[0mcs0
+ts1w39	|Set no Match Ind.
+[1;31mw41,[0mca0
+[1;31mw42,[0msp	|EXIT
+[1;31mw43,[0mclh13
+cpw44	|CR
+spw41	|exit with pos. AC
+[1;31mw44,[0mca0
+ts1w39	|Clear No Match Ind.
+ts2w39	|Clear Char. no.
+cs3w39	|End Phase Ind.
+cpw41	|Not End Phase
+ca0
+ts3w39	|Clear End Phase Ind.
+cs0
+spw42
+[1;31mw45,[0mclh12
+ts4w39	|Set shift case Ind.
+spw41
+[1;31mw46,[0mcs4w39	|Case Ind.
+cpw40	|Lower
+ca12w39	|5w39
+ad2w39
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>tdw47
+caw39	|logical char
+md11w39	|0.00037
+[1;31mw47,[0mck+
+<del><del><del><del><del><del>spw48
+spw40
+<del><del><del><del><del><del><del><del><del>[1;31mw48,[0mao2w39
+su10w39	|2
+cpw41	|Char. not greater than 2
+cs0
+ts3w39	|Set end phase Ind.
+spw41
+[1;31mw39,[0m0	|logical word
+0	|no match ind.
+0	|char. no.
+0	|end phase ind.
+0	|case ind.
+19	|(d)S
+20	|(d)T
+1	|A
+2
+0.00037
+5w39
+[1;31mr6,[0mtaw38	|search for DITTO and START AT
+cac1	|cell ctr.
+tsw24	|store original c1
+cad4
+ts1w24	|Case Ind.
+ca0
+ts2w24	|DIT/STA Ind.
+ts3w24	|Char. Ind.
+[1;31mw26,[0mcs0
+spr3	|Picks up Flexo char. on neg. entry
+spr1	|Translates Flexo char. into logical word
+ts4w24	|Store logical word
+clh1
+cpw25	|Ignore
+sp2w25
+[1;31mw25,[0maoc1	|cell ctr.
+spw26
+ca4w24	|logical word
+clh4
+cpw27	|Flexo Char. is Tab/CR
+clh1
+cpw29	|Shift case
+ca4w24	|logical word
+clh2
+cpw30	|Letter
+[1;31mw28,[0mcaw24
+tsc1	|Reset cell ctr.
+spw38	|exit pos.
+[1;31mw27,[0mclh13
+cpw28	|CR
+spw25
+[1;31mw29,[0mclh12
+ts1w24	|Case ind. set +lower -upper
+spw25
+[1;31mw30,[0mca1w24
+cp3r	|upper
+spw28
+ca2w24	|DIT/STA Ind
+cpw35	|Other than first time
+ca4w24	|logical wrd
+md5w24	|0.00037
+ckw31		|D
+spw33
+ca4w24	|logical word
+md5w24	|0.00037
+ckw32
+spw34
+spw28
+[1;31mw33,[0mca6w24	|1.00000
+ts2w24	|DIT/STA Ind.
+spw37
+[1;31mw34,[0mca7w24	|1.40000
+ts2w24	|DIT/STA Ind
+spw37
+[1;31mw35,[0mca2w24	|DIT/STA Ind
+clh1
+cpw36	|STA
+ca3w31	|w31
+sp1w36
+[1;31mw36,[0mca3w32	|w32
+ad3w24	|Char. ctr.
+[1;31mr,[0mt<del><del><del><del>d3r
+ca4w24	|logical word
+md5w24	|0.00037
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>3,ck+<del><del><del>
+spw37
+spw28
+[1;31mw37,[0mao3w24	|Char. Ctr.
+su10w24	|2
+cpw25	|not done
+caw24
+tsc1	|Reset cell ctr.
+ca2w24	|Pick up const. acc. to whether DIT or STA
+[1;31mw38,[0msp	|EXIT
+[1;31mw24,[0m0	|original c1
+0	|case ind. +lower -upper
+0	|DIT/STA Ind.
+0	|char.ctr.
+0	|logical word
+0.00037
+1.00000
+1.40000
+2
+[1;31mw31,[0m4	|D
+9	|I
+20	|T
+w31
+[1;31mw32,[0m19	|S
+20	|T
+1	|A
+w32
+[1;31mr7,[0mtaw54	|pick up program register
+tsw52	|Core addr.
+md1w52	|1.77700
+ckc5	|Comparison sbr.
+spw53
+caw52	|core addr.
+md1w52	|1.77700
+tsc5
+[1;31mw84,[0mspr28	|<del><del>Deselect
+si703	|drum
+ca2w52	|si100
+bif3
+spr27	|Reselect
+[1;31mw53,[0mcaw52	|Core addr.
+md3w52	|0.00077
+ad4w52	|f3
+td4w53
+ca
+[1;31mw54,[0msp	|EXIT
+[1;31mw52,[0m0
+1.77700
+si100
+0.00077
+f3
+[1;31mr8,[0mtaw57	|determine last CR
+cac2
+suc1
+su1
+cpw58	|last cell
+cac1
+ts1c1
+[1;31mw56,[0mca0
+tsc1	|set c1=0
+[1;31mw57,[0msp	|EXIT
+[1;31mw58,[0mspr21	|search for CR
+aoc1
+[1;31mw59,[0mcac1
+su1
+ts1c1
+su1
+tsc1
+spr21	|search for CR
+aoc1
+spr20
+cpw59	|empty
+spw56
+[1;31mr27,[0mta2r27		|Output selection
+si630
+sp+		|E<del>XIT<del>
+[1;31mr28,[0mta2r28		|Output deselection
+si630
+sp+		|E<del>XIT<del>
+[1;31mz6,[0mca2z4		|Di<del>rect Flexo Initialization
+ts1r27
+sp<del>w61		|E<del>XIT<del>
+[1;31mz7,[0mca3z4		|Delayed Punch Initialization
+ts1r26
+ca4z4
+ts1w62
+[1;31m4z7,<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>[0mca5z4		|Delayed Print Initialization
+ts1r27
+ca6z4
+t1r28
+spw61		|E<del>XIT<del>
+[1;31mz8,[0mca7z4		|Direct Punch Initialization
+ts1r27
+ca3z4
+ts1r26
+spw61		|E<del>XIT<del>
+[1;31mz9,[0mca10z4		|Anelex Initialization
+ts4r10
+ts1z1
+spx22		|Ejext page
+cs1
+ts1z5		|Set Anelex indicator
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>cf1000		|Determine active c.f.
+ts2z5
+clc35
+mdz4<del>	|7
+ts3z5		|Original A field
+clh3
+ad11z4		|200
+td<del><del>1f2		|set up c.f. in anelex conversion
+ca2z5
+mdz4		|7
+ts4z5		|Original B field
+ad12z4<del>		|100
+td3b19
+td14b19
+[1;31mz10,[0m<del>ao5z5		|Select new core field
+ck3z5
+spz10
+ck4z5
+spz10
+ca5z5
+ad12z4<del>		|100
+td1b19
+td1<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>1b19
+ca5z5
+clh3
+ad11z4		|200
+td51
+[1;31m|shift conversion to new c.f.
+ca13z4		|f3
+tdb19
+ca14z4		|2050
+td2b19
+cs15z4		|length of conversion
+ts6z5
+ao6z5
+[0m[1;31mb19,[0mca+
+[1;31m1b19,[0mcf+
+[1;31m2b19,[0mts+
+[1;31m3b19,[0mcf+
+aob19
+ao2b19
+<del><del><del><del><del><del><del><del>ao6z5
+c<del>pb19
+ca16z4
+[1;31m11<del><del><del>b19,[0mcf+
+si17
+<del><del><del><del><del><del><del>bi2<del><del><del><del>711
+[1;31m14b19,[0mcf+
+spw61		|EXIT
+[1;31mz5,[0m0		|Tape counter
+[1;31m1z5,[0m+1		|Anelex Indicator
+[1;31m2z5,[0m0		|T.S. for cf assignment
+<del><del><del><del><del><del><del><del><del>[1;31m3z<del><del><del>5,[0m0		|T.S. for original A <del>c<del>.f.
+[1;31m4z5,[0m0		|T.S. for original B c.f.
+[1;31m5z5,[0m<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>1		|Core field for Conversion Program
+[1;31m6z5,[0m0		|Conversion program counter<del>
+[1;31mr10,[0mtaw62	|punch flexo char.
+clc0
+clh12
+ad1w62
+<del><del><del>4r10,rc
+[1;31mw62,[0msp	|EXIT
+1w62,si0
+[1;31mr11,[0mtaw64	|print digit
+ad12w63
+[1;31mr,[0mtd1r
+ca
+spr10
+[1;31mw64,[0msp
+[1;31mw63,[0m0.00076	|0
+0.00025	|1
+0.00017	|2
+0.00007	|3
+0.00013	|4
+0.00023	|5
+0.00033	|6
+0.00027	|7
+0.00003	|8
+0.00066	|9
+w63
+[1;31mr12,[0mta2r<del>	|print n-digi<del>t octal no.
+tsw65
+cs
+ad1
+ts1w65
+ao2r
+td7r
+ca	|ind.
+cpw66	|convert initial zeros
+ca2w65	|+100
+sp1w66
+[1;31mw66,[0mca0
+ts3w65
+ao2r12
+tdw71	|to EXIT
+[1;31mw67,[0mca1w65	|ctr.
+mh3k1	|3
+slh17
+ad4w65	|+40
+tdw68
+caw65	|bin equiv. of no.
+[1;31mw68,[0mclh
+md5w65	|0.00007
+ts6w65
+dm0
+cpw72	|digit is zero
+ca2w65
+ts3w65
+[1;31mw69,[0mca6w65
+spr11	|sp to print digit
+[1;31mw70,[0mao1w65	|ao ctr.
+cpw67	|not finished
+[1;31mw71,[0msp	|EXIT
+[1;31mw72,[0mcs1w65	|ctr.
+su3w65	|ind.
+cpw69	|do not convert zeros into spaces
+ca7w65	|fc for space bar
+spr10	|sp to print flexo-char.
+spw70
+[1;31mw65,[0m0	|will cont. bin equiv. of no.
+0	|will cont. ctr. -(n-1)
+si100
+0	|ind.
+si40
+0.00007
+0	|temp. stor. for bin. equiv. of digit
+0.00010	|fc for space bar
+[1;31mr13,[0mtaw74	|print octal frac.
+tsw73	|o. frac.
+clh21
+md<del>1
+spr11	|print digit
+ca1w73	|fc for period
+spr10	|print flexo-char.
+caw73	|o, frac.
+md3w73	|0.77777
+spr12
+5
++0
+[1;31mw74,[0msp	|EXIT
+[1;31mw73,[0m0	|will cont. o. frac.
+0.00021	|fc for period
+0.00007
+0.77777
+[1;31mr14,[0mtaw77<del>	|print instruction
+tsw79	|AC entry
+clh25	|to get lst 5 bits to bits 11-15 of AC
+md1w79	|0.00037
+ad2w79	|w75
+[1;31mr,[0mtd1r
+ca	|table look-up
+ts3w79	|table word
+cpw78	|char. is illegal
+clh32
+md4w79	|0.00077
+spr10	|print flexo-char.
+ca3w79	|table word
+md4w79	|0.00077
+spr10	|print flexo char
+caw79	|orig. AC entry
+md5w79	|0.03777
+[1;31mw76,[0mspr12	|print n-digit octal no.
+5	|n
+-0	|neg. ind.
+[1;31mw77,[0msp	|EXIT
+[1;31mw78,[0mcaw79	|orig. AC entry
+spr13	|Print octal frac.
+spw77	|to EXIT
+<del><del><del><del>[1;31mw75,[0m0.01214	|si
+1.00000	|illegal
+0.06214	|bi
+0.02422	|rd
+0.06260	|bo
+0.02434	|rc
+0.01222	|sd
+0.03432	|cf
+0.04012	|ts
+0.04022	|td
+0.04006	|ta
+0.03436	|ck
+0.00662	|ab
+0.00272	|ex
+0.03454	|cp
+0.01254	|sp
+0.03406	|ca
+0.03412	|cs
+0.00622	|ad
+0.01216	|su
+0.03470	|cm
+0.01206	|sa
+0.00660	|ao
+0.02270	|dm
+0.07024	|mr
+0.07050	|mh
+0.02274	|dv
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>0.0<del>1244	|sl
+0.01224	|sr
+0.01232	|sf
+0.03444	|cl
+0.07022	|md
+[1;31mw79,[0m0	|will contain orig AC entry
+si37
+w75
+0	|will contain table word
+4w79,si77
+si3777
+[1;31mr15,[0mtax15	|print a line thru CR
+[1;31mx13,[0mcs0	|neg for pick-up
+spr3	|pick up flexo
+tsx17	|store
+spr1	|translate into logic<del>al word
+ts1x17	|store
+clh5
+cpx16	|case shift
+[1;31mx14,[0mcax17	|stored flexo
+spr10	|print
+aoc1
+<del>cs1x17	|stored logical word
+clh4
+cpx13	|not tab/<del>CR<del>
+<del><del><del>clh13
+cpx13	|not CR
+[1;31mx15,[0msp	|EXIT
+[1;31mx16,[0mclh<del>12
+tsd4	|set d4
+spx14
+[1;31mx17,[0m0	|store flexo char
+0	|store logical word
+[1;31mr16,[0mtax61	|[1;31mcheck for skip[0m
+cac1	|cell ctr.
+tsx64	|store c1
+3r16,ca0
+ts2x64	|clear PC ind.
+ca3<del>r16	|ca0, exit for slash assignment
+ts4x64	|TS xo<del> contain neg. ind. for <del>EXIT
+[1;31mx23,[0mcs0	|make AC neg.
+spr3	|pick up flexo-char.
+spr1	|translate to logical word
+ts1x64	|store logical word
+clh6
+cpx25	|punc.
+clh34<del>
+cpx27	|letter
+clh1
+cpx26	|num.
+clh1
+cpx28	|tab/CR
+[1;31mx24,[0maoc1	|index cell ctr.
+spx23
+<del>[1;31mx25,[0mclh5
+cpx29	|slash
+[1;31mx26,[0mcs0	|make AC neg.
+ts2x64	|set PC ind.
+spx24
+[1;31mx27,[0mca1x64	|stored logical word
+sd3x64	|0.20122, logical word for letter r
+dm0
+cpx62	|letter r
+spx26	|to set PC ind
+[1;31mx28,[0mclh13
+cpx63	|CR
+ca2x64	|PC<del><del> ind.
+cpx63	<del>|set
+spx24	|to aoc1
+[1;31mx29,[0mcax64	|stored orig. c1
+tsc1	|restore c1
+ca4x64	|TS containing neg. ind. for EXIT
+[1;31mx61,[0msp	|EXIT
+[1;31mx62,[0mcs0
+ts4x64	|set TS to -0 for exit, indicating regular skip
+spx26	|set PC ind.
+[1;31mx63,[0mcax64	|stored orig. c1
+tsc1	|restore c1 - AC pos.
+spx61	|with AC pos., go to EXIT
+[1;31mx64,[0m0	|store c1
+1x64,0	|store logical word
+2x64,0	|PC ind.
+3x64,0.20122	|logical word for letter r
+4x64,1.00000	|<del>TS to contain neg. ind. for EXIT
+[1;31mr17,[0mtax34	|print address a<del><del>nd register
+cad4	|running case ind.
+cpx35	|upper
+[1;31mx32,[0mcac3	|addr. ctr.
+spr12	|print 4 digit octal no.
+4	|n=4
+-0	|ind.
+cax31	|0.00005,fc for slash
+spr10
+spr18	|check word type
+cpx36	|instruction
+[1;31mx33,[0mcac3	|addr. ctr.
+spr7
+spr13	|print octal frac.
+[1;31mx37,[0mca1x31	|0.00045,fc for tab
+spr10
+cad4
+cpx38	|upper
+[1;31mx34,[0msp	|EXIT
+[1;31mx35,[0mca2x31	|0.00075,fc for lower case
+spr10	|print flexo char.
+spx32
+[1;31mx36,[0mca<del>c3
+spr7
+spr14	|print instruction
+spx37
+[1;31mx38,[0mca3x31	|0,00071,fc for upper case
+spr10	|print flexo char.
+spx34
+[1;31mx31,[0m0.00005	|fc for slash
+0.00045	|fc for tab
+0.00075	|fc for lower case
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>0.00071	|fc for upper case
+[1;31mr18,[0mta1x47	|check word type
+cac1
+tsx39	|store orig. c1
+cad4
+ts1d4
+cad2	|DIT/skip ind.
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>cp3x45
+spr16	|skip
+cpx43	|yes
+[1;31mx40,[0mcac1
+ts1x39	|store c1 (may have been indexed)
+spr23	|search for printed char.
+cpx46	|no PC before CR
+[1;31mx41,[0mcs0	|make AC reg for pick-up
+spr3	|pick up flexo char.
+spr1	|transl. into logical word
+ts3x39	|store
+clh6
+cpx48	|punctuation
+[1;31mx42,[0mclh36
+cpx53	|Tab/CR
+aoc1
+spx41
+[1;31mx43,[0mcs0
+spr3	|pick up flexo char
+spr1	|transl. into wd.
+ts3x39	|log. word
+clh5
+cpx45	|shift case
+[1;31mx44,[0maoc1
+ca3x39	|logical word
+clh6
+[1;31mr,[0mcp2r	|punc.
+spx43
+clh5
+cpx40	|slash
+spx43
+[1;31mx45,[0mclh12
+ts1d4	|set 1d4 for correct case
+spx44
+3x45,cad3	|const/instr ind.
+sp1x47
+[1;31mx46,[0mcax39
+tsc1	|restore orig. c1
+[1;31mx47,[0mtsd3	|const/instr ind
+1x47,sp	|EXIT<del><del><del>
+<del>[1;31mx48,[0mclh6
+cpx49	|comma
+spx42
+[1;31mx49,[0maoc1
+ex1x39	|store for later reset
+tsc1	|reset c1
+[1;31mx50,[0mcs0	|make AC neg.
+spr3	|pick up flexo-char.
+spr1	|transl. into logical word
+clh5
+cpx52	|shift case
+clh1
+[1;31mr,[0mcp2r	|punc.
+spx51
+clh6
+cpx53	|comma
+[1;31mx51,[0maoc1
+spx50
+[1;31mx52,[0mclh12
+ts1d4	|set 1d4 to correct case
+spx51
+[1;31mx53,[0mca1x39
+tsc1	|reset c1
+[1;31mx54,[0mca0
+ts2x39	|clear better ind.
+[1;31mx55,[0mcs0	|neg for pick-up
+spr3	|pick char.
+spr1	|transl. to logical word
+ts3x39	|store
+clh5
+cpx57	|shift case
+clh3<del>5
+cpx58	|letter
+clh1
+cpx46<del>	|numeral
+clh3
+cpx46	|punc.
+clh36
+cpx59	|tab/CR
+[1;31mx56,[0maoc1
+spx55
+[1;31mx57,[0mclh12
+ts1d4	|set 1d4 to correct case ind.
+spx56
+[1;31mx58,[0mca1d4
+cpx46	|upper case
+cs2x39	|letter ind.
+cpx60	|lst letter
+cax39
+tsc1	|restore orig. c1
+cs0
+spx47	|EXIT with neg. AC
+[1;31mx59,[0mclh13
+cpx46	|CR
+cs2x39	|letter ind
+cpx56	|not set
+spx46
+[1;31mx60,[0mca3x39
+clh12
+cpx46	|p,z, or u
+cs0
+ts2x39	|set letter ind.
+spx56
+[1;31mx39,[0m0	|store orig. c1
+0	|store c1
+0	|letter ind. clear, not set-neg. set
+0	|store logical word
+[1;31mr19,[0mtav3	|copy remaining cells into initial cells
+ca1c1	|cell no. of last CR
+ad1
+tsv1
+ca0
+ts1v1
+[1;31mv2,[0mcav1
+tsc1
+cs0	|neg for pick-up
+spr3	|pick up flexo-char.
+ts2v1
+ca1v1
+tsc1
+ca2v1
+spr3	|pack flexo-char.
+ao1v1
+aov1
+suc2	|no. of cells
+ad1
+cpv2	|not finished
+ca1v1
+tsc1
+[1;31mv3,[0msp	|EXIT
+[1;31mv1,[0m0	|no. of cell t be printed
+0	|no. of cell to store in
+0	|TS
+[1;31mr20,[0mtax5	|check for empty line
+cac1
+tsx1
+[1;31mx2,[0mcs0	|neg. for pick-up
+spr3	|pick up flexo char.
+spr1	|transl. to log. word
+clh2
+cpx4	|letter
+clh1
+cpx4	|numeral
+clh3
+cpx6	|punctuation
+clh36
+cpx7	|tab/CR
+[1;31mx3,[0maoc1
+spx2
+[1;31mx4,[0mcax1		|If number or letter
+tsc1
+ca0
+[1;31mx5,[0msp	|EXIT
+[1;31mx6,[0mclh5
+cpx3	|slash, <del><del>[1;31mignore[0m
+<del>spx4
+[1;31mx7,[0mclh13
+cpx8	|CR
+spx3		|[1;31mTab, ignore[0m
+<del>[1;31mx8,[0mcax1
+exc1
+ts2c1
+cs0
+spx5	|to EXIT
+[1;31mx1,[0m0	|will cont. cell ctr.
+[1;31mr21,[0mtax12<del>	|search for CR
+[1;31mx9,[0mcs0	|make AC neg
+spr3	|pick up char.
+spr1	|transl. to logical word
+clh4
+cpx11	|tab or CR
+[1;31mx10,[0mcac1
+su1
+tsc1	|store prededing cell no. in c1
+spx9
+[1;31mx11,[0mclh13
+cpx12	|CR
+spx10
+[1;31mx12,[0msp	|EXIT
+[1;31mr22,[0mtaw20	|[1;31mprint address if one is assigned[0m
+cac1
+tsw83	|store orig. c1
+[1;31mw1,[0mcs0	|neg. <del>for pick-up
+spr3	|pick up flexo char.
+ts1w83	|store flexo char.
+spr1	|translate to logical <del><del><del><del><del><del>word
+clh4
+cpw3	|tab/CR
+clh2
+cpw17	|punc.
+[1;31mw2,[0maoc1
+spw1
+<del><del>[1;31mw3,[0mcaw83	|orig. c1
+tsc1	|restore c1
+[1;31mw4,[0mcs0	|neg. for pick-up
+spr3	|pick up flexo char.
+ts1w83	|store flexo char.
+spr1	|translate to logical word
+clh4
+cpw18	|tab/CR
+clh2
+cpw21	|punc.
+[1;31mw16,[0maoc1
+spw4
+[1;31mw17,[0mclh6
+cpv15	|comma
+spw2
+[1;31mw18,[0mcaw83	|orig. c1
+tsc1	|restore c1
+[1;31mw19,[0mca2w83	|flexo for tab
+spr10	|print flexo char.
+[1;31mw20,[0msp	|EXIT
+[1;31mw21,[0mclh5
+cpw55	|slash
+spw16
+[1;31mw55,[0mcaw21	|cycle for slash
+sp1w22
+[1;31mv15,[0mcaw83
+tsc1<del>		|restore cell counter
+[1;31mv10,[0mca0
+tsv16
+ts1v1<del>6
+[1;31m3v10,[0mcs0
+spr3<del>		|pick up flexo
+spr1<del>		|translate
+clh3
+cpv13		|number
+clh37
+cp2v11<del>		|letter
+clh4
+cpv12<del>		|punct.
+[1;31mv11,[0maoc1
+sp3v10
+[1;31m2v11,[0mcs0
+ts1v16
+spv11
+[1;31mw22,[0mcaw17	|cycle for comma
+1w22,tdw81
+caw83		|orig. c1
+tsc1	|restore c1
+[1;31mw23,[0mcs0	|neg. for pick-up
+spr3	|pick up flexo char.
+ts1w83
+spr10	|print flexo char.
+ca1w83	|stored flexo char.
+spr1	|translate to logical word
+clh6
+cpw81	|punc.
+[1;31mw80,[0maoc1
+spw23
+[1;31mw81,[0mclh
+cpw82	|comma or slash
+spw80
+[1;31mw82,[0maoc1
+spw19
+[1;31mw83,[0m0	|store orig. c1
+1w83,0	|store flexo char.
+2w83,si45	|flexo for tab
+[1;31mv12,[0mclh6
+cp2v14<del>		|comma
+clh37
+cpv14		|slash
+spv11
+[1;31mv13,[0mts2v16<del>		|TS
+ca1v16		|letter ind.
+cpv11		|set
+ca2v16
+clh30
+md3vl6		|7
+ts2v16		|digit
+cav16		|number
+clh3
+ad2v16		|digit
+tsv16
+spv11
+[1;31mv14,[0maoc1
+spv10
+[1;31m2v14,[0mcac3<del>		|current address ct<del>r
+suv16<del>		|number
+ts2c4		|relative address ctr
+spw22
+[1;31mv16,[0m0		|number
+[1;31m1v16,[0m0		|letter indicator
+[1;31m2v16,[0m0<del>		|TS
+<del><del><del><del><del><del><del><del><del><del>[1;31m3v16,[0m7
+[1;31mr23,[0mtav8	|search for printed char.
+cac1
+tsv4
+[1;31mv5,[0mcs0
+spr3	|pick up flexo char.
+spr1	|translate to logical word
+clh2
+cpv7	|letter
+clh1
+cpv7	|numeral
+clh3
+cpv7	|punc.
+clh36
+cpv9	|tab/CR
+[1;31mv6,[0maoc1
+spv5
+[1;31mv7,[0mca0
+[1;31mv8,[0msp	|EXIT with pos. AC
+[1;31mv9,[0mclh13
+[1;31mr,[0mcp2r	|CR
+spv6
+cav4
+tsc1
+cs0
+spv8	|EXIT with neg. AC
+[1;31mv4,[0m0	|store initial c1
+<del>[1;31mr24,[0mtav21	|check for comment
+cac1
+tsv20
+spr23	|search for printed char.
+cs0	|neg. for pick-up
+spr3	|pick up flexo
+spr1	|transl. to logical word
+sd1v20	|1.77777
+clh6
+cpv22	|not punc.
+clh5
+cpv22	|not slash
+[1;31mv23,[0maoc1
+spr23	|search for pc
+cpv22	|CR encountered
+cs0	|neg. for pick-up
+spr3	|pick up flexo
+spr1	|translate
+sd1v20	|1.77777
+clh6
+cpv24	|not punc.
+clh5
+cpv24	|not slash
+spv23
+[1;31mv24,[0mcav20
+tsc1
+cs0	|neg. AC
+[1;31mv21,[0msp	|EXIT
+[1;31mv22,[0mcav20
+tsc1
+spv21
+[1;31mv20,[0m0	|to store c1
+[1;31m1v20,[0m1.77777
+[1;31mr25,[0mta13r	|print Core Image Empty
+si225
+cs14r
+ts15r
+4r,ca16r
+td6r
+ca
+spr10
+10r,ao6r
+ao
+cp6r
+sp
+14r,16
+0
+17r
+28	|c
+20r,48	|o
+20	|r
+2	|e
+8	|space
+24r,12	|i
+56	|m
+6	|a
+52	|g
+30r,2	|e
+8	|space
+2	|e
+56	|m
+34r,44	|p
+32	|t
+42	|y
+41	|CR
+[1;31mr26,[0mtaz2	|punch tape feed
+spz2
+cs1z3	|si77
+tsz3	|ctr.
+[1;31mz1,[0mca2z3	|si400
+rc
+aoz3	|ctr.
+cpz1	|not done
+[1;31mz2,[0msp	|EXIT
+[1;31mz3,[0msi0	|ctr.
+si77
+si400
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>[1;31mc1,[0m0	|cell ctr.
+[1;31m1c1,[0m0	|cell no. of last CR
+[1;31m2c1,[0m0	|cell no. of CR at end of line
+[1;31m3c1,[0m0	|cell no. of slash
+[1;31mc2,[0m<del><del><del><del>-f2+f3+f3-f2<del><del><del><del><del>	|total no. of cells
+[1;31mc3,[0m0	|addr. ctr.
+[1;31mc4,[0m0	|DITTO/skip ctr.
+[1;31m1c4,[0m0	|neg. if c4 has been set
+[1;31m2c4,[0m0		|relative location counter
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>[1;31mc5,[0m1	|core image block desig.
+[1;31md1,[0m0	|all done ind.
+[1;31md2,[0m0	|DITTO/skip ind.
+[1;31md3,[0m0	|const./instr. IN. neg. if I
+[1;31md4,[0m0	|running case ind neg. if upper
+[1;31m1d4,[0m0	|case ind. corr. for skipped lines
+[1;31md5,[0m0	|start of tape ind neg. later
+[1;31m2k1,[0m2
+[1;31m3k1,[0m3
+[1;31m4k1,[0m4
+[1;31m5k1,[0m5
+[1;31mz4,[0m0.00007
+[1;31m1z4,[0m0.00050
+[1;31m2z4,[0msi225
+[1;31m3z4,[0mts0
+[1;31m4z4,[0msi1400
+[1;31m5z4,[0msi176
+[1;31m6z4,[0msi134
+[1;31m7z4,[0msi205
+[1;31m10z4,[0msp50
+[1;31m11z4,[0m0.00200
+[1;31m12z4,[0m0.00100
+[1;31m13z4,[0mf<del>2		|First loc. of conv. in Storage
+[1;31m14z4,[0m0.02050		|First loc. of Conv. in new c.f.
+[1;31m15z4,[0msi640<del><del><del><del><del><del><del><del><del><del><del><del><del><del>		|Length of conversion program
+[1;31m16z4,[0msi701<del><del><del><del><del><del><del><del><del><del><del><del><del><del>		|Length of T.S. for conv. prog.
+[1;31m17z4,[0m1<del><del><del><del><del><del><del>.70010
+[1;31m20z4,[0msi61		|stop
+DITTO<del>
+2600|f2,
+3600|f3,
+STA 32

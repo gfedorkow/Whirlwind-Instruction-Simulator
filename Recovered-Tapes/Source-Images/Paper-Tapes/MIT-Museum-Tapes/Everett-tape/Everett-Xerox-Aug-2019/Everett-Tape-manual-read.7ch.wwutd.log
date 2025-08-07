@@ -1,0 +1,54 @@
+no GPIO library found
+Info: input file: Everett-Tape-manual-read.7ch, type: 7ch, basename: Everett-Tape-manual-read
+Info: FileName: Everett-Tape-manual-read.7ch
+Info: block_array contains 1 elements
+Info: decode_556_word: non-zero LSBs in c0 or c1: c0=0o73, c1=0o40, c2=0o0
+Info: decode_556_word: non-zero LSBs in c0 or c1: c0=0o73, c1=0o40, c2=0o0
+Info: Offset: 0o0(0), decode_556_word: non-zero LSBs in c0 or c1: c0=0o73, c1=0o40, c2=0o0
+Info: Offset: 0o36(30), decode_556_word: non-zero LSBs in c0 or c1: c0=0o5, c1=0o46, c2=0o4
+Info: Offset: 0o41(33), decode_556_word: non-zero LSBs in c0 or c1: c0=0o37, c1=0o22, c2=0o2
+Info: Offset: 0o44(36), decode_556_word: non-zero LSBs in c0 or c1: c0=0o51, c1=0o22, c2=0o4
+Info: Offset: 0o77(63), decode_556_word: non-zero LSBs in c0 or c1: c0=0o75, c1=0o22, c2=0o52
+Info: Offset: 0o105(69), decode_556_word: non-zero LSBs in c0 or c1: c0=0o7, c1=0o22, c2=0o2
+Info: Offset: 0o110(72), decode_556_word: non-zero LSBs in c0 or c1: c0=0o11, c1=0o40, c2=0o0
+Info: Offset: 0o135(93), decode_556_word: non-zero LSBs in c0 or c1: c0=0o33, c1=0o20, c2=0o26
+Info: Offset: 0o140(96), decode_556_word: non-zero LSBs in c0 or c1: c0=0o33, c1=0o40, c2=0o0
+Info: Offset: 0o162(114), decode_556_word: non-zero LSBs in c0 or c1: c0=0o73, c1=0o74, c2=0o20
+Info: Offset: 0o201(129), decode_556_word: non-zero LSBs in c0 or c1: c0=0o17, c1=0o40, c2=0o26
+Info: Offset: 0o204(132), decode_556_word: non-zero LSBs in c0 or c1: c0=0o31, c1=0o74, c2=0o20
+Info: Offset: 0o212(138), decode_556_word: non-zero LSBs in c0 or c1: c0=0o17, c1=0o40, c2=0o26
+Info: Offset: 0o215(141), decode_556_word: non-zero LSBs in c0 or c1: c0=0o31, c1=0o74, c2=0o20
+Info: Offset: 0o226(150), decode_556_word: non-zero LSBs in c0 or c1: c0=0o17, c1=0o40, c2=0o16
+Info: Offset: 0o231(153), decode_556_word: non-zero LSBs in c0 or c1: c0=0o35, c1=0o20, c2=0o0
+Info: Offset: 0o245(165), decode_556_word: non-zero LSBs in c0 or c1: c0=0o43, c1=0o74, c2=0o0
+Info: Offset: 0o253(171), decode_556_word: non-zero LSBs in c0 or c1: c0=0o31, c1=0o20, c2=0o0
+Info: Offset: 0o264(180), decode_556_word: non-zero LSBs in c0 or c1: c0=0o33, c1=0o20, c2=0o0
+Info: Offset: 0o311(201), decode_556_word: non-zero LSBs in c0 or c1: c0=0o33, c1=0o20, c2=0o0
+Info: Offset: 0o317(207), decode_556_word: non-zero LSBs in c0 or c1: c0=0o37, c1=0o36, c2=0o2
+Info: Offset: 0o336(222), decode_556_word: non-zero LSBs in c0 or c1: c0=0o31, c1=0o71, c2=0o20
+Info: Offset: 0o347(231), decode_556_word: non-zero LSBs in c0 or c1: c0=0o21, c1=0o40, c2=0o16
+Info: Offset: 0o352(234), decode_556_word: non-zero LSBs in c0 or c1: c0=0o41, c1=0o20, c2=0o26
+Info: Offset: 0o402(258), decode_556_word: non-zero LSBs in c0 or c1: c0=0o27, c1=0o0, c2=0o3
+Info: Offset: 0o427(279), decode_556_word: non-zero LSBs in c0 or c1: c0=0o33, c1=0o36, c2=0o52
+Info: Offset: 0o432(282), decode_556_word: non-zero LSBs in c0 or c1: c0=0o71, c1=0o40, c2=0o26
+Info: Offset: 0o435(285), decode_556_word: non-zero LSBs in c0 or c1: c0=0o37, c1=0o44, c2=0o0
+Info: Offset: 0o454(300), decode_556_word: non-zero LSBs in c0 or c1: c0=0o1, c1=0o20, c2=0o26
+Info: Offset: 0o457(303), decode_556_word: non-zero LSBs in c0 or c1: c0=0o33, c1=0o40, c2=0o0
+Info: Offset: 0o501(321), decode_556_word: non-zero LSBs in c0 or c1: c0=0o31, c1=0o76, c2=0o0
+Info: Offset: 0o507(327), decode_556_word: non-zero LSBs in c0 or c1: c0=0o33, c1=0o44, c2=0o26
+Info: Offset: 0o537(351), decode_556_word: non-zero LSBs in c0 or c1: c0=0o21, c1=0o40, c2=0o0
+Info: Offset: 0o553(363), decode_556_word: non-zero LSBs in c0 or c1: c0=0o11, c1=0o34, c2=0o10
+Info: Offset: 0o556(366), decode_556_word: non-zero LSBs in c0 or c1: c0=0o11, c1=0o40, c2=0o50
+Warning: Warning: Offset: 0o655(429), decode_556_word needs 3 char, but called with 1 characters; returning zero
+Warning: suspicious WW block length: count=5120(d), actual block length=144(d)
+Warning: Writing beyond end of Core address at addr=0o12000, offset=0o12002, core-size=0o4000
+Warning: 556 block ran out of words
+Info: ending 556 file without a jump-to
+Core Image 2048(d) words, output to file Everett-Tape-manual-read_gs001.tcore
+Info: Block Type Summary: 
+  loader: 000(d):  
+     end: 001(d): end, 
+Info: 1(d) Loader Block Chains, 0(d) Data Block Chains
+Info: Completed Every Last Byte of tape Everett-Tape-manual-read
+Info:    Wrote 1 files; Ignored 0 files due to size less than 30 words
+Info: 556 Checksum summary: Good=0(d), Bad=0(d), Missing=0(d), Jump_To's=1(d), Non_556_blocks=0(d)

@@ -1,0 +1,15 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\07\t07.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\07\t07_gs491.ocore
+%TapeID: 
+%Stats: Covariance=0.031756, Size=44, 
+%Blocknum 0o0
+@T00000: 0027130 0027130 0027130 0027124 0027124 0027130 0027130 0027124  ; rc rc rc rc rc rc rc rc  :         nnnrrnnr :         44444444
+@T00010: 0027124 0027130 0027134 0027124 0027130 0027130 0027130 0027124  ; rc rc rc rc rc rc rc rc  :         rncrnnnr :         44444444
+@T00020: 0027130 0027130 0027130 0027130 0027134 0027124 0027124 0027124  ; rc rc rc rc rc rc rc rc  :         nnnncrrr :         44444444
+@T00030: 0027134 0027124 0027124 0027130 0027134 0027130 0027130 0027134  ; rc rc rc rc rc rc rc rc  :         crrncnnc :         44444444
+@T00040: 0027124 0027134 0027130 0027134 0027124 0027130 0027134 0027130  ; rc rc rc rc rc rc rc rc  :         rcncrncn :         44444444
+@T00050: 0027134 0001444 0006770 0026750  ;          rc si .word rc  :             clmh :            4\084
+
+%Hash: 7cb701-e6ab53-44

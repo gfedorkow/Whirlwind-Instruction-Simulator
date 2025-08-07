@@ -1,0 +1,57 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\15\t15.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\15\t15_gs131.ocore
+%TapeID: 
+%Stats: Covariance=0.011405, Size=384, Display-Ops, 3, 
+%Blocknum 0o0
+@T00000: 0106454 0177777 0177777 0177777 0177777 0177777 0177777 0177777  ; cs md md md md md md md  : p<del><del><del><del><del><del><del> : <bs><del><del><del><del><del><del><del>
+@T00010: 0177777 0177777 0106454 0177777 0106454 0177777 0177777 0177777  ; md md cs md cs md md md  : <del><del>p<del>p<del><del><del> : <del><del><bs><del><bs><del><del><del>
+@T00020: 0177777 0177777 0177777 0177777 0177777 0177777 0106354 0177777  ; md md md md md md cs md  : <del><del><del><del><del><del>p<del> : <del><del><del><del><del><del><bs><del>
+@T00030: 0106350 0177777 0177777 0177777 0177777 0177777 0177777 0177777  ; cs md md md md md md md  : h<del><del><del><del><del><del><del> : <bs><del><del><del><del><del><del><del>
+@T00040: 0177777 0177777 0106304 0177777 0106260 0177777 0106260 0177777  ; md md cs md cs md cs md  : <del><del>#<del>o<del>o<del> : <del><del><bs><del><bs><del><bs><del>
+@T00050: 0106254 0177777 0106244 0177777 0106270 0006240 0177777 0106264  ; cs md cs md cs .word md cs  : p<del>l<del>mt<del>g : <bs><del><bs><del><bs>8<del><bs>
+@T00060: 0006220 0177777 0106210 0177777 0106244 0006200 0177777 0106240  ; .word md cs md cs .word md cs  : <color><del> <del>l\0<del>t : 8<del><bs><del><bs>8<del><bs>
+@T00070: 0006170 0177777 0106164 0006234 0177777 0177777 0177777 0177777  ; .word md cs .word md md md md  : m<del>gc<del><del><del><del> : 8<del><bs>8<del><del><del><del>
+@T00100: 0177777 0106134 0177777 0106114 0177777 0106114 0177777 0106074  ; md cs md cs md cs md cs  : <del>c<del>i<del>i<del>v : <del><bs><del><bs><del><bs><del><bs>
+@T00110: 0177777 0106130 0177777 0106044 0177777 0106030 0177777 0106004  ; md cs md cs md cs md cs  : <del>n<del>l<del>n<del># : <del><bs><del><bs><del><bs><del><bs>
+@T00120: 0177777 0106060 0006000 0177777 0177777 0177777 0106024 0177777  ; md cs .word md md md cs md  : <del>o\0<del><del><del>r<del> : <del><bs>8<del><del><del><bs><del>
+@T00130: 0105744 0177777 0105730 0177777 0105264 0005720 0177777 0105270  ; cs md cs md cs .word md cs  : l<del>n<del>g<color><del>m : z<del>z<del>ze<del>z
+@T00140: 0005704 0005740 0177777 0105314 0005670 0105310 0105720 0105710  ; .word .word md cs .word cs cs cs  : #t<del>im <color>  :     ee<del>zezzz
+@T00150: 0005320 0177777 0105324 0005604 0105674 0105324 0005644 0105570  ; .word md cs .word cs cs .word cs  : <color><del>r#vrlm :     e<del>zezzez
+@T00160: 0105330 0105564 0105534 0005324 0005614 0177777 0105350 0005570  ; cs cs cs .word .word md cs .word  :     ngcri<del>hm :     zzzee<del>ze
+@T00170: 0005544 0177777 0105350 0005504 0177777 0105350 0005464 0177777  ; .word md cs .word md cs .word md  : l<del>h#<del>hg<del> : e<del>ze<del>ze<del>
+@T00200: 0105364 0005524 0177777 0105424 0005504 0177777 0105400 0005454  ; cs .word md cs .word md cs .word  : gr<del>r#<del>\0p : ze<del>ze<del>ze
+@T00210: 0177777 0105440 0177777 0105350 0005420 0177777 0105360 0005330  ; md cs md cs .word md cs .word  : <del>t<del>h<color><del>on : <del>z<del>ze<del>ze
+@T00220: 0177777 0105304 0177777 0105250 0177777 0105240 0177777 0105200  ; md cs md cs md cs md cs  : <del>#<del>h<del>t<del>\0 : <del>z<del>z<del>z<del>z
+@T00230: 0005220 0177777 0105170 0177777 0105134 0005204 0177777 0105144  ; .word md cs md cs .word md cs  : <color><del>m<del>c#<del>l : e<del>z<del>ze<del>z
+@T00240: 0005130 0177777 0105074 0177777 0105054 0005110 0177777 0105024  ; .word md cs md cs .word md cs  : n<del>v<del>p <del>r : e<del>z<del>ze<del>z
+@T00250: 0005074 0177777 0105044 0004764 0177777 0104754 0004774 0177777  ; .word md cs .word md cs .word md  : v<del>lg<del>pv<del> : e<del>ze<del>ze<del>
+@T00260: 0104724 0004764 0177777 0104724 0004670 0177777 0104674 0004644  ; cs .word md cs .word md cs .word  : rg<del>rm<del>vl : ze<del>ze<del>ze
+@T00270: 0177777 0104610 0004674 0177777 0104624 0004560 0177777 0104530  ; md cs .word md cs .word md cs  : <del> v<del>ro<del>n : <del>ze<del>ze<del>z
+@T00300: 0004604 0177777 0104474 0004544 0177777 0104444 0004504 0177777  ; .word md cs .word md cs .word md  : #<del>vl<del>l#<del> : e<del>ze<del>ze<del>
+@T00310: 0104410 0004450 0177777 0104354 0004430 0177777 0104370 0004314  ; cs .word md cs .word md cs .word  :  h<del>pn<del>mi : ze<del>ze<del>ze
+@T00320: 0177777 0104260 0004354 0177777 0104220 0004330 0177777 0104260  ; md cs .word md cs .word md cs  : <del>op<del><color>n<del>o : <del>ze<del>ze<del>z
+@T00330: 0004150 0177777 0104110 0177777 0104060 0177777 0104014 0004120  ; .word md cs md cs md cs .word  : h<del> <del>o<del>i<color> : e<del>z<del>z<del>ze
+@T00340: 0177777 0104030 0003770 0177777 0103714 0004000 0177777 0103714  ; md cs si md ca .word md ca  : <del>nm<del>i\0<del>i : <del>z#<del>#e<del>#
+@T00350: 0003650 0103710 0177777 0103540 0003644 0177777 0103510 0177777  ; si ca md ca si md ca md  : h <del>tl<del> <del> : ##<del>##<del>#<del>
+@T00360: 0103440 0177777 0103340 0103400 0103314 0177777 0103234 0003350  ; ca md ca ca ca md ca si  : t<del>t\0i<del>ch : #<del>###<del>##
+@T00370: 0177777 0103220 0177777 0103160 0177777 0103140 0003044 0177777  ; md ca md ca md ca si md  : <del><color><del>o<del>tl<del> : <del>#<del>#<del>##<del>
+@T00400: 0103000 0177777 0102720 0177777 0177777 0177777 0177777 0177777  ; ca md ca md md md md md  : \0<del><color><del><del><del><del><del> : #<del>#<del><del><del><del><del>
+@T00410: 0177777 0177777 0102444 0177777 0102344 0177777 0102304 0177777  ; md md ca md ca md ca md  : <del><del>l<del>l<del>#<del> : <del><del>#<del>#<del>#<del>
+@T00420: 0177777 0177777 0102120 0177777 0102044 0177777 0102424 0001760  ; md md ca md ca md ca si  : <del><del><color><del>l<del>ro : <del><del>#<del>#<del>#\0
+@T00430: 0177777 0101664 0177777 0101564 0001624 0177777 0101514 0177777  ; md ca md ca si md ca md  : <del>g<del>gr<del>i<del> : <del>t<del>t\0<del>t<del>
+@T00440: 0101430 0177777 0101344 0177777 0101254 0177777 0101160 0177777  ; ca md ca md ca md ca md  : n<del>l<del>p<del>o<del> : t<del>t<del>t<del>t<del>
+@T00450: 0101060 0177777 0100774 0177777 0177777 0177777 0100630 0177777  ; ca md ca md md md ca md  : o<del>v<del><del><del>n<del> : t<del>t<del><del><del>t<del>
+@T00460: 0100530 0177777 0100434 0177777 0100350 0177777 0100300 0177777  ; ca md ca md ca md ca md  : n<del>c<del>h<del>\0<del> : t<del>t<del>t<del>t<del>
+@T00470: 0100254 0177777 0177777 0177777 0137700 0000050 0137760 0177777  ; ca md md md dm si dm md  : p<del><del><del>\0ho<del> : t<del><del><del>#\0#<del>
+@T00500: 0137614 0177777 0137544 0177777 0137474 0177777 0177777 0177777  ; dm md dm md dm md md md  : i<del>l<del>v<del><del><del> : #<del>#<del>#<del><del><del>
+@T00510: 0177777 0177777 0137160 0177777 0137074 0177777 0135430 0037004  ; md md dm md dm md dm cf  : <del><del>o<del>v<del>n# : <del><del>#<del>#<del>q2
+@T00520: 0177777 0136714 0177777 0136630 0036504 0177777 0136544 0036524  ; md dm md dm cf md dm cf  : <del>i<del>n#<del>lr : <del>#<del>#2<del>#2
+@T00530: 0177777 0136474 0177777 0136374 0036634 0177777 0136274 0036660  ; md dm md dm cf md dm cf  : <del>v<del>vc<del>vo : <del>#<del>#2<del>#2
+@T00540: 0177777 0136234 0177777 0177777 0177777 0177777 0177777 0136004  ; md dm md md md md md dm  : <del>c<del><del><del><del><del># : <del>#<del><del><del><del><del>#
+@T00550: 0177777 0135724 0177777 0135660 0177777 0135570 0177777 0177777  ; md dm md dm md dm md md  : <del>r<del>o<del>m<del><del> : <del>q<del>q<del>q<del><del>
+@T00560: 0177777 0136234 0035444 0035530 0177777 0135410 0177777 0135350  ; md dm cf cf md dm md dm  : <del>cln<del> <del>h : <del>#uu<del>q<del>q
+@T00570: 0177777 0135310 0177777 0135304 0177777 0177777 0177777 0177777  ; md dm md dm md md md md  : <del> <del>#<del><del><del><del> : <del>q<del>q<del><del><del><del>
+
+%Hash: 492502-b2ac35-384

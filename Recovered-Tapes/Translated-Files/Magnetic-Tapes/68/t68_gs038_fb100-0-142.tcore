@@ -1,0 +1,76 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o100142; xsum=good
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\68\t68.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\68\t68_gs038_fb100-0-142.tcore
+%TapeID: _fb100-0-142
+%JumpTo 032
+%Stats: Covariance=0.000932, Size=512, Display-Ops, 8, 
+%Blocknum 0o0
+@C02000: 0116317 0072076 0076070 0102442 0170001 0072070 0076076 0000011  ; su cp sp ca CL cp sp si  :         20mz#m0= :        #-##v-#\0
+@C02010: 0011700 0000154 0000000 0003400 0001400 0000006 0000002 0000037  ; bi si si si si si si si  :     \0p\0\0\0ae# :   #\0\0#\0\0\0\0
+@C02020: 0000036 0077777 0000017 0001740 0000060 0042547 0173267 0005175  ; si sp si si si ts CL .word  : k<del>2to##<cntl> : \0#\0\0\0.<cntl>e
+@C02030: 0177766 0173766 0174514 0000016 0014140 0000400 0176077 0014000  ; md CL md si rd si md rd  :   99iut\0<del>\0 : <del><cntl>0\0a\0<del>a
+@C02040: 0075167 0000077 0000003 0000600 0001000 0001200 0001600 0102470  ; sp si si si si si si ca  : #<del>8\0\0\0\0m :   k\0\0\0\0\0\0#
+@C02050: 0075174 0000270 0000300 0102712 0002250 0002253 0000004 0102714  ; sp si si ca si si si ca  :        vm\0sh##i :      k\0\0###\0#
+@C02060: 0177757 0177737 0177677 0177767 0000020 0000040 0000100 0000010  ; md md md md si si si si  : ##<del>#<color>t\0  : <del><del><del><del>\0\0\0\0
+@C02070: 0034000 0177740 0177776 0040000 0102715 0000315 0000160 0000236  ; cf md md ts ca si si si  :       \0t0\0++ok : u<del><del><color>#\0\0\0
+@C02100: 0002465 0157777 0176037 0102630 0010000 0137777 0020000 0177760  ; si SL md ca bi dm bo md  : #<del>#n\0<del>\0o : ##<del>### <del>
+@C02110: 0000200 0000350 0177774 0117777 0000774 0102462 0000140 0100077  ; si si md su si ca si ca  : \0hv<del>vbt<del> : \0\0<del>#\0#\0t
+@C02120: 0075554 0060000 0014140 0174377 0000012 0007777 0000151 0001000  ; sp ab rd md si .word si si  : p\0t<del>s<del>\n\0 :      kna0\08\0\0
+@C02130: 0000500 0000740 0000106 0000043 0001200 0003500 0004300 0013200  ; si si si si si si .word bi  : \0ta<bs>\0\0\0\0 :    \0\0\0\0\0#e|
+@C02140: 0102216 0042371 0060000 0000430 0000057 0000024 0003420 0102357  ; ca ts ab si si si si ca  : u<cntl>\0N#R<color># :      #)N\0\0\0##
+@C02150: 0000360 0005000 0005000 0017000 0042714 0043100 0000000 0074014  ; si .word .word rd ts ts si sp  :    O\0\0\0I\0\0I :       \0EE3))\0K
+@C02160: 0102345 0000703 0102340 0010200 0074200 0177777 0177777 0177777  ; ca si ca bi sp md md md  : \t8T\0\0<del><del><del> : #\0##K<del><del><del>
+@C02170: 0000000 0177777 0177777 0177777 0000000 0000000 0000000 0177777  ; si md md md si si si md  : \0<del><del><del>\0\0\0<del> : \0<del><del><del>\0\0\0<del>
+@C02200: 0177777 0177777 0000037 0000001 0000001 0177777 0177777 0177777  ; md md si si si md md md  : <del><del>###<del><del><del> : <del><del>\0\0\0<del><del><del>
+@C02210: 0123456 0123456 0040002 0002206 0100172 0000703 0100173 0010172  ; cm cm ts si ca si ca bi  :         QQEAX8#X : \n\n<color>#T\0T#
+@C02220: 0100713 0000703 0100714 0011100 0074206 0040000 0105115 0041115  ; ca si ca bi sp ts cs ts  :       48I\0A\0// : T\0T#K<color>Z<color>
+@C02230: 0070734 0044212 0100000 0070221 0171006 0070562 0102720 0115114  ; cp td ca cp CL cp ca su  :  CS\0)AB<color>I :         CDTCVC#W
+@C02240: 0070575 0100600 0041114 0131115 0044237 0114601 0070232 0100603  ; cp ca ts ao td su cp ca  :   <cntl>\0i+##f8 :   ct<color>pdwct
+@C02250: 0045115 0044237 0130602 0070237 0104000 0041116 0074755 0100000  ; td td ao cp cs ts sp ca  :       +#e#\0u#\0 :   ddpcz<color>kt
+@C02260: 0070223 0040606 0171001 0070554 0101115 0114603 0144604 0154017  ; cp ts CL cp ca su mh SL  :         5a#p+8#2 :   c<color>vctwb9
+@C02270: 0100605 0041116 0101115 0110607 0044377 0044531 0100606 0174610  ; ca ts ca ad td td ca md  :     |u+3<del>,a  :   t<color>tlddt0
+@C02300: 0134000 0060271 0060320 0060341 0060403 0060426 0060447 0060472  ; dm ab ab ab ab ab ab ab  : \0<cntl><color>#8J#X :         qNNNNNNN
+@C02310: 0060762 0103260 0174610 0161006 0110623 0044306 0064000 0171003  ; ab ca md SR ad td ex CL  :        BO A5A\08 :         N#0MLDFV
+@C02320: 0110623 0044311 0064000 0171003 0110623 0044313 0100000 0110624  ; ad td ex CL ad td ca ad  :       5:\0854\0R :         LDFVLDTL
+@C02330: 0041117 0100000 0041120 0100000 0041121 0100606 0171002 0070720  ; ts ca ts ca ts ca CL cp  : 2\0<color>\0)AE<color> : <color>T<color>T<color>TVC
+@C02340: 0107560 0160001 0114632 0040606 0075000 0130347 0130355 0100606  ; cs SR su ts sp ao ao ca  :        O#FA\0##A : <bs>MW<color>KPPT
+@C02350: 0110633 0070323 0100662 0041123 0104606 0144636 0155012 0040631  ; ad cp ca ts cs mh SL ts  :         65B5AKS( : LCT<color>ZB9<color>
+@C02360: 0100000 0107500 0160001 0115003 0040606 0130351 0100606 0110766  ; ca cs SR su ts ao ca ad  :      \0\0#8A\nA9 : T<bs>MW<color>PTL
+@C02370: 0070344 0100652 0110627 0041122 0104606 0145036 0155012 0074360  ; cp ca ad ts cs mh SL sp  :         LY7DAKSO :   CTL<color>ZB9K
+@C02400: 0050376 0074362 0050374 0144637 0110623 0044370 0155017 0040606  ; ta sp ta mh ad td SL ts  :         0BV#5M2A :   RKRBLD9<color>
+@C02410: 0100000 0041124 0130371 0100606 0074000 0100631 0074000 0100000  ; ca ts ao ca sp ca sp ca  : \0R<cntl>A\0(\0\0 :   T<color>PTKTKT
+@C02420: 0040606 0174640 0040631 0102630 0170034 0174640 0134000 0060415  ; ts md ts ca CL md dm ab  :        AT(NCT\0/ : <color>0<color>#V0QN
+@C02430: 0170020 0134631 0134000 0070421 0060606 0100641 0041130 0130442  ; CL dm dm cp ab ca ts ao  :  <color>(\0)A#NZ :   VQQCNT<color>P
+@C02440: 0130543 0100606 0174634 0040631 0040000 0040000 0103120 0171007  ; ao ca md ts ts ts ca CL  : <bs>AC(\0\0<color>3 : PT0<color><color><color>#V
+@C02450: 0070762 0100000 0134000 0060441 0170020 0134631 0134000 0070440  ; cp ca dm ab CL dm dm cp  : B\0\0#<color>(\0T :         CTQNVQQC
+@C02460: 0060606 0100675 0041130 0130543 0100606 0174645 0040631 0103420  ; ab ca ts ao ca md ts ca  : A<cntl>n<bs>a\t,<color> : Nt<color>pt0<color>#
+@C02470: 0170034 0174645 0040647 0114631 0134650 0071032 0060606 0100647  ; CL md ts su dm cp ab ca  :        c\t#,hfa# :   v0<color>wqcnt
+@C02500: 0074546 0040647 0074533 0114001 0044467 0100652 0134000 0060000  ; sp ts sp su td ca dm ab  :       w#6##y\0\0 :   k<color>kwdtqn
+@C02510: 0074533 0074533 0103200 0075050 0174706 0040631 0100606 0170024  ; sp sp ca sp md ts ca CL  :        66\0ha,ar :   kk#k0<color>tv
+@C02520: 0114631 0134000 0070524 0100606 0170004 0171020 0110631 0074715  ; su dm cp ca CL CL ad sp  :  ,\0ra#<color>,+ :         wqctvvlk
+@C02530: 0100631 0144651 0171013 0040647 0074533 0114001 0044521 0100676  ; ca mh CL ts sp su td ca  :        ,\n4#6#.0 :   tbv<color>kwdt
+@C02540: 0134000 0060000 0074533 0074533 0100543 0044527 0100712 0040000  ; dm ab sp sp ca td ca ts  :   \0\066<bs>7s\0 :   qnkktdt<color>
+@C02550: 0100606 0040000 0074734 0050545 0100647 0144637 0110623 0044542  ; ca ts sp ta ca mh ad td  :       a\0c\t##5z :   t<color>krtbld
+@C02560: 0155017 0040647 0100000 0041130 0130543 0074000 0144651 0154003  ; SL ts ca ts ao sp mh SL  :   2#\0n<bs>\0\n8 : 9<color>t<color>pkb9
+@C02570: 0074461 0000000 0100700 0074432 0100205 0040413 0040437 0040455  ; sp si ca sp ca ts ts ts  :  <stop>\0\0f|4## : k\0tkt<color><color><color>
+@C02600: 0040502 0040570 0101115 0044566 0044572 0044574 0100000 0174702  ; ts ts ca td td td ca md  :        em+9xv\0e : <color><color>tdddt0
+@C02610: 0074574 0110703 0040000 0074244 0040000 0104600 0041114 0074734  ; sp ad ts sp ts cs ts sp  :      v8\0l\0\0ic : kl<color>k<color>z<color>k
+@C02620: 0000002 0002734 0177763 0002721 0176677 0040000 0000000 0176156  ; si si md si md ts si md  :   ec#.<del>\0\0q : \0#<del>#<del><color>\0<del>
+@C02630: 0000777 0073400 0010400 0065400 0035400 0016400 0037000 0077000  ; si cp bi ex cf rd cf sp  : <del>\0\0\0\0\0\0\0 :        \0-#fu32#
+@C02640: 0011400 0077400 0037400 0000611 0100000 0020402 0002622 0100000  ; bi sp cf si ca bo si ca  :    \0\0\0=\0ed\0 :        ##2\0t #t
+@C02650: 0000667 0000000 0022527 0003600 0000014 0000000 0000510 0000012  ; si si bo si si si si si  :      #\07\0i\0 s :   \0\0=#\0\0\0\0
+@C02660: 0000003 0015340 0104000 0124000 0125000 0007760 0000004 0000000  ; si rd cs sa sa .word si si  :     8t\0\0\0o#\0 :      \0azyy8\0\0
+@C02670: 0000020 0050752 0100000 0017400 0057400 0077400 0063000 0073400  ; si ta ca rd ck sp ab cp  : <color>y\0\0\0\0\0\0 :        \0rt37#,-
+@C02700: 0067000 0047000 0073000 0056400 0070400 0046000 0062000 0016000  ; ex td cp ck cp td ab rd  : \0\0\0\0\0\0\0\0 :         65-7c5,3
+@C02710: 0053400 0047400 0017400 0057400 0077400 0147000 0100000 0177772  ; ta td rd ck sp mh ca md  :  \0\0\0\0\0\0\0x :     1537##t<del>
+@C02720: 0000010 0172400 0036777 0001000 0001400 0137000 0063017 0057400  ; si CL cf si si dm ab ck  :  \0<del>\0\0\02\0 : \0<cntl>2\0\0#,7
+@C02730: 0072400 0077400 0100200 0011632 0000041 0170014 0040606 0074510  ; cp sp ca bi si CL ts sp  :      \0\0\0f#ia  :  -#t#\0v<color>k
+@C02740: 0101115 0044723 0104001 0040000 0134000 0062720 0100705 0041122  ; ca td cs ts dm ab ca ts  : +5#\0\0<color>|d : tdz<color>q,t<color>
+@C02750: 0130726 0130727 0130677 0070726 0074014 0101116 0070755 0002614  ; ao ao ao cp sp ca cp si  :     j7<del>jiu#i :         pppcktc#
+@C02760: 0101117 0070750 0064635 0024635 0110704 0040635 0130740 0074740  ; ca cp ex rc ad ts ao sp  :         2h--#-tt :   tcfsl<color>pk
+@C02770: 0171010 0070755 0040635 0170030 0075014 0100713 0000707 0100714  ; CL cp ts CL sp ca si ca  :          #-ni43i :  vc<color>vkt\0t
+
+%Hash: a1101c-719b09-512
+
+%String: 5,3

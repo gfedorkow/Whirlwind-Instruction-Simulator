@@ -1,0 +1,32 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_06\102766847_fc_t-3432m701_ioc_ck.7ch
+fc TAPE 3432 m701 IOC Ck(SYNC) MORRISON
+OCTAL
+[1;31mDA12000|40|[0msp200	sp100	sp60	sp100	rd	rd	rd	rd
+50|rd	sp100	sp60	cs164	ts164	sp60	sp100	si0
+60|ta66	cs164	ts164	cp70	si112	rd	sp	sp61
+70|si113	sp65
+100|ta102	cp103	sp	ad1	cp102	rd	sp60	ck150
+110|sp106
+150|1.77777	0.74000	si0	si0	si0	si0	si0	si0
+160|si0	si0	si0	0.06000	si0
+200|ca212	ts40	ca206	ex3500	ts213	si0	sp207	ca213
+210|ts3500	sp40	sp215	si0
+215|ca300	ts40	si116
+220|cs163	ts155	ca0	rc	ao155	cp222	si116	ca0
+230|rc	rc	rc	rc	rc	si116	cs0	rc
+240|ca0	rc	rc	rc	rc	rc	si116	cs163
+250|ts155	ca0	rc	ao155	cp251	si114	si111	si111
+260|cs0	rc	si630	cs0	ts164	sp3500
+300|sp60
+|||||||[1;31mKEY[0m
+1036|0.22070	0.26006
+||||||||||[1;31mMC lines[0m
+DA35400|0.02040	0.02044	0.02045	0.02121	0.02402	0.02420	0.02426	0.02460
+0.02461	0.02547	0.02622	0.02623	0.02624
+|||||[1;31mTITLE[0m
+[1;31mDA50600|[0m0.51071	0.14060	0.34010	0.34075	0.50002	0.34036	0.10071	0.31012
+0.52030	0.34021	0.45040	0.75010	0.07013	0.07017	0.70027	0.76025	0.45071
+0.70075	0.06064	0.21010
+0.71040	0.75006	0.54002	0.10071	0.16075	0.30014	0.40010	0.25010
+0.60030	1.51051
+START AT 3500

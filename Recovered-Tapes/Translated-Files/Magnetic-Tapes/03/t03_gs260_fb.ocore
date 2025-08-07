@@ -1,0 +1,82 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\03\t03.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\03\t03_gs260_fb.ocore
+%TapeID: _fb
+%JumpTo 02030
+%Stats: Covariance=0.003834, Size=427, Display-Ops, 2, 
+%Blocknum 0o0
+@T00000: 0177753 0003200 0112766 0074103 0113033 0074141 0112755 0100003  ; md si ad sp ad sp ad ca  :        #\0986##8 :  <del>#\tk\tk\tt
+@T00010: 0113033 0070124 0112755 0100004 0113033 0070125 0112755 0104004  ; ad cp ad ca ad cp ad cs  :         6r##61## :     \tc\tt\tc\tz
+@T00020: 0177775 0112747 0040033 0100005 0110000 0024000 0002766 0054005  ; md ad ts ca ad rc si ck  :  <cntl>#6|\0\09| : <del>\t<color>tls#j
+@T00030: 0006756 0074002 0076030  ;             .word sp sp  :              qen :              8k#
+%Blocknum 0o1
+@T00000: 0177735 0003200 0112766 0074103 0113033 0074141 0110000 0006315  ; md si ad sp ad sp ad .word  :       -\0986#\0+ :   <del>#\tk\tkl8
+@T00010: 0112755 0120004 0113033 0144303 0112747 0110003 0113033 0040325  ; ad cm ad mh ad ad ad ts  :         ##68#861 : \th\tb\tl\t<color>
+@T00020: 0177775 0110000 0064000 0154017 0177775 0112747 0144001 0110003  ; md ad ex SL md ad mh ad  : <cntl>\0\02<cntl>##8 : <del>lf9<del>\tbl
+@T00030: 0113033 0040327 0112755 0104004 0177773 0113033 0070321 0100211  ; ad ts ad cs md ad cp ca  :         67###6.= : \t<color>\tz<del>\tct
+@T00040: 0074322 0100212 0110000 0024000 0002766 0054005 0141534 0074002  ; sp ca ad rc si ck mr sp  :       ds\0\09|ce :         ktls#jok
+@T00050: 0076030  ;                      sp  :                n :                #
+%Blocknum 0o2
+@T00000: 0177771 0003200 0112766 0074103 0110000 0171010 0110000 0024000  ; md si ad sp ad CL ad rc  : <cntl>\098\0 \0\0 :    <del>#\tKLVLS
+@T00010: 0002766 0054005 0152272 0074002 0076030  ;          si ck dv sp sp  :            9_XEN :            #J#K#
+%Blocknum 0o3
+@T00000: 0177771 0003200 0112766 0074103 0110000 0000000 0110000 0024000  ; md si ad sp ad si ad rc  : <cntl>\098\0\0\0\0 :   <del>#\tKL\0LS
+@T00010: 0002766 0054005 0161261 0074002 0076030  ;          si ck SR sp sp  :       9_<stop>EN :            #JMK#
+%Blocknum 0o4
+@T00000: 0177771 0003200 0112766 0074103 0110000 0000000 0110000 0024000  ; md si ad sp ad si ad rc  : <cntl>\098\0\0\0\0 :   <del>#\tKL\0LS
+@T00010: 0002766 0054005 0161261 0074002 0076030  ;          si ck SR sp sp  :       9_<stop>EN :            #JMK#
+%Blocknum 0o5
+@T00000: 0177773 0003200 0112766 0074103 0112750 0074045 0102460 0054005  ; md si ad sp ad sp ca ck  :       #\098H\tO_ :   <del>#\tK\tK#J
+@T00010: 0123770 0074002 0076030  ;                cm sp sp  :              MEN :             \nK#
+%Blocknum 0o6
+@T00000: 0177621 0003200 0112763 0050007 0177775 0112762 0050003 0074014  ; md si ad ta md ad ta sp  :   )\0#3<cntl>b8i : <del>#\tR<del>\trk
+@T00010: 0112460 0044012 0112763 0130007 0112460 0044016 0112763 0130007  ; ad td ad ao ad td ad ao  :         os#3ou#3 :     \td\tp\td\tp
+@T00020: 0112762 0100046 0112762 0074000 0177775 0112460 0100110 0150111  ; ad ca ad sp md ad ca dv  :   bwb\0<cntl>o = :  \tt\tk<del>\ttg
+@T00030: 0112460 0074114 0177774 0112460 0040112 0100110 0150111 0112460  ; ad sp md ad ts ca dv ad  :         oivos =o : \tk<del>\t<color>tg\t
+@T00040: 0074114 0112460 0040113 0177772 0112762 0100073 0040102 0100072  ; sp ad ts md ad ca ts ca  :         io4xb#ex : k\t<color><del>\tt<color>t
+@T00050: 0040103 0100102 0112460 0124112 0112762 0040102 0110000 0104000  ; ts ca ad sa ad ts ad cs  :       8eosbe\0\0 : <color>t\ty\t<color>lz
+@T00060: 0112460 0070064 0112762 0100073 0112762 0040102 0112460 0104112  ; ad cp ad ca ad ts ad cs  :         ogb#beos : \tc\tt\t<color>\tz
+@T00070: 0112762 0124102 0112762 0040102 0110000 0100000 0177774 0112460  ; ad sa ad ts ad ca md ad  :       bebe\0\0vo : \ty\t<color>lt<del>\t
+@T00100: 0070043 0074070 0074034 0177774 0112762 0100073 0040102 0100103  ; cp sp sp md ad ca ts ca  :      <bs>mcvb#e8 : ckk<del>\tt<color>t
+@T00110: 0112460 0124113 0112762 0040103 0110000 0104000 0112460 0070066  ; ad sa ad ts ad cs ad cp  :       o4b8\0\0o9 : \ty\t<color>lz\tc
+@T00120: 0112762 0100072 0112762 0040103 0112460 0104113 0112762 0124103  ; ad ca ad ts ad cs ad sa  :         bxb8o4b8 : \tt\t<color>\tz\ty
+@T00130: 0112762 0040103 0110000 0100000 0177774 0112460 0070063 0074100  ; ad ts ad ca md ad cp sp  :      b8\0\0vo#\0 : \t<color>lt<del>\tck
+@T00140: 0074054 0112762 0074023 0177772 0112460 0074070 0074025 0074100  ; sp ad sp md ad sp sp sp  :        pb5xom1\0 :   k\tk<del>\tkkk
+@T00150: 0074045 0050077 0177772 0112762 0100072 0114101 0040077 0100076  ; sp ta md ad ca su ts ca  : \t<del>xbx#<del>0 : kr<del>\ttw<color>t
+@T00160: 0040074 0054005 0146246 0074002 0076030  ;          ts ck mh sp sp  :            v|wen :      <color>j#k#
+%Blocknum 0o7
+@T00000: 0177740 0003200 0112762 0074054 0110000 0074000 0112460 0050107  ; md si ad sp ad sp ad ta  :      t\0bp\0\0o3 :   <del>#\tklk\tr
+@T00010: 0177771 0112762 0100073 0114101 0040077 0100076 0040074 0074042  ; md ad ca su ts ca ts sp  : <cntl>B##<del>0VZ : <del>\tTW<color>T<color>K
+@T00020: 0177772 0110000 0074000 0000002 0000012 0014631 0014631 0112460  ; md ad sp si si rd rd ad  :       X\0\0ES((O :  <del>LK\0\0AA\t
+@T00030: 0050117 0110000 0155017 0112460 0140120 0110000 0074000 0110000  ; ta ad SL ad mr ad sp ad  : 2\02O<color>\0\0\0 :        RL9\tOLKL
+@T00040: 0074632 0102456 0054005 0120166 0074002 0076030  ;       sp ca ck cm sp sp  :           FQ_9EN :           K#JHK#
+%Blocknum 0o10
+@T00000: 0177767 0003200 0112763 0050007 0177773 0112762 0050003 0074014  ; md si ad ta md ad ta sp  :        #\0#3#B8I : <del>#\tR<del>\tRK
+@T00010: 0100060 0074000 0102762 0054005 0144234 0074002 0076030  ;    ca sp ca ck mh sp sp  :         O\0B_CEN :          TK#JBK#
+%Blocknum 0o11
+@T00000: 0177635 0003200 0112762 0044013 0112763 0074010 0110000 0077776  ; md si ad td ad sp ad sp  :       -\0B4# \00 :   <del>#\tD\tKL#
+@T00010: 0110000 0134000 0112777 0074000 0112763 0074020 0112762 0040072  ; ad dm ad sp ad sp ad ts  : \0\0<del>\0#<color>BX : LQ\tK\tK\t<color>
+@T00020: 0110000 0077776 0112762 0134070 0112763 0074020 0112762 0040073  ; ad sp ad dm ad sp ad ts  :  \00BM#<color>B# : L#\tQ\tK\t<color>
+@T00030: 0110000 0074000 0112762 0050022 0177775 0112763 0130007 0130007  ; ad sp ad ta md ad ao ao  :  \0\0BD<cntl>#33 :   LK\tR<del>\tpp
+@T00040: 0112777 0044003 0177775 0112763 0130007 0130007 0110000 0074000  ; ad td md ad ao ao ad sp  : <del>8<cntl>#33\0\0 :   \td<del>\tpplk
+@T00050: 0177761 0112762 0100075 0040074 0104100 0040077 0100072 0040103  ; md ad ca ts cs ts ca ts  : <stop>b<cntl>v\0<del>x8 : <del>\tt<color>z<color>t<color>
+@T00060: 0074042 0100075 0040074 0104100 0040077 0100073 0040102 0074054  ; sp ca ts cs ts ca ts sp  : z<cntl>v\0<del>#ep : kt<color>z<color>t<color>k
+@T00070: 0112763 0074000 0112762 0050053 0112762 0100103 0110000 0000600  ; ad sp ad ta ad ca ad si  :      #\0b#b8\0\0 :     \tk\tr\ttl\0
+@T00100: 0112762 0100077 0112460 0024011 0177773 0112762 0110067 0040077  ; ad ca ad rc md ad ad ts  : b<del>o=#b#<del> : \tt\ts<del>\tl<color>
+@T00110: 0130074 0070045 0110000 0074000 0112762 0050066 0112762 0100077  ; ao cp ad sp ad ta ad ca  :  v\t\0\0b9b<del> :       pclk\tr\tt
+@T00120: 0110000 0000600 0177770 0112762 0100102 0024023 0100077 0110067  ; ad si md ad ca rc ca ad  :   \0\0mbe5<del># :   l\0<del>\ttstl
+@T00130: 0040077 0130074 0070055 0177767 0110000 0074000 0000376 0000000  ; ts ao cp md ad sp si si  :  <del>v##\0\00\0 : <color>pc<del>lk\0\0
+@T00140: 0000000 0000000 0000000 0000000 0177376 0054005 0015560 0074002  ; si si si si md ck rd sp  :     \0\0\0\00|oe : \0\0\0\0<del>jak
+@T00150: 0076030  ;                      sp  :                n :                #
+%Blocknum 0o12
+@T00000: 0177767 0003200 0177771 0110000 0177771 0100001 0077776 0001372  ; md si md ad md ca sp si  : #\0<cntl>\0<cntl>#0X : <del>#<del>L<del>T#\0
+@T00010: 0000000 0000000 0102777 0054005 0117556 0074002 0076030  ;    si si ca ck su sp sp  :    \0\0<del>_QEN :        \0\0#J#K#
+%Blocknum 0o13
+@T00000: 0177763 0003200 0110000 0077776 0112763 0160055 0112762 0124070  ; md si ad sp ad SR ad sa  :       #\0\00##BM :   <del>#L#\tM\tY
+@T00010: 0110000 0134000 0112763 0160061 0112762 0074005 0102772 0054005  ; ad dm ad SR ad sp ca ck  :  \0\0#<stop>B_X_ :       LQ\tM\tK#J
+@T00020: 0116347 0074002 0076030  ;                su sp sp  :              #EN :              #K#
+
+%Hash: f03d39-8708c9-427
+
+%String: lkl

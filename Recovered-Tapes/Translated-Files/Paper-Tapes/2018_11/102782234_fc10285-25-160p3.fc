@@ -1,0 +1,248 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_11\102782234_fc10285-25-160p3.7ch
+fc TAPE 10285-25-160 p3 SAFFREN
+(24,6)	NOT PA
+ui1=i1		|A(DA (Vector input))
+ui2=i2		|A(DA(R))
+ui3=i3		|A(ID)
+ui4=i4		|A(Diag. crit.)
+un1=n1		|A(N)
+un2=n2		|A(L)
+un3=n3		|A(E ctr.crit.)
+un4=n4		|A(E ctr.initial)
+up1=p1		|A( DA (log.der.))
+up2=p2		|A(DA(coeff. matrix))
+up3=p3		|(DA(H-E))
+up4=p4		|A(DA(E+Trans.))
+ut1=t1		|A(log.der)
+ut2=t2		|A(coeff. matrix)
+ut3=t3		|A(matrix cols.)
+ut4=t4		|A(H-E)
+ut5=t5		|A(E+Trans.)
+ut6=t6		|A(vector input)
+um1=m1		|A(b.l. log. der.)
+um2=m2		|A(b.l. coeff.)
+um3=m3		|A(ref. dis. row)
+uk1=k1		|A(curr. order)
+uk2=k2		|A(consec. sol. ind.)
+uk3=k3		|A(diagonalization suppr.)
+pr1=r1		|A(DIB)
+pr2=pr1+5	|A(DOB)
+pa1=s1		|A (Scope disp.)
+pa2=pa1+20	|A (SCOPE SKIP)
+pa3=pa1+40	|A (scope clear)
+pa4=s2		|A(index and head)
+pa5=pa1+137	|A(Scope reentry)
+pa6=pa4+41
+pa7=pa6+3
+pa8=pa1+96	|A(scope exit store)
+||||||||||
+ud3=50
+||||||||||
+[1;31mDA32|32|0r,[0m
+[1;31m2r|i3,
+1r|n1,
+1r|i4,
+1r|0r,
+1r|0r,
+1r|i1,
+1r|0r,
+1r|i2,
+1r|k3,
+1r|p1,
+1r|p3,
+1r|p2,
+1r|p4,
+51|[0m
+||||||||||
+[1;31mr1,[0m
+||||||||||
+[1;31m0r,[0mta21r	ca3r	sp7r	bi451+512	bo455+512	ta21r	ca4r	ts20r	td18r	ao21r
+[1;31m10r,[0mta11r	ca	td20r	ao21r	ta17r	ao21r	ta19r	ca	0	ca
+[1;31m20r,[0m0	sp
+||||||||||
+ze3=<del><del><del><del><del><del><del><del>f1
+[1;31md1,[0mcauk3	cpze3	c<del><del><del><del><del><del>aui4	tsd5	cauk1	tsd2	slh1	adup4	tsd3	sppr2	d13	d13	2048-d13	caup3	si451+512
+cad2	ad1	mhd2	slh15	biut4	tad4	tad11	spa1	[1;31md2,[0m0	[1;31md3,[0m0	[1;31md4,[0m0	[1;31md5,[0m0
+||||||||||
+ca0	tsd12	[1;31md6,[0maod12	dmd2	[1;31m0r,[0mcp2r	spd16	clc16	ad1	mhd12	slh15	add4	su1	tdd9
+su1	tdd7	cad12	su1	slh1	add4	tdd8	ad1	tdd10	[1;31md7,[0mca	[1;31md8,[0mts	[1;31md9,[0mca	[1;31md10,[0mts	spd6
+[1;31md16<del><del><del><del>,[0mcaup4	si455+512	cad2	slh1	[1;31md11,[0mbo	sppr1	d13	d13	2048-d13	<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>spze<del>3	[1;31md12,[0m0
+||||||||||
+||||||||||
+LSR
+zb1=b	zb2=b+1	zb3=b+2	zb4=b+3	zd1=pr1	zd2=pr2	zj1=<stop>
+t=d14
+[1;31ma1,[0mtaa16	csa54	tsa10	caa5	tda4	[1;31ma2,[0maoa16	taa3
+[1;31ma3,[0mca	[1;31ma4,[0mts	aoa4	aoa10	cpa2	[1;31ma5,[0mcaa53	slh1	ts2a10	ts2a28
+ts2a29	ts2a31	ts2a32	ada28	tda8	tsa10	tsa29	tsa32	cs2a10
+ad1	ts1a28	caa28	tda7	[1;31ma6,[0mIN	icaa50	[1;31ma7,[0mits	OUT	aoa7
+aoa7	ao1a28	cpa6	IN	icsa51	[1;31ma8,[0mits	OUT	ca0	ts1a29
+[1;31ma9,[0mca1a29	spa41	ts1a10	sp+zd2	[1;31ma10,[0m+0	+0	+0	caa10
+su1	su1	tsa10	ao1a29	ad1	sua53	cpa9	[1;31ma55,[0mca3a53
+ts2a10	ca2a53	ad1	tda12	ca0	ts1a10	spa56	[1;31ma11,[0mca0	tsa10
+[1;31ma12,[0mca	srh9-zj1	su2a10	dm0	cpa13	ab0	cpa15	ad2a10	ts2a10
+ca0	ts1a31	[1;31ma13,[0mcaa12	su1	tda14	[1;31ma14,[0mcm	dm1a31	cpa15
+ab0	ts1a31	caa10	ts1a28	ca1a10	ts1a29	[1;31ma15,[0maoa12	aoa12
+aoa10	ad1	su1a10	cpa12	[1;31ma56,[0maoa12	aoa12	ao1a10	ad1
+sua53	cpa11	cs3a53	ad2a10	[1;31ma16,[0mcp	ca1a28	spa43	ad1a28	ad1a28
+tda17	tda21	ca1a29	spa43	ad1a28	ad1a28	tda18	su1a28	su1a28
+ad1a29	ad1a29	tda19	tda20	IN	[1;31ma17,[0mica	its+zb1	icaa50	[1;31ma18,[0miex
+imra52	itsa10	imra10	its+zb3	[1;31ma19,[0mica	its+zb2	isu+zb1	its+zb4
+imr+zb4	iad+zb3	ispa45	its+zb3	ica+zb1	isu+zb2	icpa57
+iad+zb3	idva10	ispa58	[1;31ma57,[0misu+zb3	its+zb3	icsa10	idv+zb3	[1;31ma58,[0mits+zb3	imr+zb2
+isua10	imr+zb3	iad+zb1	iex+zb2	iad+zb1	iex+zb3	its+zb1	imr+zb1
+isua51	iex+zb2	idv+zb2	iex+zb3	isu+zb3	[1;31ma20,[0mits	ica+zb3	[1;31ma21,[0mits
+icsa51	idv+zb2	ispa45	its+zb2	OUT	cs1	tsa10
+||||||||||
+spa27	[1;31ma22,[0mcaa10	su1a29	cpa23	caa10	spa43	ad1a29	ad1a29
+spa24	[1;31ma23,[0mca1a29	spa43	ada10	ada10	[1;31ma24,[0mtda35	tda36
+caa10	su1a28	cpa25	caa10	spa43	ad1a28	ad1a28	spa26	[1;31ma25,[0mca1a28
+spa43	ada10	ada10	[1;31ma26,[0mspa33	[1;31ma27,[0maoa10	su1a28	dm0
+cpa27	caa10	su1a29	dm0	cpa27	caa10	ad1	sua53	cpa22
+ca1a28	spa41	ts1a28	ts1a31	sp+zd1	[1;31ma28,[0mt	+0	+0	ca1a29
+spa41	ts1a29	ts1a32	sp+zd1	[1;31ma29,[0m+0	+0	+0	ca0	tsa10
+[1;31ma30,[0mcaa10	slh1	ad2a28	ada28	tda35	tda36	su2a28	spa33
+aoa10	ad1	sua53	cpa30	sp+zd2	[1;31ma31,[0mt	+0	+0	sp+zd2
+[1;31ma32,[0m+0	+0	+0	spa55	[1;31ma33,[0mtaa40	tda34<del><del><del><del><del><del>	tda38
+tda39	IN	[1;31ma34,[0mics	imr+zb1	[1;31ma35,[0miad	imr+zb2	[1;31ma36,[0miex
+imr+zb1	[1;31ma38,[0miad	imr+zb2	[1;31ma39,[0mits	[1;31ma40,[0msp	[1;31ma41,[0mtaa42	mha53
+slh16	ad1a53	[1;31ma42,[0msp	[1;31ma43,[0mtaa44	tst	mht	slh15	adt
+ad2a53	[1;31ma44,[0msp	[1;31ma45,[0mitaa48	its+zb3	OUT	ao2042	srh1	ts2042
+spa46	[1;31ma46,[0mtaa47	IN	its+zb4	ica+zb3	idv+zb4	iad+zb4	imra49
+[1;31ma47,[0msp	spa46	spa46	IN	[1;31ma48,[0misp	[1;31ma49,[0m+.5	[1;31ma50,[0m+0.	[1;31ma51,[0m-1.	[1;31ma52,[0m-2.
+[1;31ma53,[0m+0	+0	+0	+0	[1;31ma54,[0m+3
+END OF SUBROUTINE
+||||||||||
+<del>||||||||||
+[1;31md13,t4,[0m
+[1;31m1056r|d14,[0m
+[1;31m128r|d15,[0m
+[1;31m-1184r|[0m
+||||||||||
+[1;31mk1,[0m0	[1;31mk2,0[0m	[1;31mm1,[0m0	[1;31mm2,[0m0	[1;31mm3,[0m0	[1;31mn2,[0m0	[1;31mn3,[0m0	[1;31mn4,[0m0
+za1=b	ze1=c1	ze5=33	ze7=d1
+[1;31mv1,[0mcs1	tsb24	[1;31mb1,[0mcsuk2	srh16	cpb23	aob2<del>4	csb24	[1;31mb23,[0madun1	cpv1	tsuk<del>1	suun1	dm0	[1;31m0r,[0mcp2r	spze7
+aoun4	suun3	su1	[1;31m0r,[0mcp2r	[1;31mb21,[0mspze5	adun3	mhum1	slh15	adup1	si451+512	caum1	biut1
+tdb13	suun2	suun2	su1	su1	tdb14	caut1+2	dmb18	cpb16	IN	icaut1+2	itspa7	OUT
+||||||||||
+ca0	tsb11	[1;31mb2,[0mca0	tsb10	aob11	dmun1	[1;31m0r,[0mcp2r	spze1	[1;31mb3,[0maob10	dmb11	[1;31m0r,[0mcp2r	spb2	clc16
+su1	slh1	tsb12	cab11	su1	mhb11	slh15	adb12	tsb12	mhum2	slh14	adup2	si451+512
+caum2	biut2	tdb6	cab13	tdb5	[1;31m0r,[0mcar	ts2042	[1;31mb4,[0mcs1	su1	dm0	abb6	abb5	sub14
+ad1	cpb22	IN	itsza1	[1;31mb5,[0mica	[1;31mb6,[0mimr	spb7	iadza1	spb4
+[1;31mb22,[0mIN	itsza1	icsut1+2	imrut2	iadut2+2	iadza1	itsb15	OUT	caup3	adb12	si455+512	ao1
+bob15	spb3
+||||||||||
+[1;31mb7,[0mcm2043	su0	cpb8	ca2042	sub9	cpb8	sp2018	[1;31mb8,[0mcar	ts2042	ca0	ts2043
+ts2044	sp2018	[1;31mb9,[0m-17
+||||||||||
+[1;31mb16,[0mtab17	adb18	[1;31mb17,[0mcp	clc16	sdb19	[1;31m0r,[0mcpb20	su0	cpb21	[1;31mb20,[0mck	[1;31mb18,[0m0.37777	[1;31mb19,[0mrs
+||||||||||
+[1;31mb10,[0m0	[1;31mb11,[0m0	[1;31mb12,[0m0	[1;31mb13,[0m0	[1;31mb14,[0mica	[1;31mb15,[0m+.0	[1;31mb24,[0m0
+||||||||||
+[1;31ms1,[0m
+LSR 194-25-449 m8 SAFFREN
+za1=<stop>
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>[1;31m0r,[0mzr1=r
+[1;31m0r,[0mta19r	sp92r	ca	ad	mh	slh12	ad	slh3	ts46r	ca
+[1;31m10r,[0mad	mh39r	slh12	ad38r	slh3	ts47r	ca0	ts2r	sp	sp
+[1;31m20r,[0mta19r	sp92r	ao	dm	ad1	cp36r	ca0	ts	ao	dm
+[1;31m30r,[0mad1	cp36r	ca	td19r	ca0	ts	ca19r	sp	0.07400	1.74777
+[1;31m40r,[0mta19r	sp92r	ca0	ts	sp35r	10	0	0	1.77400	0.25252
+[1;31m50r,[0mta78r	ad70r	td55r	ca0	td56r	cs	clc	cp71r	ca56r	clc8
+[1;31m60r,[0mmr49r	ts18r	md48r	ad47r	si384	cs48r	md18r	dv49r	slr15	ad46r
+[1;31m70r,[0mrc80r	ao56r	clc11	cp75r	sp55r	ca79r	ad46r	ts46r	sp	0.02000
+[1;31m80r,[0m1.73336	1.64544	1.71636	1.62636	0.23732	1.63716	1.73716	0.44436	1.73736	1.63736
+[1;31m90r,[0m0.05640	0.01600	ta133r	ts134r	ao19r	ta96r	ca	cp140r	sp140r	ta37r
+[1;31m100r,[0mdm0	td32r	ao37r	ta6r	ao37r	ta4r	ts18r	ao37r	ca32r	ad1
+[1;31m110r,[0mts2r	td22r	td27r	td43r	ad1	ts9r	td28r	td35r	ad1	td3r
+[1;31m120r,[0mad1	td10r	ad1	td23r	ad1	td29r	ts127r	ca	cp133r	ao2r
+[1;31m130r,[0mta9r	ao23r	ta29r	sp	0	sp136r	si4	ao96r	td19r	sp36r
+||||||||||
+[1;31m|MRA[0m
+spzr1+99	1.70330	0.37000
+[1;31m0r,[0msp3r	td2019	sp2019	ca2043	tszr1+134	clc17	adzr1+45	spzr1+50	ca96r	spzr1+50
+[1;31m10r,[0mca2042	ts40r	clc17	slh1	ad85r	ts25r	ca2044	tszr1+9	sa78r	cp97r
+[1;31m20r,[0mcs2042	su90r	cp27r	aozr1+2	IN	0	sp20r	adzr1+136	cp23r	ad81r
+[1;31m30r,[0mex40r	ts2042	cp35r	cszr1+2	tszr1+2	ca91r	exzr1+9	ex2044	srh15	ad2043
+[1;31m40r,[0m0	ts40r	slh15	exzr1+134	ts2043	cmzr1+134	mhzr1+45	ts25r	slr15	tszr1+134
+[1;31m50r,[0mcm40r	mhzr1+45	tszr1+127	slr15	sa25r	ts40r	cazr1+127	su0	cp78r	spzr1+50
+[1;31m60r,[0maozr1+9	cp45r	ca95r	spzr1+50	ca2042	clc17	adzr1+45	spzr1+50	cmzr1+2	mh92r
+[1;31m70r,[0mtszr1+134	slh15	mhzr1+45	exzr1+134	spzr1+50	cazr1+134	spzr1+50	spzr1+22	ca1	suzr1+9
+[1;31m80r,[0mad91r	srr511	cp59r	aozr1+2	s<del><del><del><del><del><del><del><del>p45r	imr86r	0.63146	1.74462	0.50000	0.04000
+[1;31m90r,[0m3	-7+za1	0.06315	0.40404	0.20000	-zr1-80+93r	-zr1-80+94r	ao2044	sp20r
+||||||||||
+|[1;31mAC[0m
+[1;31m98zr1|[0msp99r[1;31m
+99r|
+|MRA
+[0m||||||||||
+spzr1+99	1.70330	0.174<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>00
+[1;31m0r,[0msp3r	exzr1+134	spzr1+134	cazr1+134	clc17	adzr1+45	tszr1+127	cmzr1+134	mh32r	srh11
+[1;31m10r,[0msp11r	ta23r	tszr1+9	slh15	exzr1+9	suzr1+2	cp33r	exzr1+127	spzr1+50	cs0
+[1;31m20r,[0mtszr1+2	aozr1+9	mhzr1+45	sp	sp11r	sp11r	exzr1+2	su0	exzr1+2	sp11r
+[1;31m30r,[0msp11r	spzr1+22	0.15067	sp35r	sp21r	tazr1+78	spzr1+75
+[1;31m|AC[0m
+||||||||||
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del>END OF SUBROUTINE
+<stop>[1;31ms2,[0m
+[1;31m0r,[0mta32r	ao32r	ta3r	ca	td10r	ad46r	td12r	capa8	td40r	sppa3
+[1;31m10r,[0m0	ao1	td	sppa3	33r	si4	ca41r	sppa1	33r	ca42r
+[1;31m20r,[0msppa1	3<del>3r	ca43r	sppa1	33r	IN	ica44r	sppa1	-33-r	OUT
+[1;31m30r,[0mca40r	tdpa8	sp	0	0	0	0	0	<del><del><del><del><del><del>4	-40
+[1;31m40r,[0m0	0	0	0	+.0	4
+[1;31m47r,[0m
+||||||||||
+ze2=d1
+[1;31mc1,[0mca0	tsc10	sppa4	c7	ca0	tsc8	[1;31mc4,[0maoc10	dmun1	[1;31m0r,[0mcp4r	cac9	tsum3	spze2
+[1;31m4r,[0mclc16	su1	mhc10	slh15	adup3	si451+512	cac10	tsc3	slh1	biut3	tac6	tdc11
+[1;31mc5,[0mIN	[1;31mc6,[0mica	sppa1	-c7	OUT	aoc6	aoc6	suc11	ad1	cpc5	spc4
+||||||||||
+[1;31mc2,[0mOUT	aoc8	su1
+su1	su1	cppa5	ca0	tsc8	cac10	ad1	exc9	adc9	exc9	adc9	dmc12	cppa5
+sppa4	c7	sppa5
+[1;31mc7,[0mc2	0	0	[1;31mc8,[0m0	[1;31mc9,[0m0	1	[1;31mc3,[0m0	[1;31mc10,[0m0	[1;31mc11,[0mica	[1;31mc12,[0m40
+||||||||||
+za1=b
+ze4=b1
+[1;31mf1,[0msppa3	f10	cauk1	tsf20	ad1	ad1	tsf13	adum3	ad<del>f21	ad1	tsf11	adf13	dmf15	[1;31m0r,[0mcp3r	sppa4	f10
+[1;31m3r,[0mca0	tsf12	cs1	tsf18	[1;31mf2,[0maof18	dmf20	[1;31m0r,[0mcp5r	caf11	adf13	tsum3	spze4	[1;31m5r,[0mclc16	slh1	cpf6	adf7	su1
+su1	tdf3	IN	[1;31mf3,[0mica	sppa1	-f10	sppa2	-f10	OUT	caf18	mhf20	slh16	adup4
+si451+512	caf20	slh1	[1;31mf19,[0mbi	taf5	tdf17	[1;31mf4,[0mIN	[1;31mf5,[0mica	sppa1	-f10	OUT	aof5
+aof5	suf17	ad1	cpf4	spf2
+||||||||||
+[1;31mf6,[0mcaup4	si451+512	caf20	slh1	[1;31mf7,[0mbiut5	taf9	tdf17	tdf19	IN	icaf16	[1;31mf8,[0mIN
+itsza1	[1;31mf9,[0mica	sppa1	-f10	imrza1	OUT	<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>
+aof9	aof9	suf17	ad1	cpf8	<del><del><del><del><del><del>ca0	tsf22	ca2042	[1;31mf28,[0mdmf23	[1;31m0r,[0mcp2r	spf24
+clc16	ts2042	cmf22	su0	cpf25	<del><del><del><del><del><del>sppa1	f10	<del><del><del><del><del><del>sp<del><del><del><del>f26	[1;31mf25,[0msppa2	-f10	<del>[1;31mf26,[0m<del><del><del><del><del><del><del><del><del>sppa1	-f10	spf2
+||||||||||
+[1;31mf14,[0mOUT	ca0	tsf12	caf13	ad1	exf11	adf11	exf11
+adf11	su1	dmf15	cppa5	caf18	dmf20	ad1	[1;31m0r,[0mcp2r	sppa5
+sppa4	f10	sppa5	[1;31mf10,[0mf14	0	0	[1;31mf12,[0m0	[1;31mf11,[0m0
+4	[1;31mf13,[0m0
+||||||||||
+[1;31mf24,[0mtsf27	aof22	ca2042	srh16	sdf27	spf28	<del><del><del>[1;31mf22,[0m0	[1;31mf23,[0m330	[1;31mf27,[0m0
+|||||||||
+[1;31mf15,[0m40	[1;31mf16,[0m+1.0	[1;31mf17,[0mica	[1;31mf18,[0m0	[1;31mf20,[0m0	[1;31mf21,[0m4
+||||||||||
+ze6=v1
+<del><del><del><del><del><del>	[1;31mg1,[0mcaui1	si451+512	rd	su1	tsg12	si448+512	biut6	tag7	tdg13
+cag12	srh2	su1	tsun1	ex0	slh2	su1	cpg2	su1	[1;31m0r,[0mcp2r	[1;31mg2,[0mck
+caun1	dmg14	[1;31m0r,[0mcp2r	ck	caui2	si451+512	ao1	bipa7	caui3	tspa6	tspa6+1	tspa6+2	sppa4
+g11	aog7	tag3	aog7	IN	[1;31mg3,[0mica	sppa1	-g11	sppa2	g11	spg6	[1;31mg4,[0msppa2
+g11	aog7	tag5	[1;31mg5,[0mca	sppa1	g11	spg6	[1;31mg6,[0mtag8	[1;31mg7,[0mca	sppa1	g11	aog7
+sug13	ad1	[1;31mg8,[0mcp	cpg6	cpg4	cag13	su1	tdg10	su1	tdg9	[1;31mg9,[0mca	srh16	tsuk2	clc16	tsun4
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>[1;31mg10,[0mca	tsun3	<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>ca1	slh2	adup1	si451+512	rd
+tsun2	tspa6+1	si448+512	rd	tsup2	ca1	slh2	ad1	adun2	slh1
+tsum1	cs1	slh2	adum1	tsum2	caun1	ad1	mhun1	slh15	mhum2	slh14	adup2	tsup3	caun1
+ad1	mhun1	slh15	adup3	tsup4	caui4	tspa6+2	spze6	[1;31mg11,[0m0	0	0	0	0	5	-40
+[1;31mg12,[0m0	[1;31mg13,[0mca	[1;31mg14,[0m32
+||||||||||
+[1;31mg15,[0m
+||||||||||
+||||||||||
+[1;31mt6,t1,t3,t5,[0m
+[1;31m74<del>r|t2,[0m
+||||||||||
+[1;31mDA2042|2042|[0m51-g15	spg1<del>
+OCT
+START AT ud3<del>

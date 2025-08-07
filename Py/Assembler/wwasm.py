@@ -872,7 +872,7 @@ class AsmDotPpInst (AsmPseudoOpInst):
                     else:
                         self.prog.presetTab[varExpr.exprData] = val
                 else:
-                    aelf.operandTypeError (val)
+                    self.operandTypeError (val)
             else:
                 self.error ("Binding target (first operand) of a preset must be a variable")
         else:
@@ -950,7 +950,7 @@ class AsmDotWwTapeIdInst (AsmPseudoOpInst):
         if val.type == AsmExprValueType.String:
             self.prog.wwTapeId = val.value
         else:
-            aelf.operandTypeError (val)
+            self.operandTypeError (val)
 
 class AsmDotIsaInst (AsmPseudoOpInst):
     def __init__ (self, *args):

@@ -1,0 +1,60 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\04\t04.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\04\t04_gs019.ocore
+%TapeID: 
+%Stats: Covariance=0.005538, Size=408, 
+%Blocknum 0o0
+@T00000: 0177356 0042406 0040002 0012405 0000040 0016101 0000301 0016041  ; md ts ts bi si rd si rd  :         qae|t### : <del>.<color>|\03\03
+@T00010: 0014000 0016041 0171002 0016042 0012406 0070000 0016102 0012405  ; rd rd CL rd bi cp rd bi  :       \0#eza\0e| :         a3v3|c3|
+@T00020: 0074000 0040102 0012406 0000045 0016101 0000330 0016041 0014000  ; sp ts bi si rd si rd rd  :      \0ea\t#n#\0 : k<color>|\03\03a
+@T00030: 0016042 0012411 0174000 0016101 0134000 0016042 0012405 0070000  ; rd bi md rd dm rd bi cp  :      z=\0#\0z|\0 :         3|03q3|c
+@T00040: 0016101 0064000 0016041 0171005 0016042 0002401 0040000 0016101  ; rd ex rd CL rd si ts rd  :       #\0#|z#\0# :   3f3v3#<color>3
+@T00050: 0064000 0016041 0171003 0016042 0002402 0040000 0016101 0064000  ; ex rd CL rd si ts rd ex  :      \0#8ze\0#\0 :   f3v3#<color>3f
+@T00060: 0016041 0171003 0016042 0002403 0040000 0016101 0064000 0016041  ; rd CL rd si ts rd ex rd  :       #8z8\0#\0# :   3v3#<color>3f3
+@T00070: 0171003 0016042 0002404 0040000 0016101 0064000 0016041 0171002  ; CL rd si ts rd ex rd CL  :       8z#\0#\0#e :   v3#<color>3f3v
+@T00100: 0016042 0002405 0040000 0040102 0012407 0000071 0016102 0002401  ; rd si ts ts bi si rd si  :   z|\0e3<cntl>E# : 3#<color><color>|\03#
+@T00110: 0100000 0016102 0012407 0110004 0016102 0012407 0044003 0016101  ; ca rd bi ad rd bi td rd  :        \0E3#E38# :         T3_L3_D3
+@T00120: 0074000 0016042 0012410 0000000 0040102 0012410 0000076 0016102  ; sp rd bi si ts bi si rd  :       \0Z \0E 0E : K3_\0<color>_\03
+@T00130: 0011401 0074000 0016102 0011402 0074000 0016102 0011403 0074000  ; bi sp rd bi sp rd bi sp  :      #\0EE\0E8\0 :         #K3#K3#K
+@T00140: 0016102 0011404 0074000 0016102 0011405 0074000 0016102 0011406  ; rd bi sp rd bi sp rd bi  :       E#\0E_\0EA :         3#K3#K3#
+@T00150: 0074000 0016102 0011407 0074000 0016102 0011410 0074000 0016102  ; sp rd bi sp rd bi sp rd  :      \0E3\0E \0E :         K3#K3#K3
+@T00160: 0011411 0074000 0016102 0011401 0074000 0040102 0012411 0000110  ; bi sp rd bi sp ts bi si  :       :\0E#\0E:  :  #K3#K<color>_\0
+@T00170: 0006101 0077777 0040042 0011401 0000111 0016102 0011412 0100000  ; .word sp ts bi si rd bi ca  :    #<del>Z#:ES\0 :  8#<color>#\03#T
+@T00200: 0016102 0005401 0040000 0016102 0005403 0040000 0016102 0011412  ; rd .word ts rd .word ts rd bi  :       E#\0E8\0ES : 3E<color>3E<color>3#
+@T00210: 0100001 0016102 0005402 0040000 0016102 0005404 0040000 0040102  ; ca rd .word ts rd .word ts ts  :       #EE\0E#\0E : T3E<color>3E<color><color>
+@T00220: 0011413 0000117 0016102 0002402 0100000 0016102 0005405 0040000  ; bi si rd si ca rd .word ts  :       42EE\0E_\0 :  #\03#T3E<color>
+@T00230: 0016102 0012001 0074000 0016102 0012405 0074000 0040102 0011402  ; rd bi sp rd bi sp ts bi  :       E#\0E_\0EE :   3_K3_K<color>#
+@T00240: 0000123 0016101 0100000 0016042 0005401 0040000 0016102 0005403  ; si rd ca rd .word ts rd .word  :       5#\0Z#\0E8 :  \03T3E<color>3E
+@T00250: 0040000 0016102 0011412 0100001 0016102 0005402 0040000 0016102  ; ts rd bi ca rd .word ts rd  :       \0ES#EE\0E : <color>3#T3E<color>3
+@T00260: 0005404 0040000 0016102 0011413 0074000 0040102 0011403 0000132  ; .word ts rd bi sp ts bi si  :       #\0E4\0E8F : E<color>3#K<color>#\0
+@T00270: 0016102 0011412 0100000 0016102 0005401 0040000 0016102 0011412  ; rd bi ca rd .word ts rd bi  :       ES\0E#\0ES :   3#T3E<color>3#
+@T00300: 0100002 0016102 0005402 0040000 0016101 0100000 0016042 0005403  ; ca rd .word ts rd ca rd .word  :       EEE\0#\0Z8 :   T3E<color>3T3E
+@T00310: 0040000 0016102 0005404 0040000 0016102 0011413 0074000 0040102  ; ts rd .word ts rd bi sp ts  :      \0E#\0E4\0E : <color>3E<color>3#K<color>
+@T00320: 0011404 0000142 0016102 0011412 0100000 0016102 0005401 0040000  ; bi si rd bi ca rd .word ts  :       #ZES\0E#\0 :  #\03#T3E<color>
+@T00330: 0016102 0005403 0040000 0016102 0011412 0100002 0016102 0005402  ; rd .word ts rd bi ca rd .word  :        E8\0ESEEE :   3E<color>3#T3E
+@T00340: 0040000 0016102 0005404 0040000 0016102 0011413 0074000 0040102  ; ts rd .word ts rd bi sp ts  :      \0E#\0E4\0E : <color>3E<color>3#K<color>
+@T00350: 0011405 0000151 0016101 0100000 0016042 0005401 0040000 0016102  ; bi si rd ca rd .word ts rd  :      _\n#\0Z#\0E :  #\03T3E<color>3
+@T00360: 0011412 0100001 0016102 0005402 0040000 0016102 0011412 0100000  ; bi ca rd .word ts rd bi ca  :       S#EE\0ES\0 :   #T3E<color>3#T
+@T00370: 0016102 0005403 0040000 0016102 0011412 0100002 0016102 0005404  ; rd .word ts rd bi ca rd .word  :        E8\0ESEE# :   3E<color>3#T3E
+@T00400: 0040000 0016102 0011413 0074000 0040102 0011406 0000162 0016102  ; ts rd bi sp ts bi si rd  :       \0E4\0EABE : <color>3#K<color>#\03
+@T00410: 0011412 0100000 0016102 0005401 0040000 0016102 0011412 0100001  ; bi ca rd .word ts rd bi ca  :       S\0E#\0ES# :   #T3E<color>3#T
+@T00420: 0016102 0005402 0140000 0016102 0005404 0040000 0016101 0100000  ; rd .word mr rd .word ts rd ca  :      EE\0E#\0#\0 :   3EO3E<color>3T
+@T00430: 0016042 0005403 0040000 0016102 0011413 0074000 0040102 0011407  ; rd .word ts rd bi sp ts bi  :       Z8\0E4\0E3 : 3E<color>3#K<color>#
+@T00440: 0000172 0016102 0011412 0100000 0016102 0005401 0040000 0016102  ; si rd bi ca rd .word ts rd  :       XES\0E#\0E :  \03#T3E<color>3
+@T00450: 0005403 0040000 0016102 0011412 0100001 0016102 0005402 0040000  ; .word ts rd bi ca rd .word ts  :       8\0ES#EE\0 : E<color>3#T3E<color>
+@T00460: 0016102 0011412 0100002 0016102 0005404 0040000 0016102 0011413  ; rd bi ca rd .word ts rd bi  :        ESEE#\0E4 :   3#T3E<color>3#
+@T00470: 0074000 0040102 0011410 0000202 0016102 0011412 0100000 0016102  ; sp ts bi si rd bi ca rd  :       \0E EES\0E :  K<color>#\03#T3
+@T00500: 0005401 0040000 0016102 0005403 0040000 0016102 0011412 0100002  ; .word ts rd .word ts rd bi ca  :       #\0E8\0ESE : E<color>3E<color>3#T
+@T00510: 0016102 0005402 0040000 0016102 0011412 0100001 0016102 0005404  ; rd .word ts rd bi ca rd .word  :        EE\0ES#E# :   3E<color>3#T3E
+@T00520: 0040000 0016102 0011413 0074000 0040102 0011411 0000212 0016101  ; ts rd bi sp ts bi si rd  :       \0E4\0E:S# : <color>3#K<color>#\03
+@T00530: 0100000 0016042 0005401 0040000 0016102 0011412 0100001 0016102  ; ca rd .word ts rd bi ca rd  :       \0Z#\0ES#E :   T3E<color>3#T3
+@T00540: 0005402 0040000 0016102 0005404 0040000 0016102 0011412 0100000  ; .word ts rd .word ts rd bi ca  :      E\0E#\0ES\0 : E<color>3E<color>3#T
+@T00550: 0016102 0005403 0040000 0016102 0011413 0074000 0040102 0002401  ; rd .word ts rd bi sp ts si  :       E8\0E4\0E# : 3E<color>3#K<color>#
+@T00560: 0000222 0016101 0000000 0040042 0002402 0000223 0016101 0000000  ; si rd si ts si si rd si  :       D#\0ZE5#\0 : \03\0<color>#\03\0
+@T00570: 0040042 0002403 0000224 0016101 0000000 0040042 0002404 0000225  ; ts si si rd si ts si si  :        Z8R#\0Z#1 : <color>#\03\0<color>#\0
+@T00600: 0016101 0000000 0040042 0002405 0000226 0016101 0000000 0040042  ; rd si ts si si rd si ts  :       #\0Z_J#\0Z : 3\0<color>#\03\0<color>
+@T00610: 0011412 0000227 0006101 0100000 0006041 0077740 0006041 0177740  ; bi si .word ca .word sp .word md  :        S7#\0#T#T :    #\08T8#8<del>
+@T00620: 0060042 0177777 0000000 0000100 0057755 0060676 0074002 0075667  ; ab md si si ck ab sp sp  :   Z<del>\0\0#0E# :   N<del>\0\07NKK
+
+%Hash: f15663-5767ef-408

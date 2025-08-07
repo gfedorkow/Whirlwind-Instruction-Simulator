@@ -1,0 +1,64 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302374_box17\102663507_fc1305m1.7ch
+fc TAPE 1<del><del><del><del><del><del><del><del>305 m1 STEPHENSON
+OCTAL
+si10		|Reset Registers
+ca2		|Input Tape No.
+mdm1
+slh3
+ads1		|SET UP TAPE READ FORWARD
+tds1
+td<del><del>10s1
+ca3		|SET UP RECORD TAPE FORWARD
+mdm1
+slh3
+ads2
+tds2
+td4s5
+tds6
+ca3
+mdm1		|SET UP STOP TAPE RECORD FORWARD
+ads4
+tds4
+td6s5
+td2s6
+[1;31ms1,[0msi102		|READ TAPE
+rd		|IOR-AC
+cps5		|IS IT -
+tsx3		|SAVE N WORDS IN RECORD
+tsx1		|OUTPUT BLOCK
+dm0
+cp12s1
+cax3
+si102
+bi1x1		|READ IN BLOCK OF WORDS
+cax2		|ADDRESS OF 1st WORD IN BLOCK
+td1s2
+csx3		|COMPLI COUNTER
+tsx4
+[1;31ms2,[0msi106
+rcx1		|BEGINNING OF BLOCK
+ao1s2		|ADD 1 TO ADDRESS
+aox4
+cps2		|FINISHED THIS BLOCK  NOT FINISHED
+[1;31ms4,[0msi104		|TO BE MODIFIED
+sps1
+[1;31ms5,[0mtsx1
+tsx4
+aox4		|TEST FOR - 0
+cps6		|- NOT END OF SIMULATION
+si106
+rcx1		|RECORD LAST WORD OF SIMULATION
+si104
+STOP
+[1;31ms6,[0msi106		|RECORD SIMULATION NUMBER
+rcx1
+si104
+sps1		|CONTINUE TO READ TAPE
+[1;31mm1,[0m+3
+[1;31mx4,[0m+0
+[1;31mx2,[0mx1
+[1;31mx3,[0m+0
+[1;31mx1,[0m+0
+DITTO
+[1;31m400r|[0m+0
+START AT 40
