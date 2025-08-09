@@ -283,7 +283,7 @@ class AnaScope:
 
         # Jul 31, 2025 -- It appears that micro-whirlwind overloads self.pin_isGun1on = 26 and pin_tca_reset = 26
         # I've added these two terms to disable the light guns one at a time and make sure I've got the bug.
-        use_gun_1 = False
+        use_gun_1 = True
         use_gun_2 = True
         mask = 0
         
@@ -317,7 +317,7 @@ class AnaScope:
                 delta = time.time() - self.gunTime1
                 if delta > self.debounceGunTime:
                     self.wasGunPulse1 = False
-                    if DebugGun: print("Debounced Gun 1")
+                    #if DebugGun: print("Debounced Gun 1")
 
         # debounce switch 2
         if use_gun_2:
@@ -329,7 +329,7 @@ class AnaScope:
                 delta = time.time() - self.gunTime2
                 if delta > self.debounceGunTime:
                     self.wasGunPulse2 = False
-                    if DebugGun: print("Debounced Gun 2")
+                    #if DebugGun: print("Debounced Gun 2")
         return 0
 
     def checkGun(self):
