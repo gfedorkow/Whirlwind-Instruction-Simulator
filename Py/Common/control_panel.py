@@ -942,15 +942,18 @@ class PanelClass:
             return
 
         if sw == "Rotary Up":   # turning the Rotary Encoder knob right triggers this action
-            cb.dbwgt.increment_addr_location(direction_up=True)
+            if cb.dbwgt:
+                cb.dbwgt.increment_addr_location(direction_up=True)
             return
 
         if sw == "Rotary Down":   # turning the Rotary Encoder knob left triggers this action
-            cb.dbwgt.increment_addr_location(direction_up=False)
+            if cb.dbwgt:
+                cb.dbwgt.increment_addr_location(direction_up=False)
             return
 
         if sw == "Rotary Push":   # pressing the Rotary Encoder knob triggers this action
-            cb.dbwgt.select_next_widget(direction_up=True)
+            if cb.dbwgt:
+                cb.dbwgt.select_next_widget(direction_up=True)
             return
 
         print("Unhandled Button in control_panel:PanelClass %s" % sw)

@@ -99,6 +99,7 @@ class PanelMicroWWClass:
             # The rest come from the ReadIn operation
             if MwwPanelDebug: self.log.info("Preset D/F Scope Selector switches to %d" % cb.which_scope)
             self.md.set_scope_selector_leds(cb.which_scope)
+            self.md.set_mir_preset_switch_leds()   # used or not, we want the preset LEDs on
         except IOError:
             self.micro_ww_module_present = False
             self.log.warn("Missing MicroWhirlwind Panel drivers")

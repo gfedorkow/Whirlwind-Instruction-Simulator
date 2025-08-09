@@ -146,6 +146,7 @@ class LogClass:
             # LogMsgSeverity.Info
             localStdErr.flush()
             localStdOut.write (msgStr)
+            localStdOut.flush()  # added by guy; not sure if/why this is needed...
         self.factory.logSeqno.seqno += 1
 
     # Public
