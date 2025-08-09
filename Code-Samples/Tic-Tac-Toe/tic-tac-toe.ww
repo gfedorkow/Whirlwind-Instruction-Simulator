@@ -66,10 +66,12 @@ refresh_loop: sp draw_game_board
 
 rl_continue_game:
             ca light_gun_mailbox
+            ad one                  ; convert -0 (cell zero) into +1 before the next CP test, then discard the result
             cp refresh_loop
             .print "light gun hit at cell %d", light_gun_mailbox
+            ; user_play_cell goes straight to the mailbox to find the current cell number.
             sp user_play_cell   ; do something with the light gun hit!  ; this call is for person-vs-computer play
-            cs one
+            cs one                ; put -1 in the mailbox to indicate Empty
             ts light_gun_mailbox  ; mark the mailbox as empty
 
             sp refresh_loop
@@ -522,7 +524,7 @@ lgh_y1_arg: ca 0        ; load the y value of the cell's address in the grid
             sd const_0n ; invert to get negative number
             ad const_3    ; change from one-base to zero-base and invert order
             ts lcl_cell_y
-            slh 1       ; multiply y by three, i.e., double then address
+            slh 1       ; multiply y by three, i.e., double then add address
             ad lcl_cell_y
             ad lcl_cell_x  ; add x to get the cell number in the range 0-8
 
@@ -531,7 +533,6 @@ lgh_y1_arg: ca 0        ; load the y value of the cell's address in the grid
             ; the cell number of the hit is passed below in ACC
             ; sp alternate_play_cell   ; do something with the light gun hit!; this call is for two-person play
             ts light_gun_mailbox
-            ; sp user_play_cell   ; do something with the light gun hit!  ; this call is for person-vs-computer play
 
             sp is_there_winner       ; test to see if it's Game Over
 
@@ -580,10 +581,13 @@ lcl_aplay_cell_num: .word 0
 ; then the machine plays Naught
 ; Note that this routine can only be called on a previously-unplayed cell, 'cause those
 ; are the only ones with dots in them, and that's all the light gun can see.
-; The number of the cell being played is in ACC
+; The number of the cell being played (was) in ACC
+; Modified Aug 2, 2025 to pick up the cell number of the last light gun hit directly
+; from the mailbox
 user_play_cell:
             ta user_play_cell_ret
 
+            ca light_gun_mailbox     ; fetch the cell number
             ts lcl_uplay_cell_num    ; figure the pointer to the first cell draw function in game table
             slh 1                   ;  thats table_start + 3*cell_num + 2
             ad lcl_uplay_cell_num    ; multiply cell number by three for a table offset
