@@ -1877,6 +1877,9 @@ class ScreenDebugWidgetClass:
 
 
     def select_next_widget(self, direction_up = False):
+        if self.input_selector is None:  # if no widgets have been added, don't do anything here!
+            return
+        
         if direction_up:
             self.input_selector += 1
         else:
@@ -1888,6 +1891,9 @@ class ScreenDebugWidgetClass:
             self.input_selector = len(self.mem_addrs) - 1
 
     def increment_addr_location(self, direction_up = False):
+        if self.input_selector is None:  # if no widgets have been added, don't do anything here!
+            return
+        
         cm = self.cm
         wgt = self.input_selector
         addr = self.mem_addrs[wgt]
