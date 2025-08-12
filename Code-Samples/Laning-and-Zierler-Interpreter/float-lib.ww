@@ -14,8 +14,8 @@
 
                         ; Note we don't set .org since this file can be included in others
 
-                        .pp do_print, 1
-                        .pp do_floathack, 0      ; Whether to use the workaround to using "ca 0" as -32767/32768
+                        .pp do_print, 0
+                        .pp do_floathack, 1      ; Whether to use the workaround to using "ca 0" as -32767/32768
                         .pp f24, 1               ; Whether to apply mask to srh for 24,6 floats
                         .pp main_sep_param, 1
 
