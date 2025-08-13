@@ -1,0 +1,37 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o1; xsum=good
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_06\102766859_fb2251m0_kybd_input_check.7ch/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Paper-Tapes\2018_06\102766859_fb2251m0_kybd_input_check_gs001_fb2259m0.tcore
+%TapeID: _fb2259m0
+%JumpTo 040
+%Stats: Covariance=0.001764, Size=203, Display-Ops, 4, 
+%Blocknum 0o0
+@C00040: 0100051 0040043 0000225 0100214 0070057 0170012 0024000 0130043  ; ca ts si ca cp CL rc ao  : \n<bs>1i#s\0<bs> :  t<color>\0tcvsp
+@C00050: 0074043 0100214 0000000 0040523 0040500 0000050 0000051 0000017  ; sp ca si ts ts si si si  :   <bs>i\05\0h\n2 : kt\0<color><color>\0\0\0
+@C00060: 0100055 0010500 0100054 0040075 0074065 0100000 0040052 0000230  ; ca bi ca ts sp ca ts si  :  #\0p<cntl>#\0yn : t#t<color>kt<color>\0
+@C00070: 0014000 0040052 0114000 0070065 0100052 0040500 0130075 0114053  ; rd ts su cp ca ts ao su  : \0y\0#y\0<cntl># : a<color>wct<color>pw
+@C00100: 0070065 0074102 0100102 0040524 0000225 0100056 0170012 0024000  ; cp sp ca ts si ca CL rc  :        #eer1qs\0 :  ckt<color>\0tvs
+@C00110: 0100121 0040113 0000225 0100500 0070123 0170012 0024000 0130113  ; ca ts si ca cp CL rc ao  :       .41\05s\04 :  t<color>\0tcvsp
+@C00120: 0074113 0100500 0000000 0100134 0040126 0000225 0100272 0070135  ; sp ca si ca ts si ca cp  :       4\0\0cj1x- : kt\0t<color>\0tc
+@C00130: 0170012 0024000 0130126 0074126 0100272 0000017 0100055 0010500  ; CL rc ao sp ca si ca bi  :       s\0jjx2#\0 :        vspkt\0t#
+@C00140: 0100145 0040171 0100146 0040204 0074147 0040500 0100500 0100000  ; ca ts ca ts sp ts ca ca  : \t<cntl>W##\0\0\0 : t<color>T<color>K<color>TT
+@C00150: 0040052 0000232 0014000 0040052 0070170 0170001 0070170 0170001  ; ts si rd ts cp CL cp CL  :        YF\0YM#M# : <color>\0A<color>CVCV
+@C00160: 0070170 0170001 0070170 0170001 0070170 0170001 0070170 0074147  ; cp CL cp CL cp CL cp sp  :         M#M#M#M# :         CVCVCVCK
+@C00170: 0100052 0040500 0130171 0114176 0070147 0074177 0040523 0000225  ; ca ts ao su cp sp ts si  : Y\0<cntl>0#<del>51 : T<color>PWCK<color>\0
+@C00200: 0100056 0170012 0024000 0000225 0100500 0074206 0024000 0130204  ; ca CL rc si ca sp rc ao  :      QS\01\0A\0# :        TVS\0TKSP
+@C00210: 0114213 0070203 0074000 0100523 0000051 0000051 0000071 0000054  ; su cp sp ca si si si si  : 48\05\n\n<cntl>P :     WCKT\0\0\0\0
+@C00220: 0000024 0000014 0000030 0000040 0000010 0000075 0000017 0000076  ; si si si si si si si si  :    RINT <cntl>20 : \0\0\0\0\0\0\0\0
+@C00230: 0000071 0000010 0000034 0000050 0000006 0000024 0000006 0000034  ; si si si si si si si si  :    <cntl> CHARAC : \0\0\0\0\0\0\0\0
+@C00240: 0000040 0000002 0000024 0000012 0000010 0000032 0000060 0000024  ; si si si si si si si si  :         TERS FOR : \0\0\0\0\0\0\0\0
+@C00250: 0000010 0000075 0000012 0000014 0000017 0000007 0000076 0000010  ; si si si si si si si si  :     <cntl>si230  : \0\0\0\0\0\0\0\0
+@C00260: 0000071 0000034 0000050 0000002 0000034 0000036 0000075 0000051  ; si si si si si si si si  : <cntl>CHECK<cntl>\n : \0\0\0\0\0\0\0\0
+@C00270: 0000051 0100000 0000051 0000051 0000071 0000054 0000024 0000014  ; si ca si si si si si si  : \n\0\n\n<cntl>PRI :  \0t\0\0\0\0\0\0
+@C00300: 0000030 0000040 0000010 0000075 0000017 0000076 0000071 0000010  ; si si si si si si si si  : NT <cntl>20<cntl>  : \0\0\0\0\0\0\0\0
+@C00310: 0000034 0000050 0000006 0000024 0000006 0000034 0000040 0000002  ; si si si si si si si si  :         CHARACTE : \0\0\0\0\0\0\0\0
+@C00320: 0000024 0000012 0000010 0000032 0000060 0000024 0000010 0000075  ; si si si si si si si si  :    RS FOR <cntl> : \0\0\0\0\0\0\0\0
+@C00330: 0000012 0000014 0000017 0000007 0000017 0000010 0000071 0000034  ; si si si si si si si si  :    si232 <cntl>C : \0\0\0\0\0\0\0\0
+@C00340: 0000050 0000002 0000034 0000036 0000075 0000051 0000051 0000051  ; si si si si si si si si  : HECK<cntl>\n\n\n : \0\0\0\0\0\0\0\0
+@C00350: 0100000  None    None    None    None    None    None    None    ;        ca                : \0               :  t              
+@C00500: 0000000 0000000  None    None    None    None    None    None    ;       si si              : \0\0             : \0\0            
+
+%Hash: 471f64-94ce5d-203

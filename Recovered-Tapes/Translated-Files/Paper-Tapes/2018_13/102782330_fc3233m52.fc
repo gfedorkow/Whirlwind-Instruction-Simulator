@@ -1,0 +1,80 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_13\102782330_fc3233m52.7ch
+fc TAPE 3233m52 CURTISS
+OCTAL
+
+|||||RESETS
+[1;31mDA22000|40|z1,[0msi10	ca5	tst4	ca0	tst1	tst2	cat10	ts6z1	sp3500
+
+
+||||||CONTROL ROUTINE
+
+[1;31ma1,[0mcat4	cpa2	spv1	[1;31ma2,[0mcat4	clc1	tst4
+cpa3	spv2	[1;31ma3,[0mcat4	clc1	tst4	cpa4	spv3	[1;31ma4,[0mcat4	clc1	tst4	cpa5	spv4
+[1;31ma5,[0mcat4	clc1	tst4	cpa6	sps1	[1;31ma6,[0mcat4	clc1	tst4	cpa7	spd1	
+[1;31ma7,[0mcat4	clc1	tst4	cpz1	spg1
+|||||CROSS DISPLAY
+
+
+|||||QUAD 1
+[1;31mv1,[0mcat1	si600	cat2	rc0	cat1	adt6	tst1	sut3	cpv1	sph1	[1;31mh1,[0mca0	tst1
+cat1	si600	cat2	rc0	adt6	tst2	sut7	cph1	spa2	
+
+|||||QUAD 2
+[1;31mv2,[0mca0	tst2	cat1	si600	cat2	rc0	cat1	adt6	tst1	sut3	cpv2	sph2	[1;31mh2,[0mca0	tst1	cs0
+tst2	cat1	si600	cat2	rc0	cat2	sut6	tst2	sut8	cpa3	sp4h2	
+
+|||||QUAD 3
+[1;31mv3,[0mca0	tst2	cs0	tst1	cat1	si600	cat2	rc0	cat1	sut6	tst1	sut9	cph3	sp4v3
+[1;31mh3,[0mca0	tst1	cs0	tst2	cat1	si600	cat2	rc0	cat2	sut6	tst2	sut8
+cpa4	sp4h3	
+
+|||||QUAD 4
+[1;31mv4,[0mca0	tst2	cs0	tst1	cat1	si600	cat2	rc0	cat1	sut6
+tst1	sut9	cph4	sp4v4	[1;31mh4,[0mca0	tst1	ca0	tst2	cat1	si600	cat2	rc0
+adt6	tst2	sut7	cp4h4	spa5
+
+|||||CONSTANTS
+	[1;31mt1,[0msi0	[1;31mt2,[0msi0	[1;31mt3,[0m0.50000	[1;31mt4,[0msi0	[1;31mt5,[0m0.07770	[1;31mt6,[0m0.00200
+[1;31mt7,[0m0.40000	[1;31mt8,[0m1.40000	[1;31mt9,[0m1.40000	[1;31mt10,[0mspa1
+|||
+
+|DIAGONAL DISPLAY
+
+[1;31ms1,[0mcas5	tss2	cas2	si600	rc	ads3	tss2	cp2s1	ads4	cp2s1	si10	si3767
+spa6	[1;31ms5,[0mca0	[1;31ms3,[0msi40	[1;31ms4,[0mca40	[1;31ms2,[0msi0
+
+<del><del><del><del><del><del><del><del>|||||CHARACTER DISPLAY
+[1;31md1,[0mcay1	si2600	cax1	rcc1	cay1	si2600	cax2	rcc2	cay1	si2600	cax3	rcc2
+cay1	si2600	cax4	rcc3	
+
+[1;31md2,[0mcay2	si2600	cax1	rcc2	cay2	si2600	cax2	rcc1
+cay2	si2600	cax3	rcc2	cay2	si2600	cax4	rcc1	
+
+[1;31md3,[0mcay3	si2600	cax1	rcc3
+cay3	si2600	cax2	rcc2	cay3	si2600	cax3	rcc4	cay3	si2600	cax4	rcc2
+
+[1;31md4,[0mcay4	si2600	cax1	rcc5	cay4	si2600	cax2	rcc1	cay4	si2600	cax3	rcc2
+cay4	si2600	cax4	rcc3	spa7
+
+|||||CONSTANTS
+[1;31mx1,[0m1.00000	[1;31mx2,[0m1.17777	[1;31mx3,[0m1.37777	[1;31mx4,[0m1.57777	[1;31my1,[0m0.77777	[1;31my2,[0m0.60000
+[1;31my3,[0m0.40000	[1;31my4,[0m0.20000	[1;31mc1,[0m0.56400	[1;31mc2,[0m0.73400	[1;31mc3,[0m0.47400	[1;31mc4,[0m0.62000
+[1;31mc5,[0m0.37000
+
+
+|||||VECTOR DISPLAY|||| to be written
+[1;31mg1,[0mspz1
+|||||KEY
+[1;31m1036|[0m0.22070	0.26006
+|||||MC LINES
+[1;31mDA37400|[0m0	0	0	0	0	0	si2006	si2007	si2010	si2066	si2067	si2070
+
+si2151	si2163	si2227	si2230	si2231	si2400	si2401	si2402	si2403	si2404	si2441	si2444	si2460
+si2461	si2525	si2526	si2527	si2530	si2531	si2540	si2541	si2542	si2543	si2544	si2545	si2546
+si2547	si2550	si2620
+|||||TITLE
+[1;31mDA51600|[0m0.51071	0.12054	0.60040	0.75035	0.71034	0.50006	0.24075	0.35071	0.74002	0.34040	0.75035	0.71022
+0.14012	0.54044	0.06052	0.10040	0.02012	0.40010	0.40075	0.35007	0.17007	0.07010	0.75070	0.23017	1.51051
+
+
+START AT 3500

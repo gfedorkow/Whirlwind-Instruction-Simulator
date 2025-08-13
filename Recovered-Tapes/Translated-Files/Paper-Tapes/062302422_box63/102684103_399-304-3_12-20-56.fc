@@ -1,0 +1,25 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302422_box63\102684103_399-304-3_12-20-56.7ch
+fc TAPE 399-304-<del><del>3 HARRINGTON
+(24,6)
+[1;31ma1,[0m+2.	+0.	+1.	+0.	+1.	+1.	+0.	+2.	[1;31mh1,[0m+0.	[1;31mh2,[0m+0.	[1;31mh3,[0m+20.
+[1;31mc2,[0m
+LSR DE 2 KUTTA-GILL
+zf1=b1	zn1=2	zt1=c1	zn2=zn1+zn1
+[1;31m0r,[0mita3r	icr5	ict4r	isp	icx38r	ispzf1	icrzn1	ica8zt1+zn2+zn2+c	icx38r
+imr38r+c	its4zt1	icx38r	ica8zt1+zn2+c	imr2zt1	icx38r	imr46r+c	its6zt1	imr54<del>r+c
+iad4zt1	its4zt1	imr64r	isu6zt1	icx38r	iad8zt1+zn2+zn2+c	its8zt1+zn2+zn2+c
+ica8zt1+c	iad4zt1	its8zt1+c	ict7r	isp31r	isp35r	ica2zt1	imr48r
+iadzt1	itszt1	ita29r	icx38r	isp2r	+0	+0	MULTIPLE	[1;31m40r,[0m-1.	-.2928932188
+-1.7071067812	-.3333333333	[1;31m48r,[0m+.5	+.2928932188	+1.7071067812	+.5
+[1;31m56r,[0m+1.	+1.	+1.	+.3333333333	[1;31m64r,[0m+3.
+END OF SUBROUTINE
+<stop>[1;31mc1,[0m+0.	+.1	+0.	+0.	+0.	+0.	+0.	+0.	+0.	+0.
+[1;31mb1,[0mica10c1	its12c1	ics10c1	imr4a1	iada1	its2a1	[1;31mb3,[0mica8c1	isu8a1	icpb2
+ica6a1	iad14a1	its6a1	iad10a1	its8a1	ispb3	[1;31mb2,[0mica8c1	isu6a1	its12a1	ica2a1
+isu12a1	its14c1	isp6c2	[1;31md1,[0miFRA	iFOC2	+0.	+19.9	+0.	+5.	iSCX	+0.
++0.	+40	+25	iFOR	+6	+5	+500	[1;31mc4,[0misc0	icr20	[1;31misc1	icr20
+[0mc3,[1;31misc2	icr10	[0mc7,[1;31misc3	[0mc5,[1;31mispc2	isc2	[0mf1,[1;31micac1	isuh2	itsh1	ica10c1	iSOC	h1	ictc7	icac1
+iMOA+123.4567f	ica8c1	iMOA+123.4567f	ica10c1	iMOA+1.2345f	isc1	ictc3	iFRA
+iscx	+0.	+0.	+40	+25	icah2	iadh3	itsh2	isc0	ictc6	iMOAend
+iSTOP
+i START AT d1

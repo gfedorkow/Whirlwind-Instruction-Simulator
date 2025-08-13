@@ -1,0 +1,15 @@
+no GPIO library found
+Info: input file: tape-106-42-17112.7ch, type: 7ch, basename: tape-106-42-17112
+Info: FileName: tape-106-42-17112.7ch
+Info: block_array contains 4 elements
+Info: DA Aux Group Program Block Address Word: w0=0o40601
+Warning: 556 Decode overwriting core location 0o601: was 0o7, changed to 0o11
+Info: ending 556 file without a jump-to
+Core Image 2048(d) words, output to file tape-106-42-17112_gs001.tcore
+Info: Block Type Summary: 
+  loader: 000(d): b556,b556wc, b556,b556wc, b556,da, b556,jumpto, 
+     end: 004(d): end, 
+Info: 4(d) Loader Block Chains, 0(d) Data Block Chains
+Info: Completed Every Last Byte of tape tape-106-42-17112
+Info:    Wrote 1 files; Ignored 0 files due to size less than 30 words
+Info: 556 Checksum summary: Good=0(d), Bad=0(d), Missing=3(d), Jump_To's=1(d), Non_556_blocks=0(d)

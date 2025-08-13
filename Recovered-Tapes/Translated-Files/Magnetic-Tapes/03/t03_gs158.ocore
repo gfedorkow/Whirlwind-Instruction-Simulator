@@ -1,0 +1,22 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\03\t03.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\03\t03_gs158.ocore
+%TapeID: 
+%Stats: Covariance=0.003298, Size=98, Display-Ops, 9, 
+%Blocknum 0o0
+@T00000: 0040400 0000100 0021003 0000400 0141034 0040400 0004100 0021003  ; ts si bo si mr ts .word bo  :    \0\08\0c\0\08 : <color>\0 \0o<color>e 
+@T00010: 0001000 0141400 0040400 0010100 0021003 0001400 0142034 0040400  ; si mr ts bi bo si mr ts  :   \0\0\0\08\0c\0 : \0o<color># \0<stop><color>
+@T00020: 0002100 0021003 0002000 0142414 0040600 0000100 0021003 0002400  ; si bo si mr ts si bo si  :    \08\0i\0\08\0 : # #<stop><color>\0 #
+@T00030: 0143000 0040400 0000100 0021003 0003000 0143400 0040400 0037100  ; mr ts si bo si mr ts cf  :  \0\0\08\0\0\0\0 : <stop><color>\0 #<stop><color>2
+@T00040: 0021003 0003400 0144014 0040777 0177500 0021003 0004000 0144434  ; bo si mh ts md bo .word mh  :  8\0i<del>\08\0c :  #b<color><del> eb
+@T00050: 0041023 0001400 0000100 0041003 0004400 0145034 0041016 0001000  ; ts si si ts .word mh ts si  :     5\0\08\0cu\0 : <color>\0\0<color>eb<color>\0
+@T00060: 0000500 0041003 0005000 0145434 0041026 0000400 0000100 0041003  ; si ts .word mh ts si si ts  :     \08\0cj\0\08 : \0<color>eb<color>\0\0<color>
+@T00070: 0005400 0146000 0040400 0022100 0021016 0000400 0146414 0040560  ; .word mh ts bo bo si mh ts  :    \0\0\0\0u\0io : e#<color>= \0#<color>
+@T00100: 0000100 0021016 0001000 0147014 0040567 0000014 0020504 0000014  ; si bo si mh ts si bo si  :       \0u\0i#i#i : \0 \0#<color>\0 \0
+@T00110: 0020553 0000014 0020473 0000014 0020435 0000014 0020476 0000014  ; bo si bo si bo si bo si  :         #i#i-i0i :      \0 \0 \0 \0
+@T00120: 0020576 0000014 0020423 0000014 0020577 0000014 0020477 0000100  ; bo si bo si bo si bo si  : 0i5i<del>i<del>\0 :      \0 \0 \0 \0
+@T00130: 0021016 0001400 0154014 0040424 0000000 0020137 0166517 0117170  ; bo si SL ts si bo sf su  :       u\0ir\0#2m :  \09<color>\0 ##
+@T00140: 0001173 0133400  ;                   si ao  :              #\0 :              \0#
+
+%Hash: dfac5c-638765-98

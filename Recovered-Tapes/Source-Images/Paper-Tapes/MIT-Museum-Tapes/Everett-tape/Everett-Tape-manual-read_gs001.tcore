@@ -1,0 +1,26 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o1; xsum=bugbug
+%File: Everett-Tape-manual-read.7ch/Everett-Tape-manual-read_gs001.tcore
+%TapeID: 
+%Stats: Covariance=0.003379, Size=129, 
+%Blocknum 0o0
+@C00000: 0100074 0077706 0102726 0171013 0071100 0102700 0171013 0071107  ; ca sp ca CL cp ca CL cp  :       vaj4\0\043 :         t##vc#vc
+@C00010: 0037150 0102726 0171015 0071116 0102700 0171015 0071125 0101313  ; cf ca CL cp ca CL cp ca  :        hj+u\0+14 :         2#vc#vct
+@C00020: 0077706 0074062 0050072 0102726 0171012 0070101 0104100 0134000  ; sp sp ta ca CL cp cs dm  :       abxjs#\0\0 :         #kr#vczq
+@C00030: 0060063 0060103 0074062 0074545 0000075 0177627 0007630 0003000  ; ab ab sp sp si md .word si  :  #8b\t<cntl>7n\0 :    nnkk\0<del>8#
+@C00040: 0000026 0100000 0041333 0102740 0041330 0171003 0070110 0074066  ; si ca ts ca ts CL cp sp  :        j\06tn8 9 : \0t<color>#<color>vck
+@C00050: 0171001 0072554 0171017 0040003 0170021 0174743 0041331 0100003  ; CL cp CL ts CL md ts ca  :      #p28.<bs>,8 : v-v<color>v0<color>t
+@C00060: 0112423 0044141 0044205 0114237 0044151 0044202 0116456 0044176  ; ad td td su td td su td  :        5#|#\neq0 :        \tddwdd#d
+@C00070: 0044230 0116456 0044174 0044214 0114736 0046575 0046576 0044107  ; td su td td su td td td  :    nqvik<cntl>03 :         d#ddw55d
+@C00100: 0044211 0100000 0171025 0112430 0041334 0064000 0171012 0111333  ; td ca CL ad ts ex CL ad  :       =\01nc\0s6 :  dtv\t<color>fvl
+@C00110: 0041333 0100000 0070154 0074066 0040012 0171002 0070673 0171002  ; ts ca cp sp ts CL cp CL  :        6\0p9se#e : <color>tck<color>vcv
+@C00120: 0072566 0104001 0134000 0061317 0101331 0171002 0070217 0101331  ; cp cs dm ab ca CL cp ca  :        9#\02,e2, :         -zqntvct
+@C00130: 0171004 0070204 0131317 0100735 0040000 0101300 0040000 0104743  ; CL cp ao ca ts ca ts cs  :   ##2-\0\0\0<bs> : vcpt<color>t<color>z
+@C00140: 0174012 0111331 0040000 0074066 0101333 0040000 0106434 0174000  ; md ad ts sp ca ts cs md  :      s,\096\0c\0 : 0l<color>kt<color><bs>0
+@C00150: 0112434 0040000 0131320 0100733 0040000 0100737 0074176 0100742  ; ad ts ao ca ts ca sp ca  : c\0<color>6\0#0z : \t<color>pt<color>tkt
+@C00160: 0040012 0076360 0101331 0171004 0070234 0131321 0100741 0041330  ; ts sp ca CL cp ao ca ts  :         so,#c.#n : <color>#tvcpt<color>
+@C00170: 0100000 0176470 0111330 0074176 0131322 0100740 0074227 0000300  ; ca md ad sp ao ca sp si  :       \0mn0dt7\0 :    t<del>lkptk\0
+@C00200: 0104001  None    None    None    None    None    None    None    ;        cs                :  #               :  z              
+
+%Hash: 028188-d0305a-129

@@ -1,0 +1,225 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_07\102766866_fc22-102-1_9-9.7ch
+fc TAPE 22-102-<del>1 PETERSON
+OCTAL
+si10
+si176
+spa22		|tape feed
+ca3		|column function i<del><del>s for
+md6z5
+ad4z5
+ts1a26
+ca3		|function is normal
+clc4<del>		|or primed
+cpa25		|primed-normal|
+ca2z3		|letter c for normal
+[1;31ma26,[0mrc		|punch p or 2
+[1;31m1a26,[0mca0+
+rc0<del>		|punch column no.
+clc10
+rc0
+ca21z3		|punch carriage return
+rc0
+ca24		|no. 4 contains largest input x 2-9
+ts1z1
+sf5z1
+ao5z1
+ca0
+tsz2		|set 1st litter<del>al to 0
+tsz5
+ca1
+ts1z2		|set 2nd litteral to 1
+ca3z5		|reset to skip +
+tsa21		|first time through
+[1;31ma11,[0mcaz2		|reset references to main mask
+ad2z1
+tda1
+td1a7
+td2a7
+tda3
+tda27
+[1;31ma1,[0mca2000		|main mask empty
+cpa10<del>		|yes-no|
+caz2		|reset secondary prod of literals
+ad1
+md1z1		|next product of literals
+ts1z2
+<del>[1;31ma13,[0mad2z1
+tda2		|reset ref. to secondary mask
+tda6
+tda8
+[1;31ma2,[0mca2001
+cpa4		|secondary mask empty
+[1;31ma3,[0msd2000
+ck0
+spa5		|masks ag<del>ree
+sf0
+suz1		|do masks agree except 1 term
+cpa5		|yes-no|
+[1;31ma4,[0mao1z2		|try next product
+md1z1
+ts1z2		|store it
+ckz2
+spa14		|main product a prime so print
+spa13		|try again
+[1;31ma5,[0mcaz2		|1st prod of literals
+sd1z2
+[1;31ma6,[0mmd2001
+ck0
+sp0		|common term identical
+ts3z1		|sa<del>ve literals that are diff.
+sf0
+suz1		|do terms agree except 1 bit
+cpa7		|yes-
+spa4		|n<del>o-
+[1;31ma7,[0mcs3z1		|the different terms
+[1;31m1a7,[0mmd2000		|remove
+[1;31m2a7,[0mts2000		|and store
+ca1z2		|secondary literal
+suz2		|primary literal   do we eliminate secondary literal
+cpa9		|yes-no|
+cs0
+[1;31ma8,[0mts2001		|clear secondary literal
+[1;31ma9,[0mcs0<del><del><del>
+ts4z1		|memory of an action taken
+[1;31ma10,[0maoz2
+md1z1
+tsz2
+ck0
+spa12		|top of table check
+spa11
+[1;31ma12,[0mca0
+ex4z1
+cpa11		|there are still some prime terms
+si176
+ca17z3
+rc
+rc
+ca13z3		|record stop
+rc0		|s
+ca14z3
+rc0		|t
+ca15z3
+rc0		|o
+ca16z3
+rc0		|p
+spa22		|tape feed
+ca25z3		|stop character
+rc0
+si0		|stop program
+[1;31ma14,[0mca2z5		|reset letter
+tsa16
+caa1
+tda15		|set address of mask
+ca5z1
+ts1a15		|reset cycle instructions
+tsa17
+si176		|select tape unit 3 for recording
+[1;31ma21,[0mspa20		| no. + 1st time
+ca17z3
+rc0		|sp
+ca20z3
+rc0		|+
+ca17z3
+rc0		|sp
+aoz5		|count spaces used this line
+aoz5
+aoz5
+[1;31ma15,[0mcs0+		|mask
+[1;31m1a15,[0mclc0+
+cpa18		|no l<del>etter  dont print- letter print|
+[1;31ma16,[0mcaz3		|print letter
+rc0
+aoz5		|count spaces
+caz2		|product of literals
+[1;31ma17,[0mclc0+<del><del>
+cpa18		|no print-  prime|
+ca22z3
+rc0		|u.c.
+ca12z4
+rc0		|1
+ca23z3<del>
+rc0		|l.c.
+aoz5		|space counter
+[1;31ma18,[0maoa16<del><del>
+ao1a15		|next literal
+tsa17
+su6z1		|more to check  (clc17)
+cpa15		|yes-no|
+caz5		|spaces this line
+su1z5		|+90  more than 90 used
+cpa19		|no-yes|
+ca0
+tsz5		|reset counter
+ca21z3<del><del>
+rc0		|carriage return
+[1;31ma19,[0msi630		|stop tape
+<del><del><del><del><del><del>cs0
+[1;31ma27,[0mts0+
+spa10
+[1;31ma20,[0mtaa21<del><del><del><del><del><del><del><del><del><del><del><del>		|next time print + s
+spa15
+[1;31ma22,[0mtaa24
+cs5z5
+tsz5
+[1;31ma23,[0mca24z3
+rc0
+aoz<del><del>5
+cpa23
+[1;31ma24,[0msp0
+[1;31ma25,[0mca16z3
+spa26
+[1;31mz1,[0m0.40000		|1st bit checker
+si17		|letters in use
+si2000		|start of table
+si0		|temp storage (literals that appear both 0 a<del><del>nd 1)
++0		|all primes to date this run thru + otherwise
+clc0
+clc17
+[1;31mz3,[0m0.15400		|a  flexo code punch 7th hole
+1.45400		|b
+0.71400		|c
+0.45400		|d
+0.05400		|e
+0.65400		|f
+1.51400		|g
+1.21400		|h
+0.31400		|i
+0.55400		|j
+0.75400		|k
+0.25400		|s
+1.01400		|t
+1.41400		|o
+1.31400		|p
+<del>0.21400		|space
+0.33400		|+
+1.23400		|carriage return
+1.63400		|u.c.
+1.73400		|l.c.
+0.00400		|paper feed
+1.42400		|stop
+[1;31mz4,[0m1.75773		|flexo code for 00
+1.75527		|01
+1.75477		|02
+1.75437		|03
+1.75457		|04
+1.75517		|05
+1.75557		|06
+1.75537		|07
+1.75417		|08
+1.75<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>733		|09
+0.53773		|10
+0.53527		|11
+0.53477		|12
+0.53437		|13
+0.53457		|<del>14
+0.53517		|15
+[1;31mz5,[0m+0		|space counter
++90		|min no of spaces per line
+caz3
+spa20
+caz4
++120
+si17
+[1;31mz2,<del>[0msi0		|main literal product
+si1		|secondary literal product
+START AT 40

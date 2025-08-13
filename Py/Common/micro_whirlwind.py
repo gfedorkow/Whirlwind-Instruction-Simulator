@@ -8,14 +8,14 @@
 RasPi = True
 try:
     import RPi.GPIO as gpio
-    # https://pypi.org/project/smbus2/
+    # we'll import https://pypi.org/project/smbus2/
     import smbus2  # also contains i2c support
-    import msvcrt
 except ModuleNotFoundError:
 #    print("no GPIO library found")
     import smbus_replacement as smbus2
-    import gpio_replacement as gpio
-#    gpio = gpio_replacement.gpioClass()
+    import gpio_replacement   # as gpio
+    gpio = gpio_replacement.gpioClass()
+#    import msvcrt
     RasPi = False
 
 
@@ -69,6 +69,8 @@ class localCpuClass:
 class PanelMicroWWClass:
     def __init__(self, cb, sim_state_machine_arg=None, left_init=0, right_init=0):
 
+        cb.RasPi = RasPi
+
         self.log = cb.log
         self.sim_state_machine = sim_state_machine_arg
         self.micro_ww_module_present = True
@@ -88,6 +90,9 @@ class PanelMicroWWClass:
             pwr_ctl.pwr_on()
             time.sleep(0.3)
 
+            self.pin_audio_click = 12  # audio pin
+            gpio.setup(self.pin_audio_click, gpio.OUT)
+
             self.md = MappedRegisterDisplayClass(self.log, i2c_bus)  # pass in cb.log for printing log messages
             self.sw = MappedSwitchClass(self.log, i2c_bus, self.md)
             # I think there's only one set of lights that need to be initialized from CB
@@ -99,8 +104,8 @@ class PanelMicroWWClass:
             self.log.warn("Missing MicroWhirlwind Panel drivers")
             return
 
-        self.local_state_change_buttons = ("Stop-on-Addr", "Stop-on-CK", "Stop-on-S1")
-        
+        self.local_state_change_buttons = ("Stop on Addr", "Stop on CK", "Stop on S1")
+
 
 #        # the first element in the dict is the switch Read entry point, the second is the one to set the switches
 #        self.dispatch = {"LMIR":[self.md.read_left_register, self.md.set_left_register],
@@ -134,17 +139,32 @@ class PanelMicroWWClass:
         if bn:
             if bn in self.local_state_change_buttons:
                 self.local_state_change(bn)
-            else:
-                presets = self.md.read_preset_switch_leds()
-                pc_preset = presets["pc"]
-                self.sim_state_machine(bn, cb, pc_preset, set_scope_selector_leds=self.md.set_scope_selector_leds) # the third arg should be the PC Preset switch register
+            cpu_control_switches = \
+                 {"PC Preset": self.md.read_preset_switch_leds()["pc"],
+                 "Stop on Addr": self.md.stop_on_addr_state,
+                 "Stop on CK": self.md.check_alarm_special_state,
+                 "Stop on SI-1": self.md.stop_on_s1_state
+                 }
+            self.sim_state_machine(bn, cb, cpu_control_switches, set_scope_selector_leds=self.md.set_scope_selector_leds) # the third arg should be the PC Preset switch register
 
         if init_PC:
             self.write_register("PC", init_PC)
 
+        if self.md.stop_on_addr_state:  # Test the Stop on Address button on the panel
+            #  This is not a very efficient way to retrieve the PC Preset switch register
+            cpu.stop_on_address = self.md.read_preset_switch_leds()["pc"]  # if activated, set the address for the cpu to watch
+        else:
+            cpu.stop_on_address = None  # otherwise, deactivate the Stop on PC function
+
         if gpio.input(pin_gpio_isKey) == 0:   #
             return False
         return True
+
+
+    # The Panels contain a subset of the Flip Flop Register Preset switches; this method returns
+    # this list of names supported by this panel
+    def get_ff_preset_list(self):
+        return ["FF02Sw", "FF03Sw"]
 
 
    # read a register from the switches and lights panel.
@@ -179,8 +199,8 @@ class PanelMicroWWClass:
             case "StopOnAddr":
                 ret = self.md.stop_on_addr_state
             case _:
-                self.log.warn("Panel.read_register: unknown register %s" % which_one)
-                exit()
+                self.log.info("mWWPanel.read_register: unknown register %s" % which_one)
+                ret = None
         return ret
 
 
@@ -249,17 +269,22 @@ class PanelMicroWWClass:
 
     def local_state_change(self,bn):
         match bn:
-            case "Stop-on-Addr":
+            case "Stop on Addr":
                 self.md.stop_on_addr_state ^= 1
-            case "Stop-on-CK":
+            case "Stop on CK":
                 self.md.check_alarm_special_state ^= 1
-            case "Stop-on-S1":
+            case "Stop on S1":
                 self.md.stop_on_s1_state ^= 1
             case _:
                 self.log.info("mWWPanel.local_state_change: unknown button %s" % bn)
         if MwwPanelDebug: self.log.info("local_state_change: stop-on-addr=%d, stop-on-ck=%d, stop-on-S1=%d" %
             (self.md.stop_on_addr_state, self.md.check_alarm_special_state, self.md.stop_on_s1_state))
         self.md.update_exec_switch_leds()
+
+    def set_audio_click(self, acc):
+        val = (acc & 0o4) != 0
+        gpio.output(self.pin_audio_click, val)
+
 
 # ==============================================================
 
@@ -509,33 +534,33 @@ class MappedSwitchClass:
 
         # push button switches can be classified first by the "column" number, 0-9
         self.u3_switch_map = (
-            self.mir_sw,  # 0
-            self.mir_sw,  # 1
-            self.mir_sw,  # 2
-            self.mir_sw,  # 3
-            self.mir_sw,  # 4
-            self.mir_sw,  # 5
-            self.ff2_sw,  # 6
-            self.ff2_sw,  # 7
-            self.ff3_sw,  # 8
-            self.ff3_sw,  # 9
+            self.fn_mir_sw,  # 0
+            self.fn_mir_sw,  # 1
+            self.fn_mir_sw,  # 2
+            self.fn_mir_sw,  # 3
+            self.fn_mir_sw,  # 4
+            self.fn_mir_sw,  # 5
+            self.fn_ff2_sw,  # 6
+            self.fn_ff2_sw,  # 7
+            self.fn_ff3_sw,  # 8
+            self.fn_ff3_sw,  # 9
         )
         self.u4_switch_map = (
-            self.fn_sw,   # 0  - function switches - Clear Alarm through to Examine
-            self.fn_sw,   # 1  - function switches - Stop-on-X
-            self.pc_sw,   # 2  - PC Preset switches
-            self.pc_sw,   # 3  - PC Preset switches
-            self.no_sw,   # 4
-            self.no_sw,   # 5
-            self.no_sw,   # 6
-            self.no_sw,   # 7
-            self.no_sw,   # 8
-            self.no_sw,   # 9
+            self.fn_sw,  # 0  - function switches - Clear Alarm through to Examine
+            self.fn_sw,  # 1  - function switches - Stop-on-X
+            self.fn_pc_sw,  # 2  - PC Preset switches
+            self.fn_pc_sw,  # 3  - PC Preset switches
+            self.fn_no_sw,  # 4
+            self.fn_no_sw,  # 5
+            self.fn_no_sw,  # 6
+            self.fn_no_sw,  # 7
+            self.fn_no_sw,  # 8
+            self.fn_no_sw,   # 9
         )
         self.md = mapped_display
         self.fn_buttons_def = (("Examine", "Read In", "Order-by-Order", "Start at 40", "Start Over", "Restart", "Stop", "Clear"),
-                               ("Stop-on-Addr", "Stop-on-CK", "Stop-on-S1", "F-Scope", "D-Scope"))
-        self.ff_preset_state = [0, 0]        # ff2 and ff3 preset values
+                               ("Stop on Addr", "Stop on CK", "Stop on S1", "F-Scope", "D-Scope", "unused", "unused", "Rotary Push"))
+        self.encoder_state = [0,0]
 
 
     def check_buttons(self):
@@ -555,8 +580,12 @@ class MappedSwitchClass:
         elif self.tca84_u4.available() > 0:
             key = self.tca84_u4.getEvent()
             pressed = key & 0x80
-            if pressed:     # I'm ignoring "released" events
-                key &= 0x7F
+            key &= 0x7F
+            if (key == 111 or key == 112):   # siphon off rotary encoder actions from U4 first,
+                                            # then get the rest of the buttons
+                button_press = self.fn_rotary_decode(pressed, key - 111)  # the two codes come in as 111 and 112
+
+            elif pressed:     # I'm ignoring "released" events
                 key -= 1
                 row = key // 10
                 col = key % 10
@@ -570,7 +599,7 @@ class MappedSwitchClass:
 #                    button_press = input("type function button name: ")
         return button_press
 
-    def no_sw(self, row, col):
+    def fn_no_sw(self, row, col):
         self.log.warn("unknown switch row %d, col %d" %(row, col))
         return None
 
@@ -579,21 +608,21 @@ class MappedSwitchClass:
         try:
             button = self.fn_buttons_def[col][row]
         except:
-            button = "undefined button"
+            button = "undefined mWW button col=%d, row=%d" % (col, row)
         if MwwPanelDebug: self.log.info("function switch %s: row %d, col %d" %(button, row, col))
         return button
 
-    def ff2_sw(self, row, col):
+    def fn_ff2_sw(self, row, col):
         if MwwPanelDebug: self.log.info("ff2 switch row %d, col %d" %(row, col))
-        self.ff_preset_flip_bit(0, row, col)
+        self.ff_preset_flip_bit("ff2", row, col)
         return None
 
-    def ff3_sw(self, row, col):
+    def fn_ff3_sw(self, row, col):
         if MwwPanelDebug: self.log.info("ff3 switch row %d, col %d" %(row, col))
-        self.ff_preset_flip_bit(1, row, col)
+        self.ff_preset_flip_bit("ff3", row, col)
         return None
 
-    def pc_sw(self, row, col):
+    def fn_pc_sw(self, row, col):
         button = "PC Preset"
         self.pc_preset_flip_bit(row, col)
         if MwwPanelDebug: self.log.info("pc switch '%s': row %d, col %d" %(button, row, col))
@@ -606,11 +635,12 @@ class MappedSwitchClass:
         bit_num = row
         if col & 1 == 0:  # even-numbered registers are the most-significant bits of Column numbers
             bit_num += 8
-        reg = self.ff_preset_state[ff]
+
+        presets = self.md.read_preset_switch_leds()
+        reg = presets[ff]
         regf = reg ^ (1 << bit_num)         # flip the designated bit
-        self.ff_preset_state[ff] = regf
         if MwwPanelDebug: self.log.info("ff flip bit: ff=%d, bit_num=%d, reg=0o%o, regf=0o%o" % (ff, bit_num, reg, regf))
-        if ff == 0:
+        if ff == "ff2":
             self.md.set_preset_switch_leds(pc=None, pc_bank=None, ff2=regf, ff3=None, bank_test=False)
         else:
             self.md.set_preset_switch_leds(pc=None, pc_bank=None, ff2=None, ff3=regf, bank_test=False)
@@ -627,7 +657,7 @@ class MappedSwitchClass:
         self.md.set_preset_switch_leds(pc=regf, pc_bank=None)
 
 
-    def mir_sw(self, row, col):
+    def fn_mir_sw(self, row, col):
         # mir buttons are columns 0-5, rows 0-7
         activate = 0
         if col == 0 and row >= 2:  # four buttons in Col 0 are function keys
@@ -657,7 +687,35 @@ class MappedSwitchClass:
             if MwwPanelDebug: self.log.info("preset LMIR = 0o%06o, RMIR = 0o%06o, MIR=%d" %
                 (self.md.mir_state[0], self.md.mir_state[1], self.md.which_mir))
 
+    # =============== Rotary Encoder  ==================================
+    # The following routine decodes the two signals from a Rotary Encoder to
+    # figure out which way the knob is being turned.
+    # The code relies on the key scanner to deliver an 'interrupt' when either pin
+    # changes state.
+    # We're relying completely on the scanner to debounce the signals!
+    # 'which_key' is which one of the two Rotary phases changed.
+    def fn_rotary_decode(self, pressed, which_key):
 
+        self.encoder_state[which_key] = (pressed != 0)
+
+        direction = 33  # this is here because PyCharm figures it _could_ be uninitialized.
+        if pressed:
+            if which_key == 0:
+                direction = self.encoder_state[1]
+            if which_key == 1:
+                direction = self.encoder_state[0] == 0
+        else:
+            if which_key == 0:
+                direction = self.encoder_state[1] == 0
+            if which_key == 1:
+                direction = self.encoder_state[0]
+
+        if direction:
+            push_str = "Rotary Up"
+        else:
+            push_str = "Rotary Down"
+        if MwwPanelDebug: print("%s: key=%d dir=%d" % (push_str, which_key, direction))
+        return push_str
 
 
 # ******************************************************************** #
@@ -984,7 +1042,7 @@ class TCA8414:
 # We're also relying completely on the scanner to debounce the signals!
 EncoderState = [0,0]
 # 'which_key' is which one of the two Rotary phases changed.
-def rotary_decode(pressed, which_key):
+def rotary_decode_test(pressed, which_key):
     global EncoderState
 
     EncoderState[which_key] = (pressed != 0)
@@ -1046,7 +1104,7 @@ class IS31FL3731:
     # has control registers instead of pixels.
     def writeRegister8(self, register, command, val=None):
         global PassCount
-        if MwwPanelDebug: log.info("%05d: writeRegister: reg=%x, cmd=%x " % (PassCount, register, command), "val=", val)
+        if MwwPanelDebug: self.log.info("%05d: writeRegister: reg=%x, cmd=%x " % (PassCount, register, command), "val=", val)
         msg = [register]
         self.bus.write_i2c_block_data(self.i2c_addr, self.ISSI_COMMANDREGISTER, msg)
 
@@ -1113,22 +1171,22 @@ class IS31FL3731:
         global MwwPanelDebug
         _frame = 0
         # shutdown
-        if MwwPanelDebug: log.info("Shutdown")
+        if MwwPanelDebug: self.log.info("Shutdown")
         self.writeRegister8(self.ISSI_BANK_FUNCTIONREG, self.ISSI_REG_SHUTDOWN, val=0x00)
         time.sleep(0.01)
 
         # out of shutdown
-        if MwwPanelDebug: log.info("unShutdown")
+        if MwwPanelDebug: self.log.info("unShutdown")
         self.writeRegister8(self.ISSI_BANK_FUNCTIONREG, self.ISSI_REG_SHUTDOWN, val=0x01)
         #time.sleep(1)
 
         # picture mode
-        if MwwPanelDebug: log.info("picture mode")
+        if MwwPanelDebug: self.log.info("picture mode")
         self.writeRegister8(self.ISSI_BANK_FUNCTIONREG, self.ISSI_REG_CONFIG,
                  val=self.ISSI_REG_CONFIG_PICTUREMODE)
 
         #time.sleep(1)
-        if MwwPanelDebug: log.info("display frame")
+        if MwwPanelDebug: self.log.info("display frame")
         self.displayFrame(_frame)
 
         #time.sleep(1)
@@ -1168,6 +1226,7 @@ class I2C:
 class PwrCtlClass:
     def __init__(self, log):
         self.pwr_state: int = 0
+        self.log = log
 
     def pwr_on(self) -> None:
         global pin_pwr_ctl, pin_tca_reset, pin_tca_interrupt
@@ -1184,7 +1243,7 @@ class PwrCtlClass:
         time.sleep(0.3)
         gpio.output(pin_tca_reset, 1)  # Enable the key scanners
 
-        if MwwPanelDebug: log.info("power control pin %d set to one" % pin_pwr_ctl)
+        if MwwPanelDebug: self.log.info("power control pin %d set to one" % pin_pwr_ctl)
 
 
     def step(self):
@@ -1281,6 +1340,7 @@ class Is31:
         global PassCount
 
         word_reg = 0
+        word_offset = 0
         if pattern == 0 or pattern == 1:
             word_offset = self.test_step >> 4
             bit_num = self.test_step & 0xf
@@ -1406,7 +1466,7 @@ def run_tca(tca84):
         pressed = key & 0x80
         key &= 0x7F
         if (key == 111 or key == 112) and tca84.i2c_addr == TCA8414_1_ADDR:
-            rotary_decode(pressed, key - 111)  # the two codes come in as 111 and 112
+            rotary_decode_test(pressed, key - 111)  # the two codes come in as 111 and 112
 
         else:
             key -= 1
@@ -1567,15 +1627,13 @@ def main():
     is31_U2 = None
     tca84_0 = None
     tca84_1 = None
-    pwr_ctl = PwrCtlClass(cb.log)
-
-    pass_count = 0
 
     cb = wwinfra.ConstWWbitClass()
     cb.cpu = localCpuClass()
     cb.cpu.cm = wwinfra.CorememClass(cb)
     cb.log = wwinfra.LogFactory().getLog (quiet=False, no_warn=args.NoWarnings)
 
+    pwr_ctl = PwrCtlClass(cb.log)
     # not much can happen if we can't initialize the i2c bus...
     i2c_bus = I2C(1)
     bus = i2c_bus.bus

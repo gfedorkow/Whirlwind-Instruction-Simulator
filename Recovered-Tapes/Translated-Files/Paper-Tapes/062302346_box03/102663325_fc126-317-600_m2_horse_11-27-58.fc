@@ -1,0 +1,163 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302346_box03\102663325_fc126-317-600_m2_horse_11-27-58.7ch
+fc 126 317 600 m<del>2   TEST PROGRAM  ANALYZE DATA (READ AND CALC.)
+(24,6)	OCTAL
+
+[1;31mDA 0.44040|40|
+	[0msi700
+	rd		|read in last word of PA
+[1;31ma6,[0m	cac2		|shift the flexo characters in field 0,1
+	clh12
+	tsc2
+	aoa6
+	aoa6+2
+	aot2
+	cpa6
+[1;31ma7,[0m	cac3
+	clh12
+	tsc3
+	aoa7
+	aoa7+2
+	aot3
+	cpa7
+	sp2000
+
+t=3000
+
+[1;31mDA 0.46000|2000|
+g1,[0m	cat2+1		|print
+	si225		|instructions on
+	boc2		|direct printer
+	si0		|and stop
+	si10		|reset ffs
+[1;31ma1,[0m	si122		|start MT2 in read, forward
+	rd		|pick up code word of block
+	ck5		|ck 1st code word
+	spa4		|if ck, read in first block
+[1;31ma2,[0m	ck7		|if not, ck with 2nd code word
+	spa5
+	cks2		|see if there is more data on tape
+	spa11
+	spa1		|if not check, read next block from tape
+[1;31ma3,	[0msi630		|stop tape
+	spa10
+[1;31ma4,[0m	cf301		|set to read 1st block into field 0
+	cat1+2
+	bi100
+	cat1+1		|control word for other block
+	cpa3		|if other has ben read in, stop tape and continue program
+	cs1		|if not, set
+	tst1		|control word
+	spa1		|read next block from tape
+[1;31ma5,[0m	cf 321		|set to read 2nd block into
+	cat1+2		|field 2
+	bi100
+	cat1
+	cpa3
+	cs1
+	tst1+1
+	spa1
+[1;31ma10,[0m	ca0		|reset control words
+	tst1
+	tst1+1
+[1;31mg2,[0m	cat3+1		|print first instructions
+	si225		|select direct printer
+	boc3
+	si0		|stop to follow instructions
+	IN
+	isc0
+	icr144		|set counter to 100(base 10)
+	OUT
+	ca24		|pprepare to pick
+	ad24	<del>	|proper variable
+			|after one run, to pick new variable with same data,START OVER at g2+10 in fields 0,1
+
+	spr1+2
+[1;31mr1,[0m	OUT
+	cac1		|RC(+18)
+	clh20		|put +18 in BR
+	abr2+1
+	abr2+3
+	abr2+6
+	abr2+10		|modify instructions
+[1;31mr2,[0m	cf321		|pick up the first
+	ca100		|variable
+	tst
+	ca101
+	ts1t
+	cf301		|pick up the second
+	ca100<del>		|variable
+	ts2t
+	ca101
+	ts3t
+	cf331		|set fields to store resu<del><del>lts
+	cas2+1		|see if the number
+	ad3t		|is less tha<del>n C(s2+1)
+	cpr5+3
+	IN
+	ica2t
+	its102+c
+	isut
+	idv2t
+	its100+c
+[1;31mr3,[0m	isus<del>1<del>		<del><del>|store max in s1
+	icpr4
+	ica100+c
+	itss1
+	ispr5
+[1;31mr<del><del><del><del><del><del>4,[0m	<del>ics100+c		|store min in s1+2
+	iads1+2
+	icpr5
+	ica100+c
+	itss1+2
+[1;31mr5,[0m	ici1
+	ictr1
+	spr6
+[1;31mr5+3,[0m	IN
+	ica2t<del>		|if number is less tha<del>n
+	its102+c		|C(s2+1), put the difference
+	is<del>ut		|in place of the perc. dif.
+	its<del>100+c
+	ispr5
+[1;31mr6,[0m	cac1+1		|reset routine
+	tsr2+1
+	tsr2+6
+	<del>ad1
+	tsr2<del><del><del><del><del>+3
+	tsr2+10
+	car7		|go to program in flds 3,4
+	cf734
+<del>[1;31mr7,[0m	sp750
+	si0
+	si10
+	spg2+10		|re-enter from fld 4 for next set, same data
+
+<del>[1;31mDA 0.46500|2500|
+t1,[0m+0	+0	+900
+[1;31mc1,[0m+18	ca100
+[1;31mt3,[0m-24	+25
+[1;31mc3,[0m+57	+12	+10	+8	+61
++28	+30	+8	+57	+12
++24	+8	+24	+48	+20
++56	+6	+36	+8	+56
++48	+18	+2	+61	+41
+[1;31mDA 0.45610|1610|
+c2,[0m+41	+57	+12	+10	+8
++32	+40	+2	+8	+61
++28	+30	+57	+8	+12
++24	+10	+32	+8	+12
++24	+8	+10	+44	+2
++28	+12	+6	+36	+8
++56	+48	+18	+2	+41
++6	+20	+2	+8	+61
++26	+26	+10	+8	+11
++25	+8	+19	+25	+8
++27	+8	+57	+10	+2
++32	+61	+41
+[1;31mt2,[0m-57	+58
+
+
+[1;31m62|s1,[0m
+[1;31m2470|<del><del>s2,[0m	0.52525	0.55000
+
+START AT 32
+

@@ -1,0 +1,118 @@
+no GPIO library found
+Info: input file: Everett-tape-merged.7ch, type: 7ch, basename: Everett-tape-merged
+Info: FileName: Everett-tape-merged.7ch
+Info: block_array contains 46 elements
+Info: Drum Group DA word: w0=0o1
+Warning: WW Block Checksum check failed: calculated xsum=0o011233, tape says:0o011336
+Info: Drum Group DA word: w0=0o1
+Warning: suspicious WW block length: count=0(d), actual block length=1(d)
+Warning: Writing beyond end of Core address at addr=0o4000, offset=0o1046, core-size=0o4000
+Info: ending 556 file without a jump-to
+Core Image 2048(d) words, output to file Everett-tape-merged_gs001.tcore
+Info: Drum Group DA word: w0=0o2
+Warning: suspicious WW block length: count=0(d), actual block length=1(d)
+Info: Drum Group DA word: w0=0o2
+Warning: Writing beyond end of Core address at addr=0o4000, offset=0o2002, core-size=0o4000
+Info: ending 556 file without a jump-to
+Core Image 2048(d) words, output to file Everett-tape-merged_gs002.tcore
+Info: Drum Group DA word: w0=0o3
+Warning: suspicious WW block length: count=0(d), actual block length=1(d)
+Info: Drum Group DA word: w0=0o3
+Warning: suspicious WW block length: count=0(d), actual block length=1(d)
+Warning: Writing beyond end of Core address at addr=0o4000, offset=0o222, core-size=0o4000
+Info: ending 556 file without a jump-to
+Core Image 2048(d) words, output to file Everett-tape-merged_gs003.tcore
+Info: Drum Group DA word: w0=0o4
+Info: Drum Group DA word: w0=0o4
+Warning: suspicious WW block length: count=0(d), actual block length=1(d)
+Warning: Writing beyond end of Core address at addr=0o4000, offset=0o1266, core-size=0o4000
+Info: ending 556 file without a jump-to
+Core Image 2048(d) words, output to file Everett-tape-merged_gs004.tcore
+Info: Drum Group DA word: w0=0o5
+Warning: suspicious WW block length: count=808(d), actual block length=470(d)
+Warning: 556 block ran out of words
+Info: Offset: 0o2610(1416), decode_556_word: non-zero LSBs in c0 or c1: c0=0o0, c1=0o1, c2=0o20
+Info: Offset: 0o2616(1422), decode_556_word: non-zero LSBs in c0 or c1: c0=0o6, c1=0o35, c2=0o74
+Info: Offset: 0o2624(1428), decode_556_word: non-zero LSBs in c0 or c1: c0=0o6, c1=0o63, c2=0o54
+Info: Offset: 0o2635(1437), decode_556_word: non-zero LSBs in c0 or c1: c0=0o6, c1=0o65, c2=0o22
+Info: Offset: 0o2640(1440), decode_556_word: non-zero LSBs in c0 or c1: c0=0o4, c1=0o45, c2=0o44
+Info: Offset: 0o2643(1443), decode_556_word: non-zero LSBs in c0 or c1: c0=0o0, c1=0o1, c2=0o22
+Info: Offset: 0o2646(1446), decode_556_word: non-zero LSBs in c0 or c1: c0=0o4, c1=0o41, c2=0o54
+Info: Offset: 0o2651(1449), decode_556_word: non-zero LSBs in c0 or c1: c0=0o4, c1=0o53, c2=0o40
+Info: Offset: 0o2654(1452), decode_556_word: non-zero LSBs in c0 or c1: c0=0o6, c1=0o67, c2=0o36
+Info: Offset: 0o2657(1455), decode_556_word: non-zero LSBs in c0 or c1: c0=0o4, c1=0o21, c2=0o42
+Info: Offset: 0o2673(1467), decode_556_word: non-zero LSBs in c0 or c1: c0=0o6, c1=0o75, c2=0o20
+Info: Offset: 0o2701(1473), decode_556_word: non-zero LSBs in c0 or c1: c0=0o4, c1=0o53, c2=0o40
+Info: Offset: 0o2704(1476), decode_556_word: non-zero LSBs in c0 or c1: c0=0o6, c1=0o71, c2=0o36
+Info: Offset: 0o2707(1479), decode_556_word: non-zero LSBs in c0 or c1: c0=0o4, c1=0o21, c2=0o40
+Info: Offset: 0o2723(1491), decode_556_word: non-zero LSBs in c0 or c1: c0=0o6, c1=0o35, c2=0o74
+Info: Offset: 0o2731(1497), decode_556_word: non-zero LSBs in c0 or c1: c0=0o10, c1=0o15, c2=0o16
+Info: Offset: 0o2742(1506), decode_556_word: non-zero LSBs in c0 or c1: c0=0o4, c1=0o41, c2=0o44
+Info: Offset: 0o2745(1509), decode_556_word: non-zero LSBs in c0 or c1: c0=0o0, c1=0o1, c2=0o22
+Info: Offset: 0o2750(1512), decode_556_word: non-zero LSBs in c0 or c1: c0=0o4, c1=0o45, c2=0o40
+Info: Offset: 0o2753(1515), decode_556_word: non-zero LSBs in c0 or c1: c0=0o6, c1=0o75, c2=0o20
+Info: Offset: 0o2756(1518), decode_556_word: non-zero LSBs in c0 or c1: c0=0o4, c1=0o53, c2=0o40
+Info: Offset: 0o2764(1524), decode_556_word: non-zero LSBs in c0 or c1: c0=0o4, c1=0o21, c2=0o54
+Info: Offset: 0o2775(1533), decode_556_word: non-zero LSBs in c0 or c1: c0=0o2, c1=0o7, c2=0o54
+Info: Offset: 0o3003(1539), decode_556_word: non-zero LSBs in c0 or c1: c0=0o6, c1=0o31, c2=0o32
+Info: Offset: 0o3006(1542), decode_556_word: non-zero LSBs in c0 or c1: c0=0o6, c1=0o33, c2=0o20
+Info: Offset: 0o3011(1545), decode_556_word: non-zero LSBs in c0 or c1: c0=0o6, c1=0o31, c2=0o40
+Info: Offset: 0o3014(1548), decode_556_word: non-zero LSBs in c0 or c1: c0=0o6, c1=0o77, c2=0o20
+Info: Offset: 0o3017(1551), decode_556_word: non-zero LSBs in c0 or c1: c0=0o6, c1=0o7, c2=0o40
+Warning: Warning: Offset: 0o3025(1557), decode_556_word needs 3 char, but called with 1 characters; returning zero
+Info: DA Aux Group Program Block Address Word: w0=0o12242
+Info: DA Aux Group Program Block Address Word: w0=0o12540
+Info: DA Aux Group Program Block Address Word: w0=0o40234
+Warning: 556 Decode overwriting core location 0o234: was 0o140154, changed to 0o17154
+Info: DA Aux Group Program Block Address Word: w0=0o12536
+Info: DA Aux Group Program Block Address Word: w0=0o17222
+Warning: 556 Decode: leftover word 0o000022
+Info: DA Aux Group Program Block Address Word: w0=0o12054
+Info: DA Aux Group Program Block Address Word: w0=0o17336
+Info: DA Aux Group Program Block Address Word: w0=0o17420
+Info: DA Aux Group Program Block Address Word: w0=0o11442
+Info: DA Aux Group Program Block Address Word: w0=0o12554
+Info: DA Aux Group Program Block Address Word: w0=0o17436
+Info: DA Aux Group Program Block Address Word: w0=0o17022
+Info: DA Aux Group Program Block Address Word: w0=0o11440
+Info: DA Aux Group Program Block Address Word: w0=0o40134
+Warning: 556 Decode overwriting core location 0o134: was 0o40416, changed to 0o20616
+Warning: suspicious WW block length: count=13024(d), actual block length=49(d)
+Warning: Writing beyond end of Core address at addr=0o35062, offset=0o31377, core-size=0o4000
+Warning: 556 block ran out of words
+Warning: Warning: Offset: 0o3122(1618), decode_556_word needs 3 char, but called with 1 characters; returning zero
+Warning: suspicious WW block length: count=32512(d), actual block length=21(d)
+Warning: Writing beyond end of Core address at addr=0o77706, offset=0o77402, core-size=0o4000
+Warning: 556 Decode overwriting core location 0o306: was 0o3600, changed to 0o40330
+Warning: 556 Decode overwriting core location 0o307: was 0o3600, changed to 0o100370
+Warning: 556 Decode overwriting core location 0o310: was 0o40153, changed to 0o40253
+Warning: 556 Decode overwriting core location 0o311: was 0o100, changed to 0o104001
+Warning: 556 Decode overwriting core location 0o312: was 0o12, changed to 0o40252
+Warning: 556 Decode overwriting core location 0o313: was 0o40, changed to 0o130064
+Warning: 556 Decode overwriting core location 0o314: was 0o177400, changed to 0o114401
+Warning: 556 Decode overwriting core location 0o315: was 0o0, changed to 0o70040
+Warning: 556 Decode overwriting core location 0o316: was 0o176000, changed to 0o104335
+Warning: 556 Decode overwriting core location 0o317: was 0o1000, changed to 0o171006
+Warning: 556 Decode overwriting core location 0o320: was 0o100000, changed to 0o70203
+Warning: 556 Decode overwriting core location 0o321: was 0o40000, changed to 0o100402
+Warning: 556 Decode overwriting core location 0o322: was 0o50373, changed to 0o44245
+Warning: 556 Decode overwriting core location 0o323: was 0o40355, changed to 0o110001
+Warning: 556 Decode overwriting core location 0o324: was 0o171010, changed to 0o44241
+Warning: 556 Decode overwriting core location 0o325: was 0o161010, changed to 0o100403
+Warning: 556 Decode overwriting core location 0o326: was 0o154007, changed to 0o40253
+Warning: 556 Decode overwriting core location 0o327: was 0o64355, changed to 0o100404
+Warning: 556 Decode overwriting core location 0o330: was 0o174354, changed to 0o0
+Warning: 556 block ran out of words
+Info: ending 556 file without a jump-to
+Core Image 2048(d) words, output to file Everett-tape-merged_gs005.tcore
+Info: Block Type Summary: 
+  loader: 000(d): b556,da, b556,ditto, b556,da, b556,b556wc, b556,ditto,  b556,b556wc, b556,ditto, b556,jumpto, 
+  loader: 009(d): b556,da, b556,b556wc, b556,ditto,  b556,b556wc, b556,ditto, b556,da, b556,b556wc, b556,ditto, b556,jumpto, 
+  loader: 019(d): b556,da, b556,b556wc, b556,ditto,  b556,b556wc, b556,ditto, b556,da, b556,b556wc, b556,ditto,  b556,b556wc, b556,ditto, b556,jumpto, 
+  loader: 032(d): b556,da, b556,b556wc, b556,ditto, b556,da, b556,b556wc, b556,ditto,  b556,b556wc, b556,ditto, b556,jumpto, 
+  loader: 042(d): b556,da, b556,ditto,   
+     end: 046(d): end, 
+Info: 46(d) Loader Block Chains, 0(d) Data Block Chains
+Info: Completed Every Last Byte of tape Everett-tape-merged
+Info:    Wrote 5 files; Ignored 0 files due to size less than 30 words
+Info: 556 Checksum summary: Good=12(d), Bad=1(d), Missing=28(d), Jump_To's=5(d), Non_556_blocks=0(d)

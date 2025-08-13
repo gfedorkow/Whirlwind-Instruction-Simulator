@@ -1,0 +1,21 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\31\t31.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\31\t31_gs254.ocore
+%TapeID: 
+%Stats: Covariance=0.003755, Size=91, Display-Ops, 1, 
+%Blocknum 0o0
+@T00000: 0000132 0100000 0102755 0126206 0100000 0100371 0126425 0100000  ; si ca ca sa ca ca sa ca  : f\0#a\0<cntl>1\0 :        \0t##tT#T
+@T00010: 0100752 0126422 0100000 0100764 0126422 0100000 0101010 0126422  ; ca sa ca ca sa ca ca sa  :       YD\0GD\0 D :         T#TT#TT#
+@T00020: 0100000 0101377 0126417 0100000 0102340 0126411 0100000 0102427  ; ca ca sa ca ca sa ca ca  :  \0<del>2\0T:\07 :         TT#T##T#
+@T00030: 0126611 0100000 0102574 0126610 0100000 0102713 0126607 0100000  ; sa ca ca sa ca ca sa ca  :      :\0V \043\0 :         #T##T##T
+@T00040: 0103413 0126603 0100000 0103440 0126603 0100000 0133253 0127064  ; ca sa ca ca sa ca ao sa  :       48\0T8\0#G :         ##T##T##
+@T00050: 0100000 0133312 0127064 0100000 0133751 0127060 0100000 0134673  ; ca ao sa ca ao sa ca dm  :     \0SG\0\nO\0# :         T##T##TQ
+@T00060: 0127053 0100000 0134745 0127052 0100000 0135337 0127047 0000000  ; sa ca dm sa ca dm sa si  :     #\0\tY\0##\0 :        #TQ#TQ#\0
+@T00070: 0063400 0000000 0014500 0000552 0000000 0000001 0063400 0000000  ; ab si rd si si si ab si  :   \0\0\0Y\0#\0\0 :    (\0A\0\0\0(\0
+@T00100: 0014500 0001252 0000500 0000002 0063400 0000000 0014500 0001512  ; rd si si si ab si rd si  :    \0Y\0E\0\0\0S :    A\0\0\0(\0A\0
+@T00110: 0077277 0000003 0063400 0000000 0014500 0000552 0003600 0000004  ; sp si ab si rd si si si  : <del>8\0\0\0Y\0# :     #\0(\0A\0#\0
+@T00120: 0063400 0000000 0014500 0001252 0003100 0000005 0063400 0000000  ; ab si rd si si si ab si  :   \0\0\0Y\0_\0\0 :     (\0A\0#\0(\0
+@T00130: 0014500 0001512 0004300  ;             rd si .word  :            \0S\0 :             A\0E
+
+%Hash: c9ec01-130886-91

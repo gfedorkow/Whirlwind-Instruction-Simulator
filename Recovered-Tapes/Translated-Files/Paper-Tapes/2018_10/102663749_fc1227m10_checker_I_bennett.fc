@@ -1,0 +1,514 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_10\102663749_fc1227m10_checker_I_bennett.7ch
+fc 1227 m<del><del><del><del>10 WHIRLWIND CHECKER, BENNETT
+OCTAL
+[1;31m2200|p2,
+2400|p7,[0m
+|PERM A, includes executive program, s<del>pecial function, and routines needed for
+|executing executive instructions.  This block will be written over
+|by the interpretive routine.
+
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>[1;31mDA1.10240|2440|a14,[0m<del><del><del><del><del><del>ca 0
+<del>[1;31ma3,[0mad 1k3	|p2
+td c1
+[1;31ma11,[0mca c1	|executive program counter
+md 2k8	<del>|177
+si 510	|indicator lights
+rc
+sp r1
+sp r4	|print no
+ca 0	|space
+sp r10	|pr
+spc1-1	|checker
+clh2<del><del>4
+ad<del>7k3	|a8
+tda9
+[1;31ma9,[0mca
+spr34	|des.
+si<del><del>1713
+cak8<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>
+[1;31m4a9,[0mbi 2000
+sp r1
+sp 2000
+[1;31ma8,[0mb1
+b2
+b3
+b4
+b47
+b6
+b42
+b37
+b22
+|second group of executive instructions
+[1;31m2b7,[0mb36
+<del><del><del>0
+b57
+b12
+b13
+b14
+10r,b15
+b46
+b9
+b17
+14r,b18
+b19
+b39
+b40
+20r,b20
+b48
+b49
+b50
+24r,b51
+b55
+[1;31ma10,[0mtaa13	|executive drum si
+cp1a13
+si1703
+[1;31ma13,[0msp
+si1713
+spa13
+|print 3 digits, to 177
+[1;31mr4,[0mta 11r<del><del><del><del><del><del><del><del><del><del><del>13
+[1;31m1<del>r4,[0mclc 11
+sp r36	|print first digit
+sp 7r13
+|print 5 digits
+[1;31mr42,[0m<del><del><del><del><del><del>ta 11r13
+clc 1
+<del><del><del><del><del><del><del>ts 2d10
+sp 4r13
+|print 4 digit<del> address of executive instruction
+[1;31mr26,[0mta<del><del><del><del><del><del><del>5r
+sp c1-1
+sp r3
+spc1-1
+md 1k2
+5,sp
+|print comma, space
+[1;31mr39,[0mta 5r
+cs 3k8	|45, comma
+sp r11	|print
+ca <del>0
+[1;31m4,[0msp r10	|print space
+[1;31m5[0m,sp
+|plant register
+[1;31mr2,[0mta<del><del><del><del><del><del><del><del><del>6r<del><del><del>
+ca2d1	|location
+<del><del><del><del><del><del><del><del><del><del>ts6
+ca1d1
+spb41
+ts1d1
+<del><del><del><del><del><del>6,sp
+|obtain block
+[1;31mr18,[0mta w10	|obtain block
+ca c3
+ts <del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>3
+cp1w10	|core fld
+[1;31mw13,[0msp a10	|execute si
+ca 1c3	|no. words
+bi p9
+[1;31mw10,sp
+[0m1w10,clh 1
+cp w11	|core field
+ca <del>c3
+sp w13
+[1;31mw11,[0mclh 25
+md 7k1	|7
+ck 0
+sd 10k1	|10
+sd 5k3	|cf 300
+ex 5
+ts 1t2
+ex 1	|1 in ac will add 2000
+clh 12
+sd k11	|ca 0
+ts 6
+cs 1c3	|n<del><del>
+ad1
+ts 2t2
+ca 11k6	|p9
+td 1w12
+[1;31mw12,[0msp b41	|obtain word
+[1;31m1w12,[0mts
+ao 6
+ao 1w12
+ao 2t2
+cp <del>w12
+ca 1t2
+ts 5
+sp w10
+|constants
+[1;31mk8,[0msi 200<del>	|length of executive routines
+[1;31m1k8,[0m0	|spare
+[1;31m2k8,<del><del><del><del><del><del>[0msi 177
+[1;31m3k8,[0msi 45
+[1;31mk3,[0m1<del><del><del><del><del><del>.77740
+[1;31m1k3,[0mp2
+[1;31m2k3,[0msi 50
+[1;31m3k3,[0m1.74000	|md 0
+[1;31m4k3,[0mex 0	|0.64000
+[1;31m5k3,[0m<del>cf 300
+6k3,sp 7
+[1;31m7k3,[0ma8
+[1;31m10k3,[0mb7
+[1;31mt3,[0m0
+0
+0
+0
+|filler<del><del><del><del><del><del><del><del><del><del><del>
+<del><del>DITTO<del>
+[1;31m2700|p1<del><del>,[0m0	|block of 40
+DITTO
+[1;31m|<del>PERM B<del>LOCK B<del><del><del>.[0m  This block is always in core.
+|print routines
+[1;31m<del><del><del><del><del><del><del><del><del><del><del><del><del>2740|r10,[0mta 7r11<del>	|print letter or space, tab, cr, upper, lower case color.|
+[1;31m1r10,[0m su 3k5	|44
+[1;31m2r10,[0m sp 2r11	|switch, tso for anelex
+ad 3k5	|44
+[1;31m4,[0m ck <del><del>k5	|-0
+sp 15r	|space
+ck 11k1	|11
+sp 17r	|tab=3spaces
+[1;31m10,[0m ck 1k5	|17
+sp 23r	|cr
+su 4k5	|34
+cp <del><del><del>36r<del><del><del><del><del><del>	|ignore|letters-
+[1;31m14,[0m sp 7r11
+[1;31m15,[0m ca 45r	|ab0
+sp <del><del><del><del>40r
+[1;31m17,[0m ca 1d10	|3 spaces
+srh<del><del><del> 3
+su 0
+sp 46r
+[1;31m23r10,[0m si 245
+ca 6k5	|251
+bo t4	|print line
+si 17
+ca 5k5	|250
+[1;31m30,[0m bi t4	|clear image
+31,ca 6k6	|ab51t4
+ts d10	|reset key
+ca2r10<del><del>	|0.<del><del><del><del>40000
+[1;31m34,[0m ts 1d10	|reset bit
+sp 7r11
+[1;31m36,[0m ad 1	|adjust for letters
+[1;31m37r10,[0m ad d10	|key
+[1;31m40, [0mts 43r
+<del><del><del><del><del><del><del><del><del>ca 1d10	|bit
+dm 0		|to br
+[1;31m43r10, [0msp 37r10	<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>|ab to image, const.
+srh 1
+[1;31m45,[0m ab 0	|used as constant, 15r
+[1;31m46,[0m cp 51r	|AC is bit| bit in BR -
+[1;31m47,[0m ts 1d10	|new bit
+sp 7r11
+[1;31m51,[0m ex d10	|key
+ad 2k5	|70, 56d
+ts <del><del><del><del><del><del><del>d10
+ck3k11
+sp<del>31<del>r
+slh 17	|bit t<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>o A<del><del><del>C
+sp 47r
+|print digit or -.+,
+[1;31mr11,[0mta 7r
+[1;31m1r11,[0mts 0	|switch, sp37r10 for anelex
+[1;31m2r11,[0mad 7k6	|50v1
+td 4r
+[1;31m4,[0mca
+clc 12
+rc
+[1;31m7r11,[0msp	|General Exit
+|rint Instruction
+[1;31mr14,[0mta 11r13
+sp r16	|print order
+sp 1r3	|print address
+|Print Instruction - o.f.
+[1;31mr30,[0m ta 11r13
+sp r16	|print order
+sp 1r13	|print octal fraction
+|Print Order
+[1;31mr16,[0mta 12r
+ts t2	|Instruction
+clc 25
+ad 5k6	|v1, table
+td 5r
+[1;31m5,[0mca
+sp r40	|print two letters
+ca 0
+[1;31m10,[0msp r10	|print space
+ca t2	|instruction
+[1;31m12,[0m sp
+|print comments
+[1;31mr7,[0mta 1r
+1,ca
+clh 20	|AC to BR
+ab 0
+[1;31m4,[0mclc 1	|sign bit to low order bit
+sp r40	|print two letters
+ca 2d10	<del><del><del>|br
+sp r38	|print last letter
+[1;31m10,[0mao 1r
+td 13r
+ca 2d10	|br
+[1;31m13,[0mcp	|last wrod
+sp 1r
+|print octal fraction
+[1;31mr13,[0mta 11r
+sp r36	|print sign bit
+ca 7k5	|40 for point
+sp r10	|print character
+[1;31m4r13,[0msp r33
+sp r33
+[1;31m6r13,[0msp r33
+[1;31m7r13,[0msp r33
+10, sp r33
+[1;31m11,[0msp
+|print address
+[1;31mr3,[0mta 11r13
+sp r37	|vnitial for address
+sp 6r13
+|print 2 letters
+[1;31mr40,[0mta 4r
+sp r38
+ca 2d10	|br
+sp r38
+[1;31m4,[0msp
+|print carriage return, cr
+[1;31mr9,[0mta 7r11
+ca 1k5	|17
+sp 1r10
+|print cr and deselect
+[1;31mr28,[0m<del>ta 2r34
+sp r9	|cr
+sp 1r34	|deselect
+|select
+[1;31mr1,[0mta 2r
+[1;31m1r1,[0msi 630
+[1;31m2,[0msp
+|deselect
+[1;31mr34,[0mta 2r
+[1;31m1r34,[0msi 630
+[1;31m2r34,[0msp
+|extract character
+[1;31mr33,[0mta 7r11	|extract octal digit
+ca 2d10	|br
+clh 23	|next digit to ac
+[1;31m3r33,[0msp r35	|store br
+sp 1r11	|print digit
+|extract sign digit, initial entry
+[1;31mr36,[0mta 7r11	
+clh 21
+sp 3r33
+|initial entry for address
+[1;31mr37,[0mta 7r11
+clc 5
+clh 22
+sp 3r33
+|extract letter
+[1;31mr38,[0mta 7r11
+clh 25
+sp r35	|store br
+sp 1r10	|print letter
+|store br
+[1;31mr35,[0mta 4r
+ts 2d10	|ac
+ab 0
+ex 2d10	|br
+[1;31m4,[0msp
+
+|table.  first l0 bits are 2 letters for order code
+|last six bits are flexo code.  These two parts have
+|no relation to each other.  the flexo code part is
+| broken into two parts, digits and letters.
+|heading		|order	|char.	|digit	|letter	|anele<del>x
+[1;31mv1,[0m1.17435		|si		|-	|-50(o)		|1
+1.12321		|rs	|.	|-47		|2
+0.13415		|bi	|+	|-46		|3
+1.10431		|rd	|,	|-45		|4
+[1;31m4,[0m0.13310		|bo	|space	|	|0	|blank
+1.103<del><del>06	<del>	|rc	|A		|1	|17<del>(o)
+1.14462		|sd	|B		|2	|20
+0.14634		|cf	|C		|3	|21
+[1;31m10,[0m1.22322		|ts	|D		|4	|22
+1.20402		|td	|<del><del>E		|5	|23
+1.20132		|ta	|F		<del><del><del><del><del><del>|6	|24
+0.15364		|ck	|G		|7	|24
+[1;31m14,[0m0.04250		|ab	|H		|10	|26
+0.27045		|ex	|tab		|11	|3 blanks
+0.16026		|cp	|J		<del>|12	|30
+1.16036		|sp	|K		|13	|31
+[1;31m20,[0m0.14144		|ca	|L		|14	|32
+0.16370		|cs	|M		|15	|33
+0.04430		|ad	|N		|16	|34
+1.16551		|su	|cr		|17	|line feed
+[1;31m24,[0m0.15554		|cm 	|P		|20	|36
+1.14156		|sa	|Q		|21	|37
+0.07324		|ao	|R		|22	|40
+0.21512		|dm	|S		|23	|41
+[1;31m30,[0m0.66240		|mr	|T		|24	|42
+0.65016		|mh	|<del>U		|25	|43
+0.22674		|dv	|V		|26	|44
+1.15446		|sl	|W		|27	|45
+[1;31m34,[0m1.16272		|sr	|X<del>		|30	|46
+1.14<del>652		|sf	|Y		|31	|47
+0.15442		|cl	|Z		|32	|<del><del><del>50
+0.64460		|md	|O		|33	|51
+[1;31m40,[0msi 14			|I		|34	|52
+si 71			|upper case	|35	|ignored
+si 75			|lower case	|36	|ignored
+si 10			|space (flexo)	|37	|ignored
+[1;31m44,[0msi 21			|point (flwxo)	|40	|ignored
+si 05			|slash (flexo)	|41	|ignored
+si <del><del>61			|stop (flexo))	|42	|ignored
+si 20			|color shift	|43	|ignored
+[1;31m50v1,[0msi 76			|0	|0		|51
+si 25			|1	|1		|52
+si 17			|2	|2		|53
+si 07			|3	|3		|54
+[1;31m54,[0msi 13			|4	|4		|55
+si 23			|5	|5		|56
+si 33			|6	|<del>6		|57
+si 27			|7	|7		|<del><del><del>60
+[1;31m60,[0msi 03			|8	|10		|61
+si 66			|9	|11		|62
+[1;31mt4,[0m0
+DITTO
+250r|1.70400
+|start at
+[1;31ma7,[0mta a6	|start at
+ca 1d12	|br
+clh 20
+ad d12	|ac
+sp b41
+ts d12	|ac
+clh 20
+ts 1d12	|br
+[1;31ma6,[0msp
+|block in perm a and set up FFs
+[1;31mr15,[0mta 11r
+ca 12k6	|block in perm a
+si <del><del><del><del><del><del>1713
+ca 10k6	|length of perm a
+bi 2200
+ca 6k3	|sp 7
+ts 4
+ca 2d12	|current <del>cf
+ts 5
+[1;31m11r,[0msp
+|constants
+[1;31m2k1,[0m2
+[1;31m3k1,[0m<del><del>3
+[1;31m4k1,[0m4
+[1;31m5k1,[0m5
+[1;31m6k1,[0m6
+<del><del><del><del><del><del><del><del><del>[1;31m7k1,[0m7
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del>[1;31m10k1,[0m8
+11k1,9
+[1;31mk2,[0msi 37
+[1;31m1k2,[0msi3777
+2k2,si <del><del><del>177
+3k2,si <del><del><del><del><del>3740
+4k2, si4000
+5k2, si 1000
+[1;31mk5,[0m-0
+1k5,si 17
+2k5,si 70
+3k5,si 44
+4k5,si 34
+si 250
+si 251
+si 40
+10k5,si 42
+si 35
+si 41
+[1;31m5k6,[0mv<del>1
+6k6,ab 51t4
+7k6,<del>50v1
+10k6,si 540	|length of perm a
+p9
+1.10000	|DA for perm a
+[1;31mk11,[0m1.00000	|ca 0
+1.60000	|srr 0
+2k11,0.77770
+ab 51t4+250
+|filler
+DITTO
+<del><del><del><del><del><del><del><del>|[1;31mstart at executive instruction zero[0m
+[1;31m360<del><del><del><del>0|[0m[1;31ma1,[0msp r15	|block out aux
+sp a14
+[1;31mb21-1,[0msp r28
+[1;31mb21,[0mao c1
+sp a11
+[1;31mb23,[0msp r15	|initialize
+si 337	|RMIR, startover at new exec. instr
+rd
+md 2k2	|77
+sp a3
+|print pc
+[1;31mb25,[0msp r1	|print PC
+sp r7
+0.<del><del><del><del><del><del><del><del><del><del><del><del><del>37660	|cr uc P
+1.07700	|C lc sp
+ca d4
+sp r3	|core address
+sp r28
+sp 0
+[1;31mb27,[0msp r15	|start over at next executive instruction
+sp b21
+[1;31mb41,[0mta3777
+sp5
+[1;31mc1-1,[0mta1c1
+[1;31mc1,[0mca	|exec. addr. ctr.
+sp
+[1;31mc2,[0m0	|ctr., areas
+0	|ctr., registers
+[1;31mc3,[0m0	|addr. ctr. for area
+0	|no. registers in area
+[1;31md1,[0m0	|exit plant ind.
+0	|orig. contents
+<del><del>|location<del>	ex
+[1;31md2,[0m0	|1-no. areas preserved
+1d2,0	|location of last pm request
+[1;31md3,[0m0	|mode ind.
+[1;31md4,[0mca	|program counter
+[1;31md5,[0m0	|initial addr. of area-1
+0	|area length
+0	|instruction type
+[1;31md7,[0msi37	|active region, initial addr.-1
+si3740	|length
+[1;31md9,[0m0	|branch ind.(for conditional branches)
+[1;31md10,[0m0	|key for anelex
+0	|bit for aneles
+0	|br for anelex
+[1;31md12,[0m0	|current AC
+0	|current BR
+2d12,cf 323	|current core fields
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>[1;31m<del><del><del><del><del>[0m[1;31mp9,[0m0	|storage table
+DITTO
+[1;31m36r|[0m36p9,0	|loop ind. for interpretive
+0
+[1;31m<del><del><del><del><del>[0m[1;31mt1,[0m0
+[1;31mt2,[0m0
+0
+0
+[1;31mp6,[0m8	|no. of branches checked for loop
+0<del>	|control register
+0.77776	|loop limit
+|sto<del>p checker by right activate and rmir = 3
+DITT<del>O
+[1;31m3760|<del>r6,[0mta <del><del><del>3777
+si 300
+rd
+cp 5r
+[1;31m4r6,[0msp<del>3777
+[1;31m5r,[0msi 337	|rmir
+rd
+<del>ck 3k1	|3
+[1;31m10,[0msp 12r
+sp 4r
+[1;31m12,[0mca 10k5	|42
+spr1
+sp r10	|print stop
+spr34
+si 0
+<del><del><del><del><del><del>[1;31m3777|[0m3777|[1;31msp a1	|dispactcher
+STA 32
+82

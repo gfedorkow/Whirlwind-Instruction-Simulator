@@ -1,0 +1,731 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_07\102766861_fc1185m3.7ch
+fc TAPE 1185m3 BENNETT TAPE PRINT
+OCTAL
+cak2	|112
+td1r1	|SELECT MT for read
+ca2k2	|176
+td1r2	|Select MT for delayed print
+spa2
+[1;31ma1,[0mca1k2	|132
+td1r1	|Select MT for read
+ca3k2	|156
+td1r2	|Select MT for delayed print
+[1;31ma2,[0msu6k3
+td1r21
+ca0
+tsd1
+spr2	|Select del. pr.
+spr7	|Print C.R.s
+4
+<del><del>spr21
+cak6	|sp
+ts40
+[1;31ma3,[0mspr1	|si read MT
+rd
+tst1
+rd
+sdt1
+[1;31m0r,[0mcp2r
+spa16
+[1;31m2r,[0mdm0
+cpa5
+[1;31ma16,[0msi225	|Select dir. pr.
+spr8	|Sum check error
+spr9	|in ID record
+spr7	|c. 2
+1
+spr15	|operator instr.
+spr7
+5
+ca1k6	|a4
+td40
+si0
+ca1r1
+su1
+[1;31m0r,[0mts1r
+0	|Re-record reverse
+spa3
+[1;31ma5,[0mcat1
+[1;31m0r,[0mcp2r
+sp4r
+[1;31m2r,[0mdm0
+cp25
+[1;31m4r,[0mrd
+ts1t1
+rd
+sd1t1
+[1;31m0r,[0mcp2r
+spa16	|Error
+[1;31m2r,[0mdm0
+cpa6	|ok
+spa16	|Error
+[1;31ma6,[0mca1t1
+sut1
+ad1
+tse1	|Number of words in main block
+rd
+ts2t1	|Sum check
+rd
+ts3t1	|Core field
+spr2	|Select delayed printer
+cat1
+cpa7	|BD or CF
+mdk3	|Main Drum, extract field
+dm0
+cpa9	|Field zero
+spr3	|Print Main Drum
+cat1
+mdk3	|extract field
+clh25
+spr12	|Print octal integer
+2
+-0
+spr7	|Print 3 carriage returns
+3
+[1;31ma8,[0mcat1	|Initial address
+md1k3	|0.03777
+tsc1
+spa10
+[1;31ma7,[0mclh1
+cpa11	|Core field
+spr5	|Print Buffer Drum
+cat1
+md2k3	|0.34000 Extract field no.
+clh25
+spr11	|print digit
+spr7	|print C.R.s
+3
+spa8
+[1;31ma9,[0mspr4	|Print operating core, field
+cat1	|Initial addr.
+md1k3	|0.03777
+su4k3	|0.01777
+cpa12	|Group A
+ca3t1	|Core fields
+sp2a12
+[1;31ma12,[0mca3t1
+clh85
+md5k3	|0.00007
+tst2	|Core field
+spr11	|print digit
+spr7	|print C.R.s
+3
+cat2	|Core field
+clh15
+cpa8	|Not 2 or 3
+clh1
+cpa13	|2 or 3
+clh1
+cpa8	|not 2,3 or 0
+[1;31ma13,[0mcs0
+tsd1	|Set ind. for inst.
+spa8
+[1;31ma11,[0mspr6	|Print Core field
+cat1	|Initial addr.
+md3k3	|0.16000 Extract field no.
+clh26
+tst2
+spr11	|print digit
+spr7	|Print C.R.s
+3
+cat1
+md4k3	|0.01777
+tsc1	|Addr. ctr.
+cat2
+clh15
+cpa10	|Not 2 or 3
+clh1
+cpa14	|2 or 3
+clh1
+cpa10	|not 2,3,or 0
+[1;31ma14,[0mcs0
+tsd1	|Set ind. for inst.
+[1;31ma10,[0mspr21
+spr1	|Select MT read
+cse1	|n
+ad1
+tsc2
+ca3t1	|Core fields word
+ts1t2
+ca1k5
+ts1a15
+[1;31ma15,[0mrd
+ts
+sa1t2
+ts1t2
+ao1a15
+aoc2
+cpa15
+spr2	|Select del. pr.
+ca1t2	|Sum
+sd2t1	|Sum check
+[1;31m0r,[0mcp2r
+
+sp4r
+dm0
+cpa17	|ok
+[1;31m4r,[0mca6w8
+spr10
+ca1k4
+spr10
+spr8	|Print sum check error
+ca1k4	|Color
+spr10
+spr7	|C.R.s
+3
+[1;31ma17,[0mspb1	|Print block
+spr21
+ca0
+tsd1
+ts1c1
+spa3
+[1;31mb1,[0mtab5
+ca0
+ts1c1
+cac1
+md5k3	|0.00007
+tsb3
+dm0
+cpb2	|Even multiple of 10 octal
+spr20	|Print Address
+spr16	|Print tabs
+[1;31mb3,[0m0
+cab3
+ts2c1	|Col. ctr.
+spb4
+[1;31mb2,[0mspr20	|Print address
+ca0
+ts2c1
+[1;31mb4,[0mcae1	|n
+su1c1	|Word ctr.
+ad2c1	|Col. ctr.
+su1
+ts3c1	|Last col.
+su5k3	|7
+[1;31m0r,[0mcp3r	|Last col. correct
+ca5k3	|7
+ts3c1	|Set last col. at 7
+[1;31m3r,[0mspr19	|Print line
+cse1	|n
+ad1c1	|Word counter
+ad1
+cpb2	|Not done
+spr7	|Print C.R.s
+4
+[1;31mb5,[0msp
+[1;31mr1,[0mta2r	|Select MT for read
+si
+sp
+[1;31mr2,[0mta2r	|Select MT for delayed print
+si
+sp
+[1;31mr3,[0mtaw6	|print main drum
+cs1w7
+tsw7	|ctr.
+ca2w7
+tdw5
+[1;31mw5,[0mca
+spr10	|print flexo char.
+aow5
+aow7	|index ctr.
+cpw5
+[1;31mw6,[0msp
+[1;31mw7,[0m0	|ctr.
+[1;31m1w7,[0msi15
+[1;31m2w7,[0mw8
+[1;31mw8,[0m57	|fc for upper case
+56	|m
+61	|lower case
+6	|a
+[1;31m4w8,[0m12	|i
+24	|n
+8	|space
+57	|upper case
+[1;31m10w8,[0m18	|D
+61	|lower case
+20	|r
+14	|u
+[1;31m14w8,[0m56	|m
+8	|space
+[1;31mr4,[0mtaw10	|print operating core, field
+cs1w11
+tsw11	|ctr.
+ca2w11
+tdw9
+[1;31mw9,[0mca
+spr10	|print flexo char.
+aow9
+aow11	|index ctr.
+cpw9
+[1;31mw10,[0msp
+[1;31mw11,[0m0	|ctr.
+[1;31m1w11,[0msi33
+[1;31m2w11,[0mw12
+[1;31mw12,[0m57	|fc for upper case
+48	|0
+61	|lower case
+44	|p
+2	|e
+20	|r
+6	|a
+32	|t
+[1;31m10w12,[0m12	|i
+24	|n
+52	|g
+8	|space
+57	|upper case
+28	|c
+61	|lower case
+48	|0
+[1;31m20w12,[0m20	|r
+2	|e
+25	|comma
+8	|space
+57	|upper case
+26	|F
+61	|lower case
+12	|i
+[1;31m30w12,[0m2	|e
+36	|l
+18	|d
+8	|space
+[1;31mr5,[0mtaw14	|print Buffer Drum
+||||||||||
+cs1w15
+tsw15	|ctr.
+ca2w15
+tdw13
+[1;31mw13,[0mca
+spr10	|print flexo char.
+aow13
+aow15	|index ctr.
+cpw13
+[1;31mw14,[0msp
+[1;31mw15,[0m0	|ctr.
+[1;31m1w15,[0msi17
+[1;31m2w15,[0mw16
+[1;31mw16,[0m57	|fc for upper case
+50	|B
+61	|lower case
+14	|u
+26	|f
+26	|f
+2	|e
+20	|r
+[1;31m10w16,[0m8	|space
+57	|upper case
+18	|D
+61	|lower case
+20	|r
+14	|u
+56	|m
+8	|space
+[1;31mr6,[0mtaw18	|print core field
+cs1w19
+tsw19	|ctr.
+ca2w19
+tdw17
+[1;31mw17,[0mca
+spr10	|print flexo char.
+aow17
+aow19	|index ctr.
+cpw17
+[1;31mw18,[0msp
+[1;31mw19,[0m0	|ctr.
+[1;31m1w19,[0msi16
+[1;31m2w19,[0mw20
+[1;31mw20,[0m57	|fc for upper case
+28	|C
+61	|lower case
+40	|0
+20	|r
+2	|e
+8	|space
+57	|upper case
+[1;31m10w20,[0m26	|F
+61	|lower case
+12	|i
+2	|e
+36	|e
+18	|d
+8	|space
+|||||||||
+[1;31mr7,[0mta1r17
+cak4	|C.R.
+spr17
+[1;31mr8,[0mtaw3	|Print sum check error
+cs1w4
+tsw4
+ca2w4
+tdw2
+[1;31mw2,[0mca
+spr10	|Print flexo char.
+aow2
+aow4	|index ctr.
+cpw2	|if not finished
+[1;31mw3,[0msp
+[1;31mw1,[0m0.00071	|fc for upper case
+0.00012	|S
+0.00075	|lower case
+0.00016	|u
+[1;31m4w1,[0m0.00070	|m
+0.00010	|space
+0.00071	|upper case
+0.00034	|c
+[1;31m10w1,[0m0.00075	|lower case
+0.00050	|h
+0.00002	|e
+0.00034	|c
+[1;31m14w1,[0m0.00036	|k
+0.00010	|space
+0.00071	|upper case
+0.00002	|E
+[1;31m20w1,[0m0.00075	|lower case
+0.00024	|r
+0.00024	|r
+0.00060	|0
+[1;31m24w1,[0m0.00024	|r
+0.00010	|space
+[1;31mw4,[0m0	|ctr.
+[1;31m1w4,[0msi25
+[1;31m2w4,[0mw1
+[1;31mr9,[0mtaw22	|print in ID block
+cs1w23
+tsw23	|ctr.
+ca2w23
+tdw21
+[1;31mw21,[0mca
+spr10	|print flexo char.
+aow21
+aow23	|index ctr.
+cpw21
+[1;31mw22,[0msp
+[1;31mw23,[0m0	|ctr.
+[1;31m1w23,[0msi15
+[1;31m2w23,[0mw24
+[1;31mw24,[0m12	|fc for i
+24	|n
+8	|space
+57	|upper case
+12	|I
+18	|D
+61	|lower case
+8	|space
+[1;31m10w24,[0m50	|b
+36	|l
+48	|0
+28	|c
+30	|k
+8	|space
+||||||||||
+[1;31mr10,[0mtaw62	|Print Flexo Char.
+clc0	|Clear BR
+clh12
+rc
+[1;31mw62,[0msp	|EXIT
+[1;31mr11,[0mtaw64	|Print digit
+ad12w63
+[1;31mr,[0mtd1r
+ca
+spr10
+[1;31mw64,[0msp
+[1;31mw63,[0m0.00076	|0
+0.00025	|1
+0.00017	|2
+0.00007	|3
+0.00013	|4
+0.00023	|5
+0.00033	|6
+0.00027	|7
+0.00003	|8
+0.00066	|9
+w63
+[1;31mr12,[0mta2r	|Print n-digit octal
+tsw65
+cs
+ad1
+ts1w65
+ao2r
+td7r
+ca	|ind.
+cpw66	|convert initial zeros
+ca2w65	|+100
+sp1w66
+[1;31mw66,[0mca0
+ts3w65
+ao2r12
+tdw71	|to EXIT
+[1;31mw67,[0mca1w65	|ctr.
+mh3k1	|3
+slh17
+ad4w65	|+40
+tdw68
+caw65	|bin equiv. of no.
+[1;31mw68,[0mclh
+md5<del><del><del><del><del><del>w65	|0.00007
+ts6w65
+dm0
+cpw72	|digit is zero
+ca2w65
+ts3w65
+[1;31mw69,[0mca6w65
+spr11	|sp to print digit
+[1;31mw70,[0mao1w65	|ao ctr.
+cpw67	|not finished
+[1;31mw71,[0msp	|EXIT
+[1;31mw72,[0mcs1w65	|ctr.
+su3w65	|ind.
+cpw69	|do not convert zeros into spaces
+ca7w65	|fc for space bar
+spr10	|sp to print flexo-char.
+spw70
+[1;31mw65,[0m0	|will cont. bin equiv. of no.
+0	|will cont. ctr. -(n-1)
+si100
+0	|ind.
+si40
+0.00007
+0	|temp. stor. for bin. equiv. of digit
+0.00010	|fc for space bar
+[1;31mr13,[0mtaw74	|Print o.f.
+tsw73	|o. frac.
+clh21
+md1
+spr11	|print digit
+ca1w73	|fc for period
+spr10	|print flexo-char.
+caw73	|o, frac.
+md3w73
+spr12
+5
++0
+[1;31mw74,[0msp	|EXIT
+[1;31mw73,[0m0	|will cont. o. frac.
+0.00021	|fc for period
+0.00007
+0.77777
+[1;31mr14,[0mtaw77	|print instruction
+tsw79	|AC entry
+clh25	|to get first 5 bits to bits 11-15 of AC
+md1w79	|si37
+ad2w79	|w75
+[1;31mr,[0mtd1r
+ca	|table look-up
+ts3w79	|table word
+cpw78	|char. is illegal
+clh32
+md4w79	|si77
+spr10	|print flexo-char.
+ca3w79	|table word
+md<del>4w79	|si77
+spr10	|print flexo-char.
+caw79	|orig. AC entry
+md<del>5w79	|si3777
+[1;31mw76,[0mspr12	|print n-digit octal no.
+5
+-0	|neg. ind.
+[1;31mw77,[0msp	|EXIT
+[1;31mw78,[0mcaw79	|orig. ACentry
+spr13	|print octal frac.
+spw77	|to EXIT
+[1;31mw75,[0m0.01214	|si
+1.00000	|illegal
+0.06214	|bi
+0.02422	|rd
+0.06260	|bo
+0.02434	|rc
+0.01222	|sd
+0.03432	|cf
+0.04012	|ts
+0.04022	|td
+0.04006	|ta
+0.03436	|ck
+0.00662	|ab
+0.00272	|ex
+0.03454	|cp
+0.01254	|sp
+0.03406	|ca
+0.03412	|cs
+0.00622	|ad
+0.01216	|su
+0.03470	|cm
+0.01206	|sa
+0.00660	|ao
+0.02270	|dm
+0.07024	|mr
+0.07050	|mh
+0.02274	|dv
+0.41244	|sl
+0.41224	|sr
+0.01232	|sf
+0.63444	|cl
+0.07022	|md
+[1;31mw79,[0m0	|will contain orig. AC entry
+si37
+w75
+0	|will contain table word
+[1;31m4w79,[0msi77
+si3777
+[1;31mr15,[0mtaw26	|print RESTART will try again, START AT 40 will skip block
+cs1w27
+tsw27	|ctr.
+ca2w27
+tdw25
+[1;31mw25,[0mca
+spr10	|print flexo char.
+aow25
+aow27	|index ctr.
+cpw25
+[1;31mw26,[0msp
+[1;31mw27,[0m0	|ctr.
+[1;31m1w27,[0msi67
+[1;31m2w27,[0mw28
+[1;31mw28,[0m57	|fc for upper case
+20	|r
+2	|E
+10	|S
+32	|T
+6	|A
+20	|R
+32	|T
+[1;31m10w28,[0m61	|lower case
+8	|space
+38	|w
+12	|i
+36	|<del>l
+36	|l
+8	|space
+32	|t
+[1;31m20w28,[0m20	|r
+42	|y
+8	|space
+6	|a
+52	|g
+6	|a
+12	|i
+24	|n
+[1;31m30w28,[0m25	|comma
+8	|space
+57	|upper case
+10	|5
+32	|T
+6	|A
+20	|R
+32	|T
+[1;31m40w28,[0m8	|space
+6	|A
+32	|T
+61	|lower case
+8	|space
+11	|4
+62	|0
+8	|space
+[1;31m50w28,[0m38	|w
+12	|i
+36	|l
+36	|l
+8	|space
+10	|s
+30	|k
+12	|i
+[1;31m60w28,[0m44	|p
+8	|space
+50	|b
+36	|l
+48	|0
+28	|c
+30	|k
+8	|space
+||||||||||
+[1;31mr16,[0mta1r17
+ca3k4	|Tab
+spr17
+[1;31mr17,[0mts14r
+cs
+ad1
+ts13r
+[1;31m4r,[0mao1r
+td12r
+ca14r
+spr10
+[1;31m10r,[0mao13r
+cp6r
+sp
+0
+[1;31m14r,[0m0
+[1;31mr18,[0mta16r	|Print Word
+ca1c1	|word counter
+adk5	|2000
+td7r
+[1;31m4r,[0mtd12r
+cad1
+cp12r	|Inst.
+ca
+[1;31m10r,[0mspr13	|o.f.
+sp14r
+ca
+spr14	|Inst.
+[1;31m14r,[0mca3k4	|Tab
+spr10
+sp
+[1;31mr19,[0mta11r	|Print Line
+spr18
+aoc1
+ao1c1
+[1;31m4r,[0mao2c1
+su3c1	|Last col.
+cp1r
+spr7	|Print C.R.s
+[1;31m10r,[0m2
+sp
+[1;31mr20,[0mta11r	|Print Address
+cac1	|Address
+spr12	|print n-digit integer
+4
+[1;31m4r,[0m-0
+ca2k4	|slash
+spr10	|Print
+spr16	|Print tabs
+[1;31m10r,[0m2
+sp
+<del><del><del><del><del><del><del>[1;31mr21,[0mta2r
+si
+[1;31m2r,[0msp
+[1;31mc1,[0m0	|Address counter
+[1;31m1c1,[0m0	|Word Counter
+[1;31m2c1,[0m0	|Column Counter
+[1;31m3c1,[0m0	|Last col.
+[1;31mc2,[0m0	|Tape Read Counter
+[1;31md1,[0m0	|Ind. + for octal fractions, for instructions
+[1;31me1,[0m0	|n
+[1;31m2k1,[0m2
+[1;31m3k1,[0m3
+[1;31m4k1,[0m4
+[1;31mk2,[0msi112
+[1;31m1k2,[0msi132
+[1;31m2k2,[0msi176
+[1;31m3k2,[0msi156
+[1;31mk3,[0m0.74000
+[1;31m1k3,[0m0.03777
+[1;31m2k3,[0m0.34000
+[1;31m3k3,[0m0.16000
+[1;31m4k3,[0m0.01777
+[1;31m5k3,[0m0.00007
+[1;31m6k3,<del><del><del><del>[0msi42
+[1;31mk4,[0m0.00051	|CR
+[1;31m1k4,[0m0.00020	|Color
+[1;31m2k4,[0m0.00005	|Slash
+[1;31m3k4,[0m0.00045	|Tab
+[1;31mk5,[0msi2000
+ts2000
+[1;31mk6,[0msp
+[1;31m1k6,[0ma3
+[1;31mt1,[0m0	|Initial addr.
+[1;31m1t1,[0m0	|Final addr.
+[1;31m2t1,[0m0	|Sum check
+[1;31m3t1,[0m0	|Core fields
+[1;31mt2,[0m0	|Core field
+[1;31m1t2,[0m0	|Sum check
+[1;31mt3,[0m0
+3w20|48
+<del><del><del><del>START AT a1

@@ -406,6 +406,11 @@ class ConstWWbitClass:
         self.SIM_STATE_SINGLE_STEP = 2
         self.SIM_STATE_READIN = 3
         self.sim_state = self.SIM_STATE_STOP
+        # this flag allows the sim to restart after hitting a stop_on_address "breakpoint"
+        # it's set by any control panel 'start' activity, then cleared as soon as the first instruction
+        # is completed.
+        self.first_instruction_after_start = True
+
         # Caution -- Whirlwind puts bit 0 to the left (Big Endian, no?)
         self.WWBIT0 = 0o100000
         self.WWBIT1 = 0o040000
@@ -486,9 +491,10 @@ class ConstWWbitClass:
         self.xWin_size_arg = None   # if this is set to a number by the cmd-line arg, use it as the size of the xWinCRT
         self.ana_scope = None   # this is a handle to the methods for operating the analog scope
         self.which_scope = 3    # default to showing both D and F scopes on the xwin display
+        self.RasPi = False      # this will be set in microWhirlwind if it's running on a RasPi
 
         # These two will be set by prog that needs them. Looks like only wwsim at this point. LAS 5/17/24
-        self.argAutoClick = False
+        self.argAutoClick = False   # used in air defense and Nim (I think)
         self.panel = None
 
         # use these vars to control how much Helpful Stuff emerges from the sim
@@ -506,6 +512,7 @@ class ConstWWbitClass:
         self.decimal_addresses = False  # default is to print all addresses in Octal; this switches to decimal notation
         self.TraceCoreLocation = None
         self.NoZeroOneTSR = False
+        self.ZeroizeCore = False
         self.TraceDisplayScope = False
         self.PETRAfilename = None
         self.PETRBfilename = None
@@ -827,15 +834,19 @@ class WWSwitchClass:
         return 0
 
     def read_switch(self, name):
-        if name in self.SwitchNameDict:
-            if self.cb.panel and name in self.SwitchNameDict and self.SwitchNameDict[name][2]:
-                # call the Panel object to read switches, should it be present, and if it's a switch
-                # that's represented on the panel.  Use the internal name string (i.e., offset 2 in the dict)
-                ret = self.cb.panel.read_register(self.SwitchNameDict[name][2])
-                return ret
+        # go to the panel if it's anything but a Flip Flop Register Preset, or if it's an FF Preset that's in the list
+        if self.cb.panel and (name in self.cb.panel.ff_preset_list or not re.match("FlipFlopPreset", name)):
+            return self.cb.panel.read_register(self.SwitchNameDict[name][2])
+        else:
+            return self.SwitchNameDict[name][0]
+
+    def dump_switches(self):
+        for name in self.SwitchNameDict:
+            val = self.SwitchNameDict[name][0]
+            if val is not None:
+                print("  Switch %s: 0o%o" % (name, val))
             else:
-                return self.SwitchNameDict[name][0]
-        return None
+                print("  Switch %s: None" % (name))
 
 # collect a histogram of opcode frequency
 class OpCodeHistogram:
@@ -1054,8 +1065,14 @@ class CorememClass:
         else:
             ret = self._coremem[self.MemGroupA][addr & self.cb.WWBIT6_15]
             bank = self.MemGroupA
-        if fix_none and (ret is None):
-            self.cb.log.warn("Reading Uninitialized Memory at location 0o%o, bank %o" % (addr, bank))
+
+        # if the memory location reads back Null, it's uninitialized.  Most calls to .rd() ask that
+        # the Null be returned as a Zero, and ordinarily that produces a warning.
+        # But I added a command line arg to suppress the message for original WW programs that
+        # happen to read uninitialed core (e.g. Vibrating String)
+        if (fix_none or self.cb.ZeroizeCore) and (ret is None):
+            if not self.cb.ZeroizeCore:
+                self.cb.log.warn("Reading Uninitialized Memory at location 0o%o, bank %o" % (addr, bank))
             ret = 0
         if self.cb.TraceCoreLocation == addr:
             self.cb.log.info("Read from core memory; addr=0o%05o, value=%s" % (addr, octal_or_none(ret)))
@@ -1101,23 +1118,27 @@ class CorememClass:
 
 
     # integration with the Control Panel is kinda crude here...
+    # By default, Reset FF copies any pre-configured flip-flop switches into the FF registers
+    # If we have a Panel in operation, the second step is to copy any panel presets overtop of
+    # the specific FF registers.
+    #  Note that the different panels implement different numbers of FF registers.
     def reset_ff(self, cpu):
         reset_info_string = "Reset FF%02o at address 0o%o to %s"
+        for addr in range(2, self._toggle_switch_mask + 1):
+            val = cpu.cpu_switches.read_switch("FlipFlopPreset%02o" % addr)
+            if val is not None:
+                # [addr][1] is True for Read-only addrs, False for FF Reg
+                if self._toggle_switch_mem_default[addr][1] is True and \
+                    self._toggle_switch_mem_default[addr][0] != val:
+                    self.cb.log.warn("Resetting 'read-only' toggle-switch register %02o from %o to %o" %
+                                        (addr, self._toggle_switch_mem_default[addr][0], val))
+                self.write_ff_reg(addr, val)  # None for switches not found in the .acore file
+                val_str = "0o%o" % val
+                self.cb.log.info(reset_info_string % (addr, addr, val_str))
+
         if self.cb.panel:
             self.cb.panel.reset_ff_registers(self.write_ff_reg, self.cb.log, reset_info_string)
 
-        else:
-            for addr in range(0, self._toggle_switch_mask + 1):
-                val = cpu.cpu_switches.read_switch("FlipFlopPreset%02o" % addr)
-                if val is not None:
-                    # [addr][1] is True for Read-only addrs, False for FF Reg
-                    if self._toggle_switch_mem_default[addr][1] is True and \
-                        self._toggle_switch_mem_default[addr][0] != val:
-                        self.cb.log.warn("Resetting 'read-only' toggle-switch register %02o from %o to %o" %
-                                         (addr, self._toggle_switch_mem_default[addr][0], val))
-                    self.write_ff_reg(addr, val)  # None for switches not found in the core file
-                    val_str = "0o%o" % val
-                    self.cb.log.info(reset_info_string % (addr, addr, val_str))
 
 
     # this callback is here specifically to manage the Light Gun used in the 1952 Track and Scan,
@@ -1178,7 +1199,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             continue
         if len(line) and line[0] == ';':  # skip comment lines
             continue
-        if re.match(" \*\*\* Core Image \*\*\*", line):  # sigh, due to an error in wwutd, this now is a de-facto comment
+        if re.match(" \\*\\*\\* Core Image \\*\\*\\*", line):  # sigh, due to an error in wwutd, this now is a de-facto comment
             continue
 
         input_minus_comment = re.sub(";.*", "", line).rstrip()
@@ -1346,10 +1367,15 @@ def write_core(cb, corelist, offset, byte_stream, ww_filename, ww_tapeid,
     else:
         filetype = "Tape Bytestream"
         tag = "@T"  # lines that start with %T are simply streams of bytes at an offset from the tape start
+
     if output_file is None:
         fout = sys.stdout
     else:
-        fout = open(output_file, 'wt')
+        cb.log.info("Output Core File Name: %s" % output_file)
+        try:
+            fout = open(output_file, 'wt')
+        except IOError:
+            cb.log.fatal("can't open output file %s" % output_file)
         print("%s %d(d) words, output to file %s" % (filetype, file_size, output_file))
     fout.write("\n; *** %s ***\n" % filetype)
     if block_msg is not None:
@@ -1580,7 +1606,7 @@ class FlexoClass:
                 ret = ''
             elif ret == '\b':
                 ret = ' '
-            elif ret[0] == '<':   # if we're making a file name, ignore all the control functions in the table above
+            elif len(ret) and ret[0] == '<':   # if we're making a file name, ignore all the control functions in the table above
                 ret = ''
         elif show_unprintable:
             if ret == '\n':

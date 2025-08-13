@@ -1,0 +1,21 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\18\t18.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\18\t18_gs858.ocore
+%TapeID: 
+%Stats: Covariance=0.004516, Size=94, 
+%Blocknum 0o0
+@T00000: 0000135 0100000 0102547 0126210 0100000 0103106 0126205 0100300  ; si ca ca sa ca ca sa ca  :      -\0# \0a|\0 :        \0t##t##t
+@T00010: 0103547 0126202 0100000 0133504 0126262 0100100 0134034 0126260  ; ca sa ca ao sa ca dm sa  :       #e\0#b\0co :         ##t##tq#
+@T00020: 0100000 0134346 0126255 0100000 0134671 0126253 0000000 0004150  ; ca dm sa ca dm sa si .word  : \0w#\0<cntl>#\0H :        tq#tQ#\0E
+@T00030: 0065651 0013110 0067421 0013045 0000001 0004150 0065651 0013110  ; ex bi ex bi si .word ex bi  :      \n )\t#H\n  :        F_6_\0EF_
+@T00040: 0067661 0014245 0000002 0004150 0065651 0013110 0070361 0013305  ; ex rd si .word ex bi cp bi  : <stop>\tEH\n <stop>_ :        6A\0EF_C_
+@T00050: 0000003 0004150 0065651 0013110 0071061 0015445 0000004 0004150  ; si .word ex bi cp rd si .word  :  8H\n <stop>\t#H :       \0EF_CA\0E
+@T00060: 0065651 0013110 0071321 0013545 0000005 0004150 0065651 0013110  ; ex bi cp bi si .word ex bi  :      \n )\t_H\n  :        F_C_\0EF_
+@T00070: 0072261 0014005 0000006 0073626 0065652 0013110 0005516 0014245  ; cp rd si cp ex bi .word rd  :   <stop>_AJY U\t :        -A\0-F_EA
+@T00100: 0000007 0073626 0065652 0013110 0006216 0013545 0000010 0073626  ; si cp ex bi .word bi si cp  :        3JY U\t J :       \0-F_8_\0-
+@T00110: 0065652 0013110 0006716 0013045 0000011 0073626 0065652 0013110  ; ex bi .word bi si cp ex bi  :        Y U\t:JY  :        F_8_\0-F_
+@T00120: 0007416 0013405 0000012 0073626 0065652 0013110 0010116 0013745  ; .word bi si cp ex bi bi bi  :        U_SJY U\t :        8_\0-F_#_
+@T00130: 0000013 0073626 0065652 0013110 0010616 0014305  ;       si cp ex bi bi rd  :           4JY U_ :          \0-F_#A
+
+%Hash: 094b84-235b15-94

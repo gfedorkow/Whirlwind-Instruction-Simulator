@@ -1,0 +1,28 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\03\t03.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\03\t03_gs263_fb.ocore
+%TapeID: _fb
+%JumpTo 02030
+%Stats: Covariance=0.003677, Size=111, 
+%Blocknum 0o0
+@T00000: 0177752 0003200 0177765 0110000 0100000 0077777 0100000 0077777  ; md si md ad ca sp ca sp  : y\0#\0\0<del>\0<del> : <del>#<del>lt#t#
+@T00010: 0000000 0000000 0000000 0000000 0074632 0036313 0177774 0112774  ; si si si si sp cf md ad  :     \0\0\0\0f4vv : \0\0\0\0k2<del>\t
+@T00020: 0050016 0140010 0114011 0177775 0110000 0155001 0074000 0102505  ; ta mr su md ad SL sp ca  :  u =<cntl>\0#\0| :     row<del>l9k#
+@T00030: 0054005 0171075 0074002 0076030  ;             ck CL sp sp  :        |<cntl>en :             jvk#
+%Blocknum 0o1
+@T00000: 0177755 0003200 0112750 0050001 0112747 0040026 0177775 0112766  ; md si ad ta ad ts md ad  :   #\0h##j<cntl>9 : <del>#\tr\t<color><del>\t
+@T00010: 0100147 0040104 0112757 0074000 0177775 0112766 0100032 0040104  ; ca ts ad sp md ad ca ts  :   ###\0<cntl>9f# : t<color>\tk<del>\tt<color>
+@T00020: 0112747 0100026 0110000 0074000 0102506 0054005 0120223 0074002  ; ad ca ad sp ca ck cm sp  :       #j\0\0a|5e :        \ttlk#jhk
+@T00030: 0076030  ;                      sp  :                n :                #
+%Blocknum 0o2
+@T00000: 0177714 0003200 0112750 0050001 0177775 0112747 0040026 0040035  ; md si ad ta md ad ts ts  :   i\0h#<cntl>#j- : <del>#\tr<del>\t<color><color>
+@T00010: 0112506 0070006 0112755 0100020 0112506 0074007 0177775 0112755  ; ad cp ad ca ad sp md ad  : aa#<color>a3<cntl># : \tc\tt\tk<del>\t
+@T00020: 0104020 0040001 0112750 0100001 0110000 0110001 0177775 0112506  ; cs ts ad ca ad ad md ad  : <color>#h#\0#<cntl>a : z<color>\ttll<del>\t
+@T00030: 0044014 0044017 0177775 0110000 0100000 0161010 0112755 0040002  ; td td md ad ca SR ad ts  :  i2<cntl>\0\0 #e : dd<del>ltm\t<color>
+@T00040: 0177774 0110000 0100000 0171010 0161010 0112755 0040003 0177775  ; md ad ca CL SR ad ts md  :  v\0\0  #8<cntl> : <del>ltvm\t<color><del>
+@T00050: 0112766 0100147 0040104 0177775 0113033 0074221 0074000 0177775  ; ad ca ts md ad sp sp md  : 9##<cntl>6.\0<cntl> : \tt<color><del>\tkk<del>
+@T00060: 0112766 0100032 0040104 0110000 0074000 0102507 0054005 0123514  ; ad ca ts ad sp ca ck cm  :       9f#\0\03|i : \tt<color>lk#j\n
+@T00070: 0074002 0076030  ;                   sp sp  :               en :               k#
+
+%Hash: 11025d-a0b6dd-111

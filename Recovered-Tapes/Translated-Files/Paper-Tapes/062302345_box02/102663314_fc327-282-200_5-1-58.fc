@@ -1,0 +1,96 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302345_box02\102663314_fc327-282-200_5-1-58.7ch
+fc TAPE 327-282-200 WILLMANN
+(24,6)
+t=t1
+[1;31mt1,[0m+0.	[1;31m150r|t2,[0m+1942.5416	+81.626693	+.013675503
++1.4138314	+1929.5025	+36.7039345	+.027971111
++1.4114494	+0.	+14.	+65.	+36.5428416
++1.x10-5	-1.	+0.	+2.	+1.	+1.57079638
++57.2957795	+3.908097x10-3	+3437.	[1;31mk1,[0m+.00336	+0.
++.058608727	+805.92786	[1;31mk3,[0m+1.0016270	[1;31mk5,[0m+0.	[1;31m26r|k7,[0m+0.
+[1;31ma1,[0m
+LSR FU4a RAPID SIN-COS
+[1;31m0r,[0miad64r	imr66r	OUT	ca2042	su0	cp32r	su1
+cp57r	su59r	cp11r	[1;31m10r,[0msp0	ad61r	ts18r	cm2043
+ts2043	cm2044	srh15	ad2043	+0	clh1	[1;31m20r,[0mts18r
+md63r	clh1	cp47r	sf2042	ts2043	slh15	ex2044	sd18r
+cp52r	[1;31m30r,[0mcs2042	ts2042	IN	ita46r	its2t
+imr2t	itst	imr68r	iad70r	imrt	[1;31m40r,[0miad72r
+imrt	iad74r	imrt	iad76r	imr2t	isp	sd62r	clh16
+sd62r	[1;31m50r,[0mclh16	sp24r	cs2043	ts2043	cs2044	ts2044
+sp30r	ca60r	sp12r	+28	[1;31m60r,[0msrh1	slh27	1.77777
+0.77777	MULTIPLE	+1.570796327	+.636619772	+.0001514842
+[1;31m70r,[0m-.0046737656	+.0796896793	-.6459637111	+1.570796318
+END OF SUBROUTINE
+<stop>[1;31ma3,[0m
+LSR FU6a ARC SIN
+za1=t	za2=2t	za3=4t
+[1;31ma3,0,[0mita26r	itsza3	icp47r	[1;31m3,[0mimr29r	iad31r	imrza3	iad33r
+imrza3	iad35r	imrza3	iad37r	imrza3	iad39r	imrza3
+iad41r	itsza1	ica27r	isuza3	isp52r	imrza1	iad43r
+imr45r	itsza3	ica27r	its45r	icaza3	[1;31m26,[0misp	[1;31m27,[0m+1.
+[1;31m29,[0m-.0022959648	[1;31m31,[0m+0.0111462294	[1;31m33,[0m-.0268999482
+[1;31m35,[0m+.0488025043	[1;31m37,[0m-.0887556286	[1;31m39,[0m+.2145852647
+[1;31m41,[0m-1.5707961728	[1;31m43,[0m+1.570796327	[1;31m45,[0m+1.	[1;31m47,[0mics27r
+its45r	icsza3	itsza3	isp3r	[1;31m52,[0m[1;31m0r,[0mita26r	its+za3
+OUT	ca2043	dm0	cp25r	ab0	cp0	ao2042	srh1
+ts2042	sp12r	ta22r	IN	its+za2	ica+za3
+idv+za2	iad+za2	OUT	ca2042	su1	ts2042	sp
+sp12r	sp12r	IN	isp
+END OF SUBROUTINE
+<stop>[1;31ma4,[0m
+LSR FU 7 ARC TAN
+[1;31m0r,[0mita33r	its4t	[1;31m2r,[0mitst	icp34r	iad54r	[1;31m5r,[0micp32r
+icat	iad38r	iext	isu38r	[1;31m10r,[0midvt	itst	imrt	its2t
+imr54r	[1;31m15r,[0miad52r	imr2t	iad50r	imr2t	iad48r
+[1;31m20r,[0mimr2t	iad46r	imr2t	iad44r	imr2t	[1;31m25r,[0miad42r
+imr2t	iad40r	imrt	iad56r	[1;31m30r,[0miex4t	icp36r
+ica4t	[1;31m33r,[0misp0	[1;31m34r,[0mics4t	[1;31m35r,[0misp2r	[1;31m36r,[0mics4t
+[1;31m37r,[0misp33r	[1;31m38r,[0m+1.	[1;31m40r,[0m+.9999993329	[1;31m42r,[0m-.3332985605
+[1;31m44r,[0m+.1994653599	[1;31m46r,[0m-.1390853351	[1;31m48r,[0m+.096420441
+[1;31m50r,[0m-.0559098861	[1;31m52r,[0m+.0218612288	[1;31m54r,[0m-.004054058
+[1;31m56r,[0m+.7853981634
+END OF SUBROUTINE
+<stop>[1;31ma5,[0m
+LSR OD 2 DELAYED (30 - j,j) PRINT
+za1=<stop>
+0r,ita99r	OUT	ca2043	ts114r	cp7r	ca141r
+sp8r	ca142r	sp115r	clc8	sp115r	ca0
+|||||||||||||||||||||||||
+12r,ts91r	ca109r	ts29r	ca2042	ts44r	cp20r
+ao29r	ao29r	ca2044	ts89r	sa129r	cp124r
+|||||||||||||||||||||||||
+24r,cs2042	su106r	cp31r	ao91r	IN	+0
+sp24r	ad105r	cp27r	ad119r	ex44r	ts2042
+|||||||||||||||||||||||||
+36r,cp39r	cs91r	ts91r	ca104r	ex89r	ex2044
+srh15	ad2043	+0	ts44r	slh15	ex114r
+|||||||||||||||||||||||||
+48r,ts2043	ca107r	sp53r	ao91r	ca108r	ts67r
+cm114r	mh146r	ts29r	slr15	ts114r	cm44r
+|||||||||||||||||||||||||
+60r,mh146r	ts70r	slr15	sa29r	ts44r	ca70r
+su0	+0	ad102r	ts70r	+0	sp115r
+|||||||||||||||||||||||||
+72r,ao89r	cp52r	cm91r	mh145r	ad102r	ex89r
+slr15	mh146r	ad102r	ex91r	cp85r	ca144r
+|||||||||||||||||||||||||
+84r,sp86r	ca143r	sp115r	clc8	sp115r	+0
+sp115r	+0	sp115r	clc8	sp115r	si94
+|||||||||||||||||||||||||
+96r,si95	si408	IN	isp0	ita99r	sp102r
+ca131r	sp93r	-7+za1	+4	+3	cp51r
+|||||||||||||||||||||||||
+108r,sp68r	imr126r	ita99r	sp112r	ca130r	sp94r
++0	ta118r	si94	rc117r	sp0	srr511
+|||||||||||||||||||||||||
+120r,ita99r	sp122r	ca130r	sp93r	ao2044	sp24r
++10.	+.10	1.13246	1.75042
+|||||||||||||||||||||||||
+132r,0.53042	0.37042	0.17042	0.27042	0.47042	0.67042
+0.57042	0.07042	1.55042	0.33106	0.73106	0.13066
+|||||||||||||||||||||||||
+144r,0.13166	0.06315	+10
+|||||||||||||||||||||||||
+END OF SUBROUTINE
+<stop><del><del><del><del><del><del><del>i START AT g1

@@ -1,0 +1,27 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o1; xsum=bugbug
+%File: Everett-Tape-manual-read.7ch/Everett-Tape-manual-read_gs001.tcore
+%TapeID: 
+%Stats: Covariance=0.001358, Size=142, Display-Ops, 4, 
+%Blocknum 0o0
+@C00000: 0100074 0077706 0102726 0171013 0071100 0102700 0171013 0071104  ; ca sp ca CL cp ca CL cp  :       vaj4\0\04# :         t##vc#vc
+@C00010: 0012304 0075102 0121104 0006350 0135102 0175104 0062350 0135102  ; bi sp cm .word dm md ab dm  :         #e#he#he :         |kh8q0,q
+@C00020: 0171104 0032316 0075152 0171152 0175102 0015102 0022000 0003620  ; CL sd sp CL md rd bo si  :  #uyyee\0<color> :         v+kv0a=#
+@C00030: 0046250 0061026 0071500 0003620 0026226 0065026 0066000 0001602  ; td ab cp si rc ex ex si  : hj\0<color>jj\0e :        5nc#4f6\0
+@C00040: 0131700 0155000 0027620 0005614 0167620 0005652 0156100 0002700  ; ao SL rc .word sf .word SL si  : \0\0<color>i<color>y\0\0 :         p94e#e##
+@C00050: 0001426 0036026 0063620 0005604 0036026 0063620 0005604 0012626  ; si cf ab .word cf ab .word bi  : jj<color>#j<color>#j :        \02,e2,e|
+@C00060: 0036016 0071000 0002026 0001000 0002116 0107600 0026226 0061000  ; cf cp si si si cs rc ab  :     u\0j\0u\0j\0 :     2c#\0#<bs>4n
+@C00070: 0001700 0156026 0065000 0002150 0073700 0002250 0071000 0002626  ; si SL ex si cp si cp si  :     \0j\0h\0h\0j :        \0#f#-#c#
+@C00100: 0042016 0065000 0002016 0075702 0176016 0105000 0025746 0142026  ; ts ex si sp md cs rc mr  :       u\0ueu\0wj : .f#k<del>zs<stop>
+@C00110: 0063420 0011604 0072626 0042016 0101026 0062000 0003750 0162216  ; ab bi cp ts ca ab si SR  :  <color>#juj\0hu :    ,#-.t,#<cntl>
+@C00120: 0061702 0176626 0046016 0101704 0054003 0002100 0002700 0001426  ; ab md td ca ck si si si  :       EJU#8\0\0J :    N<del>5TJ##\0
+@C00130: 0045716 0002026 0071044 0065752 0162026 0076200 0001000 0002050  ; td si cp ex SR sp si si  :       UJLYJ\0\0H :   D#CF<cntl>#\0#
+@C00140: 0077724 0152200 0001026 0066000 0035620 0031610 0136000 0001026  ; sp dv si ex cf sd dm si  : R\0J\0<color> \0J :       ##\06UI#\0
+@C00150: 0062016 0063700 0026226 0066226 0062250 0135000 0025746 0142000  ; ab ab rc ex ab dm rc mr  :      U\0JJH\0W\0 :    ((46(QS<stop>
+@C00160: 0036250 0051104 0175106 0042000 0001026 0062000 0047620 0021610  ; cf ta md ts si ab td bo  : H#A\0J\0<color>  :        2R0)\0(5 
+@C00170: 0022050 0077712 0041333 0102430 0174022 0111333 0112456 0040022  ; bo sp ts ca md ad ad ts  :         HS6ND6QD : :#<color>#0L\t<color>
+@C00200: 0100003 0171012 0041333 0104734 0175330 0111333 0040000 0102436  ; ca CL ts cs md ad ts ca  :        8S6CN6\0K : TV<color>Z0L<color>#
+@C00210: 0174016 0041330 0100003 0112423 0044361 0000000  None    None    ;   md ts ca ad td si      : UN85<stop>\0     : 0<color>T\tD\0    
+
+%Hash: 780fb8-a60347-142

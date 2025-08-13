@@ -143,6 +143,8 @@ class CpuClass:
 
         self.isa_1950 = False   # set this to use the early 1950's instruction set, rather than the 1958 version
 
+        self.stop_on_address = None   # set this if the front-panel "stop on pc preset address" is active
+
         # I don't know what initializes the CPU registers, but it's easier to code if I assume they're zero!
         self._BReg = 0
         self._AC = 0    # Accumulator
@@ -676,8 +678,8 @@ class CpuClass:
             description = oplist[2]
         self.print_cpu_state(current_pc, opcode, oplist[1], description, address)
 
-        if self.cb.ana_scope:
-            self.cb.ana_scope.set_audio_click(self._AC)
+        if self.cb.RasPi:
+            self.cb.panel.panel_mWW.set_audio_click(self._AC)
 
         if current_pc in Breakpoints:
             Breakpoints[current_pc](self)
@@ -1956,9 +1958,15 @@ def main_run_sim(args, cb):
         cb.sim_state = cb.SIM_STATE_STOP
     else:
         cb.sim_state = cb.SIM_STATE_RUN
+        cb.first_instruction_after_start = True
+
     alarm_state = cb.NO_ALARM
     if cb.panel:
         cb.panel.update_panel(cb, 0, init_PC=cpu.PC, alarm_state=alarm_state)  # I don't think we can miss a mouse clicks on this call
+
+    # this was here to debug a panel/no-panel inconsistency
+    # print("Dump Switch Values:")
+    # cpu.cpu_switches.dump_switches()
 
     # LAS
     if UseDebugger:
@@ -2023,9 +2031,17 @@ def main_run_sim(args, cb):
                 time.sleep(0.1)
                 continue
 
+            #
+            if cpu.stop_on_address is not None and cb.first_instruction_after_start == False:
+                if cpu.PC == cpu.stop_on_address:
+                    cb.log.warn("Stop on PC Preset switches activated")
+                    cb.sim_state = cb.SIM_STATE_STOP
+                    continue
+
             # ################### The Simulation Starts Here ###################
             alarm_state = cpu.run_cycle()
             # ################### The Rest is Just Overhead  ###################
+            cb.first_instruction_after_start = False # clear this flag to re-enable control panel stop-on-address
             # poll various I/O circumstances, and update the xwin screen
             # Do this less frequently in AnaScope mode, as it slows the Rasp Pi performance,
             # even to check the xwin stuff
@@ -2217,7 +2233,7 @@ def main():
     parser.add_argument("-b", "--BlinkenLights",
                         help="Activate a physical Whirlwind Manual Intervention Panel", action="store_true")
     parser.add_argument("-m", "--MicroWhirlwind",
-                        help="Activate a physical Whirlwind Model", action="store_true")
+                        help="Activate the MicroWhirlwind Model", action="store_true")
     parser.add_argument("--NoZeroOneTSR",
                         help="Don't automatically return 0 and 1 for locations 0 and 1", action="store_true")
     parser.add_argument("--SynchronousVideo",
@@ -2234,6 +2250,8 @@ def main():
                         help="Cycle through states endlessly for museum display", action="store_true")
     parser.add_argument("-d", "--Debugger",
                         help="Start simulation under the debugger", action="store_true")
+    parser.add_argument("--ZeroizeCore",
+                        help="Return zero for uninitialized core memory", action="store_true")
 
     args = parser.parse_args()
 
@@ -2249,6 +2267,9 @@ def main():
 
     if args.AutoClick:
         cb.argAutoClick = True
+
+    if args.ZeroizeCore:
+        cb.ZeroizeCore = True
 
     if args.BlinkenLights and BlinkenLightsModule == False:
         cb.log.warn("No BlinkenLights Hardware available")

@@ -1,0 +1,122 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_07\102766884_fc22-103-20_2-12.7ch
+fc TAPE 22-103-20 10 BIT ADDER BARTEE
+OCTAL
+(24,6)
+ca0
+cf1000
+srh3
+ck1
+cf107	|program was read into c f 1
+ck0
+cf107
+ex 0
+slh3
+ck1
+cf107	|program was read into c f 1
+ck0
+cf107
+ad5b9	
+tsb2-1	|set to return to these program feilds
+ts1b8
+ca1b9
+ts1b1	|reset clear program
+ca0
+tsb9	|reset inputs
+si10	|ff reset
+ca24
+sfb14	|set so largest input is one increment short of pi/2
+ca3
+clc24
+td1b4	|amount output is to be rounded
+td2b4
+ca3
+clc4
+cpb15	|ones generator| zero generator--
+ca0
+[1;31mb16,[0mts6b9
+ca3
+md7b9
+td1b5	|column beinggenerated
+cf101
+[1;31mb1,[0mcab11	|make table empty
+[1;31m1b1,[0mts2000+
+ao1b1
+su4b9
+cpb1
+[1;31m-1b2,[0mcf100+
+cab9
+slh5
+tsc3
+mdc4
+srh1
+exc3
+slh<del>5
+mdc4
+srh1
+adc3
+[1;31mb5,s[0md6b9	|leave alone if ones desired compliment if zeros desired
+[1;31m1b5,[0mclc0+
+cpb7	|st<del>ore in table-- omit |
+[1;31mb6,[0maob9	|next input
+su24	|all inputs checked
+cpb2	|n0 --  yes |
+si1	|conditional stop
+ca2b9	|go to reducti<del>on program
+
+cf701
+[1;31mb7,[0mcab9	|input
+ad1b9	|start of table
+tsb8
+cf101
+ca24	|store mask
+[1;31mb8,[0mts0+
+[1;31m1b8,[0mcf100+
+spb6
+[1;31mb9,[0msi0	|input
+ts2000	|start of table
+si40	|start of reduction program
+si0	|scale factor
+ts3777	|end of table
+cf100	|restore to proper feilds
+si0	|0 if ones generator  1s if zero generator
+si17	|mask
+[1;31mb10,[0mcs0	|make out put all ones
+spb5
+[1;31mb11,[0mca0	|be sure zero is a plus zero
+spb5
+[1;31mb12,[0mca3774
+srh17	|round bit 15 if next bit was a 1
+ad3773
+srr0
+spb3
+[1;31mb15,[0mcs0	|mask for zero generator
+spb16
+DECIMAL
+[1;31mb13,[0m
+t=c3
+|||||||||||||||||||||||||
+LSR FU4 sin x  cos x
+0,ita47r	1,iad54r	2,isp6r	3,icst	4,isp10r	5,ita47r
+6,imr48r	7,itst	8,icat	9,icp3r	10,isu50r	11,icp13r
+|||||||||||||||||||||||||
+12,isp10r	13,iad50r	14,isu52r	15,icp28r	16,isu52r	17,icp30r
+18,isu52r	19,icp33r	20,isu52r	21,its2t	22,icat	23,icp26r
+||||||||||||||||||||||||
+24,ica2t
+|||||||||||||||||||||||||
+25,isp35r	26,ics2t	27,isp35r	28,iad52r	29,isp21r	30,its2t
+31,ics2t	32,isp21r	33,iad52r	34,isp30r	35,its2t	36,imr2t
+|||||||||||||||||||||||||
+37,itst	38,imr56r	39,iad58r	40,imrt	41,iad60r	42,imrt
+43,iad62r	44,imrt	45,iad64r	46,imr2t	47,isp
+|||||||||||||||||||||||||
+MULTIPLE
+48,+.636619772	50,+4.	52,+1.	54,+1.570796327	56,+.0001514842	58,-.0046737656
+|||||||||||||||||||||||||
+60,+.0796896793	62,-.6459637111	64,+1.570796318
+|||||||||||||||||||||||||
+END OF SUBROUTINE
+<stop>[1;31mc3,[0m0
+[1;31mc4,[0m0.76000
+OCTAL
+START AT 40

@@ -1,0 +1,25 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o100675; xsum=good
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\03\t03.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\03\t03_gs220_fb.tcore
+%TapeID: _fb
+%JumpTo 02030
+%Stats: Covariance=0.003648, Size=94, Display-Ops, 2, 
+%Blocknum 0o0
+@C03200: 0112764 0044015 0110000 0100000 0110000 0040000 0112765 0074000  ; ad td ad ca ad ts ad sp  :    g+\0\0\0\0#\0 : \tdltl<color>\tk
+@C03210: 0110000 0155017 0112764 0140107 0112764 0040073 0110000 0100000  ; ad SL ad mr ad ts ad ca  :      \02g3g#\0\0 : l9\to\t<color>lt
+@C03220: 0110000 0040000 0112765 0074014 0110000 0155017 0112764 0140107  ; ad ts ad sp ad SL ad mr  :      \0\0#i\02g3 : l<color>\tkl9\to
+@C03230: 0112764 0040072 0110000 0074000 0177773 0112764 0050022 0130105  ; ad ts ad sp md ad ta ao  :       gx\0\0#gd| : \t<color>lk<del>\trp
+@C03240: 0044007 0130105 0110000 0074000 0177756 0112764 0100075 0040074  ; td ao ad sp md ad ca ts  :  3|\0\0qg<cntl>v : dplk<del>\tt<color>
+@C03250: 0104100 0040077 0100072 0040103 0074042 0100075 0040074 0104100  ; cs ts ca ts sp ca ts cs  : \0<del>x8z<cntl>v\0 : z<color>t<color>kt<color>z
+@C03260: 0040077 0100073 0040102 0074054 0074104 0050053 0100103 0110000  ; ts ca ts sp sp ta ca ad  :    <del>#ep##8\0 : <color>t<color>kkrtl
+@C03270: 0000600 0112764 0100077 0112457 0024012 0177773 0112764 0110067  ; si ad ca ad rc md ad ad  :    \0g<del>#s#g# : \0\tt\ts<del>\tl
+@C03300: 0040077 0130074 0070045 0110000 0074000 0177775 0112764 0050066  ; ts ao cp ad sp md ad ta  : <del>v\t\0\0<cntl>g9 : <color>pclk<del>\tr
+@C03310: 0100077 0110000 0000600 0177770 0112764 0100102 0024023 0100077  ; ca ad si md ad ca rc ca  : <del>\0\0mge5<del> :   tl\0<del>\ttst
+@C03320: 0110067 0040077 0130074 0070055 0177767 0110000 0074000 0000376  ; ad ts ao cp md ad sp si  :   #<del>v##\0\00 : l<color>pc<del>lk\0
+@C03330: 0000000 0000000 0000000 0000000 0000000 0177376  None    None    ;   si si si si si md      :  \0\0\0\0\00     : \0\0\0\0\0<del>    
+
+%Hash: 2d9821-755cdb-94
+
+%String: ltl
+%String: ltl

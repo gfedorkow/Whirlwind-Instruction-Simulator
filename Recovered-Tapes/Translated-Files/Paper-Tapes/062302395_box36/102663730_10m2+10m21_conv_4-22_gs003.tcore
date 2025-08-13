@@ -1,0 +1,38 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o3; xsum=good
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302395_box36\102663730_10m2+10m21_conv_4-22.7ch/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Paper-Tapes\062302395_box36\102663730_10m2+10m21_conv_4-22_gs003.tcore
+%TapeID: 
+%JumpTo 00
+%Stats: Covariance=0.003202, Size=97, 
+%Blocknum 0o0
+@C00060:  None    None    None    None    None    None    None   0034105  ;                      cf  :                | :                u
+@C00070:  None    None    None    None   0034105  None    None    None    ;                cf        :          |       :          u      
+@C00100:  None   0034105  None    None    None    None   0034105  None    ;         cf         cf    :     |        |   :     u        u  
+@C00500:  None    None   0075110  None    None    None    None    None    ;            sp            :                  :      k          
+@C00520:  None    None    None    None    None    None   0075120  None    ;                    sp    :             <color>   :              k  
+@C00600:  None    None   0040000  None    None    None    None    None    ;            ts            :     \0           :     <color>          
+@C00620:  None    None    None    None    None    None   0040000  None    ;                    ts    :             \0   :             <color>  
+@C00640:  None    None   0040000  None    None    None    None    None    ;            ts            :     \0           :     <color>          
+@C00700: 0050702  None    None    None   0050706  None    None    None    ;       ta       ta        :   e      a       :   r      r      
+@C00710:  None   0101123 0075067  None    None   0101124 0075067  None    ;       ca sp     ca sp    :       5#    r#   :       tk    tk  
+@C00720:  None   0040000 0101125 0075067  None   0050727  None    None    ;       ts ca sp   ta      :      \01#  7     :   <color>tk  r    
+@C00730:  None   0050733  None    None    None   0051107  None   0101136  ;        ta       ta   ca  :      6      3  k :      r      r  t
+@C00740: 0075105  None   0101137 0075105  None    None   0101132 0075100  ;    sp   ca sp     ca sp  :     |  #|    f\0 :      k  tk    tk
+@C00750:  None    None   0101131 0075100  None    None   0101133 0075100  ;         ca sp     ca sp  :       ,\0    6\0 :         tk    tk
+@C00760:  None    None   0101130 0075100  None    None   0101127 0075100  ;         ca sp     ca sp  :       n\0    7\0 :         tk    tk
+@C00770:  None    None   0101126 0075100  None    None   0101135 0075100  ;         ca sp     ca sp  :       j\0    -\0 :         tk    tk
+@C01000:  None   0051003  None    None    None   0051007  None    None    ;         ta       ta      :     8      3     :     r      r    
+@C01010:  None    None   0101134 0075100  None   0051017  None    None    ;          ca sp   ta      :       c\0  2     :        tk  r    
+@C01020:  None    None    None   0000000  None   0000000  None    None    ;             si   si      :       \0  \0     :       \0  \0    
+@C01050:  None    None    None    None    None    None    None   0051066  ;                      ta  :                9 :                r
+@C01060: 0131065 0115122 0071064 0074000 0101750 0040000 0074000 0051077  ; ao su cp sp ca ts sp ta  :  #dg\0h\0\0<del> :   pwckt<color>kr
+@C01070: 0041750 0101025 0110001 0170003 0111750 0041750 0075057 0074000  ; ts ca ad CL ad ts sp sp  :        h1#8hh#\0 : <color>tlvl<color>kk
+@C01100: 0051107 0041750 0101023 0170003 0111750 0041750 0075057 0074000  ; ta ts ca CL ad ts sp sp  :        3h58hh#\0 : r<color>tvl<color>kk
+@C01110: 0051117 0000017 0101122 0115140 0011751 0101140 0045065 0074000  ; ta si ca su bi ca td sp  :       22dt\nt#\0 :        r\0tw#tdk
+@C01120: 0034105 0076000 0041777 0100001 0100002 0100003 0000002 0000003  ; cf sp ts ca ca ca si si  :    |\0<del>#e8e8 : u#<color>ttt\0\0
+@C01130: 0000004 0000005 0000006 0000007 0100004 0100005 0100006 0100007  ; si si si si ca ca ca ca  :         #|a3#|a3 :     \0\0\0\0tttt
+@C01140: 0041750  None    None    None    None    None    None    None    ;        ts                :  h               : <color>              
+@C01750: 0000000  None    None    None    None    None    None    None    ;        si                : \0               : \0              
+
+%Hash: 703f37-877bf4-97

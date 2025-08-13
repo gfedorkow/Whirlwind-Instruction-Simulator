@@ -118,7 +118,7 @@ def write_core_wrapper(input_file: str, base_filename: str, ww_file, sequence: i
     if base_filename is not None:
         core_file_name = "%s_gs%03d%s.%s" % (base_filename, sequence, title, file_extension)
         core_file_name = core_file_name.replace(" ", "#")
-        input_file += '/' + core_file_name
+        input_file += '/' + core_file_name  # "input file" is a comment that goes into the core file
         if DebugTAP:
             print("(write core file %s)" % core_file_name)
     else:
@@ -222,9 +222,10 @@ def decode_556_block(words, ww_file, ditto_count: int) -> Tuple[bool, Union[int,
             count = ((words[offset] ^ 0xffff) + 1) &0x7fff
             cb.log.debug556("Starting WW 556 word-count Block; title=%s, len=%d(d)" % (title, count))
             if count < 1 or count >= remaining_words or count > 2048:
-                cb.log.warn("suspicious WW block length: count=%d(d), actual block length=%d(d)" % (count, len(words)))
-#                is_556 = False
-#                break
+                cb.log.warn("suspicious WW block length: count=%d(d), remaining_words=%d(d), actual block length=%d(d)"
+                            % (count, remaining_words, len(words)))
+                is_556 = False
+                break
             if count == 0:
                 break
             addr = words[offset + 1] & 0x07ff
@@ -349,11 +350,11 @@ def decode_556_block(words, ww_file, ditto_count: int) -> Tuple[bool, Union[int,
     if not good_xsum and not bad_xsum:
         cb.log.debug556("No checksum at end of block; accumulated xsum = 0o%o" % xsum)
     if jump_to is not None and offset != len(words):
-        cb.log.warning("loader_block error?  jump_to not at end of block: offset=%d, len=%d" % (offset, len(words)))
+        cb.log.warn("loader_block error?  jump_to not at end of block: offset=%d, len=%d" % (offset, len(words)))
         is_556 = False
     if jump_to is not None:
         if ww_file.jump_to is not None:
-            cb.log.warning("More than one Jump_to: 0o%o and 0o%o" % (ww_file.jump_to, jump_to))
+            cb.log.warn("More than one Jump_to: 0o%o and 0o%o" % (ww_file.jump_to, jump_to))
             is_556 = False
         ww_file.jump_to = jump_to
     ww_file.is_556 = is_556
@@ -532,7 +533,7 @@ def read_tap_file(tap_filename, base_output_filename, min_file_size, read_past_e
     if DebugTAP:
         print("Using .TAP file %s, length=%d(d)" % (tap_filename, tap_file_len))
     if (tap_file_len % 2) != 0:
-        print("Warning: TAP warning: total tape length is odd : len=%d" % tap_file_len)
+        cb.log.warn("TAP warning: total tape length is odd : len=%d" % tap_file_len)
 
     ww_file = WWFileClass(cb)   # class to hold the core image and some metadata
     saw_tape_mark = False  # We need to detect the "double tape mark" as end of the useful file, so this is the marker
@@ -601,7 +602,7 @@ def read_tap_file(tap_filename, base_output_filename, min_file_size, read_past_e
         record = bytearray(tap_file_content[tape_offset:tape_offset+leading_record_len])
         padded_record_len = leading_record_len
         if leading_record_len & 0o1:  # odd length record should be padded with zero
-            print("Warning: odd-length record; tape block starts at %d(d) byte offset, record len = %d(d)" %
+            cb.log.warn("Odd-length record; tape block starts at %d(d) byte offset, record len = %d(d)" %
                   (tape_offset, len(record)))
             if stop_on_tap_block_error:
                 break
@@ -659,7 +660,7 @@ def read_tap_file(tap_filename, base_output_filename, min_file_size, read_past_e
 
     stats = {'good_xsum_count': good_xsum_count, 'bad_xsum_count': bad_xsum_count, 'no_xsum_count': no_xsum_count,
              'jump_to_count': jump_to_count, 'outputfile_sequence': outputfile_sequence,
-             'ignored_files_count': ignored_files_count}
+             'ignored_files_count': ignored_files_count, 'non_556_block_count': 0}
     return stats, completion_string
 
 
@@ -742,7 +743,7 @@ def decode_556_file(flexo, block_array: List[List[int]],
         # on paper tape, I've never seen a single block that contains the title and 556 code, although
         # it's possible that such a thing could exist
         # If it's a 556 block, the first word should be a negative word-count
-        if tape_header and block_is_all_flexo(flexo, block) and (w0 & 0o100000 == 0):
+        if tape_header and block_is_all_flexo(flexo, block) and (w0 & 0o100000 == 0) and ww_file.title is None:
             ww_file.title = decode_a_flexo_block(flexo, block, make_filename_safe=True)
             cb.log.debug556("556 tape header title: %s" % ww_file.title)
             continue
@@ -940,7 +941,7 @@ def decode_556_word(cc: List[int], warn: bool = False, voffset: int = None) -> i
         voff_str = ''
 
     if len(cc) < 3:
-        cb.log.warn("Warning: %sdecode_556_word needs 3 char, but called with %d characters; returning zero" %
+        cb.log.warn("%sdecode_556_word needs 3 char, but called with %d characters; returning zero" %
                     (voff_str, len(cc)))
         return 0
 #    if (cc[2] == 0o77) and (cc[1] == 0o77) and (cc[0] == 0o77):
@@ -967,7 +968,7 @@ def convert_556_block_to_words(block: List[int], block_offset=None) -> List[int]
         if block_offset is not None:
             block_offset += 3
         if 0 < offset < 3:
-            cb.log.warning("convert_556_to_words called with block not divisible by three")
+            cb.log.warn("convert_556_to_words called with block not divisible by three")
             break
     return words
 
@@ -1133,12 +1134,15 @@ def main():
         cb.log.fatal("Please specify either .7ch or .tap file, or --TapFormat or --Ch7Format")
 
     if args.OutputFile:
-        base_filename = args.OutputFile
+        base_output_filename = args.OutputFile
     else:
-        base_filename = re.sub('\\.' + file_type + '$', '', args.tape_file)
+        base_output_filename = re.sub('\\.' + file_type + '$', '', args.tape_file)
+        if re.match(".*/", base_output_filename):    #strip off a file path to get just the filename itself.
+            base_output_filename = re.sub(".*/", "", base_output_filename)
 
     if args.DebugCore:  # send output to stdout
-        base_filename = None
+        base_output_filename = None
+
 
     hist.local_histogram = not args.GlobalHistogram
 
@@ -1147,7 +1151,7 @@ def main():
     else:
         min_file_size = args.MinFileSize
 
-    cb.log.info("input file: %s, type: %s, basename: %s" % (args.tape_file, file_type, base_filename))
+    cb.log.info("input file: %s, type: %s, output basename: %s" % (args.tape_file, file_type, base_output_filename))
     stats = {}
     completion_string = 'all'
     block_type_list = []
@@ -1156,7 +1160,7 @@ def main():
         if args.FlexoForce:
             cb.log.fatal("Write Some Code:  Flexo mag tape not implemented yet!")
         # good_xsum, bad_xsum, no_xsum, jump_tos, ignored_files
-        stats, completion_string = read_tap_file(args.tape_file, base_filename,
+        stats, completion_string = read_tap_file(args.tape_file, base_output_filename,
                                                  min_file_size, read_past_eof,
                                                  args.BlockErrorStop,
                                                  args.DumpOctalBlocks)
@@ -1173,19 +1177,19 @@ def main():
                 block_type_list.append(btype)
 
         if its_all_flexo or args.FlexoForce:
-            write_flexo_file(flexo, block_array, args.tape_file, base_filename, args.ASCIIonly)
+            write_flexo_file(flexo, block_array, args.tape_file, base_output_filename, args.ASCIIonly)
         else:
             if args.No556Header:
                 stats, completion_string = just_convert_556_blocks(block_array,
-                                                                      args.tape_file, base_filename)
+                                                                      args.tape_file, base_output_filename)
             else:
                 stats, completion_string = classify_paper_tape_blocks(flexo, block_array, block_type_list,
-                                                                  args.tape_file, base_filename, min_file_size)
+                                                                  args.tape_file, base_output_filename, min_file_size)
 
     else:
         cb.log.fatal("?? how'd we get here? file_type=%s" % file_type)
 
-    cb.log.info("Completed %s of tape %s" % (completion_string, base_filename))
+    cb.log.info("Completed %s of tape %s" % (completion_string, base_output_filename))
     if len(stats) > 0:
         cb.log.info("   Wrote %d files; Ignored %d files due to size less than %d words" %
                     ((stats['outputfile_sequence'] - stats["ignored_files_count"] - 1),  # numbering starts at one

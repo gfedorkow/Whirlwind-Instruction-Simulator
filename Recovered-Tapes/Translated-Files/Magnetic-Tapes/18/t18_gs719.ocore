@@ -1,0 +1,26 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\18\t18.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\18\t18_gs719.ocore
+%TapeID: 
+%Stats: Covariance=0.004341, Size=133, 
+%Blocknum 0o0
+@T00000: 0000204 0100000 0130207 0126306 0100000 0130555 0126304 0100000  ; si ca ao sa ca ao sa ca  :      #\03a\0##\0 :        \0tp#tp#t
+@T00010: 0131230 0126300 0100000 0132531 0126270 0100000 0133723 0126261  ; ao sa ca ao sa ca ao sa  : n\0\0,m\05<stop> :         p#t##t##
+@T00020: 0100100 0101765 0126414 0100100 0103152 0126405 0100000 0135026  ; ca ca sa ca ca sa ca dm  :      \0#i\0y|\0j :         tt#t##tq
+@T00030: 0126452 0100000 0135477 0126446 0100000 0136146 0126443 0100000  ; sa ca dm sa ca dm sa ca  : y\0<del>w\0w<bs>\0 :         #tq#t##t
+@T00040: 0136413 0126441 0100000 0136627 0126437 0100000 0100122 0126627  ; dm sa ca dm sa ca ca sa  :       4#\07#\0d7 :         ##t##tt#
+@T00050: 0100000 0100451 0126625 0100100 0101021 0126622 0100000 0103106  ; ca ca sa ca ca sa ca ca  :     \0\n1\0.d\0a :         tt#tt#t#
+@T00060: 0126605 0100000 0103261 0126604 0100000 0133237 0127064 0100000  ; sa ca ca sa ca ao sa ca  : |\0<stop>#\0#g\0 :         #t##t##t
+@T00070: 0133463 0127062 0100000 0133722 0127061 0100000 0134223 0127056  ; ao sa ca ao sa ca dm sa  :  #b\0d<stop>\05q :         ##t##tq#
+@T00100: 0100000 0134447 0127055 0100000 0136114 0127043 0100000 0136612  ; ca dm sa ca dm sa ca dm  :   \0##\0i<bs>\0s :         tq#t##t#
+@T00110: 0127037 0100000 0137456 0127032 0100000 0137770 0127030 0000000  ; sa ca dm sa ca dm sa si  :      #\0qf\0mn\0 :        #t##t##\0
+@T00120: 0004150 0065651 0013110 0073023 0003542 0000001 0004150 0065651  ; .word ex bi cp si si .word ex  :       h\n 5z#h\n :        ef|-#\0ef
+@T00130: 0013110 0073763 0004002 0000002 0004150 0065651 0013110 0074723  ; bi cp .word si .word ex bi sp  :         #eeh\n 5 :        |-e\0ef|k
+@T00140: 0004242 0000003 0004150 0065651 0013110 0075163 0005202 0000004  ; .word si .word ex bi sp .word si  :        z8h\n #e# :       e\0ef|ke\0
+@T00150: 0004150 0065651 0013110 0075423 0006142 0000005 0073626 0065652  ; .word ex bi sp .word si cp ex  :        h\n 5z|jy :        ef|k8\0-f
+@T00160: 0013110 0003054 0003542 0000006 0073626 0065652 0013110 0003554  ; bi si si si cp ex bi si  :          pzajy p :        |##\0-f|#
+@T00170: 0005442 0000007 0073626 0065652 0013110 0005454 0003542 0000010  ; .word si cp ex bi .word si si  :         z3jy pz  :       e\0-f|e#\0
+@T00200: 0073626 0065652 0013110 0006154 0004742  ;    cp ex bi .word .word  :            jy pz :            -f|8e
+
+%Hash: 18744d-6c281c-133

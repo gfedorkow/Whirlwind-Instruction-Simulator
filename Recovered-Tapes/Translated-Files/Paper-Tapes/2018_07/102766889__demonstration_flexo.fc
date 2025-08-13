@@ -1,0 +1,32 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_07\102766889__demonstration_flexo.7ch
+Standard business letter writing equipment is used in the preparation of punched paper
+tapes for input into the WHIRLWIND I computer. The preparation of such a tape is the
+essential step in introducing information into a binary computer. The presence or
+absence of holes in each of the 6 significant positions across the tape provides
+a unique binary indication of what typewriter character was struck. The computer
+itself is then instructed to convert the arbitrarily coded binary combinations
+read from the tape into the correct binary form of the numbers and instructions which
+the tape was intended to introduce into the computer.
+
+
+
+AN EXAMPLE OF A SHORT PROGRAM ACTUALLY TYPED FOR THE WHIRLWIN<del>D COMPUTER FOLLOWS
+
+
+|||||||||||||||||||||||||
+TAPE NO. 2690 m1 VANDERBURGH
+OCTAL
+|||||||||||||||||||||||||
+40|	ca172	ts212	ca212	ad174	ts223	ts212	srr1	sp50
+50|	su203	cp56	ca210	ts47	ca204	sp44	ca200	sp240
+60|	ts200	sp42	su175	cp56	ca172	ts223	ts164	ca173
+70|	sp260	ts165	ca0	ts166	ca177	ad202	cp75	ca164
+100|	ad174	ts223	ts164	ca166	su170	ts166	su176	mr171
+110|	ad165	ts165	srr1	su177	cp117	ca165	sp140	ca164
+ .              .	   .	   .	   .	   .	   .	   .	   .
+ <del>.		   .	   .	   .	   .	   .	   .	   .	   .
+ .	   . 	   .	   .	   .	   .	   .	   .	   .
+340|	ts224	si600	ca223	rc	ca224	sp153
+|||||||||||||||||||||||||
+START AT l57
+|||||||||||||||||||||||||

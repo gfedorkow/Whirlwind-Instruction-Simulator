@@ -1,0 +1,331 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_12\102782316_fc126-269-330_11-25.7ch
+fc TAPE 126-269-330 MOUSE DISPLAY ROUTINES WALSH
+DECIMAL
+|ENTRY FOR THE LOOK DISPLAY
+[1;31m0.02043|[0mtap14	spg2<del>
+|ENTRY FOR THE A<del>IM DISPLAY
+tap14	spg1
+|ENTRY FOR THE MOVE DISPLAY
+tap14	spd1
+|ENTRY FOR THE TABLE OF VALUES DISPLAY
+tap14	sph1
+|ENTRY TO CHANGE MOVE DISPLAY FROM DISPA<del>CHER
+cf+0.00354	spe1	cac12	cf<del><del><del><del><del><del><del><del>+0.0|ENTRY TO TAKE A PICTURE OF THE PREVIOUS DISPLAY
+cf+0.00354	si4	cac8	ts1e11	spe13	cac9	ts1e11	si4	sp1e11
+|L<del>IGHT GUN INPUT ENTRY
+tap14	spd47
+|MOVE DISPLAY ROUTINE
+|TEST FOR ZERO MOVES, (-)=YES <del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>= DO INITIAL SETTINGS
+[1;31m<del><del><del><del><del><del><del><del>d1,[0mcaz1	dm0	cpe2
+|TEST PRESENT X POSITION TO SEE IF THE MOUSE HAS BACKED UP FURTHER THAN THE INITIAL POINT OF THE DISPLAY, (+)=NO, (-)=YES
+[1;31md4,[0mcaz6	sup5	ad1	tss3	cpd5
+|TEST END OF COMPLETE DISPLAY, (+)=YES, (-)=NO
+caz9	sup9	sup5	<del><del><del><del><del><del><del><del><del><del><del>su1	cpd8
+|TEST PRESENT X POSITION TO SEE IF IT HAS PAST THE THREE QUARTER MARK OF THE PRESENT DISPLAY, (+)=NO, (-)=<del>YES
+cas3	sup8	cpd8
+|SET THE COUNTER FOR THE NUMBER OF ALLOWED BACKUPS
+cs1	tsp11
+|INCREASE INITIAL POSITION TO GET THE NEXT PIC<del>TURE WINDOW DISPLAY
+cap5	adp4	sp1d7
+|TEST PREVIOUS PICTURE BEING DUE TO A BACKUP, (+)=YES, (-)=NO
+[1;31md5,[0maop11	cpd6
+|DOUBLE THE SIZE OF THE DISPLAY
+cap9	slr1	tsp9	spe6<del>	aoe16	cad3	su1	tsd3	spd9
+|DECREASE THE INITIAL X POSITIO<del>N OF THE DISPLAY BY ONE FOURTH THE NEW LENGTH OF THE DISPLAY
+[1;31md6,[0mcap5	sup6	cpd7	sp1d7	[1;31md7,[0mca0	tsp5	spd9
+|TEST THE COUNTER FOR THE NUMBER POINTS TO BE DISPLAYED BETWEEN COMPL<del><del><del>ETE MOVE DISPLAYS
+[1;31md8,[0maop3	cpe17
+|SET THE COUNTER FOR THE NUMBER OF POINTS TO BE DISPLAYED BETWEEN COMPLETE MOVE DISPLAYS
+[1;31md9,[0mcsp<del><del><del><del><del><del><del>2	tsp3<del>	spd21	spe8
+|SET THE INITIAL AND FINAL POINT OF T<del>HE BARRIER TO BE DISPLAYED
+[1;31md21,[0mtad32	cap5	adc2	tss7	tsd10	adp9	tss10
+|DRAW THE BARRIER
+|PICK UP A REGISTER OF THE BARRIER
+[1;31md10,[0mcat1+	tss1
+|TEST FOR A BARRIER
+cpd11	dm0	cpd13
+|SET THE <del>BIT COUNTER FOR A REGISTER OF THE BARRIER
+[1;31md11,[0mcsc3	tss2
+|TEST FOR A BARRIER AT BIT POSITIONS, (-)=YES, (+)=NO
+[1;31md12,[0mcas1	clc1	exs1	cpd18	spd2
+|SET THE X AND Y CO-ORDINATE OF THE BARRIER
+[1;31md18,[0mcad10	sus7	sup7	mhk3	[1;31md3,[0mslr	tss11	cas2	adc3	slr4	suc21	tss5	adc3	tss6	spd22
+|HAVE ALL THE BITS BEEN EXAMINED<del>, (<del>+)=YES, (-)=NO
+[1;31md2,[0maos2	cpd1<del><del>2
+|HAVE ALL THE REGISTERS BEEN EXAMINED, (+)=YES, (-)=<del>NO
+[1;31md13,[0maod10	sus10	cpd10
+|SET UP FOR THE BOTTOM HORIZONTAL LINE
+cac27	tss7
+|SET TO GO THROUGH THE FOLLOWING ROUTINE TWICE
+spd14	[1;31md14,[0mtad17
+|SET THE VERTICAL POSITION TO DRAW HORIZONTAL LINE
+csr10	tsr10	adc21	tss10
+|SET VERTICAL POSITION FOR THE <del><del><del><del><del><del><del><del>LABEL
+csc24	tsc24	ads10	ads7	slr7	<del><del>ts182d25<del>
+|SET THE REGISTER THAT PICKS UP THE LABEL
+cac10	tsd16
+|DRAW THE HORIZONTAL LINE
+cas10	slr7	si429	csc7	tss6	srr1	tss4	slr7	<del><del><del><del><del><del>tss11	[1;31md20,[0maos4	slr7	rc	aos6	cpd20
+|DRAW THE VERTICAL SECTIONING LINES
+[1;31md15,[0mcas10	sus7	tss5	adc27	tss6	spd22
+|LABEL THE VERTICAL SECTIONINGS LIN<del>ES
+cas11	suc28	ts136d25	sac25	tss11	ca0	[1;31md16,[0mcap5+1	adp5	spd24	aod16
+|HAS THE LAST<del><del><del><del><del><del><del><del><del><del><del><del><del><del> SECTIONING LINE BEEN DRAWN, (+)=YES, (-)=NO
+suc26	cpd15
+|SET<del><del><del> UP FOR THE TOP HORIZONTAL LINE
+ca0	tss7	[1;31md17,[0msp0	<del><del><del><del><del><del><del><del><del><del>[1;31md32,[0mspe8
+|DRAW THE MOUSES PATH
+|SET TO PLOT ONLY THE MOUSES LAST MOVE
+[1;31me17,[0mcaz1	su1	sp1e8
+|SET INITIAL AND FINAL POSITION OF THE MOUSE FOR THE COMPLETE DISPLAY OF ITS PATH
+[1;31me8,[0mcap5<del><del><del><del><del><del><del><del><del>	su1	adc14	tse15	caz1	adc14	tss7	spe9
+|TEST TO SEE IF MOUSES X POSITION IS ON THE DISPLAY<del>, YES=<del>TRANSLATE, NO=PICK UP NEXT MOVE
+[1;31me15,[0mcat2<del>+	tss6	<del><del>mdc13	sup5	cpe1<del>4	sp<del>e19	[1;31me14,[0mdm0	cpe19	[1;31me9,[0mcac29	tse10	spe20
+[1;31me19,[0mdmp9	cp3e19	<del><del><del><del>spe9	ab0	sup7	mhk3	slh19	[1;31me16,[0msrr	tss2	exp12	tss1	sus2	sdc1	tss3
+|TRANSLATE THE MOUSES Y POSITION INTO SCOPE CO-ORDIN<del>ATES
+cas6	clc23	slr7<del>	suc11	tss5	exp13	tss4	sus5	<del><del><del><del><del><del><del>sdc1	tss6
+|GO TO THE ROUTINE TO PLOT THE MOUSES PATH<del>
+<del>[1;31me10,[0msp1e10	spf1	spe20	[1;31me18,[0mtae10	spf9
+|TEST THE END OF THE DISPLAY, (+)=YES, (-)=NO
+[1;31me20,[0maoe15	sus7	cpe15
+|GO TO THE MIV BOX TO DETERMINE THE NEXT ACTION
+spe11
+|REPEAT THE MOVE DISPLAY
+cf+0.00354	spd<del>9<del>
+|ROUT<del>INE THAT GOES TO THE MIV BOX
+[1;31me11,[0mtae13	cf+0.00304	spy1	spe12	[1;31me13,[0msp0	spe12	spy3
+|RETURN TO THE ROUTINE THAT CALLED FOR THE DISPLAY
+[1;31me12,[0mcap14	cf+0.00752
+|DRAW A VERTICAL LINE
+[1;31md22,[0mtad23	cas5	slr7	si429	cas11	rc	aos5	sus6	cp1d22	[1;31md23,[0msp0
+|ROUTINE TO CHANGE THE STRUCTURE OF THE MOVE DISP<del>LAY
+|DISPACHER ENTRY
+[1;31me1,[0mtae7	si21<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>5	rd	sp2e2
+|ENTRY FOR THE INITIAL SET UP OF THE DISPLAY
+[1;31me2,[0mtae7	<del><del><del><del><del><del><del><del><del>cac23<del>	tsp15	sp1e21
+|SET THE NUM<del><del><del><del>BER OF POINTS ON THE <del><del>DISPLAY
+[1;31me21,[0mtae7	srh12	mdn7	tde16	adn4	tde4	sdc1	adc22	tdd3
+|SET THE NUMBER OF <del>POINTS THE PICTURE WINDOW IS TO BE ADVANCED
+slh3	mdn7	tde3
+|SET THE NUMBER OF SINGLE MOVES TO BE DISPLAYED BETWEEN COMPLETE DISPLAYS
+ex0	slh9	tsp2
+|SET THE TEMPORARY OF THE SAME EQUAL TO ZERO
+ca0	tsp3
+|FIND THE NUMBER OF POINTS THE PICTURE WINDOW IS TO BE ADVANCED
+ca1	[1;31me3,[0mslr0	tsp4
+|FIND THE NUMBER OF POINTS ON THE DISPLAY
+ca1	[1;31me4,[0mslr0	tsp9<del>
+|TEST THAT PICTURE WINDOW ADVANCE IS NOT MORE THAN HALF THE DISPLAY, (+)=NO, (-)=YES
+sup4	cpe5
+|TEST THAT <del>DISPLAY IS NOT GREATER THAN THE BARRIER TABLE, (+)=YES, (-)=NO
+cap9	suz9	cp1e6
+|ALARM-INCORRECT SETTING OF LIP
+[1;31me5,[0msp0	p4	p9	caz9
+|SET THE X POSITION OF THE QUARTER MARKERS OF THE DISPLAY
+[1;31me6,[0mtae7	cap9	srr1	tsp7	srr1	tsp6	adp7	tsp8	ca0
+[1;31md19,[0mtsp5	caz6	sup5	sup7	[1;31me7,[0mcp0	sup7	cpe7	cap5	ad1	spd19
+|SET UP FOR THE DISPLAY OF THE PRESENT AIM IN ABSOLUTE
+[1;31mg1,[0mcaz5	tss1	ca1r5	tss7	<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>cac5	tdg12	ca2r4	spg3
+|SET UP FOR THE DISPLAY OF THE PRESENT LOOK IN ABSOLUTE
+[1;31mg2,[0mcaz10	tss1	<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>adc30	ts3g12	cac6	tdg12	<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>csr5	<del>tss7	ca1r4
+|SET UP TO DISPLAY THE NAME OF THE DISPLAY
+[1;31mg3,[0mtsg6	ad1	tsg7
+|SET UP TO DRAW THE ARROW IN THE ABSO<del>LUTE DIRECTION
+cas1	slr2	adr7	tsg8	ad1	tsg9	ad1	tsg10	ad1	tsg11
+|SET TO PRINT - DIR. OF THE -
+<del>[1;31mg4,[0mcar4	tsg5
+|SET X AND Y POSITIONS
+cas7	ts182d25	car1<del>4	ts136d25
+|PRINT - DIR. OF THE -
+[1;31mg5,[0mcar1+	spg14	aog5	su<del><del><del><del><del><del><del><del>r6	cpg5
+|PRIN<del><del>T LOOK OR AIM
+[1;31mg6,[0mca	spg14	[1;31mg7,[0mca	spg14
+|IF LOOK <del>= PRINT NO. OF MOVES ALLOWABLE
+[1;31mg12,[0mspg13	caq1<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>1	spg14	cat11	spd24
+|SET Yn OF THE ARROW
+[1;31mg13,[0mcas7	srh4	suc4	tss4
+|SET Xn OF THE ARROW
+ca0<del>	tss1
+|SET DELTA X OF THE ARROW
+[1;31mg8,[0mca	tss3
+|SET Xn+1 OF THE ARROW
+ads1	tss2	tss8
+|SET DELTA Y OF THE ARROW
+[1;31mg9,[0mca	tss6
+|SET Yn+1 OF THE ARROW
+ads4	tss5	tss9
+|DRAW THE LINE OF THE ARROW
+spf1
+|DRAW THE ARROW HEAD
+cas8	tss1	cas9	tss4<del>	<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>[1;31mg10,[0mca	tss10	sp<del>f11	[1;31mg11,[0mca	tss10	spf11
+|GO TO THE MIV BOX TO DETERMINE THE NEXT ACTION
+spe11
+|REPEAT THE LOOK O<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>R THE AIM DISPLAY
+cf+0.00354	spg4
+|<del>SEND FLEXO SYMBOLS TO THE SCOPE OUTPUT ROUTINE
+[1;31mg14,[0mtag15	tss1	srh6	spd25	cas1	mdr9	spd25	[1;31mg15,[0msp0
+|PRI<del><del><del>NT<del><del><del> THE TABLE OF VALUES ROUTINE
+|SET SCOPE POSITIONS
+[1;31mh1,[0mcar5	ts182d25	<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>car1<del><del><del><del><del><del><del><del><del><del><del><del>4	ts136d25
+|PRINT TMD (TOTAL MOVES TO DATE) AND THE NUMBER
+[1;31mh2,[0mcaq1	spg14	caq2	spg14	caz1	sph11
+|PRINT TMA (TOTAL MOVES ALLOWED) AND THE NUMBER
+[1;31mh3,[0mcaq1	spg14	caq3	spg14	caz11	sph11
+|PRIN<del>T TCD (TOTAL COST TO DATE) AND THE COST 
+[1;31mh4,[0mcaq4	spg14	caq2	spg14	caz2	sph11
+|PRINT TCA (TOTAL COST ALLOWED<del><del><del>) AND THE COST
+[1;31mh5,[0mcaq4	spg14	caq3	spg14	caz12	sph11
+|PRINT TAD (TOTAL AIMS TO DATE) AND THE NUMBER
+[1;31mh6,[0mcaq6	spg14	caq2	spg14	cat5+8	sph11
+|PRIN<del>T TLD (TOTAL LOOKS ALLOWED) AND THE NUMBER
+[1;31mh7,[0mcaq5	spg14	caq2	spg14	cat6+8	sph11
+|PRINT LBT (LENGTH OF THE BARRIER TABLE) AND THE LENGTH<del>
+[1;31mh8,[0mcaq7	spg14	caq8	spg14	caz9	sph11
+|GO TO THE MIV BO<del><del>X TO DETERMINE THE NEXT ACTION
+spe11
+|REPEAT THE <del><del>TABLE OF VALUES DISPLAY
+cf+0.00354	sph1<del><del>
+<del>|PRINT NUMBER, CARRIAGE RETURN, A<del>ND TWO TABS
+[1;31mh11,[0mtah12	spd24	caq9	spg14	caq10	spg14<del>	[1;31mh12,[0msp0
+|BARRIERS INSERTION AND DELETION BY LIGHT GUN
+[1;31md47,[0mca1d37	tdd40
+|SAVE X POSITION OF MOUSE
+ca0	exz6	tsp16
+|SET FOR SIXTEEN BARRIER DISPLAY
+ca0	spe21
+|SET INITIAL BARRIER DISPLAY
+si+0.00327	[1;31mc5,[0mrdg13	md1c3	slr3	tsp5
+|DRAW EXISTING BARRIER
+[1;31md33,[0mcf+0.00354	spd21
+|SET THE INITIAL Y POSITION AND A COUNTER
+csr15	tss1	car14	spd35
+|SET Y POSITION ON SCOPE
+[1;31md34,[0mcas3	adc28	[1;31md35,[0mtss3	si429
+|SET THE INITIAL X POSITION AND A COUNTER
+csr15	tss2	<del><del><del><del><del><del><del><del><del><del><del><del><del>csr17	spd37
+|SET X POSITION ON SCOPE
+[1;31md36,[0mcas4	adr16	[1;31md37,[0mtss4	rcd40<del>+1
+|TEST LIGHT GUN
+[1;31mc6,[0mrd1g12	cpd40
+|TEST COMPLETE X COUNTER
+aos2	cpd36
+|TEST COMPLETE Y COUNTER
+aos1	cpd34
+|GO TO MIV BOX TO DETERMINE NEXT ACTION
+[1;31md38,[0mcf+0.00304	spy1	spd39	spd33	spd33
+|INCREASE INITIAL POINT OF DISPLAY
+cf+0.00354	cap5	<del><del><del><del><del><del><del><del><del><del><del>adn8	tsp5
+|TEST END OF BARRIER TABLE
+ad1	suz9	cpd33
+|EXIT FROM ROUTINE
+[1;31md39,[0mcf+0.00354	cap16	tsz6	ca<del>p15	spe<del><del>21	spe12
+[1;31md40,[0mspd40+1	spd45
+|SECOND READING FROM LIGHT GUN
+tad40	cas1	dmp3	dm0	adr15	tdd43	ab0	cpd41	cmp3	spd42	[1;31md41,[0mcms1	[1;31md42,[0mtdd43+1	cs0
+[1;31md43,[0mclc0	clc0	[1;31md44,[0msd0	ts0	spd33
+|FIRST READING OF LIGHT GUN
+[1;31md45,[0mtad40	cap5	ads2	adr15	adc2	tdd44	tdd44+1	cas1	tsp3	spd33
+|LINE BREAK DOWN - DR<del><del>AW VECTOR ROUTINE
+[1;31mf1,[0mtaf8
+|SET UP TO DRAW THE VECTOR
+car11	tss11	cs1	tss12
+|IS |DELTA<del> Y| GREATER THAN OR EQUAL TO |DELTA X|, (+)<del>=YES, (-)=NO
+cas6	dms3	cpf2
+|SET THE |OF THE <del>LARGER| IN THE AC
+cms6	sp1f2	[1;31mf2,[0mcms3
+|IS THE |OF THE LARGER| GR<del>EATER THAN THE LENGTH OF ONE VECTOR, (+)=YES, (-)=NO
+dmr11	cpf3
+|BREAK DOWN DELTA X AND DELTA Y INTO N LENGTHS WHICH ARE LESS THAN THE LENGTH OF ONE VECTOR
+abs11	mhr13	tss12	cs1	dvs12	slh15	tss10	mrs3	tss3	cas10	mrs6	tss6
+|SET UP TO DRAW THE VECTOR
+[1;31mf3,[0mcas6	mdr12	tss10	cas3	mdr12	clc8	ads10	tss10
+|TEST TO SEE IF THE LINE HAS BEEN COMPLETED, (+)=YES, (-)=NO
+[1;31mf4,[0maos12	cpf5	[1;31mf8,[0msp
+|DRAW A VECTOR
+[1;31mf5,[0mspf11
+|INCREASE THE X AND Y POSITIONS TO DRAW NEXT VECTOR
+cas1	a<del>ds3	tss1	cas4	ads6	tss4	spf4
+|ROUTINE TO PLOT A POINT
+[1;31mf9,[0mtaf10	cas5	slr4	si429	cas2	slr4	rc	[1;31mf10,[0msp
+|ROUTINE THAT DRAWS A VECTOR
+[1;31mf11,[0mtaf13	csn3	tss11	cas4	slr4	si896	[1;31mf12,[0mcas1	slr4	r<del>cs10	aos11	cpf12	[1;31mf13,[0msp0
+|DECIMAL INTEGER CO<del>NVERSION ROUTINE
+[1;31md24,[0mtad28	tss1	cpd26	cac15	sp1d26	[1;31md26,[0mcac16	spd25	ca0	tss2	csn4	tss3	cms1	mhc17
+[1;31md27,[0msrh11	tss4	slh15	tss1	aos3	cp1d28	cas4	spd29	[1;31md28,[0msp0	cas4	sus2	cpd31	spd29
+cs0	tss2	[1;31md31,[0maos1	mhc18	spd27	[1;31md29,[0mtad30	adc19	ts3d29	cac20+<del>	spd25	[1;31md30<del>,[0msp0
+|SCOPE OUTPUT DISPLAY ROUTINE
+[1;31md25,[0m
+[1;31m0r,[0mta10r	clc0	clh1	ad118r	td5r	ca0	ts165r	cp20r	ca126r	sp11r
+10r,sp0	ta19r	ex134r	cp18r	ca134r	slr2	ad136r	ts136r	sp69r	sp0
+20r,dm0	cp10r	ca165r	md210r	ts165r	dm0	cp110r	ao5r	td29r	ca0
+30r,ts214r	cp41r	ca150r	sp11r	ca174r	ad136r	ts136r	ca214r	ts165r	sp69r
+40r,sp10r	ca146r	cp8r	ca214r	md210r	ts165r	sp8r	ca146r	cp54r	ca158r
+50r,ts165r	ca162r	ts214r	sp32r	ca228r	ts165r	sp8r	cs142r	ts136r	ts134r
+60r,ca182r	sa181r	ts182r	ca0	cp66r	sp10r	si4	ca142r	sp62r	ta90r
+<del><del>70r,ca189r	ts190r	ca182r	si429	ts193r	ca136r	sp77r	ta86r	ex165r	clc1
+80r,cp83r	ex165r	sp85r	ex165r	rc0	ad134r	sp0	sp77r	ao190r	cp91r
+90r,sp0	ca193r	su126r	sp73r	ca136r	ad166r	ts136r	sp10r	ca136r	sa213r
+100r,md209r	ts136r	cs0	cp105r	sp57r	ts134r	sp10r	1.74747	0.30003	0.75757
+110r,ao5r	td112r	sp0	1.22222	1.00007	1.74744	0.31311	0.71317	103r	ca0
+120r,sp94r	1.07070	1.66066	1.34307	0.30212	0.55711	0.00400	1.31113	0.20002	ca0
+130r,sp47r	1.44443	0.11112	0.71747	-0	-0	1.01777	1.00066	1.31113	1.74447
+140r,0.21112	0.74717	0.76000	1.74744	0.21221	0.26227	-0	1.00443	0.11112	0.71222
+150r,0.00300	1.46544	0.11131	1.00334	1.64446	1.74744	0.30200	0.64757	0.00124	1.34443
+160r,0.30003	0.00700	0.12000	1.44744	0.12021	+0	0.02000	1.71111	0.30000	+0
+170r,+0	1.70127	0.32003	-0	0.00600	1.44447	0.00013	ca0	sp98r	1.44556
+180r,0.11113	1.74437	0.76000	1.44744	0.11311	ca0	sp57r	1.42111	0.12000	-4
+190r,+0	1.74744	0.21200	+0	+0	1.74470	0.22223	+0	+0	1.34443
+200r,0.21112	-0	+0	1.74747	0.21212	+0	+0	1.34543	0.30312	1.60000
+210r,0.77777	0.75713	+0	0.20000	+0	1.65544	0.31111	ca0	sp225r	1.42124
+220r,0.12021	ts146r	sp10r	1.44231	0.11220	ca0	sp221r	0.75557	0.02720	-0
+|TABLE OF FLEXO SYMBOLS FOR TABLE OF VALUES ROUTINE
+[1;31mq1,[0m0.04070	[1;31mq2,[0m0.02245	[1;31mq3,[0m0.00645	[1;31mq4,[0m0.04034	[1;31mq5,[0m0.04044	[1;31mq6,[0m0.04006	[1;31mq7,[0m0.04462	[1;31mq8,[0m0.0<del><del><del><del><del><del>4045
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>[1;31mq9,[0m0.05145	[1;31mq10,[0m0.045<del><del><del>45<del><del><del><del><del><del><del><del><del><del><del><del>	[1;31mq11,[0m0.01110
+|TABLE OF VALUE FOR ARROWS IN THE EIGHT ABSOLUTE DIRECTIONS
+|DIRECTION ZERO
+[1;31mr8,[0m+160	+0	1.41474	1.41303
+|DIRECTION ONE
++160	+160	1.41000	0.00303<del>
+|DIRECTION TWO
++0	+160	0.36303	1.<del><del>41303
+|DIRECTION THREE
+-160	+160	0.36000	0.00303
+|DIRECTION FOUR
+-160	+0	0.36474	0.36303
+|DIRECTION FIVE
+-160	-160	0.36000	0.00474
+|DIRECTION SIX
++0	-160	0.36474	1.41474
+|DIRECTION SEVEN
++160	-160	1.41000	0.00474
+|FLEXO SYMBOLS FOR DIR. OF THE
+[1;31mr1,[0m0.02214	0.02421	0.01060	0.03210	0.04050	0.00210
+|FLEXO SYMBOL<del>S FOR LOOK
+[1;31mr2,[0m<del><del>0.04460	0.06036
+|FLEXO SYMBOLS FOR AIM
+[1;31mr3,[0m0.00614	0.07077
+|CONSTANTS
+[1;31mr4,[0mcar1	car2	car3	[1;31mr5,[0m+10752	-19200	[1;31mr6,[0mcar1+5	[1;31mr7,[0mcar8	[1;31mr9,[0m+63	[1;31mr10,[0m+128	[1;31mr11,[0m0.00174	[1;31mr12,[0m0.00374	[1;31mr13,[0m-264
+[1;31mr14,[0m-8192	[1;31mr15,[0m+16	[1;31mr16,[0m<del><del><del><del><del><del>+2304	[1;31mr17,[0m+18432	<del><del><del><del><del><del><del><del><del><del><del><del>[1;31mc1,[0m-0	[1;31mc2,[0mcat1	[1;31mk3,[0m+9	[1;31mc4,[0m+300	[1;31mc7,[0m+288	[1;31mc8,[0mspx6+5	[1;31mc9,[0mcf+0.00304
+[1;31mc10,[0mcap5+1	[1;31mc11,[0m+448	[1;31mc12,[0my5	[1;31mc13,[0m+511	[1;31mc14,[0mcat2
+[1;31mc15,[0m+13	[1;31mc16,[0m+29	[1;31mc17,[0m0.15067	[1;31mc18,[0m0.50000	[1;31mc19,[0mcac20	[1;31mc20,[0m+62	+21	[1;31mc3,[0m+15	+7	+11	+19	+27
++23	+3	+54	[1;31mc21,[0m+64	[1;31mc22,[0m+2<del>7	[1;31mc23,[0m0.20000	[1;31mc24,[0m+24	[1;31mc25,[0m+11364	[1;31mc26,[0mcap5+5	[1;31mc27,[0m+8	[1;31mc28,[0m+2048	[1;31mc29,[0mspe18
+[1;31mc30,[0mcat11
+|TEMPORARY STORAGE
+[1;31ms1,[0m+0	[1;31ms2,[0m+0	[1;31ms3,[0m+0	<del>[1;31ms4,[0m+0	[1;31ms5,[0m+0	[1;31ms6,[0m+0	[1;31ms7,[0m+0	[1;31ms8,[0m+0	[1;31ms9,[0m+0	[1;31ms10,[0m+0	[1;31ms11,[0m+0	[1;31ms12,[0m+0
+|PERMANENT STORAGE
+[1;31mp1,[0m+0	[1;31mp2,[0m+0	[1;31mp3,[0m+0	[1;31mp4,[0m+0	[1;31mp5,[0m+0	+0	[1;31mp6,[0m+0	[1;31mp7,[0m+0	[1;31mp8,[0m+0	[1;31mp9,[0m+0	[1;31mp10,[0m+0	[1;31mp11,[0m+0	[1;31mp12,[0m+0	[1;31mp13,[0m+0	[1;31mp14,[0m+0
+[1;31mp15,[0m+0	[1;31mp16,[0m+0
+|C.F. FOR MIV BOX READ IN
+[1;31md46,[0mca28	cf+0.00702
+|MOUSE PARAMETER FLAD ASSIGNMENTS<del><del><del><del><del><del><del><del><del>
+OCTAL
+[1;31m43|<del>z1,	44|z2,	45|z3,	46|z4<del>,	47|z5,	50|z6,	51|z7<del>,	52|z8,	53|z9,	54|z10,	55|z11,	<del>56|z12,	57|z13,	60|z14,[0m
+[1;31m72|n2,	73|n3,	74|n4,	75|n5,	76|n6,	77|n7,[0m<del>	[1;31m61|n8,[0m
+|MOUSE <del><del>TABLE FLAD ASSIGNMENTS
+[1;31m300|t1,	701|t2,	100|t3,	110|t4,	120|t5,	131|t6,	142|t7,	152|t8,	162|t9,	172|t10,	202|t11,	212|t12,	222|t13,[0m
+|FLAD ASSIGNMENTS FOR THE CO<del>NNECTION BETWEEN THE DISPLAY ROUTINES AND ITS USER
+[1;31m2043|x1,	2045|x2,	2047|x3,	2051|x4,<del>[0m<del>	[1;31m2053|x5,<del><del>	2057|x6,[0m<del>	[1;31m2070|x7,[0m
+|FLAD ASSIGNMENTS FOR ENTRIES TO THE MIV BOX
+[1;31m43|y1,	45|y2,	47|y3,	51|y4,	52|y5,<del>[0m
+<del>START AT <del><del>d46

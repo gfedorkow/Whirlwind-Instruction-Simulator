@@ -1,0 +1,25 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o1; xsum=good
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_14\102782455_3905_parker_duplicate.7ch/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Paper-Tapes\2018_14\102782455_3905_parker_duplicate_gs001_FB3905.tcore
+%TapeID: _FB3905
+%JumpTo 040
+%Stats: Covariance=0.002727, Size=97, Display-Ops, 3, 
+%Blocknum 0o0
+@C00040: 0000010 0100003 0040066 0100123 0040067 0100122 0040071 0100002  ; si ca ts ca ts ca ts ca  :     895#d<cntl>E : \0t<color>t<color>t<color>T
+@C00050: 0070124 0100002 0170001 0070143 0100002 0170002 0070162 0100002  ; cp ca CL cp ca CL cp ca  :      RE#<bs>EEBE :         CTVCTVCT
+@C00060: 0070040 0170001 0070040 0170001 0070040 0074070 0174000 0177761  ; cp CL cp CL cp sp md md  :   T#T#TM\0<stop> :     CVCVCK0<del>
+@C00070: 0000225 0100103 0024000 0130071 0130067 0070071 0100122 0040071  ; si ca rc ao ao cp ca ts  : 18\0<cntl>#<cntl>D<cntl> :  \0TSPPCT<color>
+@C00100: 0100123 0040067 0074000 0122000 0162000 0024000 0004000 0110000  ; ca ts sp cm SR rc .word ad  :   5#\0\0\0\0\0\0 : T<color>K\n<cntl>SEL
+@C00110: 0004000 0070000 0100000 0020000 0034000 0060000 0030000 0100000  ; .word cp ca bo cf ab sd ca  : \0\0\0\0\0\0\0\0 :         ECT UNIT
+@C00120: 0172000 0122000 0100103 0177761 0050142 0000156 0100024 0024000  ; CL cm ca md ta si ca rc  : \0\08<stop>zqr\0 : <cntl>\nt<del>r\0ts
+@C00130: 0100005 0024000 0100007 0024000 0000630 0130066 0070135 0000010  ; ca rc ca rc si ao cp si  :       |\03\0n9-  :       tsts\0pc\0
+@C00140: 0100003 0040066 0074000 0050161 0000166 0100024 0024000 0100005  ; ca ts sp ta si ca rc ca  :  89\0<stop>9r\0| :  t<color>kr\0tst
+@C00150: 0024000 0100007 0024000 0000630 0130066 0070154 0000010 0100003  ; rc ca rc si ao cp si ca  :       \03\0n9p 8 :       sts\0pc\0t
+@C00160: 0040066 0074000 0050200 0000176 0100024 0024000 0100005 0024000  ; ts sp ta si ca rc ca rc  :     9\0\00r\0|\0 :  <color>kr\0tsts
+@C00170: 0100007 0024000 0000630 0130066 0070173 0000010 0100003 0040066  ; ca rc si ao cp si ca ts  :        3\0n9# 89 : ts\0pc\0t<color>
+@C00200: 0074000  None    None    None    None    None    None    None    ;        sp                : \0               :  k              
+
+%Hash: 340144-5507e6-97
+
+%String: select unit

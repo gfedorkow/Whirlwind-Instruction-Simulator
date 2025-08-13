@@ -1,0 +1,212 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302375_box18\102663520_fc22-100-01_8-19.7ch
+fc TAPE 22-100-<del>1 PETERSON
+OCTAL
+(24,6)
+[1;31mt=[0m4a5
+[1;31mz14,[0msi10
+ca3
+md13z11		|si17
+tst
+ad12z11
+tsz18
+ca2
+clc24
+ad12z11		|clc 0
+tsz5
+ts11z11
+ca2
+md13z11		|m 17
+ad12z11		|clc 0
+ts2z11
+cat
+srh3
+ad14z11
+tdz15
+ex0
+slh3
+ad14z11
+tdz16
+si17
+ca1z11
+biz9
+ca1
+srh2
+[1;31mz15,[0mab
+ex0
+srh1
+[1;31mz16,[0mab
+<del><del><del><del><del><del><del>si11
+si245
+ca1
+bo41z10
+si5
+rd
+su15z11
+<del><del><del><del><del><del><del><del><del><del><del><del>cp1z16
+si245
+caz1<del><del>1
+boz9
+si17
+ca1z11
+biz9
+ca7z11
+ts41z9
+<del><del><del><del><del>ca3
+clc24
+tdz19
+td1z19
+ca0
+ts2a5
+ts3a5
+ca5
+td3a1
+[1;31ma1,[0mca0
+ts3774		|mantissa minor part
+ca2a5<del>		|input
+slr0		|adjust to no. of sig bits
+sf3a5
+ts3773
+cs3a5		|major part
+ts3772
+IN
+imra5		|pi obtain angle in radiom
+isp5a6		|sine routine
+OUT
+ca2a5
+tst		|store input
+cs3772
+cpa4		|positiv<del>e exponent check
+tda2
+ca3773
+sa1
+cs0
+cpa3
+ca3773
+[1;31ma2,[0msrr0
+spz1		|print
+ao2a5
+su24
+cpa1
+si0
+[1;31ma3,[0mca3772
+srh17
+ad3773
+srr0
+spa2
+[1;31ma4,[0mcsa1
+sp1
+[1;31ma5,[0m+3.<del><del><del><del><del><del><del>14159265
+si0
+DITTO
+[1;31m11r|[0msi0
+DECIMAL
+[1;31ma6,[0m<del><del><del><del><del><del><del><del><del><del><del><del><del><del>
+|||||||||||||||||||||||||
+LSR FU4 sin x  cos x
+0,ita47r	1,iad54r	2,isp6r	3,icst	4,isp10r	5,ita47r
+6,imr48r	7,itst	8,icat	9,icp3r	10,isu50r	11,icp13r
+|||||||||||||||||||||||||
+12,isp10r	13,iad50r	14,isu52r	15,icp28r	16,isu52r	17,icp30r
+18,isu52r	19,icp33r	20,isu52r	21,its2t	22,icat	23,icp26r
+||||||||||||||||||||||||
+24,ica2t
+|||||||||||||||||||||||||
+25,isp35r	26,ics2t	27,isp35r	28,iad52r	29,isp21r	30,its2t
+31,ics2t	32,isp21r	33,iad52r	34,isp30r	35,its2t	36,imr2t
+|||||||||||||||||||||||||
+37,itst	38,imr56r	39,iad58r	40,imrt	41,iad60r	42,imrt
+43,iad62r	44,imrt	45,iad64r	46,imr2t	47,isp
+|||||||||||||||||||||||||
+MULTIPLE
+48,+.636619772	50,+4.	52,+1.	54,+1.570796327	56,+.0001514842	58,-.0046737656
+|||||||||||||||||||||||||
+60,+.0796896793	62,-.6459637111	64,+1.570796318
+|||||||||||||||||||||||||
+END OF SUBROUTINE
+OCTAL
+<del><del><del><del><del>[1;31mz1,[0mtaz2
+clc0
+ts1t
+dm0
+cpz2
+ca1t
+[1;31mz19,[0msrr
+slr
+ts
+dm0
+cpz17
+ab0
+[1;31mz18,[0mclc
+cp1z2
+[1;31mz2,[0msp0
+ca1
+[1;31mz3,[0msr<del>h2
+[1;31mz4,[0mab17z9
+aoz3
+tsz7
+su3z11
+cpz5-1
+spz12
+c<del><del><del><del><del><del>at
+[1;31mz5,[0mclc1
+<del><del><del><del>cpz<del><del><del>20
+[1;31mz6,[0mca1
+[1;31mz7,[0msrh2
+ab6z9		|ex <del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>(1<del>)
+[1;31mz20<del><del><del><del>,[0maoz4
+aoz3
+su3z11
+cpz8
+spz12
+[1;31mz8,[0maoz5
+su2z11
+cp1z2
+si245		|analex
+caz11
+boz9
+si17		|clear
+ca1z11
+biz9
+ca7z11
+ts41z9
+ca6z11
+ts1z7
+ca4z11
+tsz4
+ca10z11
+tsz3
+ca11z11
+tsz5
+spz2
+[1;31mz9,[0msi0
+DITTO
+[1;31m41r|[0m1.20001
+[1;31mz10,[0msi0
+DITTO
+<del><del><del><del><del><del><del><del><del><del><del>[1;31m41r|[0m1.60400
+[1;31mz11,[0msi104
+si103
+clc17
+srh17
+ab17z9
+z10-z9
+ab6z9
+1.20001
+srh2
+clc0
+clc0
+si17
+5<del><del><del><del><del><del><del>1z9
+si1
+[1;31mz12,[0mtaz13
+ca10z11
+tsz3
+tsz7
+ca5z11
+dm0
+abz4
+ab1z7
+[1;31mz13,[0msp0
+[1;31mz17,[0mca1t
+spz18
+<del><del>START<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del> AT z14

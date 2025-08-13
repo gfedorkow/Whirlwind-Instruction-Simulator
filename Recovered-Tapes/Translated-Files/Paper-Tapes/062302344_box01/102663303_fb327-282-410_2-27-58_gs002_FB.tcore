@@ -1,0 +1,26 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o2; xsum=good
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302344_box01\102663303_fb327-282-410_2-27-58.7ch/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Paper-Tapes\062302344_box01\102663303_fb327-282-410_2-27-58_gs002_FB.tcore
+%TapeID: _FB
+%JumpTo 01732
+%Stats: Covariance=0.003980, Size=41, 
+%Blocknum 0o0
+@C00040:  None    None   0044400 0007000  None    None    None    None    ;        td .word          :     \0\0         :       d8        
+@C00360:  None    None    None    None   0176452 0176452  None    None    ;               md md      :           yy     :         <del><del>    
+@C00370:  None   0014763 0014763 0177760 0000000 0063714 0015000  None    ;     rd rd md si ab rd    :       ##o\0i\0   :    aa<del>\0,a  
+@C02130:  None   0077165  None    None    None    None    None    None    ;          sp              :    #             :    #            
+@C02140:  None    None    None   0124552  None    None    None    None    ;              sa          :        y         :        y        
+@C02150:  None    None    None    None    None    None   0144552 0124552  ;                   mh sa  :               yy :               by
+@C02220:  None    None    None   0160552  None    None    None    None    ;              SR          :        y         :        m        
+@C02230:  None    None    None   0077776 0140406 0147171 0127171 0163173  ;          sp mr mh sa SR  :       0a<cntl><cntl># :       #o##<cntl>
+@C02240: 0166430 0166606  None    None    None    None    None    None    ;       sf sf              :   NA             :   ##            
+@C02250:  None    None   0077175  None    None    None    None    None    ;            sp            :     <cntl>           :      #          
+@C02270:  None   0000111 0000111  None    None    None    None    None    ;         si si            :     ==           :   \0\0          
+@C02300: 0040374  None   0046303  None    None    None    None    None    ;       ts   td            :   v  8           : <color>  5          
+@C02310:  None    None   0100374  None    None    None    None    None    ;            ca            :      v           :      t          
+@C03160:  None    None    None    None    None   0132123 0132125 0132126  ;                ao ao ao  :              51j :              ###
+@C03170: 0076132 0044400 0007000 0044400 0007000 0132202 0132234 0132220  ; sp td .word td .word ao ao ao  : f\0\0\0\0ec<color> :         #d8d8###
+@C03200: 0132220 0076253  None    None    None    None    None    None    ;       ao sp              : <color>#             :   ##            
+
+%Hash: 8b014b-4a55ce-41

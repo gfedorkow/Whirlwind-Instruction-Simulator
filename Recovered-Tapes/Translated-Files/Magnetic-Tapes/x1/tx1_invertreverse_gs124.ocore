@@ -1,0 +1,32 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\x1\tx1_invertreverse.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\x1\tx1_invertreverse_gs124.ocore
+%TapeID: 
+%Stats: Covariance=0.003763, Size=184, 
+%Blocknum 0o0
+@T00000: 0125317 0000002 0020020 0112020 0050020 0150020 0010020 0050020  ; sa si bo ad ta dv bi ta  : 2e<color><color><color><color><color><color> :       y\0 \trg#r
+@T00010: 0110020 0010020 0000020 0140020 0000020 0100020 0000020 0140020  ; ad bi si mr si ca si mr  : <color><color><color><color><color><color><color><color> :      l#\0o\0t\0o
+@T00020: 0140020 0000020 0100020 0000020 0140020 0000020 0100020 0000020  ; mr si ca si mr si ca si  : <color><color><color><color><color><color><color><color> :     o\0t\0o\0t\0
+@T00030: 0100020 0000020 0140020 0000020 0100020 0000020 0140020 0000020  ; ca si mr si ca si mr si  : <color><color><color><color><color><color><color><color> :     t\0o\0t\0o\0
+@T00040: 0140020 0140020 0000020 0140020 0000020 0140020 0150020 0052020  ; mr mr si mr si mr dv ta  : <color><color><color><color><color><color><color><color> :       oo\0o\0og1
+@T00050: 0110020 0020020 0050020 0050020 0050020 0100020 0000020 0000020  ; ad bo ta ta ta ca si si  : <color><color><color><color><color><color><color><color> :       l rrrt\0\0
+@T00060: 0000020 0000020 0000020 0000020 0000020 0000020 0000020 0000020  ; si si si si si si si si  : <color><color><color><color><color><color><color><color> : \0\0\0\0\0\0\0\0
+@T00070: 0000020 0000020 0000020 0000020 0000020 0000020 0000020 0100020  ; si si si si si si si ca  : <color><color><color><color><color><color><color><color> :  \0\0\0\0\0\0\0t
+@T00100: 0000020 0140020 0000020 0140020 0000020 0140020 0000020 0140020  ; si mr si mr si mr si mr  : <color><color><color><color><color><color><color><color> :     \0o\0o\0o\0o
+@T00110: 0140020 0140020 0110020 0042020 0020020 0160020 0050020 0140020  ; mr mr ad ts bo SR ta mr  : <color><color><color><color><color><color><color><color> :         ool. mro
+@T00120: 0010020 0140020 0140020 0140020 0000020 0140020 0140020 0140020  ; bi mr mr mr si mr mr mr  : <color><color><color><color><color><color><color><color> :        #ooo\0ooo
+@T00130: 0140020 0000020 0140020 0000020 0140020 0140020 0000020 0100020  ; mr si mr si mr mr si ca  : <color><color><color><color><color><color><color><color> :      o\0o\0oo\0t
+@T00140: 0000020 0040020 0000020 0100020 0000020 0140020 0000020 0140020  ; si ts si ca si mr si mr  : <color><color><color><color><color><color><color><color> : \0<color>\0t\0o\0o
+@T00150: 0140020 0010020 0010020 0050020 0010020 0010020 0060020 0012020  ; mr bi bi ta bi bi ab bi  : <color><color><color><color><color><color><color><color> :         o##r##n|
+@T00160: 0150020 0120020 0010020 0010020 0140020 0140020 0140020 0010020  ; dv cm bi bi mr mr mr bi  : <color><color><color><color><color><color><color><color> :         gh##ooo#
+@T00170: 0140020 0140020 0000020 0140020 0140020 0140020 0140020 0000020  ; mr mr si mr mr mr mr si  : <color><color><color><color><color><color><color><color> :       oo\0oooo\0
+@T00200: 0140020 0000020 0100020 0000020 0100020 0000020 0140020 0000020  ; mr si ca si ca si mr si  : <color><color><color><color><color><color><color><color> :     o\0t\0t\0o\0
+@T00210: 0100020 0000020 0100020 0000020 0140020 0140020 0000020 0140020  ; ca si ca si mr mr si mr  : <color><color><color><color><color><color><color><color> :      t\0t\0oo\0o
+@T00220: 0140020 0140020 0020020 0042020 0010020 0060020 0110020 0140020  ; mr mr bo ts bi ab ad mr  : <color><color><color><color><color><color><color><color> :         oo .#nlo
+@T00230: 0140020 0000020 0140020 0140020 0000020 0000020 0000020 0000020  ; mr si mr mr si si si si  : <color><color><color><color><color><color><color><color> :    o\0oo\0\0\0\0
+@T00240: 0000020 0000020 0000020 0000020 0000020 0000020 0040020 0000020  ; si si si si si si ts si  : <color><color><color><color><color><color><color><color> : \0\0\0\0\0\0<color>\0
+@T00250: 0000020 0100020 0000020 0100020 0000020 0140020 0140020 0140020  ; si ca si ca si mr mr mr  : <color><color><color><color><color><color><color><color> :      \0t\0t\0ooo
+@T00260: 0000020 0100020 0000020 0140020 0140020 0140020 0031000 0006110  ; si ca si mr mr mr sd .word  : <color><color><color><color><color><color>\0  :       \0t\0oooi8
+
+%Hash: 6e3a41-d2e754-184

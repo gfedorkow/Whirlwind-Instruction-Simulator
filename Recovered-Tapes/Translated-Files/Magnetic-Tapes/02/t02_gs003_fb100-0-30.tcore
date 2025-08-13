@@ -1,0 +1,37 @@
+
+; *** Core Image ***
+; Complete WW Tape Block 0o100030; xsum=good
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\02\t02.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\02\t02_gs003_fb100-0-30.tcore
+%TapeID: _fb100-0-30
+%JumpTo 040
+%Stats: Covariance=0.002327, Size=197, 
+%Blocknum 0o0
+@C00040: 0074254 0044044 0000010 0100002 0170000 0070063 0100044 0170013  ; sp td si ca CL cp ca CL  :        pl e\0#l4 :        kd\0tvctv
+@C00050: 0000707 0100000 0074234 0104000 0074250 0074072 0100001 0074234  ; si ca sp cs sp sp ca sp  :       3\0c\0hx#c :        \0tkzkktk
+@C00060: 0100000 0074250 0074075 0130044 0114312 0070042 0000001 0074040  ; ca sp sp ao su cp si sp  :   \0h<cntl>lsz#t :        tkkpwc\0k
+@C00070:  None    None   0050162 0100000 0074077 0050162 0104000 0040004  ;       ta ca sp ta cs ts  :     b\0<del>b\0# :     rtkrz<color>
+@C00100: 0040012 0100000 0044316 0110321 0044317 0110300 0044320 0110301  ; ts ca td ad td ad td ad  : s\0u.2\0<color># :   <color>tdldldl
+@C00110: 0074200 0100316 0074200 0100317 0074200 0100320 0074200 0100000  ; sp ca sp ca sp ca sp ca  : \0u\02\0<color>\0\0 :         ktktktkt
+@C00120: 0074326 0100317 0074205 0100001 0074326 0100320 0074205 0100324  ; sp ca sp ca sp ca sp ca  :   j2|#j<color>|r :         ktktktkt
+@C00130: 0074326 0100317 0074200 0100315 0074326 0100316 0074205 0100325  ; sp ca sp ca sp ca sp ca  :        j2\0+ju|1 :         ktktktkt
+@C00140: 0074332 0100317 0074205 0100314 0074332 0100320 0074200 0100323  ; sp ca sp ca sp ca sp ca  :  f2|if<color>\05 :         ktktktkt
+@C00150: 0074332 0100317 0074200 0100322 0074332 0100316 0110321 0044316  ; sp ca sp ca sp ca ad td  :        f2\0dfu.u :         ktktktld
+@C00160: 0114301 0070163 0074000 0100316 0110321 0044317 0110300 0044320  ; su cp sp ca ad td ad td  : ##\0u.2\0<color> :         wcktldld
+@C00170: 0074115  None    None    None    None    None    None    None    ;        sp                :  +               :  k              
+@C00200: 0050204 0074350 0021000 0054300 0074000 0050211 0074350 0022000  ; ta sp bo ck sp ta sp bo  :     #h\0\0\0=h\0 :         rk jkrk=
+@C00210: 0054301 0074000 0000000 0000000 0044226 0100316 0074354 0013000  ; ck sp si si td ca sp bi  :     #\0\0\0jup\0 :       jk\0\0dtk|
+@C00220: 0054302 0104003 0070233 0100303 0040225 0100000 0054000 0130225  ; ck cs cp ca ts ca ck ao  :       e8681\0\01 :   jzct<color>tjp
+@C00230: 0044002 0114304 0070225 0074000 0050247 0040212 0100202 0044243  ; td su cp sp ta ts ca td  :     e#1\0#se<bs> :   dwckr<color>td
+@C00240: 0110305 0044306 0100212 0040000 0130243 0114306 0070242 0074000  ; ad td ca ts ao su cp sp  :    |as\0<bs>az\0 :   ldt<color>pwck
+@C00250: 0050247 0040212 0100207 0074237 0000010 0100003 0170001 0070266  ; ta ts ca sp si ca CL cp  :         #s3# 8#9 :  r<color>tk\0tvc
+@C00260: 0100000 0074336 0100313 0044312 0100000 0074041 0100254 0074336  ; ca sp ca td ca sp ca sp  :       \0k4s\0#pk :         tktdtktk
+@C00270: 0100314 0044312 0100315 0074041  None   0100277  None    None    ;    ca td ca sp   ca      :  is+#  <del>     :      tdtk  t    
+@C00300: 0002000 0003000 0004000 0103000 0103777 0000777 0040000 0000707  ; si si .word ca ca si ts si  : \0\0\0\0<del><del>\03 : ##e##\0<color>\0
+@C00310: 0000705 0000701 0170000 0000012 0000007 0000004 0000000 0000000  ; si si CL si si si si si  :      |#\0s3#\0\0 :  \0\0v\0\0\0\0\0
+@C00320: 0000000 0001000 0000002 0000003 0000005 0000006 0050233 0044003  ; si si si si si si ta td  :       \0\0e8|a68 :   \0\0\0\0\0\0rd
+@C00330: 0100202 0074214 0050233 0044003 0100207 0074214 0050346 0110311  ; ca sp ta td ca sp ta ad  :         ei683iw= :         tkrdtkrl
+@C00340: 0044354 0110315 0044351 0044000 0110322 0044050 0074000  None    ;  td ad td td ad td sp    :     p+\n\0dh\0   :        dlddldk  
+@C00350: 0050353 0000705 0100321 0074000 0000701 0100321 0074217 0177712  ; ta si ca sp si ca sp md  :        #|.\0#.2s :   r\0tk\0tk<del>
+@C00360:  None    None    None   0177773 0000025  None    None    None    ;             md si        :         #1       :       <del>\0      
+
+%Hash: 80ff84-54a027-197

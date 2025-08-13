@@ -1,0 +1,32 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\75\t75.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\75\t75_gs053.ocore
+%TapeID: 
+%Stats: Covariance=0.003863, Size=118, 
+%Blocknum 0o0
+@T00000: 0050000 0050000 0050000 0050000 0110000 0060000 0120000 0060000  ; ta ta ta ta ad ab cm ab  : \0\0\0\0\0\0\0\0 :         rrrrlnhn
+@T00010: 0131100 0117500 0024600 0132600 0146500 0161100 0174300 0077300  ; ao su rc ao mh SR md sp  : \0\0\0\0\0\0\0\0 :         p#s##m0#
+@T00020: 0005600 0154500 0147400 0001400 0026400 0162400 0144400 0011400  ; .word SL mh si rc SR mh bi  : \0\0\0\0\0\0\0\0 :   e9#\04<cntl>B#
+@T00030: 0161100 0055100 0164100 0117000 0176000 0130000 0060000 0150000  ; SR ck sf su md ao ab dv  : \0\0\0\0\0\0\0\0 :     MJX#<del>PNG
+@T00040: 0110000 0020000 0020000 0150000 0050000 0000000 0140000 0010000  ; ad bo bo dv ta si mr bi  : \0\0\0\0\0\0\0\0 :        L  GR\0O#
+@T00050: 0150000 0060000 0160000 0160000 0122600 0146200 0142600 0062600  ; dv ab SR SR cm mh mr ab  : \0\0\0\0\0\0\0\0 :   GNMM\n#<stop>(
+@T00060: 0126500 0015100 0174300 0037700 0011300 0160500 0131400 0115000  ; sa rd md cf bi SR ao su  : \0\0\0\0\0\0\0\0 :         #A02#MPW
+@T00070: 0062400 0136000 0160400 0041000 0122100 0000500 0063400 0124400  ; ab dm SR ts cm si ab sa  : \0\0\0\0\0\0\0\0 : (#M<color>\n\0(Y
+@T00100: 0144000 0030000 0020000 0050000 0050000 0050000 0050000 0050000  ; mh sd bo ta ta ta ta ta  : \0\0\0\0\0\0\0\0 :         BI RRRRR
+@T00110: 0140000 0000000 0000000 0140000 0110000 0020000 0020000 0150000  ; mr si si mr ad bo bo dv  : \0\0\0\0\0\0\0\0 :       O\0\0OL  G
+@T00120: 0047500 0102200 0070200 0156600 0000500 0147100 0154600 0177700  ; td ca cp SL si mh SL md  : \0\0\0\0\0\0\0\0 :    5#C#\0#9<del>
+@T00130: 0000700 0176100 0004100 0021400 0153000 0136400 0126400 0073400  ; si md .word bo dv dm sa cp  : \0\0\0\0\0\0\0\0 :    \0<del>E ###-
+@T00140: 0075100 0037100 0167400 0151000 0174000 0070000 0020000 0150000  ; sp cf sf dv md cp bo dv  : \0\0\0\0\0\0\0\0 :         K2#G0C G
+@T00150: 0110000 0150000 0060000 0060000 0110000 0010000 0010000 0110000  ; ad dv ab ab ad bi bi ad  : \0\0\0\0\0\0\0\0 :         LGNNL##L
+@T00160: 0020000 0060000 0160000 0120000 0154400 0120454  ;       bo ab SR cm SL cm  :      \0\0\0\0\0P :            NMH9H
+
+%Hash: 2fb9a2-bde815-118
+
+%String: rrrrlnhn
+%String: pngl  gr
+%String: gnmm
+%String: bi rrrrro
+%String: ol  g
+%String: 0c glgnnl
+%String: l nmh

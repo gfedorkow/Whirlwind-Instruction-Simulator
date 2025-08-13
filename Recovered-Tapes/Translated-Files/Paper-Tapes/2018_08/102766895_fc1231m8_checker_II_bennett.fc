@@ -1,0 +1,475 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_08\102766895_fc1231m8_checker_II_bennett.7ch
+fc 1231 m<del><del><del><del>8 AUXILLIARY CHECKER<del>, BENNETT
+OCTAL
+<del><del><del><del><del><del><del><del><del><del>|[1;31mINTERPRETIVE OPERATION[0m
+[1;31mDA1.11600|2000|b26-7600,[0m<del><del><del><del><del><del><del><del><del>[1;31mx18,[0m<del>sp r6	|check for halt
+ca d4	|pc
+ts 6
+<del>ca1
+ts6d8
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>sp b41	|obtain instruction
+ts 6
+ts 1d6
+clh 25
+ad x20<del><del><del><del>	|x21, table
+0r,td 1r<del>
+ca
+ts t1	|logical word
+md 7k1	|si 7
+ad 1x20	|x22<del><del>
+cf 400	|dispatcher
+[1;31mx22,[0msp x23	|other
+sp x24	|sp
+sp x25	|cp
+sp x26	|cf
+<del><del><del><del><del><del><del><del><del><del><del>sp x43	|si
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>[1;31m| illegal[0m
+<del><del>[1;31mx46,[0msp r20	|pr0nt location, order
+sp r7	|il
+0.<del><del><del>73614	|uc I L
+0.30247	|L E G
+1.02636	|A L lc
+sp r28
+sp x35	|exit
+|[1;31msi order[0m
+[1;31mx43,[0mca d12	|ac
+ts 2t2	|for si
+ca 6	|si
+ts <del><del><del><del><del><del><del><del><del><del>2<del><del>2r23
+su 1k5	|17
+sd k5	|-0
+cp 1x28
+[1;31mx28,[0msp r23	|execute instruction
+[1;31m1x28,[0mca 36p9	|loop ind.
+cp x47
+ca 7d8	|inactive ind.
+cp x47
+ca d3	|mode
+ck 1k11	|1.60000
+sp x34	|trace
+[1;31mx47,[0mca <del><del>6d8
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>ad d4
+ts d4	|index PC
+[1;31mx30,[0mcad4	|pc
+ad2k11	|0.77770
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>cp x35<del><del>	|all done
+a<del>d <del><del><del><del><del><del><del><del><del>7k1	|7
+su d7	|initial-1
+0r,cp 3r	|not in active region
+su 1d7	|number regs
+sd k5	|-0
+[1;31m3,[0mts 7d8	|inactive ind
+sp x18
+[1;31mx34,[0msp r20	|loca, order
+[1;31m1x34,[0msp r<del>21	|print ac, br
+[1;31m2x34,[0msp r22<del><del><del><del>	|print contents
+sp <del>x<del><del><del>47
+[1;31m|exit[0m
+[1;31mx35,[0mao 1d8	|old pc
+td 2
+sp r15	|block in perm a
+ca <del>5r	|5b45
+sp 2a9
+[1;31m5,[0m5b45
+[1;31m|other[0m
+[1;31mx23,[0mca 36p9	|other
+cp x28	|loop
+ca 7d8<del>	|inactive ind
+<del><del><del><del><del><del><del><del><del><del>cp x28	|inactive
+ca d3	|mode
+ck 1k11	|1.60000
+sp x28	|trace
+ca 2d5<del>	|which type of instructon is of interest...
+
+cp x19	|employ or both types
+ca t1	|store type. logical word
+clh 3
+[1;31mx44,[0mcp x31	|right type, bi or bo
+clh 35
+cp x32<del>	|right type, store or employ
+sp x28
+[1;31mx19,[0mclh 1
+cp 5r	|both
+ca t1	|employ
+clh 4
+sp x44
+5r,ca t1
+clh 5
+sp x44
+[1;31mx31,[0mca 6	|instruction
+md 1k2	|3777
+su d5	|initial of area
+0r, cp 4r<del>	
+su 1d5	|lingth of area
+cp x33	|within area
+sp x28	|not within area
+4r,dm d12	|ac
+ad 2k1	|2
+cp x33	|within area
+sp x28
+[1;31mx32,[0mca 6	|instr
+md 1k2	|3777
+su d5	|initial of area
+cp x28	|not in area
+su 1d5
+cp x33	|inarea
+sp x28
+[1;31mx33,[0mca d3	|mode
+clh 1
+cp x56	|not interested area
+sp r1
+sp r9	|print cr
+sp r7
+0.75737	|lc cl ss
+0	|15 dec spaces
+0
+0
+0
+1.00000
+sp r21	|print ac, br
+sp r22	|pr contents
+[1;31mx56,[0m<del><del><del>sp r23	|execute
+sp r<del><del>20	|pr loc and ordeer
+ca d3	|mode
+clh 1
+ cp 2x34	|not interested area
+sp <del>1x34<del><del><del><del><del><del><del><del><del><del>
+|[1;31msp[0m
+[1;31mx24,[0mca d4	|pc
+td 1d8	|from
+ad 1
+td 1t2	|a register
+ca 6
+td 2d8	|to
+ca <del>36p9	|loop ind
+cp x29<del>	|in loop
+cs p6
+ad 1
+ts 4d8	|set counter to search jump table
+0r,cp 2r
+sp x36	|do not check for loop
+ca 11k6	|p9, loop detection
+[1;31mx38,[0mtd 1r
+[1;31m1x38,[0mca 	|p9, jumpt table
+md 1k2	|3777
+ck1d<del><del><del><del><del>8	|current from
+sp x37<del>	|match
+ao 1r
+[1;31mx49,[0mao 1x38
+ao 4d8
+cp 1x38
+[1;31mx<del>51,ca 2d8	|to
+[0m1,ts 6d8	|ts
+ca 11k6	|p9, shift jump table
+td 11r
+<del><del><del><del><del>[1;31m4,[0mcs 11k5	|35
+ts 4d8	|ctr
+cs 1<del><del><del><del>7<del>r
+ts1<del>7<del><del><del><del><del>r	|invert switch
+ca 6d8
+[1;31m11,[0mex
+ts 6d8
+ao 1<del>1r
+ao <del>4d8
+cp 10r
+ca1d8
+pa2=1r
+[1;31m1<del>7<del><del><del>,[0m-sp-pa2	|ca
+[1;31mx36,[0mca 7d8	|inactive ind
+cp x45	|inactive
+ca d3	|<del><del><del><del><del>mode
+ck 1k11	|1.60000
+sp x48	|trace
+sp r1
+ca 1d8	|from
+sp r3	|pr no.
+sp r7
+1.00000
+ca 2d8	|to
+sp r3	|pr
+sp r28
+sp x45
+[1;31mx48,[0msp r20	|loca, order
+sp r21
+sp r28	|carr. ret.
+sp x45
+[1;31mx37,[0mao 1x38
+td 3r
+ca 2d8
+[1;31m3x37,[0m<del><del><del><del><del><del>ck	|1<del>p9
+0r,sp 2r	|match
+sp x49
+cs0
+<del><del><del><del>[1;31m|LOOP DETECTED[0m
+ts <del><del><del><del><del><del>36p9	|loop ind
+ca 3x37
+<del>td x29
+su 1
+ts 3d8	|match entry
+md 1k2	|3777
+su 11k6	|p9
+ts 1d11	|set single branch indicator
+ca 2k1	|2
+ts d6	|n
+cs 2p6	|cycle limit
+ts 2d11	|simple loop ctr.
+sp x36
+[1;31mx29,[0mca 	|check for loop exit
+md 1k2	|3777
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>ck 1d8	|from
+sp x52	|match
+[1;31mx53,[0m<del><del><del><del><del><del>	|clear branch table<del>	si17
+cak2
+bip9
+ca 7d8
+<del>[1;31m<del>0,[0mcp 11r	|inactive
+sp r1
+spr7	|loop
+0.72633<del><del>	|uc L O
+0.67036	|O P lc
+1.01736	|sp lc cl
+ca d6	|n
+sp r13	|octal fraction
+sp r28
+[1;31m11,[0mca 1d11	|single branch loop ind
+cp x36	|set
+sp <del><del>x51
+[1;31mx52,[0m ao x29
+td 3r
+ca 2d8
+[1;31m3,[0mck
+<del><del><del><del>0r,sp 2r	|match
+sp x53
+[1;31mx45,[0mcs 36p9
+cp x39	|not loop
+ca x29
+su 1
+td <del>x29
+[1;31m0,[0mtd 1r
+[1;31m1,[0mca
+cp 3x39	|single branch loop
+[1;31mx55,[0mca x29
+su 2k1	|2
+td x29
+md 1k2	|3777
+su 11k6	|p9
+ad 1
+sd k5	|-0
+cp x39
+ao d6
+su 2p6
+0r,cp 7r
+sp r1
+sp r7
+0.73234	|uc T I
+1.31236	|L T lc
+sp r28
+sp x35<del><del>
+[1;31m7,[0mca 3d8
+td x29
+[1;31mx39,[0mca 2d8	|to
+td d4	|reset pc
+sp x30
+3x39,ao 2d11	|simple loop ctr
+cp x39
+sp r1
+sp r7
+0.73160	|uc S P
+1.70736	|I N lc
+sp r28
+sp x35<del>
+[1;31m|cp[0m
+[1;31mx25,[0mca d12	|ac, cp
+cp x24
+ca d4
+td 1d8
+ad 1
+td 1t2	|a register
+td 2d8
+cs 36p9	|loop ind
+[1;31m0r,[0mcp 1<del><del><del><del><del><del><del><del><del><del><del><del><del>x28	|not loop
+ca x29	|loop exit detection
+td <del><del><del>4r
+td x54
+[1;31m4,[0mca <del>	|pc
+md 1k2	|3777
+ck 1d8
+<del><del><del><del>sp x54	|match, loop exit
+sp 1x28
+[1;31mx54,[0mcs
+cp <del>5r	|not single branch loop
+cs 2p6	|cycle limit
+ts 2d11	|set simple loop ctr
+sp <del>x55
+[1;31m5,[0mcs 1d11	|single br ind
+cp <del>x53
+ts <del>36p9	|clear loop ind
+ca p9
+sd k11	|1.00000
+ts p9	|mark jump
+sp <del><del><del><del><del>3x53
+|[1;31mcf[0m
+[1;31mx26,[0mcs 6	|cf
+clh10
+cpx40	|group A ind. not set
+ca6
+sd5
+md<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>2k5	|70
+sd5
+ts5
+<del><del><del><del><del>ts 2d12
+[1;31mx40,[0mcs6
+clh11
+cpx41	|gr. B ind. not set
+ca6
+sd5
+md7k1<del><del><del><del><del><del><del><del><del><del><del>	|7
+sd5
+ts5
+ts 2d12
+[1;31mx41,[0mca6
+clh6
+cpx42<del><del>	|cf 1000
+clh 1
+[1;31m0,[0mcp 2r	|sp enable
+sp 1x28
+2,ca 0
+e<del>x d12
+ts 6
+sp x24	|handle as an sp
+[1;31mx42,[0mclh 1
+cp x46	|illegal
+sp x28
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>[1;31mx20,[0mx21
+x22
+[1;31mx21,[0m<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>4	|si
+5	|illegal
+0.13440	|bi
+si 440	|rd
+4r,0.07440	|bo
+si 400	|rc
+0.61140	|sd
+si4<del><del><del><del><del><del><del><del><del><del><del><del>3	|cf
+10r,1.21000	|ts
+1.21000	|td
+1.21300	|ta
+0.6150<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>0	|ck
+14r,1.610<del>40	|ab
+1.61040	|ex
+2	|cp
+1	|sp
+20r,0.61240	|ca
+0.61240	|cs
+0.61140	|ad
+0.61140	|su
+24r,0.61240	|cm
+0.611<del><del>40	|sa
+1.61140	|ao
+0.611<del>40	|dm
+30r,0.61140	|mr
+0.611<del><del>40	|mh
+0.61140	|dv
+si 100	|sl
+34r,si 100	|sr
+1.21140	|sf
+0	|cl
+0.61040	|md
+|[1;31mINTERPRETIVE OPERATION SUBROUTINES[0m
+[1;31mr20,[0mta 14r<del>	|print location, order
+sp r1
+ca d4	|pc
+sp r3
+4r,ca <del><del>1<del><del><del><del>2k5	|slash, 41
+sp r10
+ca 0
+sp r10	|space
+<del><del><del><del>[1;31m10,[0mca 1d6	|instr
+sp r14
+sp r7	|3 spaces
+1.00000
+[1;31m14,[0msp
+[1;31mr21<del><del><del><del>,[0mta 11r	|print ac, br
+ca d12	|ac
+sp r30	|<del>wi = of
+sp r7
+4, 1.00000	|3 spaces
+ca 1d12	|br
+sp r13	|of
+sp r7
+10,1.00000	|3 spaces
+11,sp
+[1;31m|print contents, if meaningful[0m
+[1;31mr22,[0mta 1<del><del>5r
+cs t1
+clh 6
+cp 14r	|not meaningful
+4r,ca c1	|ca
+ex 6
+td 6
+ts4d8
+sp b41	|obtain contents
+sp r30	|o. f.
+ca 4d8
+ts 6
+14,sp r28
+15,sp
+[1;31m|EXECUTE INSTRUCTION[0m
+[1;31mr23,[0mta <del><del><del>32r
+ca t1	|logical instruction
+clh 32
+md 7k1	|7
+ad 53r	|6r
+cf 400	|dispatcher
+6,sp 23r	|other
+sp<del>41r	|clears sam
+sp 33r	|uses SAM
+sp 45r	|ta
+sp21r	|rd, rc, bi, bo, AC for si
+ts 2	|ck
+sp a7
+ca 2
+ck 0
+ao 6d8	|extra index
+sp 32r
+21,ca 2t2<del>	|ac for si
+22r23,si 630	|si planted
+23,sp a7	|execute
+si 630
+25,cs t1
+clh 12
+cp 32r	|a register not changed
+ca 2
+td 1t2	|set a register
+32,sp	|exit
+33,sp a7
+<del>ca 0
+ex d8	|SAM
+ad d12
+ts d12	|AC
+ sp <del>25r
+41,sp a7
+ca 0
+ts d8	|store or clear SAM
+sp 25r
+45,cs4k2	|4000
+ad 6
+ts 6	|change ta to td
+ca 1t2	|a register
+sp b41
+sp 32r
+53,6r
+|filler
+DITTO
+[1;31m2724|[0md8,0	|SAM
+0	|from
+0	|to
+0	|match entry
+4,0	|ctr for: r70, r71, x39. simple loop. T. S. for r66
+0
+0	|TS for and x38
+0	|inactive ind
+[1;31md6,[0m0	|loop ctr
+0	|instruction for printing
+[1;31m1d11,[0m0	|single branch loop ind
+0	|simple loop ctr
+STA32

@@ -1,0 +1,404 @@
+%File C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302396_box37\102663741_fc1244m25_flexo_to_analex_conversion_for_1211m13.7ch
+fc TAPE 1244 m25 ANELEX CONVERSION FOR PROGRAM PRINT PROGRAM
+OCTAL<del>	DA1.12<del><del><del><del>540|
+50|[1;31ma3,[0mcav2
+cf200
+spa4
+[1;31ma4,[0mtsv2	|store flexocode
+srh12
+adc2
+[1;31ma1,[0mcf400
+spf40	| t
+spa3	|not used
+spf42	|z
+spf43	|back space
+spf44	|l
+spf45	|tab
+spf46	|w
+spa3		<del><del><del><del><del><del><del><del><del>|not used
+spf50	|h
+spf51	|carriage return
+spf52	|y
+spa3		|not used
+spf54	|p
+spa3		|not used
+spf56	|q
+sp<del>a3		|not used
+spf60	|o
+spf61	|stop
+spf62	|b
+spa3		|not used
+spf64	|g
+sp<del>a3		|not used
+spf66	|9
+sp<del>a3		|not used
+spf70	|m
+spf71	|upper case
+spf72	|x
+spa3		|not used
+spf74	|v
+spf75	|lower case
+spf76	|0
+spa3		|nullify and not used
+spa3		|not used
+spf2	|e
+spf3	|8
+<del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del><del>spa3		|not used
+spf5	|1_
+spf6	|a
+spf7	|3
+spf10	|space
+spf11	|=
+spf12	|s
+spf13	|4
+spf14	|i
+spf15	|+/
+spf16	|u
+spf17	|2
+spa3		|color change,not used
+spf21	|.)
+spf22	|d
+spf23	|5
+spf24	|r
+spf25	|1
+spf26	|j
+spf27	|7
+spf30	|n
+spf31	|,(
+spf32	|f
+spf33	|6
+spf34	|c
+spf35	|--
+spf36	|k
+spa3		|not used
+[1;31mv2,[0msi0	|flexocode
+[1;31m1v2,[0msi0	|case control
+[1;31mc2,[0msi40a1	|start of flexo table
+[1;31mc3,[0msi1	|column counter
+[1;31m1c3,[0m0.06315
+[1;31m2c3,[0m+10
+[1;31m3c3,[0m+120
+[1;31m4c3,[0m+76
+[1;31m5c3,[0m1.70010	|go to top of page
+[1;31m6c3,[0m1.70400	|single space
+[1;31m7c3,[0msi701
+[1;31mf40,[0mca43a2	|set up t
+
+spp1
+[1;31mf42,[0mca51a2	|set up z
+spp1
+[1;31mf43,[0mcac3	|accomplish back space
+su1
+tsc3
+cp0	|back space off page
+sp1f10
+[1;31mf44,[0mca33a2	|set up l
+spp1
+[1;31mf45,[0mcac3	|set up tab
+mh1c3
+ad1
+mh2c3
+slh17
+tsc3
+su3c3
+cpf10
+[1;31mb2,[0mca4c3
+tsc3	|reset column counter
+ca5f49
+[1;31mb1,[0mtsf58
+ca1
+ts1f58
+ca7c3
+si244	|printer activate
+bo1y1
+ca7c3
+si17
+bi1y1
+ca6c3
+ts700y1	|clear printer image
+spa3<del><del>
+[1;31mf46,[0mca46a2	|set up w
+spp1
++0
+[1;31mf50,[0mca27a2	|set up h
+spp1
+[1;31mf51,[0mca6c3	|set up carriage return
+ts2f46
+caf58
+ad70a2
+td6r
+ca2f46
+ts0
+ca1
+tsc3
+caf49
+spb1
+[1;31mf52,[0mca50a2	|set up y
+spp1
+[1;31mf54,[0mca37a2	|set up p
+spp1
+[1;31mf56,[0mca40a2	|set up q
+spp1
+[1;31mf61,[0mca5c3	|set up stop
+sp1f51
+[1;31mf62,[0mca21a2	|set up b
+spp1
+[1;31mf64,[0mca26a2	|set up g
+spp1
+[1;31mf66,[0mca1v2	|set up 9
+cp4r
+ca63a2
+spp1
+ca17a2
+spp1
+[1;31mf70,[0mca34a2	|set up m
+spp1
+[1;31mf71,[0mcs0
+ts1v2	|set case control to upper case
+spa3
+[1;31mf72,[0mca47a2	|set up x
+spp1
+[1;31mf74,[0mca45a2	|set up v
+spp1
+[1;31mf75,[0mca0	|set case control to lower case
+ts1v2
+spa3
+[1;31mf76,[0mca1v2	|set up 0
+cp4r
+[1;31mf60,[0mca52a2	|lower case letter or no.
+spp1
+ca6a2	|exp. zero
+spp1
+<del><del><del><del><del><del><del><del><del><del><del><del><del>[1;31mf2,[0mca24a2	|set up e
+spp1
+[1;31mf3,[0mca1v2	|set up 8
+cp4r
+ca62a2
+spp1
+ca16a2
+spp1
+[1;31mf5,[0mca1v2	|set up|_
+cpf10
+ca1a2
+spp1
+[1;31mf6,[0mca20a2	|set up a
+spp1
+[1;31mf7,[0mca1v2	|set up 3
+cp4r
+ca55a2
+spp1
+ca11a2
+spp1
+[1;31mf10,[0maoc3	|set up space bar
+dm17a2
+cpf8
+dm17a2
+cpf18
+dm17a2
+cpf19
+dm17a2
+cpf28
+dm17a2
+cpf29
+dm17a2
+cpf38
+dm17a2
+cpf39
+dm17a2
+cpf48
+spb2[1;31m
+f8,[0mmd0
+adf49
+[1;31mf9,[0mtsf58
+clc20
+ts1f58
+spa3
+[1;31mf18,[0mmd0
+ad1f49
+spf9
+[1;31mf19,[0mmd0
+ad2f49
+spf9
+[1;31mf28,[0mmd0
+ad3f49
+spf9
+[1;31mf29,[0mmd0
+ad4f49
+spf9
+[1;31mf38,[0mmd0
+ad5f49
+spf9
+[1;31mf39,[0mmd0
+ad6f49
+spf9
+[1;31mf48,[0mmd0
+ad7f49
+spf9
+[1;31mf49,[0my1
+70y1
+160y1
+250y1
+340y1
+430y1
+520y1
+610y1
+[1;31mf58,[0my1	|specifies  address of first register in group
++1	|column within group
+srh1
+[1;31mf11,[0mca2a2	|set up =
+adf58
+td10r
+ca1f58
+ad2f58
+ts7r
+ca1
+srh0
+ab0
+ca66a2
+spp1
+[1;31mf12,[0mca42a2	|set up s
+spp1
+[1;31mf13,[0mca1v2	|set up 4
+cp4r
+ca56a2
+spp1
+ca12a2
+spp1
+[1;31mf25,[0mca1v2	
+cp4r
+[1;31mf14,[0mca53a2	|set up I and 1
+spp1
+ca7a2	|exp.1
+spp1
+[1;31mf15,[0mca1v2	|set up +/
+cp4r
+ca4a2
+spp1
+ca1a2
+spp1
+[1;31mf16,[0mca44a2	|set up u
+spp1
+[1;31mf17,[0mca1v2	|set up 2
+cp4r
+ca54a2
+spp1
+ca10a2
+spp1
+[1;31mf21,[0mca1v2	|set up .)
+cp4r
+ca3a2
+spp1
+ca65a2
+spp1
+[1;31mf22,[0mca23a2	|set up d
+spp1
+[1;31mf23,[0mca1v2	|set up 5
+cp4r
+ca57a2
+spp1
+ca13a2
+spp1
+[1;31mf24,[0mca41a2	|set up r
+spp1
+<del>[1;31mf26,[0mca31a2	|set up j
+spp1
+[1;31mf27,[0mca1v2	|set up 7
+cp4r
+ca61a2
+spp1
+ca15a2
+spp1
+[1;31mf30,[0mca35a2	|set up n
+spp1
+[1;31mf31,[0mca1v2	|set up ,(
+cp4r
+ca5a2
+spp1
+ca64a2
+spp1
+[1;31mf32,[0mca25a2	|set up f
+spp1
+[1;31mf33,[0mca1v2	|set up 6
+cp4r
+ca60a2
+spp1
+ca14a2
+spp1
+[1;31mf34,[0mca22a2	|set up c
+spp1
+[1;31mf35,[0mca1v2	|set up --
+cp4r
+ca2a2
+spp1
+ca66a2
+spp1
+[1;31mf36,[0mca32a2	|set up k
+[1;31mp1,[0madf58	|print routine
+td7r
+ca1f58
+ad2f58
+ts6r
+ca1
+srh0
+ab0
+spf10
+<del><del><del><del><del><del><del><del><del><del><del>[1;31ma2,[0m+0
++1
++2
++3
++4
++5
++6
++7
+si10
+si11
+si12
+si13
+si14
+si15
+si16
+si17
+si20
+si21
+si22
+si23
+si24
+si25
+si26
+si27
+si30
+si31
+si32
+si33
+si34
+si35
+si36
+si37
+si40
+si41
+si42
+si43
+si44
+si45
+si46
+si47
+si50
+si51
+si52
+si53
+si54
+si55
+si56
+si57
+si60
+si61
+si62
+si63
+si64
+si65
+si66
+si67
+si70
+DITTO
+710|[1;31my1<del><del><del>,[0m<del><del><del>
+START AT <del><del><del>0

@@ -1,0 +1,21 @@
+
+; *** Tape Bytestream ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=none
+%File: C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\16\t16.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\16\t16_gs245.ocore
+%TapeID: 
+%Stats: Covariance=0.002931, Size=91, Display-Ops, 1, 
+%Blocknum 0o0
+@T00000: 0000132 0100000 0125001 0126332 0100000 0125754 0126324 0100000  ; si ca sa sa ca sa sa ca  :      f\0#f\0pr\0 :        \0ty#ty#t
+@T00010: 0126361 0126321 0100000 0126620 0126317 0100000 0102230 0126412  ; sa sa ca sa sa ca ca sa  : <stop>.\0<color>2\0ns :         ##t##t##
+@T00020: 0100000 0103140 0126405 0100000 0131354 0126477 0100000 0131657  ; ca ca sa ca ao sa ca ao  :  \0t|\0p<del>\0# :         t##tp#tp
+@T00030: 0126475 0100000 0132357 0126471 0100000 0133473 0126462 0100000  ; sa ca ao sa ca ao sa ca  : <cntl>\0#<cntl>\0#B\0 :         #t##T##T
+@T00040: 0100401 0126625 0100000 0133616 0126661 0100000 0134720 0126653  ; ca sa ca ao sa ca dm sa  : #1\0U<stop>\0<color># :         T#T##TQ#
+@T00050: 0100000 0136417 0126641 0000000 0070726 0070727 0012100 0062635  ; ca dm sa si cp cp bi ab  :      \02#\0J7\0- :        T##\0CC_(
+@T00060: 0000036 0000001 0070726 0070727 0012100 0065535 0000036 0000002  ; si si cp cp bi ex si si  :        K#J7\0-KE :     \0\0CC_F\0\0
+@T00070: 0070726 0070727 0012100 0070435 0000036 0000003 0070726 0070727  ; cp cp bi cp si si cp cp  :        J7\0-K8J7 :       CC_C\0\0CC
+@T00100: 0012100 0073335 0000036 0000004 0066000 0000000 0012100 0005352  ; bi cp si si ex si bi .word  :     \0-K#\0\0\0Y :      _-\0\06\0_E
+@T00110: 0007400 0000005 0066000 0000000 0012100 0005352 0003600 0000006  ; .word si ex si bi .word si si  :    \0_\0\0\0Y\0A :      8\06\0_E#\0
+@T00120: 0066000 0000000 0012100 0005352 0000000 0000007 0066000 0000000  ; ex si bi .word si si ex si  :   \0\0\0Y\03\0\0 :     6\0_E\0\06\0
+@T00130: 0012100 0005352 0074177  ;             bi .word sp  :         \0Y<del> :              _EK
+
+%Hash: 3c340b-908527-91
