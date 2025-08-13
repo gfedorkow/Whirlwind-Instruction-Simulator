@@ -102,6 +102,8 @@ else
 		echo "Test FAILED"
 	fi
 
+	# As of 8/13/25 this one is buggy and will fail (float printer
+	# problem). So there is no lz-wwsim4.log in TestRefs. 
 	echo "Testing L&Z program 4..."
 	(python $ascflx -r -i - <<-EOF
 		a = 1,
