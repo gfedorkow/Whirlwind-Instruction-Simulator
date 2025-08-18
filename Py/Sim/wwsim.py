@@ -469,7 +469,7 @@ class CpuClass:
             return None
 
     # Another debugger helper, for the "i" (instruction) format and other purposes
-    def get_inst_info (self, addr: int) -> (int, str, int, str):
+    def get_inst_info (self, addr: int) -> (int, str, int, str, int , int):
         global CoreMem
         instruction = CoreMem.rd (addr, fix_none=False) # ?? fix_none?
         if instruction is None:
@@ -640,7 +640,7 @@ class CpuClass:
                 output_str += flex_ascii
             elif fmt == "%i":
                 addr = self.rl (argList.pop(0))
-                (opcode, short_opcode, address, label) = self.get_inst_info (addr)
+                (opcode, short_opcode, address, label, ac, br) = self.get_inst_info (addr)
                 output_str += "%s 0o%o%s" % (short_opcode, address, label)
             else:
                 output_str += fmt
@@ -2143,8 +2143,9 @@ def main_run_sim(args, cb):
     end_time = time.time()
     wall_clock_time = end_time - start_time  # time in units of floating point seconds
     if wall_clock_time > 2.0 and sim_cycle > 10:  # don't do the timing calculation if the run was really short
-        cb.log.raw("Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec\n" %
-                   (sim_cycle, cpu.PC, wall_clock_time, 1000000.0 * float(wall_clock_time) / float(sim_cycle)))
+        if not cb.TraceQuiet:
+            cb.log.raw("Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec\n" %
+                       (sim_cycle, cpu.PC, wall_clock_time, 1000000.0 * float(wall_clock_time) / float(sim_cycle)))
         if args.Radar:
             print("    elapsed radar time = %4.1f minutes (%4.1f revolutions)" %
                   (radar.elapsed_time / 60.0, radar.antenna_revolutions))
@@ -2338,7 +2339,8 @@ def main():
     while True:
         (alarm_state, sim_cycle) = main_run_sim(args, cb)
         if (alarm_state == cb.QUIT_ALARM) or (cb.panel is None and alarm_state != cb.NO_ALARM):
-            print("Ran %d cycles; Used mem=%dMB" % (sim_cycle, psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
+            if not cb.TraceQuiet:
+                print("Ran %d cycles; Used mem=%dMB" % (sim_cycle, psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
             if not UseDebugger:
                 break
 

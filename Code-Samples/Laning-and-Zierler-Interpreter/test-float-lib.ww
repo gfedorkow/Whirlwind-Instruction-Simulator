@@ -1,10 +1,10 @@
                       ; notes is the default test expected by runtest.sh
                       ; Other test points are test and sqrt2
 
-					  sp notes
-					  sp normalize_test
+					  ; sp notes
+					  ; sp normalize_test
 
-					  ; sp test
+					  sp test
 
 					  ; sp sqrt2		; With su r17 this still fails
 					  si 0
@@ -81,7 +81,7 @@ notes_rtn:			  sp 0
 					  ta sqrt2_rtn
                       sp ax
                       ca float1
-                      ts t
+                      ts t00
                       sp ax
                sloop:
                       ca sloopcnt
@@ -90,10 +90,10 @@ notes_rtn:			  sp 0
                       cp sdone
                       sp ax
                       ca float2
-                      dv t
-                      ad t
+                      dv t00
+                      ad t00
                       dv float2
-                      ts t
+                      ts t00
                       sp ax
                       .print "xxxxxxxxxxxx %d %fl", sloopcnt, t
                       ca 0
@@ -104,19 +104,22 @@ notes_rtn:			  sp 0
 		   sqrt2_rtn: sp 0
 
                 test:
-                      sp ax
-					  ca x
 					  sp ax
-			testbp1:	
+;					  cm float_neg_zero
+;					  ts t00
+
+					  ; These both work
+;					  cm a440
+;					  cs a440
+
+
+					  cm minus_pi   ; -|- Broken due to issue no-lower-cm
+					  ts t01		; -|
+					  
+					  cs pi
+					  ts t02
 					  sp ax
-					  cs x
-                      sp ax
-			testbp2:	
-					  sp ax
-					  ca xn
-                      sp ax
-			testbp3:
-                      sp exit
+					  sp exit
 
                 exit: si 0
 
@@ -125,11 +128,16 @@ notes_rtn:			  sp 0
    				  xn: .float -0.5, 0
 				  ; xxx: .float +0.1, 20		; Should be an out-of-range error
 
-                   y: .float +0.25, 0
+                   y: .float +0.1, 0
                    z: .float +0.1416595, 1     ; This value breaks dv when divided into float1
+				 t00: .float 0, 0
+                 t01: .float 0, 0
+                 t02: .float 0, 0
+                 t03: .float 0, 0
                   t1: .float 0, 0
                   t2: .word 0
-                   u: .float +0.3141593, 1
+                  pi: .float +0.3141593, 1
+		    minus_pi:  float -0.3141593, 1
                    v: .float +0.2718282, 1
                 a220: .float +0.220, 3
            frac_a220: .word +0.220
@@ -139,6 +147,11 @@ notes_rtn:			  sp 0
                 num2: .word 0o010000           ; float 2^11
                       .word 0o022000
                 frac: .word +0.1
+ 		  float_zero: .float 0, 0
+	  float_neg_zero: .word 0o177777
+	  				  .word 0o000777
+		  		neg0: .word 0o177777
+		  
 ;           semitone: .float +0.1059463094, 1
             semitone: .float +0.10594632, 1		; Fudged! To get basic freqs more accurate and more familiar.
 					  		 			  		; Also in LZ test music-notes.lzt

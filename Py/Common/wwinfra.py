@@ -1199,7 +1199,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             continue
         if len(line) and line[0] == ';':  # skip comment lines
             continue
-        if re.match(" \*\*\* Core Image \*\*\*", line):  # sigh, due to an error in wwutd, this now is a de-facto comment
+        if re.match(" \\*\\*\\* Core Image \\*\\*\\*", line):  # sigh, due to an error in wwutd, this now is a de-facto comment
             continue
 
         input_minus_comment = re.sub(";.*", "", line).rstrip()
