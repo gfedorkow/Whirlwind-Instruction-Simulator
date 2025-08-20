@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Py\Common/../../Py/Assembler/wwasm.py", line 1385, in <module>
+    main()
+  File "C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Py\Common/../../Py/Assembler/wwasm.py", line 1383, in main
+    prog.assemble()
+  File "C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Py\Common/../../Py/Assembler/wwasm.py", line 1310, in assemble
+    self.passOne()
+  File "C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Py\Common/../../Py/Assembler/wwasm.py", line 1245, in passOne
+    inst = AsmNullInst (line, self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Py\Common/../../Py/Assembler/wwasm.py", line 466, in __init__
+    super().__init__ (*args)
+  File "C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Py\Common/../../Py/Assembler/wwasm.py", line 434, in __init__
+    super().__init__ (*args)
+  File "C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Py\Common/../../Py/Assembler/wwasm.py", line 215, in __init__
+    self.prog.coreToInst[self.address] = self
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+IndexError: list assignment index out of range
