@@ -26,7 +26,8 @@ else
 	echo "Test Parsing..."
 	python $asmp -v test1.ww >&test1.log		# Should produce an eval error and that's ok so it's in the log
 	python $asmp -v test2.ww >&test2.log
-
+  dos2unix test1.log
+  dos2unix test2.log
 	grep -v "AsmExpr-" test1.log >FilteredTest1.log
 	grep -v "AsmExpr-" test2.log >FilteredTest2.log
 
@@ -61,6 +62,7 @@ else
 	# Error message test.
 	echo "Test asm error messages. The ww program has an error in each line..."
 	python $asm ErrorTest.ww >&ErrorTest.log
+    dos2unix ErrorTest.log
 	diff -s ErrorTest.log TestRefs/ErrorTest.log
 	status4=$?
 	if [ "$status4" == "0" ];
@@ -74,6 +76,8 @@ else
 	echo "Test .include..."
 	rm -f inc1.acore inc1.lst includetest.log
 	python $asm --OmitAutoComment inc1.ww >&includetest.log
+    dos2unix inc1.lst
+    dos2unix includetest.log
    	diff -s inc1.lst TestRefs/inc1.lst
 	status5=$?
 	if [ "$status5" == "0" ];
@@ -88,7 +92,9 @@ else
 	echo "Test .flexh and .flexl..."
 	rm -f flextest.lst flextest.acore flextest.sim.log 
 	python $asm --OmitAutoComment flextest.ww >&flextest.asm.log
-	python $sim -q flextest.acore |& grep -v cycles >flextest.sim.log 
+	python $sim -q flextest.acore |& grep -v cycles >flextest.sim.log
+    dos2unix flextest.lst
+    dos2unix flextest.sim.log
    	diff -s flextest.lst TestRefs/flextest.lst
 	status6=$?
 	diff -s flextest.sim.log TestRefs/flextest.sim.log
@@ -101,7 +107,25 @@ else
 		echo "Test FAILED"
 	fi
 
-	status=$(($status1 + $status2 + $status3 + $status4 + $status5 + $status6 + $status7))
+	# last-word test
+	echo "Test use of last memory word"
+	rm -f last-word.lst last-word.acore last-word.sim.log 
+	python $asm --OmitAutoComment last-word.ww >&last-word.asm.log
+	python $sim -q last-word.acore |& grep -v cycles >last-word.sim.log 
+   	diff -s last-word.lst TestRefs/last-word.lst
+	status8=$?
+	diff -s last-word.sim.log TestRefs/last-word.sim.log
+	status9=$?
+	status=$(($status8 + $status9))
+	if [ "$status" == "0" ];
+	then
+		echo "Test PASSED"
+	else
+		echo "Test FAILED"
+	fi
+
+	status=$(($status1 + $status2 + $status3 + $status4 + $status5 \
+                       + $status6 + $status7 + $status8 + $status9))
 	if [ "$status" == "0" ];
 	then
 		echo "Assembler Test PASSED"
