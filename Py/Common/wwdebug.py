@@ -2,6 +2,7 @@ import os
 import sys
 import re
 import math
+import shutil
 import traceback
 import argparse
 import wwinfra
@@ -680,7 +681,8 @@ class DbgCmd_syms (DbgCmd):
             ]
         return r
     def execute (self):
-        (h, v) = os.get_terminal_size()
+        # (h, v) = os.get_terminal_size()
+        (h, v) = shutil.get_terminal_size()
         print ("LAS42", h, v)
         maxSymLen = 0
         for sym in self.dbg.symToAddrTab:

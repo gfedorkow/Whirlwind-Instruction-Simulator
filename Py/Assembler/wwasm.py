@@ -212,14 +212,17 @@ class AsmInst:
         # def passTwoOp (self):         # Subclass def
         self.instruction: int = 0       # 16 bits, may be a ww instruction or data
         self.address: int = self.prog.nextCoreAddress   # All instructions even pseudo-ops get an address
-        self.prog.coreToInst[self.address] = self
-        self.relativeAddressBase: int = 0
-        # If it has a label, record it
-        if self.parsedLine.label != "":
-            self.prog.labelTab.insert (parsedLine.label, self)
-        # If it has a comment, record it
-        if self.parsedLine.comment != "":
-            self.prog.commentTab[self.address] = self.parsedLine.comment
+        if self.address >= self.prog.coreSize:
+            self.fatalError ("Cannot store an instruction above address 0o%o" % (self.prog.coreSize - 1))
+        else:
+            self.prog.coreToInst[self.address] = self
+            self.relativeAddressBase: int = 0
+            # If it has a label, record it
+            if self.parsedLine.label != "":
+                self.prog.labelTab.insert (parsedLine.label, self)
+            # If it has a comment, record it
+            if self.parsedLine.comment != "":
+                self.prog.commentTab[self.address] = self.parsedLine.comment
     #
     # Given an int detect sign and range and generate a 16-bit one's complement
     # representation.
