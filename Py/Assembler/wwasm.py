@@ -9,6 +9,9 @@ from enum import Enum
 from wwasmparser import AsmExprValue, AsmExprValueType, AsmExprEnv, AsmExpr, AsmExprType, AsmParsedLine
 from wwflex import FlasciiToFlex
 
+class AsmFatalError (Exception):
+    pass
+
 AsmOperandType = Enum ("AsmOperandType", ["None",       # it's a pseudo-op
                                           "Jump",       # the address is a jump target
                                           "WrData",     # the instruction writes to address 
@@ -212,17 +215,16 @@ class AsmInst:
         # def passTwoOp (self):         # Subclass def
         self.instruction: int = 0       # 16 bits, may be a ww instruction or data
         self.address: int = self.prog.nextCoreAddress   # All instructions even pseudo-ops get an address
-        if self.address >= self.prog.coreSize:
-            self.fatalError ("Cannot store an instruction above address 0o%o" % (self.prog.coreSize - 1))
-        else:
+        # Only pseudo-ops can be beyond core so don't store xref and dump any comment 
+        if self.address < self.prog.coreSize:
             self.prog.coreToInst[self.address] = self
-            self.relativeAddressBase: int = 0
-            # If it has a label, record it
-            if self.parsedLine.label != "":
-                self.prog.labelTab.insert (parsedLine.label, self)
             # If it has a comment, record it
             if self.parsedLine.comment != "":
                 self.prog.commentTab[self.address] = self.parsedLine.comment
+        self.relativeAddressBase: int = 0
+        # If it has a label, record it
+        if self.parsedLine.label != "":
+            self.prog.labelTab.insert (parsedLine.label, self)
     #
     # Given an int detect sign and range and generate a 16-bit one's complement
     # representation.
@@ -287,12 +289,19 @@ class AsmInst:
         sys.stdout.flush()
         sys.stderr.flush()
         """
-        self.cb.log.fatal ("line: %d, %s:\n%s" % (self.parsedLine.lineNo, msg, self.parsedLine.lineStr))
+        # self.cb.log.fatal ("line: %d, %s:\n%s" % (self.parsedLine.lineNo, msg, self.parsedLine.lineStr))
+        self.cb.log.error (self.parsedLine.lineNo, "%s:\n%s" % (msg, self.parsedLine.lineStr))
+        raise AsmFatalError
         pass
     def operandTypeError (self, val: AsmExprValue):
         # Grab the undefined error as it's too noisy, e.g., always comes with unbound var.
         if val.type != AsmExprValueType.Undefined:
             self.error ("Incorrect operand type %s" % val.asString())
+    # Used to check if we're writing instructions or words above the allowable max address
+    def checkAddressError (self, address):
+        if address >= self.prog.coreSize:
+            msg = "Cannot store an instruction above address 0o%o" % (self.prog.coreSize - 1)
+            self.fatalError (msg)
     def addrRangeError (self, addr: int):
         self.error ("Address 0o%o out of range" % addr)
     # Return a string for the prefix address, perhaps with decimal addresses and perhaps with content
@@ -393,6 +402,7 @@ class AsmWwOpInst (AsmInst):
                 self.addrRangeError (val.value)
             else:
                 self.instruction = self.opcode | val.value      # mask not needed because we've checked range
+                self.checkAddressError (self.address)
                 self.prog.coreMem[self.address] = self.instruction
                 self.addXref (val.value)
         else:
@@ -559,6 +569,7 @@ class AsmDotWordInst (AsmPseudoOpInst):
     def passTwoOp (self):
         val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
         self.instruction = self.wwWord (val)
+        self.checkAddressError (self.address)
         self.prog.coreMem[self.address] = self.instruction
 
 class AsmDotWordsInst (AsmDotWordInst):
@@ -599,6 +610,7 @@ class AsmDotWordsInst (AsmDotWordInst):
     def passTwoOp (self):
         self.instruction = self.fillInst
         for i in range (0, len (self.block)):
+            self.checkAddressError (self.address+i)
             self.prog.coreMem[self.address+i] = self.block[i]
 
 class AsmDotFloatInst (AsmDotWordsInst):
@@ -655,6 +667,7 @@ class AsmDotFloatInst (AsmDotWordsInst):
                 self.error (".float takes two operands")
         else:
             self.operandTypeError (val)
+        self.checkAddressError (self.address+1)
         self.prog.coreMem[self.address] = self.block[0]
         self.prog.coreMem[self.address+1] = self.block[1]
 
@@ -716,6 +729,7 @@ class AsmDotFlexlhInst (AsmDotWordsInst):
         if 0 in self.block:        # We need at least this one entry
             self.instruction = self.block[0]
             for i in range (0, len (self.block)):
+                self.checkAddressError (self.address+i)
                 self.prog.coreMem[self.address+i] = self.block[i]
 
 class AsmDotJumpToInst (AsmPseudoOpInst):
@@ -1310,8 +1324,11 @@ class AsmProgram:
         listingOutStream.close()
 
     def assemble (self):
-        self.passOne()
-        self.passTwo()
+        try:
+            self.passOne()
+            self.passTwo()
+        except AsmFatalError:
+            pass
         errorCount = self.cb.log.error_count
         if errorCount != 0:     # Don't write files if picked up errors
             print ("Error Count = %d; output files suppressed" % errorCount)

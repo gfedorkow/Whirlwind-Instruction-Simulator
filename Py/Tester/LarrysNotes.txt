@@ -1,30 +1,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 This is a collection of notes and scratchings on Larry's efforts in
 the Whirlwind project. It started as a doc dump for the tester, but
 has expanded into assembler and other areas.
@@ -40,8 +16,8 @@ rationale for the change is below in a note to Guy dated Nov 2024.
 
 The main thing new is that we're script-based, and use basic scripting
 to run tests and do diffs. It's based on boiler-plate scripting which
-is copied an modified to make a new test. The convenience and
-flexibility of such script developement outweighs the "badness" of the
+is copied and modified to make a new test. The convenience and
+flexibility of such script development outweighs the "badness" of the
 redundancy, and if needed we can develop mass-editing tools to help us
 if an across-the-board change is needed.
 
@@ -603,7 +579,10 @@ literal-digit-seq												Decimal inreger
 		Backed-out; not needed
 	* Case-sensitive? Right now new asm is not at all
 		We want case-insens ops and case-sens labels and vars
-	- Check range on nextcoreaddress since can overflow 2K as in all1.ww. Right now croaks.
+	* Check range on nextcoreaddress since can overflow 2K as in all1.ww. Right now croaks.
+		[Fixed by checking range in passTwoOp. Problem in AsmInst.init
+		 showed via xref array so just ignore any overflow there since
+		 can't xref from/to non-exeutable ops.]
 	* Mod and test disasm
 	* asm: no-prefx-addr option, to get a pretty-printed source file
 		Changed to --MinimalListing
@@ -630,7 +609,7 @@ literal-digit-seq												Decimal inreger
 	- Can probably be more elegant in AsmLabelTab by subclassing dict.
 	* Why does core file have 7-oct width?
 		Guy thinks because he first wanted to encode the memory bank.
-	- Note crt-test has runtest.n.sh, but the drawing output has not
+	* Note crt-test has runtest.n.sh, but the drawing output has not
 		  been validated against fixes Guy will be supplying.
 	* I'l take on a task of updating the asm manual.
 		Should be good for now
@@ -650,9 +629,9 @@ literal-digit-seq												Decimal inreger
 		Looks ok -- needed to learn more about *args vs **kwargs
 	- Two .print insts in a row cause a comma-expected syntax bug (in sim)
 	- Unterminated string seems to crash asm tokenizer
-	- How does float dv work? Can't find anything that matches this
+	* How does float dv work? Can't find anything that matches this
 	  algorithm. The fixed-point-30 lib does not implement dv.
-		Appears to be Taylor series of 1/(a+b), two terms.
+		[Is almost certainly Taylor series of 1/(a+b), two terms.]
 	* Shifts in lz
 	* Rename new asm to be current; appropriate rename old prog and stuff if desired.
 	  		 1/31/25 -- renamed away from .n
@@ -778,7 +757,7 @@ literal-digit-seq												Decimal inreger
 		[Added escape support for \n, \t, and \b to asm
 		 tokenizer. These produce the literal char e.g. newline. The
 		 listingString() function changes it back to the source form.
-	- Asm: carat-string is useless. Fix or discard,
+	- Asm: carat-string is useless. Fix or discard.
 	* Float printer -- extreme accuracy issues
 		[Looks like bug in spax, where if you shift a 24,6 low word it
 		 will get the wrong bits due to a negative exponent. Fixed with
