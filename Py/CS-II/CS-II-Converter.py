@@ -428,6 +428,8 @@ def read_fc(cb, filename:str, cs_ii_pgm):
             cs_ii_pgm.tape_mode_settings = line
             continue
         ln = strip_color_and_del(line.rstrip())
+        if line_number == 258:
+            breakp()
         subline = ln.split('\t')
         sub_number = 'a'
         for statement in subline:
