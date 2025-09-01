@@ -86,7 +86,7 @@ class PanelMicroWWClass:
             self.log.warn("No MicroWhirlwind Panel I2C/gpio Found")
             return
 
-        if try:
+        try:
             pwr_ctl = PwrCtlClass(self.log)
             pwr_ctl.pwr_on()
             time.sleep(0.3)
