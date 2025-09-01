@@ -1,0 +1,337 @@
+
+AsmParsedLine:
+    line=            .dbwgt Vy 
+    dotIf= None 
+    prefixAddr= {} 
+    label=  
+    opname= dbwgt 
+    operand= AsmExpr-2651726275600 
+    comment=  
+    auto-comment= 
+Operand AsmExpr-2651726275600:
+   Variable Vy
+Eval operand:
+  AsmExpr-2651726275600
+    AsmExprValueType.Integer 42
+
+
+AsmParsedLine:
+    line=            .dbwgt R, 0o200, "%d" 
+    dotIf= None 
+    prefixAddr= {} 
+    label=  
+    opname= dbwgt 
+    operand= AsmExpr-2651726276368 
+    comment=  
+    auto-comment= 
+Operand AsmExpr-2651726276368:
+   BinaryComma
+      Variable R
+      BinaryComma
+         UnaryZeroOh
+            LiteralDigits 200
+         LiteralString %d
+Eval operand:
+  AsmExpr-2651726276368
+    AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 128', 'AsmExprValueType.String %d']
+
+
+AsmParsedLine:
+    line=            .dbwgt Xi, 0o400 
+    dotIf= None 
+    prefixAddr= {} 
+    label=  
+    opname= dbwgt 
+    operand= AsmExpr-2651726277648 
+    comment=  
+    auto-comment= 
+Operand AsmExpr-2651726277648:
+   BinaryComma
+      Variable Xi
+      UnaryZeroOh
+         LiteralDigits 400
+Eval operand:
+  AsmExpr-2651726277648
+    AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 256']
+
+
+AsmParsedLine:
+    line=            .dbwgt Yi, 0o100 
+    dotIf= None 
+    prefixAddr= {} 
+    label=  
+    opname= dbwgt 
+    operand= AsmExpr-2651726276880 
+    comment=  
+    auto-comment= 
+Operand AsmExpr-2651726276880:
+   BinaryComma
+      Variable Yi
+      UnaryZeroOh
+         LiteralDigits 100
+Eval operand:
+  AsmExpr-2651726276880
+    AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 64']
+
+
+AsmParsedLine:
+    line= nobounce:  sp x+57 
+    dotIf= None 
+    prefixAddr= {} 
+    label= nobounce 
+    opname= sp 
+    operand= AsmExpr-2651726278480 
+    comment=  
+    auto-comment= 
+Operand AsmExpr-2651726278480:
+   BinaryPlus
+      Variable x
+      LiteralDigits 57
+Eval operand:
+  AsmExpr-2651726278480
+    AsmExprValueType.Integer 99
+
+
+AsmParsedLine:
+    line=            .word 0o4270 
+    dotIf= None 
+    prefixAddr= {} 
+    label=  
+    opname= word 
+    operand= AsmExpr-2651726279248 
+    comment=  
+    auto-comment= 
+Operand AsmExpr-2651726279248:
+   UnaryZeroOh
+      LiteralDigits 4270
+Eval operand:
+  AsmExpr-2651726279248
+    AsmExprValueType.Integer 2232
+
+
+AsmParsedLine:
+    line=            .word -0.56789 
+    dotIf= None 
+    prefixAddr= {} 
+    label=  
+    opname= word 
+    operand= AsmExpr-2651726280016 
+    comment=  
+    auto-comment= 
+Operand AsmExpr-2651726280016:
+   BinaryDot
+      UnaryMinus
+         LiteralDigits 0
+      LiteralDigits 56789
+Eval operand:
+  AsmExpr-2651726280016
+    AsmExprValueType.Fraction -0.56789
+
+
+AsmParsedLine:
+    line=            .print "This is a message %s", 42, xyz 
+    dotIf= None 
+    prefixAddr= {} 
+    label=  
+    opname= print 
+    operand= AsmExpr-2651726280080 
+    comment=  
+    auto-comment= 
+Operand AsmExpr-2651726280080:
+   BinaryComma
+      LiteralString This is a message %s
+      BinaryComma
+         LiteralDigits 42
+         Variable xyz
+Eval operand:
+  AsmExpr-2651726280080
+    AsmExprValueType.List ['AsmExprValueType.String This is a message %s', 'AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 42']
+
+
+AsmParsedLine:
+    line=            ts -0 
+    dotIf= None 
+    prefixAddr= {} 
+    label=  
+    opname= ts 
+    operand= AsmExpr-2651726281232 
+    comment=  
+    auto-comment= 
+Operand AsmExpr-2651726281232:
+   UnaryMinus
+      LiteralDigits 0
+Eval operand:
+  AsmExpr-2651726281232
+    AsmExprValueType.NegativeZero 0
+
+
+AsmParsedLine:
+    line=            sp x+-37 
+    dotIf= None 
+    prefixAddr= {} 
+    label=  
+    opname= sp 
+    operand= AsmExpr-2651726281936 
+    comment=  
+    auto-comment= 
+Operand AsmExpr-2651726281936:
+   BinaryPlus
+      Variable x
+      UnaryMinus
+         LiteralDigits 37
+Eval operand:
+  AsmExpr-2651726281936
+    AsmExprValueType.Integer 5
+
+
+AsmParsedLine:
+    line=            .exec for i in range(0, 10): print(f"### data[{i}] = {py_int(cm.rd(rl('data') + i))} ###") 
+    dotIf= None 
+    prefixAddr= {} 
+    label=  
+    opname= exec 
+    operand= AsmExpr-2651726281424 
+    comment=  
+    auto-comment= 
+Operand AsmExpr-2651726281424:
+   LiteralString for i in range(0, 10): print(f"### data[{i}] = {py_int(cm.rd(rl('data') + i))} ###")
+Eval operand:
+  AsmExpr-2651726281424
+    AsmExprValueType.String for i in range(0, 10): print(f"### data[{i}] = {py_int(cm.rd(rl('data') + i))} ###")
+
+
+AsmParsedLine:
+    line=            sp 0o12345 
+    dotIf= None 
+    prefixAddr= {} 
+    label=  
+    opname= sp 
+    operand= AsmExpr-2651726282064 
+    comment=  
+    auto-comment= 
+Operand AsmExpr-2651726282064:
+   UnaryZeroOh
+      LiteralDigits 12345
+Eval operand:
+  AsmExpr-2651726282064
+    AsmExprValueType.Integer 5349
+
+
+AsmParsedLine:
+    line= 		   sp xyz, 0o12345 
+    dotIf= None 
+    prefixAddr= {} 
+    label=  
+    opname= sp 
+    operand= AsmExpr-2651726316304 
+    comment=  
+    auto-comment= 
+Operand AsmExpr-2651726316304:
+   BinaryComma
+      Variable xyz
+      UnaryZeroOh
+         LiteralDigits 12345
+Eval operand:
+  AsmExpr-2651726316304
+    AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 5349']
+
+
+AsmParsedLine:
+    line= 		   sp abc, 0o12345, +0.98765, 9800 ; Hi there! 
+    dotIf= None 
+    prefixAddr= {} 
+    label=  
+    opname= sp 
+    operand= AsmExpr-2651726316944 
+    comment=  Hi there! 
+    auto-comment= 
+Operand AsmExpr-2651726316944:
+   BinaryComma
+      Variable abc
+      BinaryComma
+         UnaryZeroOh
+            LiteralDigits 12345
+         BinaryComma
+            BinaryDot
+               UnaryPlus
+                  LiteralDigits 0
+               LiteralDigits 98765
+            LiteralDigits 9800
+Eval operand:
+  AsmExpr-2651726316944
+    AsmExprValueType.List ['AsmExprValueType.Integer 42', 'AsmExprValueType.Integer 5349', 'AsmExprValueType.Fraction 0.98765', 'AsmExprValueType.Integer 9800']
+
+
+AsmParsedLine:
+    line= 		   ca qwert & (poiuyt + 2) | 57 
+    dotIf= None 
+    prefixAddr= {} 
+    label=  
+    opname= ca 
+    operand= AsmExpr-2651726318608 
+    comment=  
+    auto-comment= 
+Operand AsmExpr-2651726318608:
+   BinaryBitOr
+      BinaryBitAnd
+         Variable qwert
+         ParenWrapper
+            BinaryPlus
+               Variable poiuyt
+               LiteralDigits 2
+      LiteralDigits 57
+Eval operand:
+  AsmExpr-2651726318608
+    AsmExprValueType.Integer 57
+
+
+AsmParsedLine:
+    line= 		   sp 0o177 & 0o077 | 0o1000 
+    dotIf= None 
+    prefixAddr= {} 
+    label=  
+    opname= sp 
+    operand= AsmExpr-2651726318288 
+    comment=  
+    auto-comment= 
+Operand AsmExpr-2651726318288:
+   BinaryBitOr
+      BinaryBitAnd
+         UnaryZeroOh
+            LiteralDigits 177
+         UnaryZeroOh
+            LiteralDigits 077
+      UnaryZeroOh
+         LiteralDigits 1000
+Eval operand:
+  AsmExpr-2651726318288
+    AsmExprValueType.Integer 575
+
+
+AsmParsedLine:
+    line= 		   sp 1.07777 
+    dotIf= None 
+    prefixAddr= {} 
+    label=  
+    opname= sp 
+    operand= AsmExpr-2651726320528 
+    comment=  
+    auto-comment= 
+Operand AsmExpr-2651726320528:
+   BinaryDot
+      LiteralDigits 1
+      LiteralDigits 07777
+Eval operand:
+  AsmExpr-2651726320528
+    AsmExprValueType.Integer 36863
+
+
+AsmParsedLine:
+    line=  
+    dotIf= None 
+    prefixAddr= {} 
+    label=  
+    opname=  
+    operand= None 
+    comment=  
+    auto-comment= 
