@@ -1,0 +1,2554 @@
+                        .org 0o00000   ;  
+@0000:000000     w0000: .word 0o0       ;  @@JumpedToBy retAddr printRet w0672 w2453 done w2677 a3313 bf_retAddr returnAddress w3574 WrittenBy w0454 w0502 w0511 w0556 w0561 w0563 w0567 w0615 w0616 a1014 a1102 flag_ptr r_ptr w3462 w3472 w3515 w3525 w3576 ReadBy a0221 a0355 a0362 a0445 a0460 w0475 a0476 w0507 w0510 w0530 w0533 w0537 w0552 copyLoop subRadix w0563 restoreRemainder w0571 a0611 zeroRemainder w0616 setWordPtr getWord zero10sDigits a0654 a0700 a0752 a0755 a1002 a1003 a1012 a1013 a1057 a1065 w1071 a1101 a1150 a1230 w1250 w1253 w1330 w1333 w1403 w1406 w1477 w1502 w1621 w1624 w1672 w1675 w1741 w1744 a1772 w2006 w2011 a2041 w2072 w2075 w2262 w2265 a2313 a2354 a2405 i2420 a2422 i2435 w2503 w2506 w2512 w2517 w2525 a2541 a2544 a2547 w2660 w2664 w2667 a2675 a2701 a2703 nextBit a2740 a2752 a2761 a3000 a3026 a3031 a3042 sub_instr a3065 r3067 check_ptr a3106 a3123 a3134 next_step w3164 a3165 w3176 w3210 a3211 w3222 w3224 w3231 w3257 w3262 w3266 a3326 a3336 a3352 bitToFind bf_cleanup btt xnpr_ptr a3433 r_ptr w3460 w3470 a3473 w3513 w3523 a3526 a3532 doneTakingOne a3555 w3557 cleanLoop a3563 a3572 zeroCount 
+@0001:000001     CONST_1: .word 0o1       ;  @@ReadBy a0370 a0372 a0373 a0450 a0675 
+
+                        .org 0o00040   ;  
+@0040:000006     CONST_6: .word 0o6       ; @@WrittenBy a0104 a0165 ReadBy a2673 a2750 a3040 
+@0041:000005            si   0o5       ; select I/O: unknown i/o device 
+
+@0042:000000     counter0: .word 0o0       ;  @@WrittenBy a0605 a0612 a2401 a2406 a2423 a2436 a2672 a2676 a2727 a2735 a2741 a3001 a3037 a3043 a3101 a3107 a3131 a3135 a3155 a3226 a3263 a3323 a3327 a3370 a3374 next_xnpr a3434 a3541 a3545 a3556 a3567 a3573 ReadBy a0605 a0606 a2401 a2402 a2672 a2735 a3037 a3101 a3131 a3323 a3370 next_xnpr a3427 a3541 a3567 
+@0043:000007      CONST_7: .word 0o7       ; select I/O: unknown i/o device @@ReadBy a0413 a0456 a0607 a2736 a3102 a3132 a3324 a3371 a3542 a3570 
+
+@0044:000255     CONST_255: .word 0o255       ; start address of storage for group counts
+@0045:000265     CONST_0o0265: .word 0o265     ; address of A_np1_rem 
+@0046:000003     w0046: si   0o3       ; select I/O: unknown i/o device @@WrittenBy a0102 ReadBy a2403 
+@0047:000002     r0047: si   0o2       ; select I/O: unknown i/o device @@ReadBy a2414 a2431 
+@0050:000275     CONST_0o0275: .word 0o275     ; address of bit6count
+@0051:000305     CONST_0o0305: .word 0o305     ; address of bit6count_rem
+@0052:000001     CONST_1a: .word 0o1       ;  @@ReadBy a0702 a2356 a2360 a2362 a2364 a2366 a2370 a2372 a2374 a2764 a3053 a3060 a3117 a3151 a3154 a3225 a3233 a3243 a3270 a3301 a3451 a3504 a3534 
+@0053:000317     CONST_317: .word 0o317     ; start address of X_temp @@ReadBy a0471 a3333 a3465 a3520 
+@0054:177777     counter1: .word 0o3777    ; WrittenBy a2704 a2747 a2753 ReadBy a2747 
+@0055:000000     w0055: .word 0o0       ;  @@WrittenBy a2413 a2421 a2437 ReadBy a2413 a2415 
+@0056:000000     w0056: .word 0o0       ;  @@WrittenBy a2430 a2440 ReadBy a2430 a2432 
+
+@0057:000002     m:     .word 0o2       ; @@WrittenBy a0376 ReadBy a0404 a2763 a3153 a3261 
+
+@0060:000000     entryCounter: .word 0o0       ;  @@JumpedToBy a0145 WrittenBy a0455 a0466 a0661 ReadBy a0455 
+@0061:000004     numTemp: si   0o4       ; select I/O: Camera Index @@WrittenBy a0420 a0435 ReadBy a0432 i0441 
+@0062:000000     numPieces: .word 0o0       ;  @@WrittenBy a0422 a0431 a0443 ReadBy i0426 a0442 a0453 i0501 humanMove 
+
+@0063:000000            .word 0o0       ;  
+
+;  text message "Sorry. The computer has won the game."
+;  printed at 0o2471
+@0064:051071     		.word 0o051071 ; CR UC 
+@0065:012075            .word 0o012075 ; "S" LC
+@0066:060024            .word 0o060024 ; "or"  
+@0067:024052            .word 0o024052 ; "ry"  
+@0070:021010            .word 0o021010 ; ". " 
+@0071:071040     		.word 0o071040 ; UC "T" 
+@0072:075050            .word 0o075050 ; LC "h" 
+@0073:002010            .word 0o002010 ; "e "  
+@0074:034060            .word 0o034060 ; "co" 
+@0075:070054     		.word 0o070054 ; "mp" 
+@0076:016040            .word 0o016040 ; "ut" 
+@0077:002024            .word 0o002024 ; "er" 
+@0100:010050            .word 0o010050 ; " h"  
+@0101:006012            .word 0o006012 ; "as" 
+@0102:010046            .word 0o010046 ; " w" 
+@0103:060030            .word 0o060030 ; "on"  
+@0104:010040            .word 0o010040 ; " t" 
+@0105:050002            .word 0o050002 ; "he" 
+@0106:010064            .word 0o010064 ; " g" 
+@0107:006070            .word 0o006070 ; "am"
+@0110:002021            .word 0o002021 ; "e." 
+@0111:151077            .word 0o151077 ; CR null 
+
+; text message "Congratulations, you have won the game."
+; printed at 0o2454
+@0112:051020            .word 0o051020 ; CR change color
+@0113:071034            .word 0o071034 ; UC "C" 
+@0114:075060            .word 0o075060 ; LC "o" 
+@0115:030064            .word 0o030064 ; "ng" 
+@0116:024006            .word 0o024006 ; "ra" 
+@0117:040016            .word 0o040016 ; "tu" 
+@0120:044006            .word 0o044006 ; "la" 
+@0121:040014            .word 0o040014 ; "ti" 
+@0122:060030            .word 0o060030 ; "on"  
+@0123:012031            .word 0o012031 ; "s,"
+@0124:010052            .word 0o010052 ; " y"
+@0125:060016            .word 0o060016 ; "ou" 
+@0126:010050            .word 0o010050 ; " h" 
+@0127:006074            .word 0o006074 ; "av"
+@0130:002010            .word 0o002010 ; "e " 
+@0131:046060            .word 0o046060 ; "wo" 
+@0132:030010            .word 0o030010 ; "n " 
+@0133:040050            .word 0o040050 ; "th" 
+@0134:002010            .word 0o002010 ; "e " 
+@0135:064006            .word 0o064006 ; "ga" 
+@0136:070002            .word 0o070002 ; "me" 
+@0137:021020            .word 0o021020 ; "." change color
+@0140:151077            .word 0o151077 ; CR null
+
+; text message "Your move is illegal. Please try another move."
+; printed by 0o2451
+@0141:051071            .word 0o051071 ; CR UC
+@0142:052075            .word 0o052075 ; "Y" LC
+@0143:060016            .word 0o060016 ; "ou"  
+@0144:024010            .word 0o024010 ; "r " 
+@0145:070060            .word 0o070060 ; "mo"
+@0146:074002            .word 0o074002 ; "ve" 
+@0147:010014            .word 0o010014 ; " i" 
+@0150:012010            .word 0o012010 ; "s "  
+@0151:014044            .word 0o014044 ; "il" 
+@0152:044002            .word 0o044002 ; "le"  
+@0153:064006            .word 0o064006 ; "ga" 
+@0154:044021            .word 0o044021 ; "l."  
+@0155:010071            .word 0o010071 ; " " UC
+@0156:054075            .word 0o054075 ; "P" LC 
+@0157:044002            .word 0o044002 ; "le" 
+@0160:006012            .word 0o006012 ; "as"
+@0161:002010            .word 0o002010 ; "e "  
+@0162:040024            .word 0o040024 ; "tr" 
+@0163:052010            .word 0o052010 ; "y "
+@0164:006030            .word 0o006030 ; "an"  
+@0165:060040            .word 0o060040 ; "ot" 
+@0166:050002            .word 0o050002 ; "he"  
+@0167:024010            .word 0o024010 ; "r " 
+@0170:070660            .word 0o070660 ; "mo" 
+@0171:074002            .word 0o074002 ; "ve" 
+@0172:121051            .word 0o121051 ; "." CR 
+
+@0173:000000     needInitialCounts_flg: .word 0o0       ;  0 indicates that all starting counts have been entered 
+														;   @@WrittenBy a0377 a0461 a0655 ReadBy UABpressed a0377 
+														
+@0174:000000     humanMoveCounter: .word 0o0       ;  number of moves (take some matches from one pile) the human has made in this turn 
+													;      @@WrittenBy play a0462 i0660 a0676 ReadBy play a0403 a0674 
+													
+@0175:000000     w0175: .word 0o0       ;  @@WrittenBy a0465 
+@0176:000000     numberEntryIndex: .word 0o0       ;  index for entry of initial values @@WrittenBy a0357 a0464 a0657 a0703 ReadBy a0357 a0444 a0447 a0677 
+@0177:000001     need2readFF23_flg: .word 0o1       ; 0 indicates that FF2 and FF3 have been read in @@WrittenBy a0463 a0656 a2456 a2473 ReadBy readFF23 a2456 a2473 
+
+; variable storage for drawLine subroutine @2475
+@0200:000000     tempY: .word 0o0       ;  variable Y value used to plot points @@WrittenBy a2504 a2562 a2573 a2601 ReadBy dispLoop incY a2571 diag1 a2605 
+@0201:000000     tempX: .word 0o0       ;  variable X value used to plot points @@WrittenBy a2507 a2554 a2570 a2604 ReadBy a2536 incX diag0 a2602 
+@0202:000000     endY:  .word 0o0       ;  const ending Y val @@WrittenBy a2513 ReadBy a2540 a2563 a2574 a2606 
+@0203:000000     endX:  .word 0o0       ;  const ending X val @@WrittenBy a2520 ReadBy a2543 a2555 
+@0204:001217     delta: .word 0o1217    ;  amount to add to X and Y between points @@ReadBy a2553 a2561 a2567 a2572 a2600 a2603 
+@0205:000005            si   0o5       ; ?? neither read nor written 
+@0206:000000     diagFlag: .word 0o0       ;  const controls diagonal type @@WrittenBy a2526 ReadBy a2546 
+
+@0207:000012     CONST_10d: .word 0o12      ;  
+@0210:000011     CONST_9d:  .word 0o11      ;  
+@0211:000327     CONST_0o327: .word 0o327   ; address of A_tensDigit 
+@0212:000337     CONST_0o337: .word 0o337   ; address of A_onesDigit 
+@0213:000000     w0213: .word 0o0       ;  @@WrittenBy a1251 a1331 a1404 a1500 a1622 a1673 a1742 a2007 a2073 a2263 ReadBy a1255 a1335 a1410 a1504 a1626 a1677 a1746 a2013 a2077 a2267 
+@0214:000000     w0214: .word 0o0       ;  @@WrittenBy a1254 a1334 a1407 a1503 a1625 a1676 a1745 a2012 a2076 a2266 ReadBy a1265 a1345 a1424 a1525 a1636 a1717 a1760 a2030 a2127 a2301 
+@0215:003146     r0215: si   0o3146    ; select I/O: unknown i/o device @@ReadBy a1343 a1346 a1351 a1354 a1416 a1420 a1513 a1517 a1535 a1702 a1710 a1731 a2015 a2024 a2110 a2116 a2136 a2146 
+@0216:006314     r0216: .word 0o006314  ;  @@ReadBy a1507 a1522 a1630 a1705 a1714 a2103 a2123 a2142 
+@0217:011463     r0217: bi   i1463     ; block transfer in @@ReadBy a1531 a1724 a1752 a1755 a2272 a2275 
+@0220:014631     r0220: rd   0o631     ; read @@ReadBy a1271 a1413 a1431 a1633 a1641 a1765 a2020 a2035 a2306 
+@0221:020000            bo   w0000     ; block transfer out 
+@0222:023146     r0222: bo   result_ptr     ; block transfer out @@ReadBy a1261 a1340 
+@0223:131463     r0223: ao   i1463     ; add one @@ReadBy w2340 
+@0224:154631            slr  0o00631   ; shift left and roundoff 
+@0225:031463     r0225: sd   i1463     ; sum digits - XOR @@ReadBy a2462 a2466 
+@0226:054631            .word 0o054631	;    ; check 
+@0227:046314     r0227: td   w2314     ; transfer digits @@ReadBy dispNum 
+@0230:006314            .word 0o006314  ;  
+@0231:146314            mh   w2314     ; multiply and hold 
+@0232:106314            cs   w2314     ; clear and subtract 
+@0233:000010     CONST_0o10: .word 0o10      ; constant 0o10 = 8 decimal 
+@0234:000227     r0234: si   0o227     ; select I/O: unknown i/o device @@ReadBy a2407 a2424 a2441 
+@0235:000224     r0235: si   0o224     ; select I/O: unknown i/o device @@ReadBy a2426 
+@0236:000223     r0236: si   0o223     ; select I/O: unknown i/o device @@ReadBy a2443 
+@0237:000327     r0237: si   0o327     ; select I/O: Intervention and Activate Device @@ReadBy a2445 
+@0240:000317            si   0o317     ; select I/O: Intervention and Activate Device 
+@0241:000000     groupNum: .word 0o0       ;  @@WrittenBy a0412 ReadBy doHumanMove a0503 
+
+@0242:000006     nPlus1: .word 0o6       ; @@WrittenBy a0371 ReadBy a2715 
+@0243:000005     n:      .word 0o5       ; @@WrittenBy a0367 ReadBy a0514 a3311 
+@0244:000004     nMinus1: .word 0o4      ; @@WrittenBy a0374 
+
+; storage for the addresses of bitXcount_rems that are non-zero
+;  see 0o3030 for details
+@0245:000000     nonZeroBCaddr0: .word 0o0       ;  @@WrittenBy a3012 nz_bc_rem_ptr ReadBy r3046 nz_bc_addr_ptr1 nz_bc_addr_ptr2 nzbcr_ptr_ptr bcr_ptr_ptr 
+@0246:000000     nonZeroBCaddr1: .word 0o0       ;  @@WrittenBy a3013 ReadBy nz_bc_addr_ptr3 
+@0247:000000     nonZeroBCaddr2: .word 0o0       ;  @@WrittenBy a3014 
+@0250:000000     nonZeroBCaddr3: .word 0o0       ;  @@WrittenBy a3015 
+@0251:000000     nonZeroBCaddr4: .word 0o0       ;  @@WrittenBy a3016 
+@0252:000000     nonZeroBCaddr5: .word 0o0       ;  @@WrittenBy a3017 
+@0253:000000     nonZeroBCaddr6: .word 0o0       ;  @@WrittenBy a3020 
+@0254:000000     nonZeroBCaddr7: .word 0o0       ;  @@WrittenBy a3021 a3444 a3454 a3474 a3477 a3507 a3527 ReadBy a3445 a3461 a3471 a3500 a3514 a3524 
+
+; storage for the current count values for the lettered piles
+;  typically start at 0 but can be hard-coded if you like.
+@0255:000000     A_count: .word 0o0       ;  @@WrittenBy w3316 grp_ptr ReadBy i3314 takeJustOne 
+@0256:000000     B_count: .word 0o0       ;  
+@0257:000000     C_count: .word 0o0       ;  
+@0260:000000     D_count: .word 0o0       ;  
+@0261:000000     E_count: .word 0o0       ;  
+@0262:000000     F_count: .word 0o0       ;  
+@0263:000000     G_count: .word 0o0       ;  
+@0264:000000     H_count: .word 0o0       ;  
+
+; storage for remainders of X_counts/(n+1) in the machine's turn
+@0265:000000     A_np1_rem: .word 0o0       ;  @@WrittenBy flg_sav_ptr ReadBy nextGroup clr_flg_ptr group_pointer1 group_pointer2 
+@0266:000000     B_np1_rem: .word 0o0       ;  
+@0267:000000     C_np1_rem: .word 0o0       ;  
+@0270:000000     D_np1_rem: .word 0o0       ;  
+@0271:000000     E_np1_rem: .word 0o0       ;  
+@0272:000000     F_np1_rem: .word 0o0       ;  
+@0273:000000     G_np1_rem: .word 0o0       ;  
+@0274:000000     H_np1_rem: .word 0o0       ;  
+
+; storage for bit counts of remainders of X_counts/(n+1) in the machine's turn
+;  each is the total number of set bits in that position in all groups combined
+@0275:000000     bit6count: .word 0o0       ;  @@WrittenBy bitCount_ptr bitIsSet ReadBy bitIsSet 
+@0276:000000     bit5count: .word 0o0       ;  
+@0277:000000     bit4count: .word 0o0       ;  
+@0300:000000     bit3count: .word 0o0       ;  
+@0301:000000     bit2count: .word 0o0       ;  
+@0302:000000     bit1count: .word 0o0       ;  
+@0303:000000     bit0count: .word 0o0       ;  
+@0304:000000     bitn1count: .word 0o0       ;  @@WrittenBy a2762 
+
+; storage for remainders of bitXcounts/(m+1) in machine's turn
+@0305:000000     bit6count_rem: .word 0o0       ;  @@ReadBy i3030 
+@0306:000000     bit5count_rem: .word 0o0       ;  
+@0307:000000     bit4count_rem: .word 0o0       ;  
+@0310:000000     bit3count_rem: .word 0o0       ;  
+@0311:000000     bit2count_rem: .word 0o0       ;  
+@0312:000000     bit1count_rem: .word 0o0       ;  
+@0313:000000     bit0count_rem: .word 0o0       ;  
+@0314:000000     bitn1count_rem: .word 0o0       ;  not used - a spacer since longDiv
+												 ;  expects to process 8 numbers
+
+@0315:000000            .word 0o0       ;  
+@0316:000000            .word 0o0       ;  
+
+; storage for temporary working (?) values of the counts in each group
+;
+@0317:000000     A_temp: .word 0o0       ;  @@WrittenBy a0662 a3337 ReadBy i3310 w3315 
+@0320:000000     B_temp: .word 0o0       ;  @@WrittenBy a0663 a3340 
+@0321:000000     C_temp: .word 0o0       ;  @@WrittenBy a0664 a3341 
+@0322:000000     D_temp: .word 0o0       ;  @@WrittenBy a0665 a3342 
+@0323:000000     E_temp: .word 0o0       ;  @@WrittenBy a0666 a3343 
+@0324:000000     F_temp: .word 0o0       ;  @@WrittenBy a0667 a3344 
+@0325:000000     G_temp: .word 0o0       ;  @@WrittenBy a0670 a3345 
+@0326:000000     H_temp: .word 0o0       ;  @@WrittenBy a0671 a3346 
+
+; storage for the tens digits of the count of matches in each lettered pile
+; 
+@0327:000000     A_tensDigit: .word 0o0       ;  @@WrittenBy a0642 a2705 save_ptr ReadBy w2353 flag_loop_ptr xnpr_ptr_ptr 
+@0330:000000     B_tensDigit: .word 0o0       ;  @@WrittenBy a0643 a2706 
+@0331:000000     C_tensDigit: .word 0o0       ;  @@WrittenBy a0644 a2707 
+@0332:000000     D_tensDigit: .word 0o0       ;  @@WrittenBy a0645 a2710 
+@0333:000000     E_tensDigit: .word 0o0       ;  @@WrittenBy a0646 a2711 
+@0334:000000     F_tensDigit: .word 0o0       ;  @@WrittenBy a0647 a2712 
+@0335:000000     G_tensDigit: .word 0o0       ;  @@WrittenBy a0650 a2713 
+@0336:000000     H_tensDigit: .word 0o0       ;  @@WrittenBy a0651 a2714 
+
+; storage for the ones digits of the count of matches in each lettered pile
+;  read by the subroutine at 0o2325 to draw the appropriate numbers
+@0337:000000     A_onesDigit: .word 0o0       ;  @@WrittenBy a3002 result_ptr ReadBy bc_ptr 
+@0340:000000     B_onesDigit: .word 0o0       ;  @@WrittenBy a3003 
+@0341:000000     C_onesDigit: .word 0o0       ;  @@WrittenBy a3004 
+@0342:000000     D_onesDigit: .word 0o0       ;  @@WrittenBy a3005 
+@0343:000000     E_onesDigit: .word 0o0       ;  @@WrittenBy a3006 
+@0344:000000     F_onesDigit: .word 0o0       ;  @@WrittenBy a3007 
+@0345:000000     G_onesDigit: .word 0o0       ;  @@WrittenBy a3010 
+@0346:000000     H_onesDigit: .word 0o0       ;  @@WrittenBy a3011 
+
+@0347:000000     pieceCount: .word 0o0       ;  total number of pieces in all 8 groups
+											;  updated by countPieces
+											;  @@WrittenBy a2665 a2670 a3061 a3070 a3124 skip_ptr_save ReadBy i2666 i2700 a3025 a3351 skip_ptr_save 
+
+; ---- MAIN 'BUSINESS LOGIC' STARTS HERE --------
+@0350:000300     readInputs: si   0o300     ; select I/O: Activate Register 0 (Upper Activate Button)
+
+                        .exec auto_config_switches(cb)  ;  
+                        
+@0351:014000            rd   0o0       		; read in UAB 
+@0352:070354            cp   UABpressed     ; jump if MSbit set (button pressed) 
+@0353:074705            sp   drawLetters     ; otherwise, go around again in main display loop 
+
+				; the Upper Activate Button was pressed, so there's input to process
+				
+@0354:100173     UABpressed: ca   needInitialCounts_flg     ; see if we've set all the initial counts yet  
+@0355:114000            su   w0000     		; ==0? 
+@0356:070361            cp   readFF23     	; you need counts but first see if you need to read FF2 and FF3 first
+
+				; need to get one more initial count
+@0357:130176            ao   numberEntryIndex     ; add one 
+@0360:074410            sp   readMIRs     ;  
+
+				; need to read FF2 and FF3 first
+@0361:100177     readFF23: ca   need2readFF23_flg     ; check flag 
+@0362:114000            su   w0000     ; ==0? (0 => FFs have been read) 
+@0363:070401            cp   play     ; FFs have been read & initial counts entered
+
+				;  FFs have not been read so read them
+@0364:074653            sp   clearFlags     ; clear readFF23_flg (FFs have been read) 
+@0365:000010            si   0o10      ; load switch contents into FF regs 
+@0366:100002            ca   0o0002    ; get FF2 value (n = max # of matches to take)
+@0367:040243            ts   n     ;  
+@0370:110001            ad   CONST_1     ;  
+@0371:040242            ts   nPlus1     ;  
+@0372:114001            su   CONST_1     ;  
+@0373:114001            su   CONST_1     ;  
+@0374:040244            ts   nMinus1     ;  
+@0375:100003            ca   0o0003    ; get FF3 value (m = max # of groups to alter)
+@0376:040057            ts   m     ;  
+@0377:130173            ao   needInitialCounts_flg     ; set needInitialCounts_flg so next times thru loop will read MIRs 
+@0400:074705            sp   drawLetters     ; go around to main display loop 
+
+
+; ----- GAME-PLAYING LOGIC ------------
+;  first, the human makes a 'move' (removing some matches from one pile)
+@0401:130174     play: ao   humanMoveCounter     ; the human has  
+@0402:000004            si   0o4       ; select I/O: Camera Index [take screenshot]
+@0403:100174            ca   humanMoveCounter     ; see if human has made m moves yet 
+@0404:114057            su   m     ;  
+@0405:070410            cp   readMIRs     ; if not yet, get the human's next move 
+
+					; human has made all the moves they can, it's the machine's turn
+@0406:074653            sp   clearFlags     ;  
+@0407:076650            sp   machinesTurn     ; 
+
+@0410:000336     readMIRs: si   0o336     ; select I/O: LMIR (group number)
+@0411:014000            rd   0o0       ; read LMIR 
+@0412:040241            ts   groupNum     ; save value 
+@0413:114043            su   CONST_7     ; can't be > 7 (only 8 groups) 
+@0414:070416            cp   i0416     ; branch if OK so far 
+@0415:074673            sp   illegalMove     ; sub-program 
+
+; convert entered value for number of pieces to binary
+;  it's entered as two decimal digits in octal form like this:
+;  45 decimal would be 0o000405 or binary 0 000 000 100 000 101 (really 261 decimal)
+;  89 decimal would be 0o001011 or binary 0 000 001 000 001 001 (really 521 decimal)
+@0416:000337     i0416: si   0o337       ; select I/O: RMIR (number of pieces to start with or remove)
+@0417:014000            rd   0o0         ; read RMIR
+@0420:040061            ts   numTemp     ; save to temp
+@0421:160006            srr  0o00006     ; shift off 1's digit
+@0422:040062            ts   numPieces   ; save to temp 
+@0423:114210            su   CONST_9d    ; see if greater than 9 (illegal) 
+@0424:070426            cp   i0426       ; branch if OK so far 
+@0425:074673            sp   illegalMove ; notify if illegal 
+
+@0426:100062     i0426: ca   numPieces   ; clear and add @@JumpedToBy a0424 
+@0427:144207            mh   CONST_10d   ; process 10's digit 
+@0430:155017            slh  0o00017     ;  
+@0431:040062            ts   numPieces   ; save to temp 
+@0432:100061            ca   numTemp     ; get entered value 
+@0433:154011            slr  0o00011     ; remove 10's digit 
+@0434:160011            srr  0o00011     ;  
+@0435:040061            ts   numTemp     ; save to temp 
+@0436:114210            su   CONST_9d    ; see if greater than 9 (illegal) 
+@0437:070441            cp   i0441     	 ; branch if OK so far 
+@0440:074673            sp   illegalMove ; notify if illegal
+
+@0441:100061     i0441: ca   numTemp     ; combine 1's and 10x10's digit 
+@0442:110062            ad   numPieces   ;  
+@0443:040062            ts   numPieces   ; save 
+;  end of conversion code
+
+@0444:100176            ca   numberEntryIndex     ; if == 0, then done with entering numbers; 
+@0445:114000            su   w0000     			  ;  
+@0446:070513            cp   humanMove     ; so it's a human player move 
+
+						; if not a move, it's setting an initial count
+@0447:100176            ca   numberEntryIndex     ; clear and add 
+@0450:114001            su   CONST_1     ; numberEntryIndex is 1-indexed (0 => human player move) 
+@0451:110044            ad   CONST_255     ; start address of storage for group counts (if 0, points to A_count) 
+@0452:044454            td   w0454     ; set pointer to correct count location 
+@0453:100062            ca   numPieces     ; get value to store 
+@0454:040000     w0454: ts   w0000     ; save to A_count, etc 
+@0455:130060            ao   entryCounter     ; add one 
+@0456:114043            su   CONST_7     ; see if < 7 
+@0457:070705            cp   drawLetters     ; if so, you're not done entering initial values
+											 ; go back to main loop
+
+								; done entering initial values
+								; clear flags and counters
+@0460:100000            ca   w0000     ; load zero 
+@0461:040173            ts   needInitialCounts_flg     ;  
+@0462:040174            ts   humanMoveCounter     ;  
+@0463:040177            ts   need2readFF23_flg     ;  
+@0464:040176            ts   numberEntryIndex     ;  signal that we're done entering initial counts
+@0465:040175            ts   w0175     ; transfer to storage 
+@0466:040060            ts   entryCounter     ;  
+@0467:074705            sp   drawLetters     ; go back to main loop 
+
+@0470:100241     doHumanMove: ca   groupNum     ; index into X_temp (starts at 0o0317) 
+					.print "(0o0470) Do human move" ;
+@0471:110053            ad   CONST_317     ; start address of X_temp 
+@0472:044475            td   w0475     ; save to pointers 
+@0473:044502            td   w0502     ;  
+@0474:044510            td   w0510     ;  
+@0475:100000     w0475: ca   w0000     ; get X_temp 
+@0476:114000            su   w0000     ; check to be sure == 0 
+									   ; this is to prevent drawing from the same pile > 1x
+									   ; per turn. They start at 0 but are ≠ 0 once you make a move
+									   ; since the move is stored there. So if ≠ 0, a move has
+									   ; been made from that pile already 
+@0477:070501            cp   i0501     ; continue if == 0 
+@0500:074673            sp   illegalMove     ; otherwise something (?) went wrong 
+
+@0501:100062     i0501: ca   numPieces     ; get number to remove 
+@0502:040000     w0502: ts   w0000     ; save in X_temp 
+@0503:100241            ca   groupNum     ; get groupNum 
+@0504:110044            ad   CONST_255     ; offset to start of X_count 
+@0505:044507            td   w0507     ; save to pointers 
+@0506:044511            td   w0511     ;  
+@0507:100000     w0507: ca   w0000     ; get X_count 
+@0510:114000     w0510: su   w0000     ; subtract X_temp 
+@0511:040000     w0511: ts   w0000     ; save to X_count 
+@0512:074705            sp   drawLetters     ; all done, return to main loop 
+
+@0513:100062     humanMove: ca   numPieces     ; make sure this is not > n 
+@0514:114243            su   n     ;  
+@0515:070470            cp   doHumanMove     ; this is a legal move; process it
+@0516:074673            sp   illegalMove     ; moving too many pieces 
+
+; longDiv subroutine
+;   takes N+1 dividends starting at dividends (N is stored at 0o0043 and is always 7)
+;   they are then subjected to integer division by the divisor 
+;	stores the remainders starting at remainders
+;   stores the quotients starting at quotients
+;
+;   there are two uses for this:
+;    - to convert binary numbers (pieces in each group) to 2-digit decimal numbers
+;           the quotients are the 10's digits
+;           the remainders are the 1's digits
+;    - to perform modulo division when the machine is determining its next move
+; 
+;   uses counter0 as a counter which is zeroed when done
+;
+;   address				parameter
+;   longDiv + 0		sp longDiv [subroutine call] aka "caller"
+;	longDiv + 1		divisor
+;   longDiv + 2		dividends
+;	longDiv + 3		remainders
+;   longDiv + 4 	quotients
+;
+;  start by setting pointers
+@0517:050530     longDiv: ta   w0530     ; transfer address @@JumpedToBy prep4disp a2717 continue_ww 
+@0520:050533            ta   w0533     ; transfer address 
+@0521:050537            ta   w0537     ; transfer address 
+@0522:050552            ta   w0552     ; transfer address 
+@0523:050613            ta   retAddr     ; transfer address 
+@0524:130613            ao   retAddr     ; add one 
+@0525:130613            ao   retAddr     ; add one 
+@0526:130613            ao   retAddr     ; add one 
+@0527:130613            ao   retAddr     ; add one 
+@0530:100000     w0530: ca   w0000     ; get base 
+@0531:040620            ts   divisor     ; transfer to storage 
+
+@0532:130533            ao   w0533     ; point to dividends parameter
+@0533:100000     w0533: ca   w0000     ; get dividends parameter 
+@0534:044555            td   copyLoop     ; save in copy loop 
+
+@0535:130537            ao   w0537     ; point to onesDigits parameter 
+@0536:130537            ao   w0537     ;  
+@0537:100000     w0537: ca   w0000     ; get onesDigits parameter
+@0540:044556            td   w0556     ; save in copy loop
+@0541:044557            td   subDivisor     ;  
+@0542:044561            td   w0561     ;  
+@0543:044565            td   restoreRemainder     ; 
+@0544:044567            td   w0567     ;  
+@0545:044571            td   w0571     ;  
+@0546:044615            td   w0615     ; 
+
+@0547:130552            ao   w0552     ; point to quotients parameter 
+@0550:130552            ao   w0552     ;  
+@0551:130552            ao   w0552     ;  
+@0552:100000     w0552: ca   w0000     ; get quotients parameter 
+@0553:044563            td   w0563     ; save in copy loop 
+@0554:044616            td   w0616     ; save in copy loop
+
+;  long division loop
+;   copy dividend to remainder
+;   repeatedly subtract divisor and increment quotient
+@0555:100000     copyLoop: ca   w0000  ; get number from starting set 
+@0556:040000     w0556: ts   w0000     ; save to remainder 
+@0557:100000     subDivisor: ca   w0000   ; get working value 
+@0560:114620            su   divisor      ; 
+@0561:040000     w0561: ts   w0000     ; save to working value 
+@0562:070565            cp   restoreRemainder     ; if went too far, restore remainder 
+
+@0563:130000     w0563: ao   w0000     ; increment quotient 
+@0564:074557            sp   subDivisor     ; continue subtracting divisor 
+
+@0565:100000     restoreRemainder: ca   w0000 ; get working value 
+@0566:110620            ad   divisor      ; add back base since we went too far
+@0567:040000     w0567: ts   w0000     ; save working value 
+; test to see if remaining working value is exactly = divisor
+@0570:100620            ca   divisor      ; get divisor 
+@0571:114000     w0571: su   w0000     ; subtract working value 
+@0572:070614            cp   zeroRemainder  ; if equal, set remainder = 0 and add 1 to quotient 
+
+@0573:130555     nextNum: ao   copyLoop     ; increment all pointers 
+@0574:130556            ao   w0556     ;  
+@0575:130557            ao   subDivisor     ;  
+@0576:130561            ao   w0561     ;  
+@0577:130563            ao   w0563     ;  
+@0600:130565            ao   restoreRemainder     ;  
+@0601:130567            ao   w0567     ;  
+@0602:130571            ao   w0571     ;  
+@0603:130616            ao   w0616     ;  
+@0604:130615            ao   w0615     ;  
+
+@0605:130042            ao   counter0     ; increment counter 
+@0606:100042            ca   counter0     ; clear and add 
+@0607:114043            su   CONST_7     ; see if done 
+@0610:070555            cp   copyLoop     ; conditional program 
+
+@0611:100000            ca   w0000     ; zero out counter 
+@0612:040042            ts   counter0     ;  
+@0613:074000     retAddr: sp   w0000     ; return 
+
+;  the remainder is exactly equal to the divisor, so add one to quotient  and zero remainder
+@0614:100000     zeroRemainder: ca   w0000  ; get zero 
+@0615:040000     w0615: ts   w0000     ; save to remainder 
+@0616:130000     w0616: ao   w0000     ; add one to quotient 
+@0617:074573            sp   nextNum     ; next number to divide 
+
+@0620:000000     divisor: .word 0o0       ;  divisor (set at start of routine)
+; ---- end of longDiv -------
+
+; print a null (0o077) terminated string to the Printer
+;   characters are encoded 2 per word; in binary: 
+;    0 aaa aaa 000 bbb bbb where aaa aaa is the first character and bbb bbb the second
+;    terminated with a 1 in the most sig bit and last character is null (0o77) if needed to fill the 2nd char
+;    for example: 0o034060 would print 34 "c" and 60 "o"
+;       and a terminator would look like: 0o151077 "CR" "null"
+;
+; 	address			parameter
+;	print + 0		sp print [subroutine call] aka "caller"
+;	print + 1		address of first character pair
+@0621:050624     print: ta   setWordPtr     ; save address of string start 
+@0622:050640            ta   printRet     ; save return address 
+@0623:000225            si   0o225     ; select I/O: Printer 
+@0624:100000     setWordPtr: ca   w0000     ; get starting address 
+@0625:044626            td   getWord     ; set pointer  
+@0626:100000     getWord: ca   w0000     ; get word to print 
+@0627:171001            clh  0o00001   ; shift first character into MS bits 
+@0630:024000            rc   0o0       ; print first character 
+@0631:171011            clh  0o00011   ; shift 2nd character into MS bits 
+@0632:024000            rc   0o0       ; print 2nd character 
+@0633:171026            clh  0o00026   ; shift all the way back to start 
+@0634:070637            cp   endOfString     ;  you're done if MS bit is set
+
+@0635:130626            ao   getWord     ; otherwise, increment pointer 
+@0636:074626            sp   getWord     ; get next word 
+
+@0637:130640     endOfString: ao   printRet     ; increment return address to correct location 
+@0640:074000     printRet: sp   w0000     ; return
+; --------- end of print subroutine -------- 
+
+; set all the 10's digits of the count displays = 0
+;  this is because the 10's digits are calculated by incrementing them
+;  so they need to start from zero
+@0641:100000     zero10sDigits: ca   w0000     ; clear and add @@JumpedToBy a1237 
+@0642:040327            ts   A_tensDigit     ; transfer to storage 
+@0643:040330            ts   B_tensDigit     ; transfer to storage 
+@0644:040331            ts   C_tensDigit     ; transfer to storage 
+@0645:040332            ts   D_tensDigit     ; transfer to storage 
+@0646:040333            ts   E_tensDigit     ; transfer to storage 
+@0647:040334            ts   F_tensDigit     ; transfer to storage 
+@0650:040335            ts   G_tensDigit     ; transfer to storage 
+@0651:040336            ts   H_tensDigit     ; transfer to storage 
+@0652:075240            sp   prep4disp     ; sub-program 
+
+@0653:050672     clearFlags: ta   w0672     ; transfer address @@JumpedToBy a0364 a0406 
+@0654:100000            ca   w0000     ; clear and add 
+@0655:040173            ts   needInitialCounts_flg     ; transfer to storage 
+@0656:040177            ts   need2readFF23_flg     ; transfer to storage 
+@0657:040176            ts   numberEntryIndex     ; transfer to storage 
+@0660:040174     i0660: ts   humanMoveCounter     ; transfer to storage @@JumpedToBy a0170 
+@0661:040060            ts   entryCounter     ; transfer to storage 
+@0662:040317            ts   A_temp     ; transfer to storage 
+@0663:040320            ts   B_temp     ; transfer to storage 
+@0664:040321            ts   C_temp     ; transfer to storage 
+@0665:040322            ts   D_temp     ; transfer to storage 
+@0666:040323            ts   E_temp     ; transfer to storage 
+@0667:040324            ts   F_temp     ; transfer to storage 
+@0670:040325            ts   G_temp     ; transfer to storage 
+@0671:040326            ts   H_temp     ; transfer to storage 
+@0672:074000     w0672: sp   w0000     ; sub-program @@WrittenBy clearFlags 
+
+@0673:076450     illegalMove: sp   printIllMo     ; print "illegal move" string  
+@0674:100174            ca   humanMoveCounter     ; restore counter to previous value 
+@0675:114001            su   CONST_1     ;  
+@0676:040174            ts   humanMoveCounter     ;  
+@0677:100176            ca   numberEntryIndex     ; restore to previous value 
+@0700:114000            su   w0000     ; but not if it would go negative 
+@0701:070705            cp   drawLetters     ; go back to main loop 
+
+@0702:114052            su   CONST_1a     ; subtract 
+@0703:040176            ts   numberEntryIndex     ;  
+@0704:074705            sp   drawLetters     ; go back to main loop 
+
+; PROGRAM STARTS HERE AT 0705
+; 		DRAW THE LETTERS
+;			Start with "A"
+@0705:076475     drawLetters: sp   drawLine     ; sub-program @@JumpedToBy a0353 a0400 a0457 a0467 a0512 a0701 a0704 a2457 a2474 a3354 a3551 
+						; draw vertical line from (-921,614) to (-921,921) - left vertical of "A"
+						; drawLine params follow
+						; draw left vertical of "A"
+@0706:046314            .word 0o046314 ; starting Y (+614)
+@0707:106314            .word 0o106314 ; starting X (-921)
+@0710:071463            .word 0o071463 ; ending Y (921)
+@0711:000000            .word 0o0      ; ending X - vertical line
+@0712:000000            .word 0o0      ; diagFlag
+									   ; returns to 0713	
+						.print "(0o0713) A=%d B=%d C=%d D=%d E=%d F=%d G=%d H=%d",A_count,0o0256,0o0257,0o0260,0o0261,0o0262,0o0263,0o0264;	  
+						 
+@0713:076475	sp drawLine ; sub-program
+					    ; params to follow
+					    ; draw top horizontal of "A"
+@0714:071463            .word 0o071463 ; starting Y (+921) 
+@0715:106314            .word 0o106314 ; starting X (-921) 
+@0716:000000            .word 0o0      ; ending Y - horizontal line
+@0717:123146            .word 0o123146 ; ending X (-716)  
+@0720:000000            .word 0o0      ; diagFlag
+@0721:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; draw middle horizontal of "A"
+@0722:057777            .word 0o057777 ; starting Y (767) 
+@0723:106314            .word 0o106314 ; starting X (-921) 
+@0724:000000            .word 0o0      ; ending Y - horizontal line  
+@0725:123146            .word 0o123146 ; ending X (-716) 
+@0726:000000            .word 0o0      ; diagFlag
+
+@0727:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; draw right vertical of "A"
+@0730:046314            .word 0o046314 ; starting Y (+614) 
+@0731:123146            .word 0o123146 ; starting X (-716) 
+@0732:071463            .word 0o071463 ; ending Y (921) 
+@0733:000000            .word 0o0      ; ending X - vertical line 
+@0734:000000            .word 0o0      ; diagFlag
+
+;			Write "B"
+@0735:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; left vertical of "B"
+@0736:006314            .word 0o006314 ; starting Y (+102)
+@0737:106314            .word 0o106314 ; starting X (-921)
+@0740:031463            .word 0o031463 ; ending Y (409)
+@0741:000000            .word 0o0      ; ending X - vertical line
+@0742:000000            .word 0o0      ; diagFlag
+
+@0743:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; top horizontal of "B"
+@0744:031463            .word 0o031463 ; starting Y (409) 
+@0745:106314            .word 0o106314 ; starting X (-921) 
+@0746:000000            .word 0o0      ; ending Y - horizontal line
+@0747:123146            .word 0o123146 ; ending X (-716) 
+@0750:000000            .word 0o0      ; diagFlag
+  
+@0751:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; middle horizontal of "B"
+@0752:020000            .word 0o020000 ; starting Y (256)  
+@0753:106314            .word 0o106314 ; starting X (-921)
+@0754:000000            .word 0o0      ; ending Y - horizontal line
+@0755:120000            .word 0o120000 ; ending X (-767)  
+@0756:000000            .word 0o0      ; diagFlag
+ 
+@0757:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; bottom horizontal of "B"
+@0760:006314            .word 0o006314 ; starting Y (+102)
+@0761:106314            .word 0o106314 ; starting X (-921) 
+@0762:000000            .word 0o0      ; ending Y - horizontal line
+@0763:123146            .word 0o123146 ; ending X (-716)  
+@0764:000000            .word 0o0      ; diagFlag
+ 
+@0765:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; lower right vertical on "B"
+@0766:006314            .word 0o006314 ; starting Y (+102)
+@0767:123146            .word 0o123146 ; starting X (-716) 
+@0770:014631            .word 0o014631 ; ending Y (+204) 
+@0771:000000            .word 0o0      ; ending X - vertical line
+@0772:000000            .word 0o0      ; diagFlag
+
+@0773:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; upper right vertical on "B"
+@0774:023146            .word 0o023146 ; starting Y (+307)  
+@0775:123146            .word 0o123146 ; starting X (-716)  
+@0776:031463            .word 0o031463 ; ending Y (+409)  
+@0777:000000            .word 0o0      ; ending X - vertical line 
+@1000:000000            .word 0o0      ; diagFlag
+ 
+@1001:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; upper diagonal in "B"
+@1002:020000            .word 0o020000 ; starting Y (256) 
+@1003:120000            .word 0o120000 ; starting X (-767)  
+@1004:023146            .word 0o023146 ; ending Y (+307) 
+@1005:123146            .word 0o123146 ; ending X (-716) 
+@1006:000000            .word 0o0      ; diagFlag: up and to the right
+
+@1007:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; lower diagonal of "B"
+@1010:014631     		.word 0o014631 ; starting Y (+204) 
+@1011:123146            .word 0o123146 ; starting X (-716) 
+@1012:020000            .word 0o020000 ; ending Y (256) 
+@1013:120000            .word 0o120000 ; ending X (-767)  
+@1014:040000            .word 0o040000 ; diagFlag: up and to the left 
+
+;			Write "C"
+@1015:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; vertical of "C"
+@1016:146314            .word 0o146314 ; starting Y (-409) 
+@1017:106314            .word 0o106314 ; starting X (-921) 
+@1020:171463     		.word 0o171463 ; ending Y (-102) 
+@1021:000000            .word 0o0      ; ending X - vertical line 
+@1022:000000            .word 0o0      ; diagFlag 
+  
+@1023:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; upper horizontal of "C"
+@1024:171463            .word 0o171463 ; starting Y (-102) 
+@1025:106314            .word 0o106314 ; starting X (-921) 
+@1026:000000            .word 0o0      ; ending Y - horizontal line 
+@1027:123146            .word 0o123146 ; ending X (-716) 
+@1030:000000            .word 0o0      ; diagFlag
+
+@1031:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; lower horizontal of "C"
+@1032:146314            .word 0o146314 ; starting Y (-409)  
+@1033:106314            .word 0o106314 ; starting X (-921)  
+@1034:000000     		.word 0o0	   ; ending Y - horizontal line 
+@1035:123146            .word 0o123146 ; ending X (-716) 
+@1036:000000            .word 0o0      ; diagFlag
+
+;			Write "D"
+@1037:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; left vertical of "D"
+@1040:106314     		.word 0o106314 ; starting Y (-921)    
+@1041:106314            .word 0o106314 ; starting X (-921)
+@1042:131463            .word 0o131463 ; ending Y (-614) 
+@1043:000000            .word 0o0      ; ending X - vertical line
+@1044:000000            .word 0o0      ; diagFlag
+
+@1045:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; right vertical of "D"
+@1046:111463            .word 0o111463 ; starting Y (-870) 
+@1047:123146            .word 0o123146 ; starting X (-716) 
+@1050:126314     		.word 0o126314 ; ending Y (-665) 
+@1051:000000    		.word 0o0      ; ending X - vertical line 
+@1052:000000            .word 0o0      ; diagFlag 
+
+@1053:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; top horizontal of "D"
+@1054:131463            .word 0o131463 ; starting Y (-614)
+@1055:106314            .word 0o106314 ; starting X (-921) 
+@1056:000000            .word 0o0      ; ending Y - horizontal line 
+@1057:120000            .word 0o120000 ; ending X (-767) 
+@1060:000000     		.word 0o0      ; diagFlag
+ 
+@1061:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; bottom horizontal of "D"
+@1062:106314            .word 0o106314 ; starting Y (-921) 
+@1063:106314            .word 0o106314 ; starting X (-921)
+@1064:000000            .word 0o0      ; ending Y - horizontal line
+@1065:120000            cm   w0000     ; ending X (-767) 
+@1066:000000            .word 0o0      ; diagFlag
+
+@1067:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; bottom diagonal of "D"
+@1070:106314            .word 0o106314 ; starting Y (-921)
+@1071:120000     		.word 0o120000 ; starting X (-767) 
+@1072:111463            .word 0o111463 ; ending Y (-870) 
+@1073:123146            .word 0o123146 ; ending X (-716)  
+@1074:000000            .word 0o0      ; diagFlag = up and to the right
+
+@1075:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; top diagonal of "D"
+@1076:126314            .word 0o126314 ; starting Y (-655) 
+@1077:123146     		.word 0o123146 ; starting X (-716) 
+@1100:131463            .word 0o131463 ; ending Y (-614) 
+@1101:120000            .word 0o120000 ; ending X (-767)
+@1102:040000            .word 0o040000 ; diagFlag = up and to the left 
+
+;			Draw "E"
+@1103:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; left vertical of "E"
+@1104:046314            .word 0o046314 ; starting Y (+614)
+@1105:006314            .word 0o006314 ; starting X (+102)
+@1106:071463            .word 0o071463 ; ending Y (+921) 
+@1107:000000            .word 0o0      ; ending X - vertical line
+@1110:000000            .word 0o0      ; diagFlag
+
+@1111:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; top horizontal of "E"
+@1112:071463            .word 0o071463 ; starting Y (+921) 
+@1113:006314            .word 0o006314 ; starting X (+102)
+@1114:000000            .word 0o0      ; ending Y - horizontal line 
+@1115:023146            .word 0o023146 ; ending X (+307) 
+@1116:000000            .word 0o0      ; diagFlag
+
+@1117:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; middle horizontal of "E"
+@1120:057777            .word 0o057777 ; starting Y (+767)
+@1121:006314            .word 0o006314 ; starting X (+102)
+@1122:000000            .word 0o0      ; ending Y - horizontal line 
+@1123:023146            .word 0o023146 ; ending X (+307) 
+@1124:000000            .word 0o0      ; diagFlag
+
+@1125:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; bottom horizontal of "E"
+@1126:046314            .word 0o046314 ; starting Y (+614) 
+@1127:006314            .word 0o006314 ; starting X (+102)
+@1130:000000            .word 0o0      ; ending Y - horizontal line
+@1131:023146            .word 0o023146 ; ending X (+307) 
+@1132:000000            .word 0o0      ; diagFlag
+
+;			Draw "F"
+@1133:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; left vertical of "F"
+@1134:006314            .word 0o006314 ; starting Y (+102)
+@1135:006314            .word 0o006314 ; starting X (+102)
+@1136:031463            .word 0o031463 ; ending Y (+409) 
+@1137:000000            .word 0o0      ; ending X - vertical line 
+@1140:000000            .word 0o0      ; diagFlag
+
+@1141:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; upper horizontal of "F"
+@1142:031463            .word 0o031463 ; starting Y (+409)
+@1143:006314            .word 0o006314 ; starting X (+102)
+@1144:000000            .word 0o0      ; ending Y - horizontal line
+@1145:023146            .word 0o023146 ; ending X (+307)
+@1146:000000            .word 0o0      ; diagFlag
+
+@1147:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; lower horizontal of "F"
+@1150:020000            .word 0o020000 ; starting Y (+256) 
+@1151:006314            .word 0o006314 ; starting X (+102)  
+@1152:000000            .word 0o0      ; ending Y - horizontal line
+@1153:023146            .word 0o023146 ; ending X (+307)  
+@1154:000000            .word 0o0      ; diagFlag
+
+; 			Draw "G"
+@1155:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; left vertical of "G"
+@1156:146314            .word 0o146314 ; starting Y (-409) 
+@1157:006314            .word 0o006314 ; starting X (+102)
+@1160:171463            .word 0o171463 ; ending Y (-102)
+@1161:000000            .word 0o0      ; ending X - vertical line 
+@1162:000000            .word 0o0      ; diagFlag 
+
+@1163:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; right vertical of "G"
+@1164:146314            .word 0o146314 ; starting Y (-409)
+@1165:023146            .word 0o023146 ; starting X (+307)
+@1166:157777            .word 0o157777 ; ending Y (-256)  
+@1167:000000            .word 0o0      ; ending X - vertical line
+@1170:000000            .word 0o0      ; diagFlag
+ 
+@1171:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; top horizontal of "G"
+@1172:171463            .word 0o171463 ; starting Y (-102)  
+@1173:006314            .word 0o006314 ; starting X (+102) 
+@1174:000000            .word 0o0      ; ending Y - horizontal line
+@1175:023146            .word 0o023146 ; ending X (+307) 
+@1176:000000            .word 0o0      ; diagFlag
+
+@1177:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; middle horizontal of "G"
+@1200:157777            .word 0o157777 ; starting Y (-256)
+@1201:014631            .word 0o014631 ; starting X (+204) 
+@1202:000000            .word 0o0      ; ending Y - horizontal line
+@1203:023146            .word 0o023146 ; ending X (+307) 
+@1204:000000            .word 0o0      ; diagFlag
+
+@1205:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; bottom horizontal of "G"
+@1206:146314            .word 0o146314 ; starting Y (-409) 
+@1207:006314            .word 0o006314 ; starting X (+102) 
+@1210:000000            .word 0o0      ; ending Y - horizontal line
+@1211:023146            .word 0o023146 ; ending X (+307)
+@1212:000000            .word 0o0      ; diagFlag
+ 
+;			Draw "H"
+@1213:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; left vertical of "H"
+@1214:106314            .word 0o106314 ; starting Y (-921) 
+@1215:006314            .word 0o006314 ; starting X (+102)
+@1216:131463            .word 0o131463 ; ending Y (-614) 
+@1217:000000            .word 0o0      ; ending X - vertical line 
+@1220:000000            .word 0o0      ; diagFlag
+
+@1221:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; right vertical "H"
+@1222:106314            .word 0o106314 ; starting Y (-921) 
+@1223:023146            .word 0o023146 ; starting X (+307) 
+@1224:131463            .word 0o131463 ; ending Y (-614)  
+@1225:000000            .word 0o0      ; ending X - vertical line
+@1226:000000            .word 0o0      ; diagFlag
+
+@1227:076475            sp   drawLine  ; sub-program 
+									   ; params to follow
+									   ; horizontal of "H"
+@1230:120000            .word 0o120000 ; starting Y (-767) 
+@1231:006314            .word 0o006314 ; starting X (+102) 
+@1232:000000            .word 0o0      ; ending Y - horizontal line
+@1233:023146            .word 0o023146 ; ending X (+307)
+@1234:000000            .word 0o0      ; diagFlag
+@1235:100207            ca   CONST_10d     ; clear and add (constant 0o12)
+@1236:041241            ts   base10div     ; save as divisor param for call to longDiv 
+@1237:074641            sp   zero10sDigits     ; sub-program 
+; -------- END OF DRAW A B C D E F G CODE ------------------
+
+@1240:074517     prep4disp: sp   longDiv ; convert octal counts in A_count thru H_count
+									     ; to two-digit decimal numbers
+@1241:000000     base10div: .word 0o0       ;  parameter: base (0o012) 
+@1242:000255            .word 0o255     ; dividends = address of A_count 
+@1243:000337            .word 0o337     ; remainders (1's digits) = address of A_onesDigit
+@1244:000327            .word 0o327     ; quotients (10's digits) = address of A_tensDigit
+@1245:076325            sp   dispNum     ; display the numbers 
+
+; ------- NUMBER DRAWING CODE -----------------
+@1246:051250     draw0: ta   w1250     ; transfer address @@JumpedToBy place0 
+@1247:051253            ta   w1253     ; transfer address 
+@1250:100000     w1250: ca   w0000     ; clear and add @@WrittenBy draw0 
+@1251:040213            ts   w0213     ; transfer to storage 
+@1252:131253            ao   w1253     ; add one 
+@1253:100000     w1253: ca   w0000     ; clear and add @@WrittenBy a1247 a1252 ReadBy a1252 
+@1254:040214            ts   w0214     ; transfer to storage 
+@1255:100213            ca   w0213     ; clear and add 
+@1256:041276            ts   w1276     ; transfer to storage 
+@1257:041304            ts   w1304     ; transfer to storage 
+@1260:041312            ts   w1312     ; transfer to storage 
+@1261:110222            ad   r0222     ; add 
+@1262:041300            ts   w1300     ; transfer to storage 
+@1263:041306            ts   w1306     ; transfer to storage 
+@1264:041320            ts   w1320     ; transfer to storage 
+@1265:100214            ca   w0214     ; clear and add 
+@1266:041277            ts   w1277     ; transfer to storage 
+@1267:041313            ts   w1313     ; transfer to storage 
+@1270:041321            ts   w1321     ; transfer to storage 
+@1271:110220            ad   r0220     ; add 
+@1272:041305            ts   w1305     ; transfer to storage 
+@1273:041315            ts   w1315     ; transfer to storage 
+@1274:041323            ts   w1323     ; transfer to storage 
+@1275:076475            sp   drawLine     ; sub-program 
+@1276:000000     w1276: .word 0o0       ;  @@WrittenBy a1256 
+@1277:000000     w1277: .word 0o0       ;  @@WrittenBy a1266 
+@1300:000000     w1300: .word 0o0       ;  @@WrittenBy a1262 
+@1301:000000            .word 0o0       ;  
+@1302:000000            .word 0o0       ;  
+@1303:076475            sp   drawLine     ; sub-program 
+@1304:000000     w1304: .word 0o0       ;  @@WrittenBy a1257 
+@1305:000000     w1305: .word 0o0       ;  @@WrittenBy a1272 
+@1306:000000     w1306: .word 0o0       ;  @@WrittenBy a1263 
+@1307:000000            .word 0o0       ;  
+@1310:000000            .word 0o0       ;  
+@1311:076475            sp   drawLine     ; sub-program 
+@1312:000000     w1312: .word 0o0       ;  @@WrittenBy a1260 
+@1313:000000     w1313: .word 0o0       ;  @@WrittenBy a1267 
+@1314:000000            .word 0o0       ;  
+@1315:000000     w1315: .word 0o0       ;  @@WrittenBy a1273 
+@1316:000000            .word 0o0       ;  
+@1317:076475            sp   drawLine     ; sub-program 
+@1320:000000     w1320: .word 0o0       ;  @@WrittenBy a1264 
+@1321:000000     w1321: .word 0o0       ;  @@WrittenBy a1270 
+@1322:000000            .word 0o0       ;  
+@1323:000000     w1323: .word 0o0       ;  @@WrittenBy a1274 
+@1324:000000            .word 0o0       ;  
+@1325:076377            sp   i2377     ; sub-program 
+
+@1326:051330     draw1: ta   w1330     ; transfer address @@JumpedToBy place1 
+@1327:051333            ta   w1333     ; transfer address 
+@1330:100000     w1330: ca   w0000     ; clear and add @@WrittenBy draw1 
+@1331:040213            ts   w0213     ; transfer to storage 
+@1332:131333            ao   w1333     ; add one 
+@1333:100000     w1333: ca   w0000     ; clear and add @@WrittenBy a1327 a1332 ReadBy a1332 
+@1334:040214            ts   w0214     ; transfer to storage 
+@1335:100213            ca   w0213     ; clear and add 
+@1336:041357            ts   w1357     ; transfer to storage 
+@1337:041365            ts   w1365     ; transfer to storage 
+@1340:110222            ad   r0222     ; add 
+@1341:041361            ts   w1361     ; transfer to storage 
+@1342:041375            ts   w1375     ; transfer to storage 
+@1343:114215            su   r0215     ; subtract 
+@1344:041373            ts   w1373     ; transfer to storage 
+@1345:100214            ca   w0214     ; clear and add 
+@1346:110215            ad   r0215     ; add 
+@1347:041366            ts   w1366     ; transfer to storage 
+@1350:041374            ts   w1374     ; transfer to storage 
+@1351:110215            ad   r0215     ; add 
+@1352:041360            ts   w1360     ; transfer to storage 
+@1353:041376            ts   w1376     ; transfer to storage 
+@1354:110215            ad   r0215     ; add 
+@1355:041370            ts   w1370     ; transfer to storage 
+@1356:076475            sp   drawLine     ; sub-program 
+@1357:000000     w1357: .word 0o0       ;  @@WrittenBy a1336 
+@1360:000000     w1360: .word 0o0       ;  @@WrittenBy a1352 
+@1361:000000     w1361: .word 0o0       ;  @@WrittenBy a1341 
+@1362:000000            .word 0o0       ;  
+@1363:000000            .word 0o0       ;  
+@1364:076475            sp   drawLine     ; sub-program 
+@1365:000000     w1365: .word 0o0       ;  @@WrittenBy a1337 
+@1366:000000     w1366: .word 0o0       ;  @@WrittenBy a1347 
+@1367:000000            .word 0o0       ;  
+@1370:000000     w1370: .word 0o0       ;  @@WrittenBy a1355 
+@1371:000000            .word 0o0       ;  
+@1372:076475            sp   drawLine     ; sub-program 
+@1373:000000     w1373: .word 0o0       ;  @@WrittenBy a1344 
+@1374:000000     w1374: .word 0o0       ;  @@WrittenBy a1350 
+@1375:000000     w1375: .word 0o0       ;  @@WrittenBy a1342 
+@1376:000000     w1376: .word 0o0       ;  @@WrittenBy a1353 
+@1377:000000            .word 0o0       ;  
+@1400:076377            sp   i2377     ; sub-program 
+
+@1401:051403     draw2: ta   w1403     ; transfer address @@JumpedToBy place2 
+@1402:051406            ta   w1406     ; transfer address 
+@1403:100000     w1403: ca   w0000     ; clear and add @@WrittenBy draw2 
+@1404:040213            ts   w0213     ; transfer to storage 
+@1405:131406            ao   w1406     ; add one 
+@1406:100000     w1406: ca   w0000     ; clear and add @@WrittenBy a1402 a1405 ReadBy a1405 
+@1407:040214            ts   w0214     ; transfer to storage 
+@1410:100213            ca   w0213     ; clear and add 
+@1411:041461            ts   w1461     ; transfer to storage 
+@1412:041467            ts   w1467     ; transfer to storage 
+@1413:110220            ad   r0220     ; add 
+@1414:041445            ts   w1445     ; transfer to storage 
+@1415:041471            ts   w1471     ; transfer to storage 
+@1416:110215            ad   r0215     ; add 
+@1417:041437            ts   w1437     ; transfer to storage 
+@1420:110215            ad   r0215     ; add 
+@1421:041441            ts   w1441     ; transfer to storage 
+@1422:041447            ts   w1447     ; transfer to storage 
+@1423:041453            ts   w1453     ; transfer to storage 
+@1424:100214            ca   w0214     ; clear and add 
+@1425:041440            ts   w1440     ; transfer to storage 
+@1426:041454            ts   w1454     ; transfer to storage 
+@1427:041462            ts   w1462     ; transfer to storage 
+@1430:041470            ts   w1470     ; transfer to storage 
+@1431:110220            ad   r0220     ; add 
+@1432:041456            ts   w1456     ; transfer to storage 
+@1433:041464            ts   w1464     ; transfer to storage 
+@1434:041472            ts   w1472     ; transfer to storage 
+@1435:041446            ts   w1446     ; transfer to storage 
+@1436:076475            sp   drawLine     ; sub-program 
+@1437:000000     w1437: .word 0o0       ;  @@WrittenBy a1417 
+@1440:000000     w1440: .word 0o0       ;  @@WrittenBy a1425 
+@1441:000000     w1441: .word 0o0       ;  @@WrittenBy a1421 
+@1442:000000            .word 0o0       ;  
+@1443:000000            .word 0o0       ;  
+@1444:076475            sp   drawLine     ; sub-program 
+@1445:000000     w1445: .word 0o0       ;  @@WrittenBy a1414 
+@1446:000000     w1446: .word 0o0       ;  @@WrittenBy a1435 
+@1447:000000     w1447: .word 0o0       ;  @@WrittenBy a1422 
+@1450:000000            .word 0o0       ;  
+@1451:000000            .word 0o0       ;  
+@1452:076475            sp   drawLine     ; sub-program 
+@1453:000000     w1453: .word 0o0       ;  @@WrittenBy a1423 
+@1454:000000     w1454: .word 0o0       ;  @@WrittenBy a1426 
+@1455:000000            .word 0o0       ;  
+@1456:000000     w1456: .word 0o0       ;  @@WrittenBy a1432 
+@1457:000000            .word 0o0       ;  
+@1460:076475            sp   drawLine     ; sub-program 
+@1461:000000     w1461: .word 0o0       ;  @@WrittenBy a1411 
+@1462:000000     w1462: .word 0o0       ;  @@WrittenBy a1427 
+@1463:000000     i1463: .word 0o0       ;  @@JumpedToBy a0710 a0714 a0732 a1106 a1112 WrittenBy r0217 r0223 a1042 a1054 a1100 a1216 a1224 ReadBy r0223 r0225 a0740 a0744 a0776 a1042 a1046 a1054 a1072 a1100 a1136 a1142 a1216 a1224 
+@1464:000000     w1464: .word 0o0       ;  @@WrittenBy a1433 
+@1465:000000            .word 0o0       ;  
+@1466:076475            sp   drawLine     ; sub-program 
+@1467:000000     w1467: .word 0o0       ;  @@WrittenBy a1412 
+@1470:000000     w1470: .word 0o0       ;  @@WrittenBy a1430 
+@1471:000000     w1471: .word 0o0       ;  @@WrittenBy a1415 
+@1472:000000     w1472: .word 0o0       ;  @@WrittenBy a1434 
+@1473:000000            .word 0o0       ;  
+@1474:076377            sp   i2377     ; sub-program 
+
+@1475:051477     draw3: ta   w1477     ; transfer address @@JumpedToBy place3 
+@1476:051502            ta   w1502     ; transfer address 
+@1477:100000     w1477: ca   w0000     ; clear and add @@WrittenBy draw3 
+@1500:040213            ts   w0213     ; transfer to storage 
+@1501:131502            ao   w1502     ; add one 
+@1502:100000     w1502: ca   w0000     ; clear and add @@WrittenBy a1476 a1501 ReadBy a1501 
+@1503:040214            ts   w0214     ; transfer to storage 
+@1504:100213            ca   w0213     ; clear and add 
+@1505:041545            ts   w1545     ; transfer to storage 
+@1506:041567            ts   w1567     ; transfer to storage 
+@1507:110216            ad   r0216     ; add 
+@1510:041571            ts   w1571     ; transfer to storage 
+@1511:041611            ts   w1611     ; transfer to storage 
+@1512:041571            ts   w1571     ; transfer to storage 
+@1513:110215            ad   r0215     ; add 
+@1514:041553            ts   w1553     ; transfer to storage 
+@1515:041603            ts   w1603     ; transfer to storage 
+@1516:041613            ts   w1613     ; transfer to storage 
+@1517:110215            ad   r0215     ; add 
+@1520:041575            ts   w1575     ; transfer to storage 
+@1521:041605            ts   w1605     ; transfer to storage 
+@1522:110216            ad   r0216     ; add 
+@1523:041561            ts   w1561     ; transfer to storage 
+@1524:041577            ts   w1577     ; transfer to storage 
+@1525:100214            ca   w0214     ; clear and add 
+@1526:041546            ts   w1546     ; transfer to storage 
+@1527:041554            ts   w1554     ; transfer to storage 
+@1530:041562            ts   w1562     ; transfer to storage 
+@1531:110217            ad   r0217     ; add 
+@1532:041556            ts   w1556     ; transfer to storage 
+@1533:041604            ts   w1604     ; transfer to storage 
+@1534:041614            ts   w1614     ; transfer to storage 
+@1535:110215            ad   r0215     ; add 
+@1536:041550            ts   w1550     ; transfer to storage 
+@1537:041564            ts   w1564     ; transfer to storage 
+@1540:041570            ts   w1570     ; transfer to storage 
+@1541:041576            ts   w1576     ; transfer to storage 
+@1542:041606            ts   w1606     ; transfer to storage 
+@1543:041612            ts   w1612     ; transfer to storage 
+@1544:076475     i1544: sp   drawLine     ; sub-program @@JumpedToBy a1736 a2003 a2324 
+@1545:000000     w1545: .word 0o0       ;  @@WrittenBy a1505 a1716 a1757 a2300 
+@1546:000000     w1546: .word 0o0       ;  @@WrittenBy a1526 a1721 a1762 a2303 
+@1547:000000            .word 0o0       ;  
+@1550:000000     w1550: .word 0o0       ;  @@WrittenBy a1536 a1733 a1767 a2310 
+@1551:000000            .word 0o0       ;  
+@1552:076475            sp   drawLine     ; sub-program 
+@1553:000000     w1553: .word 0o0       ;  @@WrittenBy a1514 a1712 a1754 a2274 
+@1554:000000     w1554: .word 0o0       ;  @@WrittenBy a1527 a1722 a1763 a2304 
+@1555:000000            .word 0o0       ;  
+@1556:000000     w1556: .word 0o0       ;  @@WrittenBy a1532 a1725 a1770 a2311 
+@1557:000000            .word 0o0       ;  
+@1560:076475            sp   drawLine     ; sub-program 
+@1561:000000     w1561: .word 0o0       ;  @@WrittenBy a1523 a1700 a1751 a2271 
+@1562:000000     w1562: .word 0o0       ;  @@WrittenBy a1530 a1723 a1764 a2305 
+@1563:000000            .word 0o0       ;  
+@1564:000000     w1564: .word 0o0       ;  @@WrittenBy a1537 a1726 a1771 a2312 
+@1565:000000            .word 0o0       ;  
+@1566:076475            sp   drawLine     ; sub-program 
+@1567:000000     w1567: .word 0o0       ;  @@WrittenBy a1506 a1711 a1747 a2273 
+@1570:000000     w1570: .word 0o0       ;  @@WrittenBy a1540 a1720 a1761 a2302 
+@1571:000000     w1571: .word 0o0       ;  @@WrittenBy a1510 a1512 a1715 a1756 a2276 
+@1572:000000            .word 0o0       ;  
+@1573:000000            .word 0o0       ;  
+@1574:076475            sp   drawLine     ; sub-program 
+@1575:000000     w1575: .word 0o0       ;  @@WrittenBy a1520 a1703 a1750 a2270 
+@1576:000000     w1576: .word 0o0       ;  @@WrittenBy a1541 a1732 a1766 a2307 
+@1577:000000     w1577: .word 0o0       ;  @@WrittenBy a1524 a1706 a1753 a2277 
+@1600:000000            .word 0o0       ;  
+@1601:000000            .word 0o0       ;  
+@1602:076475            sp   drawLine     ; sub-program 
+@1603:000000     w1603: .word 0o0       ;  @@WrittenBy a1515 a1701 a1773 w2314 
+@1604:000000     w1604: .word 0o0       ;  @@WrittenBy a1533 a1727 a1774 a2315 
+@1605:000000     w1605: .word 0o0       ;  @@WrittenBy a1521 a1704 a1775 a2316 
+@1606:000000     w1606: .word 0o0       ;  @@WrittenBy a1542 a1734 a1776 a2317 
+@1607:000000            .word 0o0       ;  
+@1610:076475            sp   drawLine     ; sub-program 
+@1611:000000     w1611: .word 0o0       ;  @@WrittenBy a1511 a1707 a1777 a2320 
+@1612:000000     w1612: .word 0o0       ;  @@WrittenBy a1543 a1735 a2000 a2321 
+@1613:000000     w1613: .word 0o0       ;  @@WrittenBy a1516 a1713 a2001 a2322 
+@1614:000000     w1614: .word 0o0       ;  @@WrittenBy a1534 a1730 a2002 a2323 
+@1615:000005            si   0o5       ; select I/O: unknown i/o device 
+@1616:076377            sp   i2377     ; sub-program 
+
+@1617:051621     draw4: ta   w1621     ; transfer address @@JumpedToBy place4 
+@1620:051624            ta   w1624     ; transfer address 
+@1621:100000     w1621: ca   w0000     ; clear and add @@WrittenBy draw4 
+@1622:040213            ts   w0213     ; transfer to storage 
+@1623:131624            ao   w1624     ; add one 
+@1624:100000     w1624: ca   w0000     ; clear and add @@WrittenBy a1620 a1623 ReadBy a1623 
+@1625:040214            ts   w0214     ; transfer to storage 
+@1626:100213            ca   w0213     ; clear and add 
+@1627:041662            ts   w1662     ; transfer to storage 
+@1630:110216            ad   r0216     ; add 
+@1631:041646            ts   w1646     ; transfer to storage 
+@1632:041654            ts   w1654     ; transfer to storage 
+@1633:110220            ad   r0220     ; add 
+@1634:041650            ts   w1650     ; transfer to storage 
+@1635:041664            ts   w1664     ; transfer to storage 
+@1636:100214            ca   w0214     ; clear and add 
+@1637:041647            ts   w1647     ; transfer to storage 
+@1640:041655            ts   w1655     ; transfer to storage 
+@1641:110220            ad   r0220     ; add 
+@1642:041651            ts   w1651     ; transfer to storage 
+@1643:041657            ts   w1657     ; transfer to storage 
+@1644:041663            ts   w1663     ; transfer to storage 
+@1645:076475            sp   drawLine     ; sub-program 
+@1646:000000     w1646: .word 0o0       ;  @@WrittenBy a1631 
+@1647:000000     w1647: .word 0o0       ;  @@WrittenBy a1637 
+@1650:000000     w1650: .word 0o0       ;  @@WrittenBy a1634 
+@1651:000000     w1651: .word 0o0       ;  @@WrittenBy a1642 
+@1652:000000            .word 0o0       ;  
+@1653:076475            sp   drawLine     ; sub-program 
+@1654:000000     w1654: .word 0o0       ;  @@WrittenBy a1632 
+@1655:000000     w1655: .word 0o0       ;  @@WrittenBy a1640 
+@1656:000000            .word 0o0       ;  
+@1657:000000     w1657: .word 0o0       ;  @@WrittenBy a1643 
+@1660:000000            .word 0o0       ;  
+@1661:076475            sp   drawLine     ; sub-program 
+@1662:000000     w1662: .word 0o0       ;  @@WrittenBy a1627 
+@1663:000000     w1663: .word 0o0       ;  @@WrittenBy a1644 
+@1664:000000     w1664: .word 0o0       ;  @@WrittenBy a1635 
+@1665:000000            .word 0o0       ;  
+@1666:000000            .word 0o0       ;  
+@1667:076377            sp   i2377     ; sub-program 
+
+@1670:051672     draw5: ta   w1672     ; transfer address @@JumpedToBy place5 
+@1671:051675            ta   w1675     ; transfer address 
+@1672:100000     w1672: ca   w0000     ; clear and add @@WrittenBy draw5 
+@1673:040213            ts   w0213     ; transfer to storage 
+@1674:131675            ao   w1675     ; add one 
+@1675:100000     w1675: ca   w0000     ; clear and add @@WrittenBy a1671 a1674 ReadBy a1674 
+@1676:040214            ts   w0214     ; transfer to storage 
+@1677:100213            ca   w0213     ; clear and add 
+@1700:041561            ts   w1561     ; transfer to storage 
+@1701:041603            ts   w1603     ; transfer to storage 
+@1702:110215            ad   r0215     ; add 
+@1703:041575            ts   w1575     ; transfer to storage 
+@1704:041605            ts   w1605     ; transfer to storage 
+@1705:110216            ad   r0216     ; add 
+@1706:041577            ts   w1577     ; transfer to storage 
+@1707:041611            ts   w1611     ; transfer to storage 
+@1710:110215            ad   r0215     ; add 
+@1711:041567            ts   w1567     ; transfer to storage 
+@1712:041553            ts   w1553     ; transfer to storage 
+@1713:041613            ts   w1613     ; transfer to storage 
+@1714:110216            ad   r0216     ; add 
+@1715:041571            ts   w1571     ; transfer to storage 
+@1716:041545            ts   w1545     ; transfer to storage 
+@1717:100214            ca   w0214     ; clear and add 
+@1720:041570            ts   w1570     ; transfer to storage 
+@1721:041546            ts   w1546     ; transfer to storage 
+@1722:041554            ts   w1554     ; transfer to storage 
+@1723:041562            ts   w1562     ; transfer to storage 
+@1724:110217            ad   r0217     ; add 
+@1725:041556            ts   w1556     ; transfer to storage 
+@1726:041564            ts   w1564     ; transfer to storage 
+@1727:041604            ts   w1604     ; transfer to storage 
+@1730:041614            ts   w1614     ; transfer to storage 
+@1731:110215            ad   r0215     ; add 
+@1732:041576            ts   w1576     ; transfer to storage 
+@1733:041550            ts   w1550     ; transfer to storage 
+@1734:041606            ts   w1606     ; transfer to storage 
+@1735:041612            ts   w1612     ; transfer to storage 
+@1736:075544            sp   i1544     ; sub-program 
+
+@1737:051741     draw6: ta   w1741     ; transfer address @@JumpedToBy place6 
+@1740:051744            ta   w1744     ; transfer address 
+@1741:100000     w1741: ca   w0000     ; clear and add @@WrittenBy draw6 
+@1742:040213            ts   w0213     ; transfer to storage 
+@1743:131744            ao   w1744     ; add one 
+@1744:100000     w1744: ca   w0000     ; clear and add @@WrittenBy a1740 a1743 ReadBy a1743 
+@1745:040214            ts   w0214     ; transfer to storage 
+@1746:100213            ca   w0213     ; clear and add 
+@1747:041567            ts   w1567     ; transfer to storage 
+@1750:041575            ts   w1575     ; transfer to storage 
+@1751:041561            ts   w1561     ; transfer to storage 
+@1752:110217            ad   r0217     ; add 
+@1753:041577            ts   w1577     ; transfer to storage 
+@1754:041553            ts   w1553     ; transfer to storage 
+@1755:110217            ad   r0217     ; add 
+@1756:041571            ts   w1571     ; transfer to storage 
+@1757:041545            ts   w1545     ; transfer to storage 
+@1760:100214            ca   w0214     ; clear and add 
+@1761:041570            ts   w1570     ; transfer to storage 
+@1762:041546            ts   w1546     ; transfer to storage 
+@1763:041554            ts   w1554     ; transfer to storage 
+@1764:041562            ts   w1562     ; transfer to storage 
+@1765:110220            ad   r0220     ; add 
+@1766:041576            ts   w1576     ; transfer to storage 
+@1767:041550            ts   w1550     ; transfer to storage 
+@1770:041556            ts   w1556     ; transfer to storage 
+@1771:041564            ts   w1564     ; transfer to storage 
+@1772:100000            ca   w0000     ; clear and add 
+@1773:041603            ts   w1603     ; transfer to storage 
+@1774:041604            ts   w1604     ; transfer to storage 
+@1775:041605            ts   w1605     ; transfer to storage 
+@1776:041606            ts   w1606     ; transfer to storage 
+@1777:041611            ts   w1611     ; transfer to storage 
+@2000:041612            ts   w1612     ; transfer to storage 
+@2001:041613            ts   w1613     ; transfer to storage 
+@2002:041614            ts   w1614     ; transfer to storage 
+@2003:075544            sp   i1544     ; sub-program 
+
+@2004:052006     draw7: ta   w2006     ; transfer address @@JumpedToBy place7 
+@2005:052011            ta   w2011     ; transfer address 
+@2006:100000     w2006: ca   w0000     ; clear and add @@WrittenBy draw7 
+@2007:040213            ts   w0213     ; transfer to storage 
+@2010:132011     w2010: ao   w2011     ; add one @@WrittenBy a0150 a0163 
+@2011:100000     w2011: ca   w0000     ; clear and add @@WrittenBy a2005 w2010 ReadBy w2010 
+@2012:040214            ts   w0214     ; transfer to storage 
+@2013:100213            ca   w0213     ; clear and add 
+@2014:042156            ts   w2156     ; transfer to storage 
+@2015:110215            ad   r0215     ; add 
+@2016:042160            ts   w2160     ; transfer to storage 
+@2017:042230            ts   w2230     ; transfer to storage 
+@2020:110220            ad   r0220     ; add 
+@2021:042164            ts   w2164     ; transfer to storage 
+@2022:042172            ts   w2172     ; transfer to storage 
+@2023:042232            ts   w2232     ; transfer to storage 
+@2024:110215            ad   r0215     ; add 
+@2025:042166            ts   w2166     ; transfer to storage 
+@2026:042174            ts   w2174     ; transfer to storage 
+@2027:042206            ts   w2206     ; transfer to storage 
+@2030:100214            ca   w0214     ; clear and add 
+@2031:042157     w2031: ts   w2157     ; transfer to storage @@WrittenBy a0123 
+@2032:042165            ts   w2165     ; transfer to storage 
+@2033:042207            ts   w2207     ; transfer to storage 
+@2034:042231            ts   w2231     ; transfer to storage 
+@2035:110220            ad   r0220     ; add 
+@2036:042173            ts   w2173     ; transfer to storage 
+@2037:042211            ts   w2211     ; transfer to storage 
+@2040:042233            ts   w2233     ; transfer to storage 
+@2041:100000            ca   w0000     ; clear and add 
+@2042:042200            ts   w2200     ; transfer to storage 
+@2043:042201            ts   w2201     ; transfer to storage 
+@2044:042202            ts   w2202     ; transfer to storage 
+@2045:042214            ts   w2214     ; transfer to storage 
+@2046:042215            ts   w2215     ; transfer to storage 
+@2047:042217            ts   w2217     ; transfer to storage 
+@2050:042222            ts   w2222     ; transfer to storage 
+@2051:042223            ts   w2223     ; transfer to storage 
+@2052:042225            ts   w2225     ; transfer to storage 
+@2053:042236            ts   w2236     ; transfer to storage 
+@2054:042237            ts   w2237     ; transfer to storage 
+@2055:042240            ts   w2240     ; transfer to storage 
+@2056:042241            ts   w2241     ; transfer to storage 
+@2057:042244            ts   w2244     ; transfer to storage 
+@2060:042245     w2060: ts   w2245     ; transfer to storage @@WrittenBy a0131 
+@2061:042246            ts   w2246     ; transfer to storage 
+@2062:042247            ts   w2247     ; transfer to storage 
+@2063:042252            ts   w2252     ; transfer to storage 
+@2064:042253            ts   w2253     ; transfer to storage 
+@2065:042254            ts   w2254     ; transfer to storage 
+@2066:042255            ts   w2255     ; transfer to storage 
+@2067:076155            sp   i2155     ; sub-program 
+
+@2070:052072     draw8: ta   w2072     ; transfer address @@JumpedToBy place8 
+@2071:052075            ta   w2075     ; transfer address 
+@2072:100000     w2072: ca   w0000     ; clear and add @@WrittenBy draw8 
+@2073:040213            ts   w0213     ; transfer to storage 
+@2074:132075            ao   w2075     ; add one 
+@2075:100000     w2075: ca   w0000     ; clear and add @@WrittenBy a0065 a0142 a2071 a2074 ReadBy a2074 
+@2076:040214            ts   w0214     ; transfer to storage 
+@2077:100213            ca   w0213     ; clear and add 
+@2100:042156            ts   w2156     ; transfer to storage 
+@2101:042172            ts   w2172     ; transfer to storage 
+@2102:042222            ts   w2222     ; transfer to storage 
+@2103:110216            ad   r0216     ; add 
+@2104:042160            ts   w2160     ; transfer to storage 
+@2105:042174            ts   w2174     ; transfer to storage 
+@2106:042230            ts   w2230     ; transfer to storage 
+@2107:042252            ts   w2252     ; transfer to storage 
+@2110:110215            ad   r0215     ; add 
+@2111:042214            ts   w2214     ; transfer to storage 
+@2112:042232            ts   w2232     ; transfer to storage 
+@2113:042236            ts   w2236     ; transfer to storage 
+@2114:042244            ts   w2244     ; transfer to storage 
+@2115:042254            ts   w2254     ; transfer to storage 
+@2116:110215            ad   r0215     ; add 
+@2117:042164            ts   w2164     ; transfer to storage 
+@2120:042200            ts   w2200     ; transfer to storage 
+@2121:042240            ts   w2240     ; transfer to storage 
+@2122:042246            ts   w2246     ; transfer to storage 
+@2123:110216            ad   r0216     ; add 
+@2124:042166            ts   w2166     ; transfer to storage 
+@2125:042202            ts   w2202     ; transfer to storage 
+@2126:042206            ts   w2206     ; transfer to storage 
+@2127:100214            ca   w0214     ; clear and add 
+@2130:042157            ts   w2157     ; transfer to storage 
+@2131:042165            ts   w2165     ; transfer to storage 
+@2132:042207            ts   w2207     ; transfer to storage 
+@2133:042223            ts   w2223     ; transfer to storage 
+@2134:042231            ts   w2231     ; transfer to storage 
+@2135:042247            ts   w2247     ; transfer to storage 
+@2136:110215            ad   r0215     ; add 
+@2137:042215            ts   w2215     ; transfer to storage 
+@2140:042233            ts   w2233     ; transfer to storage 
+@2141:042245            ts   w2245     ; transfer to storage 
+@2142:110216            ad   r0216     ; add 
+@2143:042217            ts   w2217     ; transfer to storage 
+@2144:042237            ts   w2237     ; transfer to storage 
+@2145:042255            ts   w2255     ; transfer to storage 
+@2146:110215            ad   r0215     ; add 
+@2147:042173            ts   w2173     ; transfer to storage 
+@2150:042201            ts   w2201     ; transfer to storage 
+@2151:042211            ts   w2211     ; transfer to storage 
+@2152:042225            ts   w2225     ; transfer to storage 
+@2153:042241            ts   w2241     ; transfer to storage 
+@2154:042253            ts   w2253     ; transfer to storage 
+@2155:076475     i2155: sp   drawLine     ; sub-program @@JumpedToBy a2067 
+@2156:000000     w2156: .word 0o0       ;  @@WrittenBy a2014 a2100 
+@2157:000000     w2157: .word 0o0       ;  @@WrittenBy w2031 a2130 
+@2160:000000     w2160: .word 0o0       ;  @@WrittenBy a2016 a2104 
+@2161:000000            .word 0o0       ;  
+@2162:000000            .word 0o0       ;  
+@2163:076475            sp   drawLine     ; sub-program 
+@2164:000000     w2164: .word 0o0       ;  @@WrittenBy a2021 a2117 
+@2165:000000     w2165: .word 0o0       ;  @@WrittenBy a2032 a2131 
+@2166:000000     w2166: .word 0o0       ;  @@WrittenBy a2025 a2124 
+@2167:000000            .word 0o0       ;  
+@2170:000000            .word 0o0       ;  
+@2171:076475            sp   drawLine     ; sub-program 
+@2172:000000     w2172: .word 0o0       ;  @@WrittenBy a2022 a2101 
+@2173:000000     w2173: .word 0o0       ;  @@WrittenBy a2036 a2147 
+@2174:000000     w2174: .word 0o0       ;  @@WrittenBy a2026 a2105 
+@2175:000000            .word 0o0       ;  
+@2176:000000            .word 0o0       ;  
+@2177:076475            sp   drawLine     ; sub-program 
+@2200:000000     w2200: .word 0o0       ;  @@WrittenBy a2042 a2120 
+@2201:000000     w2201: .word 0o0       ;  @@WrittenBy a2043 a2150 
+@2202:000000     w2202: .word 0o0       ;  @@WrittenBy a2044 a2125 
+@2203:000000            .word 0o0       ;  
+@2204:000000            .word 0o0       ;  
+@2205:076475            sp   drawLine     ; sub-program 
+@2206:000000     w2206: .word 0o0       ;  @@WrittenBy a2027 a2126 
+@2207:000000     w2207: .word 0o0       ;  @@WrittenBy a2033 a2132 
+@2210:000000            .word 0o0       ;  
+@2211:000000     w2211: .word 0o0       ;  @@WrittenBy a2037 a2151 
+@2212:000000            .word 0o0       ;  
+@2213:076475            sp   drawLine     ; sub-program 
+@2214:000000     w2214: .word 0o0       ;  @@WrittenBy a2045 a2111 
+@2215:000000     w2215: .word 0o0       ;  @@WrittenBy a2046 a2137 
+@2216:000000            .word 0o0       ;  
+@2217:000000     w2217: .word 0o0       ;  @@WrittenBy a2047 a2143 
+@2220:000000            .word 0o0       ;  
+@2221:076475            sp   drawLine     ; sub-program 
+@2222:000000     w2222: .word 0o0       ;  @@WrittenBy a2050 a2102 
+@2223:000000     w2223: .word 0o0       ;  @@WrittenBy a2051 a2133 
+@2224:000000            .word 0o0       ;  
+@2225:000000     w2225: .word 0o0       ;  @@WrittenBy a2052 a2152 
+@2226:000000            .word 0o0       ;  
+@2227:076475            sp   drawLine     ; sub-program 
+@2230:000000     w2230: .word 0o0       ;  @@WrittenBy a2017 a2106 
+@2231:000000     w2231: .word 0o0       ;  @@WrittenBy a2034 a2134 
+@2232:000000     w2232: .word 0o0       ;  @@WrittenBy a2023 a2112 
+@2233:000000     w2233: .word 0o0       ;  @@WrittenBy a2040 a2140 
+@2234:000000            .word 0o0       ;  
+@2235:076475            sp   drawLine     ; sub-program 
+@2236:000000     w2236: .word 0o0       ;  @@WrittenBy a2053 a2113 
+@2237:000000     w2237: .word 0o0       ;  @@WrittenBy a2054 a2144 
+@2240:000000     w2240: .word 0o0       ;  @@WrittenBy a2055 a2121 
+@2241:000000     w2241: .word 0o0       ;  @@WrittenBy a2056 a2153 
+@2242:000000            .word 0o0       ;  
+@2243:076475            sp   drawLine     ; sub-program 
+@2244:000000     w2244: .word 0o0       ;  @@WrittenBy a2057 a2114 
+@2245:000000     w2245: .word 0o0       ;  @@WrittenBy w2060 a2141 
+@2246:000000     w2246: .word 0o0       ;  @@WrittenBy a2061 a2122 
+@2247:000000     w2247: .word 0o0       ;  @@WrittenBy a2062 a2135 
+@2250:000005            si   0o5       ; select I/O: unknown i/o device 
+@2251:076475            sp   drawLine     ; sub-program 
+@2252:000000     w2252: .word 0o0       ;  @@WrittenBy a2063 a2107 
+@2253:000000     w2253: .word 0o0       ;  @@WrittenBy a2064 a2154 
+@2254:000000     w2254: .word 0o0       ;  @@WrittenBy a2065 a2115 
+@2255:000000     w2255: .word 0o0       ;  @@WrittenBy a2066 a2145 
+@2256:000005            si   0o5       ; select I/O: unknown i/o device 
+@2257:076377            sp   i2377     ; sub-program 
+
+@2260:052262     draw9: ta   w2262     ; transfer address @@JumpedToBy place9 
+@2261:052265            ta   w2265     ; transfer address 
+@2262:100000     w2262: ca   w0000     ; clear and add @@WrittenBy draw9 
+@2263:040213            ts   w0213     ; transfer to storage 
+@2264:132265            ao   w2265     ; add one 
+@2265:100000     w2265: ca   w0000     ; clear and add @@WrittenBy a2261 a2264 ReadBy a2264 
+@2266:040214            ts   w0214     ; transfer to storage 
+@2267:100213            ca   w0213     ; clear and add 
+@2270:041575            ts   w1575     ; transfer to storage 
+@2271:041561            ts   w1561     ; transfer to storage 
+@2272:110217            ad   r0217     ; add 
+@2273:041567            ts   w1567     ; transfer to storage 
+@2274:041553            ts   w1553     ; transfer to storage 
+@2275:110217            ad   r0217     ; add 
+@2276:041571            ts   w1571     ; transfer to storage 
+@2277:041577            ts   w1577     ; transfer to storage 
+@2300:041545            ts   w1545     ; transfer to storage 
+@2301:100214            ca   w0214     ; clear and add 
+@2302:041570            ts   w1570     ; transfer to storage 
+@2303:041546            ts   w1546     ; transfer to storage 
+@2304:041554            ts   w1554     ; transfer to storage 
+@2305:041562            ts   w1562     ; transfer to storage 
+@2306:110220            ad   r0220     ; add 
+@2307:041576            ts   w1576     ; transfer to storage 
+@2310:041550            ts   w1550     ; transfer to storage 
+@2311:041556            ts   w1556     ; transfer to storage 
+@2312:041564            ts   w1564     ; transfer to storage 
+@2313:100000            ca   w0000     ; clear and add 
+@2314:041603     w2314: ts   w1603     ; transfer to storage 
+@2315:041604            ts   w1604     ; transfer to storage 
+@2316:041605            ts   w1605     ; transfer to storage 
+@2317:041606            ts   w1606     ; transfer to storage 
+@2320:041611            ts   w1611     ; transfer to storage 
+@2321:041612            ts   w1612     ; transfer to storage 
+@2322:041613            ts   w1613     ; transfer to storage 
+@2323:041614            ts   w1614     ; transfer to storage 
+@2324:075544            sp   i1544     ; sub-program 
+
+; displays a 2-digit decimal number at the appropriate screen location
+;  gets the 1's digit using an index that starts with A_onesDigit
+;  gets the 10's digit using an index that starts with A_tensDigit
+;  gets the X and Y coordinates of each number from a table of values 
+;		at X_coordList (0o0223 - 0o0236) and Y_coordList (0o0227 - 0o0232)
+@2325:100227     dispNum: ca   r0227     ; clear and add @@JumpedToBy a1245 i2417 a2434 WrittenBy i2377 a2410 a2425 a2442 ReadBy i2377 
+@2326:042613            ts   yFor0     ; transfer to storage 
+@2327:042616            ts   yFor1     ; transfer to storage 
+@2330:042621            ts   yFor2     ; transfer to storage 
+@2331:042624            ts   yFor3     ; transfer to storage 
+@2332:042627            ts   yFor4     ; transfer to storage 
+@2333:042632            ts   yFor5     ; transfer to storage 
+@2334:042635            ts   yFor6     ; transfer to storage 
+@2335:042640            ts   yFor7     ; transfer to storage 
+@2336:042643            ts   yFor8     ; transfer to storage 
+@2337:042646            ts   yFor9     ; transfer to storage 
+@2340:100223     w2340: ca   r0223     ; clear and add @@WrittenBy a2411 a2412 a2427 a2444 ReadBy a2411 a2412 
+@2341:042614            ts   xFor0     ; transfer to storage 
+@2342:042617            ts   xFor1     ; transfer to storage 
+@2343:042622            ts   xFor2     ; transfer to storage 
+@2344:042625            ts   xFor3     ; transfer to storage 
+@2345:042630            ts   xFor4     ; transfer to storage 
+@2346:042633            ts   xFor5     ; transfer to storage 
+@2347:042636            ts   xFor6     ; transfer to storage 
+@2350:042641            ts   xFor7     ; transfer to storage 
+@2351:042644            ts   xFor8     ; transfer to storage 
+@2352:042647            ts   xFor9     ; transfer to storage 
+@2353:100327     w2353: ca   A_tensDigit     ; clear and add @@WrittenBy a2400 a2446 ReadBy a2400 
+@2354:114000            su   w0000     ; check for leading zero 
+@2355:072460            cp   leadingZero     ; 
+
+					; draw digit; all return to 0o2377
+@2356:114052            su   CONST_1a     ; subtract 
+@2357:072615            cp   place1     ; conditional program 
+
+@2360:114052            su   CONST_1a     ; subtract 
+@2361:072620            cp   place2     ; conditional program 
+
+@2362:114052            su   CONST_1a     ; subtract 
+@2363:072623            cp   place3     ; conditional program 
+
+@2364:114052            su   CONST_1a     ; subtract 
+@2365:072626            cp   place4     ; conditional program 
+
+@2366:114052            su   CONST_1a     ; subtract 
+@2367:072631            cp   place5     ; conditional program 
+
+@2370:114052            su   CONST_1a     ; subtract 
+@2371:072634            cp   place6     ; conditional program 
+
+@2372:114052            su   CONST_1a     ; subtract 
+@2373:072637            cp   place7     ; conditional program 
+
+@2374:114052            su   CONST_1a     ; subtract 
+@2375:072642            cp   place8     ; conditional program 
+
+@2376:076645            sp   place9     ; sub-program 
+
+@2377:132325     i2377: ao   dispNum     ; add one @@JumpedToBy a1325 a1400 a1474 a1616 a1667 a2257 a2463 a2467 
+@2400:132353            ao   w2353     ; add one 
+@2401:130042            ao   counter0     ; add one 
+@2402:100042            ca   counter0     ; clear and add 
+@2403:114046            su   w0046     ; subtract 
+@2404:072417            cp   i2417     ; conditional program 
+
+@2405:100000            ca   w0000     ; clear and add 
+@2406:040042            ts   counter0     ; transfer to storage 
+@2407:100234            ca   r0234     ; clear and add 
+@2410:046325            td   dispNum     ; transfer digits 
+@2411:132340            ao   w2340     ; add one 
+@2412:132340            ao   w2340     ; add one 
+@2413:130055            ao   w0055     ; add one 
+@2414:100047            ca   r0047     ; clear and add 
+@2415:114055            su   w0055     ; subtract 
+@2416:072420            cp   i2420     ; conditional program 
+
+@2417:076325     i2417: sp   dispNum     ; sub-program @@JumpedToBy a2404 
+
+@2420:100000     i2420: ca   w0000     ; clear and add @@JumpedToBy a2416 
+@2421:040055            ts   w0055     ; transfer to storage 
+@2422:100000            ca   w0000     ; clear and add 
+@2423:040042            ts   counter0     ; transfer to storage 
+@2424:100234            ca   r0234     ; clear and add 
+@2425:046325            td   dispNum     ; transfer digits 
+@2426:100235            ca   r0235     ; clear and add 
+@2427:046340            td   w2340     ; transfer digits 
+@2430:130056            ao   w0056     ; add one 
+@2431:100047            ca   r0047     ; clear and add 
+@2432:114056            su   w0056     ; subtract 
+@2433:072435            cp   i2435     ; conditional program 
+
+@2434:076325            sp   dispNum     ; sub-program 
+
+@2435:100000     i2435: ca   w0000     ; clear and add @@JumpedToBy a2433 
+@2436:040042            ts   counter0     ; transfer to storage 
+@2437:040055            ts   w0055     ; transfer to storage 
+@2440:040056            ts   w0056     ; transfer to storage 
+@2441:100234            ca   r0234     ; clear and add 
+@2442:046325            td   dispNum     ; transfer digits 
+@2443:100236            ca   r0236     ; clear and add 
+@2444:046340            td   w2340     ; transfer digits 
+@2445:100237            ca   r0237     ; clear and add 
+@2446:046353            td   w2353     ; transfer digits 
+@2447:074350            sp   readInputs     ; sub-program 
+
+					; print "illegal move" string
+@2450:052453     printIllMo: ta   w2453     ; save return address 
+@2451:074621            sp   print     ; print string:  
+@2452:000141            si   0o141     ; "Your move is illegal. Please try another move." 
+@2453:074000     w2453: sp   w0000     ; return 
+
+					; print "you have won" string
+@2454:074621     printYouWin: sp   print     ; print string: 
+@2455:000112            si   0o112     ; "Congratulations, you have won the game." 
+@2456:130177            ao   need2readFF23_flg     ; add one 
+@2457:074705            sp   drawLetters     ; sub-program 
+
+						; leave leading zero space blank
+@2460:102614     leadingZero: ca   xFor0     ; clear and add @@JumpedToBy a2355 
+@2461:072465            cp   i2465     ; conditional program 
+
+@2462:114225            su   r0225     ; subtract 
+@2463:072377            cp   i2377     ; conditional program 
+
+@2464:076612            sp   place0     ; sub-program 
+
+@2465:102614     i2465: ca   xFor0     ; clear and add @@JumpedToBy a2461 
+@2466:110225            ad   r0225     ; add 
+@2467:072377            cp   i2377     ; conditional program 
+
+@2470:076612            sp   place0     ; sub-program 
+
+@2471:074621     i2471: sp   print     ; print string: 
+@2472:000064            .word 0o000064 ; "Sorry. The computer has won the game." 
+@2473:130177            ao   need2readFF23_flg     ; add one 
+@2474:074705            sp   drawLetters     ; sub-program 
+
+; drawLine subroutine
+;  draws a line on the oscilloscope CRT
+;  address			parameter
+;  drawLine + 0		sp drawLine [subroutine call] aka "caller"
+;  drawLine + 1		starting Y value
+;  drawLine + 2		starting X value
+;  drawLine + 3		ending Y value (if 0o0, draw horizontal line)
+;  drawLine + 4		ending X value (if 0o0, draw vertical line)
+;					- if both ends are !=0, draw diagonal line using diagFlag 
+;  drawLine + 5		diagFlag 
+;					 - if 0o0, increase both X and Y = up and to the right
+;					 - if != 0x0, reduce X and increase Y = up and to the left
+;  First: copy all parameters to working area
+@2475:052503     drawLine: ta   w2503     ; transfer address 
+@2476:052506            ta   w2506     ; transfer address 
+@2477:052512            ta   w2512     ; transfer address 
+@2500:052517            ta   w2517     ; transfer address 
+@2501:052611            ta   done     ; transfer address (return address)
+@2502:052525            ta   w2525     ; transfer address 
+@2503:100000     w2503: ca   w0000     ; clear and add (address of starting Y)  
+@2504:040200            ts   tempY     ; transfer to storage 
+@2505:132506            ao   w2506     ; add one to point to caller + 2
+@2506:100000     w2506: ca   w0000     ; clear and add (address of starting X)  
+@2507:040201            ts   tempX     ; transfer to storage 
+@2510:132512            ao   w2512     ; add one 
+@2511:132512            ao   w2512     ; add one to point to caller + 3
+@2512:100000     w2512: ca   w0000     ; clear and add (address of ending Y) 
+@2513:040202            ts   endY     ; transfer to storage 
+@2514:132517            ao   w2517     ; add one 
+@2515:132517            ao   w2517     ; add one 
+@2516:132517            ao   w2517     ; add one to point to caller + 4
+@2517:100000     w2517: ca   w0000     ; clear and add (address of ending X)  
+@2520:040203            ts   endX     ; transfer to storage 
+@2521:132525            ao   w2525     ; add one 
+@2522:132525            ao   w2525     ; add one 
+@2523:132525            ao   w2525     ; add one 
+@2524:132525            ao   w2525     ; add one to point to caller + 5
+@2525:100000     w2525: ca   w0000     ; clear and add (address of diagFlag)  
+@2526:040206            ts   diagFlag     ; transfer to storage 
+@2527:132611            ao   done     ; add one 
+@2530:132611            ao   done     ; add one 
+@2531:132611            ao   done     ; add one 
+@2532:132611            ao   done     ; add one 
+@2533:132611            ao   done     ; add one to point to return address (caller + 6)
+@2534:100200     dispLoop: ca   tempY     ; clear and add  
+
+				; light a point at (tempX,tempY)
+@2535:000600            si   0o600     ; select I/O: Display Points 
+@2536:100201            ca   tempX     ; clear and add 
+@2537:024000            rc   0o0       ; record 
+
+				; see if line is horizontal, vertical, or diagonal 
+					; if endY = 0 then it's horizontal; only add to X
+@2540:120202            cm   endY     ; clear and add magnitude 
+@2541:114000            su   w0000     ; subtract 
+@2542:072552            cp   incX     ; conditional program  
+
+					; else if endX = 0 then it's vertical; only add to Y
+@2543:120203            cm   endX     ; clear and add magnitude 
+@2544:114000            su   w0000     ; subtract 
+@2545:072560            cp   incY     ; conditional program 
+
+					; else if diagFlag = 0 then it goes up and to the right
+@2546:120206            cm   diagFlag     ; clear and add magnitude 
+@2547:114000            su   w0000     ; subtract 
+@2550:072566            cp   diag0     ; conditional program 
+
+					; else it goes up and to the left
+@2551:076577            sp   diag1     ; sub-program 
+
+@2552:100201     incX: ca   tempX     ; clear and add  
+@2553:110204            ad   delta     ; add 
+@2554:040201            ts   tempX     ; transfer to storage 
+@2555:114203            su   endX     ; subtract 
+@2556:072534            cp   dispLoop     ; conditional program 
+
+@2557:076611            sp   done     ; sub-program 
+
+@2560:100200     incY: ca   tempY     ; clear and add  
+@2561:110204            ad   delta     ; add 
+@2562:040200            ts   tempY     ; transfer to storage 
+@2563:114202            su   endY     ; subtract 
+@2564:072534            cp   dispLoop     ; conditional program 
+
+@2565:076611            sp   done     ; sub-program 
+
+@2566:100201     diag0: ca   tempX     ; clear and add  
+@2567:110204            ad   delta     ; add 
+@2570:040201            ts   tempX     ; transfer to storage 
+@2571:100200            ca   tempY     ; clear and add 
+@2572:110204            ad   delta     ; add 
+@2573:040200            ts   tempY     ; transfer to storage 
+@2574:114202            su   endY     ; subtract 
+@2575:072534            cp   dispLoop     ; conditional program 
+
+@2576:076611            sp   done     ; sub-program 
+
+@2577:100200     diag1: ca   tempY     ; clear and add  
+@2600:110204            ad   delta     ; add 
+@2601:040200            ts   tempY     ; transfer to storage 
+@2602:100201            ca   tempX     ; clear and add 
+@2603:114204            su   delta     ; subtract 
+@2604:040201            ts   tempX     ; transfer to storage 
+@2605:100200            ca   tempY     ; clear and add 
+@2606:114202            su   endY     ; subtract 
+@2607:072534            cp   dispLoop     ; conditional program 
+
+@2610:076611            sp   done     ; sub-program 
+
+@2611:074000     done: sp   w0000     ; sub-program  
+
+; --- JUMP TABLE FOR DRAWING NUMBERS AT PARTICULAR LOCATIONS ---------
+;  when drawX is called, it pulls out the following two params 
+;   the Y, then X coordinate of the lower left corner of the number
+@2612:075246     place0: sp   draw0     ; sub-program @@JumpedToBy a2464 a2470 
+@2613:000000     yFor0: .word 0o0       ;  @@WrittenBy a2326 
+@2614:000000     xFor0: .word 0o0       ;  @@WrittenBy a2341 ReadBy leadingZero i2465 
+@2615:075326     place1: sp   draw1     ; sub-program @@JumpedToBy a2357 
+@2616:000000     yFor1: .word 0o0       ;  @@WrittenBy a2327 
+@2617:000000     xFor1: .word 0o0       ;  @@WrittenBy a2342 
+@2620:075401     place2: sp   draw2     ; sub-program @@JumpedToBy a2361 
+@2621:000000     yFor2: .word 0o0       ;  @@WrittenBy a2330 
+@2622:000000     xFor2: .word 0o0       ;  @@WrittenBy a2343 
+@2623:075475     place3: sp   draw3     ; sub-program @@JumpedToBy a2363 
+@2624:000000     yFor3: .word 0o0       ;  @@WrittenBy a2331 
+@2625:000000     xFor3: .word 0o0       ;  @@WrittenBy a2344 
+@2626:075617     place4: sp   draw4     ; sub-program @@JumpedToBy a2365 
+@2627:000000     yFor4: .word 0o0       ;  @@WrittenBy a2332 
+@2630:000000     xFor4: .word 0o0       ;  @@WrittenBy a2345 
+@2631:075670     place5: sp   draw5     ; sub-program @@JumpedToBy a2367 
+@2632:000000     yFor5: .word 0o0       ;  @@WrittenBy a2333 
+@2633:000000     xFor5: .word 0o0       ;  @@WrittenBy a2346 
+@2634:075737     place6: sp   draw6     ; sub-program @@JumpedToBy a2371 
+@2635:000000     yFor6: .word 0o0       ;  @@WrittenBy a2334 
+@2636:000000     xFor6: .word 0o0       ;  @@WrittenBy a2347 
+@2637:076004     place7: sp   draw7     ; sub-program @@JumpedToBy a2373 
+@2640:000000     yFor7: .word 0o0       ;  @@WrittenBy a2335 
+@2641:000000     xFor7: .word 0o0       ;  @@WrittenBy a2350 
+@2642:076070     place8: sp   draw8     ; sub-program @@JumpedToBy a2375 
+@2643:000000     yFor8: .word 0o0       ;  @@WrittenBy a2336 
+@2644:000000     xFor8: .word 0o0       ;  @@WrittenBy a2351 
+@2645:076260     place9: sp   draw9     ; sub-program @@JumpedToBy a2376 
+@2646:000000     yFor9: .word 0o0       ;  @@WrittenBy a2337 
+@2647:000000     xFor9: .word 0o0       ;  @@WrittenBy a2352 
+; ---- end of jump table
+
+@2650:077552     machinesTurn: sp   cleanCounts     ; make sure all X_counts >= 0 
+@2651:000255            .word 0o255     ; parameter: start of X_counts in storage 
+@2652:076655            sp   countPieces     ; count all pieces on the board 
+@2653:000255            .word 0o255     ; parameter: start address of X_counts in storage 
+@2654:076700            sp   i2700     ; continue processing 
+
+; subroutine to count all the pieces in all 8 groups
+;  parameter is start address of group counts
+;  saves total in pieceCount (0o0347)
+@2655:052660     countPieces: ta   w2660     ; point to parameter 
+@2656:052677            ta   w2677     ; save return address 
+@2657:132677            ao   w2677     ; point to caller + 2 
+@2660:100000     w2660: ca   w0000     ; get start address of X_counts 
+@2661:046664            td   w2664     ; save to pointer (i)
+@2662:046667            td   w2667     ; save to pointer & increment (i + 1)
+@2663:132667            ao   w2667     ;  
+@2664:100000     w2664: ca   w0000     ; get X_counts[i] 
+@2665:040347            ts   pieceCount     ; pieceCount = X_counts[0] 
+@2666:100347     i2666: ca   pieceCount     ; pieceCount = pieceCount + X_counts[i] 
+@2667:110000     w2667: ad   w0000     ; 
+@2670:040347            ts   pieceCount     ;  
+@2671:132667            ao   w2667     ; i++ 
+@2672:130042            ao   counter0     ; counted one more 
+@2673:114040            su   CONST_6     ; are we done yet? 
+@2674:072666            cp   i2666     ; not done yet 
+
+@2675:100000            ca   w0000     ; clear counter for next use 
+@2676:040042            ts   counter0     ;  
+@2677:074000     w2677: sp   w0000     ; return 
+
+
+@2700:100347     i2700: ca   pieceCount     ; see if all pieces are gone 
+						.print "(0o2700) Machines turn" ;
+@2701:114000            su   w0000     ;  
+@2702:072454            cp   printYouWin     ; if none left, then the human won
+
+                        ; otherwise, machine's turn continues
+@2703:100000            ca   w0000     ; counter1 = 0
+@2704:040054            ts   counter1     ;
+
+						; divide all X_counts by (n+1)
+						; set all X_tensDigits = 0 (since the divisioni algorithm increments these)
+@2705:040327            ts   A_tensDigit     ; transfer to storage 
+@2706:040330            ts   B_tensDigit     ; transfer to storage 
+@2707:040331            ts   C_tensDigit     ; transfer to storage 
+@2710:040332            ts   D_tensDigit     ; transfer to storage 
+@2711:040333            ts   E_tensDigit     ; transfer to storage 
+@2712:040334            ts   F_tensDigit     ; transfer to storage 
+@2713:040335            ts   G_tensDigit     ; transfer to storage 
+@2714:040336            ts   H_tensDigit     ; transfer to storage 
+@2715:100242            ca   nPlus1     ; get n+1 as divisor 
+@2716:042720            ts   w2720     ; save as longDiv parameter 
+@2717:074517            sp   longDiv     ; call longDiv 
+@2720:000000     w2720: .word 0o0       ; longDiv param: divisor (n+1)
+@2721:000255            .word 0o255     ; dividends = X_counts
+@2722:000265            .word 0o265     ; remainders => X_np1_rems 
+@2723:000337            .word 0o337     ; quotients => X_onesDigits
+
+						.print "(0o2723) X_np1_rems: A=%d B=%d C=%d D=%d E=%d F=%d G=%d H=%d",0o0265, 0o0266, 0o0267, 0o0270, 0o0271, 0o0272, 0o0273, 0o0274;
+
+@2724:077552            sp   cleanCounts     ; make sure all X_np1_rems >= 0 
+@2725:000265            .word 0o265     ; parameter - points to A_np1_rem
+
+; count the total number of set bits in all of the remainders of dividing the X_counts by (n+1)
+;  store the results in bitXcounts
+;  given a 16-bit binary number with MSB = bit 15
+;  this tests bits 0-6 in descending order
+;  
+;  counter0 counts the 8 groups (A thru H)
+;  counter1 counts the 7 possible bits to test
+;
+;  inner loop goes group by group
+;  outer loop goes bit by bit
+;
+						; outer loop
+@2726:100000     nextBit: 		ca   w0000     		; reset group counter
+@2727:040042            		ts   counter0   
+@2730:040275     bitCount_ptr: 	ts   bit6count 		; pointer to storage for bit count 
+													; set bit count initially = 0  
+
+						; inner loop
+@2731:100265     nextGroup: 	ca   A_np1_rem     	; get X_np1_rem value
+												   	; this is also a pointer to index by group
+@2732:170011     bitShift: 		clc  0o00011   		; shift bit to be tested into position
+												 	; this is incremented each time through outer loop
+@2733:072767            		cp   bitIsSet    	; branch if bit set 
+
+@2734:132731     continueInner: ao   nextGroup     	; point to next group 
+@2735:130042            		ao   counter0     	; one more group checked 
+@2736:114043            		su   CONST_7     	; see if done with all groups 
+@2737:072731            		cp   nextGroup     	; if not, go to next group 
+
+						; next bit in outer loop
+@2740:100000            		ca   w0000     		; reset group counter
+@2741:040042            		ts   counter0     	;  
+@2742:132730            		ao   bitCount_ptr   ; point to next bit counter 
+@2743:132767            		ao   bitIsSet     	;  
+@2744:132732            		ao   bitShift     	; test next bit 
+@2745:100045            		ca   CONST_0o0265   ; reset group pointer to point to A_np1_rem 
+@2746:046731            		td   nextGroup     	;  
+@2747:130054            		ao   counter1     	; next bit 
+@2750:114040            		su   CONST_6     	; done with all bits
+@2751:072726            		cp   nextBit     	; if not, test next bit 
+
+						; all done counting bits - reset pointers, counters, etc.
+@2752:100000            		ca   w0000     		; counter1 = 0 
+@2753:040054            		ts   counter1     	; 
+@2754:100050            		ca   CONST_0o0275   ; reset pointers to A_np1_rem 
+@2755:046730            		td   bitCount_ptr   ;  
+@2756:046767            		td   bitIsSet     	;  
+@2757:100210            		ca   CONST_9d     	; restore bit shift to original setting 
+@2760:046732            		td   bitShift     	;  
+@2761:100000            		ca   w0000     		; clear the 7th bit count 
+@2762:040304            		ts   bitn1count     ; this would be "bit -1"
+													; need to clear it because the long division
+													; routine will operate on it (since it expects 8 groups) 
+
+@2763:100057            		ca   m     			; use m+1 as divisor 
+@2764:110052            		ad   CONST_1a     	;  
+@2765:042772            		ts   w2772     		; save as longDiv parameter 
+@2766:076771            		sp   continue_ww     		; sub-program 
+
+@2767:130275     bitIsSet: 		ao   bit6count 		; increment the bit set count for this group
+													; this pointer is incremented by the outer loop
+@2770:076734            		sp   continueInner  ; 
+
+
+						; continue with computer's turn
+						; divide the bitXcounts by (m+1)
+						;  quotients in X_onesDigit and are cleared
+						;  remainders in bitXcount_rem
+						
+								.print "(0o2771) BitCounts: bit6=%d bit5=%d bit4=%d bit3=%d bit2=%d bit1=%d bit0=%d", 0o0275, 0o0276, 0o0277, 0o0300, 0o0301, 0o0302, 0o0303;
+								
+@2771:074517     continue_ww: 	sp   longDiv     	; long division 
+@2772:000000     w2772: 		.word 0o0       	; longDiv param: divisor (m+1) 
+@2773:000275            		.word 0o275     	; dividends = bitXcounts
+@2774:000305            		.word 0o305     	; remainders => bitXcount_rems
+@2775:000337            		.word 0o337     	; quotients => X_onesDigits
+
+@2776:077552            		sp   cleanCounts    ; be sure all bitXcount_rems >= 0 
+@2777:000305            		si   0o305     		;  
+@3000:100000            		ca   w0000     		; clear counter and quotients 
+@3001:040042            		ts   counter0     	; transfer to storage 
+@3002:040337            		ts   A_onesDigit    ; transfer to storage 
+@3003:040340            		ts   B_onesDigit    ; transfer to storage 
+@3004:040341            		ts   C_onesDigit    ; transfer to storage 
+@3005:040342            		ts   D_onesDigit    ; transfer to storage 
+@3006:040343            		ts   E_onesDigit    ; transfer to storage 
+@3007:040344            		ts   F_onesDigit    ; transfer to storage 
+@3010:040345            		ts   G_onesDigit    ; transfer to storage 
+@3011:040346            		ts   H_onesDigit    ; transfer to storage 
+
+@3012:040245            		ts   nonZeroBCaddr0     ; transfer to storage 
+@3013:040246            		ts   nonZeroBCaddr1     ; transfer to storage 
+@3014:040247           			ts   nonZeroBCaddr2     ; transfer to storage 
+@3015:040250            		ts   nonZeroBCaddr3     ; transfer to storage 
+@3016:040251            		ts   nonZeroBCaddr4     ; transfer to storage 
+@3017:040252            		ts   nonZeroBCaddr5     ; transfer to storage 
+@3020:040253            		ts   nonZeroBCaddr6     ; transfer to storage 
+@3021:040254            		ts   nonZeroBCaddr7     ; transfer to storage 
+
+@3022:040314            		ts   bitn1count_rem ; clear 'bit -1' remainder 
+ 
+ 								.print "(0o3023) bitcounts mod(m+1) b6=%d b5=%d b4=%d b3=%d b2=%d b1=%d b0=%d", 0o0305, 0o0306, 0o0307, 0o0310, 0o0311, 0o0312, 0o0313;
+ 								
+@3023:076655            		sp   countPieces	; sum up bitXcounts % (m+1) 
+@3024:000305            		si   0o305     		; param: start of bitXcount_rems 
+@3025:100347            		ca   pieceCount     ; see if this sum = 0  
+@3026:114000            		su   w0000     		;  
+@3027:073531            		cp   takeJustOne    ; if so, take just one piece 
+
+						; loop over all bitXcount_rems and save the addresses of 
+						; the non-zero ones in nonZeroBCaddr0 - 6 as needed
+						; go from highest order to lowest order
+					bc_rem_ptr:
+@3030:100305   		bc_rem_loop: 	ca   bit6count_rem  ; clear and add @@JumpedToBy a3041 WrittenBy next_bc_rem a3045 ReadBy a3033 next_bc_rem 
+@3031:114000            			su   w0000     		; is bitXcount_rem == 0? 
+@3032:073036            			cp   next_bc_rem    ; if == 0, go on to next one
+
+						; it's != 0 so save the address of the bitXcount_rem
+@3033:103030            			ca   bc_rem_ptr      ; get address of non-zero bitXcount_rem 
+@3034:044245     nz_bc_rem_ptr: 	td   nonZeroBCaddr0  ; save to nonZeroBCaddrX 
+@3035:133034            			ao   nz_bc_rem_ptr   ; point to next nonZeroBXCaddrX
+@3036:133030     next_bc_rem: 		ao   bc_rem_ptr      ; point to next bitXcount_rem 
+@3037:130042            			ao   counter0        ; have we done all 7 bitXcount_rems?
+@3040:114040            			su   CONST_6         ;  
+@3041:073030            			cp   bc_rem_loop     ; if not, do next bitXcount_rem 
+                        ; reset the pointer and counter for the next time the machine moves
+@3042:100000                        ca   w0000           ; reset counter 
+@3043:040042                        ts   counter0      
+@3044:100051                        ca   CONST_0o0305           ; address of bit6count_rem 
+@3045:047030                        td   bc_rem_ptr      ; save to pointer 
+@3046:100245     r3046:             ca   nonZeroBCaddr0  ; this value is the start value of nz_bc_rem_ptr
+                                                         ;   here, it is just used as a constant 
+@3047:103046                        ca   r3046           ; read in instruction code 
+@3050:047034                        td   nz_bc_rem_ptr   ; restore pointer 
+
+									.print "(0o3050) NZBCR %o %o %o %o %o %o %o %o", 0o0245, 0o0246, 0o0247, 0o0250, 0o0251, 0o0252, 0o0253, 0o0254;
+									
+                        ; loop over the addresses of pointers to non-zero bit count remainders
+                 nz_bc_addr_loop:
+@3051:100245     nz_bc_addr_ptr1:   ca   nonZeroBCaddr0  ; start from highest-order bit that is non-zero and get the address 
+@3052:114051                        su   CONST_0o0305    ; subtract starting address (if we're on bit 6, this = 0; bit 5 => 1, etc)
+@3053:110052                        ad   CONST_1a        ; +1 
+                                                         ; now, if on bit 6 this = 1; bit 5 => 2 etc
+@3054:043063                        ts   bit_param       ; save as subroutine parameter 
+
+						.print "(0o3054) bit=%d", 0o3063;
+						
+						; calculate the number of X_np1_rems you need to find
+@3055:100245     nz_bc_addr_ptr2: 	ca   nonZeroBCaddr0  ; get current bit count remainder 
+@3056:047057            			td   sub_instr       ; set up subtraction instruction 
+@3057:104000     sub_instr: 		cs   w0000     		 ; AC = - (current bit count remainder) 
+@3060:110052            			ad   CONST_1a        ; add 1
+@3061:040347            			ts   pieceCount      ; parameter for bitFinder
+														 ; to find q X_np1_rems, set this to -(q-1) 
+
+						.print "(0o3061) pieceCount=%d", pieceCount;
+
+@3062:077355            			sp   bitFinder       ; find q X_np1_rems with bit set (see above for translations)
+@3063:000000     bit_param: 		.word 0o0            ;  parameter: bit 
+@3064:100246     nz_bc_addr_ptr3: 	ca   nonZeroBCaddr1  ; see if next nz_bc_addr is empty (so we're on the last one) 
+@3065:114000            			su   w0000           ;  
+@3066:073114            			cp   calc_cleanup    ; all done checking the nz_bc_addrs; clean up 
+					
+						; more nz_bc_addrs to check
+@3067:100000     r3067: 			ca   w0000           ; clear pieceCount 
+@3070:040347            			ts   pieceCount      ;  
+						; loop over all 8 X_tens_digits (results of bitFinder)
+						; this will pull out addresses of X_np1_rems that have useful bits set
+						; and have already been found to be useful
+						; flag them - by setting sign bit - so they won't be "found" again
+				 flag_loop:
+@3071:100327     flag_loop_ptr: 	ca   A_tensDigit    ; get next address of X_np1_rem with bit set 
+@3072:047074            			td   check_ptr      ; save to pointers 
+@3073:047077            			td   flag_ptr       ;  
+@3074:100000     check_ptr: 		ca   w0000          ; get selected X_np1_rem 
+@3075:073100            			cp   flag_set       ; don't flag it if it has already been flagged 
+								; it was not flagged; flag it
+@3076:113067            			ad   r3067          ; set high order flag bit (ca 0 = 1000000) 
+@3077:040000     flag_ptr: 			ts   w0000          ; save back to selected X_np1_rem
+@3100:133071     flag_set: 			ao   flag_loop_ptr  ; point to next X_tens_digit (next address of X_np1_rem with bit set)
+@3101:130042            			ao   counter0       ; have we done all 8?
+@3102:114043            			su   CONST_7        ; subtract 
+@3103:073071            			cp   flag_loop      ; go around if we haven't
+
+								; get ready for next NZBC pointer
+@3104:100211            			ca   CONST_0o327    ; reset flag_loop_ptr 
+@3105:047071            			td   flag_loop_ptr  ;  
+@3106:100000            			ca   w0000          ; clear counter0 
+@3107:040042            			ts   counter0       ;  
+@3110:133051            			ao   nz_bc_addr_ptr1 ; update pointers 
+@3111:133055            			ao   nz_bc_addr_ptr2     ;  
+@3112:133064            			ao   nz_bc_addr_ptr3     ;  
+@3113:077051            			sp   nz_bc_addr_loop     ; go to top of loop 
+
+						; finished finding addresses of X_np1_rems with appropriate bits set
+						; need to clean up for the next time this is called
+@3114:103046     calc_cleanup: 		ca   r3046         ; get original instruction 
+@3115:047051            			td   nz_bc_addr_ptr1 ; restore pointers 
+@3116:047055            			td   nz_bc_addr_ptr2 ;  
+@3117:110052            			ad   CONST_1a        ; point to next one 
+@3120:047064            			td   nz_bc_addr_ptr3 ;  
+@3121:100211            			ca   CONST_0o327     ; restore pointer 
+@3122:047404            			td   save_ptr        ; 
+@3123:100000            			ca   w0000           ; clear pieceCount 
+@3124:040347            			ts   pieceCount      ;  
+
+						; clean all the set sign bit (MSB) flags in the X_np1_rems
+				 clr_flg_loop:
+@3125:100265     clr_flg_ptr: 		ca   A_np1_rem      ; get selected X_np1_rem 
+@3126:073142            			cp   flg_set        ; branch if flag already set 
+
+@3127:133125     next_to_clr: 		ao   clr_flg_ptr    ; update pointers 
+@3130:133143            			ao   flg_sav_ptr    ;  
+@3131:130042            			ao   counter0       ; have we checked all 8?
+@3132:114043            			su   CONST_7        ;  
+@3133:073125            			cp   clr_flg_loop   ; go around again if not 
+
+							; all done; reset pointers etc
+@3134:100000            			ca   w0000          ; clear counter0 
+@3135:040042            			ts   counter0       ; 
+@3136:100045            			ca   CONST_0o0265   ; reset pointers 
+@3137:047143            			td   flg_sav_ptr    ;  
+@3140:047125            			td   clr_flg_ptr    ;  
+@3141:077145            			sp   next_step          ; sub-program 
+
+@3142:117067     flg_set: 			su   r3067          ; clear sign (MSB) bit 
+@3143:040265     flg_sav_ptr: 		ts   A_np1_rem      ; write back to selected X_np1_rem 
+@3144:077127            			sp   next_to_clr    ; go around again 
+
+; at this point, the machine has:
+; (1) calculated X_counts % (n + 1) => X_np1_rems
+; (2) calculated the count of each bit set in the X_np1_rems => bitXcounts
+; (3) calculated bitXcounts % (m + 1) => bitXcount_rems
+; (4) searched through the bitXcount_rems for non-zero values
+;     stored pointers to these bitXcount_rems in nonZeroBCaddrXs
+;       	LOCATION			CONTENTS
+;			nonZeroBCaddr0		address of highest-order non-zero bitXcount_rem
+; 			nonZeroBCaddr1		address of next lower order non-zero bitXcount_rem
+;			etc.
+; (5) going bit-by-bit from highest order to lowest, search through the X_np1_rems 
+;     to find up to bitXcount_rem of these that have bitX set 
+;     stored pointers to these X_np1_rems in order of discovery (cumulative across all bits)
+;     in X_tensDigits like this:
+;       	LOCATION			CONTENTS
+;			A_tensDigit			address of first X_np1_rem found with one of the "useful*" bits set
+;			B_tensDigit			address of second X_np1_rem found with one of the "useful*" bit set
+;			etc.
+;     * "useful" = a bit that is not zero in the bitXcount_rems
+; 
+
+				; process the X_np1_rems using the pointers in X_tensDigits
+				; save results in X_onesDigits
+@3145:100000     next_step: 		ca   w0000           ; clear result storage location
+@3146:040337     result_ptr: 		ts   A_onesDigit     ;  
+
+						; determine which bit to examine
+@3147:100245     nzbcr_ptr_ptr: 	ca   nonZeroBCaddr0  ; get address of desired bitXcount_rem 
+@3150:114051            			su   CONST_0o0305    ; subtract base address 
+														 ; AC = 0 => bit6; AC = 1 => bit5; etc
+@3151:110052            			ad   CONST_1a     	 ; AC = 1 => bit6; AC = 2 => bit5, etc 
+@3152:043157            			ts   bit_to_test     ; save as subroutine param 
+
+						; determine how many X_np1_rems to search 
+@3153:104057            			cs   m     			 ; AC = -m 
+@3154:110052            			ad   CONST_1a        ; AC = -m + 1 
+@3155:040042            			ts   counter0        ; save in counter0 as subroutine param 
+														 ; subroutine will search thru m X_np1_rems
+@3156:077411            			sp   xnpr_bitTester  ;   and put count of set bits in X_onesDigit
+@3157:000000     bit_to_test: 		.word 0o0            ; subroutine param bit to test
+
+						; move on to next bit to test 
+@3160:133146            			ao   result_ptr      ; point to next place to store bit counts 
+@3161:133147            			ao   nzbcr_ptr_ptr   ; point to next nzbcr_ptr 
+@3162:103147            			ca   nzbcr_ptr_ptr   ; dereference it 
+@3163:047164            			td   w3164           ; 
+@3164:100000     w3164:             ca   w0000           ; see if nzbcr_ptr == 0 (no more nzbcrs to test) 
+@3165:114000            			su   w0000           ;    (all done looping over nzbcrs)
+@3166:073170            			cp   restore_ptrs     		 ; go on if done 
+@3167:077145            			sp   next_step       ; otherswise, test the next one 
+
+						; done with this loop; restore pointers
+@3170:100212     restore_ptrs: 		ca   CONST_0o337     ; get start value of result ptr (A_tensDigit) 
+@3171:047146            			td   result_ptr      ; restore value 
+@3172:103046            			ca   r3046           ; get start value of nzbcr_ptr_ptr 
+@3173:047147            			td   nzbcr_ptr_ptr   ; restore value 
+
+						.print "(0o3173) X_onesDigits A=%d B=%d C=%d D=%d E=%d F=%d G=%d H=%d", 0o0337, 0o0340, 0o0341, 0o0342, 0o0343, 0o0344, 0o0345, 0o0346;
+
+; at this point, the machine has - in addition to the things above:
+; in the X_onesDigits, the actual bit counts (not bit count remainders mod(m+1))
+;  of the highest-order "useful" (non-zero bit count remainder) bits
+;  in order from highest order to lowest
+;
+
+                        ; compare actual bit counts with bit count remainders
+                        ;  loop over X_onesDigits until you hit a 0 (no more remainders to check)
+                 cbc_loop:
+@3174:100245     bcr_ptr_ptr:       ca   nonZeroBCaddr0  ; get pointer to NZBCR
+@3175:047176                        td   w3176           ; dereference it 
+@3176:100000     w3176:             ca   w0000           ; get NZBCR 
+@3177:114337     bc_ptr:            su   A_onesDigit     ; compare to actual bit count 
+@3200:073214                        cp   a_ge_r          ; jump if remainder - actual ≤ 0
+                                                         ;   that is if actual ≥ remainder 
+@3201:077246                        sp   a_lt_r          ; else actual < remainder 
+
+                        ; update pointers etc for next comparison
+@3202:077552     next_bc:           sp   cleanCounts     ; set all counts ≤ 0 to 0 (clear flagged ones?)  
+@3203:000265                        .word 0o265          ; param for cleanCounts = X_np1_rems 
+@3204:133174                        ao   bcr_ptr_ptr     ; increment pointers 
+@3205:133177                        ao   bc_ptr          ;  
+@3206:103174                        ca   bcr_ptr_ptr     ; get pointer to next bcr pointer 
+@3207:047210                        td   w3210           ; dereference pointer 
+@3210:100000     w3210:             ca   w0000           ;  
+@3211:114000                        su   w0000           ; is it pointing to 0? then we're done 
+@3212:073304                        cp   make_move           ; we're done - move on to next computation 
+@3213:077174                        sp   cbc_loop        ; not done, so go to next NZBC 
+
+                            ; actual bit count ≥ bit count remainder (m+1)
+                                ; change bit set and bit clear functions
+@3214:103443     a_ge_r:            ca   addToMove      ; set bitSet_fn_ptr to addToMove 
+@3215:103214                        ca   a_ge_r          ;  
+@3216:047423                        td   bitSet_fn_ptr   ;  
+@3217:133442                        ao   bitClr_fn1      ; alter bitClr_fn1 so that it loops back to 0o3426
+                                                         ;  this means that, each time thru loop, it does not 
+                                                         ;  increment counter0 so the loop in xnpr_bitTester
+                                                         ;  must break out differently
+                                ; set up for call to xnpr_bitTester
+                                ;  search through current bit count remainder # of X_np1_rems                           
+@3220:103174                        ca   bcr_ptr_ptr     ; get pointer to current BCR_ptr
+@3221:047222                        td   w3222           ; dereference it 2x to the actual BCR
+@3222:100000     w3222:             ca   w0000           ; 
+@3223:047224                        td   w3224           ;  
+@3224:104000     w3224:             cs   w0000           ; AC = - (current BCR)
+@3225:110052                        ad   CONST_1a        ; AC = - (current BCR + 1)
+@3226:040042                        ts   counter0        ; set up to search thru current BCR X_np1_rems 
+                                ; get bit to check
+@3227:103174                        ca   bcr_ptr_ptr     ; get pointer to current BCR 
+@3230:047231                        td   w3231           ; dereference it to get pointer value (address)
+@3231:100000     w3231:             ca   w0000           ;  
+@3232:114051                        su   CONST_0o0305    ; subtract offset to get bit number
+@3233:110052                        ad   CONST_1a        ; adjust bit number for xnpr_bitTester 
+@3234:043236                        ts   w3236           ;  
+@3235:077411                        sp   xnpr_bitTester  ; sub-program 
+@3236:000000     w3236:             .word 0o0            ;  param for xnpr_bitTester
+
+                                ; restore bit set and clear function pointers
+@3237:103436     r3237:             ca   bitSet_fn1      ; restore bitSet_fn_ptr to point to bitSet_fn1
+@3240:103237                        ca   r3237           ;  
+@3241:047423                        td   bitSet_fn_ptr   ; 
+@3242:103442                        ca   bitClr_fn1      ; restore branch instruction in bitClr_fn1 
+@3243:114052                        su   CONST_1a        ;   so that counter0 is incremented each time thru loop 
+@3244:043442                        ts   bitClr_fn1      ;  
+@3245:077202                        sp   next_bc         ; next bit count 
+    
+                            ; actual bit count is less than remainder % (m+1)
+                                ; change bit set and clear functions
+@3246:103442     a_lt_r:            ca   bitClr_fn1      ; set bitSet_fn_ptr to bitClr_fn1 
+@3247:103246                        ca   a_lt_r          ; 
+@3250:047423                        td   bitSet_fn_ptr   ; 
+@3251:103476     r3251:             ca   bitClr_fn2      ; set bitClr_fn_ptr to bitClr_fn2 
+@3252:103251                        ca   r3251           ; 
+@3253:047424                        td   bitClr_fn_ptr   ; 
+@3254:133442                        ao   bitClr_fn1      ; alter bitClr_fn1 so that it loops back to 0o3426
+                                                         ;  this means that, each time thru loop, it does not 
+                                                         ;  increment counter0 so the loop in xnpr_bitTester
+                                                         ;  must break out differently
+                                ; set up for call to xnpr_bitTester 
+                                ; first, calculate number of X_np1_rems to search
+@3255:103174                        ca   bcr_ptr_ptr     ; get current bcr_ptr 
+@3256:047257                        td   w3257           ; dereference 2x to get actuall bcr value 
+@3257:100000     w3257:             ca   w0000           ;  
+@3260:047262                        td   w3262           ; 
+@3261:104057                        cs   m               ; AC = -m 
+@3262:110000     w3262:             ad   w0000           ; AC = -m + (current BCR)
+@3263:040042                        ts   counter0        ; save as param for xnpr_bitTester
+                                                         ;  it will check m - (current BCR) + 1 X_np1_rems
+                                ; get bit to check          
+@3264:103174                        ca   bcr_ptr_ptr     ; get pointer to current BCR  
+@3265:047266                        td   w3266           ; dereference it to get pointer value (address) 
+@3266:100000     w3266:             ca   w0000           ;  
+@3267:114051                        su   CONST_0o0305    ; subtract offset
+@3270:110052                        ad   CONST_1a        ; adjust bit number for xnpr_bitTester 
+@3271:043273                        ts   w3273           ;  
+@3272:077411                        sp   xnpr_bitTester  ; sub-program 
+@3273:000000     w3273:             .word 0o0            ;  bit to test param for xnpr_bitTester
+
+                                ; restore bit set and clear pointers and functions
+@3274:103246                        ca   a_lt_r          ; restore bitClr_fn_ptr 
+@3275:047424                        td   bitClr_fn_ptr   ;  
+@3276:103237                        ca   r3237           ; restore bitSet_fn_ptr 
+@3277:047423                        td   bitSet_fn_ptr   ; 
+@3300:103442                        ca   bitClr_fn1      ; restore branch instruction in bitClr_fn1  
+@3301:114052                        su   CONST_1a        ;  so that counter0 is incremented each time thru loop 
+@3302:043442                        ts   bitClr_fn1      ;  
+@3303:077202                        sp   next_bc         ; next bit count 
+
+                        .print "(0o3304) X_temps: A=%d B=%d C=%d D=%d E=%d F=%d G=%d H=%d", 0o0317, 0o0320, 0o0321, 0o0322, 0o0323, 0o0324, 0o0325, 0o0326;
+
+@3304:103046     make_move:         ca   r3046     ; clear and add @@JumpedToBy a3212 
+@3305:047174            td   bcr_ptr_ptr     ; transfer digits 
+@3306:100212            ca   CONST_0o337     ; clear and add 
+@3307:047177            td   bc_ptr     ; transfer digits 
+@3310:100317     i3310: ca   A_temp     ; clear and add @@JumpedToBy a3325 WrittenBy a3317 a3334 ReadBy a3317 
+@3311:114243            su   n     ; subtract 
+@3312:073314            cp   i3314     ; conditional program 
+
+@3313:074000            sp   w0000     ; sub-program 
+@3314:100255     i3314: ca   A_count     ; clear and add @@JumpedToBy a3312 WrittenBy a3320 a3331 ReadBy a3320 
+@3315:114317     w3315: su   A_temp     ; subtract @@WrittenBy a3321 a3335 ReadBy a3321 
+@3316:040255     w3316: ts   A_count     ; transfer to storage @@WrittenBy a3322 a3332 ReadBy a3322 
+@3317:133310            ao   i3310     ; add one 
+@3320:133314            ao   i3314     ; add one 
+@3321:133315            ao   w3315     ; add one 
+@3322:133316            ao   w3316     ; add one 
+@3323:130042            ao   counter0     ; add one 
+@3324:114043            su   CONST_7     ; subtract 
+@3325:073310            cp   i3310     ; conditional program 
+
+@3326:100000            ca   w0000     ; clear and add 
+@3327:040042            ts   counter0     ; transfer to storage 
+@3330:100044            ca   CONST_255     ; clear and add 
+@3331:047314            td   i3314     ; transfer digits 
+@3332:047316            td   w3316     ; transfer digits 
+@3333:100053            ca   CONST_317     ; clear and add 
+@3334:047310            td   i3310     ; transfer digits 
+@3335:047315            td   w3315     ; transfer digits 
+@3336:100000            ca   w0000     ; clear and add 
+@3337:040317            ts   A_temp     ; transfer to storage 
+@3340:040320            ts   B_temp     ; transfer to storage 
+@3341:040321            ts   C_temp     ; transfer to storage 
+@3342:040322            ts   D_temp     ; transfer to storage 
+@3343:040323            ts   E_temp     ; transfer to storage 
+@3344:040324            ts   F_temp     ; transfer to storage 
+@3345:040325            ts   G_temp     ; transfer to storage 
+@3346:040326            ts   H_temp     ; transfer to storage 
+@3347:076655            sp   countPieces     ; sub-program 
+@3350:000255            si   0o255     ; select I/O: unknown i/o device 
+@3351:100347            ca   pieceCount     ; clear and add 
+@3352:114000            su   w0000     ; subtract 
+@3353:072471            cp   i2471     ; conditional program 
+
+@3354:074705            sp   drawLetters     ; sub-program 
+
+                        ; subroutine to find a given number X_np1_rems which have a given bit set
+                        ; save results in X_tensDigits as you find them
+                        ;  	RESULTS ARE CUMULATIVE OVER REPEATED CALLS TO THIS ROUTINE
+                        ;    (reset between machine turns)
+                        ;  ** Do not save the address of the X_np1_rem if it's sign bit (MSB) is set **
+                        ; parameter "bit" 1 => bit6, 2 => bit5, etc.
+                        ; parameter "number to find" "q" specified in pieceCount
+                        ;    pieceCount = -(q-1) 
+                        ;    to find 2, pieceCount = -1
+@3355:053360     bitFinder:    		ta   bitToFind     ; address of "bit" parameter 
+@3356:053400                    	ta   bf_retAddr     ; save return address 
+@3357:133400                    	ao   bf_retAddr     ; point to next instruction
+ 
+@3360:100000     bitToFind:         ca   w0000             ; get bit parameter 
+@3361:110233                    	ad   CONST_0o10        ; +8 so now 9 => bit6, 10 => bit5 etc 
+@3362:047364                    	td   clc_instr         ; configure shift instruction
+@3363:100265     group_pointer1: 	ca   A_np1_rem         ; clear and add @@JumpedToBy a3372 WrittenBy group_loop a3376 ReadBy group_loop a3403 
+@3364:170000     clc_instr:         clc  0o00000           ; put selected bit into most-sig position 
+@3365:073401                    	cp   group_pointer2    ; branch if set 
+
+                            ; bit was 0, try next one
+@3366:133363     group_loop:        ao   group_pointer1    ; increment pointers 
+@3367:133401                    	ao   group_pointer2    ;  
+@3370:130042            			ao   counter0          ; increment loop counter
+@3371:114043            			su   CONST_7     	   ; have we looped over all 8 groups yet? 
+@3372:073363            			cp   group_pointer1    ; if not, go around again 
+
+                            ; all done, restore pointers to original states
+@3373:100000     bf_cleanup: 		ca   w0000             ; clear counter0 
+@3374:040042            			ts   counter0          ; 
+@3375:100045            			ca   CONST_0o0265      ; restore pointers to address of A_np1_rem 
+@3376:047363            			td   group_pointer1    ;  
+@3377:047401            			td   group_pointer2    ; 
+
+									.print "(0o3377) found bit set in %o %o %o %o %o %o %o %o",0o0327,0o0330,0o0331,0o0332,0o0333,0o0334,0o0335,0o0336;
+@3400:074000     bf_retAddr: 		sp   w0000             ; return 
+
+							; bit was set
+								; check for flag (sign bit set)
+@3401:100265     group_pointer2: 	ca   A_np1_rem         ; get current X_np1_rem 
+@3402:073406            			cp   skip_ptr_save     ; branch if flag bit set 
+
+								; flag not set (usual situation)
+								; save address of X_np1_rem that had this bit set in X_tens_digit[save_ptr]
+@3403:103363            			ca   group_pointer1    ; get address of X_np1_rem that has bit set 
+@3404:044327     save_ptr: 			td   A_tensDigit       ; save in indexed Y_tensDigit 
+@3405:133404            			ao   save_ptr          ; point to next _tensDigit 
+
+@3406:130347     skip_ptr_save: 	ao   pieceCount        ; one more set bit counted
+@3407:073366            			cp   group_loop        ; if you haven't found all you need; keep going 
+
+							; you've found all the X_np1_rems you need
+@3410:077373            			sp   bf_cleanup        ; cleanup and exit 
+
+					; subroutine to examine bits set in X_np1_rems that have 'useful' bits set
+					; 'useful' = a bit that is not zero in the bitXcount_rems 
+					; the bit to test is specified in the btt parameter (1 => bit6, 2=> bit5 etc)
+					; the number of X_np1_rems to search is specified in counter0
+					;  it searches (-counter0) + 1 X_np1_rems
+					;  since counter0 is set to -m + 1, this searches m X_np1_rems
+					;
+					; this is a multi-purpose subroutine. 
+					;  depending on the function pointers at 0o3423 and 0o3424, it responds differently
+					;  when the specified bit is set or clear.
+					;  - when called at 0o3156, it counts the number of bits set and saves them in X_onesDigits
+@3411:053414     xnpr_bitTester: 	ta   btt       		   ; parameter address (bit to test) 
+@3412:053435            			ta   returnAddress     ; save return address 
+@3413:133435            			ao   returnAddress     ;  
+@3414:100000     btt: 				ca   w0000             ; get # for bit to test (AC = 1 => bit6; AC = 2 => bit5, etc ) 
+@3415:110233            			ad   CONST_0o10        ; set up shift instruction to select proper bit
+@3416:047422            			td   shifter	       ;  
+				 next_xnpr_ptr:
+@3417:100327     xnpr_ptr_ptr: 		ca   A_tensDigit       ; get pointer to selected X_np1_rem that has a useful bit set 
+@3420:047421            			td   xnpr_ptr     	   ; set up to get the X_np1_rem 
+@3421:100000     xnpr_ptr: 			ca   w0000             ; get desired X_np1_rem 
+@3422:170000     shifter: 			clc  0o00000           ; put desired bit in MSbit  
+@3423:073436     bitSet_fn_ptr: 	cp   bitSet_fn1        ; jump if bit set @@WrittenBy a3216 a3241 a3250 a3277 
+														   ;   jump target is variable!
+														   ;   first pass: bitSet_fn1
+						; bit is not set
+@3424:077442     bitClr_fn_ptr: 	sp   bitClr_fn1        ; jump if bit is clear @@WrittenBy a3253 a3275 
+														   ;   jump target is variable!
+														   ;     - first pass: bitSet_fn1, bitClr_fn1
+														   ;         puts counts of set bits in X_onesDigits in bit order
+														   ;           highest order non-zero bit count in A_onesDigit
+														   ;            next in B_onesDigit
+
+@3425:130042     next_xnpr:			ao   counter0     	   ; one more X_np1_rem searched 
+@3426:133417            			ao   xnpr_ptr_ptr      ; point to next X_np1_rem 
+@3427:100042            			ca   counter0          ; see if done (counter == 0)
+@3430:073417            			cp   next_xnpr_ptr     ; go around again if not 
+
+						; all done, reset pointer and counter
+@3431:100211            			ca   CONST_0o327      ; reset pointer 
+@3432:047417            			td   xnpr_ptr_ptr     ;  
+@3433:100000            			ca   w0000     		  ; clear counter 
+@3434:040042            			ts   counter0         ; 
+@3435:074000     returnAddress: 	sp   w0000    ; return to caller 
+
+@3436:103146     bitSet_fn1: 		ca   result_ptr       ; get pointer to result
+@3437:047440            			td   r_ptr            ; dereference pointer 
+@3440:130000     r_ptr: 			ao   w0000            ; increment result in X_onesDigit
+@3441:077425            			sp   next_xnpr        ; test next X_np1_rem 
+
+@3442:077425     bitClr_fn1: 		sp   next_xnpr        ; sub-program @@JumpedToBy bitClr_fn_ptr WrittenBy a3217 a3244 a3254 a3302 ReadBy a3217 a3242 a_lt_r a3254 a3300 
+
+            ; this accumulates the machine's move part-by-part
+            ;  this takes the # of the bit that's being tested and converts
+            ;  that to a binary number with that bit set
+            ;    ex bit3 => 0 000 000 000 000 100 (0o000004)
+            ;    the binary # = 2^(bit number - 1)
+            ;  and then adds that to the growing total of tokens to remove
+            ;  in the appropriate X_temp
+            ;
+            ;  it also SUBTRACTS the move from the X_np1_rem
+            ;
+            ;  - a move is accumulated over repeated calls to this function in both
+            ;    X_temp and X_np1_rem
+            ;
+            ;  uses nonZeroBCAddr7 as a temp storage
+            ; 
+@3443:103422     addToMove:         ca   shifter          ; get shifter instruction to find which bit is being tested 
+@3444:044254                        td   nonZeroBCaddr7   ; save the digits - the amount to shift 
+@3445:104254                        cs   nonZeroBCaddr7   ; convert bit shift to bit being tested 
+@3446:110233                        ad   CONST_0o10       ;  
+@3447:110233                        ad   CONST_0o10       ; AC = # of bit being tested 
+@3450:047452                        td   w3452            ; prepare shift instruction  
+@3451:100052                        ca   CONST_1a         ; start with 1 in LSB to shift 
+@3452:155000     w3452:             slh  0o00000          ; shift left and hold @@WrittenBy a3450 
+@3453:160001                        srr  0o00001          ; AC = 2^((bit number) - 1) 
+@3454:040254                        ts   nonZeroBCaddr7   ; save value - this is the number of tokens to take
+
+                    ; update the X_np1_rem by REMOVING the chosen # of tokens
+@3455:103421                        ca   xnpr_ptr         ; get address of current X_np1_rem 
+@3456:047460                        td   w3460            ; set up pointers 
+@3457:047462                        td   w3462            ;  
+@3460:100000     w3460:             ca   w0000            ; AC = contents of X_np1_rem 
+@3461:114254                        su   nonZeroBCaddr7   ; update X_np1_rem with move
+@3462:040000     w3462:             ts   w0000            ; X_np1_rem = X_np1_rem - move
+
+                    ; use current X_np1_rem pointer to figure out which X_temp to modify
+@3463:103421                        ca   xnpr_ptr        ; AC = address of current X_np1_rem 
+@3464:114045                        su   CONST_0o0265    ; subtract offset
+@3465:110053                        ad   CONST_317       ; translate address to X_temp 
+                                                         ;  eg A_np1_rem => A_temp 
+@3466:047470                        td   w3470           ; set up pointers to X_temp 
+@3467:047472                        td   w3472           ;  
+@3470:100000     w3470:             ca   w0000           ; AC = X_temp 
+@3471:110254                        ad   nonZeroBCaddr7  ; AC = X_temp - move 
+@3472:040000     w3472:             ts   w0000           ; save updated X_temp
+                    
+                    ; clean up for next call 
+@3473:100000                        ca   w0000           ; clear temp variable 
+@3474:040254                        ts   nonZeroBCaddr7  ;  
+@3475:077425                        sp   next_xnpr       ; next call 
+
+
+            ; this accumulates the machine's move part-by-part
+            ;  this takes the # of the bit that's being tested and converts
+            ;  that to a binary number with that bit set
+            ;    ex bit3 => 0 000 000 000 000 100 (0o000004)
+            ;    the binary # = 2^(bit number - 1)
+            ;  and then adds that to the growing total of tokens to remove
+            ;  in the appropriate X_temp
+            ;
+            ;  it also ADDS the move from the X_np1_rem
+            ;
+            ;  - a move is accumulated over repeated calls to this function in both
+            ;    X_temp and X_np1_rem
+            ;
+            ;  uses nonZeroBCAddr7 as a temp storage
+            ; 
+@3476:103422     bitClr_fn2:        ca   shifter        ; get shifter instruction to determine which bit is being tested 
+@3477:044254                        td   nonZeroBCaddr7 ; save the digits - the # of bits to shift 
+@3500:104254                        cs   nonZeroBCaddr7 ; convert to # of bit being tested 
+@3501:110233                        ad   CONST_0o10     ;  
+@3502:110233                        ad   CONST_0o10     ;  AC = # of bit being tested
+@3503:047505                        td   w3505          ; prepare shift instruction 
+@3504:100052                        ca   CONST_1a       ; start with 1 in LSB 
+@3505:155000     w3505:             slh  0o00000        ;  
+@3506:160001                        srr  0o00001        ; AC = 2^((bit number) - 1) = the move
+@3507:040254                        ts   nonZeroBCaddr7 ; save move  
+
+                    ; update the X_np1_rem by ADDING the chosen # of tokens
+@3510:103421                        ca   xnpr_ptr       ; get address of current X_np1_rem 
+@3511:047513                        td   w3513          ; set up pointers 
+@3512:047515                        td   w3515          ;  
+@3513:100000     w3513:             ca   w0000          ; AC = current X_np1_rem 
+@3514:110254                        ad   nonZeroBCaddr7 ; add move
+@3515:040000     w3515:             ts   w0000          ; X_np1_rem = X_np1_rem + move 
+
+                    ; use current X_np1_rem pointer to figure out which X_temp to modify
+@3516:103421                        ca   xnpr_ptr       ; AC = address of current X_np1_rem
+@3517:114045                        su   CONST_0o0265   ; subtract offset
+@3520:110053                        ad   CONST_317      ; translate address to X_temp
+                                                        ;  eg A_np1_rem => A_temp 
+@3521:047523                        td   w3523          ; set up pointers 
+@3522:047525                        td   w3525          ;  
+@3523:100000     w3523:             ca   w0000          ; AC = X_temp 
+@3524:114254                        su   nonZeroBCaddr7 ; AC = X_temp - move 
+@3525:040000     w3525:             ts   w0000          ; save updated X_temp 
+
+                    ; clean up for next call 
+@3526:100000                        ca   w0000          ; clear temp variable 
+@3527:040254                        ts   nonZeroBCaddr7 ;  
+@3530:077425                        sp   next_xnpr      ; next call 
+
+; take just one piece from the first non-empty group and be done with machine's turn
+@3531:100255     takeJustOne: 	ca   A_count     	; check to see if group is empty
+													; this is a pointer that is incremented
+@3532:114000            		su   w0000     		;  
+@3533:073537            		cp   tryNextGroup   ; if so, try next group
+
+							; group is not empty, take just one piece from it
+@3534:114052            		su   CONST_1a     	;  take one
+@3535:040255     grp_ptr: 		ts   A_count     	;  
+@3536:077544            		sp   doneTakingOne  ; all done
+
+@3537:133531     tryNextGroup: 	ao   takeJustOne    ; point to next group 
+@3540:133535            		ao   grp_ptr     	;  
+@3541:130042            		ao   counter0     	; have we done all 8 groups? 
+@3542:114043            		su   CONST_7     	;  
+@3543:073531            		cp   takeJustOne    ; if not, try next group 
+
+							; all done taking one piece; need to clean up
+@3544:100000     doneTakingOne: ca   w0000     		; reset counter0 
+@3545:040042            		ts   counter0     	;  
+@3546:100044            		ca   CONST_255     	; restore pointers to A_count
+@3547:047531            		td   takeJustOne    ;  
+@3550:047535            		td   grp_ptr     	;  
+@3551:074705            		sp   drawLetters    ; return to main loop 
+
+; loops over all X_counts and any that are <= 0 are set to 0
+;   parameter is the starting address of the X_counts
+;  this may be to reset any flag bit (sometimes the sign bit is used as a flag)
+@3552:053557     cleanCounts: ta   w3557     ; point to parameter 
+@3553:053574            ta   w3574     ; save return address 
+@3554:133574            ao   w3574     ; increment to point to caller + 2 
+@3555:100000            ca   w0000     ; clear counter 
+@3556:040042            ts   counter0  ; 
+@3557:100000     w3557: ca   w0000     ; get start address of X_counts 
+@3560:047562            td   cleanLoop     ; save to pointer (i)
+@3561:047576            td   w3576     ; save to pointer (i)
+@3562:100000     cleanLoop: ca   w0000     ; get X_counts[i] 
+@3563:114000            su   w0000     ; see if <= 0 
+@3564:073575            cp   zeroCount     ; if <= 0, need to set to 0 
+
+@3565:133562     i3565: ao   cleanLoop     ; i++
+@3566:133576            ao   w3576     ; i++
+@3567:130042            ao   counter0     ; one more has been checked 
+@3570:114043            su   CONST_7     ; are we done? 
+@3571:073562            cp   cleanLoop     ; if not, check next one 
+
+@3572:100000            ca   w0000     ; we're done with all 8 counts 
+@3573:040042            ts   counter0     ; clear the counter 
+@3574:074000     w3574: sp   w0000     ; return 
+
+@3575:100000     zeroCount: ca   w0000     ; clear and add @@JumpedToBy a3564 
+@3576:040000     w3576: ts   w0000     ; X_counts[i] = 0 
+@3577:077565            sp   i3565     ; increment counters and go around again 
+
+                        .jumpto 0o705     ;  
+                        .ww_file "102766757_fb131-247-12_12-4.7ch/102766757_fb131-247-12_12-4_gs001_fb131-247-12.tcore"  ;  
+                        .ww_tapeid "_fb131-247-12+_fb"  ;   
+
