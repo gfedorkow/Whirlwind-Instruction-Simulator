@@ -1,4 +1,3 @@
-sh: 1: color: not found
 start at 0o1000
 configure flexowriter #2, stop_on_zero=1, packed=0
 Flexo: x = 1.059463094,
@@ -16,8 +15,8 @@ configure flexowriter #2, stop_on_zero=1, packed=0
 configure flexowriter #2, stop_on_zero=1, packed=0
 configure flexowriter #2, stop_on_zero=1, packed=0
 Flexo: y=+.11224619+01 z=-.59461879-01 
-Halt Instruction!  (Code=0) at pc=02757
-Alarm 'Program Halt' (5) at PC=0o2757 (0d1519)
+Halt Instruction!  (Code=0) at pc=02765
+Alarm 'Program Halt' (5) at PC=0o2765 (0d1525)
 
 Flexowriter Said:
 x = 1.059463094,

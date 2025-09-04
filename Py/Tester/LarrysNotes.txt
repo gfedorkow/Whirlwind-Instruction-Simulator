@@ -762,12 +762,13 @@ literal-digit-seq												Decimal inreger
 		[Looks like bug in spax, where if you shift a 24,6 low word it
 		 will get the wrong bits due to a negative exponent. Fixed with
 		 ".if f24" enablement in the code.]
-	- Float printer: do low-end rounding? eg 42^2 + 57^2 = 5013, but
+	* Float printer: do low-end rounding? eg 42^2 + 57^2 = 5013, but
 		printer gives +0.50129985+04. Same issue printing 42^2 and 57^2.
 		Problem in essence is the modern style is to do decimal
 		rounding, after producing digits. Would need code change to
 		frac printer to store digits then do the round. This does not
 		seem to be in the spirit of the ww apps at the time.
+		[Yes not in the spirit. See "Is integer printing" issue below.]
 	* LZ: 197 location needs to change to different space -- runs into comp_code
 		[Now grows down from top of comp_code]
 	* LZ: Note switch-table loc for a letter (var) is re-used during
@@ -777,14 +778,15 @@ literal-digit-seq												Decimal inreger
 			followed by another in the table, so variable collisions
 			are avoided. The upper case table has a few such
 			collisions, but vars are all lower case.
-    - LZ: 12th root of 2 accuracy?
-        Note use this clisp loop to get many digits of music-note prog for ref:
-             (let ((r (expt 2d0 (coerce 1/12 'double-float)))
-                   (s 220d0))
-               (dotimes (i 25)
-                 (print (list i s (sq s) (/ 1 (sq s))))
-                 (setq s (* r s))))
-	- LZ: Is integer printing behavior really like the original? Prints approx from below.
+	* LZ: 12th root of 2 accuracy?
+		Note use this clisp loop to get many digits of music-note prog for ref:
+			 (let ((r (expt 2d0 (coerce 1/12 'double-float)))
+				   (s 220d0))
+			   (dotimes (i 25)
+				 (print (list i s (sq s) (/ 1 (sq s))))
+				 (setq s (* r s))))
+		[I've probably gone as far as I can with this.]
+	* LZ: Is integer printing behavior really like the original? Prints approx from below.
 	  	  Eg print 123 -> +.12299998+03
 		  Python prints the integer
 
@@ -796,8 +798,8 @@ literal-digit-seq												Decimal inreger
 		  original float printer (it seems) printed in the same
 		  frac+exp manner. Would they have printed for 123,  +.12300000+03 ?
 
-		  * Found round issue! Now looks better, ie, more like
-            original, as in sample in Laning letter.
+		  [Found round issue! Now looks better, ie, more like
+            original, as in sample in Laning letter.]
 
 	* LZ Paper:
 		- -32767 -- fractional behavior
@@ -811,9 +813,18 @@ literal-digit-seq												Decimal inreger
 		$ file bounce1954.ww 
 			bounce1954.ww: ASCII text, with CRLF line terminators
 	* LZ: print of .1 comes out as .25
-	- LZ: certain tests fail badly with wrong values. See
+		[Needed zero-checks.]
+	* LZ: certain tests fail badly with wrong values. See
       lzt8.save. Not clear if the issue is just printing, as in
       previous issue.
+		[Looks good now]
+	* Added Justifier class to wwdebug to print syms in neat
+	  columns. Algorithm adapted from ls.c. That one looks more time
+	  efficient, passing over the string list only once, but using a
+	  fair bit of memory, to hold info on the max number of possible
+	  columns, e.g. screen-width/3. Mine just formats for 1,2,
+	  ... columns until it won't fit, then backs off to the previous.
+
 
 
 
@@ -1194,7 +1205,7 @@ and potentially change the shift from hold to round.
 
 
 
-Diving into the Tapes
+Diving into the Tapes  *****
 =====================
 
 ~/whirlwind/Tapes/
@@ -1212,4 +1223,62 @@ As of now 6/22/25 these will not be checked in to git.
 - What do we know about what's on what tapes now? I.e., what have we extracted successfully?
 
 - .tap files seems to be the base source data, with tcore, ocore, etc. dereived.
+
+
+
+Tape Dev
+========
+
+--------------------------------
+Guy's mail 8/27/25:
+
+hi Larry,
+  Here's the script I used.
+  
+  It's currently very inefficient, and I notice now I didn't even try
+  to run it on the mysterious .ocore files.
+
+  At the moment, it also prints the name of the file it's searching,
+  whether it finds anything or not.  Since almost all attempts find
+  nothing, the obvious change is to make it completely silent unless
+  it has something useful to say.
+
+  I did add this to my guy-dev branch, in ~/WW/GitHub/Recovered-Tapes/Translated-Files/Scripts
+
+  Thanks for putting up with all these rough edges...
+
+  /guy
+
+$ cat search-for-pattern.sh
+
+# use code-correlate to search for a pattern in the tape corpus
+# This script takes quite a while to finish...
+# fedorkow, Aug 16, 2025
+#
+PROBE=`cygpath -w /cygdrive/c/Users/guyfe/Documents/guy/WW/GitHub/Code-Samples/Laning-and-Zierler-Interpreter/float-lib.acore`
+LOG=~/tmp/tape-search.log
+WWCOR=${PYTHONPATH}\\..\\Tools\\code-correlate.py
+
+find ../Magnetic-Tapes ../Paper-Tapes -name "*.tcore" -exec python ${WWCOR} -q -p ${PROBE} "{}" ";"  -exec echoerr "{}" ';' > ${LOG}
+--------------------------------
+
+--------------------------------
+Guy's mail 8/30/25:
+
+The file 102782316_fc126-269-330_11-25.fc has color-changes coded as 
+VT-100 codes, and also rubouts in it.  The Mouse.fc file is just ascii 
+text with the rubouts and color codes deleted.  You can see this coder 
+typed most of his/her labels in red.
+
+You can see the CS-II converter at ~/WW/GitHub/Py/CS-II.
+
+It's written in my ad-hoc regex style, but that's clearly not the right 
+methodology for parsing this stuff...  they must have done 
+character-by-character parsing somehow.
+
+My intent is to convert the relative labels to offsets from a 'real' 
+label, but that's not working properly yet.  Other than that, it's close 
+to emitting wwasm code.
+--------------------------------
+
 

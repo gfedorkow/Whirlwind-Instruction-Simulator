@@ -16,7 +16,7 @@ then
 	echo "Accepting L&Z Tests..."
 	rm -rf TestRefs/
 	mkdir TestRefs
-	cp fl-wwasm.log fl-wwsim.log lz-wwsim1.log lz-wwsim2.log lz-wwsim3.log lz-music-wwsim.log TestRefs/
+	cp fl-wwasm.log fl-wwsim.log lz-wwsim1.log lz-wwsim2.log lz-wwsim3.log lz-wwsim4.log lz-music-wwsim.log TestRefs/
 elif [ "$1" == "--Build" ];
 then
  	echo "L&Z ww already built"
@@ -67,6 +67,8 @@ else
 	fi
 
 	echo "Testing L&Z program 2..."
+	echo "  This test shows a bug in LZ where x = -y comes out as x = 1 - y."
+	echo "  So a passing test means the LZ bug is present"
 	(python $ascflx -r -i - <<-EOF
 		x = 1.059463094,
 		y = xx,
