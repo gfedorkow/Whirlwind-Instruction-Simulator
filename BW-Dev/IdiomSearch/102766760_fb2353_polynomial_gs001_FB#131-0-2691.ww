@@ -1,0 +1,453 @@
+               .ORG 0o00000
+@0000:000000   i0000: .word 0o0 @@ JumpedToBy: r0440 WrittenBy: i0256 i0264 a0321 r0427 r0437 ReadBy: a0107 i0120 i0202 i0234 a0246 a0254 a0262 a0314 i0317 r0453  
+@0001:000001   r0001: .word 0o1 @@ ReadBy: a0070 a0164 a0221  @@Flexo:'#'
+               .ORG 0o00040
+@0040:074042   i0040:  sp  i0042   ; sub-program @@ JumpedToBy: a0445 a0452  
+
+@0041:070045           cp  i0045   ; conditional program  
+
+@0042:100357   i0042:  ca  r0357   ; clear and add @@ JumpedToBy: i0040  
+@0043:040432   i0043:  ts  w0432   ; transfer to storage @@ JumpedToBy: a0046  
+@0044:074047           sp  i0047   ; sub-program  
+
+@0045:100360   i0045:  ca  r0360   ; clear and add @@ JumpedToBy: a0041  
+@0046:074043           sp  i0043   ; sub-program  
+
+@0047:100442   i0047:  ca  r0442   ; clear and add @@ JumpedToBy: a0044  
+@0050:040371           ts  w0371   ; transfer to storage  
+@0051:100441           ca  r0441   ; clear and add  
+@0052:040366           ts  w0366   ; transfer to storage  
+@0053:100440           ca  r0440   ; clear and add  
+@0054:040367           ts  w0367   ; transfer to storage  
+@0055:100437           ca  r0437   ; clear and add  
+@0056:040364           ts  w0364   ; transfer to storage  
+@0057:100435           ca  r0435   ; clear and add  
+@0060:044202           td  i0202   ; transfer digits  
+@0061:100434           ca  r0434   ; clear and add  
+@0062:040230           ts  w0230   ; transfer to storage  
+@0063:074174           sp  i0174   ; sub-program  
+
+@0064:100433   i0064:  ca  r0433   ; clear and add @@ JumpedToBy: r0434  
+@0065:040230           ts  w0230   ; transfer to storage  
+@0066:100442           ca  r0442   ; clear and add  
+@0067:040371           ts  w0371   ; transfer to storage  
+@0070:104001           cs  r0001   ; clear and subtract  
+@0071:040370           ts  w0370   ; transfer to storage  
+@0072:100441           ca  r0441   ; clear and add  
+@0073:040367           ts  w0367   ; transfer to storage  
+@0074:100432           ca  w0432   ; clear and add  
+@0075:114427           su  r0427   ; subtract  
+@0076:114427           su  r0427   ; subtract  
+@0077:040476           ts  w0476   ; transfer to storage  
+@0100:040363           ts  w0363   ; transfer to storage  
+@0101:074120           sp  i0120   ; sub-program  
+
+@0102:100365   i0102:  ca  w0365   ; clear and add @@ JumpedToBy: a0137 a0142 a0233  
+@0103:040364           ts  w0364   ; transfer to storage  
+@0104:100363           ca  w0363   ; clear and add  
+@0105:124431           sa  w0431   ; special add  
+@0106:040365           ts  w0365   ; transfer to storage  
+@0107:104000           cs  i0000   ; clear and subtract  
+@0110:070112           cp  i0112   ; conditional program  
+
+@0111:074234           sp  i0234   ; sub-program  
+
+@0112:100365   i0112:  ca  w0365   ; clear and add @@ JumpedToBy: a0110  
+@0113:040476           ts  w0476   ; transfer to storage  
+@0114:040363           ts  w0363   ; transfer to storage  
+@0115:074120           sp  i0120   ; sub-program  
+
+@0116:100365   i0116:  ca  w0365   ; clear and add @@ JumpedToBy: a0126  
+@0117:040476           ts  w0476   ; transfer to storage  
+@0120:100000   i0120:  ca  i0000   ; clear and add @@ JumpedToBy: a0101 a0115  
+@0121:110406   w0121:  ad  r0406   ; add @@ WrittenBy: a0130 ReadBy: a0124  
+@0122:140363           mr  w0363   ; multiply and roundoff  
+@0123:040365           ts  w0365   ; transfer to storage  
+@0124:130121           ao  w0121   ; add one  
+@0125:114426           su  r0426   ; subtract  
+@0126:070116           cp  i0116   ; conditional program  
+
+@0127:100425           ca  r0425   ; clear and add  
+@0130:040121           ts  w0121   ; transfer to storage  
+@0131:100365           ca  w0365   ; clear and add  
+@0132:110415           ad  r0415   ; add  
+@0133:154006          slr  0o00006   ; shift left and roundoff  
+@0134:074500           sp  i0500   ; sub-program  
+
+@0135:040365   i0135:  ts  w0365   ; transfer to storage @@ JumpedToBy: a0505  
+@0136:130370           ao  w0370   ; add one  
+@0137:070102           cp  i0102   ; conditional program  
+
+@0140:104365           cs  w0365   ; clear and subtract  
+@0141:140364           mr  w0364   ; multiply and roundoff  
+@0142:070102           cp  i0102   ; conditional program  
+
+@0143:100365           ca  w0365   ; clear and add  
+@0144:114364           su  w0364   ; subtract  
+@0145:040364           ts  w0364   ; transfer to storage  
+@0146:104365           cs  w0365   ; clear and subtract  
+@0147:140431           mr  w0431   ; multiply and roundoff  
+@0150:150364           dv  w0364   ; divide  
+@0151:154017          slr  0o00017   ; shift left and roundoff  
+@0152:110363           ad  w0363   ; add  
+@0153:040364           ts  w0364   ; transfer to storage  
+@0154:100441           ca  r0441   ; clear and add  
+@0155:040366           ts  w0366   ; transfer to storage  
+@0156:100364           ca  w0364   ; clear and add  
+@0157:070163           cp  i0163   ; conditional program  
+
+@0160:100420           ca  r0420   ; clear and add  
+@0161:044202   i0161:  td  i0202   ; transfer digits @@ JumpedToBy: a0165  
+@0162:074174           sp  i0174   ; sub-program  
+
+@0163:100420   i0163:  ca  r0420   ; clear and add @@ JumpedToBy: a0157  
+@0164:110001           ad  r0001   ; add  
+@0165:074161           sp  i0161   ; sub-program  
+
+@0166:120364   i0166:  cm  w0364   ; clear and add magnitude @@ JumpedToBy: a0227  
+@0167:144421           mh  r0421   ; multiply and hold  
+@0170:110422           ad  r0422   ; add  
+@0171:044202           td  i0202   ; transfer digits  
+@0172:154017          slr  0o00017   ; shift left and roundoff  
+@0173:040364           ts  w0364   ; transfer to storage  
+@0174:100367   i0174:  ca  w0367   ; clear and add @@ JumpedToBy: a0063 a0162 a0220  
+@0175:040362           ts  w0362   ; transfer to storage  
+@0176:100366           ca  w0366   ; clear and add  
+@0177:110430           ad  r0430   ; add  
+@0200:040476           ts  w0476   ; transfer to storage  
+@0201:040366           ts  w0366   ; transfer to storage  
+@0202:104000   i0202:  cs  i0000   ; clear and subtract @@ JumpedToBy: a0213 WrittenBy: a0060 i0161 a0171  
+@0203:170001   w0203: clc  0o00001   ; cycle left and clear @@ WrittenBy: a0222 ReadBy: i0211 a0216  
+@0204:070454   w0204:  cp  i0454   ; conditional program @@ WrittenBy: a0417  
+
+@0205:100362           ca  w0362   ; clear and add  
+@0206:110430           ad  r0430   ; add  
+@0207:074510           sp  i0510   ; sub-program  
+
+@0210:040362   i0210:  ts  w0362   ; transfer to storage @@ JumpedToBy: a0515  
+@0211:130203   i0211:  ao  w0203   ; add one @@ JumpedToBy: a0457  
+@0212:130371           ao  w0371   ; add one  
+@0213:070202           cp  i0202   ; conditional program  
+
+@0214:100442           ca  r0442   ; clear and add  
+@0215:040371           ts  w0371   ; transfer to storage  
+@0216:100203           ca  w0203   ; clear and add  
+@0217:114423           su  r0423   ; subtract  
+@0220:070174           cp  i0174   ; conditional program  
+
+@0221:100001           ca  r0001   ; clear and add  
+@0222:044203           td  w0203   ; transfer digits  
+@0223:100366           ca  w0366   ; clear and add  
+@0224:110430           ad  r0430   ; add  
+@0225:040366           ts  w0366   ; transfer to storage  
+@0226:114424           su  r0424   ; subtract  
+@0227:070166           cp  i0166   ; conditional program  
+
+@0230:100367   w0230:  ca  w0367   ; clear and add @@ WrittenBy: a0062 a0065  
+@0231:110373           ad  r0373   ; add  
+@0232:040367           ts  w0367   ; transfer to storage  
+@0233:074102           sp  i0102   ; sub-program  
+
+@0234:100000   i0234:  ca  i0000   ; clear and add @@ JumpedToBy: a0111  
+@0235:040476           ts  w0476   ; transfer to storage  
+@0236:040371           ts  w0371   ; transfer to storage  
+@0237:074520           sp  i0520   ; sub-program  
+
+@0240:040370   i0240:  ts  w0370   ; transfer to storage @@ JumpedToBy: a0525  
+@0241:100372   i0241:  ca  r0372   ; clear and add @@ JumpedToBy: a0306  
+@0242:040361           ts  w0361   ; transfer to storage  
+@0243:100371   i0243:  ca  w0371   ; clear and add @@ JumpedToBy: a0266  
+@0244:124431           sa  w0431   ; special add  
+@0245:040365           ts  w0365   ; transfer to storage  
+@0246:104000           cs  i0000   ; clear and subtract  
+@0247:070251           cp  i0251   ; conditional program  
+
+@0250:074307           sp  i0307   ; sub-program  
+
+@0251:100365   i0251:  ca  w0365   ; clear and add @@ JumpedToBy: a0247  
+@0252:040476           ts  w0476   ; transfer to storage  
+@0253:040371           ts  w0371   ; transfer to storage  
+@0254:100000           ca  i0000   ; clear and add  
+@0255:074530           sp  i0530   ; sub-program  
+
+@0256:040000   i0256:  ts  i0000   ; transfer to storage @@ JumpedToBy: a0535  
+@0257:104371           cs  w0371   ; clear and subtract  
+@0260:000600           si  0o600   ; select I/O: Display Points  
+@0261:040364           ts  w0364   ; transfer to storage  
+@0262:100000           ca  i0000   ; clear and add  
+@0263:074540           sp  i0540   ; sub-program  
+
+@0264:040000   i0264:  ts  i0000   ; transfer to storage @@ JumpedToBy: a0545  
+@0265:130361           ao  w0361   ; add one  
+@0266:070243           cp  i0243   ; conditional program  
+
+@0267:100431           ca  w0431   ; clear and add  
+@0270:074550           sp  i0550   ; sub-program  
+
+@0271:040365   i0271:  ts  w0365   ; transfer to storage @@ JumpedToBy: a0555  
+@0272:104431           cs  w0431   ; clear and subtract  
+@0273:074660           sp  i0660   ; sub-program  
+
+@0274:040365   i0274:  ts  w0365   ; transfer to storage @@ JumpedToBy: a0665  
+@0275:104364           cs  w0364   ; clear and subtract  
+@0276:040476           ts  w0476   ; transfer to storage  
+@0277:040364           ts  w0364   ; transfer to storage  
+@0300:100431           ca  w0431   ; clear and add  
+@0301:074560           sp  i0560   ; sub-program  
+
+@0302:040365   i0302:  ts  w0365   ; transfer to storage @@ JumpedToBy: a0565  
+@0303:104431           cs  w0431   ; clear and subtract  
+@0304:074570           sp  i0570   ; sub-program  
+
+@0305:040365   i0305:  ts  w0365   ; transfer to storage @@ JumpedToBy: a0575  
+@0306:074241           sp  i0241   ; sub-program  
+
+@0307:100372   i0307:  ca  r0372   ; clear and add @@ JumpedToBy: a0250 a0354  
+@0310:040361           ts  w0361   ; transfer to storage  
+@0311:100370   i0311:  ca  w0370   ; clear and add @@ JumpedToBy: a0331  
+@0312:124431           sa  w0431   ; special add  
+@0313:040365           ts  w0365   ; transfer to storage  
+@0314:104000           cs  i0000   ; clear and subtract  
+@0315:070317           cp  i0317   ; conditional program  
+
+@0316:074444           sp  i0444   ; sub-program  
+
+@0317:100000   i0317:  ca  i0000   ; clear and add @@ JumpedToBy: a0315  
+@0320:040476           ts  w0476   ; transfer to storage  
+@0321:040000           ts  i0000   ; transfer to storage  
+@0322:100365           ca  w0365   ; clear and add  
+@0323:074600           sp  i0600   ; sub-program  
+
+@0324:040370   i0324:  ts  w0370   ; transfer to storage @@ JumpedToBy: a0605  
+@0325:104370           cs  w0370   ; clear and subtract  
+@0326:074610           sp  i0610   ; sub-program  
+
+@0327:040365   i0327:  ts  w0365   ; transfer to storage @@ JumpedToBy: a0615  
+@0330:130361           ao  w0361   ; add one  
+@0331:070311           cp  i0311   ; conditional program  
+
+@0332:100431           ca  w0431   ; clear and add  
+@0333:000600           si  0o600   ; select I/O: Display Points  
+@0334:040431           ts  w0431   ; transfer to storage  
+@0335:100365           ca  w0365   ; clear and add  
+@0336:074620           sp  i0620   ; sub-program  
+
+@0337:040476   i0337:  ts  w0476   ; transfer to storage @@ JumpedToBy: a0625  
+@0340:104365           cs  w0365   ; clear and subtract  
+@0341:074630           sp  i0630   ; sub-program  
+
+@0342:040365   i0342:  ts  w0365   ; transfer to storage @@ JumpedToBy: a0635  
+@0343:104431           cs  w0431   ; clear and subtract  
+@0344:040476           ts  w0476   ; transfer to storage  
+@0345:040371           ts  w0371   ; transfer to storage  
+@0346:100365           ca  w0365   ; clear and add  
+@0347:074640           sp  i0640   ; sub-program  
+
+@0350:040365   i0350:  ts  w0365   ; transfer to storage @@ JumpedToBy: a0645  
+@0351:104365           cs  w0365   ; clear and subtract  
+@0352:074650           sp  i0650   ; sub-program  
+
+@0353:040365   i0353:  ts  w0365   ; transfer to storage @@ JumpedToBy: a0655  
+@0354:074307           sp  i0307   ; sub-program  
+
+@0355:000000          .word 0o0  
+@0356:000000          .word 0o0  
+@0357:001000   r0357:  si  0o1000   ; select I/O: unknown i/o device @@ ReadBy: i0042  
+@0360:002000   r0360:  si  0o2000   ; select I/O: unknown i/o device @@ ReadBy: i0045  
+@0361:000000   w0361: .word 0o0 @@ WrittenBy: a0242 a0310 ReadBy: a0265 a0330  
+@0362:000000   w0362: .word 0o0 @@ WrittenBy: a0175 i0210 a0456 ReadBy: a0205 i0454  
+@0363:000000   w0363: .word 0o0 @@ WrittenBy: a0100 a0114 ReadBy: a0104 a0122 a0152  
+@0364:000000   w0364: .word 0o0 @@ WrittenBy: a0056 a0103 a0145 a0153 a0173 a0261 a0277 ReadBy: a0141 a0144 a0150 a0156 i0166 a0275  
+@0365:000000   w0365: .word 0o0 @@ WrittenBy: a0106 a0123 i0135 a0245 i0271 i0274 i0302 i0305 a0313 i0327 i0342 i0350 i0353 ReadBy: i0102 i0112 i0116 a0131 a0140 a0143 a0146 i0251 a0322 a0335 a0340 a0346 a0351  
+@0366:000000   w0366: .word 0o0 @@ WrittenBy: a0052 a0155 a0201 a0225 ReadBy: a0176 a0223  
+@0367:000000   w0367: .word 0o0 @@ WrittenBy: a0054 a0073 a0232 ReadBy: i0174 w0230 r0433  
+@0370:000000   w0370: .word 0o0 @@ WrittenBy: a0071 i0240 i0324 ReadBy: a0136 i0311 a0325  
+@0371:000000   w0371: .word 0o0 @@ WrittenBy: a0050 a0067 a0215 a0236 a0253 a0345 ReadBy: a0212 i0243 a0257  
+@0372:177770   r0372:  md  0o3770   ; multiply digits no roundoff (AND) @@ ReadBy: i0241 i0307  
+@0373:006000   r0373: .word 0o006000 @@ ReadBy: a0231  
+@0374:077077           sp  0o3077   ; sub-program  
+
+@0375:001740           si  0o1740   ; select I/O: unknown i/o device  
+@0376:063263           ab  0o3263   ; add B-Reg  
+@0377:053277           ta  0o3277   ; transfer address  
+@0400:016237           rd  0o2237   ; read  
+@0401:057275           ck  0o3275   ; check  
+@0402:077275           sp  0o3275   ; sub-program  
+
+@0403:003643           si  0o3643   ; select I/O: Display Characters  
+@0404:077277           sp  0o3277   ; sub-program  
+
+@0405:057277           ck  0o3277   ; check  
+@0406:032640   r0406:  sd  0o2640   ; sum digits - XOR @@ ReadBy: w0121 r0425  
+@0407:000000          .word 0o0  
+@0410:124537           sa  0o0537   ; special add  
+@0411:000000          .word 0o0  
+@0412:023540           bo  0o3540   ; block transfer out  
+@0413:000000          .word 0o0  
+@0414:175637   r0414:  md  0o1637   ; multiply digits no roundoff (AND) @@ ReadBy: r0426  
+@0415:000000   r0415: .word 0o0 @@ ReadBy: a0132  
+@0416:010704           bi  0o0704   ; block transfer in  
+@0417:010204           bi  w0204   ; block transfer in  
+@0420:000416   r0420:  si  0o416   ; select I/O: unknown i/o device @@ ReadBy: a0160 i0163  
+@0421:000012   r0421:  si   0o12   ; select I/O: unknown i/o device @@ ReadBy: a0167  @@Flexo:'s'
+@0422:000374   r0422:  si  0o374   ; select I/O: unknown i/o device @@ ReadBy: a0170  
+@0423:170017   r0423: clc  0o00017   ; cycle left and clear @@ ReadBy: a0217  
+@0424:123777   r0424:  cm  0o3777   ; clear and add magnitude @@ ReadBy: a0226  
+@0425:110406   r0425:  ad  r0406   ; add @@ ReadBy: a0127  
+@0426:110414   r0426:  ad  r0414   ; add @@ ReadBy: a0125  
+@0427:040000   r0427:  ts  i0000   ; transfer to storage @@ ReadBy: a0075 a0076  
+@0430:001000   r0430:  si  0o1000   ; select I/O: unknown i/o device @@ ReadBy: a0177 a0206 a0224 a0455  
+@0431:002000   w0431:  si  0o2000   ; select I/O: unknown i/o device @@ WrittenBy: a0334 ReadBy: a0105 a0147 a0244 a0267 a0272 a0300 a0303 a0312 a0332 a0343  
+@0432:000000   w0432: .word 0o0 @@ WrittenBy: i0043 ReadBy: a0074  
+@0433:100367   r0433:  ca  w0367   ; clear and add @@ ReadBy: i0064  
+@0434:074064   r0434:  sp  i0064   ; sub-program @@ ReadBy: a0061  
+
+@0435:000436   r0435:  si  0o436   ; select I/O: unknown i/o device @@ ReadBy: a0057  
+@0436:076245           sp  0o2245   ; sub-program  
+
+@0437:064000   r0437:  ex  i0000   ; exchange @@ ReadBy: a0055  
+@0440:070000   r0440:  cp  i0000   ; conditional program @@ ReadBy: a0053  
+@0441:100777   r0441:  ca  0o0777   ; clear and add @@ ReadBy: a0051 a0072 a0154  
+@0442:177773   r0442:  md  0o3773   ; multiply digits no roundoff (AND) @@ ReadBy: i0047 a0066 a0214  
+@0443:000000          .word 0o0  
+@0444:130002   i0444:  ao  0o0002   ; add one @@ JumpedToBy: a0316  
+@0445:070040           cp  i0040   ; conditional program  
+
+@0446:000001          .word 0o1  @@Flexo:'#'
+@0447:074025           sp  0o0025   ; sub-program  
+
+@0450:100453           ca  r0453   ; clear and add  
+@0451:040002           ts  0o0002   ; transfer to storage  
+@0452:074040           sp  i0040   ; sub-program  
+
+@0453:100000   r0453:  ca  i0000   ; clear and add @@ ReadBy: a0450  
+@0454:100362   i0454:  ca  w0362   ; clear and add @@ JumpedToBy: w0204  
+@0455:110430           ad  r0430   ; add  
+@0456:040362           ts  w0362   ; transfer to storage  
+@0457:074211           sp  i0211   ; sub-program  
+
+               .ORG 0o00476
+@0476:000000   w0476: .word 0o0 @@ WrittenBy: a0077 a0113 a0117 a0200 a0235 a0252 a0276 a0320 i0337 a0344 ReadBy: a0502 a0512 a0522 a0532 a0542 a0552 a0562 a0572 a0602 a0612 a0622 a0632 a0642 a0652 a0662  
+@0477:000000   w0477: .word 0o0 @@ WrittenBy: i0500 i0510 i0520 i0530 i0540 i0550 i0560 i0570 i0600 i0610 i0620 i0630 i0640 i0650 i0660 ReadBy: a0504 a0514 a0524 a0534 a0544 a0554 a0564 a0574 a0604 a0614 a0624 a0634 a0644 a0654 a0664  
+@0500:040477   i0500:  ts  w0477   ; transfer to storage @@ JumpedToBy: a0134  
+@0501:000600           si  0o600   ; select I/O: Display Points  
+@0502:100476           ca  w0476   ; clear and add  
+@0503:024000           rc    0o0   ; record  
+@0504:100477           ca  w0477   ; clear and add  
+@0505:074135           sp  i0135   ; sub-program  
+
+               .ORG 0o00510
+@0510:040477   i0510:  ts  w0477   ; transfer to storage @@ JumpedToBy: a0207  
+@0511:000600           si  0o600   ; select I/O: Display Points  
+@0512:100476           ca  w0476   ; clear and add  
+@0513:024000           rc    0o0   ; record  
+@0514:100477           ca  w0477   ; clear and add  
+@0515:074210           sp  i0210   ; sub-program  
+
+               .ORG 0o00520
+@0520:040477   i0520:  ts  w0477   ; transfer to storage @@ JumpedToBy: a0237  
+@0521:000600           si  0o600   ; select I/O: Display Points  
+@0522:100476           ca  w0476   ; clear and add  
+@0523:024000           rc    0o0   ; record  
+@0524:100477           ca  w0477   ; clear and add  
+@0525:074240           sp  i0240   ; sub-program  
+
+               .ORG 0o00530
+@0530:040477   i0530:  ts  w0477   ; transfer to storage @@ JumpedToBy: a0255  
+@0531:000600           si  0o600   ; select I/O: Display Points  
+@0532:100476           ca  w0476   ; clear and add  
+@0533:024000           rc    0o0   ; record  
+@0534:100477           ca  w0477   ; clear and add  
+@0535:074256           sp  i0256   ; sub-program  
+
+               .ORG 0o00540
+@0540:040477   i0540:  ts  w0477   ; transfer to storage @@ JumpedToBy: a0263  
+@0541:000600           si  0o600   ; select I/O: Display Points  
+@0542:100476           ca  w0476   ; clear and add  
+@0543:024000           rc    0o0   ; record  
+@0544:100477           ca  w0477   ; clear and add  
+@0545:074264           sp  i0264   ; sub-program  
+
+               .ORG 0o00550
+@0550:040477   i0550:  ts  w0477   ; transfer to storage @@ JumpedToBy: a0270  
+@0551:000600           si  0o600   ; select I/O: Display Points  
+@0552:100476           ca  w0476   ; clear and add  
+@0553:024000           rc    0o0   ; record  
+@0554:100477           ca  w0477   ; clear and add  
+@0555:074271           sp  i0271   ; sub-program  
+
+               .ORG 0o00560
+@0560:040477   i0560:  ts  w0477   ; transfer to storage @@ JumpedToBy: a0301  
+@0561:000600           si  0o600   ; select I/O: Display Points  
+@0562:100476           ca  w0476   ; clear and add  
+@0563:024000           rc    0o0   ; record  
+@0564:100477           ca  w0477   ; clear and add  
+@0565:074302           sp  i0302   ; sub-program  
+
+               .ORG 0o00570
+@0570:040477   i0570:  ts  w0477   ; transfer to storage @@ JumpedToBy: a0304  
+@0571:000600           si  0o600   ; select I/O: Display Points  
+@0572:100476           ca  w0476   ; clear and add  
+@0573:024000           rc    0o0   ; record  
+@0574:100477           ca  w0477   ; clear and add  
+@0575:074305           sp  i0305   ; sub-program  
+
+               .ORG 0o00600
+@0600:040477   i0600:  ts  w0477   ; transfer to storage @@ JumpedToBy: a0323  
+@0601:000600           si  0o600   ; select I/O: Display Points  
+@0602:100476           ca  w0476   ; clear and add  
+@0603:024000           rc    0o0   ; record  
+@0604:100477           ca  w0477   ; clear and add  
+@0605:074324           sp  i0324   ; sub-program  
+
+               .ORG 0o00610
+@0610:040477   i0610:  ts  w0477   ; transfer to storage @@ JumpedToBy: a0326  
+@0611:000600           si  0o600   ; select I/O: Display Points  
+@0612:100476           ca  w0476   ; clear and add  
+@0613:024000           rc    0o0   ; record  
+@0614:100477           ca  w0477   ; clear and add  
+@0615:074327           sp  i0327   ; sub-program  
+
+               .ORG 0o00620
+@0620:040477   i0620:  ts  w0477   ; transfer to storage @@ JumpedToBy: a0336  
+@0621:000600           si  0o600   ; select I/O: Display Points  
+@0622:100476           ca  w0476   ; clear and add  
+@0623:024000           rc    0o0   ; record  
+@0624:100477           ca  w0477   ; clear and add  
+@0625:074337           sp  i0337   ; sub-program  
+
+               .ORG 0o00630
+@0630:040477   i0630:  ts  w0477   ; transfer to storage @@ JumpedToBy: a0341  
+@0631:000600           si  0o600   ; select I/O: Display Points  
+@0632:100476           ca  w0476   ; clear and add  
+@0633:024000           rc    0o0   ; record  
+@0634:100477           ca  w0477   ; clear and add  
+@0635:074342           sp  i0342   ; sub-program  
+
+               .ORG 0o00640
+@0640:040477   i0640:  ts  w0477   ; transfer to storage @@ JumpedToBy: a0347  
+@0641:000600           si  0o600   ; select I/O: Display Points  
+@0642:100476           ca  w0476   ; clear and add  
+@0643:024000           rc    0o0   ; record  
+@0644:100477           ca  w0477   ; clear and add  
+@0645:074350           sp  i0350   ; sub-program  
+
+               .ORG 0o00650
+@0650:040477   i0650:  ts  w0477   ; transfer to storage @@ JumpedToBy: a0352  
+@0651:000600           si  0o600   ; select I/O: Display Points  
+@0652:100476           ca  w0476   ; clear and add  
+@0653:024000           rc    0o0   ; record  
+@0654:100477           ca  w0477   ; clear and add  
+@0655:074353           sp  i0353   ; sub-program  
+
+               .ORG 0o00660
+@0660:040477   i0660:  ts  w0477   ; transfer to storage @@ JumpedToBy: a0273  
+@0661:000600           si  0o600   ; select I/O: Display Points  
+@0662:100476           ca  w0476   ; clear and add  
+@0663:024000           rc    0o0   ; record  
+@0664:100477           ca  w0477   ; clear and add  
+@0665:074274           sp  i0274   ; sub-program  
+
+                       .JumpTo 0o450
+                       .WW_File "C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\2018_01\102766760_fb2353_polynomial.7ch/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Paper-Tapes\2018_01\102766760_fb2353_polynomial_gs001_FB#131-0-2691.tcore"
+                       .WW_TapeID "_FB131-0-2691"
