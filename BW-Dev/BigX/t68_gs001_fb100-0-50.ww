@@ -1,0 +1,158 @@
+               .ORG 0o00000
+@0000:000000   r0000: .word 0o0 @@ ReadBy: r0230 w0242 w0245 w0250  
+@0001:000001   r0001: .word 0o1 @@ ReadBy: i0225  @@Flexo:'#'
+               .ORG 0o00040
+@0040:100230           ca  r0230   ; clear and add  
+@0041:000600           si  0o600   ; select I/O: Display Points  
+@0042:104234   i0042:  cs  r0234   ; clear and subtract @@ JumpedToBy: a0227  
+@0043:040002           ts  0o0002   ; transfer to storage  
+@0044:100242   i0044:  ca  w0242   ; clear and add @@ JumpedToBy: a0051  
+@0045:024045           rc   0o45   ; record  
+@0046:110231           ad  r0231   ; add  
+@0047:040242           ts  w0242   ; transfer to storage  
+@0050:130002           ao  0o0002   ; add one  
+@0051:070044           cp  i0044   ; conditional program  
+
+@0052:104235           cs  r0235   ; clear and subtract  
+@0053:040002           ts  0o0002   ; transfer to storage  
+@0054:100243   i0054:  ca  w0243   ; clear and add @@ JumpedToBy: a0061  
+@0055:024055           rc   0o55   ; record  
+@0056:110232           ad  r0232   ; add  
+@0057:040243           ts  w0243   ; transfer to storage  
+@0060:130002           ao  0o0002   ; add one  
+@0061:070054           cp  i0054   ; conditional program  
+
+@0062:104234           cs  r0234   ; clear and subtract  
+@0063:040002           ts  0o0002   ; transfer to storage  
+@0064:100244   i0064:  ca  w0244   ; clear and add @@ JumpedToBy: a0071  
+@0065:024065           rc   0o65   ; record  
+@0066:124231           sa  r0231   ; special add  
+@0067:040244           ts  w0244   ; transfer to storage  
+@0070:130002           ao  0o0002   ; add one  
+@0071:070064           cp  i0064   ; conditional program  
+
+@0072:104233           cs  r0233   ; clear and subtract  
+@0073:040002           ts  0o0002   ; transfer to storage  
+@0074:100245   i0074:  ca  w0245   ; clear and add @@ JumpedToBy: a0111  
+@0075:110231           ad  r0231   ; add  
+@0076:040245           ts  w0245   ; transfer to storage  
+@0077:000600           si  0o600   ; select I/O: Display Points  
+@0100:100230           ca  r0230   ; clear and add  
+@0101:024101           rc  0o101   ; record  
+@0102:100245           ca  w0245   ; clear and add  
+@0103:024103           rc  0o103   ; record  
+@0104:120245           cm  w0245   ; clear and add magnitude  
+@0105:024105           rc  0o105   ; record  
+@0106:120230           cm  r0230   ; clear and add magnitude  
+@0107:024107           rc  0o107   ; record  
+@0110:130002           ao  0o0002   ; add one  
+@0111:070074           cp  i0074   ; conditional program  
+
+@0112:104235           cs  r0235   ; clear and subtract  
+@0113:040002           ts  0o0002   ; transfer to storage  
+@0114:100246   i0114:  ca  w0246   ; clear and add @@ JumpedToBy: a0131  
+@0115:110232           ad  r0232   ; add  
+@0116:040246           ts  w0246   ; transfer to storage  
+@0117:000600           si  0o600   ; select I/O: Display Points  
+@0120:100230           ca  r0230   ; clear and add  
+@0121:024121           rc  0o121   ; record  
+@0122:100246           ca  w0246   ; clear and add  
+@0123:024123           rc  0o123   ; record  
+@0124:104246           cs  w0246   ; clear and subtract  
+@0125:024125           rc  0o125   ; record  
+@0126:120230           cm  r0230   ; clear and add magnitude  
+@0127:024127           rc  0o127   ; record  
+@0130:130002           ao  0o0002   ; add one  
+@0131:070114           cp  i0114   ; conditional program  
+
+@0132:104233           cs  r0233   ; clear and subtract  
+@0133:040002           ts  0o0002   ; transfer to storage  
+@0134:100247   i0134:  ca  w0247   ; clear and add @@ JumpedToBy: a0151  
+@0135:110231           ad  r0231   ; add  
+@0136:040247           ts  w0247   ; transfer to storage  
+@0137:000600           si  0o600   ; select I/O: Display Points  
+@0140:100230           ca  r0230   ; clear and add  
+@0141:024141           rc  0o141   ; record  
+@0142:100247           ca  w0247   ; clear and add  
+@0143:024143           rc  0o143   ; record  
+@0144:104247           cs  w0247   ; clear and subtract  
+@0145:024145           rc  0o145   ; record  
+@0146:120230           cm  r0230   ; clear and add magnitude  
+@0147:024147           rc  0o147   ; record  
+@0150:130002           ao  0o0002   ; add one  
+@0151:070134           cp  i0134   ; conditional program  
+
+@0152:120230           cm  r0230   ; clear and add magnitude  
+@0153:000600           si  0o600   ; select I/O: Display Points  
+@0154:104234           cs  r0234   ; clear and subtract  
+@0155:040002           ts  0o0002   ; transfer to storage  
+@0156:100250   i0156:  ca  w0250   ; clear and add @@ JumpedToBy: a0163  
+@0157:024157           rc  0o157   ; record  
+@0160:110231           ad  r0231   ; add  
+@0161:040250           ts  w0250   ; transfer to storage  
+@0162:130002           ao  0o0002   ; add one  
+@0163:070156           cp  i0156   ; conditional program  
+
+@0164:104235           cs  r0235   ; clear and subtract  
+@0165:040002           ts  0o0002   ; transfer to storage  
+@0166:100251   i0166:  ca  w0251   ; clear and add @@ JumpedToBy: a0173  
+@0167:024167           rc  0o167   ; record  
+@0170:110232           ad  r0232   ; add  
+@0171:040251           ts  w0251   ; transfer to storage  
+@0172:130002           ao  0o0002   ; add one  
+@0173:070166           cp  i0166   ; conditional program  
+
+@0174:104234           cs  r0234   ; clear and subtract  
+@0175:040002           ts  0o0002   ; transfer to storage  
+@0176:100252   i0176:  ca  w0252   ; clear and add @@ JumpedToBy: a0203  
+@0177:024177           rc  0o177   ; record  
+@0200:124231           sa  r0231   ; special add  
+@0201:040252           ts  w0252   ; transfer to storage  
+@0202:130002           ao  0o0002   ; add one  
+@0203:070176           cp  i0176   ; conditional program  
+
+@0204:100230           ca  r0230   ; clear and add  
+@0205:040242           ts  w0242   ; transfer to storage  
+@0206:040245           ts  w0245   ; transfer to storage  
+@0207:040250           ts  w0250   ; transfer to storage  
+@0210:100236           ca  r0236   ; clear and add  
+@0211:040243           ts  w0243   ; transfer to storage  
+@0212:040251           ts  w0251   ; transfer to storage  
+@0213:100237           ca  r0237   ; clear and add  
+@0214:040244           ts  w0244   ; transfer to storage  
+@0215:040252           ts  w0252   ; transfer to storage  
+@0216:100240           ca  r0240   ; clear and add  
+@0217:040246           ts  w0246   ; transfer to storage  
+@0220:100241           ca  r0241   ; clear and add  
+@0221:040247           ts  w0247   ; transfer to storage  
+@0222:100230           ca  r0230   ; clear and add  
+@0223:000600           si  0o600   ; select I/O: Display Points  
+@0224:104253           cs  r0253   ; clear and subtract  
+@0225:110001   i0225:  ad  r0001   ; add @@ JumpedToBy: a0226  
+@0226:070225           cp  i0225   ; conditional program  
+
+@0227:074042           sp  i0042   ; sub-program  
+
+@0230:100000   r0230:  ca  r0000   ; clear and add @@ ReadBy: a0040 a0100 a0106 a0120 a0126 a0140 a0146 a0152 a0204 a0222  
+@0231:000200   r0231:  si  0o200   ; select I/O: Mechanical Paper Tape Reader @@ ReadBy: a0046 a0066 a0075 a0135 a0160 a0200  
+@0232:000400   r0232:  si  0o400   ; select I/O: unknown i/o device @@ ReadBy: a0056 a0115 a0170  
+@0233:000077   r0233:  si   0o77   ; select I/O: unknown i/o device @@ ReadBy: a0072 a0132  @@Flexo:'<null>'
+@0234:000100   r0234:  si  0o100   ; select I/O: Magnetic Tape @@ ReadBy: i0042 a0062 a0154 a0174  
+@0235:000276   r0235:  si  0o276   ; select I/O: unknown i/o device @@ ReadBy: a0052 a0112 a0164  
+@0236:120377   r0236:  cm  0o0377   ; clear and add magnitude @@ ReadBy: a0210  
+@0237:057760   r0237:  ck  0o3760   ; check @@ ReadBy: a0213  
+@0240:117777   r0240:  su  0o3777   ; subtract @@ ReadBy: a0216  
+@0241:057560   r0241:  ck  0o3560   ; check @@ ReadBy: a0220  
+@0242:100000   w0242:  ca  r0000   ; clear and add @@ WrittenBy: a0047 a0205 ReadBy: i0044  
+@0243:120377   w0243:  cm  0o0377   ; clear and add magnitude @@ WrittenBy: a0057 a0211 ReadBy: i0054  
+@0244:057760   w0244:  ck  0o3760   ; check @@ WrittenBy: a0067 a0214 ReadBy: i0064  
+@0245:100000   w0245:  ca  r0000   ; clear and add @@ WrittenBy: a0076 a0206 ReadBy: i0074 a0102 a0104  
+@0246:117777   w0246:  su  0o3777   ; subtract @@ WrittenBy: a0116 a0217 ReadBy: i0114 a0122 a0124  
+@0247:057560   w0247:  ck  0o3560   ; check @@ WrittenBy: a0136 a0221 ReadBy: i0134 a0142 a0144  
+@0250:100000   w0250:  ca  r0000   ; clear and add @@ WrittenBy: a0161 a0207 ReadBy: i0156  
+@0251:120377   w0251:  cm  0o0377   ; clear and add magnitude @@ WrittenBy: a0171 a0212 ReadBy: i0166  
+@0252:057760   w0252:  ck  0o3760   ; check @@ WrittenBy: a0201 a0215 ReadBy: i0176  
+@0253:007637   r0253: .word 0o007637 @@ ReadBy: a0224  
+                       .JumpTo 0o40
+                       .WW_File "C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\68\t68.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\68\t68_gs001_fb100-0-50.tcore"
+                       .WW_TapeID "_fb100-0-50"
