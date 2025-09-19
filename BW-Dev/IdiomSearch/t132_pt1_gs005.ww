@@ -1,0 +1,267 @@
+               .ORG 0o00000
+@0000:000000   i0000: .word 0o0 @@ JumpedToBy: a2605 a2672 a2743 WrittenBy: a2417 a2424 a2445 a2466 a2534 a2545 a2637 a2642 a2645 a2650 a2656 a2661 a2664 a2667 a2710 a2713 a2716 a2724 a2727 a2735 a2740 ReadBy: a2442 a2463 a2471 a2501 a2516 a2526 a2531 a2537 a2542 a2550 a2560 a2575 a2624 a2634 a2702  
+@0001:000001   i0001: .word 0o1 @@ JumpedToBy: a2756 WrittenBy: a2407 a2604 a2671 a2742 a3005 ReadBy: a2653 a2721  @@Flexo:'#'
+               .ORG 0o02406
+@2406:040002           ts  0o0002   ; transfer to storage  
+@2407:010001           bi  i0001   ; block transfer in  
+@2410:000040           si   0o40   ; select I/O: unknown i/o device  @@Flexo:'t'
+@2411:016101           rd  0o2101   ; read  
+@2412:000010           si   0o10   ; select I/O: unknown i/o device  @@Flexo:' '
+@2413:016041           rd  0o2041   ; read  
+@2414:100002           ca  0o0002   ; clear and add  
+@2415:016042           rd  0o2042   ; read  
+@2416:010002           bi  0o0002   ; block transfer in  
+@2417:044000           td  i0000   ; transfer digits  
+@2420:016101           rd  0o2101   ; read  
+@2421:100003           ca  0o0003   ; clear and add  
+@2422:016042           rd  0o2042   ; read  
+@2423:010003           bi  0o0003   ; block transfer in  
+@2424:044000           td  i0000   ; transfer digits  
+@2425:016101           rd  0o2101   ; read  
+@2426:000007           si    0o7   ; select I/O: unknown i/o device  @@Flexo:'3'
+@2427:016041           rd  0o2041   ; read  
+@2430:014000           rd    0o0   ; read  
+@2431:040042           ts  0o0042   ; transfer to storage  
+@2432:010002           bi  0o0002   ; block transfer in  
+@2433:000047           si   0o47   ; select I/O: unknown i/o device  @@Flexo:'#'
+@2434:016101           rd  0o2101   ; read  
+@2435:170000          clc  0o00000   ; cycle left and clear  
+@2436:016041           rd  0o2041   ; read  
+@2437:124002           sa  0o0002   ; special add  
+@2440:016042           rd  0o2042   ; read  
+@2441:006401          .word 0o006401  
+@2442:124000           sa  i0000   ; special add  
+@2443:016102           rd  0o2102   ; read  
+@2444:006401          .word 0o006401  
+@2445:040000           ts  i0000   ; transfer to storage  
+@2446:016101           rd  0o2101   ; read  
+@2447:000007           si    0o7   ; select I/O: unknown i/o device  @@Flexo:'3'
+@2450:016041           rd  0o2041   ; read  
+@2451:014000           rd    0o0   ; read  
+@2452:040042           ts  0o0042   ; transfer to storage  
+@2453:010003           bi  0o0003   ; block transfer in  
+@2454:000055           si   0o55   ; select I/O: unknown i/o device  @@Flexo:'#'
+@2455:016101           rd  0o2101   ; read  
+@2456:170000          clc  0o00000   ; cycle left and clear  
+@2457:016041           rd  0o2041   ; read  
+@2460:124003           sa  0o0003   ; special add  
+@2461:016042           rd  0o2042   ; read  
+@2462:006402          .word 0o006402  
+@2463:124000           sa  i0000   ; special add  
+@2464:016102           rd  0o2102   ; read  
+@2465:006402          .word 0o006402  
+@2466:040000           ts  i0000   ; transfer to storage  
+@2467:016102           rd  0o2102   ; read  
+@2470:006401          .word 0o006401  
+@2471:100000           ca  i0000   ; clear and add  
+@2472:040102           ts  0o0102   ; transfer to storage  
+@2473:012401           bi  0o2401   ; block transfer in  
+@2474:000062           si   0o62   ; select I/O: unknown i/o device  @@Flexo:'b'
+@2475:016101           rd  0o2101   ; read  
+@2476:000600           si  0o600   ; select I/O: Display Points  
+@2477:016042           rd  0o2042   ; read  
+@2500:006402          .word 0o006402  
+@2501:100000           ca  i0000   ; clear and add  
+@2502:040102           ts  0o0102   ; transfer to storage  
+@2503:013001           bi  w3001   ; block transfer in  
+@2504:000064           si   0o64   ; select I/O: unknown i/o device  @@Flexo:'g'
+@2505:016101           rd  0o2101   ; read  
+@2506:024000           rc    0o0   ; record  
+@2507:040042           ts  0o0042   ; transfer to storage  
+@2510:012402           bi  0o2402   ; block transfer in  
+@2511:000065           si   0o65   ; select I/O: unknown i/o device  @@Flexo:'#'
+@2512:016101           rd  0o2101   ; read  
+@2513:000600           si  0o600   ; select I/O: Display Points  
+@2514:016042           rd  0o2042   ; read  
+@2515:006401          .word 0o006401  
+@2516:100000           ca  i0000   ; clear and add  
+@2517:040102           ts  0o0102   ; transfer to storage  
+@2520:004001          .word 0o004001  
+@2521:000067           si   0o67   ; select I/O: unknown i/o device  @@Flexo:'#'
+@2522:016101           rd  0o2101   ; read  
+@2523:024000           rc    0o0   ; record  
+@2524:016042           rd  0o2042   ; read  
+@2525:006401          .word 0o006401  
+@2526:100000           ca  i0000   ; clear and add  
+@2527:016102           rd  0o2102   ; read  
+@2530:006403          .word 0o006403  
+@2531:030000           sd  i0000   ; sum digits - XOR  
+@2532:016102           rd  0o2102   ; read  
+@2533:006401          .word 0o006401  
+@2534:040000           ts  i0000   ; transfer to storage  
+@2535:016102           rd  0o2102   ; read  
+@2536:006402          .word 0o006402  
+@2537:100000           ca  i0000   ; clear and add  
+@2540:016102           rd  0o2102   ; read  
+@2541:006403          .word 0o006403  
+@2542:030000           sd  i0000   ; sum digits - XOR  
+@2543:016102           rd  0o2102   ; read  
+@2544:006402          .word 0o006402  
+@2545:040000           ts  i0000   ; transfer to storage  
+@2546:016102           rd  0o2102   ; read  
+@2547:006401          .word 0o006401  
+@2550:100000           ca  i0000   ; clear and add  
+@2551:040102           ts  0o0102   ; transfer to storage  
+@2552:012403           bi  0o2403   ; block transfer in  
+@2553:000077           si   0o77   ; select I/O: unknown i/o device  @@Flexo:'<null>'
+@2554:016101           rd  0o2101   ; read  
+@2555:000600           si  0o600   ; select I/O: Display Points  
+@2556:016042           rd  0o2042   ; read  
+@2557:006402          .word 0o006402  
+@2560:100000           ca  i0000   ; clear and add  
+@2561:040102           ts  0o0102   ; transfer to storage  
+@2562:013002           bi  w3002   ; block transfer in  
+@2563:000101           si  0o101   ; select I/O: Magnetic Tape  
+@2564:016101           rd  0o2101   ; read  
+@2565:024000           rc    0o0   ; record  
+@2566:040042           ts  0o0042   ; transfer to storage  
+@2567:012404           bi  0o2404   ; block transfer in  
+@2570:000102           si  0o102   ; select I/O: Magnetic Tape  
+@2571:016101           rd  0o2101   ; read  
+@2572:000600           si  0o600   ; select I/O: Display Points  
+@2573:016042           rd  0o2042   ; read  
+@2574:006401          .word 0o006401  
+@2575:100000           ca  i0000   ; clear and add  
+@2576:040102           ts  0o0102   ; transfer to storage  
+@2577:004002          .word 0o004002  
+@2600:000104           si  0o104   ; select I/O: Magnetic Tape  
+@2601:016101           rd  0o2101   ; read  
+@2602:024000           rc    0o0   ; record  
+@2603:016042           rd  0o2042   ; read  
+@2604:010001           bi  i0001   ; block transfer in  
+@2605:074000           sp  i0000   ; sub-program  
+@2606:040102           ts  0o0102   ; transfer to storage  
+@2607:006401          .word 0o006401  
+@2610:000106           si  0o106   ; select I/O: Magnetic Tape  
+@2611:000101           si  0o101   ; select I/O: Magnetic Tape  
+@2612:000000          .word 0o0  
+@2613:040042           ts  0o0042   ; transfer to storage  
+@2614:006402          .word 0o006402  
+@2615:000107           si  0o107   ; select I/O: Magnetic Tape  
+@2616:000101           si  0o101   ; select I/O: Magnetic Tape  
+@2617:000000          .word 0o0  
+@2620:040042           ts  0o0042   ; transfer to storage  
+@2621:006403          .word 0o006403  
+@2622:000110           si  0o110   ; select I/O: Magnetic Tape  
+@2623:016101           rd  0o2101   ; read  
+@2624:100000           ca  i0000   ; clear and add  
+@2625:020041           bo  0o0041   ; block transfer out  
+@2626:000400           si  0o400   ; select I/O: unknown i/o device  
+@2627:040042           ts  0o0042   ; transfer to storage  
+@2630:007401          .word 0o007401  
+@2631:000400           si  0o400   ; select I/O: unknown i/o device  
+@2632:016102           rd  0o2102   ; read  
+@2633:006001          .word 0o006001  
+@2634:100000           ca  i0000   ; clear and add  
+@2635:016102           rd  0o2102   ; read  
+@2636:012401           bi  0o2401   ; block transfer in  
+@2637:040000           ts  i0000   ; transfer to storage  
+@2640:016102           rd  0o2102   ; read  
+@2641:012402           bi  0o2402   ; block transfer in  
+@2642:040000           ts  i0000   ; transfer to storage  
+@2643:016102           rd  0o2102   ; read  
+@2644:012403           bi  0o2403   ; block transfer in  
+@2645:040000           ts  i0000   ; transfer to storage  
+@2646:016102           rd  0o2102   ; read  
+@2647:012404           bi  0o2404   ; block transfer in  
+@2650:040000           ts  i0000   ; transfer to storage  
+@2651:016102           rd  0o2102   ; read  
+@2652:006001          .word 0o006001  
+@2653:100001           ca  i0001   ; clear and add  
+@2654:016102           rd  0o2102   ; read  
+@2655:013001           bi  w3001   ; block transfer in  
+@2656:040000           ts  i0000   ; transfer to storage  
+@2657:016102           rd  0o2102   ; read  
+@2660:013002           bi  w3002   ; block transfer in  
+@2661:040000           ts  i0000   ; transfer to storage  
+@2662:016102           rd  0o2102   ; read  
+@2663:004001          .word 0o004001  
+@2664:040000           ts  i0000   ; transfer to storage  
+@2665:016102           rd  0o2102   ; read  
+@2666:004002          .word 0o004002  
+@2667:040000           ts  i0000   ; transfer to storage  
+@2670:016102           rd  0o2102   ; read  
+@2671:010001           bi  i0001   ; block transfer in  
+@2672:074000           sp  i0000   ; sub-program  
+@2673:020101           bo  0o0101   ; block transfer out  
+@2674:000500           si  0o500   ; select I/O: In-Out Check Registers  
+@2675:040042           ts  0o0042   ; transfer to storage  
+@2676:007402          .word 0o007402  
+@2677:000500           si  0o500   ; select I/O: In-Out Check Registers  
+@2700:016102           rd  0o2102   ; read  
+@2701:006002          .word 0o006002  
+@2702:100000           ca  i0000   ; clear and add  
+@2703:016102           rd  0o2102   ; read  
+@2704:012401           bi  0o2401   ; block transfer in  
+@2705:074002           sp  0o0002   ; sub-program  
+
+@2706:016102           rd  0o2102   ; read  
+@2707:012402           bi  0o2402   ; block transfer in  
+@2710:040000           ts  i0000   ; transfer to storage  
+@2711:016102           rd  0o2102   ; read  
+@2712:012403           bi  0o2403   ; block transfer in  
+@2713:040000           ts  i0000   ; transfer to storage  
+@2714:016102           rd  0o2102   ; read  
+@2715:012404           bi  0o2404   ; block transfer in  
+@2716:040000           ts  i0000   ; transfer to storage  
+@2717:016102           rd  0o2102   ; read  
+@2720:006002          .word 0o006002  
+@2721:100001           ca  i0001   ; clear and add  
+@2722:016102           rd  0o2102   ; read  
+@2723:013001           bi  w3001   ; block transfer in  
+@2724:040000           ts  i0000   ; transfer to storage  
+@2725:016102           rd  0o2102   ; read  
+@2726:013002           bi  w3002   ; block transfer in  
+@2727:040000           ts  i0000   ; transfer to storage  
+@2730:016102           rd  0o2102   ; read  
+@2731:006002          .word 0o006002  
+@2732:100002           ca  0o0002   ; clear and add  
+@2733:016102           rd  0o2102   ; read  
+@2734:004001          .word 0o004001  
+@2735:040000           ts  i0000   ; transfer to storage  
+@2736:016102           rd  0o2102   ; read  
+@2737:004002          .word 0o004002  
+@2740:040000           ts  i0000   ; transfer to storage  
+@2741:016102           rd  0o2102   ; read  
+@2742:010001           bi  i0001   ; block transfer in  
+@2743:074000           sp  i0000   ; sub-program  
+@2744:020101           bo  0o0101   ; block transfer out  
+@2745:000600           si  0o600   ; select I/O: Display Points  
+@2746:040042           ts  0o0042   ; transfer to storage  
+@2747:007403          .word 0o007403  
+@2750:000600           si  0o600   ; select I/O: Display Points  
+@2751:016102           rd  0o2102   ; read  
+@2752:006002          .word 0o006002  
+@2753:100003           ca  0o0003   ; clear and add  
+@2754:016102           rd  0o2102   ; read  
+@2755:007402          .word 0o007402  
+@2756:074001           sp  i0001   ; sub-program  
+
+@2757:040102           ts  0o0102   ; transfer to storage  
+@2760:006001          .word 0o006001  
+@2761:000602           si  0o602   ; select I/O: Display Points  
+@2762:016101           rd  0o2101   ; read  
+@2763:000600           si  0o600   ; select I/O: Display Points  
+@2764:016041           rd  0o2041   ; read  
+@2765:024000           rc    0o0   ; record  
+@2766:040042           ts  0o0042   ; transfer to storage  
+@2767:006002          .word 0o006002  
+@2770:000604           si  0o604   ; select I/O: Display Points  
+@2771:016101           rd  0o2101   ; read  
+@2772:001600           si  0o1600   ; select I/O: Display Vectors  
+@2773:016042           rd  0o2042   ; read  
+@2774:006401          .word 0o006401  
+@2775:024000           rc    0o0   ; record  
+@2776:016102           rd  0o2102   ; read  
+@2777:006402          .word 0o006402  
+@3000:024000           rc    0o0   ; record  
+@3001:016101   w3001:  rd  0o2101   ; read @@ WrittenBy: a2503 a2655 a2723  
+@3002:002600   w3002:  si  0o2600   ; select I/O: Display Characters @@ WrittenBy: a2562 a2660 a2726  
+@3003:060043           ab  0o0043   ; add B-Reg  
+@3004:177777           md  0o3777   ; multiply digits no roundoff (AND)  
+@3005:010001           bi  i0001   ; block transfer in  
+@3006:000000          .word 0o0  
+@3007:000140           si  0o140   ; select I/O: Magnetic Tape  
+                       .JumpTo 0o40
+                       .WW_File "C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Magnetic-Tapes\132\t132_pt1.tap/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Magnetic-Tapes\132\t132_pt1_gs005.tcore"
+                       .WW_TapeID "(None)"
