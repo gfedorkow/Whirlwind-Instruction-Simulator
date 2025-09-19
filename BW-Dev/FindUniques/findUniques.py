@@ -43,4 +43,8 @@ for file1 in allFiles:
                     else:
                         # we've already found a match for file1
                         filesToIgnore.append(file2)
+
+with open("uniqueFileNames.txt", 'w') as f:
+    for line in uniqueFiles:
+        f.write(f"{line}\n")
                 
