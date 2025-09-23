@@ -9,10 +9,13 @@ import os
 import filecmp
 
 allFiles = []
-filesToIgnore = []
 uniqueFiles = []
 
-# first, make a list of all the rea files
+# first, make a list of all the real files
+# set up a list of tuples:
+#  fileName, flag
+#   flag = 0 -> this file is not a duplicate of another (or hasn't been checked yet)
+#   flag = 1 -> this file is a duplicate of another file
 topDirList = ["../../Recovered-Tapes/Translated-Files/Magnetic-Tapes/", "../../Recovered-Tapes/Translated-Files/Paper-Tapes/"]
 for topDir in topDirList:
     dirList = os.listdir(topDir)
@@ -23,28 +26,26 @@ for topDir in topDirList:
             for file in fileList:
                 if (not file.startswith(".")):
                     fileName = dirName + "/" + file
-                    allFiles.append(fileName)
+                    data = {"fn" : fileName, "dup" : 0}
+                    allFiles.append(data)
 
-# then check them against each other
-for file1 in allFiles:
-    foundAMatchForFile1Already = 0
-    if (file1 not in filesToIgnore):
-        for file2 in allFiles:
-            if (file2 not in filesToIgnore):
-                if (filecmp.cmp(file1, file2, shallow = False)):
-                    # file2 is a dupe of file 1
-                    if (foundAMatchForFile1Already == 0):
-                        # it's the first time file1 has matched; so save it
-                        uniqueFiles.append(file1);
-                        foundAMatchForFile1Already = 1
-                        print(file1)
-                        # but file 2 is a dupe so ignore it
-                        filesToIgnore.append(file2);
-                    else:
-                        # we've already found a match for file1
-                        filesToIgnore.append(file2)
-
+# loop over them to find duplicates
+for i in range(len(allFiles)):
+    # see if the probe file is a duplicate; ignore if it is
+    if (allFiles[i]["dup"] == 0):
+        # it isn't, so save the name and look for duplicates
+        uniqueFiles.append(allFiles[i]["fn"])
+#        print(allFiles[i]["fn"])
+        for j in range(i + 1, len(allFiles)):
+            if (allFiles[j]["dup"] == 0):
+                print("comparing " + str(i) + " and " + str(j))
+                if(filecmp.cmp(allFiles[i]["fn"], allFiles[j]["fn"], shallow = False)):
+                    # if [j] is a duplicate of [i]; mark both as duplicates
+                    allFiles[i]["dup"] = 1
+                    allFiles[j]["dup"] = 1
+                
+# save the result
 with open("uniqueFileNames.txt", 'w') as f:
     for line in uniqueFiles:
         f.write(f"{line}\n")
-                
+      
