@@ -1172,6 +1172,7 @@ This tests for x == +-0 (seen in frac printer):
 	cm x
 	su 0
 	cp a	; Branch if x is zero
+------------------------------------------------------------------------------
 
 
 ------------------------------------------------------------------------------
@@ -1194,6 +1195,8 @@ since it's not what we're used to nowadays. When cntr gets to -1,
 adding one via ao produces -0.  -0 still checks as negative so the
 loop continues. On the next loop adding one to -0 produces 1, and the
 loop ends. Thus stuff is executed N times.
+------------------------------------------------------------------------------
+
 
 ------------------------------------------------------------------------------
 --- Beware the td!
@@ -1201,12 +1204,51 @@ loop ends. Thus stuff is executed N times.
 Writing instructions is a normal part of ww coding. Careful with td!
 When used with shift instructions td will overwrite the low opcode bit
 and potentially change the shift from hold to round.
+------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------
+--- WW languages designed as regular grammars
+
+This one is more a design theme rather than an idiom.
+
+In looking through L&Z, plus the opnames and types of labels which can
+be formed in CSII, it seems their languages were all "rigged"
+grammatically to allow for a largely FSM approach to parsing the csii
+text. In L&Z, they used a switched-instruction state machine to branch
+(i.e., "jump" or "dispatch" table) through char sequences. Those char
+sequences are very tightly defined, eg, it just needs the P in PRINT,
+and the operations are unambiguous one- or two-letter nmemonics.
+
+In CSII, consider for example the tape output with lines like:
+
+		 cpc1
+		 csh1
+		 rcr2
+		 slr10
+		 srr17
+		 
+In all these cases the second char of the opcode can only be followwed
+by chars that are either operands or a third opcode char. There are no
+ambiguities as the set of chars allowed at each step is deterministic. The operands also have a simple
+and unambiguous interpretation that 
+
+It may be worth considering how to detect this sort of pattern in the
+tapes, to help find valid code. In particcular looking for rd loops is
+a start.
+------------------------------------------------------------------------------
+
+
+
+
+
 
 
 
 
 Diving into the Tapes  *****
 =====================
+[9/10/25 Deleted all these dirs and zips because we're using Guy's dir structure now.]
 
 ~/whirlwind/Tapes/
 	Paper-Tapes
@@ -1280,5 +1322,7 @@ My intent is to convert the relative labels to offsets from a 'real'
 label, but that's not working properly yet.  Other than that, it's close 
 to emitting wwasm code.
 --------------------------------
+
+
 
 

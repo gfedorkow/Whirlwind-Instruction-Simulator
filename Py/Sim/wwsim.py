@@ -23,6 +23,7 @@ BlinkenLightsModule = False
 
 import sys
 import os
+import platform
 import psutil
 # sys.path.append('K:\\guy\\History-of-Computing\\Whirlwind\\Py\\Common')
 # sys.path.append('C:\\Users\\lstabile\\whirlwind\\InstructionSimulator\\Py\\Common')
@@ -62,7 +63,7 @@ flowgraph = None
 #
 # UseDebugger is set via the -d (--Debugger) cmd line arg. When true invokes
 # sim in in the interactive debugger.  The Debugger object itself is made once
-# in the sim loop, and retained for re-use across executions of rhe program.
+# in the sim loop, and retained for re-use across executions of the program.
 #
 UseDebugger = False
 Debugger: DbgDebugger = None
@@ -2329,7 +2330,10 @@ def main():
     # I added colored text to the trace log using ANSI escape sequences.  This works by default with
     # Cygwin xterm, but for DOS Command Shell there's a special command to enable ANSI parsing.
     # The command doesn't seem to exist in xterm, but running it doesn't break anything (yet).
-    os.system("color")
+    # LAS 9/5/25 Keyed this on Windows since otherwise we get an unwanted
+    # command-not-found error from the shell.
+    if "Windows" in platform.platform():
+        os.system ("color")
 
     # This loop runs the main part of the simulator.
     # It's a loop so that it can be restarted from the control panel, if that's in use.

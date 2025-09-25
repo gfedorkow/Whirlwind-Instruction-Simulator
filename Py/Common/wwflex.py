@@ -13,7 +13,7 @@ import wwinfra
 # Flexowriter support library
 # main program provides test path
 #
-# Public classes are FlasciiToFlex, FlexToFlascii, and FlexToFlexoWin.
+# Public classes are FlasciiToFlex, FlexToFlascii, FlexToComment, and FlexToFlexoWin.
 #
 
 # Use this class multiple-inheritance-style to hold common utilities
@@ -141,10 +141,11 @@ class AsciiFlex (AsciiFlexBase):
     def buildTables (self):
         for e in AsciiFlexCodes.codes:
             readable = ""
+            unprintable = ""
             if len (e) == 3:
                 (flexCode, lcAscii, ucAscii) = e
             else:
-                (flexCode, lcAscii, ucAscii, readable) = e
+                (flexCode, lcAscii, ucAscii, readable) = e                
             self.lowerCodeTable[lcAscii] = flexCode
             self.upperCodeTable[ucAscii] = flexCode
             self.upperAsciiTable[flexCode] = ucAscii
@@ -212,54 +213,141 @@ class FlasciiToFlex (AsciiFlex):
 
 # Base class for conversions from Flex to other forms. All conversions need to
 # use a stateful model.
+#
+# These classes are init'ed either bare or with a list of flex codes. If bare
+# then each call to addCode adds to the set of be converted. If a list is
+# passed then all the codes for that list are added upon creation. More may be
+# added if desired, but a typical use is to conver a block at once, i.e., it's
+# just a function. Both styles are useful. In any case to get the final string
+# getXXX is called.
 
 class FlexToSomething (AsciiFlex):
     def __init__ (self):
         super().__init__()
         self.upcase: bool = False
         self.colorRed: bool = False
+        self.asciiOut = ""
+    def addCodes (self, flexCodes: [int]):
+        for code in flexCodes:
+            self.addCode (code)
+        return self
     def addCode (self, flexCode: int):
         # Subclass def
         pass
 
 # Convert Flex code-by-code (via addCode), building up a string in the Flascii
-# format. Get the resulting string with getFlascii
+# format. Get the resulting string with getFlascii.
+#
+# We assume that initially we're in a downshifted and uncolored state.
 
 class FlexToFlascii (FlexToSomething):
     def __init__ (self):
         super().__init__()
-        self.asciiOut = ""
-        self.emittedCarat = False
-    def addCode (self, flexCode: int):
-        if self.upcase:
-            ascii = self.upperAsciiTable[flexCode]
-        else:
-            ascii = self.lowerAsciiTable[flexCode]
-        if ascii == "<shift up>":
-            self.upcase = True
-        elif ascii == "<shift dn>":
-            self.upcase = False
-        elif ascii == "<color change>":
+        self.state = 0
+    def accumAndSetColor (self, ascii: str):
+        if ascii == "<color>":
             self.colorRed = not self.colorRed
-        elif self.isDigit (ascii):
-            if self.upcase and not self.emittedCarat:
-                self.emittedCarat = True
-                self.asciiOut += "^"
-            self.asciiOut += ascii
+        self.asciiOut += ascii
+    def checkValidCode (self, flexCode):
+        if flexCode not in self.lowerAsciiTable:
+            self.asciiOut += ("<invalid flex %d>" % flexCode)
+            return False
         else:
-            self.asciiOut += ascii
-            self.emittedCarat = False
+            return True
+    def addCode (self, flexCode: int):
+        if self.checkValidCode (flexCode):
+	        if self.state == 0:
+	            ascii = self.lowerAsciiTable[flexCode]
+	            if ascii == "<shift up>":
+	                self.state = 1
+	            else:
+	                self.accumAndSetColor (ascii)
+	        elif self.state == 1:
+	            ascii = self.upperAsciiTable[flexCode]
+	            if self.isDigit (ascii) or ascii == "-":
+	                self.asciiOut += "^" + ascii
+	                self.state = 2
+	            elif ascii == "<shift dn>":
+	                self.state = 0
+	            else:
+	                self.accumAndSetColor (ascii)
+	                self.state = 1
+	        elif self.state == 2:
+	            ascii = self.upperAsciiTable[flexCode]
+	            if self.isDigit (ascii) or ascii == "-":
+	                self.asciiOut += ascii
+	                self.state = 2
+	            elif ascii == "<shift dn>":
+	                self.state = 0
+	            else:
+	                self.accumAndSetColor (ascii)
+	                self.state = 1
+	        else:
+	            print ("Internal error: Unexpected state %d in FlexToFlascii" % self.state)
+	            exit (1)
+        pass
     def getFlascii (self) -> str:
         return self.asciiOut
 
 
-# Produce the "readable" set of lines for the -r option to ww-ASCII-to-Flexo.py
+# make_filename_safe     tab, bs -> ' ', else any ctl char -> ''. Used in decode_556_file, to get ww_file.title
+#                        Also used in decode_a_flexo_byte in read_7ch, but in commented-out code
+# ^--- ortho ---v
+# show_unprintable       Used in decode_ww_loader_format to get ww_file.title
+# v--Can be used with either of the above
+# ascii_only             Replaces <del> and <color> with the empty string. Option to wwutd when making .fc files
+
     
-class FlexToComment (FlexToSomething):
-    def __init__ (self, flexCodes: [int]):
+# Convert from Flex to .fc format. This will emit Ansi escape codes for color,
+# rather than <color>, otherwise same as Flascii.
+#
+# The utility of asciiOnly is not clear except to eliminate the Ansi color
+# escape sequences.
+
+class FlexToFc (FlexToFlascii):
+    def __init__ (self, asciiOnly = False):
         super().__init__()
-        self.flexCodes = flexCodes
-        self.asciiOut = ""
+        self.asciiOnly = asciiOnly
+    def accumAndSetColor (self, ascii: str):
+        if ascii == "<color>":
+            self.colorRed = not self.colorRed
+            if not self.asciiOnly:
+                if self.colorRed:
+                    self.asciiOut += "\033[1;31m"
+                else:
+                    self.asciiOut += "\033[0m"
+        elif ascii == "<del>" and self.asciiOnly:
+            pass
+        else:
+            self.asciiOut += ascii
+
+# Used to satisfy show_unprintable
+
+class FlexToCsyntaxFlascii (FlexToFc):
+    def __init__ (self):
+        super().__init__()
+        self.dict = {'\n': '\\n', '\t': '\\t'}
+    def accumAndSetColor (self, ascii: str):
+        if ascii in self.dict:
+            ascii = self.dict[ascii]
+        self.asciiOut += ascii
+
+# Used to satisfy make_filename_safe
+
+class FlexToFilenameSafeFlascii (FlexToFc):
+    def __init__ (self):
+        super().__init__()
+        self.dict = {'\n': '', '\t': ' ', '\b': ' '}
+    def accumAndSetColor (self, ascii: str):
+        if ascii in self.dict:
+            ascii = self.dict[ascii]
+        self.asciiOut += ascii
+
+# Produce the "readable" set of lines for the -r option to ww-ASCII-to-Flexo.py
+
+class FlexToComment (FlexToSomething):
+    def __init__ (self):
+        super().__init__()
     def addCode (self, flexCode: int):
         if self.upcase:
             ascii = self.upperAsciiTable[flexCode]
@@ -270,15 +358,13 @@ class FlexToComment (FlexToSomething):
             self.upcase = True
         elif ascii == "<shift dn>":
             self.upcase = False
-        elif ascii == "<color change>":
+        elif ascii == "<color>":
             self.colorRed = not self.colorRed
         if readableAscii != "":
             ascii = readableAscii
         self.asciiOut += "; %06o %s\n" % (flexCode, ascii)
         pass
     def getComment (self) -> str:
-        for flexCode in self.flexCodes:
-            self.addCode (flexCode)
         return self.asciiOut
 
 # Creates a FlexoWin, and each incoming call to addCode(flexCode) prints any
@@ -298,7 +384,7 @@ class FlexToFlexoWin (FlexToSomething):
             self.upcase = True
         elif ascii == "<shift dn>":
             self.upcase = False
-        elif ascii == "<color change>":
+        elif ascii == "<color>":
             self.colorRed = not self.colorRed
         elif self.isDigit (ascii) or ascii == "-":
             if self.upcase:
@@ -314,62 +400,64 @@ class FlexToFlexoWin (FlexToSomething):
 #
 # This table is based on 2M-0277, Table 1, Page 106
 #    
+
 class AsciiFlexCodes:
     codes = [
         #
-        # code    lc                  uc                  for ww-ASCII-to-flexo.py -r
+        #                                    
+        # code    lc           uc            ww-ASCII-to-flexo.py -r
         #
-        [0o2,    'e',                'E'],
-        [0o3,    '8',                '8'],
-        [0o5,    '|',                '_'],
-        [0o6,    'a',                'A'],
-        [0o7,    '3',                '3'],
-        [0o10,   ' ',                ' ',                'sp'],                 # Space
-        [0o11,   '=',                ':'],
-        [0o12,   's',                'S'],
-        [0o13,   '4',                '4'],
-        [0o14,   'i',                'I'],
-        [0o15,   '+',                '/'],
-        [0o16,   'u',                'U'],
-        [0o17,   '2',                '2'],
-        [0o20,   '<color change>',   '<color change>',   'color change'],
-        [0o21,   '.',                ')'],
-        [0o22,   'd',                'D'],
-        [0o23,   '5',                '5'],
-        [0o24,   'r',                'R'],
-        [0o25,   '1',                '1'],
-        [0o26,   'j',                'J'],
-        [0o27,   '7',                '7'],
-        [0o30,   'n',                'N'],
-        [0o31,   ',',                '('],
-        [0o32,   'f',                'F'],
-        [0o33,   '6',                '6'],
-        [0o34,   'c',                'C'],
-        [0o35,   '-',                '-'],                                       # Upper case '-' is for superscripts, e.g. for negative exponents
-        [0o36,   'k',                'K'],
-        [0o40,   't',                'T'],
-        [0o42,   'z',                'Z'],
-        [0o43,   '\b',               '\b',               'bs'],                  # Backspace
-        [0o44,   'l',                'L'],
-        [0o45,   '\t',               '\t',               'tab'],                 # Tab
-        [0o46,   'w',                'W'],
-        [0o50,   'h',                'H'],
-        [0o51,   '\n',               '\n',               'cr'],                  # Newline
-        [0o52,   'y',                'Y'],
-        [0o54,   'p',                'P'],
-        [0o56,   'q',                'Q'],
-        [0o60,   'o',                'O'],
-        [0o61,   '<stop>',           '<stop>',           'stop'],
-        [0o62,   'b',                'B'],
-        [0o64,   'g',                'G'],
-        [0o66,   '9',                '9'],
-        [0o70,   'm',                'M'],
-        [0o71,   '<shift up>',       '<shift up>',       'shift up'],
-        [0o72,   'x',                'X'],
-        [0o74,   'v',                'V'],
-        [0o75,   '<shift dn>',       '<shift dn>',       'shift dn'],
-        [0o76,   '0',                '0'],
-        [0o77,   '<nullify>',        '<nullify>',        'nullify']
+        [0o2,    'e',          'E'],
+        [0o3,    '8',          '8'],
+        [0o5,    '|',          '_'],
+        [0o6,    'a',          'A'],
+        [0o7,    '3',          '3'],
+        [0o10,   ' ',          ' ',          'sp'],       # Space
+        [0o11,   '=',          ':'],
+        [0o12,   's',          'S'],
+        [0o13,   '4',          '4'],
+        [0o14,   'i',          'I'],
+        [0o15,   '+',          '/'],
+        [0o16,   'u',          'U'],
+        [0o17,   '2',          '2'],
+        [0o20,   '<color>',    '<color>',    'color'],
+        [0o21,   '.',          ')'],
+        [0o22,   'd',          'D'],
+        [0o23,   '5',          '5'],
+        [0o24,   'r',          'R'],
+        [0o25,   '1',          '1'],
+        [0o26,   'j',          'J'],
+        [0o27,   '7',          '7'],
+        [0o30,   'n',          'N'],
+        [0o31,   ',',          '('],
+        [0o32,   'f',          'F'],
+        [0o33,   '6',          '6'],
+        [0o34,   'c',          'C'],
+        [0o35,   '-',          '-'],                      # Upper case '-' is for superscripts, e.g. for negative exponents
+        [0o36,   'k',          'K'],
+        [0o40,   't',          'T'],
+        [0o42,   'z',          'Z'],
+        [0o43,   '\b',         '\b',         'bs'],       # Backspace
+        [0o44,   'l',          'L'],
+        [0o45,   '\t',         '\t',         'tab'],      # Tab
+        [0o46,   'w',          'W'],
+        [0o50,   'h',          'H'],
+        [0o51,   '\n',         '\n',         'cr'],       # Newline
+        [0o52,   'y',          'Y'],
+        [0o54,   'p',          'P'],
+        [0o56,   'q',          'Q'],
+        [0o60,   'o',          'O'],
+        [0o61,   '<stop>',     '<stop>',     'stop'],
+        [0o62,   'b',          'B'],
+        [0o64,   'g',          'G'],
+        [0o66,   '9',          '9'],
+        [0o70,   'm',          'M'],
+        [0o71,   '<shift up>', '<shift up>', 'shift up'], 
+        [0o72,   'x',          'X'],
+        [0o74,   'v',          'V'],
+        [0o75,   '<shift dn>', '<shift dn>', 'shift dn'],
+        [0o76,   '0',          '0'],
+        [0o77,   '<del>',      '<del>',      'del']
 ]
 
 # Check noxwin option!!!!!
@@ -463,7 +551,7 @@ def\n\
 x^42\n\
 <nullify>\n\
 <shift up>abc<shift dn>\n\
-<color change>\n\
+<color>\n\
 <yyy>\n\
 <xxx\n"
 
@@ -472,27 +560,41 @@ m=~1,\n\
 z=0,\n\
 1 Dz=0,\n\
 7 p=xd|^0/c+p|^0,\n\
-<color change>\
+<color>\
 8 q=.0001p,\n\
 u=10000/c|^10+c|^11q+c|^12q^2+c|^13q^3,\n\
-<color change>\
-q|^1=F^3(a),\n\
+<color>\
+q|^1=F^3 ^4(a),\n\
 \n\n\n\n"
-            
+
+# The test in Tests/flex runs this without -w, so the virtual flexowriter
+# window will pop up, display the text, and then be gone.
+
 def main ():
+    parser = wwinfra.StdArgs().getParser (".")
+    parser.add_argument ("-w", "--Wait", help="Wait for input before exiting, to allow viewing of the virual flexowriter window", action="store_true")
+    cmdArgs = parser.parse_args()
     text = testText2
     a = FlasciiToFlex (text)
     f = a.getFlex()
     print (text, f)
+    
     b = FlexToFlascii()
     for c in f:
         b.addCode (c)
     sys.stdout.write (b.getFlascii())
-    sys.stdout.write (FlexToComment (f).getComment())
+    sys.stdout.write (FlexToComment().addCodes(f).getComment())
+
+    fc = FlexToFc()
+    for c in f:
+        fc.addCode (c)
+    sys.stdout.write (fc.getFlascii())
+    
     w = FlexToFlexoWin()
     for c in f:
         w.addCode (c)
-    input ("xxx")
+    if cmdArgs.Wait:
+        input ("Press return to exit: ")
 
 if __name__ == "__main__":
     main()

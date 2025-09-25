@@ -1,0 +1,20 @@
+start at 0o1000
+configure flexowriter #2, stop_on_zero=1, packed=0
+Flexo: x = (3.14159 + 42)(2.718 + 57),
+Flexo: PRINT x.
+Flexo: STOP
+configure flexowriter #2, stop_on_zero=1, packed=0
+LZ output: 2695.765381
+configure flexowriter #2, stop_on_zero=1, packed=0
+configure flexowriter #2, stop_on_zero=1, packed=0
+configure flexowriter #2, stop_on_zero=1, packed=0
+Flexo: x=+.26957654+04 
+Halt Instruction!  (Code=0) at pc=02765
+Alarm 'Program Halt' (5) at PC=0o2765 (0d1525)
+
+Flexowriter Said:
+x = (3.14159 + 42)(2.718 + 57),
+PRINT x.
+STOP
+x=+.26957654+04 
+
