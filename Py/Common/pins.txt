@@ -1,0 +1,30 @@
+
+analog_scope.py:    self.pin_isGun1on =  4
+micro_whirlwind.py: pin_gpio_LED1 =      5
+analog_scope.py:    self.pin_TargetLED = 5
+micro_whirlwind.py: pin_gpio_LED2 =      6
+analog_scope.py:    self.pin_InterceptorLED = 6
+
+analog_scope.py:    # self.pin_audio_click = 12  # experiment
+micro_whirlwind.py: # self.pin_audio_click = 12  # audio pin
+analog_scope.py:    self.pin_isGun2on =      12 #26  # was 7, but that's a CE on RasPi 5
+
+
+micro_whirlwind.py: pin_tca_interrupt  = 16
+analog_scope.py:    self.pin_doMove = 17
+analog_scope.py:    self.pin_enZ1 = 18
+micro_whirlwind.py: pin_pwr_ctl = 19
+micro_whirlwind.py: pin_gpio_LED3 = 20
+micro_whirlwind.py: pin_gpio_LED4 = 21
+analog_scope.py:    self.pin_isIntercept = 21  # used to indicate Target or Intercept to air-defense sim
+analog_scope.py:    self.pin_doDraw = 22
+analog_scope.py:    self.pin_enZ2 =   23
+analog_scope.py:    self.pin_isGun2 = 24
+analog_scope.py:    self.pin_isGun1 = 25
+micro_whirlwind.py: # pin_tca_reset = 26  # keyboard scanner reset pin; low for reset
+analog_scope.py:    self.pin_isKey =  27 # used as the Stop signal
+analog_scope.py:    # Jul 31, 2025 -- It appears that micro-whirlwind overloads self.pin_isGun2on = 26 and pin_tca_reset = 26
+micro_whirlwind.py: pin_gpio_isKey =  27
+
+
+random-lines.py:    pin_pwr_ctl = 19
