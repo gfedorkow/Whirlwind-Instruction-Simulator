@@ -45,7 +45,7 @@ Programs = [
     WwAppClass("TicTacToe Two Person", dir="Py/Shell", exec="tictactoe.py", is_WW=False),
     WwAppClass("TicTacToe vs WW", dir="Code-Samples/Tic-Tac-Toe", exec="tic-tac-toe.acore", is_WW=True),
     WwAppClass("R-196 Bounce", dir="Code-Samples/Bounce/BlinkenLights-Bounce", exec="bounce-control-panel.acore", is_WW=True),
-    WwAppClass("Bounce w/ Hole", dir="Code-Samples/Bounce/Bounce-Tape-with-Hole", exec="fb131-0-2690_bounce-annotated.acore", is_WW=True),
+    WwAppClass("Bounce w/ Hole", dir="Code-Samples/Bounce/Bounce-Tape-with-Hole", exec="bounce-no-velocity.acore", is_WW=True, args=["--Crt", "10"]),
     WwAppClass("Mad Game", dir="Code-Samples/Mad-Game", exec="mad-game.acore", is_WW=True),
     WwAppClass("Black-Jack", dir="Code-Samples/Blackjack", exec="bjack.acore", is_WW=True),
     WwAppClass("CRT Test", dir="Code-Samples/Diags", exec="crt-test-68_001_fbl00-0-50.tcore", is_WW=True),

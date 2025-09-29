@@ -302,9 +302,8 @@ class AnaScope:
         if UseGun1 and not self.wasGunPulse1 and gpio.input(self.pin_isGun1) == 0:
             mask = 1
             self.wasGunPulse1 = True
-            if DebugGun: print("first pulse, Gun 1: isGun1=%d, isGun1on=%d, isGun2=%d, isGun2on=%d, PushButton=%d" %
+            if DebugGun: print("first pulse, Gun 1: isGun1=%d, isGun1on=%d, isGun2=x isGun2on=x, PushButton=%d" %
                     (gpio.input(self.pin_isGun1), gpio.input(self.pin_isGun1on),
-                     gpio.input(self.pin_isGun2), gpio.input(self.pin_isGun2on),
                       gpio.input(self.pin_isIntercept)))
         if UseGun2 and not self.wasGunPulse2 and gpio.input(self.pin_isGun2) == 0:
             mask = mask | 2
@@ -323,17 +322,17 @@ class AnaScope:
                 if gpio.input(self.pin_isGun1on) == 0:
                     # while switch is on, restart timer
                     self.gunTime1 = time.time()
-                    if DebugGun: print("debouncing 1: isGun1=%d, isGun1on=%d, isGun2=%d, isGun2on=%d" %
+                    if DebugGun: print("debouncing 1: isGun1=%d, isGun1on=%d, isGun2=x, isGun2on=x" %
                         (gpio.input(self.pin_isGun1), gpio.input(self.pin_isGun1on),
-                         gpio.input(self.pin_isGun2), gpio.input(self.pin_isGun2on)))
+                         ))
                 else:
                     # switch must be off some time (debounce)
                     delta = time.time() - self.gunTime1
                     if delta > self.debounceGunTime:
                         self.wasGunPulse1 = False
-                        if DebugGun: print("debounced 1: isGun1=%d, isGun1on=%d, isGun2=%d, isGun2on=%d" %
+                        if DebugGun: print("debounced 1: isGun1=%d, isGun1on=%d, isGun2=x, isGun2on=x" %
                             (gpio.input(self.pin_isGun1), gpio.input(self.pin_isGun1on),
-                             gpio.input(self.pin_isGun2), gpio.input(self.pin_isGun2on)))
+                             ))
 
         # debounce switch 2
         if UseGun2:
