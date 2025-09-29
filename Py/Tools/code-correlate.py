@@ -47,6 +47,7 @@ sorted(student_objects, key=lambda student: student.age)   # sort by age
 
 import argparse
 import wwinfra
+import sys
 
 cb = wwinfra.ConstWWbitClass()
 
@@ -116,9 +117,10 @@ def DecodeOp(w, pc, short=False):
 
 
 
-def print_match(probe, archive, probe_match_start, archive_match_start, match_length):
-    print("\nMatch: probe start=%d (0o%o), archive_start=%d (0o%o), length=%d" %
-          (probe_match_start, probe_match_start, archive_match_start, archive_match_start, match_length))
+def print_match(sc, probe, archive, probe_match_start, archive_match_start, match_length):
+    print("\nArchive: %s; Probe: %s\n Match: probe start=%d (0o%o), archive_start=%d (0o%o), length=%d" %
+          (sc.archive_filename, sc.probe_filename, probe_match_start, probe_match_start, archive_match_start,
+           archive_match_start, match_length))
     prt = "archive code, starting at 0o%03o:\n" % archive_match_start
     start = archive_match_start # - 10
     probe_offset_from_archive = probe_match_start - archive_match_start
@@ -162,7 +164,7 @@ def scan_archive(sc, scan_start, probe, archive, probe_addr_correction):
         if not sc.match_complete_word:
             if p: p &= 0o174000  # keep the WW Op Code; toss the address field
             if a: a &= 0o174000
-        # Here's the critical line matchine a word from the two files
+        # Here's the critical line matching a word from the two files
         if a is not None and p is not None and p == a:  # don't match None, but if the values match, it's part of a run
             if run == 0:
                 probe_match_start = probe_offset
@@ -171,18 +173,16 @@ def scan_archive(sc, scan_start, probe, archive, probe_addr_correction):
                 run += 1
         else:
             if run > sc.run_threshold:
-                if run == 428:
-                    breakp()
                 matches.append(MatchStat(run, archive_match_start, probe_match_start + probe_addr_correction, scan_start, len(probe)))
                 if True: # sc.chatty:
-                    print_match(probe, archive, probe_match_start + probe_addr_correction, archive_match_start, run)
+                    print_match(sc, probe, archive, probe_match_start + probe_addr_correction, archive_match_start, run)
             run = 0
 
     # pick up a last run of matches, in case we matched right through to the end
     if run > sc.run_threshold:
         matches.append(MatchStat(run, archive_match_start, probe_offset, scan_start, len(probe)))
         if True: # sc.chatty:
-            print_match(probe, archive, probe_match_start + probe_addr_correction, archive_match_start, run)
+            print_match(sc, probe, archive, probe_match_start + probe_addr_correction, archive_match_start, run)
 
     return matches
 
@@ -212,7 +212,7 @@ def index_scan(sc, probe, archive):
             matches += m
             c += 1
             if c > 100:
-                exit(1)
+                print("more than 100 matches")
     return matches
 
 
@@ -248,41 +248,10 @@ def coremem_to_list(cb, cm, break_at_none_cell=False):
     return mem_list[0:last_addr]
 
 
-def main():
-    parser = argparse.ArgumentParser(description='Analyze a Whirlwind Paper Tape.')
-    parser.add_argument("ArchiveFileName", type=str, help="file name of tape image file to search")
-    parser.add_argument("--Quiet", '-q', help="Print less debug info on tape blocks", action="store_true")
-    parser.add_argument("--WordCompare", '-w', help="Compare the whole word, not just op-codes", action="store_true")
-    parser.add_argument('--ProbeFileName', '-p', type=str, help='file name containing search pattern')
-    parser.add_argument("--RunThreshold", "-t", help="set threshold bytes for identifying a match (default=10)", type=int)
-
-    args = parser.parse_args()
-    # args
-
-    sc = SettingsClass(quiet=args.Quiet, match_complete_word=args.WordCompare)
-
-    if args.RunThreshold is not None:
-        sc.run_threshold = args.RunThreshold
-
-    # read probe core
-    # read archive core
-    #probe = [3, 4, 5, 6, 7]
-    #archive = [0, 1, 2, 3, 4, 5, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6]
-    #archive  = [3, 4, 5, 6, 7]
-    #probe = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    probe = [0o14174, 000, 0o130007, 0o130003, 0o150006, 0o40024, 0o50002]
-
-    sc.archive_filename = args.ArchiveFileName
-    sc.probe_filename = args.ProbeFileName
-    args.LogDir = None
-    cb = wwinfra.ConstWWbitClass (corefile="no_corefile_name", args = args)
-    wwinfra.theConstWWbitClass = cb
-    cb.log = wwinfra.LogFactory().getLog (quiet=args.Quiet)
-    cb.NoZeroOneTSR = True  # don't add the automatic zero and one to locations zero and one
-    cb.use_x_win = False
-
+def analyze_a_file(cb, sc, args, probe, filename):
     # read the Archive file
-    if sc.chatty: ("Reading Archive file...")
+    if sc.chatty: print("Reading Archive file...")
+    sc.archive_filename = filename
     cm = wwinfra.CorememClass(cb, use_default_tsr=False)
     cpu = wwinfra.CpuClass(cb, cm)
     cb.cpu = cpu
@@ -292,21 +261,9 @@ def main():
     archive = coremem_to_list(cb, cm)
 
     if len(archive) == 0:
-        if sc.chatty: print("empty file: ", sc.archive_filename)
-        exit(1)
-
-    # read the Probe file
-    if sc.chatty: print("Reading Probe file...")
-    cm = wwinfra.CorememClass(cb, use_default_tsr=False)
-    cpu = wwinfra.CpuClass(cb, cm)
-    cb.cpu = cpu
-    cpu.cpu_switches = wwinfra.WWSwitchClass(cb)
-    (cpu.SymTab, cpu.SymToAddrTab, JumpTo, WWfile, WWtapeID, dbwgt_list) = \
-        wwinfra.read_core_file(cm, sc.probe_filename, cpu, cb)
-    probe = coremem_to_list(cb, cm)
-
-    if not sc.chatty:
-        print("%-70s" % sc.archive_filename)
+        if sc.chatty:
+            print("empty file: ", sc.archive_filename)
+        return
 
     # correlate images
     matches = index_scan(sc, probe, archive)
@@ -324,8 +281,63 @@ def main():
         i += 1
         if i >= matches_to_print:
             break
-    print('')  # newline
     # report results
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Analyze a Whirlwind Paper Tape.')
+    parser.add_argument("ArchiveFileNameList", help="file name(s) of tape image file to search", nargs="*")
+    parser.add_argument("--FileList", '-f', help="File containing a list of filenames", type=str)
+    parser.add_argument("--Quiet", '-q', help="Print less debug info on tape blocks", action="store_true")
+    parser.add_argument("--WordCompare", '-w', help="Compare the whole word, not just op-codes", action="store_true")
+    parser.add_argument('--ProbeFileName', '-p', type=str, help='file name containing search pattern')
+    parser.add_argument("--RunThreshold", "-t", help="set threshold bytes for identifying a match (default=10)", type=int)
+
+    args = parser.parse_args()
+    # args
+
+    sc = SettingsClass(quiet=args.Quiet, match_complete_word=args.WordCompare)
+
+    if args.RunThreshold is not None:
+        sc.run_threshold = args.RunThreshold
+
+    args.LogDir = None
+    cb = wwinfra.ConstWWbitClass (corefile="no_corefile_name", args = args)
+    wwinfra.theConstWWbitClass = cb
+    cb.log = wwinfra.LogFactory().getLog (quiet=args.Quiet)
+    cb.NoZeroOneTSR = True  # don't add the automatic zero and one to locations zero and one
+    cb.use_x_win = False
+
+    # read the Probe file
+    sc.probe_filename = args.ProbeFileName
+    if sc.chatty: print("Reading Probe file...")
+    cm = wwinfra.CorememClass(cb, use_default_tsr=False)
+    cpu = wwinfra.CpuClass(cb, cm)
+    cb.cpu = cpu
+    cpu.cpu_switches = wwinfra.WWSwitchClass(cb)
+    (cpu.SymTab, cpu.SymToAddrTab, JumpTo, WWfile, WWtapeID, dbwgt_list) = \
+        wwinfra.read_core_file(cm, sc.probe_filename, cpu, cb)
+    probe = coremem_to_list(cb, cm)
+
+    if args.FileList:
+        file_list = []
+        try:
+            with open(args.FileList, 'r') as file:
+                for line in file:
+                    file_list.append(line.strip())  # Removes leading/trailing whitespace, including '\n'
+        except FileNotFoundError:
+            print(f"Error: The file '{args.FileList}' was not found.")
+    else:
+        file_list = args.ArchiveFileNameList
+
+    i = 1
+    list_len = len(file_list)
+    for filename in file_list:
+
+        sys.stderr.write("%d of %d\r" % (i, list_len))
+        i += 1
+        analyze_a_file(cb, sc, args, probe, filename)
+
 
 
 main()
