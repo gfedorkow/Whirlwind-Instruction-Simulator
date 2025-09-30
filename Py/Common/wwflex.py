@@ -250,41 +250,47 @@ class FlexToFlascii (FlexToSomething):
         self.asciiOut += ascii
     def checkValidCode (self, flexCode):
         if flexCode not in self.lowerAsciiTable:
-            self.asciiOut += ("<invalid flex %d>" % flexCode)
+            self.accumAndSetColor ("<invalid flex %d>" % flexCode)
             return False
         else:
             return True
     def addCode (self, flexCode: int):
         if self.checkValidCode (flexCode):
-	        if self.state == 0:
-	            ascii = self.lowerAsciiTable[flexCode]
-	            if ascii == "<shift up>":
-	                self.state = 1
-	            else:
-	                self.accumAndSetColor (ascii)
-	        elif self.state == 1:
-	            ascii = self.upperAsciiTable[flexCode]
-	            if self.isDigit (ascii) or ascii == "-":
-	                self.asciiOut += "^" + ascii
-	                self.state = 2
-	            elif ascii == "<shift dn>":
-	                self.state = 0
-	            else:
-	                self.accumAndSetColor (ascii)
-	                self.state = 1
-	        elif self.state == 2:
-	            ascii = self.upperAsciiTable[flexCode]
-	            if self.isDigit (ascii) or ascii == "-":
-	                self.asciiOut += ascii
-	                self.state = 2
-	            elif ascii == "<shift dn>":
-	                self.state = 0
-	            else:
-	                self.accumAndSetColor (ascii)
-	                self.state = 1
-	        else:
-	            print ("Internal error: Unexpected state %d in FlexToFlascii" % self.state)
-	            exit (1)
+            if self.state == 0:
+                ascii = self.lowerAsciiTable[flexCode]
+                if ascii == "<shift up>":
+                    self.state = 1
+                elif ascii == "<shift dn>":
+                    self.state = 0
+                else:
+                    self.accumAndSetColor (ascii)
+            elif self.state == 1:
+                ascii = self.upperAsciiTable[flexCode]
+                if self.isDigit (ascii) or ascii == "-":
+                    self.asciiOut += "^" + ascii
+                    self.state = 2
+                elif ascii == "<shift dn>":
+                    self.state = 0
+                elif ascii == "<shift up>":
+                    self.state = 1
+                else:
+                    self.accumAndSetColor (ascii)
+                    self.state = 1
+            elif self.state == 2:
+                ascii = self.upperAsciiTable[flexCode]
+                if self.isDigit (ascii) or ascii == "-":
+                    self.asciiOut += ascii
+                    self.state = 2
+                elif ascii == "<shift dn>":
+                    self.state = 0
+                elif ascii == "<shift up>":
+                    self.state = 2
+                else:
+                    self.accumAndSetColor (ascii)
+                    self.state = 1
+            else:
+                print ("Internal error: Unexpected state %d in FlexToFlascii" % self.state)
+                exit (1)
         pass
     def getFlascii (self) -> str:
         return self.asciiOut
@@ -341,6 +347,8 @@ class FlexToFilenameSafeFlascii (FlexToFc):
     def accumAndSetColor (self, ascii: str):
         if ascii in self.dict:
             ascii = self.dict[ascii]
+        elif len (ascii) > 0 and ascii[0] == '<':    # [Guy's original comment] if we're making a file name, ignore all the control functions in the table above
+            ascii = ''
         self.asciiOut += ascii
 
 # Produce the "readable" set of lines for the -r option to ww-ASCII-to-Flexo.py
@@ -458,7 +466,12 @@ class AsciiFlexCodes:
         [0o75,   '<shift dn>', '<shift dn>', 'shift dn'],
         [0o76,   '0',          '0'],
         [0o77,   '<del>',      '<del>',      'del']
-]
+        ]
+    def __init__ (self):
+        self.codeSet = [codeInfo[0] for codeInfo in self.codes]
+    def isValidCode (self, flexCode: int) -> bool:
+        return flexCode in self.codeSet
+
 
 # Check noxwin option!!!!!
 

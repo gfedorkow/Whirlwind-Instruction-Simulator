@@ -12,8 +12,9 @@ asmc="$PYTHONPATH/../../Py/Assembler/cwparser.py"
 ascflx="$PYTHONPATH/../../Py/Tools/ww-ASCII-to-Flexo.py"
 utd="$PYTHONPATH/../../Py/Tape-Decode/wwutd.py"
 
-tapepath=$PYTHONPATH/../../Recovered-Tapes/Source-Images/Paper-Tapes/
+# tapepath=$PYTHONPATH/../../Recovered-Tapes/Source-Images/Paper-Tapes/
 test_file_base=102766758_fc131-204-10_watson
+tapepath=$PYTHONPATH/../../Recovered-Tapes/Source-Images/
 
 if [ "$1" == "--Accept" ];
 then
@@ -24,6 +25,16 @@ then
 elif [ "$1" == "--Build" ];
 then
  	echo "Nothing to build yet"
+elif [ "$1" == "--CopyTapes" ];
+then
+	 echo "Copying all tapes to tmp..."
+	 find $tapepath \( -name "*.7ch" -o -name "*.7CH" -o -name "*.tap" \) -print -exec cp -i {} tmp/ \;
+elif [ "$1" == "--ReadTapes" ];
+then
+	echo "Producing tcore, ocore, or fc files from all tapes in tmp, writing to tmp..."
+	cd tmp
+	time find .  \( -name "*.7ch" -o -name "*.7CH" -o -name "*.tap" \) -exec $utd {} \; >&tapelog
+	cd ..
 else
 	rm -f wwutd.log ${test_file_base}.fc
 	

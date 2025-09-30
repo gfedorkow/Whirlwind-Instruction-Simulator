@@ -24,7 +24,7 @@ import re
 import wwinfra
 import hashlib
 from typing import List, Dict, Tuple, Sequence, Union, Any
-from wwflex import FlexToFc, FlexToFilenameSafeFlascii, FlexToCsyntaxFlascii
+from wwflex import FlexToFc, FlexToFilenameSafeFlascii, FlexToCsyntaxFlascii, AsciiFlexCodes, FlexToFlascii
 import traceback
 
 
@@ -45,27 +45,34 @@ def breakp(why: str):
 
 def scan_for_strings(corelist, byte_stream):
     global cb
-    flexo_table = wwinfra.FlexoClass(cb)  # instantiate the class to get a copy of the code translation table
     string_list = []
-    flexo_string_high = ''
-
-    for coremem in corelist:
-        addr = 0
-        while (byte_stream is False and addr < cb.CORE_SIZE) or (byte_stream is True and addr < len(coremem)):
-            m = coremem[addr]
-            c = '\b'
-            if m is not None and (m & 0o1777) == 0:
-                c = flexo_table.flexocode_alphanum[(m >> 10) & 0x3f]
-            if c == '\b':
-                if len(flexo_string_high) > 2:
-                    string_list.append(flexo_string_high)
-                flexo_string_high = ''
-            else:
-                flexo_string_high += '%s' % c
-            addr += 1
-
-    if len(flexo_string_high) > 2:
-        string_list.append(flexo_string_high)
+    flexCodes = AsciiFlexCodes()
+    flexToFlascii = FlexToFlascii()
+    for fcns in [[lambda m: m & 0o001777, lambda m: (m >> 10) & 0o77],
+                 [lambda m: m & 0o177700, lambda m: m & 0o77]]:
+        maskFcn = fcns[0]
+        shiftFcn = fcns[1]
+        for coremem in corelist:
+            memLimit = len (coremem) if byte_stream else cb.CORE_SIZE 
+            addr = 0
+            flexCnt = 0 # Number of contiguous flex codes seen
+            while addr <= memLimit:
+                m = coremem[addr] if addr != memLimit else None
+                validCode = False
+                if m is not None and maskFcn (m) == 0:
+                    flexCode = shiftFcn (m)
+                    if flexCodes.isValidCode (flexCode):
+                        validCode = True
+                if validCode:
+                    flexToFlascii.addCode (flexCode)
+                    flexCnt += 1
+                else:
+                    if flexCnt > 2:
+                        flexo_string_high = flexToFlascii.getFlascii()
+                        string_list.append (flexo_string_high)
+                    flexToFlascii = FlexToFlascii()
+                    flexCnt = 0
+                addr += 1
 
     if Debug556 and (len(string_list) > 0):
         print("String Dump")
@@ -73,7 +80,6 @@ def scan_for_strings(corelist, byte_stream):
             print("   String: %s" % s)
 
     return string_list
-
 
 # This routine writes out a series of octal blocks as if it were an independent paper tape file.
 def write_petra_file(block_list, filename_7ch, base_output_filename, min_file_size, starting_seq: int = 1):
@@ -434,7 +440,6 @@ class WWFileClass:
 
 
 def decode_ww_loader_format(word_record, ww_file, long_octal_dump):
-    print ("LAS86")
     """ word_record: array of 16-bit words read from the tape
     core: core memory object to store the results of a decode
     """
@@ -473,7 +478,8 @@ def decode_ww_loader_format(word_record, ww_file, long_octal_dump):
 
     if flexo_block:
         # LAS
-        flexo_string = FlexToCsyntaxFlascii().addCodes([word & 0x3f for word in word_record]).getFlascii()
+        # flexo_string = FlexToCsyntaxFlascii().addCodes([word & 0x3f for word in word_record]).getFlascii()
+        flexo_string = FlexToFilenameSafeFlascii().addCodes([word & 0x3f for word in word_record]).getFlascii()
         """
         for wrd in word_record:
             if wrd != 0:
@@ -482,6 +488,7 @@ def decode_ww_loader_format(word_record, ww_file, long_octal_dump):
         flexo_string = flexo_string.rstrip()
         if DebugTAP:
             print("flexo code=%s" % flexo_string)
+        print ("LAS57", flexo_string)
         ww_file.title = flexo_string
 
     elif not block_num:  # continue here if it's not flexo, and not a block_num
@@ -672,29 +679,6 @@ def read_tap_file(tap_filename, base_output_filename, min_file_size, read_past_e
 
 # ############## Paper Tape Reader  ###############################################
 
-# a few flexowriter odds and ends
-def decode_a_flexo_byte(flexo, c: int):
-    print ("LAS42", c)
-    # traceback.print_stack()
-    # sys.exit(0)
-    
-    ascii_str = flexo.code_to_letter(c, show_unprintable=True)
-    return ascii_str
-
-
-def decode_a_flexo_block(flexo, b: List[int], show_unprintable=True, make_filename_safe=False, ascii_only=False):
-    print ("LAS57")
-
-    traceback.print_stack()
-    sys.exit(0)
-    
-    ascii_str = ''
-    for ch in b:
-        asc = flexo.code_to_letter(ch, show_unprintable=show_unprintable,
-                                   make_filename_safe=make_filename_safe, ascii_only=ascii_only)
-        ascii_str += asc
-    return ascii_str
-
 # test a string of bytes to see if they're flexo characters.
 # My table returns '#' for characters that aren't defined in the WW Flexo char set
 # There aren't many -- of the 64 possible codes, most are used.
@@ -738,7 +722,6 @@ def write_flexo_file(flexo, block_array: List[List[int]], input_filename: str, b
 # A JumpTo causes the current core file to be written and a new one started
 def decode_556_file(flexo, block_array: List[List[int]],
                     filename_7ch: str, base_output_filename: str, min_file_size: int, starting_seq: int = 1):
-    print ("LAS101")
     global cb
     outputfile_sequence = starting_seq
     xsum_str = "bugbug"  # this var will get changed before it's used
@@ -766,8 +749,7 @@ def decode_556_file(flexo, block_array: List[List[int]],
         # it's possible that such a thing could exist
         # If it's a 556 block, the first word should be a negative word-count
         if tape_header and block_is_all_flexo(flexo, block) and (w0 & 0o100000 == 0) and ww_file.title is None:
-            # LAS 9/24/25 Running wwutd on all the tape files does not pick up any instances of this condition
-            # ww_file.title = decode_a_flexo_block(flexo, block, make_filename_safe=True)
+            # LAS
             ww_file.title = FlexToFilenameSafeFlascii().addCodes(block).getFlascii()
             cb.log.debug556("556 tape header title: %s" % ww_file.title)
             continue
@@ -1066,16 +1048,13 @@ def read_7ch(cb, flexo, filename:str):
         msn = int(sevenbit[0:3], 2)
         tape_code = lsn + (msn << 3)
         valid_bit = sevenbit[6]
-#            print("hex_from_tape=%x (Valid=%s) (rev=%s n1=%s n2=%s) octal_result=%o, flexo-to-ascii '%s'" %
-#                  (by, valid_bit, sevenbit, sevenbit[0:3], sevenbit[3:6], tape_code, decode_a_flexo_byte(tape_code)))
         if valid_bit == '1':
             if invalid_count != 0:
                 cb.log.debug7ch("(%d(d) characters with Valid=0)" % invalid_count)
                 invalid_count = 0
-            """
-            cb.log.debug7ch("voffset=%05d(d) hex_from_tape=%x (Valid=%s) octal_result=%o, flexo-to-ascii '%s'" %
-                            (valid_offset, by, valid_bit, tape_code, decode_a_flexo_byte(flexo, tape_code)))
-            """
+            cb.log.debug7ch("voffset=%05d(d) hex_from_tape=%x (Valid=%s) octal_result=%o" %
+                            (valid_offset, by, valid_bit, tape_code))
+
         else:
             invalid_count += 1
 

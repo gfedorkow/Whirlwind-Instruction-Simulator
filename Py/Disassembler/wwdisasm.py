@@ -176,12 +176,15 @@ def DecodeOp(w, pc, auto_sym, manual_sym, short=False):
         ext_op_bit = (w >> 9) & 0o1  # the extra op bit is the "512s" bit, not the MSB of address
         long_op = "%3s  0o%05o" % \
                   (ext_op_code[op_name][0][ext_op_bit], addr & 0o777)
-        comment = ext_op_code[op_name][1][ext_op_bit]
+        comment = ext_op_code[op_name][1][ext_op_bit] 
     elif op_name == "cf":
         long_op = "%3s  %5s" % (cb.op_code[op][0], operand)
         comment = "cf" + cf_decode(addr)
     elif op_name == "si":
         comment = "select I/O: " + cb.Decode_IO(addr)
+
+    if cb.disasmNoComment:
+        comment = ""
 
     if short:
         return op_name
@@ -493,6 +496,7 @@ def main():
     parser.add_argument('--use_default_tsr', '-u',
                         help="pre-init core with default Toggle Switch Register settings", action="store_true")
     parser.add_argument("--DefZeroOne", '-z', help="Define core[0,1] as 0 and 1", action="store_true")
+    parser.add_argument("--NoComment", '-n', help="Omit comments which describe each instruction", action="store_true")
     parser.add_argument("--Debug", '-d', help="Print lotsa debug info", action="store_true")
 
     args = parser.parse_args()
@@ -508,6 +512,9 @@ def main():
     cb = wwinfra.ConstWWbitClass (corefile=os.path.basename(base_filename), args = args)
     wwinfra.theConstWWbitClass = cb
     cpu = WWCpuClass(cb)
+
+    # Invent a new cb attribute on-the-fly
+    cb.disasmNoComment: bool = args.NoComment
 
     #  oops, this got a bit twisted...  use_default_tsr is intended simply to copy the default contents of
     #  the TSR into core, i.e., to put the boot loader into the image (if there should be one there)
