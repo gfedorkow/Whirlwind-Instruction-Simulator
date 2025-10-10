@@ -4,7 +4,7 @@ Flexo: a = 1.0594632,
 Flexo: PRINT a.
 Flexo: n = -25,
 Flexo: y = 220,
-Flexo: 1 z = y2,
+Flexo: 1 z = y^2,
 Flexo: t = 1/z,
 Flexo: PRINT y,z,t.
 Flexo: y = ay,
@@ -375,7 +375,7 @@ a = 1.0594632,
 PRINT a.
 n = -25,
 y = 220,
-1 z = y2,
+1 z = y^2,
 t = 1/z,
 PRINT y,z,t.
 y = ay,

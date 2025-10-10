@@ -17,6 +17,8 @@ import argparse
 import sys
 import os
 import statistics as stat
+from wwinfra import CorememClass
+from wwcpu import CpuClass
 
 CORESIZE: int = 2048
 NBANKS: int = 6
@@ -469,7 +471,6 @@ def define_blocks(cb, core_meta_data, cm, cpu):
                 continue
             if core_meta_data.rd(pc).last_word:
                 last_word = True
-
             if core_meta_data.rd(pc).first_word or branched_to_by:
                 if current_block:
                     print("oops, starting a new block when we're already in one; pc = 0o%05o" % pc)
@@ -620,10 +621,12 @@ def format_one_block(b, block_info_len, cpu):
     # Bug - Jan 27, 2025 - guy - Labels contain comments from code, which may in turn contain double quotes
     # These quotes must be escaped to avoid freaking the Dot compiler out.
     # Somehow this approach using replace() isn't working, but I don't want to debug this Right Now!
-    #if '"' in b.label:
-    #    breakp()
-    #    b.label = b.label.replace('"', '\\"')
-
+    # [LAS 10/6/25 It looks like the other two vars below other than b.label
+    #  needed the escapes too. With those additions it works.]
+    b.label = b.label.replace('"', '\\"')
+    block_start_label = block_start_label.replace ('"', '\\"')
+    block_end_label = block_end_label.replace ('"', '\\"')
+    
     graph_label = '  %s [label="%s(%dw)\\l%s:\\l%s%s"%s;fontname=courier;shape=box3d]\n' % \
                   (b.id, b.label, block_len, cpu.wwaddr_to_str (b.start_addr, label_only_flag=True), block_start_label, block_end_label, style)
     return(graph_label)
@@ -728,6 +731,7 @@ class FlowGraph:
         blocklist = define_blocks(cb, core_meta_data, cm, cpu)
         output_block_list(cb, blocklist, core_meta_data, title, self.outfile, block_info_len, cpu)
 
+    # Private
     def init_log (self):
         tracelog = []
         tracelog.append (TraceLogClass(0, '', '', 0, 0, '', log_beginning=True))
@@ -739,4 +743,17 @@ class FlowGraph:
             tracelog = cb.tracelog
             tracelog.append(TraceLogClass(0, '', '', 0, 0, '', log_end=True))
             self.run_flow_analysis(cb, tracelog, cm, cpu, title, block_info_len)
+
+    # Public
+    def finish_flow_graph_from_asm (self, cb, title, block_info_len=FLOW_BLOCK_ALL_CODE):
+        tracelog = cb.tracelog
+        tracelog.append (TraceLogClass(0, '', '', 0, 0, '', log_end=True))
+        cm = CorememClass (cb)
+        cpu = CpuClass (cb, cm)
+        cb.cpu = cpu
+        print ("LAS42", self.outfile)
+        print ("LAS42", self.outfile_basename)
+        print ("LAS42", self.flowgraph_outfile)
+        print ("LAS42", self.flowgraph_outdir)
+        self.run_flow_analysis(cb, tracelog, cm, cpu, title, block_info_len)
 

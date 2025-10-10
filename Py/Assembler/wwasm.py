@@ -8,6 +8,7 @@ import wwinfra
 from enum import Enum
 from wwasmparser import AsmExprValue, AsmExprValueType, AsmExprEnv, AsmExpr, AsmExprType, AsmParsedLine
 from wwflex import FlasciiToFlex
+from ww_flow_graph import TraceLogClass, FlowGraph
 
 class AsmFatalError (Exception):
     pass
@@ -22,7 +23,7 @@ AsmOperandType = Enum ("AsmOperandType", ["None",       # it's a pseudo-op
 class OpCodeInfo:
     def __init__ (self, opcode: int, type: AsmOperandType):
         self.opcode = opcode
-        self.opcodeWitdth: int = None   # subclass def
+        self.opcodeWidth: int = None   # subclass def
         self.type = type
         self.className = AsmWwOpInst
         
@@ -214,6 +215,7 @@ class AsmInst:
         # def passOneOp (self):         # Subclass def
         # def passTwoOp (self):         # Subclass def
         self.instruction: int = 0       # 16 bits, may be a ww instruction or data
+        self.operand: int = 0           # Lower part of instruction word
         self.address: int = self.prog.nextCoreAddress   # All instructions even pseudo-ops get an address
         # Only pseudo-ops can be beyond core so don't store xref and dump any comment 
         if self.address < self.prog.coreSize:
@@ -375,6 +377,9 @@ class AsmInst:
         sp2 = sp*(commentColumn - len (s2)) if p.label != "" or p.opname != "" else ""
         s3 = (sp2 + ";" + comment + " " + autoComment) if comment + autoComment != "" else ""
         return (s2 + s3).rstrip (" ")
+    # Only true instructions should produce a trace log entry (for static flowgraph), so by default we don't
+    def getTraceLogEntry (self) -> TraceLogClass:
+        return None
 
 class AsmWwOpInst (AsmInst):
     def __init__ (self, *args):
@@ -401,7 +406,8 @@ class AsmWwOpInst (AsmInst):
             if val.value < 0 or val.value >= self.prog.coreSize:
                 self.addrRangeError (val.value)
             else:
-                self.instruction = self.opcode | val.value      # mask not needed because we've checked range
+                self.operand = val.value
+                self.instruction = self.opcode | self.operand      # mask not needed because we've checked range
                 self.checkAddressError (self.address)
                 self.prog.coreMem[self.address] = self.instruction
                 self.addXref (val.value)
@@ -428,6 +434,11 @@ class AsmWwOpInst (AsmInst):
                         otherInst.xrefs.jumpedToByStr += thisLabelOrAddr
                     case AsmOperandType.Param:
                         pass
+    # Only true instructions should produce a trace log entry (for static flowgraph)
+    def getTraceLogEntry (self) -> TraceLogClass:
+        return TraceLogClass (self.address, self.parsedLine.label,
+                              self.parsedLine.opname.upper(), self.operand, 0, self.parsedLine.comment)
+
                     
 class AsmWwSiOpInst (AsmWwOpInst):
     def __init__ (self, *args):
@@ -1081,7 +1092,8 @@ class AsmProgram:
                   inFilename, inStream,
                   coreOutFilename, listingOutFilename,
                   verbose, debug, minimalListing, isa1950,
-                  reformat, omitUnrefedLabels, commentColumn, commentWidth, omitAutoComment):
+                  reformat, omitUnrefedLabels, doFlowGraph,
+                  commentColumn, commentWidth, omitAutoComment):
         #
         # The "fundamental constants" of the machine. Masks, which can hide
         # bugs, are not used. Ranges of fields are checked.
@@ -1105,7 +1117,6 @@ class AsmProgram:
         self.metaOpcode = self.opCodeTables.meta_op_code
 
         self.cb = wwinfra.theConstWWbitClass
-        self.flexoClass = wwinfra.FlexoClass (self.cb, log = wwinfra.LogFactory().getLog())   # want a non-asm log at the low-level
 
         # [Guy says:] I think the CSII assembler defaults to starting to load
         # instructions at 0o40, the first word of writable core.  Of course a
@@ -1118,6 +1129,7 @@ class AsmProgram:
         self.minimalListing = minimalListing
         self.reformat = reformat
         self.omitUnrefedLabels = omitUnrefedLabels
+        self.doFlowGraph = doFlowGraph
         self.commentColumn = commentColumn if commentColumn is not None else 25
         self.commentWidth = commentWidth if commentWidth is not None else 0
         self.omitAutoComment = omitAutoComment
@@ -1323,6 +1335,18 @@ class AsmProgram:
                                                         omitAutoComment = self.omitAutoComment) + "\n")
         listingOutStream.close()
 
+    def writeFlowgraph (self):
+        if self.doFlowGraph:
+            self.cb.CoreFileName = "xxx.acore"
+            flowgraph = FlowGraph (True, None, None, self.cb)
+            tracelog: TracelogClass = self.cb.tracelog
+            for inst in self.insts:
+                tracelogEntry = inst.getTraceLogEntry()
+                if tracelogEntry is not None:
+                    tracelog.append (tracelogEntry)
+            title = "yyy"
+            flowgraph.finish_flow_graph_from_asm (self.cb, title)
+
     def assemble (self):
         try:
             self.passOne()
@@ -1346,6 +1370,7 @@ class AsmProgram:
                 self.writeCore()
                 print ("Listing output to file %s" % self.listingOutFilename)
                 self.writeListing()
+                self.writeFlowgraph()
 
 def main():
     parser = wwinfra.StdArgs().getParser ("Assemble a Whirlwind Program.")
@@ -1360,6 +1385,7 @@ def main():
     parser.add_argument("--ISA_1950", help="Use the 1950 version of the instruction set", action="store_true")
     parser.add_argument("--Reformat", help="Prettify the source .ww file and move the original to .ww.bak", action="store_true")
     parser.add_argument("--OmitUnrefedLabels", help="Don't put unreferenced labels in the listing", action="store_true")
+    parser.add_argument("-f", "--FlowGraph", help="Generate a static flow graph. Default output file <corefile-base-name>.flow.gv", action="store_true")
     # Suggested for comment columns is "--CommentColumn 25 --CommentWidth 50"
     parser.add_argument("--CommentColumn", type=int, help="Column after labels for comments in listing. Default 25")
     parser.add_argument("--CommentWidth", type=int, help="Space to allocate to each comment field in listing. If not specified or zero, no field detection")
@@ -1384,6 +1410,7 @@ def main():
     if reformat:
         minimalListing = True
     omitUnrefedLabels = args.OmitUnrefedLabels
+    doFlowGraph = args.FlowGraph
     commentColumn = args.CommentColumn
     commentWidth = args.CommentWidth
     omitAutoComment = args.OmitAutoComment
@@ -1399,7 +1426,7 @@ def main():
         inFilename, inStream,
         coreOutFilename, listingOutFilename,
         verbose, debug, minimalListing, isa1950,
-        reformat, omitUnrefedLabels, commentColumn, commentWidth, omitAutoComment)
+        reformat, omitUnrefedLabels, doFlowGraph, commentColumn, commentWidth, omitAutoComment)
     prog.assemble()
 
 main()

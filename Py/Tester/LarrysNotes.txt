@@ -804,9 +804,39 @@ literal-digit-seq												Decimal inreger
 	* LZ Paper:
 		- -32767 -- fractional behavior
 		- Fig 5 -- wrong; it's not the 24,6 routine
-	- %fx -- really can't support it
+	* %fx -- really can't support it
+		[Removed]
 	- Replace FlexoClass with code in wwflex
-		Where is current flex-code converter used? ascii-to-flex tool should be most uses
+		- wwdisasm uses it's own flex code table -- not clear it's worth changing
+		- "record status message" get a char returned for rc -- necessary? -- currently commented out
+		- char display at right in tcore files has changed e.g. # rather than \0 for null char
+
+
+< @C00160: 0040112 0100207 0040047 0074040 0000000 0000000 0000000 0066315  ; ts ca ts sp si si si ex  :         s3#t###+ : <color>t<color>k###6
+< @C00170: 0000510 0005075 0114630 0063147 0000200 0034632 0177533 0157777  ; si .word su ab si cf md SL  :  <shift dn>n##f6<del> :     #ew,#u<del>#
+< @C00200: 0137777 0106313 0000100 0017400 0041000 0001000 0000001 0074050  ; dm cs si rd ts si si sp  :     <del>4#####h :  #\b#3<color>##k
+< @C00210: 0074062 0074152 0000000 0177766 0130002 0070040 0000001 0074032  ; sp sp si md ao cp si sp  :         by#9et#f :     kk#<del>pc#k
+< @C00220: 0100213 0040002 0074157 0000000 0000000  None    None    None    ;    ca ts sp si si        :      4e###       : t<color>k##      
+< @C00240: 0040224 0000600 0100223 0024000 0100224 0074060  None    None    ;   ts si ca rc ca sp      :       r#5#ro     : <color>#tstk    
+< @C00260: 0040224 0000600 0100223 0024000 0100224 0074071  None    None    ;   ts si ca rc ca sp      : r#5#r<shift up>     : <color>#tstk    
+< @C00300: 0040224 0000600 0100223 0024000 0100224 0074130  None    None    ;   ts si ca rc ca sp      :       r#5#rn     : <color>#tstk    
+< @C00320: 0040224 0000600 0100223 0024000 0100224 0074141  None    None    ;   ts si ca rc ca sp      :       r#5#r#     : <color>#tstk    
+< @C00340: 0040224 0000600 0100223 0024000 0100224 0074153  None    None    ;   ts si ca rc ca sp      :       r#5#r#     : <color>#tstk    
+---
+> @C00160: 0040112 0100207 0040047 0074040 0000000 0000000 0000000 0066315  ; ts ca ts sp si si si ex  :      s3#t\0\0\0+ : <color>t<color>k\0\0\06
+> @C00170: 0000510 0005075 0114630 0063147 0000200 0034632 0177533 0157777  ; si .word su ab si cf md SL  :  <cntl>n#\0f6<del> :   \0ew,\0u<del>#
+> @C00200: 0137777 0106313 0000100 0017400 0041000 0001000 0000001 0074050  ; dm cs si rd ts si si sp  : <del>4\0\0\0\0#h : #<bs>\03<color>\0\0k
+> @C00210: 0074062 0074152 0000000 0177766 0130002 0070040 0000001 0074032  ; sp sp si md ao cp si sp  :        by\09et#f :   kk\0<del>pc\0k
+> @C00220: 0100213 0040002 0074157 0000000 0000000  None    None    None    ;    ca ts sp si si        :    4e#\0\0       : t<color>k\0\0      
+> @C00240: 0040224 0000600 0100223 0024000 0100224 0074060  None    None    ;   ts si ca rc ca sp      :     r\05\0ro     : <color>\0tstk    
+> @C00260: 0040224 0000600 0100223 0024000 0100224 0074071  None    None    ;   ts si ca rc ca sp      : r\05\0r<cntl>     : <color>\0tstK    
+> @C00300: 0040224 0000600 0100223 0024000 0100224 0074130  None    None    ;   ts si ca rc ca sp      :     R\05\0RN     : <color>\0TSTK    
+> @C00320: 0040224 0000600 0100223 0024000 0100224 0074141  None    None    ;   ts si ca rc ca sp      :     R\05\0R#     : <color>\0TSTK    
+> @C00340: 0040224 0000600 0100223 0024000 0100224 0074153  None    None    ;   ts si ca rc ca sp      :     R\05\0R#     : <color>\0TSTK    
+
+
+
+
 	- Code-Samples/Bounce/r-196-bounce-example: There is bounce.ww and bounce1954.ww, same except that
 		$ file bounce.ww 
 			 bounce.ww: ASCII text
@@ -824,6 +854,28 @@ literal-digit-seq												Decimal inreger
 	  fair bit of memory, to hold info on the max number of possible
 	  columns, e.g. screen-width/3. Mine just formats for 1,2,
 	  ... columns until it won't fit, then backs off to the previous.
+	- Notes and proposals for output and logging:
+	
+		- Flex (and tty) output -- too much! For flex, there is
+		  line-by-line, "flex said:" everything at the end, and that
+		  again if "info" is on, i.e., if it's not -q.  Seems to me we
+		  really only need the line-by-line.
+
+		  Removed this extra logging:
+
+                cb.log.info ("Begin Flexout:\n" + logstr)
+                cb.log.info ("End Flexout")
+
+		- If sim without -q, we're flooded with "info" messages. This
+          should all be off by default. Particularly annoying:
+				Info: branch forwards from pc=0o2524 to 0o2745(r199)
+				Info: branch backwards from pc=0o2746 to 0o2712(exec_inst)
+
+		  Added --Verbose (-v) in addition to -q. We'll sort out the diff as we go.
+
+		  Should we have -v and -vv (--VeryVerbose)?
+
+
 
 
 

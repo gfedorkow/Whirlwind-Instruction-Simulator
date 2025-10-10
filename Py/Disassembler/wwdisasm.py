@@ -541,10 +541,15 @@ def main():
 
     cb.log.debug("debug")
 
+    # LAS 10/2/25 We decided that resulting ww files should not have a default
+    # .JumpTo.
+    start = jump_to
+    """
     if jump_to is None:
         start = 0o40
     else:
         start = jump_to
+    """
 
     # scan the image to figure out which addresses are referenced as data or are the target
     # of a branch instruction

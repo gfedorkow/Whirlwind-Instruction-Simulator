@@ -18,11 +18,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import sys
-
 import wwinfra
 import re
 import traceback
+from wwflex import FlexToCsyntaxFlascii
+
 iolog = None
+
 def getiolog ():
     global iolog
     if iolog is None:
@@ -139,7 +141,6 @@ class PhotoElectricTapeReaderClass:
         global petrAfile
         global petrBfile
         self.cb = cb
-        self.flexo = wwinfra.FlexoClass(cb)
 
         self.name = "PhotoElectricTapeReader"
         self.PETR_device = 'A'
@@ -202,8 +203,9 @@ class PhotoElectricTapeReaderClass:
             ret = self.PETR_tape_image[self.PETR_device][offset]
             self.PETR_read_offset[self.PETR_device] += 1
             getiolog().info("RD: PhotoElectricTapeReader %s read character 0o%o (ascii '%s') " %
-                            (self.PETR_device, ret, self.flexo.code_to_letter(ret, show_unprintable=True)
-))
+                            (self.PETR_device, ret,
+                            # May be incorrect since we're not using the stateful flex model here
+                             FlexToCsyntaxFlascii().decodeSingleChar(ret)))
             return self.cb.NO_ALARM, ret
         getiolog().info("unimplemented rd: PhotoElectric Read from file %s, mode %s" % (self.PETR_device, self.PETR_mode))
         return self.cb.UNIMPLEMENTED_ALARM, 0

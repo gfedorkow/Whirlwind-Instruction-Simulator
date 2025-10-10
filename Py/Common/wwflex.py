@@ -37,12 +37,14 @@ class AsciiFlexBase:
 #          shift bit is ignored.
 #
 #        - "Upper case numbers" -- flex's name for superscript numbers -- are
-#          supported as ^n. ^ has no flex code. When encountered, the
-#          next contiguous set of digits will be superscripted, or
-#          upcased in flex parlance. We'll make the resonable
-#          assumption that any non-digit encountered returns to lower
-#          case. So "^1 2" will produce a super 1 and a normal 2, but
-#          "^12" will super both the 1 and the 2.
+#          supported as ^n. ^ has no flex code. When encountered, the next
+#          contiguous set of digits will be superscripted, or upcased in flex
+#          parlance. We'll make the resonable assumption that any non-digit
+#          encountered returns to lower case. So "^1 2" will produce a super 1
+#          and a normal 2, but "^12" will super both the 1 and the 2. '-'
+#          (hyphen or minus sign) is also upper-cased as a superscript, and can
+#          begin a sequence of upper-cased digits, to allow for negative
+#          exponents. '+' (plus) has no superscript counterpart.
 #
 #        - Flex characters such as "stop" will be denoted "<stop>". See the
 #          table below for all the formats.
@@ -141,7 +143,6 @@ class AsciiFlex (AsciiFlexBase):
     def buildTables (self):
         for e in AsciiFlexCodes.codes:
             readable = ""
-            unprintable = ""
             if len (e) == 3:
                 (flexCode, lcAscii, ucAscii) = e
             else:
@@ -167,6 +168,9 @@ class AsciiFlex (AsciiFlexBase):
             return True
         else:
             return False
+    def isNewline (self, flexCode: int) -> bool:
+        return flexCode in self.lowerAsciiTable and self.lowerAsciiTable[flexCode] == "\n"
+        
 
 # Provide a string, then use getFlex to get the resulting list of flex codes.
 # If addStopCode is True, add the <stop> char to the end of the resulting set
@@ -212,12 +216,17 @@ class FlasciiToFlex (AsciiFlex):
         pass
 
 # Base class for conversions from Flex to other forms. All conversions need to
-# use a stateful model.
+# use a stateful model -- but there two exceptions, which use decodeSingleChar:
+#
+#    - In write_core, a context-free char is put in the "ascii tables" in the core
+#      file. These will just get the lower-case form of the flex code.
+#
+#    - In an error msg in PhotoElectricTapeReaderClass in ww_io_sim.py.
 #
 # These classes are init'ed either bare or with a list of flex codes. If bare
 # then each call to addCode adds to the set of be converted. If a list is
 # passed then all the codes for that list are added upon creation. More may be
-# added if desired, but a typical use is to conver a block at once, i.e., it's
+# added if desired, but a typical use is to convert a block at once, i.e., it's
 # just a function. Both styles are useful. In any case to get the final string
 # getXXX is called.
 
@@ -226,6 +235,8 @@ class FlexToSomething (AsciiFlex):
         super().__init__()
         self.upcase: bool = False
         self.colorRed: bool = False
+        self.asciiOut = ""
+    def clearAsciiOut (self):
         self.asciiOut = ""
     def addCodes (self, flexCodes: [int]):
         for code in flexCodes:
@@ -327,16 +338,25 @@ class FlexToFc (FlexToFlascii):
         else:
             self.asciiOut += ascii
 
-# Used to satisfy show_unprintable
+# Used to satisfy the old show_unprintable, and decodeSingleChar supplies the
+# context-free (and possibly incorrect) translations when applicable.
 
 class FlexToCsyntaxFlascii (FlexToFc):
     def __init__ (self):
         super().__init__()
-        self.dict = {'\n': '\\n', '\t': '\\t'}
+        self.dict = {'\n': '\\n', '\t': '\\t', '\b': '\\b'}
     def accumAndSetColor (self, ascii: str):
         if ascii in self.dict:
             ascii = self.dict[ascii]
         self.asciiOut += ascii
+    def decodeSingleChar (self, flexCode: int) -> str:
+        if flexCode in self.lowerAsciiTable:
+            ascii = self.lowerAsciiTable[flexCode]
+        else:
+            ascii = '#'     # The convention for unknown char used in the original code
+        if ascii in self.dict:
+            ascii = self.dict[ascii]
+        return ascii
 
 # Used to satisfy make_filename_safe
 
@@ -347,7 +367,8 @@ class FlexToFilenameSafeFlascii (FlexToFc):
     def accumAndSetColor (self, ascii: str):
         if ascii in self.dict:
             ascii = self.dict[ascii]
-        elif len (ascii) > 0 and ascii[0] == '<':    # [Guy's original comment] if we're making a file name, ignore all the control functions in the table above
+        elif len (ascii) > 0 and ascii[0] == '<':    # [Guy's original comment] if we're making a file name,
+                                                     # ignore all the control functions in the table above
             ascii = ''
         self.asciiOut += ascii
 
@@ -407,7 +428,11 @@ class FlexToFlexoWin (FlexToSomething):
 
 #
 # This table is based on 2M-0277, Table 1, Page 106
-#    
+#
+#  [From Guy's original code:]
+#  From "Making Electrons Count:
+# "Even the best of typists make mistakes. The error is nullified by pressing the "delete" button. This
+# punches all the holes resulting in a special character ignored by the computer"
 
 class AsciiFlexCodes:
     codes = [
@@ -465,13 +490,12 @@ class AsciiFlexCodes:
         [0o74,   'v',          'V'],
         [0o75,   '<shift dn>', '<shift dn>', 'shift dn'],
         [0o76,   '0',          '0'],
-        [0o77,   '<del>',      '<del>',      'del']
+        [0o77,   '<del>',      '<del>',      'del']       # Nullify
         ]
     def __init__ (self):
         self.codeSet = [codeInfo[0] for codeInfo in self.codes]
     def isValidCode (self, flexCode: int) -> bool:
         return flexCode in self.codeSet
-
 
 # Check noxwin option!!!!!
 
@@ -556,7 +580,7 @@ class FlexoWin (AsciiFlexBase):
             t.draw (self.win)
 
 # Test area
-    
+
 testText1 = "\
 ABC\n\
 def\n\
