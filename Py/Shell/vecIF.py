@@ -277,13 +277,13 @@ def loop():
              omode = mode
  
         if mode == 1:
-            mode += fig1()
+            mode += 1 # fig1()
         if mode == 2:
-            mode += show_circles()
+            mode += 1 # show_circles()
         if mode == 3:
-            mode += show_bounce(1)
+            mode += 1 # show_bounce(1)
         if mode == 4:
-            mode += show_bounce(2)
+            mode += 1 # show_bounce(2)
         if mode == 5:
             for i in range(0,10):
                 base.drawCharacter(-0.5 + i * 0.1, 0.0, base.digits[i])
@@ -298,7 +298,7 @@ def loop():
         if mode == 8:
             mode += do_rocket(2)
         if mode == 9:
-            mode += do_oxo()
+            mode += 1 # do_oxo()
  
         if 1 == base.getKeys() % 2 :
             mode += 1
