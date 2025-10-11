@@ -2097,7 +2097,7 @@ def main_run_sim(args, cb):
                 if cb.panel:
                     if alarm_state == cb.QUIT_ALARM:   # they said Quit, we'll quit.
                         break
-                    else:  # here's the state where we hit an alarm, but it's not QUIT
+                    if not args.NoAlarmStop:  # here's the state where we hit an alarm, but it's not QUIT
                         cb.sim_state = cb.SIM_STATE_STOP
 #                if cb.panel and cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # watch for mouse clicks on the panel
 #                    break
