@@ -54,7 +54,7 @@ Programs = [
     WwAppClass("Nim", dir="Code-Samples/Nim", exec="nim-fb.acore", is_WW=True, args=["--CrtFade", "3"]),
     WwAppClass("Number Display", dir="Code-Samples/Number-Display", exec="number-display-annotated.acore", is_WW=True),
     WwAppClass("Air Defense", dir="Code-Samples/Track-While-Scan-D-Israel", exec="annotated-track-while-scan.acore", 
-               is_WW=True, args=["-D", "-r", "--CrtF", "5", "--NoToggl", "--NoAlarmStop"]),
+               is_WW=True, args=["-D", "-r", "--CrtF", "15", "--NoToggl", "--NoAlarmStop"]),
     WwAppClass("Vector Clock", dir="Code-Samples/Vector-Clock", exec="vector-clock.acore", is_WW=True),
     WwAppClass("Lorenz Attractor", dir="Code-Samples/Lorenz", exec="lorenz.acore", is_WW=True),
 ]
