@@ -2231,7 +2231,6 @@ class XwinCrt:
         if self.win is None:   # all this stuff only works on a laptop display, not a CRT display
             return self.cb.NO_ALARM
 
-        dbwgt = cb.dbwgt
         if self.polling_mouse is False:
             pt, button = self.win.checkMouse()
             if (pt is not None) and (button == 1):
@@ -2249,7 +2248,8 @@ class XwinCrt:
 
         self.draw_red_x_and_axis(cb)    # replace the Red-X for exit symbol
         # and the screen-debug widget undraws its own objects, so that's being done twice now.
-        dbwgt.refresh_widgets()
+        if cb.dbwgt:
+            cb.dbwgt.refresh_widgets()
 
         if cb.analog_display:
             return self.cb.NO_ALARM
