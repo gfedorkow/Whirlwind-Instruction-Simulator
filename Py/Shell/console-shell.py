@@ -40,7 +40,7 @@ class WwAppClass:
         self.args = args
 
 Programs = [
-    WwAppClass("Exit" ),  # Assume this is always the first option, i.e., index 0, so I can make "q" also work
+    WwAppClass("No-Op" ),  # Broken Oct 11; 2025 -->  Assume this is always the first option, i.e., index 0, so I can make "q" also work
     WwAppClass("Random-Raster", dir="Py/Common", exec="random-lines.py", is_WW=False),
     WwAppClass("TicTacToe Two Person", dir="Py/Shell", exec="tictactoe.py", is_WW=False),
     WwAppClass("TicTacToe vs WW", dir="Code-Samples/Tic-Tac-Toe", exec="tic-tac-toe.acore", is_WW=True),
@@ -54,9 +54,11 @@ Programs = [
     WwAppClass("Nim", dir="Code-Samples/Nim", exec="nim-fb.acore", is_WW=True, args=["--CrtFade", "3"]),
     WwAppClass("Number Display", dir="Code-Samples/Number-Display", exec="number-display-annotated.acore", is_WW=True),
     WwAppClass("Air Defense", dir="Code-Samples/Track-While-Scan-D-Israel", exec="annotated-track-while-scan.acore", 
-               is_WW=True, args=["-D", "-r", "--CrtF", "5", "--NoToggl", "--NoAlarmStop"]),
+               is_WW=True, args=["-D", "-r", "--CrtF", "15", "--NoToggl", "--NoAlarmStop"]),
     WwAppClass("Vector Clock", dir="Code-Samples/Vector-Clock", exec="vector-clock.acore", is_WW=True),
     WwAppClass("Lorenz Attractor", dir="Code-Samples/Lorenz", exec="lorenz.acore", is_WW=True),
+    WwAppClass("Rocket", dir="Py/Shell", exec="vecIF.py", is_WW=False),
+    WwAppClass("77 to Exit" ),  # Exit Hack
 ]
 
 
@@ -120,8 +122,10 @@ def main():
             except ValueError:
                 print("\nEnter a number please")
                 continue
-        if choice & 0o77 == 0:
+        if choice & 0o77 == 0o77:
             return
+        if choice & 0o77 == 0:
+            continue   # convert a zero into a no-op so that pressing interrupt doesn't cause an exit
         if RMIR_arg:
             args += RMIR_arg
         if choice & 0o100:
