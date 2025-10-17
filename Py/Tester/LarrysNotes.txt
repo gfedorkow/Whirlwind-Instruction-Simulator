@@ -683,7 +683,8 @@ literal-digit-seq												Decimal inreger
 	  e.g. xyz* gives comma-op syntax error, which is misleading.
 	* Trap float overflow in conversion and return inf.
 	- Dbg bug in printing AC and prob other regs -- wrong signs. Trying printing neg number.
-	- Dbg bug in rs if do rs before running.
+	* Dbg bug in rs if do rs before running.
+		[Fixed with revamp of control structure]
 	* Dbg possible enhs: watch-for-write (addr); allow a mem loc to be set
 			[Watch-write done,
 			 Write-loc done.]
@@ -702,10 +703,7 @@ literal-digit-seq												Decimal inreger
 	  Instructions like halt execute, and where is the pc left (on the
 	  real machine)?
 
-
-	
-
-
+	- Dbg: Fix help wrt what the commands print
 	* Send Knuth info we have for any insights
 	* Added -r (readable section) to flex converter
 	x Made ! be the stop char -- but not really needed
@@ -800,21 +798,44 @@ literal-digit-seq												Decimal inreger
 			followed by another in the table, so variable collisions
 			are avoided. The upper case table has a few such
 			collisions, but vars are all lower case.
-	- LZ: 12th root of 2 accuracy?
-		Note use this clisp loop to get many digits of music-note prog for ref:
+    - LZ: 12th root of 2 accuracy?
+        Note use this clisp loop to get many digits of music-note prog for ref:
+             (let ((r (expt 2d0 (coerce 1/12 'double-float)))
+                   (s 220d0))
+               (dotimes (i 25)
+                 (print (list i s (sq s) (/ 1 (sq s))))
+                 (setq s (* r s))))
+	- LZ: Is integer printing behavior really like the original? Prints approx from below.
+	  	  Eg print 123 -> +.12299998+03
+		  Python prints the integer
 
-			 (let ((r (expt 2d0 (coerce 1/12 'double-float)))
-			 	   (s 220d0))
-			   (dotimes (i 25)
-				 (print (list i s (sq s) (/ 1 (sq s))))
-				 (setq s (* r s))))
-	  
-	- LZ Paper:
+		  Well...If it's an int, then div by ten drops bits, so we
+		  lose precision in normalize. Therefore need better way to
+		  detect the int and print differently.
+
+		  But, what is that different way? The frac printer and the
+		  original float printer (it seems) printed in the same
+		  frac+exp manner. Would they have printed for 123,  +.12300000+03 ?
+
+		  * Found round issue! Now looks better, ie, more like
+            original, as in sample in Laning letter.
+
+	* LZ Paper:
 		- -32767 -- fractional behavior
 		- Fig 5 -- wrong; it's not the 24,6 routine
 	- %fx -- really can't support it
 	- Replace FlexoClass with code in wwflex
-		Where is current flex-code converter used?
+		Where is current flex-code converter used? ascii-to-flex tool should be most uses
+	- Code-Samples/Bounce/r-196-bounce-example: There is bounce.ww and bounce1954.ww, same except that
+		$ file bounce.ww 
+			 bounce.ww: ASCII text
+		$ file bounce1954.ww 
+			bounce1954.ww: ASCII text, with CRLF line terminators
+	* LZ: print of .1 comes out as .25
+	- LZ: certain tests fail badly with wrong values. See
+      lzt8.save. Not clear if the issue is just printing, as in
+      previous issue.
+
 
 
 	- C-ish
@@ -1157,7 +1178,7 @@ by Guy or Larry.
 ------------------------------------------------------------------------------
 --- Nice test for zero
 
-This tests for x == 0 (seen in frac printer):
+This tests for x == +-0 (seen in frac printer):
 	cm x
 	su 0
 	cp a	; Branch if x is zero
@@ -1191,4 +1212,25 @@ Writing instructions is a normal part of ww coding. Careful with td!
 When used with shift instructions td will overwrite the low opcode bit
 and potentially change the shift from hold to round.
 
+
+
+
+Diving into the Tapes
+=====================
+
+~/whirlwind/Tapes/
+	Paper-Tapes
+	Mag-Tapes
+	Also under here are the original zip files from google drive:
+	Paper-Tapes-20250622T214459Z-1-001.zip
+	Mag-Tapes-20250622T215056Z-1-001.zip
+
+Env var WWTAPES = ~/whirlwind/Tapes/, set to your local area under
+which the Paper-Tapes and Mag-Tapes directories are kept.
+	
+As of now 6/22/25 these will not be checked in to git.
+
+- What do we know about what's on what tapes now? I.e., what have we extracted successfully?
+
+- .tap files seems to be the base source data, with tcore, ocore, etc. dereived.
 

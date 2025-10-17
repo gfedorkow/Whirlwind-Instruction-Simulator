@@ -22,9 +22,9 @@ else
 	egrep "Warning|Error" TestRefs/wwasm.log >&tmp-ref-wwasm.log
 	grep ww_draw_point wwsim.log >&tmp-wwsim.log
 	grep ww_draw_point TestRefs/wwsim.log >&tmp-ref-wwsim.log
-	diff -s tmp-wwasm.log tmp-ref-wwasm.log
+	diff -s tmp-ref-wwasm.log tmp-wwasm.log
 	status1=$?
-	diff -s tmp-wwsim.log tmp-ref-wwsim.log
+	diff -s tmp-ref-wwsim.log tmp-wwsim.log
 	status2=$?
 	status=$(($status1 + $status2))
 	if [ "$status" == "0" ];

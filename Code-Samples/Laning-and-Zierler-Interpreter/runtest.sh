@@ -4,6 +4,7 @@ thisfile=$0
 cd ${thisfile%/*}/
 
 sim="$PYTHONPATH/../../Py/Sim/wwsim.py"
+simf="$PYTHONPATH/../../Py/Sim/wwsim.py --FlexoWin"
 asm="$PYTHONPATH/../../Py/Assembler/wwasm.py"
 asmp="$PYTHONPATH/../../Py/Common/wwasmparser.py"
 asml="$PYTHONPATH/../../Py/Assembler/wwlzparser.py"
@@ -26,12 +27,15 @@ then
 	# Ditto for the frac printer. This morphed into modern-frac-30-0-0-print.ww.
 	# python $asml frac-30-0-0-print-transcript.txt -o frac-30-0-0-print.ww
 else
-	rm -f fl-wwasm.log fl-wwsim.log lz-wwsim1.log lz-wwsim2.log help-me lz-tmp.pet
+	rm -f fl-wwasm.log fl-wwsim.log  help-me lz-tmp.pet
+	rm -f lz-wwsim1.log lz-wwsim2.log lz-wwsim3.log lz-wwsim4.log
+	rm lz-music-wwsim.log music-notes.pet
+	
 	echo "Testing floatlib..."
 	python $asm --CommentColumn 25 --CommentWidth 50 --OmitAutoComment test-float-lib.ww >&fl-wwasm.log
 	# We'll assume the "notes" test is the default run by the floatlib test code
 	python $sim -q test-float-lib.acore | grep xxxxxx >&fl-wwsim.log
-	diff -s fl-wwsim.log TestRefs/fl-wwsim.log
+	diff -s TestRefs/fl-wwsim.log fl-wwsim.log
 	status1=$?	
 	if [ "$status1" == "0" ];
 	then
@@ -53,7 +57,7 @@ else
 		EOF
 	) >lz-tmp.pet
 	python $sim -q --PETRAfile lz-tmp.pet l-and-z.acore >&lz-wwsim1.log
-	diff -s lz-wwsim1.log TestRefs/lz-wwsim1.log
+	diff -s TestRefs/lz-wwsim1.log lz-wwsim1.log
 	status2=$?
 	if [ "$status2" == "0" ];
 	then
@@ -72,7 +76,7 @@ else
 		EOF
  	) >lz-tmp.pet
 	python $sim -q --PETRAfile lz-tmp.pet  l-and-z.acore >&lz-wwsim2.log
-	diff -s lz-wwsim2.log TestRefs/lz-wwsim2.log
+	diff -s TestRefs/lz-wwsim2.log lz-wwsim2.log
 	status3=$?
 	if [ "$status3" == "0" ];
 	then
@@ -89,9 +93,34 @@ else
 		EOF
   	) >lz-tmp.pet
 	python $sim -q --PETRAfile lz-tmp.pet l-and-z.acore >&lz-wwsim3.log
-	diff -s lz-wwsim3.log TestRefs/lz-wwsim3.log
+	diff -s TestRefs/lz-wwsim3.log lz-wwsim3.log
 	status4=$?
 	if [ "$status4" == "0" ];
+	then
+		echo "Test PASSED"
+	else
+		echo "Test FAILED"
+	fi
+
+	# As of 8/13/25 this one is buggy and will fail (float printer
+	# problem). So there is no lz-wwsim4.log in TestRefs. 
+	echo "Testing L&Z program 4..."
+	(python $ascflx -r -i - <<-EOF
+		a = 1,
+		PRINT a.
+		y = 0,
+		x = -24,
+		1 y = a + y,
+		PRINT y.
+		x = x + 1,
+		CP 1,
+		STOP
+		EOF
+  	) >lz-tmp.pet
+	python $sim -q --PETRAfile lz-tmp.pet l-and-z.acore >&lz-wwsim4.log
+	diff -s TestRefs/lz-wwsim4.log lz-wwsim4.log
+	status5=$?
+	if [ "$status5" == "0" ];
 	then
 		echo "Test PASSED"
 	else
@@ -105,7 +134,7 @@ else
 	python $sim -q --PETRAfile music-notes.pet l-and-z.acore >&lz-music-wwsim.log
 	# ...but this does
 	# python $sim -q -p --FlexoWin --PETRAfile music-notes.pet l-and-z.acore
-	diff -s lz-music-wwsim.log TestRefs/lz-music-wwsim.log
+	diff -s TestRefs/lz-music-wwsim.log lz-music-wwsim.log
 	status5=$?
 	if [ "$status5" == "0" ];
 	then

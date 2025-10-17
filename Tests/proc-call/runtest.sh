@@ -22,9 +22,9 @@ else
 	egrep "Warning|Error" TestRefs/wwasm-proc.log >&tmp-ref-wwasm.log
 	grep proc-call-test wwsim-proc.log >&tmp-wwsim.log
 	grep proc-call-test TestRefs/wwsim-proc.log >&tmp-ref-wwsim.log
-	diff -s tmp-wwasm.log tmp-ref-wwasm.log
+	diff -s tmp-ref-wwasm.log tmp-wwasm.log
 	status1=$?
-	diff -s tmp-wwsim.log tmp-ref-wwsim.log
+	diff -s tmp-ref-wwsim.log tmp-wwsim.log
 	status2=$?
 
 	rm stack-frame-rel-addr-lib.acore stack-frame-rel-addr-lib.lst
@@ -34,9 +34,9 @@ else
 	egrep "Warning|Error" TestRefs/wwasm-frame.log >&tmp-ref-wwasm.log
 	grep proc-call-test wwsim-frame.log >&tmp-wwsim.log
 	grep proc-call-test TestRefs/wwsim-frame.log >&tmp-ref-wwsim.log
-	diff -s tmp-wwasm.log tmp-ref-wwasm.log
+	diff -s tmp-ref-wwasm.log tmp-wwasm.log
 	status3=$?
-	diff -s tmp-wwsim.log tmp-ref-wwsim.log
+	diff -s tmp-ref-wwsim.log tmp-wwsim.log
 	status4=$?
 
 	status=$(($status1 + $status2 + $status3 + $status4))

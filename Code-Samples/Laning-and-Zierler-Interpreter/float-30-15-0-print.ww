@@ -54,8 +54,18 @@ flt_print_rtn:        sp 0
                       sp nm_calc
          nm_not_ge_1: cm t                     ; |x| < 1
                       su float_point_1
+
+					  ts ftmp0
+					  cm ftmp0
+					  su 0
+					  cp nm_already_norm	   ; Branch if |x| = .1
+
+					  cm t
+                      su float_point_1
+
                       cp nm_lt_point_1
-                      sp nm_already_norm       ; |x| >= .1
+                      sp nm_already_norm       ; |x| > .1
+					  ad float0				   ; Nop
        nm_lt_point_1:
                       ; setup 10 loop          ; |x| < .1
                       sp ax                    ; Spax out
@@ -85,7 +95,7 @@ flt_print_rtn:        sp 0
 
                       ; Now we need to shift down by the binary exponent to denormalize
                       ;  the float to a 2-word fraction. Printing that fraction in decimal
-                      ;  will result in a correct digits since we now have the base-10
+                      ;  will result in correct digits since we now have the base-10
                       ;  exponent as a separate value.
 
                       ca mra + 2               ; Binary exponent range zero to negative four
@@ -148,5 +158,6 @@ flt_print_rtn:        sp 0
        float_point_1: .float +0.1, 0
        float_low_rnd: .float +0.5, -6    ; -6 is the smallest exponent to bump up to above the int (still not round to the int)
           float_neg1: .word 0o137777
-                      .word 0o001777
+		              .word 0o001777
+			   ftmp0: .float 0, 0
         fp_space:     .flexh " "

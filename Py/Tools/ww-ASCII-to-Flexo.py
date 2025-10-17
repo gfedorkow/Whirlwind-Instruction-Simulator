@@ -71,7 +71,7 @@ def main():
         except IOError:
             cb.log.fatal("Can't write to file %s" % args.OutputFile)
 
-    # LAS Should debate this auto-add ofs stop, probably an option to omit it is wise
+    # LAS Auto-add the <stop> char by default here; suppressed by --OmitAutoStop
     flexo_codes = FlasciiToFlex (input_string, addStopCode = not args.OmitAutoStop).getFlex()
 
     if args.BinaryOut:
@@ -93,6 +93,7 @@ def main():
         else:
             print("%s" % output_str)
 
+    # This is largely for testing, i.e., to see if a given Flascii file prints properly
     if args.FlexoWin:
         w = FlexToFlexoWin()
         for code in flexo_codes:

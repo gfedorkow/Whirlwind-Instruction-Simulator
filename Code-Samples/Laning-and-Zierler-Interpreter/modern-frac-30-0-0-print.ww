@@ -54,10 +54,6 @@
           mfp:							; mfp == modern frac print
                ta 37mfp
                sp ax                    ; Resume ordinary ww operation
-<<<<<<< HEAD
-			   .print "LZ output: %fm", mra
-=======
->>>>>>> d9afde81dc52addf45b9bb2be7e025e381d3c81f
                ca 3ax                   ; -|
                ts 2tmfp                 ;  |- Store C(mra) in 1tmfp and 2tmfp
                ca 2ax                   ;  |
@@ -101,14 +97,6 @@
                ao digit_cntr            ; -|- Have enough digits been printed?
                cp 17mfp                 ; -|
 
-<<<<<<< HEAD
-			   ca newline				;; LAS The description says no cr, but there does not seem to be one emitted at any level
-			   rc 0
-=======
-			   ; ca newlinemfp	 		;; LAS The description says no cr, but there does not seem to be one emitted at any level
-			   ; rc 0
->>>>>>> d9afde81dc52addf45b9bb2be7e025e381d3c81f
-
                sp ax                    ; -|- Return control to int. subroutine
         37mfp: sp 0                     ; -|
 
@@ -140,13 +128,6 @@
                sp 9mfp
         57mfp: cs 1tmfp
                sp 5mfp
-<<<<<<< HEAD
-        59mfp: ca 0                     ;                                                  ; [59-73 are notated in Subroutines.pdf with no spaces, e.g., ca0, p1]
-        60mfp: .word 1
-      ndigits:
-        61mfp: .word 10                 ; v2                                               ; [was just n1a2 -- need to track down this notation]
-        62mfp: .word 10
-=======
 
         59mfp: ca 0                     ;                                                  ; [59-73 are notated in Subroutines.pdf with no spaces, e.g., ca0, p1]
         60mfp: .word 1
@@ -156,7 +137,6 @@
         61mfp: .word 8 - 1              ; v2                                               ; [was just n1a2 -- need to track down this notation]
         62mfp: .word 10
   digit_table:
->>>>>>> d9afde81dc52addf45b9bb2be7e025e381d3c81f
         63mfp: .word 64mfp              ; ,                                                ; [I think comma? Might just be a blemish]
         64mfp: .flexh "0123456789"      ; Digit table
     plus_char:
@@ -164,19 +144,11 @@
    minus_char:
         75mfp: .flexh "-"
      dot_char: .flexh "."
-<<<<<<< HEAD
-
-=======
->>>>>>> d9afde81dc52addf45b9bb2be7e025e381d3c81f
         1tmfp: .word 0
         2tmfp: .word 0
         3tmfp: .word 0
    digit_cntr:
         4tmfp: .word 0
-<<<<<<< HEAD
-		upcase: .word 0o71 * 1024
-		dncase: .word 0o75 * 1024
-=======
 	newlinemfp: .flexh "\n"
 
 
@@ -221,4 +193,3 @@ pe_10:		   .word 10
 pe_t1:		   .word 0
 pe_one_char:   .flexh "1"
 pe_zero_char:  .flexh "0"
->>>>>>> d9afde81dc52addf45b9bb2be7e025e381d3c81f
