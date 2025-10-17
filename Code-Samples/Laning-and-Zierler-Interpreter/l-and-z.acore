@@ -622,7 +622,7 @@
 @S0001: main_sep_param
 @E1762: print: "LZ output: %fm", 0o002420
 @N0040:  |
-@N1000:                                                   ; [LAS Added this call so we get the program and the results printed on the flex]
+@N1000:  [LAS Added this call so we get the program and the results printed on the flex]
 @N1002:                                                   ; PETR A, rewind
 @N1005:  (l.c. or u.c.)                                   ; [LAS was ad (a3/1a3)]
 @N1013:  -| Is symbol
@@ -1110,7 +1110,7 @@
 @N2616:  -|
 @N2617:  -|- Form x1 - 2**-15
 @N2620:  -|
-@N2621:  -|- Complement x1'                               ; [LAS was transcription error ca r03]             ;   114r->
+@N2621:  -|- Complement x1'                               ; 114r->                                           ; [LAS was transcription error ca r03]
 @N2622:  -|
 @N2623:  -|- Form x1*x1'
 @N2624:  -|

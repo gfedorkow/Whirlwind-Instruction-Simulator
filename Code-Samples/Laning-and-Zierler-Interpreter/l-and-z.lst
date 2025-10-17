@@ -508,9 +508,9 @@
 @0777.0511:000000
 
                                          .org 0o1000
-                               val_temp:                          ; [LAS temp values start here and groq down. This is the "197" allocation point
+                               val_temp:                          ; [LAS temp values start here and grow down. This is the "197" allocation point]
 
-@1000.0512:076771              lz_begin: sp print_prog            ;                                                  ; [LAS Added this call so we get the program and the results printed on the flex]
+@1000.0512:076771              lz_begin: sp print_prog            ; [LAS Added this call so we get the program and the results printed on the flex]
 @1001.0513:075002                        sp a1
 
                                          ; [LAS Define some vars for the first few value-temp locs, for debugger]
@@ -1820,7 +1820,7 @@
 @2617.1423:116500                        su r50                   ; -|- Form x1 - 2**-15
 @2620.1424:042420                        ts r02                   ; -|
 
-@2621.1425:106421                  r122: cs r03                   ; -|- Complement x1'                               ; [LAS was transcription error ca r03]             ;   114r->
+@2621.1425:106421                  r122: cs r03                   ; -|- Complement x1'                               ; 114r->                                           ; [LAS was transcription error ca r03]
 @2622.1426:042421                        ts r03                   ; -|
 
 @2623.1427:142420                        mr r02                   ; -|- Form x1*x1'

@@ -74,7 +74,7 @@ if [ $(checkarg "--DisAsm") == 0 ];
 then
 	echo "Disassembling tcore files..."
 	cd tmp
-	rm -rf disasmlog
+	rm -f disasmlog
 	for file in `ls *.tcore` ; do
 		echo "Disassembling " $file
 		python $dis -n $file &>>disasmlog
@@ -83,9 +83,9 @@ then
 fi
 if [ $(checkarg "--Asm") == 0 ];
 then
-	echo "Assembling ww files..."
+	echo "Assembling ww files, with flowgraphs..."
 	cd tmp
-	rm -rf asmlog
+	rm -f asmlog
 	for file in `ls *.ww` ; do
 		echo "Assembling " $file
 		python $asm -f $file &>>asmlog
