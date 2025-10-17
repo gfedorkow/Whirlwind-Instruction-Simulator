@@ -146,6 +146,7 @@ class LogClass:
             # LogMsgSeverity.Info
             localStdErr.flush()
             localStdOut.write (msgStr)
+            localStdOut.flush()  # added by guy; not sure if/why this is needed...
         self.factory.logSeqno.seqno += 1
 
     # Public
@@ -1876,6 +1877,9 @@ class ScreenDebugWidgetClass:
 
 
     def select_next_widget(self, direction_up = False):
+        if self.input_selector is None:  # if no widgets have been added, don't do anything here!
+            return
+        
         if direction_up:
             self.input_selector += 1
         else:
@@ -1887,6 +1891,9 @@ class ScreenDebugWidgetClass:
             self.input_selector = len(self.mem_addrs) - 1
 
     def increment_addr_location(self, direction_up = False):
+        if self.input_selector is None:  # if no widgets have been added, don't do anything here!
+            return
+        
         cm = self.cm
         wgt = self.input_selector
         addr = self.mem_addrs[wgt]
@@ -2224,7 +2231,6 @@ class XwinCrt:
         if self.win is None:   # all this stuff only works on a laptop display, not a CRT display
             return self.cb.NO_ALARM
 
-        dbwgt = cb.dbwgt
         if self.polling_mouse is False:
             pt, button = self.win.checkMouse()
             if (pt is not None) and (button == 1):
@@ -2242,7 +2248,8 @@ class XwinCrt:
 
         self.draw_red_x_and_axis(cb)    # replace the Red-X for exit symbol
         # and the screen-debug widget undraws its own objects, so that's being done twice now.
-        dbwgt.refresh_widgets()
+        if cb.dbwgt:
+            cb.dbwgt.refresh_widgets()
 
         if cb.analog_display:
             return self.cb.NO_ALARM

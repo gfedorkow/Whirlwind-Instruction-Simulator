@@ -1,0 +1,37 @@
+Error: Line 1: Dot operator syntax error at char pos 10:
+    ta x+*y*(z + 99)
+         ^
+
+Error: Line 2: Tokenizer state 4: Illegal char '[' at char pos 8:
+    ta x[10]+y*(z + 99)
+       ^
+
+Error: Line 8: Address 0o177777 out of range:
+    .org 0o177777
+Error: Line 9: Incorrect operand type AsmExprValueType.String xyz:
+    .org "xyz"
+Error: Line 10: Incorrect operand type AsmExprValueType.Integer 42:
+    .flexl 42
+Error: Line 14: What do you think this is, ENIAC?:
+    .isa 1945
+Error: Line 15: Sorry, Babbage is no longer with us:
+    .isa 1832
+Error: Line 16: Setting instruction set to the Antikythera Mechanism:
+    .isa 1066
+Error: Line 17: Setting instruction set to MIT WhirlWave Quantum Computer:
+    .isa 4000
+Error: Line 3: Digit string must be octal:
+    sp 0o177789
+Error: Line 4: Address 0o177777 out of range:
+    sp 0o177777
+Error: Line 6: Unbound variable xyz:
+    sp xyz + 42
+Error: Line 7: Incorrect operand type AsmExprValueType.String abc:
+    sp "abc"
+Error: Line 11: Incorrect operand type AsmExprValueType.String blah:
+    .dbwgt x, "blah"
+Error: Line 19: Unsigned integer conversion of 70000 (= 0o210560) is out of 16-bit unsigned range:
+    .word 70000
+Error: Line 20: Signed integer conversion of -40000 is out of 16-bit one's-complement range:
+    .word -40000
+Error Count = 16; output files suppressed

@@ -25,6 +25,7 @@ Code-Samples/*/flow.svg
 
 # Pycharm control files
 .idea/
+Py/workspace.code-workspace
 
 # ignore the build artifacts for PyInstall
 Py/Sim/build/

@@ -26,7 +26,8 @@ else
 	echo "Test Parsing..."
 	python $asmp -v test1.ww >&test1.log		# Should produce an eval error and that's ok so it's in the log
 	python $asmp -v test2.ww >&test2.log
-
+  dos2unix test1.log
+  dos2unix test2.log
 	grep -v "AsmExpr-" test1.log >FilteredTest1.log
 	grep -v "AsmExpr-" test2.log >FilteredTest2.log
 
@@ -101,7 +102,25 @@ else
 		echo "Test FAILED"
 	fi
 
-	status=$(($status1 + $status2 + $status3 + $status4 + $status5 + $status6 + $status7))
+	# last-word test
+	echo "Test use of last memory word"
+	rm -f last-word.lst last-word.acore last-word.sim.log 
+	python $asm --OmitAutoComment last-word.ww >&last-word.asm.log
+	python $sim -q last-word.acore |& grep -v cycles >last-word.sim.log 
+   	diff -s last-word.lst TestRefs/last-word.lst
+	status8=$?
+	diff -s last-word.sim.log TestRefs/last-word.sim.log
+	status9=$?
+	status=$(($status8 + $status9))
+	if [ "$status" == "0" ];
+	then
+		echo "Test PASSED"
+	else
+		echo "Test FAILED"
+	fi
+
+	status=$(($status1 + $status2 + $status3 + $status4 + $status5 \
+                       + $status6 + $status7 + $status8 + $status9))
 	if [ "$status" == "0" ];
 	then
 		echo "Assembler Test PASSED"

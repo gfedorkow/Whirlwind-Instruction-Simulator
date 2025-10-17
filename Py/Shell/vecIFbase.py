@@ -146,7 +146,9 @@ wasGunPulse2 = True          # if a pulse was delivered
 gunTime2= 0.0
 debounceGunTime = 0.05
     
-  
+
+DebugGun = True
+
 def getLightGuns():
     """
         returns 0 if no light gun detected, or set the (two) lower bits
@@ -162,24 +164,28 @@ def getLightGuns():
     if not wasGunPulse1 and gpio.input(pin_isGun1) == 0:
         mask = 1
         wasGunPulse1 = True
+        if DebugGun: print("Gun #1: isGun1=%d, isGun1on=%d" % (gpio.input(pin_isGun1), gpio.input(pin_isGun1on)))
     if not wasGunPulse2 and gpio.input(pin_isGun2) == 0:
         mask = mask | 2
         wasGunPulse2 = True
         
     if mask != 0:
         return mask
-    
+
     # print(gpio.input(pin_isGun1on), gpio.input(pin_isGun2on))
-    # debounce switch 1 
-    if gpio.input(pin_isGun1on) == 0:
-        # while switch is on, restart timer
-        gunTime1 = time.time()
-    else:
-        # switch must be off some time (debounce)
-        delta = time.time() - gunTime1
-        if delta > debounceGunTime:
-            wasGunPulse1 = False
-            
+    # debounce switch 1
+    if wasGunPulse1:
+        if gpio.input(pin_isGun1on) == 0:
+            # while switch is on, restart timer
+            gunTime1 = time.time()
+            if DebugGun: print("Gun #1 Debouncing: isGun1=%d, isGun1on=%d" % (gpio.input(pin_isGun1), gpio.input(pin_isGun1on)))
+        else:
+            # switch must be off some time (debounce)
+            delta = time.time() - gunTime1
+            if delta > debounceGunTime:
+                if DebugGun: print("Gun #1 Debounced: isGun1=%d, isGun1on=%d" % (gpio.input(pin_isGun1), gpio.input(pin_isGun1on)))
+                wasGunPulse1 = False
+
     # debounce switch 2
     if gpio.input(pin_isGun2on) == 0:
         # while switch is on, restart timer
