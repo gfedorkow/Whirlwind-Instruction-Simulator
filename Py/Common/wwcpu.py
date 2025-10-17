@@ -872,14 +872,13 @@ class CpuClass:
         if address >= self.cb.CORE_SIZE:
             print("branch: looks like a bad branch pointer to %oo at pc=%oo" % address, pc)
             sys.exit(-1)
-        if not self.cb.TraceQuiet:
+        if self.cb.TraceBranch: # LAS This is inactive see assignment in wwinfra,py
             if address < self.PC:
                 bdir = "backwards"
             else:
                 bdir = "forwards"
-            if self.cb.TraceBranch:
-                self.cb.log.info ("branch %s from pc=%s to %s" %
-                                  (bdir, self.wwaddr_to_str(self.PC - 1), self.wwaddr_to_str(address)))
+            self.cb.log.info ("branch %s from pc=%s to %s" %
+                              (bdir, self.wwaddr_to_str(self.PC - 1), self.wwaddr_to_str(address)))
 
         # save the current PC+1 as a return address
         self._AReg = self.PC    # the PC was incremented in the calling routine (I think)

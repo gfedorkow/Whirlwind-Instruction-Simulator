@@ -491,7 +491,9 @@ class ConstWWbitClass:
         self.TracePC = 0        # print a line for each instruction if this number is non-zero; decrement it if pos.
         self.LongTraceFormat = True  # prints more CPU registers for each trace line
         self.TraceALU = False   # print a line for add, multiply, negate, etc
-        self.TraceBranch = True  # print a line for each branch
+        # LAS 10/12/25 Set this to False as it doesn't seem needed and
+        # generates a lot of stuff. Easily reactvated here is desired.
+        self.TraceBranch = False  # print a line for each branch
         self.TraceQuiet = False
         self.TraceVerbose = False
         self.tracelog = None     # set this to a value if we're supposed to keep logs for a flow graph
@@ -1488,8 +1490,8 @@ class InstructionOpTable:
             }
 
 # See manual 2M-0277 pg 46 for flexowriter codes and addresses
-# This class is primarily the Flexowriter output driver, but it's also used
-# other places for translating characters between ASCII and Flexo code.
+# This class the Flexowriter output driver.
+# Translating between ASCII and Flex is handled by classes in wwflex.py.
 class FlexoControlClass:
     def __init__(self, cb, log = None):
         self.stop_on_zero = None
@@ -1537,7 +1539,7 @@ class FlexoControlClass:
             if self.flexToFlexoWin is None:
                 self.flexToFlexoWin = FlexToFlexoWin()
         else:
-            print(("configure flexowriter #2, stop_on_zero=%o, packed=%o" % (self.stop_on_zero, self.packed)))
+            self.log.info ("configure flexowriter #2, stop_on_zero=%o, packed=%o" % (self.stop_on_zero, self.packed))
         return self.cb.NO_ALARM
 
     def rc(self, _unused, acc):  # "record", i.e. output instruction to tty

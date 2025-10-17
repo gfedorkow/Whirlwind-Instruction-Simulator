@@ -697,7 +697,7 @@ def output_block_list(cb, blocklist, core, title, output_file, block_info_len, c
           (len(blocklist), edge_count, core_locations))
 
 class FlowGraph:
-    def __init__ (self, argFlowGraph, argFlowGraphOutFile, argFlowGraphOutDir, cb):
+    def __init__ (self, argFlowGraph, argFlowGraphOutFile, argFlowGraphOutDir, cb, isStatic: bool = False):
         self.outfile = ""
         self.outfile_basename = ""
         self.do_flowgraph = argFlowGraph
@@ -710,7 +710,8 @@ class FlowGraph:
             self.do_flowgraph = True
             self.outfile = self.flowgraph_outfile
         else:
-            self.outfile_basename = re.sub ("\\.acore$", "", os.path.basename (self.cb.CoreFileName)) + ".flow.gv"
+            suffix = "flow" if not isStatic else "flow.static"
+            self.outfile_basename = re.sub ("\\.acore$", "", os.path.basename (self.cb.CoreFileName)) + "." + suffix + ".gv"
         if self.flowgraph_outdir is not None:
             self.do_flowgraph = True
             self.outfile = self.flowgraph_outdir + "/" + self.outfile_basename

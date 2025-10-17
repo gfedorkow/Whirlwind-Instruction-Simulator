@@ -1,15 +1,10 @@
 start at 0o1000
-configure flexowriter #2, stop_on_zero=1, packed=0
 Flexo: x = 42 + 57,
 Flexo: y = 86 + 99,
 Flexo: z = xy,
 Flexo: PRINT z.
 Flexo: STOP
-configure flexowriter #2, stop_on_zero=1, packed=0
 LZ output: 18315
-configure flexowriter #2, stop_on_zero=1, packed=0
-configure flexowriter #2, stop_on_zero=1, packed=0
-configure flexowriter #2, stop_on_zero=1, packed=0
 Flexo: z=+.18315000+05 
 Halt Instruction!  (Code=0) at pc=02765
 Alarm 'Program Halt' (5) at PC=0o2765 (0d1525)

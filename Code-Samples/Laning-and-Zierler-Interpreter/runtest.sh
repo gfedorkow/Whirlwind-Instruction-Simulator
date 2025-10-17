@@ -34,7 +34,7 @@ else
 	echo "Testing floatlib..."
 	python $asm --CommentColumn 25 --CommentWidth 50 --OmitAutoComment test-float-lib.ww >&fl-wwasm.log
 	# We'll assume the "notes" test is the default run by the floatlib test code
-	python $sim -q test-float-lib.acore | grep xxxxxx >&fl-wwsim.log
+	python $sim test-float-lib.acore | grep xxxxxx >&fl-wwsim.log
 	diff -s TestRefs/fl-wwsim.log fl-wwsim.log
 	status1=$?	
 	if [ "$status1" == "0" ];
@@ -56,7 +56,7 @@ else
 		STOP
 		EOF
 	) >lz-tmp.pet
-	python $sim -q --PETRAfile lz-tmp.pet l-and-z.acore >&lz-wwsim1.log
+	python $sim --PETRAfile lz-tmp.pet l-and-z.acore >&lz-wwsim1.log
 	diff -s TestRefs/lz-wwsim1.log lz-wwsim1.log
 	status2=$?
 	if [ "$status2" == "0" ];
@@ -77,7 +77,7 @@ else
 		STOP
 		EOF
  	) >lz-tmp.pet
-	python $sim -q --PETRAfile lz-tmp.pet  l-and-z.acore >&lz-wwsim2.log
+	python $sim --PETRAfile lz-tmp.pet  l-and-z.acore >&lz-wwsim2.log
 	diff -s TestRefs/lz-wwsim2.log lz-wwsim2.log
 	status3=$?
 	if [ "$status3" == "0" ];
@@ -94,7 +94,7 @@ else
 		STOP
 		EOF
   	) >lz-tmp.pet
-	python $sim -q --PETRAfile lz-tmp.pet l-and-z.acore >&lz-wwsim3.log
+	python $sim --PETRAfile lz-tmp.pet l-and-z.acore >&lz-wwsim3.log
 	diff -s TestRefs/lz-wwsim3.log lz-wwsim3.log
 	status4=$?
 	if [ "$status4" == "0" ];
@@ -119,7 +119,7 @@ else
 		STOP
 		EOF
   	) >lz-tmp.pet
-	python $sim -q --PETRAfile lz-tmp.pet l-and-z.acore >&lz-wwsim4.log
+	python $sim --PETRAfile lz-tmp.pet l-and-z.acore >&lz-wwsim4.log
 	diff -s TestRefs/lz-wwsim4.log lz-wwsim4.log
 	status5=$?
 	if [ "$status5" == "0" ];
@@ -133,9 +133,9 @@ else
 
 	python $ascflx -r -i music-notes.lzt -o music-notes.pet
 	# Note this does not bring up a FlexoWin...
-	python $sim -q --PETRAfile music-notes.pet l-and-z.acore >&lz-music-wwsim.log
+	python $sim --PETRAfile music-notes.pet l-and-z.acore >&lz-music-wwsim.log
 	# ...but this does
-	# python $sim -q -p --FlexoWin --PETRAfile music-notes.pet l-and-z.acore
+	# python $sim -p --FlexoWin --PETRAfile music-notes.pet l-and-z.acore
 	diff -s TestRefs/lz-music-wwsim.log lz-music-wwsim.log
 	status5=$?
 	if [ "$status5" == "0" ];

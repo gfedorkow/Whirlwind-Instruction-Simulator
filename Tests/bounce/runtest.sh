@@ -15,20 +15,15 @@ else
 	sim="$PYTHONPATH/../../Py/Sim/wwsim.py"
 	rm -f bounce.acore bounce.lst wwsim.log wwasm.log tmp-wwasm.log tmp-ref-wwasm.log tmp-wwsim.log tmp-ref-wwsim.log
 	python $asm bounce.ww -o bounce >&wwasm.log
-	python $sim --CycleLimit 7700 bounce.acore >&wwsim.log
-	egrep "Warning|Error" wwasm.log >&tmp-wwasm.log
-	egrep "Warning|Error" TestRefs/wwasm.log >&tmp-ref-wwasm.log
-	grep ww_draw_point wwsim.log >&tmp-wwsim.log
-	grep ww_draw_point TestRefs/wwsim.log >&tmp-ref-wwsim.log
-	diff -s tmp-ref-wwasm.log tmp-wwasm.log
+	python $sim --CycleLimit 15000 bounce.acore >&wwsim.log
+	diff -s TestRefs/wwasm.log wwasm.log
 	status1=$?
-	diff -s tmp-ref-wwsim.log tmp-wwsim.log
+	diff -s TestRefs/wwsim.log wwsim.log
 	status2=$?
 	status=$(($status1 + $status2))
 	if [ "$status" == "0" ];
 	then
 		echo "Test PASSED"
-		rm tmp-ref-wwasm.log tmp-ref-wwsim.log tmp-wwasm.log tmp-wwsim.log
 	else
 		echo "Test FAILED"
 	fi

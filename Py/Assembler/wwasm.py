@@ -436,10 +436,10 @@ class AsmWwOpInst (AsmInst):
                         pass
     # Only true instructions should produce a trace log entry (for static flowgraph)
     def getTraceLogEntry (self) -> TraceLogClass:
+        comment = re.sub (" +", " ", self.parsedLine.comment)
         return TraceLogClass (self.address, self.parsedLine.label,
-                              self.parsedLine.opname.upper(), self.operand, 0, self.parsedLine.comment)
+                              self.parsedLine.opname.upper(), self.operand, 0, comment)
 
-                    
 class AsmWwSiOpInst (AsmWwOpInst):
     def __init__ (self, *args):
         super().__init__ (*args)
@@ -1337,14 +1337,14 @@ class AsmProgram:
 
     def writeFlowgraph (self):
         if self.doFlowGraph:
-            self.cb.CoreFileName = "xxx.acore"
-            flowgraph = FlowGraph (True, None, None, self.cb)
+            self.cb.CoreFileName = self.coreOutFilename
+            flowgraph = FlowGraph (True, None, None, self.cb, isStatic = True)
             tracelog: TracelogClass = self.cb.tracelog
             for inst in self.insts:
                 tracelogEntry = inst.getTraceLogEntry()
                 if tracelogEntry is not None:
                     tracelog.append (tracelogEntry)
-            title = "yyy"
+            title = self.coreOutFilename
             flowgraph.finish_flow_graph_from_asm (self.cb, title)
 
     def assemble (self):
@@ -1385,7 +1385,7 @@ def main():
     parser.add_argument("--ISA_1950", help="Use the 1950 version of the instruction set", action="store_true")
     parser.add_argument("--Reformat", help="Prettify the source .ww file and move the original to .ww.bak", action="store_true")
     parser.add_argument("--OmitUnrefedLabels", help="Don't put unreferenced labels in the listing", action="store_true")
-    parser.add_argument("-f", "--FlowGraph", help="Generate a static flow graph. Default output file <corefile-base-name>.flow.gv", action="store_true")
+    parser.add_argument("-f", "--FlowGraph", help="Generate a static flow graph. Default output file <corefile-base-name>.flow.static.gv", action="store_true")
     # Suggested for comment columns is "--CommentColumn 25 --CommentWidth 50"
     parser.add_argument("--CommentColumn", type=int, help="Column after labels for comments in listing. Default 25")
     parser.add_argument("--CommentWidth", type=int, help="Space to allocate to each comment field in listing. If not specified or zero, no field detection")
@@ -1426,7 +1426,8 @@ def main():
         inFilename, inStream,
         coreOutFilename, listingOutFilename,
         verbose, debug, minimalListing, isa1950,
-        reformat, omitUnrefedLabels, doFlowGraph, commentColumn, commentWidth, omitAutoComment)
+        reformat, omitUnrefedLabels, doFlowGraph,
+        commentColumn, commentWidth, omitAutoComment)
     prog.assemble()
 
 main()

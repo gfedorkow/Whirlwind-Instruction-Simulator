@@ -149,7 +149,7 @@ class DbgDebugger:
     def __init__ (self):
         self.jumpOpcodes = [0o16, 0o17] # cp, sp
         self.writeOpcodes = [0o10, 0o11, 0o12, 0o15, 0o26] # ts, td, ta, ao, ex
-        self.formatStrs = ["fl", "fr", "fm", "fx", "i", "o", "d"]
+        self.formatStrs = ["fl", "fr", "fm", "i", "o", "d"]
         self.brks = DbgBrks (self)
     # If program exits then we want to return to initial dbg stopped state, but
     # breakpoints and other info should be preserved; hence any such state to
@@ -323,7 +323,7 @@ class DbgCmd_p (DbgCmd):
     def helpStrs (self) -> [str]:
         r = [
             "p expr [, block-len] [, format]",
-            "Format = o: octal, d: decimal, fr: fraction, fl: 24,6 float, fm: 30,15 float, fx: flexo-to-ascii, i: instruction.",
+            "Format = o: octal, d: decimal, fr: fraction, fl: 24,6 float, fm: 30,15 float, i: instruction.",
             "Print an address or block and its contents, or just the value if a register is specfied.",
             "Default format is octal."
             ]

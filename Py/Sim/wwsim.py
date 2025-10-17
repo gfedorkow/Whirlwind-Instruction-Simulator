@@ -228,17 +228,12 @@ def main_run_sim(args, cb):
     global CoreMem, CommentTab   # should have put this in the CPU Class...
     global UseDebugger, Debugger
 
+    # LAS dup of main
+    """
     if args.CrtFadeDelay:
         cb.crt_fade_delay_param = args.CrtFadeDelay
         cb.log.info("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
-
-    if args.Quiet and not UseDebugger:
-        cb.TraceQuiet = True
-        cb.log.info("TraceQuiet turned on")
-    if args.NoZeroOneTSR:
-        cb.NoZeroOneTSR = True
-    else:
-        cb.log.info("Automatically return 0 and 1 from locations 0 and 1")
+    """
 
     CoreMem = wwinfra.CorememClass(cb)
     cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
@@ -347,7 +342,8 @@ def main_run_sim(args, cb):
     if UseDebugger:
         # Refactoring and hoisting up at least the cpu class is something we should
         # do. Here I'm straining to avoid it by passing in myriad functions to the
-        # debugger
+        # debugger.
+        # LAS 10/14/25 That refactoring is done so cleaning this up is on the list.
         if Debugger is None:
             Debugger = DbgDebugger()
         Debugger.reset (CoreMem,
@@ -586,7 +582,7 @@ def main():
     parser.add_argument("-fo", "--FlowGraphOutFile", help="Specify flow graph output file. Implies -f", type=str)
     parser.add_argument("-fd", "--FlowGraphOutDir", help="Specify flow graph output directory. Implies -f", type=str)
     parser.add_argument("-j", "--JumpTo", type=str, help="Sim Start Address in octal")
-    parser.add_argument("-q", "--Quiet", help="Suppress run-time messages", action="store_true")
+    parser.add_argument("-q", "--Quiet", help="Suppress run-time messages (nop -- here just for compat)", action="store_true")
     parser.add_argument("-v", "--Verbose", help="Produce run-time messages", action="store_true")
     parser.add_argument("--NoWarnings", help="Suppress Warning messages", action="store_true")
     parser.add_argument("-D", "--DecimalAddresses", help="Display trace information in decimal (default is octal)",
@@ -639,7 +635,8 @@ def main():
     args = parser.parse_args()
 
     UseDebugger = args.Debugger
-    quiet = args.Quiet or UseDebugger      # Too noisy in the debugger if not quiet
+
+    quiet = not args.Verbose 
     
     # instantiate the class full of constants
     cb = wwinfra.ConstWWbitClass (corefile=args.corefile, get_screen_size = True, args = args)
@@ -688,9 +685,8 @@ def main():
         cb.crt_fade_delay_param = args.CrtFadeDelay
         cb.log.info("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
 
-    if quiet:
-        cb.TraceQuiet = True
-        cb.log.info("TraceQuiet turned on")
+    cb.TraceQuiet = quiet
+
     if args.NoZeroOneTSR:
         cb.NoZeroOneTSR = True
     else:

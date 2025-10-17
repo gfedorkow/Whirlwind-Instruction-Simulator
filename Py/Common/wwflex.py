@@ -13,19 +13,24 @@ import wwinfra
 # Flexowriter support library
 # main program provides test path
 #
-# Public classes are FlasciiToFlex, FlexToFlascii, FlexToComment, and FlexToFlexoWin.
-#
+# Most classes are public and those marked private are intended just for
+# internal use
 
 # Use this class multiple-inheritance-style to hold common utilities
+# Private
 
 class AsciiFlexBase:
     def __init__ (self):
-        self.cb = wwinfra.ConstWWbitClass (get_screen_size=True)
+        self.cb = wwinfra.ConstWWbitClass()
+        self.cb.log = wwinfra.LogFactory().getLog()
+        self.codes = AsciiFlexCodes()
     def error (self, msg: str):
-        # self.cb.log.error (msg)
-        print ("Error!", msg)
+        self.cb.log.error (msg)
     def isDigit (self, c) -> bool:
         return c >= '0' and c <= '9'
+    def isValidCode (self, flexCode: int) -> bool:
+        return self.codes.isValidCode (flexCode)
+        
 
 # The Flascii language, i.e., a format for specifying all the possible flex
 # codes. In summary:
@@ -52,24 +57,27 @@ class AsciiFlexBase:
 
 # This level just gets tokens; they're checked at the next level up.
 
+# Private
 FlasciiTokenType = Enum ("FlasciiTokenType",
                          ["Character",
                           "Super",
                           "Bracketed",
                           "EndOfString"])
 
+# Private
 class FlasciiToken:
     def __init__ (self, type: FlasciiTokenType, data: str):
         self.type: FlasciiTokenType = type
         self.data = data
 
+# Private
 class FlasciiTokenizer (AsciiFlexBase):
     def __init__ (self, str):
+        super().__init__()
         self.pos = 0
         self.state = 0
         self.str = str
         self.slen = len (str)
-        # self.cb = theConstWWbitClass
         self.endOfString = "<EndOfString>"
         self.endOfStringTok = FlasciiToken (FlasciiTokenType.EndOfString, "")
     def getToken (self) -> FlasciiToken:
@@ -132,7 +140,7 @@ class FlasciiTokenizer (AsciiFlexBase):
 
 class AsciiFlex (AsciiFlexBase):
     def __init__ (self):
-        # self.cb = theConstWWbitClass
+        super().__init__()
         self.curCodeTable: dict = None
         self.upperCodeTable: dict = {}          # ascii to flex
         self.lowerCodeTable: dict = {}
@@ -230,6 +238,7 @@ class FlasciiToFlex (AsciiFlex):
 # just a function. Both styles are useful. In any case to get the final string
 # getXXX is called.
 
+# Private
 class FlexToSomething (AsciiFlex):
     def __init__ (self):
         super().__init__()
@@ -434,6 +443,8 @@ class FlexToFlexoWin (FlexToSomething):
 # "Even the best of typists make mistakes. The error is nullified by pressing the "delete" button. This
 # punches all the holes resulting in a special character ignored by the computer"
 
+# Private
+
 class AsciiFlexCodes:
     codes = [
         #
@@ -512,6 +523,8 @@ class AsciiFlexCodes:
 #       180 milliseconds
 # Tabulation and carriage return:
 #       200 to 900 milliseconds
+
+# Private
 
 class FlexoWin (AsciiFlexBase):
     def __init__(self):

@@ -502,7 +502,7 @@ def main():
     args = parser.parse_args()
 
     input_file_name = args.inputfile
-    base_filename = re.sub('\\..*core$', '', input_file_name)
+    base_filename = re.sub('\\..core$', '', input_file_name)
     if args.outputfile is None:
         wwdisasm_output_filename = base_filename + ".ww"
     else:

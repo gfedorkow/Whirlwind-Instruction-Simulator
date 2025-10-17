@@ -807,9 +807,10 @@ literal-digit-seq												Decimal inreger
 	* %fx -- really can't support it
 		[Removed]
 	- Replace FlexoClass with code in wwflex
+		* File names and related stuff in asm flow gen
 		- wwdisasm uses it's own flex code table -- not clear it's worth changing
 		- "record status message" get a char returned for rc -- necessary? -- currently commented out
-		- char display at right in tcore files has changed e.g. # rather than \0 for null char
+		- char display at right in tcore files has changed e.g. # rather than \0 for null char:
 
 
 < @C00160: 0040112 0100207 0040047 0074040 0000000 0000000 0000000 0066315  ; ts ca ts sp si si si ex  :         s3#t###+ : <color>t<color>k###6
@@ -835,8 +836,9 @@ literal-digit-seq												Decimal inreger
 > @C00340: 0040224 0000600 0100223 0024000 0100224 0074153  None    None    ;   ts si ca rc ca sp      :     R\05\0R#     : <color>\0TSTK    
 
 
-
-
+	- Static flow -- check holy cow and uninited memory
+	* Hoisted CpuClass to its own file wwcpu.py, now in Common.
+	- With cpu hoist should be able to simplify debugger interface to sim.
 	- Code-Samples/Bounce/r-196-bounce-example: There is bounce.ww and bounce1954.ww, same except that
 		$ file bounce.ww 
 			 bounce.ww: ASCII text
@@ -874,8 +876,7 @@ literal-digit-seq												Decimal inreger
 		  Added --Verbose (-v) in addition to -q. We'll sort out the diff as we go.
 
 		  Should we have -v and -vv (--VeryVerbose)?
-
-
+			Python uses -V and if you want more, -V -V
 
 
 
@@ -1378,3 +1379,66 @@ to emitting wwasm code.
 
 
 
+--------------------------------
+Mail to Guy 10/13/25
+
+I've made number of changes that I hope you'll like. In digging into
+the tape processing the first thing that was clear was the need to
+unify the flex-code code. Along the way I wanted to experiment with
+emitting a static flow graph from the assembler. These things combined
+induced a number of changes, some of which we have chatted about
+before.
+
+Before doing a merge and pull request I'll demo this to you at our
+next meeting.
+
+1. Processing the flex code is now done completely by the classes in
+wwflex.py. These use FSM lex techniques to assure we have the right
+interpretation. In particular, translation of superscripts to
+appropriate ascii now works, and I think the different formats are
+clearer in the code. One thing this shows is that a lot of the fc
+files have numbers with exponents in them. This may give us a clue to
+their use.
+
+%String in the core output from wwutd now includes chars from both the
+upper and lower part of the word. This picked up several more new
+interesting-looking strings. We should go over whether and how we
+should annotate the addresses for the strings.
+
+We'll need to go over the need and use for flex char translation which
+is not dependent on context, as in the core file tables.
+
+2. I'm moving ahead with the idea that the system (at least the sim)
+should be quiet(er) by default. So there is now a --Verbose (-v), and
+-q is the default. Thus -q is now a nop and just stays for compat. I
+mostly did not change the flags in the code, so quiet = not
+verbose. However there are a few related flags and I'll consolidate as
+seems reasonable. I'll go over these before any drastic changes.
+
+There are a few printouts that really seem unnecessary, and I'm
+commenting them out for now. One is use use of a "symbol" returned
+from rc for the "rc record" or something. Another is the "branch
+fwd/back" print. The latter produces tremendous output is of
+questionable use so the flag controlling it is commented out.
+
+3. The old FlexoClass is now FlexoControlClass, and just has what's
+needed for device control, not the flex code processing.
+
+4. The class CpuClass has been pulled out of wwsim.py and into its
+own file in Common, wwcpu.py. The stubs that were in a couple of files
+have been deleted. A couple of other files had to move into Common,
+like radar.py.
+
+One thing I can now do is make the interface to the debugger a little
+cleaner, but I'm not rushing into it. But what put me over the edge
+for this was trying to integrate the flowgraph.
+
+5. wwasm.py has a new --FlowGraph (-f) option, which will make
+prog.flow.static.gv from the static structure.
+
+6. Tape processing is in progress. wwutd.py uses the new flex classes,
+and I've set up scripts to build needed files from the tape images en
+masse. As mentioned this has already exposed some things like
+exponents in numbers. We should go over this when we chat next.
+
+ - Larry

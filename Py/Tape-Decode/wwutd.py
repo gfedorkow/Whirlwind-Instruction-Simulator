@@ -24,7 +24,7 @@ import re
 import wwinfra
 import hashlib
 from typing import List, Dict, Tuple, Sequence, Union, Any
-from wwflex import FlexToFc, FlexToFilenameSafeFlascii, FlexToCsyntaxFlascii, AsciiFlexCodes, FlexToFlascii
+from wwflex import FlexToFc, FlexToFilenameSafeFlascii, FlexToCsyntaxFlascii, FlexToFlascii
 import traceback
 
 
@@ -46,7 +46,6 @@ def breakp(why: str):
 def scan_for_strings(corelist, byte_stream):
     global cb
     string_list = []
-    flexCodes = AsciiFlexCodes()
     flexToFlascii = FlexToCsyntaxFlascii()
     # Scan twice, using these fcns to access the high and low parts of the word
     for fcns in [[lambda m: m & 0o001777, lambda m: (m >> 10) & 0o77],
@@ -62,7 +61,7 @@ def scan_for_strings(corelist, byte_stream):
                 validCode = False
                 if m is not None and maskFcn (m) == 0:
                     flexCode = shiftFcn (m)
-                    if flexCodes.isValidCode (flexCode):
+                    if flexToFlascii.isValidCode (flexCode):
                         validCode = True
                 if validCode:
                     flexToFlascii.addCode (flexCode)
@@ -679,9 +678,9 @@ def read_tap_file(tap_filename, base_output_filename, min_file_size, read_past_e
 # My table returns '#' for characters that aren't defined in the WW Flexo char set
 # There aren't many -- of the 64 possible codes, most are used.
 def block_is_all_flexo(b: List[int]):
-    flexCodes = AsciiFlexCodes()
+    flexToFlascii = FlexToCsyntaxFlascii()
     for c in b:
-        if not flexCodes.isValidCode (c):
+        if not flexToFlascii.isValidCode (c):
             return False
     return True
 

@@ -88,7 +88,7 @@ else
 	echo "Test .flexh and .flexl..."
 	rm -f flextest.lst flextest.acore flextest.sim.log 
 	python $asm --OmitAutoComment flextest.ww >&flextest.asm.log
-	python $sim -q flextest.acore |& grep -v cycles >flextest.sim.log 
+	python $sim flextest.acore |& grep -v cycles >flextest.sim.log 
    	diff -s TestRefs/flextest.lst flextest.lst
 	status6=$?
 	diff -s flextest.sim.log TestRefs/flextest.sim.log
