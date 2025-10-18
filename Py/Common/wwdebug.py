@@ -2,6 +2,7 @@ import os
 import sys
 import re
 import math
+import shutil
 import traceback
 import argparse
 import wwinfra
@@ -148,7 +149,7 @@ class DbgDebugger:
     def __init__ (self):
         self.jumpOpcodes = [0o16, 0o17] # cp, sp
         self.writeOpcodes = [0o10, 0o11, 0o12, 0o15, 0o26] # ts, td, ta, ao, ex
-        self.formatStrs = ["fl", "fr", "fm", "fx", "i", "o", "d"]
+        self.formatStrs = ["fl", "fr", "fm", "i", "o", "d"]
         self.brks = DbgBrks (self)
     # If program exits then we want to return to initial dbg stopped state, but
     # breakpoints and other info should be preserved; hence any such state to
@@ -322,7 +323,7 @@ class DbgCmd_p (DbgCmd):
     def helpStrs (self) -> [str]:
         r = [
             "p expr [, block-len] [, format]",
-            "Format = o: octal, d: decimal, fr: fraction, fl: 24,6 float, fm: 30,15 float, fx: flexo-to-ascii, i: instruction.",
+            "Format = o: octal, d: decimal, fr: fraction, fl: 24,6 float, fm: 30,15 float, i: instruction.",
             "Print an address or block and its contents, or just the value if a register is specfied.",
             "Default format is octal."
             ]
@@ -668,6 +669,87 @@ class DbgCmd_wr (DbgCmd):
         else:
             self.error()
 
+# LAS 9/1/25 Added Justifier class to print syms in neat columns. Could be
+# generally useful and may pull into Common.  Algorithm adapted from ls.c. That
+# one looks more time efficient, passing over the string list only once, but
+# using a fair bit of memory, to hold info on the max number of possible
+# columns, e.g. screen-width/3. Mine just formats for 1,2, ... columns until it
+# won't fit, then backs off to the previous.
+
+class Justifier:
+    def __init__ (self, splitString: bool = False):
+        self.splitString = splitString
+        pass
+    #
+    # Usage eg a = makeArray([10,20,30]) makes 10x20x30 3-D array
+    #
+    # Note tried syntax array = [[None]*10]*5 and variants but that just dups the
+    # inner array
+    #
+    # private:
+    def makeArray (self, dims: [int], initVal = None) -> []:
+        if dims == []:
+            return initVal
+        else:
+            l = []
+            size = dims[0]
+            dims.pop(0)
+            for i in range (0, size):
+                l.append (self.makeArray (dims.copy(), initVal = initVal))
+            return l
+    # public:
+    def printStrings (self, strList: [str]):
+        nStrs = len (strList)
+        (h, v) = shutil.get_terminal_size()
+        # (osh, osv) = os.get_terminal_size()
+        maxCols = h // 3
+        maxRowLen = h
+        uncle: bool = False
+        nCols = 1
+        while True:
+            nRows = math.ceil (nStrs / nCols)
+            strs = self.makeArray ([nRows, nCols], initVal = "")
+            maxColLen = self.makeArray ([nCols], initVal = 0)
+            n = 0
+            for col in range (0, nCols):
+                for row in range (0, nRows):
+                    if n < nStrs:
+                        s = strList[n]
+                    else:
+                        s = ""
+                    l = len (s) + 1
+                    maxColLen[col] = max (maxColLen[col], l)
+                    strs[row][col] = s
+                    n += 1
+                    if n >= nStrs:
+                        break
+            if uncle:
+                break
+            if nCols >= maxCols:
+                break
+            sumMaxColLen = 0
+            for col in range (0, nCols):
+                sumMaxColLen += maxColLen[col]
+            sumMaxColLen += 1
+            if sumMaxColLen + nCols*5 + 5 > maxRowLen:
+                uncle = True
+                nCols -= 1
+            else:
+                nCols += 1
+            pass
+        for row in range (0, nRows):
+            line = ""
+            for col in range (0, nCols):
+                s = strs[row][col]
+                if s != "":
+                    if self.splitString:
+                        # Split at space and left-justify left string and right-justify right strings
+                        (l, r) = s.split()
+                        line += l + " "*(maxColLen[col] - len (r) - len (l) + 1) + r + " "*5
+                    else:
+                        line += s + " "*(maxColLen[col] - len (s) + 1)
+            print (line)
+
 # syms -- print all symbols and their values
 class DbgCmd_syms (DbgCmd):
     def __init__ (self, *args):
@@ -680,15 +762,22 @@ class DbgCmd_syms (DbgCmd):
             ]
         return r
     def execute (self):
-        (h, v) = os.get_terminal_size()
-        print ("LAS42", h, v)
+        # (h, v) = os.get_terminal_size()
+        (h, v) = shutil.get_terminal_size()
         maxSymLen = 0
+        """
         for sym in self.dbg.symToAddrTab:
             if len (sym) > maxSymLen:
                 maxSymLen = len (sym)
         for sym in self.dbg.symToAddrTab:
             val = self.dbg.symToAddrTab[sym]
             print ("%s%s 0o%o" % (sym, " "*(maxSymLen - len (sym)), val))
+        """
+        strList = []
+        for sym in self.dbg.symToAddrTab:
+            val = self.dbg.symToAddrTab[sym]
+            strList.append ("%s 0o%o" % (sym, val))
+        Justifier(splitString=True).printStrings (strList)
 
 # h -- help
 class DbgCmd_h (DbgCmd):

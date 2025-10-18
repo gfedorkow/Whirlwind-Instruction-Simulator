@@ -508,9 +508,9 @@
 @0777.0511:000000
 
                                          .org 0o1000
-                               val_temp:                          ; [LAS temp values start here and groq down. This is the "197" allocation point
+                               val_temp:                          ; [LAS temp values start here and grow down. This is the "197" allocation point]
 
-@1000.0512:076763              lz_begin: sp print_prog            ;                                                  ; [LAS Added this call so we get the program and the results printed on the flex]
+@1000.0512:076771              lz_begin: sp print_prog            ; [LAS Added this call so we get the program and the results printed on the flex]
 @1001.0513:075002                        sp a1
 
                                          ; [LAS Define some vars for the first few value-temp locs, for debugger]
@@ -569,10 +569,10 @@
                                          ; | Sheet 2/20
                                          ; | a1
 
-@1042.0546:076410                  32a1: sp ax                    ; (programmed arithmetic
+@1042.0546:076416                  32a1: sp ax                    ; (programmed arithmetic
 @1043.0547:141364                        mr 4a7                   ; (i.e., by 10)                                    ; [LAS was "mr 497" -- transcription error]
 @1044.0548:110000                  34a1: ad 0
-@1045.0549:076410                        sp ax
+@1045.0549:076416                        sp ax
 @1046.0550:131047                  36a1: ao 37a1                  ; (reset to 38r)
 @1047.0551:075004                  37a1: sp 2a1
 @1050.0552:000000                  38a1: .word 0                  ; (counter for digits before decimal pt            ; [LAS eliminated parens for opcode p or just data in this and following sections]
@@ -606,7 +606,7 @@
 @1076.0574:075351                        sp 19a6                  ;  |
 @1077.0575:111543                        ad 56a10                 ;  |
 @1100.0576:075336                        sp 8a6                   ; -|
-@1101.0577:076410                  18a2: sp ax                    ; -| START
+@1101.0577:076416                  18a2: sp ax                    ; -| START
 @1102.0578:074040                        sp comp_code             ; -|                                               ; [LAS was sp 32] [LAS was sp a1, changed to go to start of compiled code]
                                          ; |
                                          ; | Sheet 4/20
@@ -660,7 +660,7 @@
 @1155.0621:075265                 var_y: sp 50a4                  ; y
 @1156.0622:001326                  43a3: .word a6
 @1157.0623:075265                 var_p: sp 50a4                  ; p
-@1160.0624:106412                  45a3: cs 2ax
+@1160.0624:106420                  45a3: cs 2ax
 @1161.0625:075265                 var_q: sp 50a4                  ; q
 @1162.0626:040000                  47a3: ts 0
 @1163.0627:075265                 var_o: sp 50a4                  ; o (letter)
@@ -708,7 +708,7 @@
 @1230.0664:000014                  21a4: .word 12                 ; 1 (exp.)
 @1231.0665:111733                  22a4: ad 41a13                 ; J (not used)
 @1232.0666:000022                        .word 18                 ; 7 (exp.)
-@1233.0667:106412                  24a4: cs 2ax                   ; N (not used)                                     ; [LAS was (cs 2ax/ca 2ax)]
+@1233.0667:106420                  24a4: cs 2ax                   ; N (not used)                                     ; [LAS was (cs 2ax/ca 2ax)]
 @1234.0668:075571                        sp a11                   ; (
 @1235.0669:000000                        .word 0                  ; F                                                ; [LAS was blank]
 @1236.0670:000021                        .word 17                 ; 6 (exp.)
@@ -726,7 +726,7 @@
 @1244.0676:075377                  33a4: sp 9a8
 @1245.0677:075004                        sp 2a1                   ; Z (not used)
 @1246.0678:075004                        sp 2a1                   ; back space
-@1247.0679:102412                  36a4: ca 2ax                   ; L (not used)
+@1247.0679:102420                  36a4: ca 2ax                   ; L (not used)
 @1250.0680:075004                        sp 2a1                   ; tabulate
 @1251.0681:101253                  38a4: ca 40a4                  ; W (not used)
 @1252.0682:115107                        su 4a3
@@ -765,18 +765,18 @@
 @1306.0710:071322                        cp 15a5
 @1307.0711:075366                        sp a8                    ; (select new address k)
 @1310.0712:045312                        td 7a5
-@1311.0713:076410                        sp ax                    ; (= sp 852) -| store number
+@1311.0713:076416                        sp ax                    ; (= sp 852) -| store number
 @1312.0714:040000                   7a5: ts 0                     ;             | in (k, k+1)
-@1313.0715:076410                        sp ax                    ;            -|
+@1313.0715:076416                        sp ax                    ;            -|
 @1314.0716:101265                        ca 50a4                  ; -| form symbol mr k
 @1315.0717:045320                        td 13a5                  ;  | or dv k, where
 @1316.0718:101312                        ca 7a5                   ;  | k is address at
 @1317.0719:115162                        su 47a3                  ;  | which number has
 @1320.0720:110000                  13a5: ad 0                     ;  | just been stored
 @1321.0721:075336                        sp 8a6                   ; -|
-@1322.0722:076410                  15a5: sp ax
+@1322.0722:076416                  15a5: sp ax
 @1323.0723:151364                        dv 4a7                   ; (divide by 10)
-@1324.0724:076410                        sp ax
+@1324.0724:076416                        sp ax
 @1325.0725:075305                        sp 2a5
                                          ; |
                                          ; | Sheet 9/20
@@ -792,9 +792,9 @@
 @1334.0732:075377                        sp 9a8                   ; -|
 @1335.0733:075351                        sp 19a6                  ; -| compute and store the
 @1336.0734:075377                   8a6: sp 9a8                   ; -| exponent +-n
-@1337.0735:076410                   9a6: sp ax                    ; -|
+@1337.0735:076416                   9a6: sp ax                    ; -|
 @1340.0736:101360                  10a6: ca a7                    ;  | reset MRA
-@1341.0737:076410                        sp ax                    ;  | and various
+@1341.0737:076416                        sp ax                    ;  | and various
 @1342.0738:100000                        ca 0                     ;  | counters
 @1343.0739:041050                  13a6: ts 38a1                  ;  |
 @1344.0740:041051                        ts 39a1                  ;  |
@@ -803,9 +803,9 @@
 @1347.0743:075251                  17a6: sp 38a4                  ;                                                  ; [LAS was sp (38a4/14a9)]
 @1350.0744:075701                  18a6: sp 15a13                 ; "sp exp"
 @1351.0745:051357                  19a6: ta 25a6                  ;                                                  ; [LAS was td 25a6. Transcription error.]
-@1352.0746:102414                        ca 4ax                   ; -|
+@1352.0746:102422                        ca 4ax                   ; -|
 @1353.0747:045356                        td 24a6                  ;  | Form +-n, where
-@1354.0748:102412                  22a6: ca 2ax                   ;  | n is in MRA in                                ; [LAS was (ca 2ax/cs 2ax)]
+@1354.0748:102420                  22a6: ca 2ax                   ;  | n is in MRA in                                ; [LAS was (ca 2ax/cs 2ax)]
 @1355.0749:161017                        srh 15                   ;  | (24,6) form                                   ; [LAS was sr*]
 @1356.0750:154000                  24a6: slr 0                    ; -|
 @1357.0751:074000                  25a6: sp 0
@@ -1066,7 +1066,7 @@
                                   15a13:
 @1701.0961:051707              exponent: ta 21a13                 ; exponent
 @1702.0962:051715                        ta 27a13
-@1703.0963:076410                        sp ax
+@1703.0963:076416                        sp ax
 @1704.0964:131707                        ao 21a13
 @1705.0965:045722                        td 32a13
 @1706.0966:131722                        ao 32a13
@@ -1080,11 +1080,11 @@
 @1716.0974:041724                        ts 34a13
 @1717.0975:131732                 29a13: ao 40a13
 @1720.0976:071723                        cp 33a13
-@1721.0977:076410                        sp ax
+@1721.0977:076416                        sp ax
 @1722.0978:074000                 32a13: sp 0
-@1723.0979:076410                 33a13: sp ax
+@1723.0979:076416                 33a13: sp ax
 @1724.0980:140000                 34a13: mr 0                     ;                                                  ; [LAS was (mr (-)/dv (-))]
-@1725.0981:076410                        sp ax
+@1725.0981:076416                        sp ax
 @1726.0982:075717                        sp 29a13
 @1727.0983:041732                 37a13: ts 40a13
 @1730.0984:101172                        ca 55a3
@@ -1101,7 +1101,7 @@
                                     a15:
                                   print:
 @1736.0990:051741                        ta 3a15                  ; -| plant address of 1st
-@1737.0991:076410                  1a15: sp ax                    ; -| character to be printed
+@1737.0991:076416                  1a15: sp ax                    ; -| character to be printed
 @1740.0992:000225                        si 149
 @1741.0993:100000                  3a15: ca 0
 @1742.0994:045760                        td 16a15
@@ -1115,10 +1115,10 @@
                                          ; Use the Laning letter as the template (see
                                          ; ./InfoFromKnuth/from-Laning-76-07-02.pdf).  Here we print
                                          ; the newline following the print of a set of equations.]
-@1745.0997:102337                        ca newlinemfp
+@1745.0997:102345                        ca newlinemfp
 @1746.0998:024000                        rc 0
 
-@1747.0999:076410                        sp ax                    ;  | Since symbols to be printed are stored as
+@1747.0999:076416                        sp ax                    ;  | Since symbols to be printed are stored as
 @1750.1000:074000                  8a15: sp 0                     ; -| "mr x,mr y," etc. the "mr" actuates this xxx [?]
 @1751.1001:115103                  9a15: su a3                    ; -|
 @1752.1002:170012                        clc 10                   ;  | form and print first letter
@@ -1126,11 +1126,11 @@
 @1754.1004:131741                        ao 3a15
 @1755.1005:101210                        ca 5a4                   ; (0.22000 - "=")
 @1756.1006:025756                 14a15: rc 14a15
-@1757.1007:076410                        sp ax
+@1757.1007:076416                        sp ax
 @1760.1008:100000                 16a15: ca 0                     ;                -| print number
-@1761.1009:076410                        sp ax
+@1761.1009:076416                        sp ax
                                          .print "LZ output: %fm", mra
-@1762.1010:076410                        sp ax
+@1762.1010:076416                        sp ax
 @1763.1011:076015                        sp float_30_15_print     ; (24,6) print    |                                ; [LAS Was sp 222. We don't have the original print routine]
 @1764.1012:075737                        sp 1a15                  ;   routine      -|
                                          ; |
@@ -1192,26 +1192,26 @@
                                          ; is (30,15), but we'll only use (24,6) range.
 
 @2015.1037:052030     float_30_15_print: ta flt_print_rtn
-@2016.1038:042155                        ts nm_x
-@2017.1039:076410                        sp ax                    ; Spax out
+@2016.1038:042163                        ts nm_x
+@2017.1039:076416                        sp ax                    ; Spax out
 @2020.1040:076031                        sp normalize
                                          ; .print "floating print normalize x = %fl, t = %fl, mra-fm = %fm, mra-fr = %fr, mra-exp = %d", nm_x, t, mra, mra, mra + 2
                                          ; After normnalize the mra contains a 2-word denormalized fraction
                                          ; in mra and mra+1, and a power of ten exponent in mra+2.
-@2021.1041:076410                        sp ax                    ; Spax in
-@2022.1042:076214                        sp mfp
-@2023.1043:076410                        sp ax                    ; Spax out
-@2024.1044:076340                        sp print_exp
+@2021.1041:076416                        sp ax                    ; Spax in
+@2022.1042:076222                        sp mfp
+@2023.1043:076416                        sp ax                    ; Spax out
+@2024.1044:076346                        sp print_exp
 
                                          ; Not much guidance on where spaces and newlines should be printed,
                                          ; but we'll use the Laning letter as the template (see
                                          ; ./InfoFromKnuth/from-Laning-76-07-02.pdf).  Print a space
                                          ; following each equation, then at the upper level when all are done
                                          ; print a newline.
-@2025.1045:102213                        ca fp_space
+@2025.1045:102221                        ca fp_space
 @2026.1046:024000                        rc 0
 
-@2027.1047:076410                        sp ax                    ; Spax in
+@2027.1047:076416                        sp ax                    ; Spax in
 @2030.1048:074000         flt_print_rtn: sp 0
 
                                          ; Normalize, first by reducing to a fraction f such that 0.1 <= f < 1.0,
@@ -1223,60 +1223,67 @@
                                          ; Output: mra, first two words fraction (denormalized mantissa), third word decimal exponent
 
                               normalize:
-@2031.1049:052147                        ta nm_rtn
-@2032.1050:102166                        ca zero
-@2033.1051:042150                        ts nm_exp
-@2034.1052:076410                        sp ax                    ; Spax in
-@2035.1053:102155                        ca nm_x                  ; x
-@2036.1054:042160                        ts t
+@2031.1049:052155                        ta nm_rtn
+@2032.1050:102174                        ca zero
+@2033.1051:042156                        ts nm_exp
+@2034.1052:076416                        sp ax                    ; Spax in
+@2035.1053:102163                        ca nm_x                  ; x
+@2036.1054:042166                        ts t
                                 nm_loop:
-@2037.1055:122160                        cm t
-@2040.1056:116173                        su float1
-@2041.1057:072051                        cp nm_not_ge_1
+@2037.1055:122166                        cm t
+@2040.1056:116201                        su float1
+@2041.1057:042217                        ts ftmp0
+@2042.1058:122217                        cm ftmp0
+@2043.1059:114000                        su 0
+@2044.1060:072050                        cp nm_ge_1
+@2045.1061:122166                        cm t
+@2046.1062:116201                        su float1
+@2047.1063:072057                        cp nm_not_ge_1
                                          ; setup 0.1 loop         ; |x| >= 1
-@2042.1058:076410                        sp ax                    ; Spax out
-@2043.1059:102153                        ca nm_mr_float_point_1
-@2044.1060:042073                        ts nm_calc_mr
-@2045.1061:102154                        ca nm_ad_one
-@2046.1062:042077                        ts nm_calc_ad
-@2047.1063:076410                        sp ax                    ; Spax in
-@2050.1064:076072                        sp nm_calc
-@2051.1065:122160           nm_not_ge_1: cm t                     ; |x| < 1
-@2052.1066:116203                        su float_point_1
+                                nm_ge_1:
+@2050.1064:076416                        sp ax                    ; Spax out
+@2051.1065:102161                        ca nm_mr_float_point_1
+@2052.1066:042101                        ts nm_calc_mr
+@2053.1067:102162                        ca nm_ad_one
+@2054.1068:042105                        ts nm_calc_ad
+@2055.1069:076416                        sp ax                    ; Spax in
+@2056.1070:076100                        sp nm_calc
+@2057.1071:122166           nm_not_ge_1: cm t                     ; |x| < 1
+@2060.1072:116211                        su float_point_1
 
-@2053.1067:042211                        ts ftmp0
-@2054.1068:122211                        cm ftmp0
-@2055.1069:114000                        su 0
-@2056.1070:072103                        cp nm_already_norm       ; Branch if |x| = .1
+@2061.1073:042217                        ts ftmp0
+@2062.1074:122217                        cm ftmp0
+@2063.1075:114000                        su 0
+@2064.1076:072111                        cp nm_already_norm       ; Branch if |x| = .1
 
-@2057.1071:122160                        cm t
-@2060.1072:116203                        su float_point_1
+@2065.1077:122166                        cm t
+@2066.1078:116211                        su float_point_1
 
-@2061.1073:072064                        cp nm_lt_point_1
-@2062.1074:076103                        sp nm_already_norm       ; |x| > .1
-@2063.1075:112167                        ad float0                ; Nop
+@2067.1079:072072                        cp nm_lt_point_1
+@2070.1080:076111                        sp nm_already_norm       ; |x| > .1
+@2071.1081:112175                        ad float0                ; Nop
                           nm_lt_point_1:
                                          ; setup 10 loop          ; |x| < .1
-@2064.1076:076410                        sp ax                    ; Spax out
-@2065.1077:102152                        ca nm_mr_float10
-@2066.1078:042073                        ts nm_calc_mr
-@2067.1079:102151                        ca nm_su_one
-@2070.1080:042077                        ts nm_calc_ad
-@2071.1081:076410                        sp ax                    ; Spax in
+@2072.1082:076416                        sp ax                    ; Spax out
+@2073.1083:102160                        ca nm_mr_float10
+@2074.1084:042101                        ts nm_calc_mr
+@2075.1085:102157                        ca nm_su_one
+@2076.1086:042105                        ts nm_calc_ad
+@2077.1087:076416                        sp ax                    ; Spax in
                                 nm_calc:
-@2072.1082:102160                        ca t
-@2073.1083:000000            nm_calc_mr: .word 0                  ; mr =0.1 or mr =10.0
-@2074.1084:042160                        ts t
-@2075.1085:076410                        sp ax                    ; Spax out
-@2076.1086:102150                        ca nm_exp
-@2077.1087:000000            nm_calc_ad: .word 0                  ; ad one or su one
-@2100.1088:042150                        ts nm_exp
-@2101.1089:076410                        sp ax                    ; Spax in
-@2102.1090:076037                        sp nm_loop
+@2100.1088:102166                        ca t
+@2101.1089:000000            nm_calc_mr: .word 0                  ; mr =0.1 or mr =10.0
+@2102.1090:042166                        ts t
+@2103.1091:076416                        sp ax                    ; Spax out
+@2104.1092:102156                        ca nm_exp
+@2105.1093:000000            nm_calc_ad: .word 0                  ; ad one or su one
+@2106.1094:042156                        ts nm_exp
+@2107.1095:076416                        sp ax                    ; Spax in
+@2110.1096:076037                        sp nm_loop
                         nm_already_norm:
-@2103.1091:102160               nm_done: ca t
+@2111.1097:102166               nm_done: ca t
                                          ; ad float_low_rnd       ; Rounding experiment. Really want decimal round in the printer   LAS
-@2104.1092:076410                        sp ax                    ; Spax out
+@2112.1098:076416                        sp ax                    ; Spax out
 
                                          ; Here t and the mra hold the (fractional) reduced value (0.1 <=
                                          ;  |value| < 1.0), and nm_exp holds the decimal exponent
@@ -1287,79 +1294,79 @@
                                          ;  will result in correct digits since we now have the base-10
                                          ;  exponent as a separate value.
 
-@2105.1093:102414                        ca mra + 2               ; Binary exponent range zero to negative four
-@2106.1094:042161                        ts t3
-@2107.1095:102166                        ca zero
-@2110.1096:042162                        ts t4
-@2111.1097:132161          nm_mask_loop: ao t3
-@2112.1098:072114                        cp nm_2_cont
-@2113.1099:076121                        sp nm_mask_done
-@2114.1100:102162             nm_2_cont: ca t4
-@2115.1101:170001                        clc 1
-@2116.1102:112165                        ad one
-@2117.1103:042162                        ts t4
-@2120.1104:076111                        sp nm_mask_loop
+@2113.1099:102422                        ca mra + 2               ; Binary exponent range zero to negative four
+@2114.1100:042167                        ts t3
+@2115.1101:102174                        ca zero
+@2116.1102:042170                        ts t4
+@2117.1103:132167          nm_mask_loop: ao t3
+@2120.1104:072122                        cp nm_2_cont
+@2121.1105:076127                        sp nm_mask_done
+@2122.1106:102170             nm_2_cont: ca t4
+@2123.1107:170001                        clc 1
+@2124.1108:112173                        ad one
+@2125.1109:042170                        ts t4
+@2126.1110:076117                        sp nm_mask_loop
                            nm_mask_done:                          ; t4 has the mask
-@2121.1105:102412                        ca mra + 0               ; Upper mant
-@2122.1106:176162                        md t4
-@2123.1107:042163                        ts t5                    ; t5 has the rightmost bits of upper mant
-@2124.1108:122414                        cm mra + 2
-@2125.1109:032157                        sd nm_srh_inst
-@2126.1110:042131                        ts nm_shift_hi
-@2127.1111:042134                        ts nm_shift_lo
-@2130.1112:102412                        ca mra + 0
-@2131.1113:161000           nm_shift_hi: srh 0
-@2132.1114:042412                        ts mra + 0
-@2133.1115:102413                        ca mra + 1               ; Lower mant
-@2134.1116:161000           nm_shift_lo: srh 0
-@2135.1117:042413                        ts mra + 1
-@2136.1118:102164                        ca word_size
-@2137.1119:112414                        ad mra + 2
-@2140.1120:046142                        td nm_smb
-@2141.1121:102163                        ca t5
-@2142.1122:170000                nm_smb: clc 0                    ; Shift the masked bits up
-@2143.1123:032413                        sd mra + 1
-@2144.1124:042413                        ts mra + 1
-@2145.1125:102150                        ca nm_exp
-@2146.1126:042414                        ts mra + 2
-@2147.1127:074000                nm_rtn: sp 0
+@2127.1111:102420                        ca mra + 0               ; Upper mant
+@2130.1112:176170                        md t4
+@2131.1113:042171                        ts t5                    ; t5 has the rightmost bits of upper mant
+@2132.1114:122422                        cm mra + 2
+@2133.1115:032165                        sd nm_srh_inst
+@2134.1116:042137                        ts nm_shift_hi
+@2135.1117:042142                        ts nm_shift_lo
+@2136.1118:102420                        ca mra + 0
+@2137.1119:161000           nm_shift_hi: srh 0
+@2140.1120:042420                        ts mra + 0
+@2141.1121:102421                        ca mra + 1               ; Lower mant
+@2142.1122:161000           nm_shift_lo: srh 0
+@2143.1123:042421                        ts mra + 1
+@2144.1124:102172                        ca word_size
+@2145.1125:112422                        ad mra + 2
+@2146.1126:046150                        td nm_smb
+@2147.1127:102171                        ca t5
+@2150.1128:170000                nm_smb: clc 0                    ; Shift the masked bits up
+@2151.1129:032421                        sd mra + 1
+@2152.1130:042421                        ts mra + 1
+@2153.1131:102156                        ca nm_exp
+@2154.1132:042422                        ts mra + 2
+@2155.1133:074000                nm_rtn: sp 0
 
-@2150.1128:000000                nm_exp: .word 0
-@2151.1129:116165             nm_su_one: su one
-@2152.1130:142177         nm_mr_float10: mr float10
-@2153.1131:142203   nm_mr_float_point_1: mr float_point_1
-@2154.1132:112165             nm_ad_one: ad one
-@2155.1133:000000                  nm_x: .float 0, 0
-@2156.1134:000000
-@2157.1135:161000           nm_srh_inst: srh 0                    ; Note can't use td with these insts or you overwrite the opcode
-@2160.1136:000000                     t: .word 0
-@2161.1137:000000                    t3: .word 0
-@2162.1138:000000                    t4: .word 0
-@2163.1139:000000                    t5: .word 0
-@2164.1140:000017             word_size: .word 15
-@2165.1141:000001                   one: .word 1
-@2166.1142:000000                  zero: .word 0
-@2167.1143:000000                float0: .float 0, 0
-@2170.1144:000000
-@2171.1145:040000              float1_2: .float +0.5, 0
-@2172.1146:000000
-@2173.1147:040000                float1: .float +0.1, 1
-@2174.1148:001000
-@2175.1149:040000                float2: .float +0.2, 1
-@2176.1150:002000
-@2177.1151:050000               float10: .float +0.1, 2
-@2200.1152:004000
-@2201.1153:040000               float16: .float +0.16, 2
-@2202.1154:005000
-@2203.1155:063146         float_point_1: .float +0.1, 0
-@2204.1156:174315
-@2205.1157:041433         float_low_rnd: .float +0.5, -6          ; -6 is the smallest exponent to bump up to above the int (still not round to the int)
-@2206.1158:153675
-@2207.1159:137777            float_neg1: .word 0o137777
-@2210.1160:001777                        .word 0o001777
-@2211.1161:000000                 ftmp0: .float 0, 0
-@2212.1162:000000
-@2213.1163:020000              fp_space: .flexh " "
+@2156.1134:000000                nm_exp: .word 0
+@2157.1135:116173             nm_su_one: su one
+@2160.1136:142205         nm_mr_float10: mr float10
+@2161.1137:142211   nm_mr_float_point_1: mr float_point_1
+@2162.1138:112173             nm_ad_one: ad one
+@2163.1139:000000                  nm_x: .float 0, 0
+@2164.1140:000000
+@2165.1141:161000           nm_srh_inst: srh 0                    ; Note can't use td with these insts or you overwrite the opcode
+@2166.1142:000000                     t: .word 0
+@2167.1143:000000                    t3: .word 0
+@2170.1144:000000                    t4: .word 0
+@2171.1145:000000                    t5: .word 0
+@2172.1146:000017             word_size: .word 15
+@2173.1147:000001                   one: .word 1
+@2174.1148:000000                  zero: .word 0
+@2175.1149:000000                float0: .float 0, 0
+@2176.1150:000000
+@2177.1151:040000              float1_2: .float +0.5, 0
+@2200.1152:000000
+@2201.1153:040000                float1: .float +0.1, 1
+@2202.1154:001000
+@2203.1155:040000                float2: .float +0.2, 1
+@2204.1156:002000
+@2205.1157:050000               float10: .float +0.1, 2
+@2206.1158:004000
+@2207.1159:040000               float16: .float +0.16, 2
+@2210.1160:005000
+@2211.1161:063146         float_point_1: .float +0.1, 0
+@2212.1162:174315
+@2213.1163:041433         float_low_rnd: .float +0.5, -6          ; -6 is the smallest exponent to bump up to above the int (still not round to the int)
+@2214.1164:153675
+@2215.1165:137777            float_neg1: .word 0o137777
+@2216.1166:001777                        .word 0o001777
+@2217.1167:000000                 ftmp0: .float 0, 0
+@2220.1168:000000
+@2221.1169:020000              fp_space: .flexh " "
                                          ; end .include "float-30-15-0-print.ww"
                                          ; .include "modern-frac-30-0-0-print.ww"
 
@@ -1416,113 +1423,113 @@
                                          ; |
 
                                     mfp:                          ; mfp == modern frac print
-@2214.1164:052263                        ta 37mfp
-@2215.1165:076410                        sp ax                    ; Resume ordinary ww operation
-@2216.1166:102413                        ca 3ax                   ; -|
-@2217.1167:042334                        ts 2tmfp                 ;  |- Store C(mra) in 1tmfp and 2tmfp
-@2220.1168:102412                        ca 2ax                   ;  |
-@2221.1169:042333                  5mfp: ts 1tmfp                 ; -|
-@2222.1170:142334                  6mfp: mr 2tmfp                 ; Do 1tmfp and 2tmfp agree in sign?
-@2223.1171:072264                        cp 38mfp
-@2224.1172:102333                        ca 1tmfp                 ; -|
-@2225.1173:072230                  9mfp: cp 12mfp                 ;  |
-@2226.1174:102330                        ca plus_char             ;  |
-@2227.1175:076231                        sp 13mfp                 ;  |- Sense and print algebraic sign of C(mra) followed by a decimal point
-@2230.1176:102331                 12mfp: ca minus_char            ;  |
-@2231.1177:000225                 13mfp: si 149                   ;  |
-@2232.1178:024000                        rc 0                     ;  |
-@2233.1179:102332                        ca dot_char              ;  |
-@2234.1180:024000                        rc 0                     ; -|
+@2222.1170:052271                        ta 37mfp
+@2223.1171:076416                        sp ax                    ; Resume ordinary ww operation
+@2224.1172:102421                        ca 3ax                   ; -|
+@2225.1173:042342                        ts 2tmfp                 ;  |- Store C(mra) in 1tmfp and 2tmfp
+@2226.1174:102420                        ca 2ax                   ;  |
+@2227.1175:042341                  5mfp: ts 1tmfp                 ; -|
+@2230.1176:142342                  6mfp: mr 2tmfp                 ; Do 1tmfp and 2tmfp agree in sign?
+@2231.1177:072272                        cp 38mfp
+@2232.1178:102341                        ca 1tmfp                 ; -|
+@2233.1179:072236                  9mfp: cp 12mfp                 ;  |
+@2234.1180:102336                        ca plus_char             ;  |
+@2235.1181:076237                        sp 13mfp                 ;  |- Sense and print algebraic sign of C(mra) followed by a decimal point
+@2236.1182:102337                 12mfp: ca minus_char            ;  |
+@2237.1183:000225                 13mfp: si 149                   ;  |
+@2240.1184:024000                        rc 0                     ;  |
+@2241.1185:102340                        ca dot_char              ;  |
+@2242.1186:024000                        rc 0                     ; -|
 
-@2235.1181:106313                        cs ndigits               ; -|- Set up digit counter
-@2236.1182:042336                        ts digit_cntr            ; -|
+@2243.1187:106321                        cs ndigits               ; -|- Set up digit counter
+@2244.1188:042344                        ts digit_cntr            ; -|
 
-@2237.1183:122333                 17mfp: cm 1tmfp                 ; -|
-@2240.1184:146314                        mh 62mfp                 ;  |
-@2241.1185:042335                        ts 3tmfp                 ;  |
-@2242.1186:154017                        slr 15                   ;  |
-@2243.1187:042333                        ts 1tmfp                 ;  |- Multiply C(1tmfp,2tmfp) by p10
-@2244.1188:122334                        cm 2tmfp                 ;  |
-@2245.1189:146314                        mh 62mfp                 ;  |
-@2246.1190:042334                        ts 2tmfp                 ;  |
-@2247.1191:154017                        slr 15                   ;  |
-@2250.1192:066334                        ex 2tmfp                 ;  |
-@2251.1193:126333                        sa 1tmfp                 ;  |
-@2252.1194:042333                        ts 1tmfp                 ; -|
+@2245.1189:122341                 17mfp: cm 1tmfp                 ; -|
+@2246.1190:146322                        mh 62mfp                 ;  |
+@2247.1191:042343                        ts 3tmfp                 ;  |
+@2250.1192:154017                        slr 15                   ;  |
+@2251.1193:042341                        ts 1tmfp                 ;  |- Multiply C(1tmfp,2tmfp) by p10
+@2252.1194:122342                        cm 2tmfp                 ;  |
+@2253.1195:146322                        mh 62mfp                 ;  |
+@2254.1196:042342                        ts 2tmfp                 ;  |
+@2255.1197:154017                        slr 15                   ;  |
+@2256.1198:066342                        ex 2tmfp                 ;  |
+@2257.1199:126341                        sa 1tmfp                 ;  |
+@2260.1200:042341                        ts 1tmfp                 ; -|
 
-@2253.1195:102335                        ca 3tmfp                 ; -|
-@2254.1196:112315                        ad 63mfp                 ;  |- Set up entry into table
-@2255.1197:046256                        td 32mfp                 ; -|
+@2261.1201:102343                        ca 3tmfp                 ; -|
+@2262.1202:112323                        ad 63mfp                 ;  |- Set up entry into table
+@2263.1203:046264                        td 32mfp                 ; -|
 
                                   32mfp:
-@2256.1198:100000                        ca 0                     ; -|- Print a single digit
-@2257.1199:024000                        rc 0                     ; -|
+@2264.1204:100000                        ca 0                     ; -|- Print a single digit
+@2265.1205:024000                        rc 0                     ; -|
 
-@2260.1200:132336                        ao digit_cntr            ; -|- Have enough digits been printed?
-@2261.1201:072237                        cp 17mfp                 ; -|
+@2266.1206:132344                        ao digit_cntr            ; -|- Have enough digits been printed?
+@2267.1207:072245                        cp 17mfp                 ; -|
 
-@2262.1202:076410                        sp ax                    ; -|- Return control to int. subroutine
-@2263.1203:074000                 37mfp: sp 0                     ; -|
+@2270.1208:076416                        sp ax                    ; -|- Return control to int. subroutine
+@2271.1209:074000                 37mfp: sp 0                     ; -|
 
-@2264.1204:122333                 38mfp: cm 1tmfp                 ; -|
-@2265.1205:114000                        su 0                     ;  |- Is C(1tmfp) != 0?
-@2266.1206:072307                        cp 57mfp                 ; -|
+@2272.1210:122341                 38mfp: cm 1tmfp                 ; -|
+@2273.1211:114000                        su 0                     ;  |- Is C(1tmfp) != 0?
+@2274.1212:072315                        cp 57mfp                 ; -|
 
-@2267.1207:122334                        cm 2tmfp                 ; -|
-@2270.1208:114000                        su 0                     ;  |- Is C(2tmfp) != 0?
-@2271.1209:072301                        cp 51mfp                 ; -|
+@2275.1213:122342                        cm 2tmfp                 ; -|
+@2276.1214:114000                        su 0                     ;  |- Is C(2tmfp) != 0?
+@2277.1215:072307                        cp 51mfp                 ; -|
 
-@2272.1210:116312                        su 60mfp                 ; -|
-@2273.1211:112311                        ad 59mfp                 ;  |- Form 1 - |C(2tmfp)|
-@2274.1212:042334                        ts 2tmfp                 ; -|
+@2300.1216:116320                        su 60mfp                 ; -|
+@2301.1217:112317                        ad 59mfp                 ;  |- Form 1 - |C(2tmfp)|
+@2302.1218:042342                        ts 2tmfp                 ; -|
 
-@2275.1213:102333                        ca 1tmfp                 ; -|- Is C(1tmfp) pos.?
-@2276.1214:072305                        cp 55mfp                 ; -|
+@2303.1219:102341                        ca 1tmfp                 ; -|- Is C(1tmfp) pos.?
+@2304.1220:072313                        cp 55mfp                 ; -|
 
-@2277.1215:116312                        su 60mfp                 ; -|- Form C(1tmfp) - 2^-15
-@2300.1216:042333                        ts 1tmfp                 ; -|
+@2305.1221:116320                        su 60mfp                 ; -|- Form C(1tmfp) - 2^-15
+@2306.1222:042341                        ts 1tmfp                 ; -|
 
-@2301.1217:106334                 51mfp: cs 2tmfp                 ; -|- Complement C(2tmfp)
-@2302.1218:042334                        ts 2tmfp                 ; -|
+@2307.1223:106342                 51mfp: cs 2tmfp                 ; -|- Complement C(2tmfp)
+@2310.1224:042342                        ts 2tmfp                 ; -|
 
-@2303.1219:102333                        ca 1tmfp                 ; -|- Re-enter sign agreement
-@2304.1220:076222                        sp 6mfp                  ; -|
+@2311.1225:102341                        ca 1tmfp                 ; -|- Re-enter sign agreement
+@2312.1226:076230                        sp 6mfp                  ; -|
 
-@2305.1221:132333                 55mfp: ao 1tmfp
-@2306.1222:076225                        sp 9mfp
-@2307.1223:106333                 57mfp: cs 1tmfp
-@2310.1224:076221                        sp 5mfp
+@2313.1227:132341                 55mfp: ao 1tmfp
+@2314.1228:076233                        sp 9mfp
+@2315.1229:106341                 57mfp: cs 1tmfp
+@2316.1230:076227                        sp 5mfp
 
-@2311.1225:100000                 59mfp: ca 0                     ;                                                  ; [59-73 are notated in Subroutines.pdf with no spaces, e.g., ca0, p1]
-@2312.1226:000001                 60mfp: .word 1
+@2317.1231:100000                 59mfp: ca 0                     ;                                                  ; [59-73 are notated in Subroutines.pdf with no spaces, e.g., ca0, p1]
+@2320.1232:000001                 60mfp: .word 1
                                          ; [Really ndigits - 1. Here as in Laning's letter
                                          ;  (see ./InfoFromKnuth/from-Laning-76-07-02.pdf) we want 8.]
                                 ndigits:
-@2313.1227:000007                 61mfp: .word 8 - 1              ; v2                                               ; [was just n1a2 -- need to track down this notation]
-@2314.1228:000012                 62mfp: .word 10
+@2321.1233:000007                 61mfp: .word 8 - 1              ; v2                                               ; [was just n1a2 -- need to track down this notation]
+@2322.1234:000012                 62mfp: .word 10
                             digit_table:
-@2315.1229:002316                 63mfp: .word 64mfp              ; ,                                                ; [I think comma? Might just be a blemish]
-@2316.1230:174000                 64mfp: .flexh "0123456789"      ; Digit table
-@2317.1231:052000
-@2320.1232:036000
-@2321.1233:016000
-@2322.1234:026000
-@2323.1235:046000
-@2324.1236:066000
-@2325.1237:056000
-@2326.1238:006000
-@2327.1239:154000
+@2323.1235:002324                 63mfp: .word 64mfp              ; ,                                                ; [I think comma? Might just be a blemish]
+@2324.1236:174000                 64mfp: .flexh "0123456789"      ; Digit table
+@2325.1237:052000
+@2326.1238:036000
+@2327.1239:016000
+@2330.1240:026000
+@2331.1241:046000
+@2332.1242:066000
+@2333.1243:056000
+@2334.1244:006000
+@2335.1245:154000
                               plus_char:
-@2330.1240:032000                 74mfp: .flexh "+"
+@2336.1246:032000                 74mfp: .flexh "+"
                              minus_char:
-@2331.1241:072000                 75mfp: .flexh "-"
-@2332.1242:042000              dot_char: .flexh "."
-@2333.1243:000000                 1tmfp: .word 0
-@2334.1244:000000                 2tmfp: .word 0
-@2335.1245:000000                 3tmfp: .word 0
+@2337.1247:072000                 75mfp: .flexh "-"
+@2340.1248:042000              dot_char: .flexh "."
+@2341.1249:000000                 1tmfp: .word 0
+@2342.1250:000000                 2tmfp: .word 0
+@2343.1251:000000                 3tmfp: .word 0
                              digit_cntr:
-@2336.1246:000000                 4tmfp: .word 0
-@2337.1247:122000            newlinemfp: .flexh "\n"
+@2344.1252:000000                 4tmfp: .word 0
+@2345.1253:122000            newlinemfp: .flexh "\n"
 
 
                                          ; The (decimal) exponent is in the exp field of the mra (mra+2)
@@ -1533,39 +1540,39 @@
                                          ; exponents wiil be no greater in magnitude than 19, so just subtraction
                                          ; will do.
 
-@2340.1248:052374             print_exp: ta print_exp_rtn
-@2341.1249:000225                        si 149
-@2342.1250:106414                        cs mra + 2
-@2343.1251:072346                        cp pe_non_neg
-@2344.1252:102331                        ca minus_char
-@2345.1253:076347                        sp pe_2
-@2346.1254:102330            pe_non_neg: ca plus_char
-@2347.1255:024000                  pe_2: rc 0
-@2350.1256:122414                        cm mra + 2
-@2351.1257:042376                        ts pe_t1
-@2352.1258:102375                        ca pe_10
-@2353.1259:116376                        su pe_t1
-@2354.1260:072362                        cp pe_exp_ge_10
-@2355.1261:122414          pe_exp_lt_10: cm mra + 2
-@2356.1262:042376                        ts pe_t1
-@2357.1263:102400                        ca pe_zero_char
-@2360.1264:024000                        rc 0
-@2361.1265:076367                        sp pe_1
-@2362.1266:122414          pe_exp_ge_10: cm mra + 2
-@2363.1267:116375                        su pe_10
-@2364.1268:042376                        ts pe_t1
-@2365.1269:102377                        ca pe_one_char
+@2346.1254:052402             print_exp: ta print_exp_rtn
+@2347.1255:000225                        si 149
+@2350.1256:106422                        cs mra + 2
+@2351.1257:072354                        cp pe_non_neg
+@2352.1258:102337                        ca minus_char
+@2353.1259:076355                        sp pe_2
+@2354.1260:102336            pe_non_neg: ca plus_char
+@2355.1261:024000                  pe_2: rc 0
+@2356.1262:122422                        cm mra + 2
+@2357.1263:042404                        ts pe_t1
+@2360.1264:102403                        ca pe_10
+@2361.1265:116404                        su pe_t1
+@2362.1266:072370                        cp pe_exp_ge_10
+@2363.1267:122422          pe_exp_lt_10: cm mra + 2
+@2364.1268:042404                        ts pe_t1
+@2365.1269:102406                        ca pe_zero_char
 @2366.1270:024000                        rc 0
-@2367.1271:102376                  pe_1: ca pe_t1
-@2370.1272:112315                        ad digit_table
-@2371.1273:046372                        td pe_load_char
-@2372.1274:100000          pe_load_char: ca 0
-@2373.1275:024000                        rc 0
-@2374.1276:074000         print_exp_rtn: sp 0
-@2375.1277:000012                 pe_10: .word 10
-@2376.1278:000000                 pe_t1: .word 0
-@2377.1279:052000           pe_one_char: .flexh "1"
-@2400.1280:174000          pe_zero_char: .flexh "0"
+@2367.1271:076375                        sp pe_1
+@2370.1272:122422          pe_exp_ge_10: cm mra + 2
+@2371.1273:116403                        su pe_10
+@2372.1274:042404                        ts pe_t1
+@2373.1275:102405                        ca pe_one_char
+@2374.1276:024000                        rc 0
+@2375.1277:102404                  pe_1: ca pe_t1
+@2376.1278:112323                        ad digit_table
+@2377.1279:046400                        td pe_load_char
+@2400.1280:100000          pe_load_char: ca 0
+@2401.1281:024000                        rc 0
+@2402.1282:074000         print_exp_rtn: sp 0
+@2403.1283:000012                 pe_10: .word 10
+@2404.1284:000000                 pe_t1: .word 0
+@2405.1285:052000           pe_one_char: .flexh "1"
+@2406.1286:174000          pe_zero_char: .flexh "0"
                                          ; end .include "modern-frac-30-0-0-print.ww"
 
                                          ; LAS include the float-lib, which defines ax and friends
@@ -1592,18 +1599,17 @@
                                          .pp f24, 1               ; Whether to apply mask to srh for 24,6 floats
                                          .pp main_sep_param, 1
 
-@2401.1281:037777                   max: .word 0o037777
+@2407.1287:037777                   max: .word 0o037777
 
-
-@2402.1282:052406             floathack: ta fhrtn
-@2403.1283:042407                        ts ac_save
-@2404.1284:102407                        ca ac_save
+@2410.1288:052414             floathack: ta fhrtn
+@2411.1289:042415                        ts ac_save
+@2412.1290:102415                        ca ac_save
                                          ; Original instruction, replaced by next instruction
                                          ; su r17
-@2405.1285:112401                        ad max
+@2413.1291:112407                        ad max
 
-@2406.1286:074000                 fhrtn: sp 0
-@2407.1287:000000               ac_save: .word 0
+@2414.1292:074000                 fhrtn: sp 0
+@2415.1293:000000               ac_save: .word 0
 
 
                                          ; --- Below here is the floating lib ---
@@ -1630,312 +1636,312 @@
                                          ; .org 852
                                          ; .org 0o2000
 
-@2410.1288:052704                    ax: ta exec_inst             ; Set address of 1st instruction to be interpreted ; from Enter
-@2411.1289:076704                        sp exec_inst
+@2416.1294:052712                    ax: ta exec_inst             ; Set address of 1st instruction to be interpreted ; from Enter
+@2417.1295:076712                        sp exec_inst
 
                                          ; words r02, r03, and r04 represent the double precision accumulator
                                     mra:
                                     2ax:
-@2412.1290:000000                   r02: .word 0                  ; x1  -|
+@2420.1296:000000                   r02: .word 0                  ; x1  -|
                                     3ax:                          ;      |
-@2413.1291:000000                   r03: .word 0                  ; x1'  |- Multiple register accumulator
+@2421.1297:000000                   r03: .word 0                  ; x1'  |- Multiple register accumulator
                                     4ax:                          ;      |
-@2414.1292:000000                   r04: .word 0                  ; y1  -|
-@2415.1293:161036                   r05: srh 30                   ; "ca"                                             ; from 196r-->
-@2416.1294:102410                   r06: ca ax
-@2417.1295:102721                   r07: ca r191                  ; "cs"                                             ; from l3r,196r
-@2420.1296:076550                        sp r95
-@2421.1297:076622                        sp r129                  ; "ad"                                             ; from 196r-->
-@2422.1298:000035                   r10: .word 29
-@2423.1299:042552                        ts r97                   ; "su"                                             ; from 196r-->
-@2424.1300:076617                        sp r126
-@2425.1301:076417                        sp r07                   ; "cm"                                             ; from 196r-->
-@2426.1302:000000                   r14: .word 0                  ;  Temporary digits storage                        ; (170r)
+@2422.1298:000000                   r04: .word 0                  ; y1  -|
+@2423.1299:161036                   r05: srh 30                   ; "ca"                                             ; from 196r-->
+@2424.1300:102416                   r06: ca ax
+@2425.1301:102727                   r07: ca r191                  ; "cs"                                             ; from l3r,196r
+@2426.1302:076556                        sp r95
+@2427.1303:076630                        sp r129                  ; "ad"                                             ; from 196r-->
+@2430.1304:000035                   r10: .word 29
+@2431.1305:042560                        ts r97                   ; "su"                                             ; from 196r-->
+@2432.1306:076625                        sp r126
+@2433.1307:076425                        sp r07                   ; "cm"                                             ; from 196r-->
+@2434.1308:000000                   r14: .word 0                  ;  Temporary digits storage                        ; (170r)
 
-@2427.1303:126413                   r15: sa r03                   ; -|- Add two minor products                       ; from 24r
-@2430.1304:042413                        ts r03                   ; -|
+@2435.1309:126421                   r15: sa r03                   ; -|- Add two minor products                       ; from 24r
+@2436.1310:042421                        ts r03                   ; -|
 
-@2431.1305:100000                   r17: ca 0                     ; -|- Store overflow
-@2432.1306:066736                        ex tmp                   ; -|
+@2437.1311:100000                   r17: ca 0                     ; -|- Store overflow
+@2440.1312:066744                        ex tmp                   ; -|
 
-@2433.1307:146412                        mh r02                   ; Form major product
-@2434.1308:076657                        sp r158
-@2435.1309:142412                   r21: mr r02                   ; "mr" Form two                                    ; from 49r9,196r
-@2436.1310:066413                        ex r03                   ; minor products
-@2437.1311:142736                        mr tmp
-@2440.1312:076427                        sp r15
-@2441.1313:066736                        ex tmp                   ; "dv"                                             ; from 196r-->
-@2442.1314:042552                        ts r97
-@2443.1315:106561                        cs r102                  ; -|
-@2444.1316:112476                        ad r54                   ;  |- Form exponent of 2**-2/x2
-@2445.1317:042561                        ts r102                  ; -|
+@2441.1313:146420                        mh r02                   ; Form major product
+@2442.1314:076665                        sp r158
+@2443.1315:142420                   r21: mr r02                   ; "mr" Form two                                    ; from 49r9,196r
+@2444.1316:066421                        ex r03                   ; minor products
+@2445.1317:142744                        mr tmp
+@2446.1318:076435                        sp r15
+@2447.1319:066744                        ex tmp                   ; "dv"                                             ; from 196r-->
+@2450.1320:042560                        ts r97
+@2451.1321:106567                        cs r102                  ; -|
+@2452.1322:112504                        ad r54                   ;  |- Form exponent of 2**-2/x2
+@2453.1323:042567                        ts r102                  ; -|
 
-@2446.1318:106552                        cs r97                   ; -|
-@2447.1319:146552                        mh r97                   ;  |
-@2450.1320:066736                        ex tmp                   ;  |- Form and store -(2**-2 * x2')/x2**2
-@2451.1321:161002                        srh 2                    ;  |
-@2452.1322:152736                        dv tmp                   ;  |
-@2453.1323:155017                   r35: slh 15                   ;  |
-@2454.1324:042650                        ts r151                  ; -|                                               ; [LAS was transcription error ta r151]
+@2454.1324:106560                        cs r97                   ; -|
+@2455.1325:146560                        mh r97                   ;  |
+@2456.1326:066744                        ex tmp                   ;  |- Form and store -(2**-2 * x2')/x2**2
+@2457.1327:161002                        srh 2                    ;  |
+@2460.1328:152744                        dv tmp                   ;  |
+@2461.1329:155017                   r35: slh 15                   ;  |
+@2462.1330:042656                        ts r151                  ; -|                                               ; [LAS was transcription error ta r151]
 
-@2455.1325:102520                        ca r72                   ; -|                                               ; [LAS this sequence does not seem to store this formula, instead stores 2**-2/x2]
-@2456.1326:152552                        dv r97                   ;  |- Form and store 2**-2/x2**2
-@2457.1327:155017                        slh 15                   ;  |
-@2460.1328:042736                        ts tmp                   ; -|
+@2463.1331:102526                        ca r72                   ; -|                                               ; [LAS this sequence does not seem to store this formula, instead stores 2**-2/x2]
+@2464.1332:152560                        dv r97                   ;  |- Form and store 2**-2/x2**2
+@2465.1333:155017                        slh 15                   ;  |
+@2466.1334:042744                        ts tmp                   ; -|
 
-@2461.1329:146552                        mh r97                   ; -|
-@2462.1330:116520                        su r72                   ;  |
-@2463.1331:155017                        slh 15                   ;  |
-@2464.1332:116431 .if (1 - do_floathack)   su r17                   ;  |- Form (2**-2/x**2)' (Use Euclid's algorithm)  ; [LAS Looks like this should say (2**-2/x2)' -- Uses remainder arith, hence the Euclid ref]
+@2467.1335:146560                        mh r97                   ; -|
+@2470.1336:116526                        su r72                   ;  |
+@2471.1337:155017                        slh 15                   ;  |
+@2472.1338:116437 .if (1 - do_floathack)   su r17                   ;  |- Form (2**-2/x**2)' (Use Euclid's algorithm)  ; [LAS Looks like this should say (2**-2/x2)' -- Uses remainder arith, hence the Euclid ref]
 ;                                                      .if do_floathack       sp floathack             ;                                                  ; [LAS 3/30/25 Using r17 broke dv, but looks like it works now in more cases than before.
                                          ;                        ;                                                  ; Still breaks e.g. on sqrt2 test.
                                          ;                        ;                                                  ; Can't find what changed to enable this, but we'll switch between the original
                                          ;                        ;                                                  ; and floathack as needed.
                                          ;                        ;                                                  ; The use of r17 is highly suspicious, as it's the opcode of an instruction.]
-@2465.1333:112472                        ad r50                   ;  |
-@2466.1334:152552                        dv r97                   ;  |
-@2467.1335:155017                        slh 15                   ; -|
+@2473.1339:112500                        ad r50                   ;  |
+@2474.1340:152560                        dv r97                   ;  |
+@2475.1341:155017                        slh 15                   ; -|
 
-@2470.1336:112650                        ad r151                  ; -|- Add two minor parts of reciprocal
-@2471.1337:076435                        sp r21                   ; -|
+@2476.1342:112656                        ad r151                  ; -|- Add two minor parts of reciprocal
+@2477.1343:076443                        sp r21                   ; -|
 
-@2472.1338:000001                   r50: .word 1
-@2473.1339:076521                        sp r73                   ; "ts"
-@2474.1340:106412                   r52: cs r02                   ; -|- complement x1                                ; [LAS Was ca r02. Transcription error.
+@2500.1344:000001                   r50: .word 1
+@2501.1345:076527                        sp r73                   ; "ts"
+@2502.1346:106420                   r52: cs r02                   ; -|- complement x1                                ; [LAS Was ca r02. Transcription error.
                                          ;                        ;                                                  ;  Caught late, needed to zoom in and closely examine original text 6/16/25.]
-@2475.1341:076665                        sp r164                  ; -|
-@2476.1342:000002                   r54: .word 2
-@2477.1343:102741                        ca r201                  ; "ta" -|                                          ; from 196r-->
-@2500.1344:044000                   r56: td 0                     ;       |- Store digits in indicated address
-@2501.1345:076703                        sp next_inst             ;      -|
+@2503.1347:076673                        sp r164                  ; -|
+@2504.1348:000002                   r54: .word 2
+@2505.1349:102747                        ca r201                  ; "ta" -|                                          ; from 196r-->
+@2506.1350:044000                   r56: td 0                     ;       |- Store digits in indicated address
+@2507.1351:076711                        sp next_inst             ;      -|
 
-@2502.1346:132412                   r58: ao r02                   ; -|- Increase xl by by 2**-15                     ; from 119r-->
-@2503.1347:076670                        sp r167                  ; -|
+@2510.1352:132420                   r58: ao r02                   ; -|- Increase xl by by 2**-15                     ; from 119r-->
+@2511.1353:076676                        sp r167                  ; -|
 
-@2504.1348:076453                   r60: sp r35
-@2505.1349:076521                        sp r73                   ; "ex"                                             ; from 196r-->
-@2506.1350:000077                   r62: .word 63
-@2507.1351:106412                        cs r02                   ; "cp" -|- Is x1 negative?                         ; from 196r-->
-@2510.1352:072703                        cp next_inst             ;      -|                                          ; [LAS was transcription error r188]
-@2511.1353:132704                        ao exec_inst             ; "sp" -|- Set Return address for sp ax            ; from 196r
-@2512.1354:046741                        td r201                  ;      -|
-@2513.1355:102717                        ca r189                  ; -|- Set pick up order for ordinary cp & sp       ; LAST DIGIT is a GUESS! [LAS not legible -- needed to dig into program to nail this down]
-@2514.1356:046704                        td exec_inst             ; -|
+@2512.1354:076461                   r60: sp r35
+@2513.1355:076527                        sp r73                   ; "ex"                                             ; from 196r-->
+@2514.1356:000077                   r62: .word 63
+@2515.1357:106420                        cs r02                   ; "cp" -|- Is x1 negative?                         ; from 196r-->
+@2516.1358:072711                        cp next_inst             ;      -|                                          ; [LAS was transcription error r188]
+@2517.1359:132712                        ao exec_inst             ; "sp" -|- Set Return address for sp ax            ; from 196r
+@2520.1360:046747                        td r201                  ;      -|
+@2521.1361:102725                        ca r189                  ; -|- Set pick up order for ordinary cp & sp       ; LAST DIGIT is a GUESS! [LAS not legible -- needed to dig into program to nail this down]
+@2522.1362:046712                        td exec_inst             ; -|
 
-@2515.1357:116416                        su r06                   ;                                                  ; PROBABLY an SU op code!
+@2523.1363:116424                        su r06                   ;                                                  ; PROBABLY an SU op code!
 
-@2516.1358:072737                        cp r199                  ; -|- Test to see whether instruction is sp ax
-@2517.1359:076704                        sp exec_inst             ; -|
+@2524.1364:072745                        cp r199                  ; -|- Test to see whether instruction is sp ax
+@2525.1365:076712                        sp exec_inst             ; -|
 
-@2520.1360:020000                   r72: .word 0.20000            ;                                                  ; [LAS ]
+@2526.1366:020000                   r72: .word 0.20000            ;                                                  ; [LAS ]
 
-@2521.1361:102413                   r73: ca r03                   ; -|                                               ; from 51r,61r->
-@2522.1362:160006                        srr 6                    ;  |- Round off x1' and store x1' * 2**-6
-@2523.1363:176746 .if f24                md float24_low_mant_mask
-@2524.1364:042413                        ts r03                   ; -|
+@2527.1367:102421                   r73: ca r03                   ; -|                                               ; from 51r,61r->
+@2530.1368:160006                        srr 6                    ;  |- Round off x1' and store x1' * 2**-6
+@2531.1369:176754 .if f24                md float24_low_mant_mask
+@2532.1370:042421                        ts r03                   ; -|
 
-@2525.1365:161011                        srh 9                    ; -|
-@2526.1366:126412                        sa r02                   ;  |- Add round-off carry into x1
-@2527.1367:042412                        ts r02                   ; -|
+@2533.1371:161011                        srh 9                    ; -|
+@2534.1372:126420                        sa r02                   ;  |- Add round-off carry into x1
+@2535.1373:042420                        ts r02                   ; -|
 
-@2530.1368:100000                        ca 0                     ; -|
-@2531.1369:072534                        cp r83                   ;  |- Is there an overflow?
-@2532.1370:114000                        su 0                     ;  |
-@2533.1371:072537                        cp r86                   ; -|
+@2536.1374:100000                        ca 0                     ; -|
+@2537.1375:072542                        cp r83                   ;  |- Is there an overflow?
+@2540.1376:114000                        su 0                     ;  |
+@2541.1377:072545                        cp r86                   ; -|
 
-@2534.1372:154016                   r83: slr 14                   ; -|                                               ; from  80r->
-@2535.1373:042412                        ts r02                   ;  |- Add overflow into x1 and x1'. Increase y1
-@2536.1374:132414                        ao r04                   ; -|
+@2542.1378:154016                   r83: slr 14                   ; -|                                               ; from  80r->
+@2543.1379:042420                        ts r02                   ;  |- Add overflow into x1 and x1'. Increase y1
+@2544.1380:132422                        ao r04                   ; -|
 
-@2537.1375:122414                   r86: cm r04                   ; -|                                               ; from  82r->
-@2540.1376:116506                        su r62                   ;  |- |y1| - 63 > 0?
-@2541.1377:072546                        cp r93                   ; -|                                               ; [LAS was transcription error sp r93]
+@2545.1381:122422                   r86: cm r04                   ; -|                                               ; from  82r->
+@2546.1382:116514                        su r62                   ;  |- |y1| - 63 > 0?
+@2547.1383:072554                        cp r93                   ; -|                                               ; [LAS was transcription error sp r93]
 
-@2542.1378:106414                        cs r04                   ; -|- y <= 0? (i.e.  y1 < -63?)
-@2543.1379:072742                        cp r202                  ; -|
+@2550.1384:106422                        cs r04                   ; -|- y <= 0? (i.e.  y1 < -63?)
+@2551.1385:072750                        cp r202                  ; -|
 
-@2544.1380:106506                        cs r62                   ; -|- Set y1 = -63
-@2545.1381:042414                        ts r04                   ; -|
+@2552.1386:106514                        cs r62                   ; -|- Set y1 = -63
+@2553.1387:042422                        ts r04                   ; -|
 
-@2546.1382:102552                   r93: ca r97                   ; -|- ts n + k or ex n + k                         ; from 88r->
-@2547.1383:112735                        ad sep_param             ; -|
+@2554.1388:102560                   r93: ca r97                   ; -|- ts n + k or ex n + k                         ; from 88r->
+@2555.1389:112743                        ad sep_param             ; -|
 
-@2550.1384:042561                   r95: ts r102                  ; Store ts, ex, ca, cs or cm n+k                   ; from 8r->                                        ; [LAS Issue no-lower-cm: When branched-to,
+@2556.1390:042567                   r95: ts r102                  ; Store ts, ex, ca, cs or cm n+k                   ; from 8r->                                        ; [LAS Issue no-lower-cm: When branched-to,
                                          ;                        ;                                                  ;                                                  ; does not load a possible cm from r97 at r93,
                                          ;                        ;                                                  ;                                                  ; so we get no mag of low end. But that would not
                                          ;                        ;                                                  ;                                                  ; be completely right either, as it's a packed
                                          ;                        ;                                                  ;                                                  ; word with an exp.]
-@2551.1385:102412                        ca r02
-@2552.1386:000000                   r97: .word 0                  ; -|                                               ; from (180r)
-@2553.1387:066413                        ex r03                   ;  |
+@2557.1391:102420                        ca r02
+@2560.1392:000000                   r97: .word 0                  ; -|                                               ; from (180r)
+@2561.1393:066421                        ex r03                   ;  |
 ;                  .if (1-f24)            srh 9                    ;  |
 
-@2554.1388:042745 .if f24                ts float24_tmp
+@2562.1394:042753 .if f24                ts float24_tmp
 
-@2555.1389:066414                        ex r04                   ;  |
-@2556.1390:155011                        slh 9                    ;  |
+@2563.1395:066422                        ex r04                   ;  |
+@2564.1396:155011                        slh 9                    ;  |
 
-@2557.1391:176747 .if f24                md float24_low_exp_mask
-@2560.1392:032745 .if f24                sd float24_tmp
+@2565.1397:176755 .if f24                md float24_low_exp_mask
+@2566.1398:032753 .if f24                sd float24_tmp
 
-@2561.1393:000000                  r102: .word 0                  ;  |                                               ; (95r)
+@2567.1399:000000                  r102: .word 0                  ;  |                                               ; (95r)
 
-@2562.1394:042744 .if f24                ts float24_low           ;                                                  ; [Note ex leaves B alone]
-@2563.1395:161011 .if f24                srh 9
-@2564.1396:042745 .if f24                ts float24_tmp
-@2565.1397:102744 .if f24                ca float24_low
-@2566.1398:176746 .if f24                md float24_low_mant_mask
+@2570.1400:042752 .if f24                ts float24_low           ;                                                  ; [Note ex leaves B alone]
+@2571.1401:161011 .if f24                srh 9
+@2572.1402:042753 .if f24                ts float24_tmp
+@2573.1403:102752 .if f24                ca float24_low
+@2574.1404:176754 .if f24                md float24_low_mant_mask
 
-@2567.1399:161011                        srh 9                    ;  |- Perform ts, ex, ca, cs or cm                 ; [saves low mant in B]
+@2575.1405:161011                        srh 9                    ;  |- Perform ts, ex, ca, cs or cm                 ; [saves low mant in B]
 
-@2570.1400:066745 .if f24                ex float24_tmp           ;                                                  ; [Note ex leaves B alone]
+@2576.1406:066753 .if f24                ex float24_tmp           ;                                                  ; [Note ex leaves B alone]
 
-@2571.1401:066413                        ex r03                   ;  |
-@2572.1402:042412                        ts r02                   ;  |
-@2573.1403:155017                        slh 15                   ;  |                                               ; [gets low mant back from B]
-@2574.1404:066413                        ex r03                   ;  |
-@2575.1405:076702                  r108: sp r177                  ; -|
+@2577.1407:066421                        ex r03                   ;  |
+@2600.1408:042420                        ts r02                   ;  |
+@2601.1409:155017                        slh 15                   ;  |                                               ; [gets low mant back from B]
+@2602.1410:066421                        ex r03                   ;  |
+@2603.1411:076710                  r108: sp r177                  ; -|
 
-@2576.1406:122412                  r109: cm r02                   ; -|                                               ;  166r->
-@2577.1407:114000                        su 0                     ;  |- x1 != 0?
-@2600.1408:072474                        cp r52                   ; -|
+@2604.1412:122420                  r109: cm r02                   ; -|                                               ;  166r->
+@2605.1413:114000                        su 0                     ;  |- x1 != 0?
+@2606.1414:072502                        cp r52                   ; -|
 
-@2601.1409:122413                        cm r03                   ; -|
-@2602.1410:114000                        su 0                     ;  |- x1' != 0?
-@2603.1411:072613                        cp r122                  ; -|
+@2607.1415:122421                        cm r03                   ; -|
+@2610.1416:114000                        su 0                     ;  |- x1' != 0?
+@2611.1417:072621                        cp r122                  ; -|
 
-@2604.1412:116472                        su r50                   ; -|
-@2605.1413:112431                        ad r17                   ;  |- Form |x1'| - 1                               ; PROBABLY AD op code
-@2606.1414:042413                        ts r03                   ; -|
+@2612.1418:116500                        su r50                   ; -|
+@2613.1419:112437                        ad r17                   ;  |- Form |x1'| - 1                               ; PROBABLY AD op code
+@2614.1420:042421                        ts r03                   ; -|
 
-@2607.1415:102412                        ca r02                   ; -|- x1 > 0?
-@2610.1416:072502                        cp r58                   ; -|
+@2615.1421:102420                        ca r02                   ; -|- x1 > 0?
+@2616.1422:072510                        cp r58                   ; -|
 
-@2611.1417:116472                        su r50                   ; -|- Form x1 - 2**-15
-@2612.1418:042412                        ts r02                   ; -|
+@2617.1423:116500                        su r50                   ; -|- Form x1 - 2**-15
+@2620.1424:042420                        ts r02                   ; -|
 
-@2613.1419:106413                  r122: cs r03                   ; -|- Complement x1'                               ; [LAS was transcription error ca r03]             ;   114r->
-@2614.1420:042413                        ts r03                   ; -|
+@2621.1425:106421                  r122: cs r03                   ; -|- Complement x1'                               ; 114r->                                           ; [LAS was transcription error ca r03]
+@2622.1426:042421                        ts r03                   ; -|
 
-@2615.1421:142412                        mr r02                   ; -|- Form x1*x1'
-@2616.1422:076667                        sp r166                  ; -|
+@2623.1427:142420                        mr r02                   ; -|- Form x1*x1'
+@2624.1428:076675                        sp r166                  ; -|
 
-@2617.1423:106736                  r126: cs tmp                   ; -|                                               ; 12r->
-@2620.1424:042736                        ts tmp                   ;  |- Complement x2, x2'
-@2621.1425:106552                        cs r97                   ; -|
+@2625.1429:106744                  r126: cs tmp                   ; -|                                               ; 12r->
+@2626.1430:042744                        ts tmp                   ;  |- Complement x2, x2'
+@2627.1431:106560                        cs r97                   ; -|
 
-@2622.1426:066561                  r129: ex r102                  ; -|                                               ; r9 ->
-@2623.1427:116414                        su r04                   ;  |- Form and store  y2 - yl
-@2624.1428:042552                        ts r97                   ; -|
+@2630.1432:066567                  r129: ex r102                  ; -|                                               ; r9 ->
+@2631.1433:116422                        su r04                   ;  |- Form and store  y2 - yl
+@2632.1434:042560                        ts r97                   ; -|
 
-@2625.1429:072636                        cp r141                  ; y2 - y1 > 0?
+@2633.1435:072644                        cp r141                  ; y2 - y1 > 0?
 
-@2626.1430:112414                        ad r04                   ; -|
-@2627.1431:042414                        ts r04                   ;  |
-@2630.1432:102412                        ca r02                   ;  |
-@2631.1433:066736                        ex tmp                   ;  |- Interchange (x1, x1', y1) and (x2, x2', y2)
-@2632.1434:042412                        ts r02                   ;  |
-@2633.1435:102413                        ca r03                   ;  |
-@2634.1436:066561                        ex r102                  ;  |
-@2635.1437:042413                        ts r03                   ; -|
+@2634.1436:112422                        ad r04                   ; -|
+@2635.1437:042422                        ts r04                   ;  |
+@2636.1438:102420                        ca r02                   ;  |
+@2637.1439:066744                        ex tmp                   ;  |- Interchange (x1, x1', y1) and (x2, x2', y2)
+@2640.1440:042420                        ts r02                   ;  |
+@2641.1441:102421                        ca r03                   ;  |
+@2642.1442:066567                        ex r102                  ;  |
+@2643.1443:042421                        ts r03                   ; -|
 
-@2636.1438:122552                  r141: cm r97                   ; -|                                               ; 132r->
-@2637.1439:116422                        su r10                   ;  |-  |y2 - y1| - 29 > 0?
-@2640.1440:072642                        cp r145                  ; -|
+@2644.1444:122560                  r141: cm r97                   ; -|                                               ; 132r->
+@2645.1445:116430                        su r10                   ;  |-  |y2 - y1| - 29 > 0?
+@2646.1446:072650                        cp r145                  ; -|
 
-@2641.1441:076703                        sp next_inst             ; No need for addition
+@2647.1447:076711                        sp next_inst             ; No need for addition
 
-@2642.1442:112415                  r145: ad r05                   ; -|- Store  sr *1 +|y2 - y1|                      ; 143r->
-@2643.1443:042650                        ts r151                  ; -|
+@2650.1448:112423                  r145: ad r05                   ; -|- Store  sr *1 +|y2 - y1|                      ; 143r->
+@2651.1449:042656                        ts r151                  ; -|
 
-@2644.1444:102472                        ca r50                   ; -|- Set y2 = l
-@2645.1445:066561                        ex r102                  ; -|
-
-@2646.1446:161017                        srh 15                   ; -|
-@2647.1447:112736                        ad tmp                   ;  |
-@2650.1448:000000                  r151: .word 0                  ;  |- Form and store                               ; (146r)
-@2651.1449:042736                        ts tmp                   ;  |  (x2 + x2' * 2**-15) * 2**(-1 - |y2 - y1|)
-@2652.1450:155017                        slh 15                   ;  |
-@2653.1451:066413                        ex r03                   ; -|
+@2652.1450:102500                        ca r50                   ; -|- Set y2 = l
+@2653.1451:066567                        ex r102                  ; -|
 
 @2654.1452:161017                        srh 15                   ; -|
-@2655.1453:112412                        ad r02                   ;  |-    Form (x1 + x1' * 2**-15) * 2**-l
-@2656.1454:161001                        srh 1                    ; -|
+@2655.1453:112744                        ad tmp                   ;  |
+@2656.1454:000000                  r151: .word 0                  ;  |- Form and store                               ; (146r)
+@2657.1455:042744                        ts tmp                   ;  |  (x2 + x2' * 2**-15) * 2**(-1 - |y2 - y1|)
+@2660.1456:155017                        slh 15                   ;  |
+@2661.1457:066421                        ex r03                   ; -|
 
-@2657.1455:042412                  r158: ts r02                   ; Store x1                                         ;  20r->
+@2662.1458:161017                        srh 15                   ; -|
+@2663.1459:112420                        ad r02                   ;  |-    Form (x1 + x1' * 2**-15) * 2**-l
+@2664.1460:161001                        srh 1                    ; -|
 
-@2660.1456:155017                        slh 15                   ; -|
-@2661.1457:126413                        sa r03                   ;  |                                               ; [LAS was transcription error ts r03]
-@2662.1458:042413                        ts r03                   ;  |- Add x1, x1' and x2, x2'
-@2663.1459:102736                        ca tmp                   ;  |
-@2664.1460:112412                        ad r02                   ;  |
-@2665.1461:042412                  r164: ts r02                   ; -|                                               ; 53r->
+@2665.1461:042420                  r158: ts r02                   ; Store x1                                         ;  20r->
 
-@2666.1462:142413                        mr r03                   ; Does sign x1 = sign x1'?
-@2667.1463:072576                  r166: cp r109                  ;                                                  ;  125r->
+@2666.1462:155017                        slh 15                   ; -|
+@2667.1463:126421                        sa r03                   ;  |                                               ; [LAS was transcription error ts r03]
+@2670.1464:042421                        ts r03                   ;  |- Add x1, x1' and x2, x2'
+@2671.1465:102744                        ca tmp                   ;  |
+@2672.1466:112420                        ad r02                   ;  |
+@2673.1467:042420                  r164: ts r02                   ; -|                                               ; 53r->
 
-@2670.1464:102413                  r167: ca r03                   ; -|                                               ; 59r->
-@2671.1465:161017                        srh 15                   ;  |
-@2672.1466:112412                        ad r02                   ;  |
-@2673.1467:166426                        sf r14                   ;  |- Scale factor and store x1, x1'
-@2674.1468:042412                        ts r02                   ;  |                                               ; [LAS was transcription error ta r02]
-@2675.1469:155017                        slh 15                   ;  |
-@2676.1470:042413                        ts r03                   ; -|                                               ; [LAS was transcription error ta r03]
+@2674.1468:142421                        mr r03                   ; Does sign x1 = sign x1'?
+@2675.1469:072604                  r166: cp r109                  ;                                                  ;  125r->
 
-@2677.1471:106426                        cs r14                   ; -|
-@2700.1472:112561                        ad r102                  ;  |- Form exponent
-@2701.1473:112414                        ad r04                   ;  |
-@2702.1474:042414                  r177: ts r04                   ; -|                                               ; 108r->
+@2676.1470:102421                  r167: ca r03                   ; -|                                               ; 59r->
+@2677.1471:161017                        srh 15                   ;  |
+@2700.1472:112420                        ad r02                   ;  |
+@2701.1473:166434                        sf r14                   ;  |- Scale factor and store x1, x1'
+@2702.1474:042420                        ts r02                   ;  |                                               ; [LAS was transcription error ta r02]
+@2703.1475:155017                        slh 15                   ;  |
+@2704.1476:042421                        ts r03                   ; -|                                               ; [LAS was transcription error ta r03]
 
-@2703.1475:132704             next_inst: ao exec_inst             ; increase address                                 ; [LAS was transcription error ao r197]
-@2704.1476:100000             exec_inst: ca 0                     ; Pick up next instruction
-@2705.1477:076751                        sp halt_if_zero
-@2706.1478:042552                        ts r97                   ; -|
-@2707.1479:046500           inst_stored: td r56                   ;  |                                               ; Good place for a breakpoint. Int inst in r97.
-@2710.1480:046717                        td r189                  ;  |- Store instruction and digits
-@2711.1481:112735                        ad sep_param             ;  |
-@2712.1482:046721                        td r191                  ; -|
-@2713.1483:161033                        srh 27                   ; -|
-@2714.1484:155021                        slh 17                   ;  |- Form sp to address for particular instruction
-@2715.1485:112504                        ad r60                   ;  |
-@2716.1486:042734                  r188: ts dispatch              ; -|
-@2717.1487:100000                  r189: ca 0                     ; -|                                               ; (182r)
-@2720.1488:042561                        ts r102                  ;  |
-@2721.1489:100000                  r191: ca 0                     ;  |                                               ; (181r)
+@2705.1477:106434                        cs r14                   ; -|
+@2706.1478:112567                        ad r102                  ;  |- Form exponent
+@2707.1479:112422                        ad r04                   ;  |
+@2710.1480:042422                  r177: ts r04                   ; -|                                               ; 108r->
 
-@2722.1490:042744 .if f24                ts float24_low
-@2723.1491:161011 .if f24                srh 9
-@2724.1492:042745 .if f24                ts float24_tmp
-@2725.1493:102744 .if f24                ca float24_low
-@2726.1494:176746 .if f24                md float24_low_mant_mask
+@2711.1481:132712             next_inst: ao exec_inst             ; increase address                                 ; [LAS was transcription error ao r197]
+@2712.1482:100000             exec_inst: ca 0                     ; Pick up next instruction
+@2713.1483:076757                        sp halt_if_zero
+@2714.1484:042560                        ts r97                   ; -|
+@2715.1485:046506           inst_stored: td r56                   ;  |                                               ; Good place for a breakpoint. Int inst in r97.
+@2716.1486:046725                        td r189                  ;  |- Store instruction and digits
+@2717.1487:112743                        ad sep_param             ;  |
+@2720.1488:046727                        td r191                  ; -|
+@2721.1489:161033                        srh 27                   ; -|
+@2722.1490:155021                        slh 17                   ;  |- Form sp to address for particular instruction
+@2723.1491:112512                        ad r60                   ;  |
+@2724.1492:042742                  r188: ts dispatch              ; -|
+@2725.1493:100000                  r189: ca 0                     ; -|                                               ; (182r)
+@2726.1494:042567                        ts r102                  ;  |
+@2727.1495:100000                  r191: ca 0                     ;  |                                               ; (181r)
 
-@2727.1495:161011                        srh 9                    ;  |- Pick up x2, x2' and y2. Store x2 in reg. 198, y2 in reg 102. Hold x2' in AC
+@2730.1496:042752 .if f24                ts float24_low
+@2731.1497:161011 .if f24                srh 9
+@2732.1498:042753 .if f24                ts float24_tmp
+@2733.1499:102752 .if f24                ca float24_low
+@2734.1500:176754 .if f24                md float24_low_mant_mask
 
-@2730.1496:066745 .if f24                ex float24_tmp
+@2735.1501:161011                        srh 9                    ;  |- Pick up x2, x2' and y2. Store x2 in reg. 198, y2 in reg 102. Hold x2' in AC
 
-@2731.1497:066561                        ex r102                  ;  |
-@2732.1498:042736                        ts tmp                   ;  |
-@2733.1499:155017                        slh 15                   ; -|
+@2736.1502:066753 .if f24                ex float24_tmp
+
+@2737.1503:066567                        ex r102                  ;  |
+@2740.1504:042744                        ts tmp                   ;  |
+@2741.1505:155017                        slh 15                   ; -|
 
 ;                  .if do_print           .print "1 dis='%i' inst='%i' tmp=x2=%o r102=y2=%o AC=x2'=0o%ao r02=x1=%o r03=x1'=%o r04=y1=%o t=%fl r189=%o mra=%fm mra-oct=%o %o %o", dispatch, r97, tmp, r102, r02, r03, r04, t, r189, mra, mra + 0, mra + 1, mra + 2
-@2734.1500:000000              dispatch: .word 0                  ; Go to part of I.S. for particular instruction    ; (188r)
+@2742.1506:000000              dispatch: .word 0                  ; Go to part of I.S. for particular instruction    ; (188r)
                                    r197:
-@2735.1501:000001             sep_param: .word main_sep_param     ; Separation parameter                             ; [LAS There is a note in Subroutines.pdf pdf-page 25 that says r197 is "pax2"
+@2743.1507:000001             sep_param: .word main_sep_param     ; Separation parameter                             ; [LAS There is a note in Subroutines.pdf pdf-page 25 that says r197 is "pax2"
                                    r198:
-@2736.1502:000000                   tmp: .word 0                  ; Temporary storage
+@2744.1508:000000                   tmp: .word 0                  ; Temporary storage
 
-@2737.1503:112472                  r199: ad r50                   ;                                                  ; from 70r-->
-@2740.1504:072704                        cp exec_inst             ; Does address equal ax?
-@2741.1505:074000                  r201: sp 0                     ; Return to register following sp ax               ; (66r)
+@2745.1509:112500                  r199: ad r50                   ;                                                  ; from 70r-->
+@2746.1510:072712                        cp exec_inst             ; Does address equal ax?
+@2747.1511:074000                  r201: sp 0                     ; Return to register following sp ax               ; (66r)
 
-@2742.1506:102575                  r202: ca r108                  ; -|- Produce overflow alarm                       ; from 90r
-@2743.1507:112575                        ad r108                  ; -|
+@2750.1512:102603                  r202: ca r108                  ; -|- Produce overflow alarm                       ; from 90r
+@2751.1513:112603                        ad r108                  ; -|
 
-@2744.1508:000000           float24_low: .word 0
-@2745.1509:000000           float24_tmp: .word 0
-@2746.1510:000777 float24_low_mant_mask: .word 0o000777
-@2747.1511:177000  float24_low_exp_mask: .word 0o177000
-@2750.1512:000000       float24_ac_save: .word 0
+@2752.1514:000000           float24_low: .word 0
+@2753.1515:000000           float24_tmp: .word 0
+@2754.1516:000777 float24_low_mant_mask: .word 0o000777
+@2755.1517:177000  float24_low_exp_mask: .word 0o177000
+@2756.1518:000000       float24_ac_save: .word 0
 
                                          ; [LAS Added this section, which halts the machine if it encounters an
                                          ;  si 0 (i.e., a zero instruction). This came up in L&Z, where the
@@ -1945,16 +1951,16 @@
                                          ;  or both, where termination conditions aren't clear. Perhaps some of
                                          ;  the illegible hand-written notes address it.]
 
-@2751.1513:052761          halt_if_zero: ta hiz_rtn
-@2752.1514:042762                        ts hiz_ac
-@2753.1515:122762                        cm hiz_ac                ; Nice zero-checking idiom from the frac printer. Ah, one's-complement!
-@2754.1516:114000                        su 0
-@2755.1517:072757                        cp hiz1
-@2756.1518:076760                        sp hiz2
-@2757.1519:000000                  hiz1: si 0                     ; After all that, we interpret an si 0 as an si 0
-@2760.1520:102762                  hiz2: ca hiz_ac
-@2761.1521:074000               hiz_rtn: sp 0
-@2762.1522:000000                hiz_ac: .word 0
+@2757.1519:052767          halt_if_zero: ta hiz_rtn
+@2760.1520:042770                        ts hiz_ac
+@2761.1521:122770                        cm hiz_ac                ; Nice zero-checking idiom from the frac printer. Ah, one's-complement!
+@2762.1522:114000                        su 0
+@2763.1523:072765                        cp hiz1
+@2764.1524:076766                        sp hiz2
+@2765.1525:000000                  hiz1: si 0                     ; After all that, we interpret an si 0 as an si 0
+@2766.1526:102770                  hiz2: ca hiz_ac
+@2767.1527:074000               hiz_rtn: sp 0
+@2770.1528:000000                hiz_ac: .word 0
 
 
                                          ; end .include "float-lib.ww"
@@ -1964,7 +1970,7 @@
                                          ; .include "print-prog.ww"
 
                              print_prog:
-@2763.1523:053042                        ta ppg_rtn
+@2771.1529:053050                        ta ppg_rtn
 
                                          ; First section with pr_ label prefix reads all the
                                          ; chars from the pet into pp_buffer.
@@ -1973,64 +1979,64 @@
                                          ;  at the end of the chars but within the buffer, so we
                                          ;  can terminate the print and zeroing loops
 
-@2764.1524:001004              pr_enter: si 0o1004                ; PETR A, rewind
-@2765.1525:103002                        ca pr_buf
-@2766.1526:046777                        td pr_st_char
-@2767.1527:014000               pr_loop: rd 0
-@2770.1528:043005                        ts pr_char
-@2771.1529:117003                        su pr_stop_char
-@2772.1530:043004                        ts pr_tmp
-@2773.1531:123004                        cm pr_tmp
-@2774.1532:114000                        su 0
-@2775.1533:073006                        cp pr_done
-@2776.1534:103005                        ca pr_char
-@2777.1535:040000            pr_st_char: ts 0
-@3000.1536:132777                        ao pr_st_char
-@3001.1537:076767                        sp pr_loop
-@3002.1538:000040                pr_buf: .word comp_code          ; share the "heap space" with the L&Z compiled code
-@3003.1539:000061          pr_stop_char: .flexl "<stop>"
-@3004.1540:000000                pr_tmp: .word 0
-@3005.1541:000000               pr_char: .word 0
+@2772.1530:001004              pr_enter: si 0o1004                ; PETR A, rewind
+@2773.1531:103010                        ca pr_buf
+@2774.1532:047005                        td pr_st_char
+@2775.1533:014000               pr_loop: rd 0
+@2776.1534:043013                        ts pr_char
+@2777.1535:117011                        su pr_stop_char
+@3000.1536:043012                        ts pr_tmp
+@3001.1537:123012                        cm pr_tmp
+@3002.1538:114000                        su 0
+@3003.1539:073014                        cp pr_done
+@3004.1540:103013                        ca pr_char
+@3005.1541:040000            pr_st_char: ts 0
+@3006.1542:133005                        ao pr_st_char
+@3007.1543:076775                        sp pr_loop
+@3010.1544:000040                pr_buf: .word comp_code          ; share the "heap space" with the L&Z compiled code
+@3011.1545:000061          pr_stop_char: .flexl "<stop>"
+@3012.1546:000000                pr_tmp: .word 0
+@3013.1547:000000               pr_char: .word 0
                                 pr_done:
 
                                          ; This section with pp label prints the buffer to the flexowriter
 
-@3006.1542:000225              pp_enter: si 149
-@3007.1543:103002                        ca pr_buf
-@3010.1544:047011                        td pp_rd_char
+@3014.1548:000225              pp_enter: si 149
+@3015.1549:103010                        ca pr_buf
+@3016.1550:047017                        td pp_rd_char
                                 pp_loop:
-@3011.1545:100000            pp_rd_char: ca 0
-@3012.1546:043023                        ts pp_tmp
-@3013.1547:123023                        cm pp_tmp
-@3014.1548:114000                        su 0
-@3015.1549:073024                        cp pp_done
-@3016.1550:103023                        ca pp_tmp
-@3017.1551:170012                        clc 10
-@3020.1552:024000                        rc 0
-@3021.1553:133011                        ao pp_rd_char
-@3022.1554:077011                        sp pp_loop
-@3023.1555:000000                pp_tmp: .word 0
+@3017.1551:100000            pp_rd_char: ca 0
+@3020.1552:043031                        ts pp_tmp
+@3021.1553:123031                        cm pp_tmp
+@3022.1554:114000                        su 0
+@3023.1555:073032                        cp pp_done
+@3024.1556:103031                        ca pp_tmp
+@3025.1557:170012                        clc 10
+@3026.1558:024000                        rc 0
+@3027.1559:133017                        ao pp_rd_char
+@3030.1560:077017                        sp pp_loop
+@3031.1561:000000                pp_tmp: .word 0
                                 pp_done:
 
                                          ; Last section with pz label zeroes-out the buffer to return it to its orginal state.
 
                                pz_enter:
-@3024.1556:103002                        ca pr_buf
-@3025.1557:047027                        td pz_rd_char
-@3026.1558:047035                        td pz_wr_zero
+@3032.1562:103010                        ca pr_buf
+@3033.1563:047035                        td pz_rd_char
+@3034.1564:047043                        td pz_wr_zero
                                 pz_loop:
-@3027.1559:100000            pz_rd_char: ca 0
-@3030.1560:043041                        ts pz_tmp
-@3031.1561:123041                        cm pz_tmp
-@3032.1562:114000                        su 0
-@3033.1563:073042                        cp pz_done
-@3034.1564:100000                        ca 0
-@3035.1565:040000            pz_wr_zero: ts 0
-@3036.1566:133027                        ao pz_rd_char
-@3037.1567:133035                        ao pz_wr_zero
-@3040.1568:077027                        sp pz_loop
-@3041.1569:000000                pz_tmp: .word 0
+@3035.1565:100000            pz_rd_char: ca 0
+@3036.1566:043047                        ts pz_tmp
+@3037.1567:123047                        cm pz_tmp
+@3040.1568:114000                        su 0
+@3041.1569:073050                        cp pz_done
+@3042.1570:100000                        ca 0
+@3043.1571:040000            pz_wr_zero: ts 0
+@3044.1572:133035                        ao pz_rd_char
+@3045.1573:133043                        ao pz_wr_zero
+@3046.1574:077035                        sp pz_loop
+@3047.1575:000000                pz_tmp: .word 0
                                 pz_done:
-@3042.1570:074000               ppg_rtn: sp 0
+@3050.1576:074000               ppg_rtn: sp 0
 
                                          ; end .include "print-prog.ww"

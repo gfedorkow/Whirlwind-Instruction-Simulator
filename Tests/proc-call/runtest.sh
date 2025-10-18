@@ -17,7 +17,7 @@ else
 	rm proc-call.acore proc-call.lst
 	rm 	wwasm-proc.log wwsim-proc.log wwasm-frame.log wwsim-frame.log
 	python $asm proc-call.ww  >&wwasm-proc.log
-	python $sim -q --CycleLimit 7700 proc-call.acore >&wwsim-proc.log
+	python $sim --CycleLimit 7700 proc-call.acore >&wwsim-proc.log
 	egrep "Warning|Error" wwasm-proc.log >&tmp-wwasm.log
 	egrep "Warning|Error" TestRefs/wwasm-proc.log >&tmp-ref-wwasm.log
 	grep proc-call-test wwsim-proc.log >&tmp-wwsim.log

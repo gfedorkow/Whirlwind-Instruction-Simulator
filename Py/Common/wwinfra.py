@@ -31,7 +31,7 @@ import argparse
 import traceback
 import graphics as gfx
 import time
-from wwflex import FlexToFlexoWin
+from wwflex import FlexToFlexoWin, FlexToFlascii, FlexToCsyntaxFlascii
 
 theConstWWbitClass = None       # everything should use the same instance of the cb. Set in wwsim.
 
@@ -39,21 +39,6 @@ from typing import List, Dict, Tuple, Sequence, Union, Any
 
 def breakp():
     print("** Breakpoint **")
-
-# sigh, I'll put this stub here so I can call Read Core without more special cases.
-# the simulator has a much larger CpuClass definition which would override this one
-# But due to lack of partitioning skill, several other of my ww programs need a stub
-class CpuClass:
-    def __init__(self, cb, core_mem):
-        self.cb = cb
-        # putting this stuff here seems pretty darn hacky
-        self.cpu_switches = None
-        self.SymTab = {}
-        self.ExecTab = {}
-        self.CommentTab = [None] * 2048
-        self.cm = core_mem
-
-
 
 class LogSeqno:
     def __init__ (self):
@@ -507,8 +492,11 @@ class ConstWWbitClass:
         self.TracePC = 0        # print a line for each instruction if this number is non-zero; decrement it if pos.
         self.LongTraceFormat = True  # prints more CPU registers for each trace line
         self.TraceALU = False   # print a line for add, multiply, negate, etc
-        self.TraceBranch = True  # print a line for each branch
+        # LAS 10/12/25 Set this to False as it doesn't seem needed and
+        # generates a lot of stuff. Easily reactvated here is desired.
+        self.TraceBranch = False  # print a line for each branch
         self.TraceQuiet = False
+        self.TraceVerbose = False
         self.tracelog = None     # set this to a value if we're supposed to keep logs for a flow graph
         self.decimal_addresses = False  # default is to print all addresses in Octal; this switches to decimal notation
         self.TraceCoreLocation = None
@@ -1073,7 +1061,9 @@ class CorememClass:
         # happen to read uninitialed core (e.g. Vibrating String)
         if (fix_none or self.cb.ZeroizeCore) and (ret is None):
             if not self.cb.ZeroizeCore:
-                self.cb.log.warn("Reading Uninitialized Memory at location 0o%o, bank %o" % (addr, bank))
+                # LAS
+                # self.cb.log.warn("Reading Uninitialized Memory at location 0o%o, bank %o" % (addr, bank))
+                print ("Reading Uninitialized Memory at location 0o%o, bank %o" % (addr, bank))
             ret = 0
         if self.cb.TraceCoreLocation == addr:
             self.cb.log.info("Read from core memory; addr=0o%05o, value=%s" % (addr, octal_or_none(ret)))
@@ -1354,7 +1344,9 @@ def hash_to_fingerprint(hash_obj, word_count):
 #  [Careful, there's another write_core in wwasm.py.  oops.]
 def write_core(cb, corelist, offset, byte_stream, ww_filename, ww_tapeid,
                jump_to, output_file, string_list, block_msg=None, stats_string=''):
-    flexo_table = FlexoClass(cb)  # instantiate the class to get a copy of the code translation table
+    # LAS
+    # flexo_table = FlexoClass(cb)  # instantiate the class to get a copy of the code translation table
+    flexo = FlexToCsyntaxFlascii()
     op_table = InstructionOpTable()
     hash_obj = hashlib.md5()  # create an object to store the hash of the file contents
 
@@ -1413,9 +1405,8 @@ def write_core(cb, corelist, offset, byte_stream, ww_filename, ww_tapeid,
                     hash_obj.update(m.to_bytes(2, byteorder='big'))   # if the word is not Null, include it in the hash
                     word_count += 1
                     non_null += 1
-                    flexo_string_low += '%s' % flexo_table.code_to_letter(m & 0x3f, show_unprintable=True)
-                    flexo_string_high += '%s' % flexo_table.code_to_letter((m >> 10) & 0x3f,
-                                                                           show_unprintable=True)
+                    flexo_string_low += '%s' % flexo.decodeSingleChar (m & 0x3f)
+                    flexo_string_high += '%s' % flexo.decodeSingleChar ((m >> 10) & 0x3f)
                     op = op_table.op_decode[m >> 11]
                     op_string += '%s ' % op[0]
                 else:
@@ -1500,17 +1491,16 @@ class InstructionOpTable:
             }
 
 # See manual 2M-0277 pg 46 for flexowriter codes and addresses
-# This class is primarily the Flexowriter output driver, but it's also used
-# other places for translating characters between ASCII and Flexo code.
-class FlexoClass:
+# This class the Flexowriter output driver.
+# Translating between ASCII and Flex is handled by classes in wwflex.py.
+class FlexoControlClass:
     def __init__(self, cb, log = None):
-        self._uppercase = False  # Flexo used a code to switch to upper case, another code to return to lower
-        self._color = False  # the Flexo had a two-color ribbon, I assume it defaulted to Black
         self.stop_on_zero = None
         self.packed = None
-        self.null_count = 0
-        self.FlexoOutput = []  # this is the accumulation of all output from the Flexowriter
-        self.FlexoLine = ""    # this one accumulates one line of Flexo output for immediate printing
+
+        self.flexoOut = FlexToFlascii()  # Accumulate all Flexowriter output
+        self.flexoLine = FlexToFlascii() # Accumulate one line of Flexowriter output for immediate printing
+        
         self.flexToFlexoWin: FlexToFlexoWin = None
         self.name = "Flexowriter"
         self.cb = cb   # what's the right way to do this??
@@ -1525,149 +1515,6 @@ class FlexoClass:
         self.FLEXO3 = 0o010  # code to select which flexo printer.  #3 is said to be 'unused'
         self.FLEXO_STOP_ON_ZERO = 0o01  # code to select whether the printer "hangs" if asked to print a zero word
         self.FLEXO_PACKED = 0o02        # code to interpret three (six-bit) characters per word (??)
-
-        self.FLEXO_UPPER = 0o071   # character to switch to upper case
-        self.FLEXO_LOWER = 0o075   # character to switch to lower case
-        self.FLEXO_COLOR = 0o020   # character to switch ribbon color
-        self.FLEXO_NULLIFY = 0o077  # the character that remains on a tape after the typist presses Delete
-
-        #  From "Making Electrons Count:
-        # "Even the best of typists make mistakes. The error is nullified by pressing the "delete" button. This
-        # punches all the holes resulting in a special character ignored by the computer"
-
-        self.flexocode_lcase = ["#", "#", "e", "8", "#", "|", "a", "3",
-                                " ", "=", "s", "4", "i", "+", "u", "2",
-                                "<color>", ".", "d", "5", "r", "1", "j", "7",
-                                "n", ",", "f", "6", "c", "-", "k", "#",
-
-                                "t", "#", "z", "<bs>", "l", "\t", "w", "#",
-                                "h", "\n", "y", "#", "p", "#", "q", "#",
-                                "o", "<stop>", "b", "#", "g", "#", "9", "#",
-                                "m", "<upper>", "x", "#", "v", "<lower>", "0", "<del>"]
-
-        self.flexocode_ucase = ["#", "#", "E", "8", "#", "_", "A", "3",
-                                " ", ":", "S", "4", "I", "/", "U", "2",
-                                "<color>", ")", "D", "5", "R", "1", "J", "7",
-                                "N", "(", "F", "6", "C", "-", "K", "#",
-
-                                "T", "#", "Z", "<bs>", "L", "\t", "W", "#",
-                                "H", "\n", "Y", "#", "P", "#", "Q", "#",
-                                "O", "<stop>", "B", "#", "G", "#", "9", "#",
-                                "M", "<upper>", "X", "#", "V", "<lower>", "0", "<del>"]
-
-        self.flexocode_alphanum = ['\b', '\b', "e", "8", '\b',   '\b', "a", "3",
-                                   ' ',  ':',  "s", "4",  "i", '/', "u", "2",
-                                   '',  ".",  "d", "5", "r", "1", "j", "7",
-                                   "n", ",",  "f", "6", "c", "-", "k", '',
-
-                                   "t", '\b', "z", '\b', "l", '\b', "w", '\b',
-                                   "h", '\b', "y", '\b', "p", '\b', "q", '\b',
-                                   "o", '\b', "b", '\b', "g", '\b', "9", '\b',
-                                   "m", '',   "x", '\b', "v", '',   "0", '\b']
-
-        self.flexo_ascii_lcase_dict = self.make_ascii_dict(upper_case=False)
-        self.flexo_ascii_ucase_dict = self.make_ascii_dict(upper_case=True)
-
-    # This routine takes a flexo character and converts it to an ascii character or string
-    # Show_unprintable instructs this routine to make various invisible characters like tabs, newlines and nulls
-    # visible as \t, \n etc
-    # ascii_only returns null strings for Rubout (aka Nullify) and color-change flexo codes so that FC programs
-    # can be edited with a standard text editor
-    def code_to_letter(self, code: int, show_unprintable=False, make_filename_safe=False, ascii_only=False) -> str:
-        ret = ''
-        if code == self.FLEXO_NULLIFY:
-            self.null_count += 1
-
-        if code == self.FLEXO_UPPER:
-            self._uppercase = True
-        elif code == self.FLEXO_LOWER:
-            self._uppercase = False
-        elif code == self.FLEXO_COLOR and (show_unprintable == False) and (ascii_only == False):
-            self._color = not self._color
-            if self._color:
-                return "\033[1;31m"
-            else:
-                return "\033[0m"
-        else:
-            if self._uppercase:
-                ret = self.flexocode_ucase[code]
-            else:
-                ret = self.flexocode_lcase[code]
-
-        if ascii_only:
-            if code == self.FLEXO_NULLIFY or code == self.FLEXO_COLOR:
-                ret = ''
-
-        if make_filename_safe:
-            if ret == '\n':
-                ret = ''
-            elif ret == '\t':
-                ret = ' '
-            elif code == 0:
-                ret = ''
-            elif ret == '\b':
-                ret = ' '
-            elif len(ret) and ret[0] == '<':   # if we're making a file name, ignore all the control functions in the table above
-                ret = ''
-        elif show_unprintable:
-            if ret == '\n':
-                ret = '\\n'
-            if ret == '\t':
-                ret = '\\t'
-            if code == 0:
-                ret = '\\0'
-            if ret == '':
-                ret = '<cntl>'
-        return ret
-
-    # LAS Could not see an easy way to meld this into the other tables. This is
-    # used in the ascii-to-flexo tool to emit a human-readable table in
-    # comments.
-    def map_to_readable_ascii (self, flex_code: int, c: str) -> str:
-        dict = {
-            0o10: "sp",
-            0o20: "color change",
-            0o43: "bs",
-            0o45: "tab",
-            0o51: "cr",
-            0o61: "stop",
-            0o77: "nullify"
-            }
-        if flex_code in dict:
-            return dict[flex_code]
-        else:
-            return c
-
-    # when "printing" ASCII to flexo, compile a dictionary of flexo codes indexed
-    # by ASCII
-    def make_ascii_dict(self, upper_case: bool = False):
-        ascii_dict = {}
-        for flex in range(1, 64):
-            if upper_case:
-                ascii = self.flexocode_ucase[flex]
-            else:
-                ascii = self.flexocode_lcase[flex]
-            ascii_dict[ascii] = flex
-        return ascii_dict
-
-    # this routine converts an ASCII leter into a Flexocode
-    # The routine should be extended to accept and return a string, probably
-    # by returning an array of flexocodes, not just one for one.
-    # Aside from being a convenient way to define a string in a program
-    # binary, this would allow upper and lower case to work!
-    def ascii_to_flexo(self, ascii_letter):
-        upper_case = False
-        flexo_code = None
-        a = ascii_letter
-        if a in self.flexo_ascii_lcase_dict:
-            flexo_code = self.flexo_ascii_lcase_dict[a]
-        elif a in self.flexo_ascii_ucase_dict:
-            flexo_code = self.flexo_ascii_ucase_dict[a]
-            upper_case = True
-        else:
-            self.log.warn("no flexo translation for '%s'" % a)
-        return flexo_code
-
 
     def is_this_for_me(self, io_address):
         if (io_address & self.FLEXO_ADDR_MASK) == self.FLEXO_BASE_ADDRESS:
@@ -1693,22 +1540,34 @@ class FlexoClass:
             if self.flexToFlexoWin is None:
                 self.flexToFlexoWin = FlexToFlexoWin()
         else:
-            print(("configure flexowriter #2, stop_on_zero=%o, packed=%o" % (self.stop_on_zero, self.packed)))
+            self.log.info ("configure flexowriter #2, stop_on_zero=%o, packed=%o" % (self.stop_on_zero, self.packed))
         return self.cb.NO_ALARM
 
     def rc(self, _unused, acc):  # "record", i.e. output instruction to tty
         code = acc >> 10  # the code is in the upper six bits of the accumulator
-        symbol = self.code_to_letter(code)  # look up the code, mess with Upper Case and Color
+        # LAS
+        # symbol = self.code_to_letter(code)  # look up the code, mess with Upper Case and Color
+        symbol = ""
         # Only do the standard flex buffering if we have no flex window
         if self.flexToFlexoWin is not None:
             self.flexToFlexoWin.addCode (code)
         else:
+            self.flexoOut.addCode (code)
+            if self.flexoLine.isNewline (code):
+                s = self.flexoLine.getFlascii()
+                self.flexoLine.clearAsciiOut()
+                print("Flexo: %s" % s)   # print the full line on the console, ignoring the line feed
+            else:
+                self.flexoLine.addCode (code)
+            # LAS
+            """
             self.FlexoOutput.append(symbol)
             self.FlexoLine += symbol
             if symbol == '\n':
                 symbol = '\\n'   # convert the newline into something that can go in a Record status message
                 print("Flexo: %s" % self.FlexoLine[0:-1])   # print the full line on the console, ignoring the line feed
                 self.FlexoLine = ""                         # and start accumulating the next line
+            """
         return self.cb.NO_ALARM, symbol
 
     def bo(self, address, acc, cm):  # "block transfer out"
@@ -1717,7 +1576,8 @@ class FlexoClass:
             acc: contents of accumulator (the word count)
             cm: core memory instance
         """
-        symbol_str = ''
+        # LAS commented out all symbol_str stuff
+        # symbol_str = ''
         if address + acc > self.cb.WW_ADDR_MASK:
             print("block-transfer-out Flexo address out of range")
             return self.cb.QUIT_ALARM
@@ -1725,14 +1585,19 @@ class FlexoClass:
             wrd = cm.rd(m)  # read the word from mem
             self.rc(0, wrd)
             code = wrd >> 10   # code in top six bits contain the character
-            symbol_str += self.code_to_letter(code)  # look up the code, mess with Upper Case and Color
+            # symbol_str += self.code_to_letter(code)  # look up the code, mess with Upper Case and Color
 
+        # LAS Removed this unconditional print 
+        """
         print(("Block Transfer Write to Flexo: start address=0o%o, length=0o%o, str=%s" %
               (address, acc, symbol_str)))
+        """
         return self.cb.NO_ALARM
 
-    def get_saved_output(self):
-        return self.FlexoOutput
+    def get_saved_output(self) -> str:
+        # LAS
+        # return self.FlexoOutput
+        return self.flexoOut.getFlascii()
 
 
 # The following class prints debug text on the CRT to display and adjust memory values

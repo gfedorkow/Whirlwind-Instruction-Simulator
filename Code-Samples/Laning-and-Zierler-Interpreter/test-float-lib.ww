@@ -1,11 +1,9 @@
                       ; notes is the default test expected by runtest.sh
                       ; Other test points are test and sqrt2
 
-					  ; sp notes
+					  sp notes
 					  ; sp normalize_test
-
-					  sp test
-
+					  ; sp test
 					  ; sp sqrt2		; With su r17 this still fails
 					  si 0
 normalize_test:

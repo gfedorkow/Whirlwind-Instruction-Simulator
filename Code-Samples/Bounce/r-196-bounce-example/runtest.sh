@@ -17,7 +17,7 @@ else
 	sim="$PYTHONPATH/../../Py/Sim/wwsim.py"
 	rm bounce.acore wwsim.log wwasm.log
 	python $asm bounce1954.ww -o bounce >&wwasm.log
-	python $sim --CycleLimit 7700 bounce.acore >&wwsim.log
+	python $sim -v --CycleLimit 7700 bounce.acore >&wwsim.log
 	egrep "Warning|Error" wwasm.log >&tmp-wwasm.log
 	egrep "Warning|Error" TestRefs/wwasm.log >&tmp-ref-wwasm.log
 	grep ww_draw_point wwsim.log >&tmp-wwsim.log
