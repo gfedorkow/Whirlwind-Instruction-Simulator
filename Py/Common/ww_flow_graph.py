@@ -752,9 +752,5 @@ class FlowGraph:
         cm = CorememClass (cb)
         cpu = CpuClass (cb, cm)
         cb.cpu = cpu
-        print ("LAS42", self.outfile)
-        print ("LAS42", self.outfile_basename)
-        print ("LAS42", self.flowgraph_outfile)
-        print ("LAS42", self.flowgraph_outdir)
         self.run_flow_analysis(cb, tracelog, cm, cpu, title, block_info_len)
 

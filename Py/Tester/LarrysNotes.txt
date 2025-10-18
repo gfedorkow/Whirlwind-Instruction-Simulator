@@ -837,6 +837,7 @@ literal-digit-seq												Decimal inreger
 
 
 	- Static flow -- check holy cow and uninited memory
+	- ww_flowgraph.py -- LAS42 prints
 	* Hoisted CpuClass to its own file wwcpu.py, now in Common.
 	- With cpu hoist should be able to simplify debugger interface to sim.
 	- Code-Samples/Bounce/r-196-bounce-example: There is bounce.ww and bounce1954.ww, same except that
