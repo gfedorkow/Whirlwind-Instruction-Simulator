@@ -15,7 +15,7 @@ else
 	sim="$PYTHONPATH/../../Py/Sim/wwsim.py"
 	rm -f crt-test.acore crt-test.lst wwsim.log wwasm.log tmp-wwsim.log tmp-ref-wwsim.log 
 	python $asm crt-test.ww >&wwasm.log
-	python $sim --CycleLimit 5000 crt-test.acore >&wwsim.log
+	python $sim -v --CycleLimit 5000 crt-test.acore >&wwsim.log
 	egrep "Warning|Error" wwasm.log >&tmp-wwasm.log
 	egrep "Warning|Error" TestRefs/wwasm.log >&tmp-ref-wwasm.log
 	grep ww_draw_point wwsim.log >&tmp-wwsim.log

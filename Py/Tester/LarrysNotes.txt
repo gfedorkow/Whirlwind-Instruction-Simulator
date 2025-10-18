@@ -1,30 +1,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 This is a collection of notes and scratchings on Larry's efforts in
 the Whirlwind project. It started as a doc dump for the tester, but
 has expanded into assembler and other areas.
@@ -40,8 +16,8 @@ rationale for the change is below in a note to Guy dated Nov 2024.
 
 The main thing new is that we're script-based, and use basic scripting
 to run tests and do diffs. It's based on boiler-plate scripting which
-is copied an modified to make a new test. The convenience and
-flexibility of such script developement outweighs the "badness" of the
+is copied and modified to make a new test. The convenience and
+flexibility of such script development outweighs the "badness" of the
 redundancy, and if needed we can develop mass-editing tools to help us
 if an across-the-board change is needed.
 
@@ -603,7 +579,10 @@ literal-digit-seq												Decimal inreger
 		Backed-out; not needed
 	* Case-sensitive? Right now new asm is not at all
 		We want case-insens ops and case-sens labels and vars
-	- Check range on nextcoreaddress since can overflow 2K as in all1.ww. Right now croaks.
+	* Check range on nextcoreaddress since can overflow 2K as in all1.ww. Right now croaks.
+		[Fixed by checking range in passTwoOp. Problem in AsmInst.init
+		 showed via xref array so just ignore any overflow there since
+		 can't xref from/to non-exeutable ops.]
 	* Mod and test disasm
 	* asm: no-prefx-addr option, to get a pretty-printed source file
 		Changed to --MinimalListing
@@ -630,7 +609,7 @@ literal-digit-seq												Decimal inreger
 	- Can probably be more elegant in AsmLabelTab by subclassing dict.
 	* Why does core file have 7-oct width?
 		Guy thinks because he first wanted to encode the memory bank.
-	- Note crt-test has runtest.n.sh, but the drawing output has not
+	* Note crt-test has runtest.n.sh, but the drawing output has not
 		  been validated against fixes Guy will be supplying.
 	* I'l take on a task of updating the asm manual.
 		Should be good for now
@@ -650,9 +629,9 @@ literal-digit-seq												Decimal inreger
 		Looks ok -- needed to learn more about *args vs **kwargs
 	- Two .print insts in a row cause a comma-expected syntax bug (in sim)
 	- Unterminated string seems to crash asm tokenizer
-	- How does float dv work? Can't find anything that matches this
+	* How does float dv work? Can't find anything that matches this
 	  algorithm. The fixed-point-30 lib does not implement dv.
-		Appears to be Taylor series of 1/(a+b), two terms.
+		[Is almost certainly Taylor series of 1/(a+b), two terms.]
 	* Shifts in lz
 	* Rename new asm to be current; appropriate rename old prog and stuff if desired.
 	  		 1/31/25 -- renamed away from .n
@@ -778,17 +757,18 @@ literal-digit-seq												Decimal inreger
 		[Added escape support for \n, \t, and \b to asm
 		 tokenizer. These produce the literal char e.g. newline. The
 		 listingString() function changes it back to the source form.
-	- Asm: carat-string is useless. Fix or discard,
+	- Asm: carat-string is useless. Fix or discard.
 	* Float printer -- extreme accuracy issues
 		[Looks like bug in spax, where if you shift a 24,6 low word it
 		 will get the wrong bits due to a negative exponent. Fixed with
 		 ".if f24" enablement in the code.]
-	- Float printer: do low-end rounding? eg 42^2 + 57^2 = 5013, but
+	* Float printer: do low-end rounding? eg 42^2 + 57^2 = 5013, but
 		printer gives +0.50129985+04. Same issue printing 42^2 and 57^2.
 		Problem in essence is the modern style is to do decimal
 		rounding, after producing digits. Would need code change to
 		frac printer to store digits then do the round. This does not
 		seem to be in the spirit of the ww apps at the time.
+		[Yes not in the spirit. See "Is integer printing" issue below.]
 	* LZ: 197 location needs to change to different space -- runs into comp_code
 		[Now grows down from top of comp_code]
 	* LZ: Note switch-table loc for a letter (var) is re-used during
@@ -798,14 +778,15 @@ literal-digit-seq												Decimal inreger
 			followed by another in the table, so variable collisions
 			are avoided. The upper case table has a few such
 			collisions, but vars are all lower case.
-    - LZ: 12th root of 2 accuracy?
-        Note use this clisp loop to get many digits of music-note prog for ref:
-             (let ((r (expt 2d0 (coerce 1/12 'double-float)))
-                   (s 220d0))
-               (dotimes (i 25)
-                 (print (list i s (sq s) (/ 1 (sq s))))
-                 (setq s (* r s))))
-	- LZ: Is integer printing behavior really like the original? Prints approx from below.
+	* LZ: 12th root of 2 accuracy?
+		Note use this clisp loop to get many digits of music-note prog for ref:
+			 (let ((r (expt 2d0 (coerce 1/12 'double-float)))
+				   (s 220d0))
+			   (dotimes (i 25)
+				 (print (list i s (sq s) (/ 1 (sq s))))
+				 (setq s (* r s))))
+		[I've probably gone as far as I can with this.]
+	* LZ: Is integer printing behavior really like the original? Prints approx from below.
 	  	  Eg print 123 -> +.12299998+03
 		  Python prints the integer
 
@@ -817,24 +798,87 @@ literal-digit-seq												Decimal inreger
 		  original float printer (it seems) printed in the same
 		  frac+exp manner. Would they have printed for 123,  +.12300000+03 ?
 
-		  * Found round issue! Now looks better, ie, more like
-            original, as in sample in Laning letter.
+		  [Found round issue! Now looks better, ie, more like
+            original, as in sample in Laning letter.]
 
 	* LZ Paper:
 		- -32767 -- fractional behavior
 		- Fig 5 -- wrong; it's not the 24,6 routine
-	- %fx -- really can't support it
+	* %fx -- really can't support it
+		[Removed]
 	- Replace FlexoClass with code in wwflex
-		Where is current flex-code converter used? ascii-to-flex tool should be most uses
+		* File names and related stuff in asm flow gen
+		- wwdisasm uses it's own flex code table -- not clear it's worth changing
+		- "record status message" get a char returned for rc -- necessary? -- currently commented out
+		- char display at right in tcore files has changed e.g. # rather than \0 for null char:
+
+
+< @C00160: 0040112 0100207 0040047 0074040 0000000 0000000 0000000 0066315  ; ts ca ts sp si si si ex  :         s3#t###+ : <color>t<color>k###6
+< @C00170: 0000510 0005075 0114630 0063147 0000200 0034632 0177533 0157777  ; si .word su ab si cf md SL  :  <shift dn>n##f6<del> :     #ew,#u<del>#
+< @C00200: 0137777 0106313 0000100 0017400 0041000 0001000 0000001 0074050  ; dm cs si rd ts si si sp  :     <del>4#####h :  #\b#3<color>##k
+< @C00210: 0074062 0074152 0000000 0177766 0130002 0070040 0000001 0074032  ; sp sp si md ao cp si sp  :         by#9et#f :     kk#<del>pc#k
+< @C00220: 0100213 0040002 0074157 0000000 0000000  None    None    None    ;    ca ts sp si si        :      4e###       : t<color>k##      
+< @C00240: 0040224 0000600 0100223 0024000 0100224 0074060  None    None    ;   ts si ca rc ca sp      :       r#5#ro     : <color>#tstk    
+< @C00260: 0040224 0000600 0100223 0024000 0100224 0074071  None    None    ;   ts si ca rc ca sp      : r#5#r<shift up>     : <color>#tstk    
+< @C00300: 0040224 0000600 0100223 0024000 0100224 0074130  None    None    ;   ts si ca rc ca sp      :       r#5#rn     : <color>#tstk    
+< @C00320: 0040224 0000600 0100223 0024000 0100224 0074141  None    None    ;   ts si ca rc ca sp      :       r#5#r#     : <color>#tstk    
+< @C00340: 0040224 0000600 0100223 0024000 0100224 0074153  None    None    ;   ts si ca rc ca sp      :       r#5#r#     : <color>#tstk    
+---
+> @C00160: 0040112 0100207 0040047 0074040 0000000 0000000 0000000 0066315  ; ts ca ts sp si si si ex  :      s3#t\0\0\0+ : <color>t<color>k\0\0\06
+> @C00170: 0000510 0005075 0114630 0063147 0000200 0034632 0177533 0157777  ; si .word su ab si cf md SL  :  <cntl>n#\0f6<del> :   \0ew,\0u<del>#
+> @C00200: 0137777 0106313 0000100 0017400 0041000 0001000 0000001 0074050  ; dm cs si rd ts si si sp  : <del>4\0\0\0\0#h : #<bs>\03<color>\0\0k
+> @C00210: 0074062 0074152 0000000 0177766 0130002 0070040 0000001 0074032  ; sp sp si md ao cp si sp  :        by\09et#f :   kk\0<del>pc\0k
+> @C00220: 0100213 0040002 0074157 0000000 0000000  None    None    None    ;    ca ts sp si si        :    4e#\0\0       : t<color>k\0\0      
+> @C00240: 0040224 0000600 0100223 0024000 0100224 0074060  None    None    ;   ts si ca rc ca sp      :     r\05\0ro     : <color>\0tstk    
+> @C00260: 0040224 0000600 0100223 0024000 0100224 0074071  None    None    ;   ts si ca rc ca sp      : r\05\0r<cntl>     : <color>\0tstK    
+> @C00300: 0040224 0000600 0100223 0024000 0100224 0074130  None    None    ;   ts si ca rc ca sp      :     R\05\0RN     : <color>\0TSTK    
+> @C00320: 0040224 0000600 0100223 0024000 0100224 0074141  None    None    ;   ts si ca rc ca sp      :     R\05\0R#     : <color>\0TSTK    
+> @C00340: 0040224 0000600 0100223 0024000 0100224 0074153  None    None    ;   ts si ca rc ca sp      :     R\05\0R#     : <color>\0TSTK    
+
+
+	- Static flow -- check holy cow and uninited memory
+	- ww_flowgraph.py -- LAS42 prints
+	* Hoisted CpuClass to its own file wwcpu.py, now in Common.
+	- With cpu hoist should be able to simplify debugger interface to sim.
 	- Code-Samples/Bounce/r-196-bounce-example: There is bounce.ww and bounce1954.ww, same except that
 		$ file bounce.ww 
 			 bounce.ww: ASCII text
 		$ file bounce1954.ww 
 			bounce1954.ww: ASCII text, with CRLF line terminators
 	* LZ: print of .1 comes out as .25
-	- LZ: certain tests fail badly with wrong values. See
+		[Needed zero-checks.]
+	* LZ: certain tests fail badly with wrong values. See
       lzt8.save. Not clear if the issue is just printing, as in
       previous issue.
+		[Looks good now]
+	* Added Justifier class to wwdebug to print syms in neat
+	  columns. Algorithm adapted from ls.c. That one looks more time
+	  efficient, passing over the string list only once, but using a
+	  fair bit of memory, to hold info on the max number of possible
+	  columns, e.g. screen-width/3. Mine just formats for 1,2,
+	  ... columns until it won't fit, then backs off to the previous.
+	- Notes and proposals for output and logging:
+	
+		- Flex (and tty) output -- too much! For flex, there is
+		  line-by-line, "flex said:" everything at the end, and that
+		  again if "info" is on, i.e., if it's not -q.  Seems to me we
+		  really only need the line-by-line.
+
+		  Removed this extra logging:
+
+                cb.log.info ("Begin Flexout:\n" + logstr)
+                cb.log.info ("End Flexout")
+
+		- If sim without -q, we're flooded with "info" messages. This
+          should all be off by default. Particularly annoying:
+				Info: branch forwards from pc=0o2524 to 0o2745(r199)
+				Info: branch backwards from pc=0o2746 to 0o2712(exec_inst)
+
+		  Added --Verbose (-v) in addition to -q. We'll sort out the diff as we go.
+
+		  Should we have -v and -vv (--VeryVerbose)?
+			Python uses -V and if you want more, -V -V
+
 
 
 
@@ -1182,6 +1226,7 @@ This tests for x == +-0 (seen in frac printer):
 	cm x
 	su 0
 	cp a	; Branch if x is zero
+------------------------------------------------------------------------------
 
 
 ------------------------------------------------------------------------------
@@ -1204,6 +1249,8 @@ since it's not what we're used to nowadays. When cntr gets to -1,
 adding one via ao produces -0.  -0 still checks as negative so the
 loop continues. On the next loop adding one to -0 produces 1, and the
 loop ends. Thus stuff is executed N times.
+------------------------------------------------------------------------------
+
 
 ------------------------------------------------------------------------------
 --- Beware the td!
@@ -1211,12 +1258,51 @@ loop ends. Thus stuff is executed N times.
 Writing instructions is a normal part of ww coding. Careful with td!
 When used with shift instructions td will overwrite the low opcode bit
 and potentially change the shift from hold to round.
+------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------
+--- WW languages designed as regular grammars
+
+This one is more a design theme rather than an idiom.
+
+In looking through L&Z, plus the opnames and types of labels which can
+be formed in CSII, it seems their languages were all "rigged"
+grammatically to allow for a largely FSM approach to parsing the csii
+text. In L&Z, they used a switched-instruction state machine to branch
+(i.e., "jump" or "dispatch" table) through char sequences. Those char
+sequences are very tightly defined, eg, it just needs the P in PRINT,
+and the operations are unambiguous one- or two-letter nmemonics.
+
+In CSII, consider for example the tape output with lines like:
+
+		 cpc1
+		 csh1
+		 rcr2
+		 slr10
+		 srr17
+		 
+In all these cases the second char of the opcode can only be followwed
+by chars that are either operands or a third opcode char. There are no
+ambiguities as the set of chars allowed at each step is deterministic. The operands also have a simple
+and unambiguous interpretation that 
+
+It may be worth considering how to detect this sort of pattern in the
+tapes, to help find valid code. In particcular looking for rd loops is
+a start.
+------------------------------------------------------------------------------
 
 
 
 
-Diving into the Tapes
+
+
+
+
+
+Diving into the Tapes  *****
 =====================
+[9/10/25 Deleted all these dirs and zips because we're using Guy's dir structure now.]
 
 ~/whirlwind/Tapes/
 	Paper-Tapes
@@ -1234,3 +1320,126 @@ As of now 6/22/25 these will not be checked in to git.
 
 - .tap files seems to be the base source data, with tcore, ocore, etc. dereived.
 
+
+
+Tape Dev
+========
+
+--------------------------------
+Guy's mail 8/27/25:
+
+hi Larry,
+  Here's the script I used.
+  
+  It's currently very inefficient, and I notice now I didn't even try
+  to run it on the mysterious .ocore files.
+
+  At the moment, it also prints the name of the file it's searching,
+  whether it finds anything or not.  Since almost all attempts find
+  nothing, the obvious change is to make it completely silent unless
+  it has something useful to say.
+
+  I did add this to my guy-dev branch, in ~/WW/GitHub/Recovered-Tapes/Translated-Files/Scripts
+
+  Thanks for putting up with all these rough edges...
+
+  /guy
+
+$ cat search-for-pattern.sh
+
+# use code-correlate to search for a pattern in the tape corpus
+# This script takes quite a while to finish...
+# fedorkow, Aug 16, 2025
+#
+PROBE=`cygpath -w /cygdrive/c/Users/guyfe/Documents/guy/WW/GitHub/Code-Samples/Laning-and-Zierler-Interpreter/float-lib.acore`
+LOG=~/tmp/tape-search.log
+WWCOR=${PYTHONPATH}\\..\\Tools\\code-correlate.py
+
+find ../Magnetic-Tapes ../Paper-Tapes -name "*.tcore" -exec python ${WWCOR} -q -p ${PROBE} "{}" ";"  -exec echoerr "{}" ';' > ${LOG}
+--------------------------------
+
+--------------------------------
+Guy's mail 8/30/25:
+
+The file 102782316_fc126-269-330_11-25.fc has color-changes coded as 
+VT-100 codes, and also rubouts in it.  The Mouse.fc file is just ascii 
+text with the rubouts and color codes deleted.  You can see this coder 
+typed most of his/her labels in red.
+
+You can see the CS-II converter at ~/WW/GitHub/Py/CS-II.
+
+It's written in my ad-hoc regex style, but that's clearly not the right 
+methodology for parsing this stuff...  they must have done 
+character-by-character parsing somehow.
+
+My intent is to convert the relative labels to offsets from a 'real' 
+label, but that's not working properly yet.  Other than that, it's close 
+to emitting wwasm code.
+--------------------------------
+
+
+
+
+--------------------------------
+Mail to Guy 10/13/25
+
+I've made number of changes that I hope you'll like. In digging into
+the tape processing the first thing that was clear was the need to
+unify the flex-code code. Along the way I wanted to experiment with
+emitting a static flow graph from the assembler. These things combined
+induced a number of changes, some of which we have chatted about
+before.
+
+Before doing a merge and pull request I'll demo this to you at our
+next meeting.
+
+1. Processing the flex code is now done completely by the classes in
+wwflex.py. These use FSM lex techniques to assure we have the right
+interpretation. In particular, translation of superscripts to
+appropriate ascii now works, and I think the different formats are
+clearer in the code. One thing this shows is that a lot of the fc
+files have numbers with exponents in them. This may give us a clue to
+their use.
+
+%String in the core output from wwutd now includes chars from both the
+upper and lower part of the word. This picked up several more new
+interesting-looking strings. We should go over whether and how we
+should annotate the addresses for the strings.
+
+We'll need to go over the need and use for flex char translation which
+is not dependent on context, as in the core file tables.
+
+2. I'm moving ahead with the idea that the system (at least the sim)
+should be quiet(er) by default. So there is now a --Verbose (-v), and
+-q is the default. Thus -q is now a nop and just stays for compat. I
+mostly did not change the flags in the code, so quiet = not
+verbose. However there are a few related flags and I'll consolidate as
+seems reasonable. I'll go over these before any drastic changes.
+
+There are a few printouts that really seem unnecessary, and I'm
+commenting them out for now. One is use use of a "symbol" returned
+from rc for the "rc record" or something. Another is the "branch
+fwd/back" print. The latter produces tremendous output is of
+questionable use so the flag controlling it is commented out.
+
+3. The old FlexoClass is now FlexoControlClass, and just has what's
+needed for device control, not the flex code processing.
+
+4. The class CpuClass has been pulled out of wwsim.py and into its
+own file in Common, wwcpu.py. The stubs that were in a couple of files
+have been deleted. A couple of other files had to move into Common,
+like radar.py.
+
+One thing I can now do is make the interface to the debugger a little
+cleaner, but I'm not rushing into it. But what put me over the edge
+for this was trying to integrate the flowgraph.
+
+5. wwasm.py has a new --FlowGraph (-f) option, which will make
+prog.flow.static.gv from the static structure.
+
+6. Tape processing is in progress. wwutd.py uses the new flex classes,
+and I've set up scripts to build needed files from the tape images en
+masse. As mentioned this has already exposed some things like
+exponents in numbers. We should go over this when we chat next.
+
+ - Larry

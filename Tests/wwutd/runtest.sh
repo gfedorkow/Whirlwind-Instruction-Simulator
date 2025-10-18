@@ -15,7 +15,7 @@ then
 else
 	asm="$PYTHONPATH/../../Py/Assembler/wwasm.py"		# Use quotes since can't resolve backslash yet -- it's needed for file name translation
 	sim="$PYTHONPATH/../../Py/Sim/wwsim.py"
-  wwutd="$PYTHONPATH/../../Py/Tape-Decode/wwutd.py"
+	wwutd="$PYTHONPATH/../../Py/Tape-Decode/wwutd.py"
 	rm -f ${test_file}_gs001.tcore  wwutd.log tmp-wwutd.log tmp-ref-wwutd.log 
 	python $wwutd ${test_file}.7ch  >&wwutd.log
 
