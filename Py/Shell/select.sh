@@ -30,7 +30,7 @@ do $base/scope-select.py
      10) p="wwsim $code/Vibrating-String/v204-open-end.acore --Ana -q";;
      11) p="wwsim $code/Nim/nim-fb.acore --Ana -q";;
      12) p="wwsim $code/Number-Display/number-display-annotated.acore --Ana -q";;
-     13) cd $code/Track-While-Scan-D-Israel/; p="wwsim annotated-track-while-scan.acore -D -r --CrtF 5 --NoToggl --Ana -c 0 -q";;
+     13) cd $code/Track-While-Scan-D-Israel/; p="wwsim annotated-track-while-scan.acore -D -r --CrtF 15 --NoToggl --Ana -c 0 -q --NoAlarmStop";;
      14) cd $code/Vector-Clock; p="wwsim vector-clock.acore --Ana -q";;
      15) p="wwsim $code/Lorenz/lorenz.acore --NoAlarm --Ana -q";;
     127) exit;;

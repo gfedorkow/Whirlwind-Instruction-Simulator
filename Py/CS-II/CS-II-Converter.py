@@ -64,6 +64,8 @@ class parser_state_class:
         self.file_name = None
         self.tape_mode_settings = None
         self.wwasm_output = ''
+        self.current_relative_base = None
+
 
 
 class csii_statement_class:
@@ -79,7 +81,6 @@ class csii_statement_class:
         # it is possible to have both of these address assignments on a single instruction
         self.address_assignment = ''  # this makes a .ORG to set the current location in core
         self.drum_address_assignment = ''  # this makes a (weird kind of) .ORG to set the location on the drum
-        self.current_relative_base = None
 
 
     # in the case of a Program Parameter, I'm going to make an assember directive ".PP", followed by what
@@ -120,12 +121,12 @@ class csii_statement_class:
             instruction = ns
             print("Line %s: add in a .ORG '%s' for %s" % (line_number, addr, csii_statement))
 
-        if line_number == "8b":
-            breakp()
-
         #check for directives, e.g. OCTAL, DECIMAL, START AT
-        if (p_op := self.check_for_pseudo_op(cs_ii_pgm, instruction)) is not None:
-             self.psuedo_op = p_op
+        # The routine returns a pseudo-op or None, plus a comment if it's a pseudo-op
+        p_op = self.check_for_pseudo_op(cs_ii_pgm, instruction)
+        if p_op[0] is not None:
+             self.psuedo_op = p_op[0]
+             self.comment += p_op[1]
         else:
             #labels are at the start of the line, followed by a comma
             # it looks like its possible to attach two labels to the same instruction, e.g. 'r6,y30,ca0'
@@ -133,11 +134,12 @@ class csii_statement_class:
                 split_instruction = instruction.split(',')
                 if len(split_instruction) == 2:
                     (self.label, operation) = split_instruction
-                    cs_ii_pgm.current_relative_base
+                    cs_ii_pgm.current_relative_base = self.label
                     print("Found Label %s in stmt %s, line %s" % (self.label, self.statement, line_number))
                 elif len(split_instruction) == 3:
                     (self.label, self.label2, operation) = split_instruction
                     print("Found double Label %s %s in stmt %s, line %s" % (self.label, self.label2, self.statement, line_number))
+                    cb.log.warn("don't know how to set Relative Base with two labels!")
                 else:
                     cb.log.warn("Line %s: can't parse %s" % (line_number, instruction))
 
@@ -224,16 +226,34 @@ class csii_statement_class:
 
     def check_for_pseudo_op(self, cs_ii_pgm, stmt):
         ret = None
+        comment = None
         if re.match("DECIMAL", stmt):
             cs_ii_pgm.number_base = 10
             ret = ''
+            comment = "; Decimal Address Mode"
         if re.match("OCTAL", stmt):
             cs_ii_pgm.number_base = 8
+            comment = "; Octal Address Mode"
             ret = ''
+        # I don't think this case ever happens, and it should be deleted (Aug 4, 2025)
         if re.match("START AT", stmt):
             cs_ii_pgm.start_at = re.sub("START AT *", '', stmt)
             ret = ".jumpto %s" % cs_ii_pgm.start_at
-        return ret
+            comment = "; Start Address"
+        if re.match("ST", stmt):  # the correct Start At is "ST<addr>"
+            cs_ii_pgm.start_at = re.sub("ST*", '', stmt)
+            ret = ".jumpto %s" % cs_ii_pgm.start_at
+            comment = "; Start Address"
+        if re.match("<stop>", stmt):
+            comment = "; Stop character in input file"
+            ret = ''
+        if re.match("fc", stmt):  # comment that gives the file info at the beginning of the cs-ii source
+            comment = "; %s" % stmt
+            ret = ''
+        if re.match("DA", stmt):  # Drum Address -- I should do _something_ with this, but not sure what yet
+            comment = "; %s" % stmt
+            ret = ''
+        return (ret, comment)
 
 
     # check M-2539-2 VIII-8 [XIV-19?] for a run-down of floating, temporary and relative addressing for labels.
@@ -246,7 +266,6 @@ class csii_statement_class:
         global cb
 
         print_it = False
-        got_it = 0
         operand = operand_arg  # we return the operand unchanged unless it needs conversion
 
         # catch labels with offsets in front.  The format would be a couple decimal digits, the label letter[s]
@@ -256,12 +275,27 @@ class csii_statement_class:
         #   ... to be resolved in the wwasm
         # That's because J Backus said Numbers start with a Number, Labels start with a Letter.
         #    It's The Right Thing to Do
-        if re.match("[.0-9]+[a-z]+[0-9]*$", operand):
+        # While we're at it, replace the label 'r' with the last "real" label we saw.
+        #    Note that 2r3 is ordinary label "r3" with an offset of two;
+        #    while "2r" iw the relative offset of two from the last real label
+        #    The bare letter 'r' [I think] refers to the last real label, i.e., it's like '0r'
+        if re.match("[-0-9]*r$", operand):
+            nl = self.relative_label_fixer(operand, cs_ii_pgm.current_relative_base)
+            self.comment += ";replaced relative label with %s " % nl
+            operand = nl
+        if re.match("[-0-9]+[a-z]+[0-9]*$", operand):
             nl = self.offset_label_fixer(operand)
             self.comment += ";old label: %s, new label: %s" % (operand, nl)
             operand = nl
 
+        # fix unusual cs-ii octal number format
+        #   "0.71", etc, seems to be octal; we'll Make It So
+        if re.match("\.[0-7]+$", operand):
+            nl = self.number_fixer(operand)
+            self.comment += ";old number: %s, new number: %s" % (operand, nl)
+            operand = nl
 
+        got_it = 0
         # categorize the remaining types of operands
         if re.match("[0-1]*\.[0-7]*$", operand):
             if print_it: print("octal fraction: %s" % operand)
@@ -310,7 +344,7 @@ class csii_statement_class:
         if operand[0].isnumeric() and operand[-1] == 'r':
             if print_it: print("relative label: %s" % operand)
             got_it += 1
-        if re.match("\-?[0-9]+[a-z][0-9]+$", operand):  #the Minus on the front is optional
+        if re.match("\-?[0-9]+[a-z][0-9]+$", operand) and got_it == 0:  #the Minus on the front is optional
             if print_it: print("offset label: %s" % operand)
             got_it += 1
         if got_it != 1:
@@ -318,19 +352,46 @@ class csii_statement_class:
         return(operand)
 
 
+    # number_fixer
+    # Coming into this should be a slightly-off-standard Octal format, starting with a . and having
+    # fewer than 5 digits
+    # The result 'must' be a positive octal number...
+    def number_fixer(self, operand):
+        if operand[0] != '.':
+            cb.log.warn("number-fixer failed for operand=%s" % operand)
+            return operand
+        operand = operand[1:]
+        ret = "0o0" + operand
+        pad = 5 - len(operand)
+        while pad > 0:
+            ret += '0'      # append zeros to get to five digits
+            pad -= 1
+        return ret
+
     # This short routine parses a '<number><letter> operand to convert it to separate strings
     # e.g. "2r" becomes label, offset = 'r' and '2'
     def offset_label_fixer(self, operand):
         global cb
         ret = operand  # by default, do nothing
-        m = re.match("([.0-9]+)([a-z]+.*)", operand)
+        m = re.match("([-0-9]+)([a-z]+.*)", operand)
+        sign = '+'
         if m:
             offset = m.group(1)
+            if offset[0] == '-':
+                offset = offset[1:]
+                sign = '-'
             label = m.group(2)
-            ret = label + ' + ' + offset
+            ret = label + ' ' + sign + ' ' + offset
         else:
-            cb.log.warn("match failed for operand=%s in offset_label_fixer", operand)
+            cb.log.warn("match failed for operand=%s in offset_label_fixer" % operand)
         return ret
+
+    def relative_label_fixer(self, operand, current_relative_base):
+        global cb
+        ret = re.sub('r', current_relative_base, operand)
+        cb.log.warn("relative_label_fixer replaced 'r' with '%s' to get '%s'" % (current_relative_base, ret))
+        return ret
+
 
 # My Flexo converter carries both Delete (rubout) and color change codes through to the ascii
 # output, converting the red/black shift to ASCII \e codes.  Both are ignored in Whirlwind language
@@ -367,6 +428,8 @@ def read_fc(cb, filename:str, cs_ii_pgm):
             cs_ii_pgm.tape_mode_settings = line
             continue
         ln = strip_color_and_del(line.rstrip())
+        if line_number == 258:
+            breakp()
         subline = ln.split('\t')
         sub_number = 'a'
         for statement in subline:

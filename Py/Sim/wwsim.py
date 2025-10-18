@@ -101,11 +101,6 @@ Breakpoints = {
 # In 'midnight-restart mode, I want the sim to stop when the day changes at midnight
 
 
-
-
-
-
-
 # At the end of the simulation, we may want to dump out the state of core memory
 def write_core_dump(cb, core_dump_file_name, cm):
     core_all_banks = []
@@ -468,7 +463,7 @@ def main_run_sim(args, cb):
                 if cb.panel:
                     if alarm_state == cb.QUIT_ALARM:   # they said Quit, we'll quit.
                         break
-                    else:  # here's the state where we hit an alarm, but it's not QUIT
+                    if not args.NoAlarmStop:  # here's the state where we hit an alarm, but it's not QUIT
                         cb.sim_state = cb.SIM_STATE_STOP
 #                if cb.panel and cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # watch for mouse clicks on the panel
 #                    break

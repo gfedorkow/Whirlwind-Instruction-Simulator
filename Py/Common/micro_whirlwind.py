@@ -24,6 +24,7 @@ import blinkenlights
 import control_panel
 import time
 import wwinfra
+import analog_scope   # import this just to see if UseGun2 is set or not
 
 MwwPanelDebug = False    # turn on to see what's going on with the control panel code
 
@@ -90,8 +91,9 @@ class PanelMicroWWClass:
             pwr_ctl.pwr_on()
             time.sleep(0.3)
 
-            self.pin_audio_click = 12  # audio pin
-            gpio.setup(self.pin_audio_click, gpio.OUT)
+            if not analog_scope.UseGun2:
+                self.pin_audio_click = 12  # audio pin
+                gpio.setup(self.pin_audio_click, gpio.OUT)
 
             self.md = MappedRegisterDisplayClass(self.log, i2c_bus)  # pass in cb.log for printing log messages
             self.sw = MappedSwitchClass(self.log, i2c_bus, self.md)
@@ -99,6 +101,7 @@ class PanelMicroWWClass:
             # The rest come from the ReadIn operation
             if MwwPanelDebug: self.log.info("Preset D/F Scope Selector switches to %d" % cb.which_scope)
             self.md.set_scope_selector_leds(cb.which_scope)
+            self.md.set_mir_preset_switch_leds()   # used or not, we want the preset LEDs on
         except IOError:
             self.micro_ww_module_present = False
             self.log.warn("Missing MicroWhirlwind Panel drivers")
@@ -1203,7 +1206,7 @@ class I2C:
         if Debug_I2C: print("I2C init bus #%d: " % bus_number)
         # bus = I2Cclass(channel = 1)
         self.bus = smbus2.SMBus(bus_number)
-        if Debug_I2C: print("  done")
+        print(" i2c done")
         self.test_step = 0
 
     def writeRegister(self, i2c_addr, command, val):
@@ -1229,7 +1232,7 @@ class PwrCtlClass:
         self.log = log
 
     def pwr_on(self) -> None:
-        global pin_pwr_ctl, pin_tca_reset, pin_tca_interrupt
+        global pin_pwr_ctl, pin_tca_interrupt, pin_tca_reset
 
         self.pwr_state = 1
 
@@ -1541,7 +1544,7 @@ class MappedDisplayTestDriverClass:
             self.reg_disp.set_preset_switch_leds(pc = self.reg_list[5].var_name, pc_bank= 0,
                                               ff2=self.reg_list[6].var_name, ff3=self.reg_list[7].var_name)
         elif self.reg_list[self.reg_num].fn == "mir_preset":
-            self.reg_disp.set_mir_preset_switch_leds(self.reg_list[8].var_name)
+            self.reg_disp.set_mir_preset_switch_leds()  ## former arg: self.reg_list[8].var_name)
         else:
             print("unknown register set type %s" % self.reg_list[self.reg_num].fn)
 
@@ -1631,7 +1634,7 @@ def main():
     cb = wwinfra.ConstWWbitClass()
     cb.cpu = localCpuClass()
     cb.cpu.cm = wwinfra.CorememClass(cb)
-    cb.log = wwinfra.LogFactory().getLog (quiet=False, no_warn=args.NoWarnings)
+    cb.log = wwinfra.LogFactory().getLog (quiet=False)
 
     pwr_ctl = PwrCtlClass(cb.log)
     # not much can happen if we can't initialize the i2c bus...

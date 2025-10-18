@@ -1,4 +1,6 @@
 
+
+
 # Copyright 2023 Guy C. Fedorkow
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 # associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -31,6 +33,11 @@ DebugAnaScope = False
 DebugGun = True
 RasPi = True
 
+# Jul 31, 2025 -- It appears that micro-whirlwind overloads self.pin_isGun2on = 12 and Audio_click = 12
+# I've added these two terms to disable the light guns one at a time and make sure I've got the bug.
+UseGun1 = True
+UseGun2 = False
+
 import time
 import math
 import os
@@ -44,6 +51,7 @@ except ImportError:
 # Analog Scope Interface Class
 class AnaScope:
     def __init__(self, host_os, cb):
+        global UseGun1, UseGun2
         cb.RasPi = RasPi
         #
         version = "g1.1gf"
@@ -54,21 +62,24 @@ class AnaScope:
             self.PCDebug = False  # RasPi seems to return "none" for this environment variable
         self.cb = cb  # this class is full of all kinds of helpful infra
         self.screen_max = 1024
-        # pin definitions in BCM numbering
+        # pin definitions in BCM numbering; That means 'the numbers inside the RasPi box', 
+                         #                               not the 40-pin connector pin numbers!
         self.pin_doMove = 17
         self.pin_doDraw = 22
-        self.pin_enZ1 = 23
-        self.pin_enZ2 = 18
+        self.pin_enZ1 = 18
+        self.pin_enZ2 = 23
         self.pin_isKey = 27 # used as the Stop signal
-        self.pin_isGun1 = 24
-        self.pin_isGun2 = 25
-        self.pin_isGun1on = 26  # could be 12, # was 7
-        self.pin_isGun2on = 4
+        self.pin_isGun1 = 25
+        self.pin_isGun1on = 4
+        if UseGun2:
+            self.pin_isGun2 = 24
+            self.pin_isGun2on = 12  # was 7, but that's a CE on RasPi 5
         self.pin_TargetLED = 5
         self.pin_InterceptorLED = 6
         self.pin_isIntercept = 21  # used to indicate Target or Intercept to air-defense sim
 
-        # self.pin_audio_click = 12  # experiment
+        if not UseGun2:
+            self.pin_audio_click = 12  # click the loudspeaker
 
         # SPI pins are defined by SPI interface
 
@@ -90,16 +101,19 @@ class AnaScope:
             gpio.setup(self.pin_doDraw, gpio.OUT)
             gpio.setup(self.pin_enZ1,   gpio.OUT)
             gpio.setup(self.pin_enZ2,   gpio.OUT)
-            # gpio.setup(self.pin_audio_click,    gpio.OUT)
+            if not UseGun2:
+                gpio.setup(self.pin_audio_click,    gpio.OUT)
             gpio.setup(self.pin_TargetLED,      gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.setup(self.pin_InterceptorLED, gpio.IN, pull_up_down=gpio.PUD_UP)
 
             gpio.setup(self.pin_isKey, gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.setup(self.pin_isIntercept, gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.setup(self.pin_isGun1, gpio.IN, pull_up_down=gpio.PUD_UP)
-            gpio.setup(self.pin_isGun2, gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.setup(self.pin_isGun1on, gpio.IN, pull_up_down=gpio.PUD_UP)
-            gpio.setup(self.pin_isGun2on, gpio.IN, pull_up_down=gpio.PUD_UP)
+            if UseGun2:
+                gpio.setup(self.pin_isGun2, gpio.IN, pull_up_down=gpio.PUD_UP)
+                gpio.setup(self.pin_isGun2on, gpio.IN, pull_up_down=gpio.PUD_UP)
+
             self.spi = spidev.SpiDev()
             self.spi.open(0, 0)
             self.spi.max_speed_hz = 4000000
@@ -275,27 +289,23 @@ class AnaScope:
         """
             returns 0 if no light gun detected, or set the (two) lower bits
         """
+        global UseGun1, UseGun2
 
         # light gun signals are evaluated only if there was a point drawing
         if not self.wasPoint:
             return 0
 
 
-        # Jul 31, 2025 -- It appears that micro-whirlwind overloads self.pin_isGun1on = 26 and pin_tca_reset = 26
-        # I've added these two terms to disable the light guns one at a time and make sure I've got the bug.
-        use_gun_1 = False
-        use_gun_2 = True
         mask = 0
         
         # check if this is the first light gun pulse
-        if use_gun_1 and not self.wasGunPulse1 and gpio.input(self.pin_isGun1) == 0:
+        if UseGun1 and not self.wasGunPulse1 and gpio.input(self.pin_isGun1) == 0:
             mask = 1
             self.wasGunPulse1 = True
-            if DebugGun: print("first pulse, Gun 1: isGun1=%d, isGun1on=%d, isGun2=%d, isGun2on=%d, PushButton=%d" %
+            if DebugGun: print("first pulse, Gun 1: isGun1=%d, isGun1on=%d, isGun2=x isGun2on=x, PushButton=%d" %
                     (gpio.input(self.pin_isGun1), gpio.input(self.pin_isGun1on),
-                     gpio.input(self.pin_isGun2), gpio.input(self.pin_isGun2on),
                       gpio.input(self.pin_isIntercept)))
-        if use_gun_1 and not self.wasGunPulse2 and gpio.input(self.pin_isGun2) == 0:
+        if UseGun2 and not self.wasGunPulse2 and gpio.input(self.pin_isGun2) == 0:
             mask = mask | 2
             self.wasGunPulse2 = True
             if DebugGun: print("first pulse, Gun 2: isGun1=%d, isGun1on=%d, isGun2=%d, isGun2on=%d, PushButton=%d" %
@@ -306,21 +316,26 @@ class AnaScope:
         if mask != 0:
             return mask
 
-        # print("lg:", gpio.input(self.pin_isGun1on), gpio.input(self.pin_isGun2on))
         # debounce switch 1
-        if use_gun_1:
-            if gpio.input(self.pin_isGun1on) == 0:
-                # while switch is on, restart timer
-                self.gunTime1 = time.time()
-            else:
-                # switch must be off some time (debounce)
-                delta = time.time() - self.gunTime1
-                if delta > self.debounceGunTime:
-                    self.wasGunPulse1 = False
-                    if DebugGun: print("Debounced Gun 1")
+        if UseGun1:
+            if self.wasGunPulse1:
+                if gpio.input(self.pin_isGun1on) == 0:
+                    # while switch is on, restart timer
+                    self.gunTime1 = time.time()
+                    if DebugGun: print("debouncing 1: isGun1=%d, isGun1on=%d, isGun2=x, isGun2on=x" %
+                        (gpio.input(self.pin_isGun1), gpio.input(self.pin_isGun1on),
+                         ))
+                else:
+                    # switch must be off some time (debounce)
+                    delta = time.time() - self.gunTime1
+                    if delta > self.debounceGunTime:
+                        self.wasGunPulse1 = False
+                        if DebugGun: print("debounced 1: isGun1=%d, isGun1on=%d, isGun2=x, isGun2on=x" %
+                            (gpio.input(self.pin_isGun1), gpio.input(self.pin_isGun1on),
+                             ))
 
         # debounce switch 2
-        if use_gun_2:
+        if UseGun2:
             if gpio.input(self.pin_isGun2on) == 0:
                 # while switch is on, restart timer
                 self.gunTime2 = time.time()
@@ -328,8 +343,8 @@ class AnaScope:
                 # switch must be off some time (debounce)
                 delta = time.time() - self.gunTime2
                 if delta > self.debounceGunTime:
+                    if DebugGun and self.wasGunPulse2: print("Debounced Gun 2")
                     self.wasGunPulse2 = False
-                    if DebugGun: print("Debounced Gun 2")
         return 0
 
     def checkGun(self):
@@ -370,11 +385,12 @@ class AnaScope:
         return(gpio.input(self.pin_isKey) == 0)
 
 
-#    def set_audio_click(self, acc):
-#        if gpio is None:
-#            return False
-#        val = (acc & 0o4) != 0
-#        gpio.output(self.pin_audio_click, val)
+    # Audio moved from analog_scope to micro_whirlwind so that "wwsim -m" would make noise
+    # def set_audio_click(self, acc):
+        # if gpio is None:
+        #     return False
+        # val = (acc & 0o4) != 0
+        # gpio.output(self.pin_audio_click, val)
 
     #
 #### next functions for stand alone test only

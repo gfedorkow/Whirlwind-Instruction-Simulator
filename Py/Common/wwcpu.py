@@ -583,7 +583,7 @@ class CpuClass:
             description = ""
         self.print_cpu_state(current_pc, opcode, oplist[1], description, address)
 
-        if self.cb.RasPi:
+        if self.cb.panel and self.cb.panel.panel_mWW:
             self.cb.panel.panel_mWW.set_audio_click(self._AC)
 
         return ret
