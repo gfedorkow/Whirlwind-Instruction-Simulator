@@ -10,7 +10,7 @@ import os
 
 i = 0 
 with open("RunnableFileResults.csv", 'w') as outFile:
-	outFile.write("FileName,NumLinesInResult,LastUsefulLine,DisplayCount,LightGunCount,FlexowriterCount,BranchTargetLog\n")
+	outFile.write("FileName,NumLinesInResult,LastUsefulLine,DisplayCount,LightGunEnableCount,LightGunCheckCount,FlexowriterCount,BranchTargetCount,AvgBranchTargetHits\n")
 	with open('runnableFiles.txt', 'r') as f:
 		for fileName in f:
 			fileName = fileName.rstrip()
@@ -30,6 +30,7 @@ with open("RunnableFileResults.csv", 'w') as outFile:
 			displayCount = 0
 			flexowriterCount = 0
 			lightGunEnableCount = 0
+			lightGunCheckCount = 0
 			branchTargetLog = {}
 			
 			for line in result:
@@ -37,6 +38,8 @@ with open("RunnableFileResults.csv", 'w') as outFile:
 					displayCount = displayCount + 1
 				if ("gun_enable=1" in line):
 					lightGunEnableCount = lightGunEnableCount + 1
+				if ("ww_check_light_gun" in line):
+					lightGunCheckCount = lightGunCheckCount + 1
 				if ("Flexowriter" in line):
 					flexowriterCount = flexowriterCount + 1
 				if ("branch" in line):
@@ -51,8 +54,15 @@ with open("RunnableFileResults.csv", 'w') as outFile:
 			outFile.write("\"" + lastUsefulLine.rstrip() + "\",")
 			outFile.write(str(displayCount) + ",")
 			outFile.write(str(lightGunEnableCount) + ",")
+			outFile.write(str(lightGunCheckCount) + ",")
 			outFile.write(str(flexowriterCount) + ",")
+			outFile.write(str(len(branchTargetLog)) + ",")
+			totalHits = 0
 			for dest in sorted(branchTargetLog):
-				outFile.write(oct(dest) + ":" + str(branchTargetLog[dest]) + ";")
-			outFile.write("\n")
+				totalHits = totalHits + branchTargetLog[dest]
+			if (len(branchTargetLog) > 0):
+				avg = totalHits/len(branchTargetLog)
+				outFile.write(str(round(avg, 1)) + "\n")
+			else:
+				outFile.write("-\n")
 
