@@ -1,0 +1,443 @@
+                    .ORG 0
+@0000:000000  zero: .word 0                  ; @@ReadBy i0040 a0132 a0136 a0250 a0254 a0336 a0342 a0374 a0400 i0523
+@0001:000001   one: .word 1                  ; @@ReadBy i0413 i0416 i0421 i0424 i0427 i0432 i0435 i0440 i0443 i0446 i0451 i0454 i0457 i0462 i0465 i0470 i0473 i0504 i0513 i0520
+                    .ORG 0o40
+@0040:100000 i0040: ca 0000                  ; @@JumpedToBy a0412 a0522
+@0041:000645        si 0o645                 ;                                                  ; Auto-Annotate I/O: Display Points
+@0042:024000        rc 0
+@0043:014000        rd 0
+@0044:070523        cp i0523                 ; branch if reset button is clicked
+
+@0045:100556        ca r0556
+@0046:003625        si 0o3625                ;                                                  ; Auto-Annotate I/O: Display Characters
+@0047:024560        rc r0560
+@0050:110556        ad r0556
+@0051:024561        rc r0561
+@0052:110556        ad r0556
+@0053:024562        rc r0562
+@0054:110556        ad r0556
+@0055:024561        rc r0561
+@0056:110556        ad r0556
+@0057:024563        rc r0563
+@0060:110557        ad r0557
+@0061:024564        rc r0564
+
+                    ; dot #1
+@0062:100535 i0062: ca w0535                 ; return here at the end of the Reset Button action @@JumpedToBy a0532
+@0063:070076        cp i0076                 ; once it's been clicked, w0535 contains -1 for this dot, and it's not drawn
+
+@0064:100572        ca r0572                 ; load 020000 into ACC                             ;
+@0065:001656        si 0o1656                ; set the x axis to ACC                            ; Auto-Annotate I/O: Display Vectors
+@0066:104571        cs r0571                 ; load -030000
+@0067:024565        rc 0o565                 ; draw a line
+@0070:100572        ca r0572                 ; load 020000 into ACC                             ;
+@0071:000645        si 0o645                 ;                                                  ; Auto-Annotate I/O: Display Points
+@0072:104571        cs r0571                 ; load -030000
+@0073:024000        rc 0                     ; draw a point
+@0074:014000        rd 0
+@0075:070413        cp i0413                 ; branch if light gun hit
+                    ; the place it branches to does this... write -1 to a location tested for this dot, then return
+                    ;   i0413:  cs   0001
+                    ;           ts  w0535
+                    ;           sp  i0076
+
+                    ; dot #2
+@0076:100536 i0076: ca w0536                 ; @@JumpedToBy a0063 a0415
+@0077:070112        cp i0112
+@0100:100572        ca r0572
+@0101:001656        si 0o1656                ; Auto-Annotate I/O: Display Vectors ; Auto-Annotate I/O: Display Vectors
+@0102:104572        cs r0572
+@0103:024565        rc 0o565
+@0104:100572        ca r0572
+@0105:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0106:104572        cs r0572
+@0107:024000        rc 0
+@0110:014000        rd 0
+@0111:070416        cp i0416
+
+                    ; dot #3
+@0112:100537 i0112: ca w0537                 ; @@JumpedToBy a0077 a0420
+@0113:070126        cp i0126
+@0114:100572        ca r0572
+@0115:001656        si 0o1656                ; Auto-Annotate I/O: Display Vectors ; Auto-Annotate I/O: Display Vectors
+@0116:104573        cs r0573
+@0117:024565        rc 0o565
+@0120:100572        ca r0572
+@0121:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0122:104573        cs r0573
+@0123:024000        rc 0
+@0124:014000        rd 0
+@0125:070421        cp i0421
+
+                    ; dot #4
+@0126:100540 i0126: ca w0540                 ; @@JumpedToBy a0113 a0423
+@0127:070142        cp i0142
+@0130:100572        ca r0572
+@0131:001656        si 0o1656                ; Auto-Annotate I/O: Display Vectors ; Auto-Annotate I/O: Display Vectors
+@0132:100000        ca 0000
+@0133:024565        rc 0o565
+@0134:100572        ca r0572
+@0135:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0136:100000        ca 0000
+@0137:024000        rc 0
+@0140:014000        rd 0
+@0141:070424        cp i0424
+
+                    ; dot #5
+@0142:100541 i0142: ca w0541                 ; @@JumpedToBy a0127 a0426
+@0143:070156        cp i0156
+@0144:100572        ca r0572
+@0145:001656        si 0o1656                ; Auto-Annotate I/O: Display Vectors ; Auto-Annotate I/O: Display Vectors
+@0146:100573        ca r0573
+@0147:024565        rc 0o565
+@0150:100572        ca r0572
+@0151:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0152:100573        ca r0573
+@0153:024000        rc 0
+@0154:014000        rd 0
+@0155:070427        cp i0427
+
+                    ; dot #6
+@0156:100542 i0156: ca w0542                 ; @@JumpedToBy a0143 a0431
+@0157:070172        cp i0172
+@0160:100572        ca r0572
+@0161:001656        si 0o1656                ; Auto-Annotate I/O: Display Vectors ; Auto-Annotate I/O: Display Vectors
+@0162:100572        ca r0572
+@0163:024565        rc 0o565
+@0164:100572        ca r0572
+@0165:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0166:100572        ca r0572
+@0167:024000        rc 0
+@0170:014000        rd 0
+@0171:070432        cp i0432
+
+                    ; dot #7
+@0172:100543 i0172: ca w0543                 ; @@JumpedToBy a0157 a0434
+@0173:070206        cp i0206
+@0174:100572        ca r0572
+@0175:001656        si 0o1656                ; Auto-Annotate I/O: Display Vectors ; Auto-Annotate I/O: Display Vectors
+@0176:100571        ca r0571
+@0177:024565        rc 0o565
+@0200:100572        ca r0572
+@0201:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0202:100571        ca r0571
+@0203:024000        rc 0
+@0204:014000        rd 0
+@0205:070435        cp i0435
+
+                    ; this must be the eighth dot, right hand column.  It's always displayed, and when clicked,
+                    ; it sets the previous seven dots to -1, i.e., turned off
+@0206:100572 i0206: ca r0572                 ; @@JumpedToBy a0173 a0437
+@0207:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0210:100574        ca r0574
+@0211:024000        rc 0
+@0212:014000        rd 0
+@0213:070473        cp i0473
+
+
+                    ; second row of five dots
+@0214:100544 i0214: ca w0544                 ; @@JumpedToBy a0503
+@0215:070230        cp i0230
+@0216:100573        ca r0573
+@0217:001656        si 0o1656                ; Auto-Annotate I/O: Display Vectors ; Auto-Annotate I/O: Display Vectors
+@0220:104572        cs r0572
+@0221:024565        rc 0o565
+@0222:100573        ca r0573
+@0223:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0224:104572        cs r0572
+@0225:024000        rc 0
+@0226:014000        rd 0
+@0227:070440        cp i0440
+
+@0230:100545 i0230: ca w0545                 ; @@JumpedToBy a0215 a0442
+@0231:070244        cp i0244
+@0232:100573        ca r0573
+@0233:001656        si 0o1656                ; Auto-Annotate I/O: Display Vectors ; Auto-Annotate I/O: Display Vectors
+@0234:104573        cs r0573
+@0235:024565        rc 0o565
+@0236:100573        ca r0573
+@0237:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0240:104573        cs r0573
+@0241:024000        rc 0
+@0242:014000        rd 0
+@0243:070443        cp i0443
+
+@0244:100546 i0244: ca w0546                 ; @@JumpedToBy a0231 a0445
+@0245:070260        cp i0260
+@0246:100573        ca r0573
+@0247:001656        si 0o1656                ; Auto-Annotate I/O: Display Vectors ; Auto-Annotate I/O: Display Vectors
+@0250:100000        ca 0000
+@0251:024565        rc 0o565
+@0252:100573        ca r0573
+@0253:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0254:100000        ca 0000
+@0255:024000        rc 0
+@0256:014000        rd 0
+@0257:070446        cp i0446
+
+@0260:100547 i0260: ca w0547                 ; @@JumpedToBy a0245 a0450
+@0261:070274        cp i0274
+@0262:100573        ca r0573
+@0263:001656        si 0o1656                ; Auto-Annotate I/O: Display Vectors ; Auto-Annotate I/O: Display Vectors
+@0264:100573        ca r0573
+@0265:024565        rc 0o565
+@0266:100573        ca r0573
+@0267:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0270:100573        ca r0573
+@0271:024000        rc 0
+@0272:014000        rd 0
+@0273:070451        cp i0451
+
+@0274:100550 i0274: ca w0550                 ; @@JumpedToBy a0261 a0453
+@0275:070310        cp i0310
+@0276:100573        ca r0573
+@0277:001656        si 0o1656                ; Auto-Annotate I/O: Display Vectors ; Auto-Annotate I/O: Display Vectors
+@0300:100572        ca r0572
+@0301:024565        rc 0o565
+@0302:100573        ca r0573
+@0303:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0304:100572        ca r0572
+@0305:024000        rc 0
+@0306:014000        rd 0
+@0307:070454        cp i0454
+
+@0310:100573 i0310: ca r0573                 ; @@JumpedToBy a0275 a0456
+@0311:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0312:100574        ca r0574
+@0313:024000        rc 0
+@0314:014000        rd 0
+@0315:070504        cp i0504
+
+
+                    ; third row of three dots
+@0316:100551 i0316: ca w0551                 ; @@JumpedToBy a0512
+@0317:070332        cp i0332
+@0320:104573        cs r0573
+@0321:001656        si 0o1656                ; Auto-Annotate I/O: Display Vectors ; Auto-Annotate I/O: Display Vectors
+@0322:104573        cs r0573
+@0323:024565        rc 0o565
+@0324:104573        cs r0573
+@0325:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0326:104573        cs r0573
+@0327:024000        rc 0
+@0330:014000        rd 0
+@0331:070457        cp i0457
+
+@0332:100552 i0332: ca w0552                 ; @@JumpedToBy a0317 a0461
+@0333:070346        cp i0346
+@0334:104573        cs r0573
+@0335:001656        si 0o1656                ; Auto-Annotate I/O: Display Vectors ; Auto-Annotate I/O: Display Vectors
+@0336:100000        ca 0000
+@0337:024565        rc 0o565
+@0340:104573        cs r0573
+@0341:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0342:100000        ca 0000
+@0343:024000        rc 0
+@0344:014000        rd 0
+@0345:070462        cp i0462
+
+@0346:100553 i0346: ca w0553                 ; @@JumpedToBy a0333 a0464
+@0347:070362        cp i0362
+@0350:104573        cs r0573
+@0351:001656        si 0o1656                ; Auto-Annotate I/O: Display Vectors ; Auto-Annotate I/O: Display Vectors
+@0352:100573        ca r0573
+@0353:024565        rc 0o565
+@0354:104573        cs r0573
+@0355:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0356:100573        ca r0573
+@0357:024000        rc 0
+@0360:014000        rd 0
+@0361:070465        cp i0465
+
+@0362:104573 i0362: cs r0573                 ; @@JumpedToBy a0347 a0467
+@0363:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0364:100574        ca r0574
+@0365:024000        rc 0
+@0366:014000        rd 0
+@0367:070513        cp i0513
+
+                    ; last row(?) of one dot
+@0370:100554 i0370: ca w0554                 ; @@JumpedToBy a0517
+@0371:070404        cp i0404
+@0372:104572        cs r0572
+@0373:001656        si 0o1656                ; Auto-Annotate I/O: Display Vectors ; Auto-Annotate I/O: Display Vectors
+@0374:100000        ca 0000
+@0375:024565        rc 0o565
+@0376:104572        cs r0572
+@0377:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0400:100000        ca 0000
+@0401:024000        rc 0
+@0402:014000        rd 0
+@0403:070470        cp i0470
+
+@0404:104572 i0404: cs r0572                 ; @@JumpedToBy a0371 a0472
+@0405:000645        si 0o645                 ; Auto-Annotate I/O: Display Points ; Auto-Annotate I/O: Display Points
+@0406:100574        ca r0574
+@0407:024000        rc 0
+@0410:014000        rd 0
+@0411:070520        cp i0520
+
+                    ; at the end of the scan loop, we head back to the start and do it all again.
+@0412:074040        sp i0040
+
+
+                    ; each of the following 16 routines corresponds to one dot, and is called
+                    ; to turn the dot off.
+@0413:104001 i0413: cs 0001                  ; @@JumpedToBy a0075
+@0414:040535        ts w0535
+@0415:074076        sp i0076
+
+@0416:104001 i0416: cs 0001                  ; @@JumpedToBy a0111
+@0417:040536        ts w0536
+@0420:074112        sp i0112
+
+@0421:104001 i0421: cs 0001                  ; @@JumpedToBy a0125
+@0422:040537        ts w0537
+@0423:074126        sp i0126
+
+@0424:104001 i0424: cs 0001                  ; @@JumpedToBy a0141
+@0425:040540        ts w0540
+@0426:074142        sp i0142
+
+@0427:104001 i0427: cs 0001                  ; @@JumpedToBy a0155
+@0430:040541        ts w0541
+@0431:074156        sp i0156
+
+@0432:104001 i0432: cs 0001                  ; @@JumpedToBy a0171
+@0433:040542        ts w0542
+@0434:074172        sp i0172
+
+@0435:104001 i0435: cs 0001                  ; @@JumpedToBy a0205
+@0436:040543        ts w0543
+@0437:074206        sp i0206
+
+@0440:104001 i0440: cs 0001                  ; @@JumpedToBy a0227
+@0441:040544        ts w0544
+@0442:074230        sp i0230
+
+@0443:104001 i0443: cs 0001                  ; @@JumpedToBy a0243
+@0444:040545        ts w0545
+@0445:074244        sp i0244
+
+@0446:104001 i0446: cs 0001                  ; @@JumpedToBy a0257
+@0447:040546        ts w0546
+@0450:074260        sp i0260
+
+@0451:104001 i0451: cs 0001                  ; @@JumpedToBy a0273
+@0452:040547        ts w0547
+@0453:074274        sp i0274
+
+@0454:104001 i0454: cs 0001                  ; @@JumpedToBy a0307
+@0455:040550        ts w0550
+@0456:074310        sp i0310
+
+@0457:104001 i0457: cs 0001                  ; @@JumpedToBy a0331
+@0460:040551        ts w0551
+@0461:074332        sp i0332
+
+@0462:104001 i0462: cs 0001                  ; @@JumpedToBy a0345
+@0463:040552        ts w0552
+@0464:074346        sp i0346
+
+@0465:104001 i0465: cs 0001                  ; @@JumpedToBy a0361
+@0466:040553        ts w0553
+@0467:074362        sp i0362
+
+@0470:104001 i0470: cs 0001                  ; @@JumpedToBy a0403
+@0471:040554        ts w0554
+@0472:074404        sp i0404
+
+
+                    ; the following four routines correspond to the four 'master' dots down
+                    ; the right side of the display, each clearing the whole row.
+@0473:104001 i0473: cs 0001                  ; @@JumpedToBy a0213
+@0474:040535        ts w0535
+@0475:040536        ts w0536
+@0476:040537        ts w0537
+@0477:040540        ts w0540
+@0500:040541        ts w0541
+@0501:040542        ts w0542
+@0502:040543        ts w0543
+@0503:074214        sp i0214
+
+@0504:104001 i0504: cs 0001                  ; @@JumpedToBy a0315
+@0505:040544        ts w0544
+@0506:040545        ts w0545
+@0507:040546        ts w0546
+@0510:040547        ts w0547
+@0511:040550        ts w0550
+@0512:074316        sp i0316
+
+@0513:104001 i0513: cs 0001                  ; @@JumpedToBy a0367
+@0514:040551        ts w0551
+@0515:040552        ts w0552
+@0516:040553        ts w0553
+@0517:074370        sp i0370
+
+@0520:104001 i0520: cs 0001                  ; @@JumpedToBy a0411
+@0521:040554        ts w0554
+@0522:074040        sp i0040
+
+
+                    ; Jump here if the Reset button is clicked
+@0523:100000 i0523: ca 0000                  ; clear ACC @@JumpedToBy a0044 a0527
+@0524:040535 w0524: ts w0535                 ; store zero at 0533 @@WrittenBy a0525 a0531 ReadBy a0525
+@0525:130524        ao w0524                 ; increment the address pointer, leave the new instruction in ACC
+@0526:114533        su r0533                 ; subtract from a pointer to the end of the data block
+@0527:070523        cp i0523
+@0530:100534        ca r0534                 ; put 0535 into the ACC
+@0531:044524        td w0524                 ; reset the transfer-to-storage instruction at 0524
+@0532:074062        sp i0062                 ; done -- back to the main loop
+
+                    ; here begins the data segment
+@0533:040555 r0533: .word 0o040555           ; @@ReadBy a0526
+@0534:000535 r0534: .word 0o000535           ; @@ReadBy a0530
+                    ; these 16 vars hold the state of the 16 dots
+@0535:000000 w0535: .word 0                  ; @@WrittenBy a0414 a0474 w0524 ReadBy i0062
+@0536:000000 w0536: .word 0                  ; @@WrittenBy a0417 a0475 ReadBy i0076
+@0537:000000 w0537: .word 0                  ; @@WrittenBy a0422 a0476 ReadBy i0112
+@0540:000000 w0540: .word 0                  ; @@WrittenBy a0425 a0477 ReadBy i0126
+@0541:000000 w0541: .word 0                  ; @@WrittenBy a0430 a0500 ReadBy i0142
+@0542:000000 w0542: .word 0                  ; @@WrittenBy a0433 a0501 ReadBy i0156
+@0543:000000 w0543: .word 0                  ; @@WrittenBy a0436 a0502 ReadBy i0172
+@0544:000000 w0544: .word 0                  ; @@WrittenBy a0441 a0505 ReadBy i0214
+@0545:000000 w0545: .word 0                  ; @@WrittenBy a0444 a0506 ReadBy i0230
+@0546:000000 w0546: .word 0                  ; @@WrittenBy a0447 a0507 ReadBy i0244
+@0547:000000 w0547: .word 0                  ; @@WrittenBy a0452 a0510 ReadBy i0260
+@0550:000000 w0550: .word 0                  ; @@WrittenBy a0455 a0511 ReadBy i0274
+@0551:000000 w0551: .word 0                  ; @@WrittenBy a0460 a0514 ReadBy i0316
+@0552:000000 w0552: .word 0                  ; @@WrittenBy a0463 a0515 ReadBy i0332
+@0553:000000 w0553: .word 0                  ; @@WrittenBy a0466 a0516 ReadBy i0346
+@0554:000000 w0554: .word 0                  ; @@WrittenBy a0471 a0521 ReadBy i0370
+
+@0555:000000 w0555: .word 0
+
+                    ; these two constants gives the character spacing when printing "RESET"
+                    ; LAS -- I "fixed" the "T" below as the space needed to complete it looked too large. So it's
+                    ; reduced in the .if 0 below, so the T looks more like a T.
+                    ; However I left the default as in the original code, via the .if 1.
+@0556:002000 r0556: .word 0o2000             ; @@ReadBy a0045 a0050 a0052 a0054 a0056
+@0557:002000 .if 1 r0557: .word 0o2000             ; @@ReadBy a0060
+;             .if 0 r0557: .word 0o1000 - 100
+
+                    ; the following five numbers/constants are the characters to be drawn ("RESET", sort of)
+@0560:057400 r0560: .word 0o057400
+@0561:067000 r0561: .word 0o067000
+@0562:037000 r0562: .word 0o037000
+@0563:001000 r0563: .word 0o001000
+@0564:043000 r0564: .word 0o043000
+
+                    ;these four appear to be unused words
+@0565:000140        .word 0o000140
+@0566:020000        .word 0o020000
+@0567:000334        .word 0o000334
+@0570:154000        .word 0o154000
+
+@0571:030000 r0571: .word 0o030000           ; @@ReadBy a0066 a0072 a0176 a0202
+@0572:020000 r0572: .word 0o020000           ; @@ReadBy a0064 a0070 a0100 a0102 a0104 a0106 a0114 a0120 a0130 a0134 a0144 a0150 a0160 a0162 a0164 a0166 a0174 a0200 i0206 a0220 a0224 a0300 a0304 a0372 a0376 i0404
+@0573:010000 r0573: .word 0o010000           ; @@ReadBy a0116 a0122 a0146 a0152 a0216 a0222 a0232 a0234 a0236 a0240 a0246 a0252 a0262 a0264 a0266 a0270 a0276 a0302 i0310 a0320 a0322 a0324 a0326 a0334 a0340 a0350 a0352 a0354 a0356 i0362
+@0574:035000 r0574: .word 0o035000           ; @@ReadBy a0210 a0312 a0364 a0406
+
+                    .JumpTo 0o40
+                    .WW_File "102684113_mad_game_m_hurvitz.7ch"
+                    .WW_TapeID "fb0"

@@ -401,6 +401,8 @@ class CpuClass:
     def update_panel_for_dbg (self):
         if self.cb.panel is not None:
             self.cb.panel.update_panel (self.cb, 0)
+        if self.scope is not None and self.scope.crt is not None:
+            self.scope.crt.ww_scope_update (self.cm, self.cb)
 
     def print_alarm_msg (self, alarm_state: int):
         print("Alarm '%s' (%d) at PC=0o%o (0d%d)" %

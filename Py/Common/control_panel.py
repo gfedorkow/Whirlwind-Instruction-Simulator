@@ -26,6 +26,11 @@ import re
 
 # ###########################################
 
+class DefaultColors:
+    on_color = "gold"
+    off_color = "black"
+    outline_color ="white"
+
 class BboxClass:   # Bounding Box for buttons
     def __init__(self, x, y, x_size, y_size):
         self.min_x = x
@@ -39,7 +44,9 @@ class BboxClass:   # Bounding Box for buttons
 
 class OneToggleClass:  # make a toggle switch
     def __init__(self, win, x, y, radius, name=None, initial_value = 0,
-                 on_color="blue", off_color="black", outline_color="white"):
+                 on_color=DefaultColors.on_color,
+                 off_color=DefaultColors.off_color,
+                 outline_color=DefaultColors.outline_color):
         self.win = win
         self.current_state = initial_value
         self.name = name
@@ -93,7 +100,9 @@ class OneToggleClass:  # make a toggle switch
 
 class OneButtonClass:
     def __init__(self, win, x, y, radius, name=None, initial_value=0, toggle=False,
-                 on_color="blue", off_color="black", outline_color="white"):
+                 on_color=DefaultColors.on_color,
+                 off_color=DefaultColors.off_color,
+                 outline_color=DefaultColors.outline_color):
         self.win = win
         self.current_state = initial_value
         self.on_color = on_color
@@ -140,7 +149,8 @@ class OneButtonClass:
 
 
 class OneLampClass:
-    def __init__(self, win, x, y, radius, on_color="orange", off_color="black", initial_value=0):
+    def __init__(self, win, x, y, radius, on_color="orange",
+                 off_color=DefaultColors.off_color, initial_value=0):
         self.on_color = on_color
         self.off_color = off_color
         self.current_state = 0
@@ -206,8 +216,8 @@ class ButtonVectorClass:
         self.y_step = y_step
         self.radius = diameter / 2
         self.current_selection = 0
-        self.off_color = "black"
-        self.on_color = "blue"
+        self.off_color = DefaultColors.off_color
+        self.on_color = DefaultColors.on_color
         self.button_obj = []
         self.button_x = []
         self.button_y = []

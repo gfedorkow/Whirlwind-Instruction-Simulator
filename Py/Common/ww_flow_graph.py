@@ -90,7 +90,8 @@ class CoreMemoryMetaData:
 
     def make_core_node(self, pc: int, label: str, opcode: str, operand: int, comment: str):
         if self.rd(pc) is None:
-            self.wr(pc, CoreNodeClass(pc, label, opcode, operand, comment))
+            node = CoreNodeClass(pc, label, opcode, operand, comment)
+            self.wr(pc, node)
         else:  # these fields aren't filled in if the node is first encountered as a possible branch target
             if self.rd(pc).label == '':
                 self.rd(pc).label = label
@@ -122,7 +123,6 @@ class CoreNodeClass:
         self.first_word = False
         self.last_word = False
         self.block_id = None
-
 
 def add_branch_addr_to_core(core, pc, value, cm, cpu, branches_to=False, branched_to_by=False):
     if branches_to ^ branched_to_by is False:
@@ -355,7 +355,6 @@ def static_trace(core_meta_data, start_pc, prev_pc, cm, cpu):
             cb.log.warn("static trace leads to None?")
         opcode = cpu.op_decode[(instruction >> 11) & 0o37][1]
         operand = instruction & cpu.cb.WW_ADDR_MASK
-
         label = cpu.wwaddr_to_str(pc, label_only_flag=True)
         comment = "n/c"   # 'no comment', i.e. there might be one in the source, but the instruction didn't
                           # execute, so it's not in the trace log.  oops.
@@ -384,7 +383,7 @@ def static_trace(core_meta_data, start_pc, prev_pc, cm, cpu):
             core_meta_data.rd(pc).branches_to[pc + 1] = 0  # add a new zero-use branch target
         static_trace(core_meta_data, pc+1, pc, cm, cpu)
 
-
+        # read the sequence of log entries and mark block-start and block-end in a core image
 
 # scan a sequential block of instructions to see if any of them might do an I/O op or contain a Change Field
 # start_addr is the address of the first instruction in the block; end_addr is the address
@@ -697,7 +696,7 @@ def output_block_list(cb, blocklist, core, title, output_file, block_info_len, c
           (len(blocklist), edge_count, core_locations))
 
 class FlowGraph:
-    def __init__ (self, argFlowGraph, argFlowGraphOutFile, argFlowGraphOutDir, cb, isStatic: bool = False):
+    def __init__ (self, argFlowGraph, argFlowGraphOutFile, argFlowGraphOutDir, cb):
         self.outfile = ""
         self.outfile_basename = ""
         self.do_flowgraph = argFlowGraph
@@ -710,7 +709,7 @@ class FlowGraph:
             self.do_flowgraph = True
             self.outfile = self.flowgraph_outfile
         else:
-            suffix = "flow" if not isStatic else "flow.static"
+            suffix = "flow"
             self.outfile_basename = re.sub ("\\.acore$", "", os.path.basename (self.cb.CoreFileName)) + "." + suffix + ".gv"
         if self.flowgraph_outdir is not None:
             self.do_flowgraph = True
@@ -744,13 +743,4 @@ class FlowGraph:
             tracelog = cb.tracelog
             tracelog.append(TraceLogClass(0, '', '', 0, 0, '', log_end=True))
             self.run_flow_analysis(cb, tracelog, cm, cpu, title, block_info_len)
-
-    # Public
-    def finish_flow_graph_from_asm (self, cb, title, block_info_len=FLOW_BLOCK_ALL_CODE):
-        tracelog = cb.tracelog
-        tracelog.append (TraceLogClass(0, '', '', 0, 0, '', log_end=True))
-        cm = CorememClass (cb)
-        cpu = CpuClass (cb, cm)
-        cb.cpu = cpu
-        self.run_flow_analysis(cb, tracelog, cm, cpu, title, block_info_len)
 

@@ -175,7 +175,7 @@ class LogClass:
         self.error_count += 1
 
     def info(self, message):
-        if not self._quiet:                             # LAS check def of quiet
+        if not self._quiet:
             self.writeLog (LogMsgType.Log, LogMsgSeverity.Info, message)
 
     def warn(self, message):
@@ -1061,7 +1061,7 @@ class CorememClass:
         # happen to read uninitialed core (e.g. Vibrating String)
         if (fix_none or self.cb.ZeroizeCore) and (ret is None):
             if not self.cb.ZeroizeCore:
-                # LAS
+                # LAS changed to print for now since we can call from asm
                 # self.cb.log.warn("Reading Uninitialized Memory at location 0o%o, bank %o" % (addr, bank))
                 print ("Reading Uninitialized Memory at location 0o%o, bank %o" % (addr, bank))
             ret = 0
@@ -1344,8 +1344,6 @@ def hash_to_fingerprint(hash_obj, word_count):
 #  [Careful, there's another write_core in wwasm.py.  oops.]
 def write_core(cb, corelist, offset, byte_stream, ww_filename, ww_tapeid,
                jump_to, output_file, string_list, block_msg=None, stats_string=''):
-    # LAS
-    # flexo_table = FlexoClass(cb)  # instantiate the class to get a copy of the code translation table
     flexo = FlexToCsyntaxFlascii()
     op_table = InstructionOpTable()
     hash_obj = hashlib.md5()  # create an object to store the hash of the file contents
@@ -1498,8 +1496,9 @@ class FlexoControlClass:
         self.stop_on_zero = None
         self.packed = None
 
-        self.flexoOut = FlexToFlascii()  # Accumulate all Flexowriter output
-        self.flexoLine = FlexToFlascii() # Accumulate one line of Flexowriter output for immediate printing
+        self.flexoOut = FlexToFlascii()                 # Accumulate all Flexowriter output
+        self.flexoLine = FlexToFlascii()                # Accumulate one line of Flexowriter output for immediate printing
+        self.flexoDecoder = FlexToCsyntaxFlascii()      # For out-of-context char lookup
         
         self.flexToFlexoWin: FlexToFlexoWin = None
         self.name = "Flexowriter"
@@ -1545,9 +1544,7 @@ class FlexoControlClass:
 
     def rc(self, _unused, acc):  # "record", i.e. output instruction to tty
         code = acc >> 10  # the code is in the upper six bits of the accumulator
-        # LAS
-        # symbol = self.code_to_letter(code)  # look up the code, mess with Upper Case and Color
-        symbol = ""
+        symbol = self.flexoDecoder.decodeSingleChar (code)
         # Only do the standard flex buffering if we have no flex window
         if self.flexToFlexoWin is not None:
             self.flexToFlexoWin.addCode (code)
@@ -1559,15 +1556,6 @@ class FlexoControlClass:
                 print("Flexo: %s" % s)   # print the full line on the console, ignoring the line feed
             else:
                 self.flexoLine.addCode (code)
-            # LAS
-            """
-            self.FlexoOutput.append(symbol)
-            self.FlexoLine += symbol
-            if symbol == '\n':
-                symbol = '\\n'   # convert the newline into something that can go in a Record status message
-                print("Flexo: %s" % self.FlexoLine[0:-1])   # print the full line on the console, ignoring the line feed
-                self.FlexoLine = ""                         # and start accumulating the next line
-            """
         return self.cb.NO_ALARM, symbol
 
     def bo(self, address, acc, cm):  # "block transfer out"
@@ -1576,8 +1564,6 @@ class FlexoControlClass:
             acc: contents of accumulator (the word count)
             cm: core memory instance
         """
-        # LAS commented out all symbol_str stuff
-        # symbol_str = ''
         if address + acc > self.cb.WW_ADDR_MASK:
             print("block-transfer-out Flexo address out of range")
             return self.cb.QUIT_ALARM
@@ -1585,18 +1571,9 @@ class FlexoControlClass:
             wrd = cm.rd(m)  # read the word from mem
             self.rc(0, wrd)
             code = wrd >> 10   # code in top six bits contain the character
-            # symbol_str += self.code_to_letter(code)  # look up the code, mess with Upper Case and Color
-
-        # LAS Removed this unconditional print 
-        """
-        print(("Block Transfer Write to Flexo: start address=0o%o, length=0o%o, str=%s" %
-              (address, acc, symbol_str)))
-        """
         return self.cb.NO_ALARM
 
     def get_saved_output(self) -> str:
-        # LAS
-        # return self.FlexoOutput
         return self.flexoOut.getFlascii()
 
 

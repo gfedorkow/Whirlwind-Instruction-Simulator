@@ -421,7 +421,7 @@ class DbgCmd_rs (DbgCmd):
         super().__init__ (*args)
         pass
     def helpStrs (self) -> [str]:
-        r = ["rs", "Restart program"]
+        r = ["rs", "Reset program ('r' starts it again)"]
         return r
     def execute (self):
         self.dbg.state = DbgProgState.Restarting
@@ -766,6 +766,7 @@ class DbgCmd_syms (DbgCmd):
         (h, v) = shutil.get_terminal_size()
         maxSymLen = 0
         """
+        # This commented-out section is the orginal single-column output.
         for sym in self.dbg.symToAddrTab:
             if len (sym) > maxSymLen:
                 maxSymLen = len (sym)
