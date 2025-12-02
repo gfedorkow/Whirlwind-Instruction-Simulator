@@ -904,6 +904,10 @@ literal-digit-seq												Decimal inreger
 
 		- Switches esp intervention don't seem to correspond to much
           doc. And why are they radio buttons? And short words?
+		  [Guy explained about this radio-octal notation. It's in a
+		  panel in a pic from his HNF doc.]
+
+		- Monentary push-buttons should light momentarily when pressed.
 
 		- If FF Regs are for internal indicator use, why tdo we get
 		  warnings when we write them?
@@ -914,6 +918,8 @@ literal-digit-seq												Decimal inreger
 
 		- I can find few pics that show any of the panels described in
           the doc.
+		  [Guy: most panels work woith two rosw of lights, one red and one "clear" or "white". 
+
 
 
 

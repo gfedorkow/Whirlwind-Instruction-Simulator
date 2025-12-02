@@ -1084,7 +1084,7 @@ class AsmDotIsaInst (AsmPseudoOpInst):
 # LAS 12/16/24 ww code will need to be converted to use comma-separated
 # operands, rather than space-separated.
 #
-# Again I'm stoppping short of a full-pipeline revamp of this since I don't
+# Again I'm stopping short of a full-pipeline revamp of this since I don't
 # want to modify the sim if I can help it. Below though we have everything in
 # parsed format, and we'll change it back to text for the sim to parse again.
 #

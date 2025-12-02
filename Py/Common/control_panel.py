@@ -27,7 +27,7 @@ import re
 # ###########################################
 
 class DefaultColors:
-    on_color = "gold"
+    on_color = "dodger blue"
     off_color = "black"
     outline_color ="white"
 
