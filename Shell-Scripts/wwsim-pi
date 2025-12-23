@@ -1,0 +1,4 @@
+
+export PYTHONPATH=/home/guyfe/guy/Whirlwind-Instruction-Simulator/Py/Common
+python /home/guyfe/guy/Whirlwind-Instruction-Simulator/Py/Sim/wwsim.py $*
+
