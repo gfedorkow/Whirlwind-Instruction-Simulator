@@ -1,0 +1,6 @@
+while true
+do
+ping -c 2 guy-nuc
+sleep 10
+done
+
