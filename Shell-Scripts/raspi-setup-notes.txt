@@ -1,0 +1,37 @@
+# steps to configure a new RasPi for WW Sim
+# Gu Fedorkow, Dec 24, 2025
+
+copy in 
+ .vimrc  .viminfo  .nanorc .bash_profile .gitconfig 
+
+
+mkdir History-of-Computing
+cd History-of-Computing
+mkdir Whirlwind
+mkdir GitHub
+cd GitHub
+git init
+cd ..
+mkdir Hardware
+cd Hardware
+mkdir Micro-Whirlwind
+cd Micro-Whirlwind
+mkdir GitHub
+cd GitHub
+git init
+
+copy in .git/config(s) to two directories
+
+
+
+apt install vim
+
+python modules
+apt install python3-full
+apt install python3-screeninfo
+
+link desktop image to /usr/share/rpd-wallpaper
+select wallpaper with RasPi -> Control Center
+
+
+
