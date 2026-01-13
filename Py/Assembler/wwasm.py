@@ -220,7 +220,7 @@ class AsmInst:
         if self.address < self.prog.coreSize:
             self.prog.coreToInst[self.address] = self
             # If it has a comment, record it
-            if self.parsedLine.comment != "":
+            if self.parsedLine.comment is not None:
                 self.prog.commentTab[self.address] = self.parsedLine.comment
         self.relativeAddressBase: int = 0
         # If it has a label, record it
@@ -328,6 +328,8 @@ class AsmInst:
     # Look for semicolons and justify
     # LAS 4/3/25 This and listingString() have a lot of hacks and should be replaced by a proper FSM scanner
     def formatComment (self, comment: str, inst: str) -> (str, int):
+        if comment is None:
+            return (None, None)
         nSemis = 0
         cw = self.prog.commentWidth
         if cw == 0:
@@ -385,7 +387,9 @@ class AsmInst:
         s2 = s1 + inst
         commentColumn = len (s1) + self.prog.commentColumn
         sp2 = sp*(commentColumn - len (s2)) if p.label != "" or p.opname != "" else ""
-        s3 = (sp2 + ";" + comment + " " + autoComment) if comment + autoComment != "" else ""
+        if autoComment != "" and comment is None:
+            comment = ""
+        s3 = (sp2 + ";" + comment + " " + autoComment) if comment is not None else ""
         return (s2 + s3).rstrip (" ")
     def getGvNodeDesc (self) -> str:
         return None
@@ -458,7 +462,7 @@ class AsmWwOpInst (AsmInst):
         else:
             label = ""
         inst = "%s 0o%o" % (self.parsedLine.opname, self.operand)
-        if self.parsedLine.comment != "":
+        if self.parsedLine.comment is not None:
             comment = " ; " + re.sub (" +", " ", self.parsedLine.comment)
             comment = comment.replace('"', '\\"')
         else:
@@ -518,7 +522,7 @@ class AsmWwSiOpInst (AsmWwOpInst):
         val = self.operandVal
         if val.type == AsmExprValueType.Integer:
             d: str = "; Auto-Annotate I/O: %s" % self.cb.Decode_IO (val.value)
-            if d not in self.parsedLine.comment:
+            if self.parsedLine.comment is not None and d not in self.parsedLine.comment:
                 self.xrefs.annotateIoStr = d
         else:
             self.operandTypeError (val)

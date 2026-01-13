@@ -585,6 +585,10 @@ class FlexoWin (AsciiFlexBase):
                 self.texts[i].move (0, -25)
             self.charX = self.textX
             time.sleep (self.crTime)
+        elif c in ["\b", "\\b"]:
+            if self.charX - 12 >= 0:
+                self.charX -= 12
+            time.sleep (self.charTime)
         else:
             charY = self.textY
             t = self.newText (c, self.charX, charY, super, colorRed)

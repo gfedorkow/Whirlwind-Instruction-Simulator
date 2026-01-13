@@ -1335,6 +1335,17 @@ a start.
 ------------------------------------------------------------------------------
 
 
+------------------------------------------------------------------------------
+--- Using the rc instruction for storage
+
+The rc instruction generally ignores its operand, so you can use that
+as storage. In the change-problem code it kept pointer to a string
+table. So the instruction was read for its address, and executed as
+well, e.g. to write to the printer.
+------------------------------------------------------------------------------
+
+
+
 
 
 
@@ -1369,6 +1380,49 @@ Tape Dev
 
 Tape Dev Lab Notes
 ------------------
+
+1/6/26
+Ran wwutd with across all the tape files, with the new packed string
+detector. Picked up a few more interesting strings, mostly in what
+looks like a set of test programs and test executives.
+
+12/31/25
+The "change" program works and is now in
+Code-Samples/Change-Problem. After much massaging the code is
+reasonably comprehensible.
+
+Found a few absolute-address issues, i.e, the code itself looks
+correct, but snags were hit trying to convert to mnemonic labels and
+so forth. Also in this case it's heavy on strings, and uses a packed
+format (Brian says nim programs uses it too). In octal it's
+{0|1}xx0yy, where xx and yy are 6-bit flexo chars, big-endian
+order. The sign bit is used as an end-of-string indicator.
+ 
+Separating the code from the data in this case was a major
+challenge. To help this, I added another tool to the sim, a simple
+memory map, which provides some combination of "rwx" (or nothing for
+untouched) depending on the runtime access pattern. Right now it just
+orders the banks as though they were cat'ed together as one big
+address space.  This tool is instantiated with an option since it may
+be a performance drag. The map is produced as a separate file, which
+can then be examined along with the listing. I contemplated adding it
+to the listing somehow but there wasn't a clean way to do that and a
+separate file does the job. 
+ 
+The change program accepts a sale amount and amount received via the
+panel's "intervention registers." Key in a digit in the left IR, and
+add the digit via the activation button in the right IR. The left
+activation button then triggers the next phase, either asking for
+input or computing and printing the change. A negative input causes a
+backspace and an overstrike x, indicating an erasure.
+ 
+The map helped a lot, as well as the fact that the program effectively
+worked, and I just had to poke around to figure out how to use it and
+pick up it nuances.
+
+Interesting coding idiom: The rc instruction generally ignores its
+operand, so you can use that as storage. In this case it holds a
+pointer to the string table.
 
 10/31/25
 Updated packed flex description of 10/23/25 below. It may be a good
@@ -1524,3 +1578,51 @@ masse. As mentioned this has already exposed some things like
 exponents in numbers. We should go over this when we chat next.
 
  - Larry
+
+
+
+------------------------------------------------------------------------------
+12/5/25 -- Foray into 3D modeling using VPython
+
+Summary: An interesting system for 3D and not too hard to use, but
+lacks practical tools and appears to be mainly a teaching vehicle.
+
+Test code is in the Py/Tester dir:
+
+    Tester/vpython-test.py
+    Tester/VPythonDemos_no_notebook/
+
+First do:
+
+    pip install vpython
+
+The demo vpython-test.py of toggle switches and lights works pretty
+well, but is super-slow to render. Tracked this down primarily to the
+use of "compound" and "extrusion" objects. There seem to be built-in
+flushes and screen-redraws when these are used. Even with the source
+code I've not been able to track down why this is so, and I'd need to
+devote much more time to it.
+
+VPython isn't bad, but without the source code you're lost, since much
+is omitted from the doc. However I have my doubts that this will be a
+good way to build interactive realistic-looking Whirlwind panels of
+lights, switches, knobs, and meters. VPython/Glowscript has been
+around foe a long time, and has evolved from Python-only to web-based,
+with translations to javascript at first but then more recently a
+client-server approach.
+
+The older translation-style system is "WebVPython" (link below) which
+shows better the translation to js. But this looks like just teaching
+stuff, though the code is available at the github site below. On its
+face both these packages lack basic utilities like logs and debug
+dumps, saving of state, and related APIs for interaction.
+
+There is also a "Jupyter Notebook" version, and I have not looked at
+whether that might alleviate some of the shortcomings.
+
+Further exploration may be had starting from this these links:
+
+    https://vpython.org/
+    https://github.com/vpython/glowscript/blob/master/docs/GlowScriptOverview.md
+
+They should lead to the different versions, doc, etc.

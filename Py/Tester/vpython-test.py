@@ -23,13 +23,14 @@
 from screeninfo import get_monitors
 from vpython import *
 
+# scene.visible = False # while preparing the scene
+
 title = "Click and drag the mouse in the 3D canvas to insert and drag a small sphere."
 scene.title = title
-scene.range = 3
+scene.range = 10 # 3
 
 scene.width = 1500
 scene.height = 1000
-
 
 """
 for i in range (0, 100):
@@ -75,14 +76,6 @@ compound ((x, xt, y, yt, z, zt))
 # A text obj by itself causes exceptions on selction, but works ok when
 # embedded in a compound.
 crap = compound ([text (pos = vector(1,4,0), text = "If it isn't Scottish it's crap!")])
-
-def x (v: vector):
-    return dot (v, vector (1, 0, 0))
-def y (v: vector):
-    return dot (v, vector (0, 1, 0))
-def z (v: vector):
-    return dot (v, vector (0, 0, 1))
-
 
 class ObjPair:
     def __init__ (self, pos: vector):
@@ -150,7 +143,6 @@ class LampPair (ObjPair):
         self.objOn = compound ([b, e, hemion])
         self.objOn.pos = pos
         self.objOn.visible = False
-        # arrow (pos = pos, axis = self.objOn.axis)
 
 class TogglePair (ObjPair):
     def __init__ (self, pos: vector):
@@ -163,8 +155,8 @@ class TogglePair (ObjPair):
         swhemi.rotate (angle = -pi/2)
         swhemi.pos = vector (0, 0, -0.15)
         swhandle = compound ([swcone, swhemi])
-        swhandle.rotate (angle = pi)
         swhandle.visible = False
+        swhandle.rotate (angle = pi)
         swhon = swhandle.clone()
         swhon.rotate (angle = -pi/8)
         swhon.pos = pos + vector (0, 0, 0.75)
@@ -206,7 +198,7 @@ class ToggleLampPairs:
         rot = 0
         for s in range (0, 4):
             dir = dirs[s]
-            colpos = vector (x(pos), y(pos0), z(pos))
+            colpos = vector (pos.x, pos0.y, pos.z)
             for i in range (0, colSize):
                 pos = colpos + vector (0, -5*i, 0)
                 # pos = pos.x,pos0.y,0
@@ -231,6 +223,8 @@ class ToggleLampPairs:
 
 ToggleLampPairs (4,2)
 
+# scene.visible = True # finished preparing the scene
+
 class Handler:
     def __init__ (self):
         self.drag = True
@@ -251,7 +245,7 @@ class Handler:
     def move (self, evt):
         global scene
         if self.drag and self.s is not None:
-            # self.s.pos = scene.mouse.pos
+            self.s.pos = scene.mouse.pos
             pass
     def drop (self, evt):
         global scene

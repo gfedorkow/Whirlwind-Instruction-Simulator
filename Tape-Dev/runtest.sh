@@ -112,7 +112,7 @@ if [ $(checkarg "--ReadTapes") == 0 ];
 then
 	echo "Producing tcore, ocore, or fc files from all tapes, writing to tmp..."
 	cd tmp
-	time /bin/find $tapepath  \( -name "*.7ch" -o -name "*.7CH" -o -name "*.tap" \) -exec python $utd {} \; >&tapelog
+	time /bin/find $tapepath  \( -name "*.7ch" -o -name "*.7CH" -o -name "*.tap" \) -print -exec python $utd {} \; >&tapelog
 	cd ..
 fi
 if [ $(checkarg "--ShortReadTapes") == 0 ];

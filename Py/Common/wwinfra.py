@@ -505,6 +505,7 @@ class ConstWWbitClass:
         self.TraceDisplayScope = False
         self.PETRAfilename = None
         self.PETRBfilename = None
+        self.record_core_info = False
 
         #
         # Read std args
@@ -925,7 +926,56 @@ class OpCodeHistogram:
             ret = "Display-Ops, %d, " % display_count
         return ret
 
+# Maintain a map of memory access for each loc -- untouched, read, write, or exec.
+# At end of sim write a map file with the addresses and access types. It's just
+# a linear address span across all the banks.
 
+class CoreMemInfo:
+    # Bits for core mem info loc status
+    class OpType:
+        Untouched = 0o0
+        Rd = 0o1
+        Wr = 0o2
+        Exec = 0o4
+    def __init__ (self, coremem):       # coremem: CoreMemClass
+        self.coremem = coremem
+        self.cb = self.coremem.cb
+        self.coreFileName = self.cb.CoreFileName
+        self.mapFileName = re.sub("\\..core$", "", self.coreFileName) + ".map"
+        self.info = []                  # Meta-info about each loc
+        for i in range (self.coremem.NBANKS):
+            self.info.append ([CoreMemInfo.OpType.Untouched] * (self.cb.CORE_SIZE // 2))
+        pass
+    # Private
+    def registerOp (self, addr: int, op: int):
+        if addr & self.cb.WWBIT5:  # High half of the address space, Group B
+            self.info[self.coremem.MemGroupB][addr & self.cb.WWBIT6_15] |= op
+        else:
+            self.info[self.coremem.MemGroupA][addr & self.cb.WWBIT6_15] |= op
+        pass
+    def registerRd (self, addr: int):
+        self.registerOp (addr, CoreMemInfo.OpType.Rd)
+    def registerWr (self, addr: int):
+        self.registerOp (addr, CoreMemInfo.OpType.Wr)
+    def registerExec (self, addr: int):
+        self.registerOp (addr, CoreMemInfo.OpType.Exec)
+    def writeMapFile (self):
+        s = open (self.mapFileName, "wt")
+        addr: int = 0
+        for i in range (0, self.coremem.NBANKS):
+            for j in range (0, self.cb.CORE_SIZE // 2):
+                op = self.info[i][j]
+                opStr = ""
+                if op & CoreMemInfo.OpType.Rd:
+                    opStr += "r"
+                if op & CoreMemInfo.OpType.Wr:
+                    opStr += "w"
+                if op & CoreMemInfo.OpType.Exec:
+                    opStr += "x"
+                s.write ("0o%06o %s\n" % (addr, opStr))
+                addr += 1
+        s.close()
+    
 # CoreReadBy           = [[] for _ in xrange(CORE_SIZE)]
 # WW ended up with 6K words of memory, but a 2K word address space.  Overlays and bank
 # switching were the order of the day
@@ -1005,6 +1055,8 @@ class CorememClass:
                                    #   indexed by bank and address
         self.mem_addr_reg = 0       # store the most recent memory access address and data for blinkenlights
         self.mem_data_reg = 0
+        self.corememinfo = None
+        
     # the WR method has two optional args
     # 'force' arg overwrites the "read only" toggle switches
     # 'track' is used only in the case of initializing the drum storage
@@ -1034,14 +1086,16 @@ class CorememClass:
             self._coremem[self.MemGroupB][addr & self.cb.WWBIT6_15] = val
         else:
             self._coremem[self.MemGroupA][addr & self.cb.WWBIT6_15] = val
-
+        if self.corememinfo is not None:
+            self.corememinfo.registerWr (addr)
+        pass
 
     # memory is filled with None at the start, so read-before-write will cause a trap in my sim.
     #   Some programs don't seem to be too careful about that, so I fixed so most cases just get
     #   a warning, a zero and move on.  But returning a zero to an instruction fetch is not a good idea...
     # I don't know how to tell if the first 32 words of the address space are always test-storage, or if
     # it's only the first 32 words of Bank 0.  I'm assuming test storage is always accessible.
-    def rd(self, addr, fix_none=True, skip_mar=False):
+    def rd(self, addr, fix_none=True, skip_mar=False, register_rd=True):
         if (addr & ~self._toggle_switch_mask) == 0 and self.use_default_tsr:
             if self.tsr_callback[addr] is not None:
                 ret = self.tsr_callback[addr](addr, None)
@@ -1054,6 +1108,9 @@ class CorememClass:
         else:
             ret = self._coremem[self.MemGroupA][addr & self.cb.WWBIT6_15]
             bank = self.MemGroupA
+        if self.corememinfo is not None and register_rd:
+            self.corememinfo.registerRd (addr)
+
 
         # if the memory location reads back Null, it's uninitialized.  Most calls to .rd() ask that
         # the Null be returned as a Zero, and ordinarily that produces a warning.
@@ -1081,7 +1138,6 @@ class CorememClass:
         if self.cb.NoZeroOneTSR is False:
             self._coremem[0][0] = 0
             self._coremem[0][1] = 1
-
 
     # entry point to read a core file into 'memory'
     def read_core(self, filename, cpu, cb, file_contents=None):

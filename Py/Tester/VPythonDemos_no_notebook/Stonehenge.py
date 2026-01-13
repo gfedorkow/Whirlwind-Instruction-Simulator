@@ -1,5 +1,8 @@
 from vpython import *
-scene.visible = False # while preparing the scene
+
+# LAS
+# scene.visible = False # while preparing the scene
+
 import time
 
 # Bruce Sherwood
@@ -221,7 +224,9 @@ haircolor = color.black
 roam = 0
 
 scene.waitfor("textures")
-scene.visible = True # finished preparing the scene
+
+# LAS
+# scene.visible = True # finished preparing the scene
 
 roam = False
 

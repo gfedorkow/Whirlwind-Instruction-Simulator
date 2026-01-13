@@ -17,9 +17,9 @@ height = 0.4*L/N
 for x in range(N):
     for y in range(N):
         for z in range(N):
-            b = box(color=vector(x/N,y/N,z/N), 
+            b = compound ([box(color=vector(x/N,y/N,z/N), 
                 pos=vector(L*(x/(N-1)-.5),L*(y/(N-1)-.5),L*(z/(N-1)-.5)),
-                size=vector(length,height,length))
+                size=vector(length,height,length))])
             #b.axis = length*vector(1,1,0)
             boxes.append(b)
 

@@ -15,7 +15,7 @@ then
 	echo "Accepting..."
 	rm -rf TestRefs/
 	mkdir TestRefs
-	cp ErrorTest.log FilteredTest1.log FilteredTest2.log inc1.lst flextest.lst flextest.sim.log TestRefs/
+	cp ErrorTest.log FilteredTest1.log FilteredTest2.log inc1.lst flextest.lst flextest.sim.log last-word.sim.log last-word.lst TestRefs/
 else
 	asmp="$PYTHONPATH/../../Py/Common/wwasmparser.py"		# Use quotes since can't resolve backslash yet -- it's needed for file name translation
 	asm="$PYTHONPATH/../../Py/Assembler/wwasm.py"
