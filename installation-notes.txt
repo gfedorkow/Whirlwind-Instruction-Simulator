@@ -1,0 +1,36 @@
+
+mkdir History-of-Computing
+cd History-of-Computing
+mkdir Whirlwind
+mkdir GitHub
+cd GitHub
+git init
+cd ..
+mkdir Hardware
+cd Hardware
+mkdir Micro-Whirlwind
+cd Micro-Whirlwind
+mkdir GitHub
+cd GitHub
+git init
+
+copy in .git/config(s) to two directories
+copy in git-token
+
+install vim
+copy in vimrc
+copy in nanorc
+
+python modules
+apt get python3-full
+apt-get python3-screeninfo
+
+link desktop image to /usr/share/rpd-wallpaper
+select wallpaper with RasPi -> Control Center->Desktop->Picture
+
+in Config tool, enable I2C, SPI, SSH and VNC
+  (Where is the 'config' database stored?)
+
+add PYTHONPATH
+add ~/bin
+
