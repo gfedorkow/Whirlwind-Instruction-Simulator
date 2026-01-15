@@ -48,15 +48,18 @@ def scan_for_strings(corelist, byte_stream):
     string_list = []
     flexToFlascii = FlexToCsyntaxFlascii()
     # Scan twice, using these fcns to access the high and low parts of the word
-    for fcns in [[lambda m: m & 0o001777, lambda m: (m >> 10) & 0o77],
-                 [lambda m: m & 0o177700, lambda m: m & 0o77]]:
-        maskFcn = fcns[0]
-        shiftFcn = fcns[1]
+    for fcns in [["  High", lambda m: m & 0o001777, lambda m: (m >> 10) & 0o77],
+                 ["   Low", lambda m: m & 0o177700, lambda m: m & 0o77]]:
+        label = fcns[0]
+        maskFcn = fcns[1]
+        shiftFcn = fcns[2]
         for coremem in corelist:
             memLimit = len (coremem) if byte_stream else cb.CORE_SIZE 
             addr = 0
             flexCnt = 0 # Number of contiguous flex codes seen
             while addr <= memLimit:
+                if flexCnt == 0:
+                    strAddr = addr
                 m = coremem[addr] if addr != memLimit else None
                 validCode = False
                 if m is not None and maskFcn (m) == 0:
@@ -68,7 +71,7 @@ def scan_for_strings(corelist, byte_stream):
                     flexCnt += 1
                 else:
                     if flexCnt > 2:
-                        flexo_string_high = flexToFlascii.getFlascii()
+                        flexo_string_high = ("%s 0o%06o: " % (label, strAddr)) + flexToFlascii.getFlascii()
                         string_list.append (flexo_string_high)
                     flexToFlascii = FlexToCsyntaxFlascii()
                     flexCnt = 0
@@ -79,6 +82,52 @@ def scan_for_strings(corelist, byte_stream):
         for s in string_list:
             print("   String: %s" % s)
 
+    return string_list
+
+# Scan for strings packed as {0|1}0xxxxxx000yyyyyy, where xxxxxx and yyyyyy
+# represent the chars in the word. This form of packing is found in the program
+# 102782306_change_problem_gs001_fb100-6-150.
+
+def scan_for_packed_strings (corelist, byte_stream):
+    global cb
+    string_list = []
+    flexToFlascii = FlexToCsyntaxFlascii()
+    mask = 0o000700 # All bit positions with no char info must be zero
+    for coremem in corelist:
+        memLimit = len (coremem) if byte_stream else cb.CORE_SIZE 
+        addr = 0
+        flexCnt = 0 # Number of contiguous flex codes seen
+        while addr <= memLimit:
+            if flexCnt == 0:
+                strAddr = addr
+            m = coremem[addr] if addr != memLimit else None
+            validCodes = False
+            endOfString = False
+            if m is not None and m & mask == 0:
+                flexCode1 = (m >> 9) & 0o77
+                if flexToFlascii.isValidCode (flexCode1):
+                    flexCode2 = m & 0o77
+                    if flexCode2 == 0 or flexToFlascii.isValidCode (flexCode2):
+                        validCodes = True
+                        if m & 0o100000:
+                            endOfString = True
+            if validCodes:
+                flexToFlascii.addCode (flexCode1)
+                if flexCode2 != 0:
+                    flexToFlascii.addCode (flexCode2)
+                flexCnt += 2
+                if endOfString and flexCnt > 2:
+                    flexo_string_high = ("Packed 0o%06o: " % strAddr) + flexToFlascii.getFlascii()
+                    string_list.append (flexo_string_high)
+                    flexToFlascii = FlexToCsyntaxFlascii()
+                    flexCnt = 0
+            else:
+                if flexCnt > 2:
+                    flexo_string_high = ("Packed 0o%06o: " % strAddr) + flexToFlascii.getFlascii()
+                    string_list.append (flexo_string_high)
+                flexToFlascii = FlexToCsyntaxFlascii()
+                flexCnt = 0
+            addr += 1
     return string_list
 
 # This routine writes out a series of octal blocks as if it were an independent paper tape file.
@@ -160,8 +209,9 @@ def write_core_wrapper(input_file: str, base_filename: str, ww_file, sequence: i
 
     if min_file_size is None or (for_sure_code or core_len >= min_file_size):
         string_list = scan_for_strings(core_list, is_octal_block)
-        wwinfra.write_core(cb, core_list, 0, is_octal_block, input_file, title, jump_to, core_file_name, string_list,
-                   block_msg, stats_string)
+        packed_string_list = scan_for_packed_strings (core_list, is_octal_block)
+        wwinfra.write_core(cb, core_list, 0, is_octal_block, input_file, title, jump_to, core_file_name,
+                           string_list + packed_string_list, block_msg, stats_string)
     else:
         ignored_files += 1
     return ignored_files

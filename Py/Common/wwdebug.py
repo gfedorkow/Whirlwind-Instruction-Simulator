@@ -32,7 +32,11 @@ class DbgBrks:
     def __init__ (self, dbg):
         self.dbg = dbg
         self.jumpOpcodes = [0o16, 0o17] # cp, sp
-        self.writeOpcodes = [0o10, 0o11, 0o12, 0o15, 0o26] # ts, td, ta, ao, ex
+        self.writeOpcodes = [0o10, 0o11, 0o12, 0o15, 0o26, 0o35] # ts, td, ta, ex, ao, sf
+        self.readOpcodes = [ # bo, sd, ck, ab, ex, ca, cs, ad, su, cm, sa, ao, dm, mr, mh, dv, md
+            0o4, 0o6, 0o12, 0o13, 0o15, 0o20, 0o21,
+            0o22, 0o23, 0o24, 0o25, 0o26, 0o27, 0o30, 0o31, 0o32, 0o37
+            ]
         self.reset()
     def reset (self):
         self.brkTab = {}
@@ -40,6 +44,7 @@ class DbgBrks:
         self.pcToBrkPtTab = {}
         self.addrToWrBrkTab = {}
         self.addrToRdBrkTab = {}
+        self.opcodeToInstBrkTab = {}
     def list (self):
         for brkId in self.brkTab:
             brk = self.brkTab[brkId]
@@ -80,6 +85,10 @@ class DbgBrks:
                 (opcode, short_opcode, address, label, ac, br) = info
                 if opcode in self.writeOpcodes and address in self.addrToWrBrkTab:
                     r = self.addrToWrBrkTab[address]
+                elif opcode in self.readOpcodes and address in self.addrToRdBrkTab:
+                    r = self.addrToRdBrkTab[address]
+                elif opcode in self.opcodeToInstBrkTab:
+                    r = self.opcodeToInstBrkTab[opcode]
                 else:
                     r = None
         if r is not None and r.disabled:
@@ -136,6 +145,22 @@ class DbgReadWatchPt (DbgBrk):
     def delete (self, brkId: int):
         del self.brks.addrToRdBrkTab[self.addr]
 
+class DbgInstWatchPt (DbgBrk):
+    def __init__ (self, brks: DbgBrks, opname: str):
+        super().__init__ (brks)
+        self.opname = opname
+        opcode = self.brks.dbg.opnameToOpcodeFcn (opname)
+        if opcode is not None:
+            self.brks.opcodeToInstBrkTab[opcode] = self
+            pass
+    def prompt (self):
+        return "Instruction breakpoint:"
+    def listStr (self):
+        return "instruction watch %s" % self.opname
+    def delete (self, brkId: int):
+        del self.brks.opcodeToInstBrkTab[self.opcode]
+        pass
+
 # This state is set by the debugger -- i.e., it's the state of the prog from the debugger's viewpoint
 DbgProgState = Enum ("DbgProgState", ["Running", "Stepping", "Restarting", "Stopped"])
 
@@ -162,6 +187,7 @@ class DbgDebugger:
                addrToSymTab: dict,
                fmtPrinterFcn,
                asmLineFcn,
+               opnameToOpcodeFcn,
                getRegFcn,
                getInstInfoFcn,
                updatePanelFcn):
@@ -170,6 +196,7 @@ class DbgDebugger:
         self.addrToSymTab = addrToSymTab
         self.fmtPrinterFcn = fmtPrinterFcn
         self.asmLineFcn = asmLineFcn
+        self.opnameToOpcodeFcn = opnameToOpcodeFcn
         self.getRegFcn = getRegFcn
         self.getInstInfoFcn = getInstInfoFcn
         self.updatePanelFcn = updatePanelFcn
@@ -276,25 +303,23 @@ class DbgCmd:
         self.dbg.error()
     def helpStrs (self) -> [str]:
         return ["Help!"]
-    # Run fcn on each expr in the comma-expr.
-    # Signature of fcn is fcn (expr: AsmExpr, pos: int)
-    # Nop if it's not a comma-expr.
+    # Run fcn on each expr in the comma-expr, or on just the initial expr if
+    # it's not a comma-expr.  Signature of fcn is fcn (expr: AsmExpr, pos: int)
     def walkCommaExpr (self, exprIn: AsmExpr, fcn):
-        if exprIn.exprType == AsmExprType.BinaryComma:
-            expr = exprIn
-            pos = 0
-            while True:
-                if expr.exprType == AsmExprType.BinaryComma:
-                    left = expr.leftSubExpr
-                    fcn (left, pos)
-                    expr = expr.rightSubExpr
-                    pos += 1
-                else:
-                    # Assume here that a null expr is considered a "terminator"
-                    # and is not of interest
-                    if expr.exprType != AsmExprType.Null:
-                        fcn (expr, pos)
-                    return
+        expr = exprIn
+        pos = 0
+        while True:
+            if expr.exprType == AsmExprType.BinaryComma:
+                left = expr.leftSubExpr
+                fcn (left, pos)
+                expr = expr.rightSubExpr
+                pos += 1
+            else:
+                # Assume here that a null expr is considered a "terminator"
+                # and is not of interest
+                if expr.exprType != AsmExprType.Null:
+                    fcn (expr, pos)
+                return
         pass
     def formatAddr (self, expr: AsmExpr, addr: int, fmtIn: str) -> str:
         fmt = fmtIn if fmtIn in ["o", "d"] else "o"
@@ -421,7 +446,7 @@ class DbgCmd_rs (DbgCmd):
         super().__init__ (*args)
         pass
     def helpStrs (self) -> [str]:
-        r = ["rs", "Restart program"]
+        r = ["rs", "Reset program ('r' starts it again)"]
         return r
     def execute (self):
         self.dbg.state = DbgProgState.Restarting
@@ -471,7 +496,7 @@ class DbgRangeCmd (DbgCmd):
             if expr.exprData == "all":
                 self.all = True
             else:
-                error()
+                self.error()
         elif expr.exprType == AsmExprType.LiteralDigits:
             v = int (expr.exprData)
             self.rangeList.append ([v, v])
@@ -637,6 +662,59 @@ class DbgCmd_wwr (DbgCmd):
         else:
             self.error()
 
+# wrd -- watch read
+class DbgCmd_wrd (DbgCmd):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+        pass
+    def helpStrs (self) -> [str]:
+        r = [
+            "wrd addr1, ..., addrN",
+            "Watch for memory read. When any read instruction",
+            "(bo, sd, ck, ab, ex, ca, cs, ad, su, cm, sa, ao, dm, mr, mh, dv, md)",
+            "is executed which reads one of the given addresses, break."
+            ]
+        return r
+    def execute (self):
+        valList = self.eval()
+        if len (valList) > 0:
+            for val in valList:
+                if val.type == AsmExprValueType.Integer:
+                    addr = val.value
+                    DbgReadWatchPt (self.dbg.brks, addr)
+                else:
+                    self.error()
+        else:
+            self.error()
+            
+# wi -- watch for instruction
+class DbgCmd_wi (DbgCmd):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+        self.walkCommaExpr (self.parsedLine.operand, self.literalizeStrings)
+        pass
+    def literalizeStrings (self, expr: AsmExpr, pos: int):
+        if expr.exprType == AsmExprType.Variable:
+            expr.exprType = AsmExprType.LiteralString
+    def helpStrs (self) -> [str]:
+        r = [
+            "wi opname1,..., opnameN",
+            "Watch for the execution of any of the given instructions,",
+            "and break prior to that execution."
+            ]
+        return r
+    def execute (self):
+        valList = self.eval()
+        if len (valList) > 0:
+            for val in valList:
+                if val.type == AsmExprValueType.String:
+                    opname = val.value
+                    DbgInstWatchPt (self.dbg.brks, opname)
+                else:
+                    self.error()
+        else:
+            self.error()
+
 # wr -- write mem loc
 class DbgCmd_wr (DbgCmd):
     def __init__ (self, *args):
@@ -766,6 +844,7 @@ class DbgCmd_syms (DbgCmd):
         (h, v) = shutil.get_terminal_size()
         maxSymLen = 0
         """
+        # This commented-out section is the orginal single-column output.
         for sym in self.dbg.symToAddrTab:
             if len (sym) > maxSymLen:
                 maxSymLen = len (sym)

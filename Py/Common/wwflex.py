@@ -15,6 +15,7 @@ import wwinfra
 #
 # Most classes are public and those marked private are intended just for
 # internal use
+#
 
 # Use this class multiple-inheritance-style to hold common utilities
 # Private
@@ -362,7 +363,7 @@ class FlexToCsyntaxFlascii (FlexToFc):
         if flexCode in self.lowerAsciiTable:
             ascii = self.lowerAsciiTable[flexCode]
         else:
-            ascii = '#'     # The convention for unknown char used in the original code
+            ascii = '#'     # The convention for unknown or unused flex code 
         if ascii in self.dict:
             ascii = self.dict[ascii]
         return ascii
@@ -584,6 +585,10 @@ class FlexoWin (AsciiFlexBase):
                 self.texts[i].move (0, -25)
             self.charX = self.textX
             time.sleep (self.crTime)
+        elif c in ["\b", "\\b"]:
+            if self.charX - 12 >= 0:
+                self.charX -= 12
+            time.sleep (self.charTime)
         else:
             charY = self.textY
             t = self.newText (c, self.charX, charY, super, colorRed)

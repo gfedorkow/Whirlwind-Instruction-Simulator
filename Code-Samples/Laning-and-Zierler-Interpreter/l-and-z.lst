@@ -1218,7 +1218,7 @@
                                          ; with a decimal exponent d, then shifting to normalize in the
                                          ; binary exponent e, -4 >= e >= 0. The result is a two-word 30,0 fraction
                                          ; along with a decimal exponent. The fraction is printed with the frac printer mfp.
-
+                                         ;
                                          ; Input: nm_x, (24,6) format
                                          ; Output: mra, first two words fraction (denormalized mantissa), third word decimal exponent
 

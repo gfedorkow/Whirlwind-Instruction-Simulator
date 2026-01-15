@@ -6,10 +6,10 @@
                        ; updated to use the 1954 I/O instruction set for display
 
 
-                       .switch FlipFlopPreset02, 0.40201
-                       .switch FlipFlopPreset03, 1.00210
-                       .switch FlipFlopPreset05, 1.00211
-                       .switch FlipFlopPreset06, 0.40203
+                       .switch FlipFlopPreset02, 0.40201;
+                       .switch FlipFlopPreset03, 1.00210;
+                       .switch FlipFlopPreset05, 1.00211;
+                       .switch FlipFlopPreset06, 0.40203;
 
 
                        .dbwgt Vy
@@ -20,11 +20,11 @@
                        .jumpto main
                        .org 1
 @0001:100207     main: ca XI                    ;   Initialize X axis @@JumpedToBy a0044
-@0002:040201           ts Xi
+@0002:040201           ts Xi                    ;
 @0003:100210           ca YI                    ;   initialize Y axis
-@0004:040202           ts Yi
+@0004:040202           ts Yi                    ;
 @0005:100211           ca VYi                   ;  Initialize Y Velocity    ;; guy: this was the designated loop return in the exemplar, but that's clearly wrong
-@0006:040203           ts Vy
+@0006:040203           ts Vy                    ;
 
 @0007:100201     loop: ca Xi                    ;  fetch current X value @@JumpedToBy a0043
 @0010:110212           ad Vxdt                  ; add the velocity increment

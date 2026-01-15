@@ -333,6 +333,9 @@ def main_run_sim(args, cb):
     # print("Dump Switch Values:")
     # cpu.cpu_switches.dump_switches()
 
+    if cb.record_core_info:
+        CoreMem.corememinfo = wwinfra.CoreMemInfo (CoreMem)
+
     # LAS
     if UseDebugger:
         # Refactoring and hoisting up at least the cpu class is something we should
@@ -346,6 +349,7 @@ def main_run_sim(args, cb):
                         cpu.SymTab,
                         cpu.wwprint_to_str,
                         cpu.get_dbg_line,
+                        cpu.opname_to_opcode,
                         cpu.get_reg,
                         cpu.get_inst_info,
                         cpu.update_panel_for_dbg)
@@ -626,6 +630,8 @@ def main():
                         help="Start simulation under the debugger", action="store_true")
     parser.add_argument("--ZeroizeCore",
                         help="Return zero for uninitialized core memory", action="store_true")
+    parser.add_argument("-map", "--MemoryMap",
+                        help="Produce a memory map (.map) file of the access types during this run", action="store_true")
 
     args = parser.parse_args()
 
@@ -698,6 +704,7 @@ def main():
 #        cb.tracelog = ww_flow_graph.FlowGraph.init_log_from_sim()
     cb.decimal_addresses = args.DecimalAddresses  # if set, trace output is expressed in Decimal to suit 1950's chic
     cb.no_toggle_switch_warn = args.NoToggleSwitchWarning
+    cb.record_core_info = args.MemoryMap
 
     # I added colored text to the trace log using ANSI escape sequences.  This works by default with
     # Cygwin xterm, but for DOS Command Shell there's a special command to enable ANSI parsing.
@@ -719,7 +726,9 @@ def main():
                 print("Ran %d cycles; Used mem=%dMB" % (sim_cycle, psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
             if not UseDebugger:
                 break
-
+    if CoreMem.corememinfo is not None:
+        CoreMem.corememinfo.writeMapFile()
+    
     # sys.exit(alarm_state != cb.NO_ALARM)
     sys.exit(0)         # return zero for an ordinary exit
 

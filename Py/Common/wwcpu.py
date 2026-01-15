@@ -368,6 +368,13 @@ class CpuClass:
         s5 = self.get_trace_line (pc, short_opcode, address)
         return s5
 
+    # Yet another debugger helper
+    def opname_to_opcode (self, opname: str) -> int:
+        for i in range (0, len (self.op_decode)):
+            if self.op_decode[i][1].lower() == opname.lower():
+                return i
+        return None
+    
     # Needed by debugger
     def get_reg (self, reg: str) -> int:
         reg = reg.upper()
@@ -401,6 +408,8 @@ class CpuClass:
     def update_panel_for_dbg (self):
         if self.cb.panel is not None:
             self.cb.panel.update_panel (self.cb, 0)
+        if self.scope is not None and self.scope.crt is not None:
+            self.scope.crt.ww_scope_update (self.cm, self.cb)
 
     def print_alarm_msg (self, alarm_state: int):
         print("Alarm '%s' (%d) at PC=0o%o (0d%d)" %
@@ -556,10 +565,13 @@ class CpuClass:
 
 
     def run_cycle(self):
-        instruction = self.cm.rd(self.PC, fix_none=False)
+        # Don't register the read for inst lookup (unless it was already read by another inst)
+        instruction = self.cm.rd(self.PC, fix_none=False, register_rd=False)
         if instruction is None:
             print("\nrun_cycle: Instruction is 'None' at %s" % self.wwint_to_str(self.PC))
             return self.cb.READ_BEFORE_WRITE_ALARM
+        if self.cm.corememinfo is not None:
+            self.cm.corememinfo.registerExec (self.PC)
         opcode = (instruction >> 11) & 0o37
         address = instruction & self.cb.WW_ADDR_MASK
         current_pc = self.PC
@@ -844,7 +856,7 @@ class CpuClass:
     # of register x is destroyed.
     def td_inst(self, _pc, address, _opcode, _op_description):
         mask = self.cb.WW_ADDR_MASK
-        m = self.cm.rd(address, fix_none=False)  # I can't believe a td could do useful work on uninitialized storage
+        m = self.cm.rd(address, fix_none=False, register_rd=False)  # I can't believe a td could do useful work on uninitialized storage
         if m is None:
             return self.cb.READ_BEFORE_WRITE_ALARM
         self.cm.wr(address, m & (self.cb.WWBIT0_15 & ~mask) | (mask & self._AC))
@@ -860,7 +872,7 @@ class CpuClass:
     # sf or other operations.
     def ta_inst(self, _pc, address, _opcode, _op_description):
         mask = self.cb.WW_ADDR_MASK
-        m = self.cm.rd(address, fix_none=False)  # I can't believe a ta could do useful work on uninitialized storage
+        m = self.cm.rd(address, fix_none=False, register_rd=False)  # I can't believe a ta could do useful work on uninitialized storage
         self.cm.wr(address, m & (self.cb.WWBIT0_15 & ~mask) | (mask & self._AReg))
         if self.cb.TraceALU:
             print("ta_inst  AR=%oo, oldCore=%oo, newCore=%oo" % (self._AReg, m, self.cm.rd(address)))

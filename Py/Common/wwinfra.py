@@ -175,7 +175,7 @@ class LogClass:
         self.error_count += 1
 
     def info(self, message):
-        if not self._quiet:                             # LAS check def of quiet
+        if not self._quiet:
             self.writeLog (LogMsgType.Log, LogMsgSeverity.Info, message)
 
     def warn(self, message):
@@ -505,6 +505,7 @@ class ConstWWbitClass:
         self.TraceDisplayScope = False
         self.PETRAfilename = None
         self.PETRBfilename = None
+        self.record_core_info = False
 
         #
         # Read std args
@@ -925,7 +926,56 @@ class OpCodeHistogram:
             ret = "Display-Ops, %d, " % display_count
         return ret
 
+# Maintain a map of memory access for each loc -- untouched, read, write, or exec.
+# At end of sim write a map file with the addresses and access types. It's just
+# a linear address span across all the banks.
 
+class CoreMemInfo:
+    # Bits for core mem info loc status
+    class OpType:
+        Untouched = 0o0
+        Rd = 0o1
+        Wr = 0o2
+        Exec = 0o4
+    def __init__ (self, coremem):       # coremem: CoreMemClass
+        self.coremem = coremem
+        self.cb = self.coremem.cb
+        self.coreFileName = self.cb.CoreFileName
+        self.mapFileName = re.sub("\\..core$", "", self.coreFileName) + ".map"
+        self.info = []                  # Meta-info about each loc
+        for i in range (self.coremem.NBANKS):
+            self.info.append ([CoreMemInfo.OpType.Untouched] * (self.cb.CORE_SIZE // 2))
+        pass
+    # Private
+    def registerOp (self, addr: int, op: int):
+        if addr & self.cb.WWBIT5:  # High half of the address space, Group B
+            self.info[self.coremem.MemGroupB][addr & self.cb.WWBIT6_15] |= op
+        else:
+            self.info[self.coremem.MemGroupA][addr & self.cb.WWBIT6_15] |= op
+        pass
+    def registerRd (self, addr: int):
+        self.registerOp (addr, CoreMemInfo.OpType.Rd)
+    def registerWr (self, addr: int):
+        self.registerOp (addr, CoreMemInfo.OpType.Wr)
+    def registerExec (self, addr: int):
+        self.registerOp (addr, CoreMemInfo.OpType.Exec)
+    def writeMapFile (self):
+        s = open (self.mapFileName, "wt")
+        addr: int = 0
+        for i in range (0, self.coremem.NBANKS):
+            for j in range (0, self.cb.CORE_SIZE // 2):
+                op = self.info[i][j]
+                opStr = ""
+                if op & CoreMemInfo.OpType.Rd:
+                    opStr += "r"
+                if op & CoreMemInfo.OpType.Wr:
+                    opStr += "w"
+                if op & CoreMemInfo.OpType.Exec:
+                    opStr += "x"
+                s.write ("0o%06o %s\n" % (addr, opStr))
+                addr += 1
+        s.close()
+    
 # CoreReadBy           = [[] for _ in xrange(CORE_SIZE)]
 # WW ended up with 6K words of memory, but a 2K word address space.  Overlays and bank
 # switching were the order of the day
@@ -1005,6 +1055,8 @@ class CorememClass:
                                    #   indexed by bank and address
         self.mem_addr_reg = 0       # store the most recent memory access address and data for blinkenlights
         self.mem_data_reg = 0
+        self.corememinfo = None
+        
     # the WR method has two optional args
     # 'force' arg overwrites the "read only" toggle switches
     # 'track' is used only in the case of initializing the drum storage
@@ -1034,14 +1086,16 @@ class CorememClass:
             self._coremem[self.MemGroupB][addr & self.cb.WWBIT6_15] = val
         else:
             self._coremem[self.MemGroupA][addr & self.cb.WWBIT6_15] = val
-
+        if self.corememinfo is not None:
+            self.corememinfo.registerWr (addr)
+        pass
 
     # memory is filled with None at the start, so read-before-write will cause a trap in my sim.
     #   Some programs don't seem to be too careful about that, so I fixed so most cases just get
     #   a warning, a zero and move on.  But returning a zero to an instruction fetch is not a good idea...
     # I don't know how to tell if the first 32 words of the address space are always test-storage, or if
     # it's only the first 32 words of Bank 0.  I'm assuming test storage is always accessible.
-    def rd(self, addr, fix_none=True, skip_mar=False):
+    def rd(self, addr, fix_none=True, skip_mar=False, register_rd=True):
         if (addr & ~self._toggle_switch_mask) == 0 and self.use_default_tsr:
             if self.tsr_callback[addr] is not None:
                 ret = self.tsr_callback[addr](addr, None)
@@ -1054,6 +1108,9 @@ class CorememClass:
         else:
             ret = self._coremem[self.MemGroupA][addr & self.cb.WWBIT6_15]
             bank = self.MemGroupA
+        if self.corememinfo is not None and register_rd:
+            self.corememinfo.registerRd (addr)
+
 
         # if the memory location reads back Null, it's uninitialized.  Most calls to .rd() ask that
         # the Null be returned as a Zero, and ordinarily that produces a warning.
@@ -1061,7 +1118,7 @@ class CorememClass:
         # happen to read uninitialed core (e.g. Vibrating String)
         if (fix_none or self.cb.ZeroizeCore) and (ret is None):
             if not self.cb.ZeroizeCore:
-                # LAS
+                # LAS changed to print for now since we can call from asm
                 # self.cb.log.warn("Reading Uninitialized Memory at location 0o%o, bank %o" % (addr, bank))
                 print ("Reading Uninitialized Memory at location 0o%o, bank %o" % (addr, bank))
             ret = 0
@@ -1081,7 +1138,6 @@ class CorememClass:
         if self.cb.NoZeroOneTSR is False:
             self._coremem[0][0] = 0
             self._coremem[0][1] = 1
-
 
     # entry point to read a core file into 'memory'
     def read_core(self, filename, cpu, cb, file_contents=None):
@@ -1344,8 +1400,6 @@ def hash_to_fingerprint(hash_obj, word_count):
 #  [Careful, there's another write_core in wwasm.py.  oops.]
 def write_core(cb, corelist, offset, byte_stream, ww_filename, ww_tapeid,
                jump_to, output_file, string_list, block_msg=None, stats_string=''):
-    # LAS
-    # flexo_table = FlexoClass(cb)  # instantiate the class to get a copy of the code translation table
     flexo = FlexToCsyntaxFlascii()
     op_table = InstructionOpTable()
     hash_obj = hashlib.md5()  # create an object to store the hash of the file contents
@@ -1498,8 +1552,9 @@ class FlexoControlClass:
         self.stop_on_zero = None
         self.packed = None
 
-        self.flexoOut = FlexToFlascii()  # Accumulate all Flexowriter output
-        self.flexoLine = FlexToFlascii() # Accumulate one line of Flexowriter output for immediate printing
+        self.flexoOut = FlexToFlascii()                 # Accumulate all Flexowriter output
+        self.flexoLine = FlexToFlascii()                # Accumulate one line of Flexowriter output for immediate printing
+        self.flexoDecoder = FlexToCsyntaxFlascii()      # For out-of-context char lookup
         
         self.flexToFlexoWin: FlexToFlexoWin = None
         self.name = "Flexowriter"
@@ -1545,9 +1600,7 @@ class FlexoControlClass:
 
     def rc(self, _unused, acc):  # "record", i.e. output instruction to tty
         code = acc >> 10  # the code is in the upper six bits of the accumulator
-        # LAS
-        # symbol = self.code_to_letter(code)  # look up the code, mess with Upper Case and Color
-        symbol = ""
+        symbol = self.flexoDecoder.decodeSingleChar (code)
         # Only do the standard flex buffering if we have no flex window
         if self.flexToFlexoWin is not None:
             self.flexToFlexoWin.addCode (code)
@@ -1559,15 +1612,6 @@ class FlexoControlClass:
                 print("Flexo: %s" % s)   # print the full line on the console, ignoring the line feed
             else:
                 self.flexoLine.addCode (code)
-            # LAS
-            """
-            self.FlexoOutput.append(symbol)
-            self.FlexoLine += symbol
-            if symbol == '\n':
-                symbol = '\\n'   # convert the newline into something that can go in a Record status message
-                print("Flexo: %s" % self.FlexoLine[0:-1])   # print the full line on the console, ignoring the line feed
-                self.FlexoLine = ""                         # and start accumulating the next line
-            """
         return self.cb.NO_ALARM, symbol
 
     def bo(self, address, acc, cm):  # "block transfer out"
@@ -1576,8 +1620,6 @@ class FlexoControlClass:
             acc: contents of accumulator (the word count)
             cm: core memory instance
         """
-        # LAS commented out all symbol_str stuff
-        # symbol_str = ''
         if address + acc > self.cb.WW_ADDR_MASK:
             print("block-transfer-out Flexo address out of range")
             return self.cb.QUIT_ALARM
@@ -1585,18 +1627,9 @@ class FlexoControlClass:
             wrd = cm.rd(m)  # read the word from mem
             self.rc(0, wrd)
             code = wrd >> 10   # code in top six bits contain the character
-            # symbol_str += self.code_to_letter(code)  # look up the code, mess with Upper Case and Color
-
-        # LAS Removed this unconditional print 
-        """
-        print(("Block Transfer Write to Flexo: start address=0o%o, length=0o%o, str=%s" %
-              (address, acc, symbol_str)))
-        """
         return self.cb.NO_ALARM
 
     def get_saved_output(self) -> str:
-        # LAS
-        # return self.FlexoOutput
         return self.flexoOut.getFlascii()
 
 

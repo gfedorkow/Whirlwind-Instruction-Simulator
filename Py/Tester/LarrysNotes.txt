@@ -613,7 +613,7 @@ literal-digit-seq												Decimal inreger
 		  been validated against fixes Guy will be supplying.
 	* I'l take on a task of updating the asm manual.
 		Should be good for now
-	- Get rid of yaml files
+	* Get rid of yaml files
 	* Assure all TestResults* dirs out of git -- ok git in web diff says deleted?
 	- Do we need to handle anything special for "overflow" numbers?
       E.g., +1.001. Is there a need to handle this in some way in the
@@ -649,7 +649,7 @@ literal-digit-seq												Decimal inreger
 		Changed to error
 	* Print floats with scientific notation or the eqv of C's "g" format.
 		Python has "g".  Now printing 30,15 floats with 10 digits and 24,6 floats with 8 digits
-	- Hoist cpu class so we can share with dbg
+	* Hoist cpu class so we can share with dbg
 	- Show .print etc in dbg. Right now just shows ww insts
 	- Get rid of need for dummy parsed line in dbg
 	* Dbg doesn't handle signals and alarms
@@ -734,7 +734,7 @@ literal-digit-seq												Decimal inreger
 	    -0.99999994
 		[Fixed by limitng number of digits based on system rounding such that
 		 the resulting floating value is less than 1.0.]
-	- "help-me" files look like they're coming from flex converter
+	* "help-me" files look like they're coming from flex converter
 		[Should go away after revamp of that program. In-progress.]
 	* What is supposed to happen if you read beyond the end of a PETR?
 		[Unknown, but note mention of <stop> char in L&Z user doc,
@@ -809,7 +809,8 @@ literal-digit-seq												Decimal inreger
 	- Replace FlexoClass with code in wwflex
 		* File names and related stuff in asm flow gen
 		- wwdisasm uses it's own flex code table -- not clear it's worth changing
-		- "record status message" get a char returned for rc -- necessary? -- currently commented out
+		* "record status message" get a char returned for rc -- necessary? -- currently commented out
+			[Keeping it for now]
 		- char display at right in tcore files has changed e.g. # rather than \0 for null char:
 
 
@@ -835,11 +836,29 @@ literal-digit-seq												Decimal inreger
 > @C00320: 0040224 0000600 0100223 0024000 0100224 0074141  None    None    ;   ts si ca rc ca sp      :     R\05\0R#     : <color>\0TSTK    
 > @C00340: 0040224 0000600 0100223 0024000 0100224 0074153  None    None    ;   ts si ca rc ca sp      :     R\05\0R#     : <color>\0TSTK    
 
-
-	- Static flow -- check holy cow and uninited memory
-	- ww_flowgraph.py -- LAS42 prints
+	- Asm log subclass just doesn't work -- python doesn't have the right polymorphism
+	- Asm: label: ,word 0o123 parses but produces garbage
+	- Runaway detector -- still work? [Looks like it is -- run "...change...tcore". But mad-game loops and it doens't kick in.]
+	* ww_flowgraph.py -- LAS42 prints
+	- wwutd -- Add addresses to %String
+	* Should use immutable  (1,2,3) lists for x in (1,2,3) rather than mutable [1,2,3]
+		[Changed wwasmparser to use tuple format. Did perf test and is
+		 maybe marginally better. Also had a separate test doing "x in
+		 (1,2,3...15)" and "x in [1,2,3...15]" in a loop and it showed
+		 almost no perf diff. Perhaps there are jit switches or other
+		 magic to get more optimization. Until I feel like diiving in,
+		 I'll leave the original code alone.]
+	- Dbg: syms screen size wrong? Also should sort
+	* wwinfra.py, why this?
+				# LAS
+                # self.cb.log.warn("Reading Uninitialized Memory at location 0o%o, bank %o" % (addr, bank))
+                print ("Reading Uninitialized Memory at location 0o%o, bank %o" % (addr, bank))
+		[Seems to work with the warn call, so I put it back]
+	* wwinfra.py -- cleanup up commented-out stuff
+	* wwinfra.py -- restore "symbol" for "record record"
 	* Hoisted CpuClass to its own file wwcpu.py, now in Common.
 	- With cpu hoist should be able to simplify debugger interface to sim.
+	- update_panel_for_dbg -- needs to do all i/o for dbg or at least more than now.
 	- Code-Samples/Bounce/r-196-bounce-example: There is bounce.ww and bounce1954.ww, same except that
 		$ file bounce.ww 
 			 bounce.ww: ASCII text
@@ -878,6 +897,29 @@ literal-digit-seq												Decimal inreger
 
 		  Should we have -v and -vv (--VeryVerbose)?
 			Python uses -V and if you want more, -V -V
+
+	- Control panel:
+
+		- Some doc in 2M page 68 MANUAL INTERVENTION REGISTERS AND INDICATOR LIGHTS
+
+		- Switches esp intervention don't seem to correspond to much
+          doc. And why are they radio buttons? And short words?
+		  [Guy explained about this radio-octal notation. It's in a
+		  panel in a pic from his HNF doc.]
+
+		- Monentary push-buttons should light momentarily when pressed.
+
+		- If FF Regs are for internal indicator use, why tdo we get
+		  warnings when we write them?
+
+		- I'm not clear on the "gas discharge" doc -- are they just
+		  neon lights, and they use the hysteresis induced by their
+		  negative resistance?
+
+		- I can find few pics that show any of the panels described in
+          the doc.
+		  [Guy: most panels work woith two rosw of lights, one red and one "clear" or "white". 
+
 
 
 
@@ -1293,6 +1335,17 @@ a start.
 ------------------------------------------------------------------------------
 
 
+------------------------------------------------------------------------------
+--- Using the rc instruction for storage
+
+The rc instruction generally ignores its operand, so you can use that
+as storage. In the change-problem code it kept pointer to a string
+table. So the instruction was read for its address, and executed as
+well, e.g. to write to the printer.
+------------------------------------------------------------------------------
+
+
+
 
 
 
@@ -1324,6 +1377,88 @@ As of now 6/22/25 these will not be checked in to git.
 
 Tape Dev
 ========
+
+Tape Dev Lab Notes
+------------------
+
+1/6/26
+Ran wwutd with across all the tape files, with the new packed string
+detector. Picked up a few more interesting strings, mostly in what
+looks like a set of test programs and test executives.
+
+12/31/25
+The "change" program works and is now in
+Code-Samples/Change-Problem. After much massaging the code is
+reasonably comprehensible.
+
+Found a few absolute-address issues, i.e, the code itself looks
+correct, but snags were hit trying to convert to mnemonic labels and
+so forth. Also in this case it's heavy on strings, and uses a packed
+format (Brian says nim programs uses it too). In octal it's
+{0|1}xx0yy, where xx and yy are 6-bit flexo chars, big-endian
+order. The sign bit is used as an end-of-string indicator.
+ 
+Separating the code from the data in this case was a major
+challenge. To help this, I added another tool to the sim, a simple
+memory map, which provides some combination of "rwx" (or nothing for
+untouched) depending on the runtime access pattern. Right now it just
+orders the banks as though they were cat'ed together as one big
+address space.  This tool is instantiated with an option since it may
+be a performance drag. The map is produced as a separate file, which
+can then be examined along with the listing. I contemplated adding it
+to the listing somehow but there wasn't a clean way to do that and a
+separate file does the job. 
+ 
+The change program accepts a sale amount and amount received via the
+panel's "intervention registers." Key in a digit in the left IR, and
+add the digit via the activation button in the right IR. The left
+activation button then triggers the next phase, either asking for
+input or computing and printing the change. A negative input causes a
+backspace and an overstrike x, indicating an erasure.
+ 
+The map helped a lot, as well as the fact that the program effectively
+worked, and I just had to poke around to figure out how to use it and
+pick up it nuances.
+
+Interesting coding idiom: The rc instruction generally ignores its
+operand, so you can use that as storage. In this case it holds a
+pointer to the string table.
+
+10/31/25
+Updated packed flex description of 10/23/25 below. It may be a good
+idea to look for this pattern in wwutd.
+
+10/23/25
+Wrapped up mad-game in code samples, adding a test and
+reformtting. Determined the bad "T" is a bug and noted a fix in the
+program.
+
+Looking at 102782306_change_problem_gs001_fb100-6-150.acore. It prints
+"Amount of sale: " but the string is not in %Strings. Looks like
+packed encoding, and I'm trying to figure it out...
+
+The encoding is packed, but not in a way I expected:
+
+Bit 15--------------------
+                         |
+Bit 7------------        |
+                |        |
+Bit 0 ----      |        |
+         |      |        |
+         v      v        v
+         0xxxxxx0 00yyyyyy
+
+xxxxxx is one char, and yyyyyy is another. x is packed just after the
+sign bit, which is zero. So a clc 1 puts x in a position to be
+printed, then clc 9 puts y in print position, and rc is called to
+output them to the flex.
+
+10/22/25
+Noted that Code-Samples mad-game is the same as the one found by Brian in the tapes:
+	062302422_box63/102684113_mad_game_m_hurvitz.7ch
+	102684113_mad_game_m_hurvitz_gs001_fb0.tcore
+
+
 
 --------------------------------
 Guy's mail 8/27/25:
@@ -1443,3 +1578,51 @@ masse. As mentioned this has already exposed some things like
 exponents in numbers. We should go over this when we chat next.
 
  - Larry
+
+
+
+------------------------------------------------------------------------------
+12/5/25 -- Foray into 3D modeling using VPython
+
+Summary: An interesting system for 3D and not too hard to use, but
+lacks practical tools and appears to be mainly a teaching vehicle.
+
+Test code is in the Py/Tester dir:
+
+    Tester/vpython-test.py
+    Tester/VPythonDemos_no_notebook/
+
+First do:
+
+    pip install vpython
+
+The demo vpython-test.py of toggle switches and lights works pretty
+well, but is super-slow to render. Tracked this down primarily to the
+use of "compound" and "extrusion" objects. There seem to be built-in
+flushes and screen-redraws when these are used. Even with the source
+code I've not been able to track down why this is so, and I'd need to
+devote much more time to it.
+
+VPython isn't bad, but without the source code you're lost, since much
+is omitted from the doc. However I have my doubts that this will be a
+good way to build interactive realistic-looking Whirlwind panels of
+lights, switches, knobs, and meters. VPython/Glowscript has been
+around foe a long time, and has evolved from Python-only to web-based,
+with translations to javascript at first but then more recently a
+client-server approach.
+
+The older translation-style system is "WebVPython" (link below) which
+shows better the translation to js. But this looks like just teaching
+stuff, though the code is available at the github site below. On its
+face both these packages lack basic utilities like logs and debug
+dumps, saving of state, and related APIs for interaction.
+
+There is also a "Jupyter Notebook" version, and I have not looked at
+whether that might alleviate some of the shortcomings.
+
+Further exploration may be had starting from this these links:
+
+    https://vpython.org/
+    https://github.com/vpython/glowscript/blob/master/docs/GlowScriptOverview.md
+
+They should lead to the different versions, doc, etc.
