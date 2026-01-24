@@ -1,0 +1,96 @@
+
+; Graphics Demo #2 for Whirlwind
+; plot of +/-AX**2 for several values of A
+
+; original code from Q3 1949 Summary Report, pg 37
+; It appears at this point that the machine didn't have a qh instruction;
+; I assume that means that it plotted as Y against time on a standard oscilloscope
+; I've added a couple instructions to set the scope horizontal to "X" on each
+; iteration.
+
+; Register  No.  Order  Description
+;  (FF  register)  1  ca  16  Puts  a  value  of A  (initially  from  register  No.  16) into AC
+;  2  mh  21  Multiplies  by  x (initially  -1 + 2"  ' ) from  register No. 21
+;  3  mh  21  Multiplies  again  by x
+;  4  qd  24  Displays  Ax  and stores  it in register  No.  24
+;  5  cs  24  Puts  -Ax  into AC
+;  6  qd  24  Displays  -Ax  and stores  it in  register  No. 24
+;  7  ao  1  Increases the content of register  No.  1 by  2  " (initially changing from ca  16toca  17), thereby  selecting a new value of A
+;  8  su  23  Subtracts ca  15 + n from  the quantity ca  16  +n  in AC (where  n is  the  number  of  pairs  of  curves  desired)
+;  9  cp  1  If the  result  is negative  or  0, meaning  that  fewer than  n pairs  have been  plotted,  control  is  returned to register  No.  1 to plot  another  pair
+;  10  ca  21  All  the cur\  es  having been  plotted  for  one  value  of x, x is put into AC
+;  11  ad  22  h  is added  to  x, thereby  giving  a new  value  of  x
+;  12  ts  21  The  sum  is  stored  in  register  No.  21
+;  13  ca  20  The order  ca  16 comes  to  AC from  register  No. 20
+;  14  ts  1  The order  ca  is stored in register No. 1, thus  pre-paring to repeat the whole cycle for the new value of x
+;  15  sp  1  Control  is  returned  to register  No. 1 to  repeat  the  whole  cycle
+;  16  0.111111111111111  1 -  2**-15
+;  17  0.100000000000000  1/2
+;  18  0.010000000000000  1/4
+;  19  0.000000000000000  0
+;  20  ca  16
+;  (FF register)  21  Contains  x,  reset to  1.000000000000000
+;  (FF register)  22  Contains  h,  equal  approximately  to 2~?
+;  (FF register)  23  Reset  to ca  15 * n, where  n is  the  number of  pairs  of  curves  desired
+;  (FF register)  24  Temporary  or  dummy  storage
+
+
+        ; 1    ca 16
+        ; 2    mh 21
+        ; 3    mh
+        ; 4    qd
+        ; 5    OS
+        ; 6    qd
+        ; 7    ao
+        ; 8    su
+        ; 9    cp
+        ; 10   ca 21
+        ; 11   ad 22
+        ; 12   ts 21
+        ; 13   ca 20
+        ; 14   ts 1
+        ; 15   sp 1
+        ; 
+        ; 16  0.111111111111111
+        ; 17  0.100000000000000
+        ; 18  0.010000000000000
+        ; 19  0.000000000000000
+        ; 20  ca 16
+
+        .ISA 1950
+        .org 2
+ff21:   .word 1.00000  ; contains 'x'
+        .org 5
+ff22:   .word 0.00400
+ff23:   ca index + 5
+ff24:   .word 0.00000
+
+
+        .org 32
+start:  ca ff21
+        qh 0             ; use X to set Horizontal; note side effect of copying AC to 0
+index:  ca c1               ; 1    
+        mh ff21             ; 2    
+        mh ff21             ; 3    
+        qd ff24             ; 4    
+        cs ff24             ; 5    
+        qd ff24             ; 6    
+        ao index             ; 7    
+        su ff23             ; 8    
+        cp start            ; 9    
+        ca ff21             ; 10   
+        ad ff22             ; 11   
+        ts ff21             ; 12   
+        ca c5               ; 13   
+        ts index             ; 14   
+        sp start            ; 15   
+                            ; 
+        ; constants
+c1:     .word 0.77777             ; 16   1 - 2**-15
+c2:     .word 0.40000             ; 17   1/2
+c3:     .word 0.20000             ; 18   1/4
+c4:     .word 0.00000             ; 19   zero
+c5:     ca index            ; 20   value to reinitialize location Start
+
+        .jumpto start
+        

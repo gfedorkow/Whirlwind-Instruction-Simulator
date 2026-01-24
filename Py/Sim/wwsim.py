@@ -542,13 +542,17 @@ class CpuClass:
                 exec_op = "exec"
                 self.cb.log.warn("deprecated @E format: '%s'" % line)
             if exec_op == "exec":
-                try:
+                TRAP_ON_EXEC = True   # This is easier to debug if the exec can just cause the whole sim to fail
+                if TRAP_ON_EXEC:
                     exec(line)
-                except Exception as ex:
-                    # https://stackoverflow.com/questions/9823936/python-how-do-i-know-what-type-of-exception-occurred
-                    template = "An exception of type {0} occurred. Arguments:\n   {1!r}"
-                    message = template.format(type(ex).__name__, ex.args)
-                    self.cb.log.warn("Exec of '%s' failed at pc=0o%03o\n  %s" % (line, pc, message))
+                else:
+                    try:
+                        exec(line)
+                    except Exception as ex:
+                        template = "An exception of type {0} occurred. Arguments:\n   {1!r}"
+                        # https://stackoverflow.com/questions/9823936/python-how-do-i-know-what-type-of-exception-occurred
+                        message = template.format(type(ex).__name__, ex.args)
+                        self.cb.log.warn("Exec of '%s' failed at pc=0o%03o\n  %s" % (line, pc, message))
             elif exec_op == "print":
                 self.wwprint(line)
             else:
@@ -1915,14 +1919,17 @@ def main_run_sim(args, cb):
 
         # This target list is optimized to increase spacing of aircraft at the start of the sim to make
         # use of the light-gun easier
-        # target_list = [radar_class.AircraftClass('T1',  50.0, -100.0, 340.0, 200.0, 3, 'T'),  # was 3 revolutions
-        #                radar_class.AircraftClass('I1',  90.0, -20.0, 350.0, 250.0, 7, 'I'), # was 6 revolutions
-        #                radar_class.AircraftClass('T2', -20.0, -80.0,  20.0, 200.0, 0, ''),  # add in a stray aircraft
+        # target_list = [radar_class.AircraftClass('T1',  40.0, -100.0, 350.0, 200.0, 3, 'T'),  # wait 3 revolutions
+        #                radar_class.AircraftClass('I1', 100.0,  -20.0, 350.0, 250.0, 7, 'I'), # wait 7 revolutions
+        #                radar_class.AircraftClass('T2', -70.0, -100.0,  17.7, 200.0, 0, ''),  # add in a stray aircraft
+        #                # radar_class.AircraftClass('T3', -110.0, -70.0,  33.0, 200.0, 0, ''),  # add in a stray aircraft
         #                ]
-        target_list = [radar_class.AircraftClass('T1',  40.0, -100.0, 350.0, 200.0, 3, 'T'),  # was 3 revolutions
-                       radar_class.AircraftClass('I1', 100.0,  -20.0, 350.0, 250.0, 7, 'I'), # was 6 revolutions
-                       radar_class.AircraftClass('T2', -70.0, -100.0,  17.7, 200.0, 0, ''),  # add in a stray aircraft
-                       # radar_class.AircraftClass('T3', -110.0, -70.0,  33.0, 200.0, 0, ''),  # add in a stray aircraft
+        # Jan 23, 2026 - scale the distances down so none are larger than 64 miles to avoid an overflow problem
+                                        # T1 was 24, -60
+        target_list = [radar_class.AircraftClass('T1',  50.0,  -20.0, 350.0, 200.0, 0, ''),  # wait 3 revolutions
+                       radar_class.AircraftClass('I1',  60.0,  -12.0, 350.0, 250.0, 3, 'I'), # wait 7 revolutions
+                       radar_class.AircraftClass('T2', -42.0,  -60.0,  17.7, 200.0, 0, ''),  # add in a stray aircraft
+                       radar_class.AircraftClass('T3', -60.0,  -12.0,  33.0, 200.0, 0, ''),  # add in a stray aircraft
                        ]
         radar = radar_class.RadarClass(target_list, cb, cpu, args.AutoClick)
         # register a callback for anything that accesses Register 0o27 (that's the Light Gun)
@@ -2079,7 +2086,7 @@ def main_run_sim(args, cb):
                     if new_rotation:
                         print("\n")
                     if rcode != 0 and (rcode & 0o40000 == 0):
-                        if not cb.TraceQuiet or not (" Geo_" in reading_name):
+                        if not cb.TraceQuiet and not (" Geo_" in reading_name):
                             print("%s: radar-code=0o%o" % (reading_name, rcode))
                     if radar.exit_alarm != cb.NO_ALARM:
                         alarm_state = radar.exit_alarm

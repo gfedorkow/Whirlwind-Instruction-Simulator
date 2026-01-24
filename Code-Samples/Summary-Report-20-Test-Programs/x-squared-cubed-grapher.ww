@@ -1,0 +1,32 @@
+
+        ; original code
+        ;1 ca 10
+        ;2 ad 11
+        ;3 qd 10
+        ;4 mh 10
+        ;5 qd 9
+        ;6 mh 10
+        ;7 qd 9
+        ;8 sp 1
+        ;(FF register) 9
+        ;(FF register) 10
+        ; (FF register) 11
+
+
+        .org 2
+ff9:    .word 0  
+ff10:   .word 1.00000
+        .org 5
+ff11:   .word 0.00400
+        
+        .org 0o40
+loop:   ca ff10
+        ad ff11
+        qh ff10
+        qd ff10
+        mh ff10
+        qd ff9
+        mh ff10
+        qd ff9
+        sp loop
+        
