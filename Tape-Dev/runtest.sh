@@ -94,7 +94,10 @@ then
 	exit
 elif [ "$1" == "--Build" ];
 then
- 	echo "Nothing to build yet"
+	./runtest.sh --ReadTapes
+	./runtest.sh --DisAsm
+	./runtest.sh --Asm
+	./runtest.sh  --Dot
 	exit
 fi
 if [ $(checkarg "--Test1") == 0 ];
@@ -108,11 +111,20 @@ then
 	./runtest.sh --Test1
 	exit
 fi
+# This option is not needed to produce tcore and other derived files
+if [ $(checkarg "--CopyTapes") == 0 ];
+then
+	echo "Copying tapes *.7ch, *.7CH, and *.tap to tmp..."
+	cd tmp
+	rm *.7ch *.7CH *.tap
+	time /bin/find $tapepath  \( -name "*.7ch" -o -name "*.7CH" -o -name "*.tap" \) -print -exec cp -b {} . \; >&copylog
+	cd ..
+fi
 if [ $(checkarg "--ReadTapes") == 0 ];
 then
 	echo "Producing tcore, ocore, or fc files from all tapes, writing to tmp..."
 	cd tmp
-	time /bin/find $tapepath  \( -name "*.7ch" -o -name "*.7CH" -o -name "*.tap" \) -print -exec python $utd {} \; >&tapelog
+	time /bin/find $tapepath  \( -name "*.7ch" -o -name "*.7CH" -o -name "*.tap" \) -print -exec python $utd --ArchaeoLog {} \; >&tapelog
 	cd ..
 fi
 if [ $(checkarg "--ShortReadTapes") == 0 ];

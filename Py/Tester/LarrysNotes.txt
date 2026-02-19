@@ -36,7 +36,7 @@ co-resident in the dir with runtest.sh, and by convention called
 TestRefs, but not required.
 
 Each runtest.sh must have a --Accept option, which copies a set of log
-or output files to the test refs area.
+or output files to the test refs area.                                        **** Should assure it does a git add
 
 Each runtest.sh also has a standard cd to its own location (i.e., the
 dir of arg $0), to allow it to be run more easily from an external
@@ -799,8 +799,11 @@ literal-digit-seq												Decimal inreger
 		  frac+exp manner. Would they have printed for 123,  +.12300000+03 ?
 
 		  [Found round issue! Now looks better, ie, more like
-            original, as in sample in Laning letter.]
-
+            original, as in sample in Laning letter. But the point
+            remains that they probably used an algorithm similar to
+            mine, and didn't go overbaard try to detect integer or
+            other property.]
+			
 	* LZ Paper:
 		- -32767 -- fractional behavior
 		- Fig 5 -- wrong; it's not the 24,6 routine
@@ -812,7 +815,6 @@ literal-digit-seq												Decimal inreger
 		* "record status message" get a char returned for rc -- necessary? -- currently commented out
 			[Keeping it for now]
 		- char display at right in tcore files has changed e.g. # rather than \0 for null char:
-
 
 < @C00160: 0040112 0100207 0040047 0074040 0000000 0000000 0000000 0066315  ; ts ca ts sp si si si ex  :         s3#t###+ : <color>t<color>k###6
 < @C00170: 0000510 0005075 0114630 0063147 0000200 0034632 0177533 0157777  ; si .word su ab si cf md SL  :  <shift dn>n##f6<del> :     #ew,#u<del>#
@@ -839,8 +841,11 @@ literal-digit-seq												Decimal inreger
 	- Asm log subclass just doesn't work -- python doesn't have the right polymorphism
 	- Asm: label: ,word 0o123 parses but produces garbage
 	- Runaway detector -- still work? [Looks like it is -- run "...change...tcore". But mad-game loops and it doens't kick in.]
+	- Fatal error, output file name gibberish when do:
+		python $utd --ArchaeoLog /home/lstabile/whirlwind/Py/Common/../../Recovered-Tapes/Source-Images/Paper-Tapes/062302399_box40/102663769_230_4of6.7ch
+	- Some tcore files are logged in alog but are not created by wwutd
 	* ww_flowgraph.py -- LAS42 prints
-	- wwutd -- Add addresses to %String
+	* wwutd -- Add addresses to %String
 	* Should use immutable  (1,2,3) lists for x in (1,2,3) rather than mutable [1,2,3]
 		[Changed wwasmparser to use tuple format. Did perf test and is
 		 maybe marginally better. Also had a separate test doing "x in
@@ -1353,7 +1358,7 @@ well, e.g. to write to the printer.
 
 
 
-Diving into the Tapes  *****
+Diving into the Tapes
 =====================
 [9/10/25 Deleted all these dirs and zips because we're using Guy's dir structure now.]
 
@@ -1374,12 +1379,222 @@ As of now 6/22/25 these will not be checked in to git.
 - .tap files seems to be the base source data, with tcore, ocore, etc. dereived.
 
 
+Proposal for an "archaeobase"
+----------------------------
+
+I've been thinking about how we might organize the info we have so we
+can collectively get a handle on what everything in ww is all
+about. The change for unique "leaf" names is a basic step that I'm
+sure will be useful.
+
+We've chatted a bit about perhaps a database, or one of more
+spreadsheets, or other tools. I'll add html, which perhaps we touched
+on.  That could be a good initial UI.
+
+In considering all this it occurred to me that we've all referred to
+this as "archaeology" in some way so I wondered what archaeologists do
+to handle their data?  As you can imagine, this turns out to be a vast
+field. Public-facing orgs like the British Museum have detailed and
+complex web sites for their artifacts.  And there are many databases
+for specific areas, like image-processing for pottery shards and
+similar DBs of artifact attributes. All in all, it's interesting,
+stuff, but also a large enough effort that I'm probably not going to
+dig much further on it at this point. May be worth revisiting.
+
+I also found "Software Archaeology" on wiki
+https://en.wikipedia.org/wiki/Software_archaeology and it's:
+
+    "...the study of poorly documented or undocumented legacy software
+    implementations, as part of software maintenance."
+
+This is what we called "The Code Left by the Ancient Ones" problem --
+we had a big system and its experts had departed. But oddly efforts
+like ours are not part of the description.
+
+We don't know exactly what we need yet. However important goals seem to be:
+
+    - Be able to correlate many pieces of disparate data, including code, documents, photos, etc.
+    - Record our own activities so we don't repeat tasks.
+    - Incorporate data we each might generate through our individual analyses.
+
+Anyway what I'm getting to is a specific proposal, a step toward an
+"archaeobase" as I'll call it for marketing purposes. This is just a
+term for whatever we do in terms of a data set and tools to explore
+and manage it.
+
+While we don't know exactly what we need yet, we will need to
+populate whatever it is with data, and we'll need to get that data out
+of the files and programs we have now. To do that, we'll create a new
+logging class I'll call ArchaeoLog.
+
+Current logging is for managing errors and warnings, and to get
+run-time info from ww runs into the logs for testing. It's a free-form
+syntax.
+
+ArchaeoLog will be a formal syntax, and will log a different kind of
+data, involving the objects (as exemplified by the unique keys), and
+their attributes, in a simple (object, attribute, value) form.  They
+aren't temporal, i.e., are not timestamped. Each object, attribute, or
+value can be any string or numerical data type.  This format is very
+general and programs can be written that convert fairly easily to
+multiple forms, including databases, spreadsheets, and
+html. "Key-value" databases of this kind are also popular in their own
+right, e.g., Redis, or Amazon Dynamo. I'm thinking html will be the
+first transformation I'd like to try.
+
+Some possible examples of entries:
+
+    "Everett-Tape-manual-read.7ch", utd-to, "Everett-Tape-manual-read_gs001.tcore"
+    "Everett-Tape-manual-read.7ch", utd-to, "Everett-Tape-manual-read_gs002.tcore"
+    "Everett-Tape-manual-read_gs001.tcore", disasm-to, "Everett-Tape-manual-read_gs001.ww"
+    "Everett-Tape-manual-read.7ch", avg-tcore-size, 4257.38
+    "Everett-Tape-manual-read.7ch", n-tcore-files, 42
+    "Everett-Tape-manual-read_gs001.ww", asm-to, Everett-Tape-manual-read_gs001.acore"
+    "Everett-Tape-manual-read.7ch", full-path, "Recovered-Tapes/Source-Images/Paper-Tapes/MIT-Museum-Tapes/Everett-tape/Everett-Tape-manual-read.7ch"
+
+
+Note that, with the tape file names unique, we can also count on the
+derived core, ww, gv, and other files to be unique. So this gives us a
+wide variety of objects we can tie attributes to.
+
+Attribute names can be whatever is desired, however some subsequent
+program will need to recognize them.  The lib for this will have an
+enum for some std attributes.
+
+Each tool we want to contribute data will need to populate the
+archaeolog, e.g., wwutd, wwdisasm, wwasm. Scripts or python code we
+each write to do some analysis should be able to contribute as well.
+
+For python, we'll have class ArchaeoLog. It will take care of all
+aspects of file handling, including naming.
+
+Ways we might call this:
+
+    al = ArchaeoLog()
+
+    al.log ("Everett-Tape-manual-read.7ch", "utd-to", "Everett-Tape-manual-read_gs001.tcore")
+    al.log (tapeFile, "utd-to", tcoreFile)
+    al.log (tapeFile, ArchaeoAttr.utdTo, tcoreFile)
+    al.log (tapeFile, ArchaeoAttr.avgCoreSize, 42.57)
+
+Being able to contribute notes to the data is also important. I have a
+couple of ideas on how to accommodate that and maybe we can chat about
+it when we next meet.
+
+Operationally, this log will be a set of files under the dir
+"archaeolog" in the main ww top level.  Each file will be named by the
+program and a random number, e.g.:
+
+    wwutd.12123
+    wwutd.44477
+    wwutd.23823
+    wwasm.43846
+    wwdisasm.48282
+
+In this way we can keep an accumulation of files without
+conflicts. Since there is no temporal order, a processing program can
+load them however it likes. It's also good for python programming in
+that no global "log object" needs to be kept.
+
+For shell, we'll need a way to create one of the random files as above. 
+
+I anticipate that the primary initial use for this will be as a batch
+process, as in the script in Tape-Dev that makes all the derived
+files. A batch script would normally clear this dir and rebuild the
+files.  It will be active only with a program option --ArchaeoLog.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+archaeobase
+archaeo-base
+
+
+archaeolog
+archaeo-log
+
+ArchaeoLog
+
+archaeology
+
+
+
+
+"Everett-Tape-manual-read.7ch", utd-to, "Everett-Tape-manual-read_gs001.tcore"
+"Everett-Tape-manual-read.7ch", utd-to, "Everett-Tape-manual-read_gs002.tcore"
+"Everett-Tape-manual-read_gs001.tcore", disasm-to, "Everett-Tape-manual-read_gs001.ww"
+"Everett-Tape-manual-read.7ch", avg-tcore-size, 4257
+"Everett-Tape-manual-read.7ch", n-tcore-files, 42
+"Everett-Tape-manual-read_gs001.ww", asm-to, Everett-Tape-manual-read_gs001.acore"
+"Everett-Tape-manual-read.7ch", full-path, "Recovered-Tapes/Source-Images/Paper-Tapes/MIT-Museum-Tapes/Everett-tape/Everett-Tape-manual-read.7ch"
+
+
+Easiest way to get unique files is to gen a random number and check it
+exists. All gen'ed files about 24K right now. Gen up to 100K?
+
+wwutd.12123
+wwutd.44477
+wwutd.23823
+wwasm.43846
+wwdisasm.48282
+
+
+Could reduce random names by using one of the keys but doesn't seem worth it.
+
+log ("Everett-Tape-manual-read.7ch", "utd-to", "Everett-Tape-manual-read_gs001.tcore"
+
+log (tapeFile, "utd-to", tcoreFile)
+
+log (tapeFile, ArchaeoAttr.utdTo, tcoreFile)
+
+log (tapeFile, ArchaeoAttr.avgCoreSize, 42.57)
+
+
+
 
 Tape Dev
 ========
 
 Tape Dev Lab Notes
 ------------------
+
+2/13/26
+All the .7CH (caps) files failed utd since the extension was not recognized.
 
 1/6/26
 Ran wwutd with across all the tape files, with the new packed string

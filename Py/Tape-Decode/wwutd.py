@@ -17,6 +17,7 @@
 # guy fedorkow, Dec 9, 2019
 # decode Whirlwind mag tape
 
+import os
 import sys
 # sys.path.append('K:\\guy\\History-of-Computing\\Whirlwind\\Py\\Common')
 import argparse
@@ -26,7 +27,7 @@ import hashlib
 from typing import List, Dict, Tuple, Sequence, Union, Any
 from wwflex import FlexToFc, FlexToFilenameSafeFlascii, FlexToCsyntaxFlascii, FlexToFlascii
 import traceback
-
+from archaeolog import ArchaeoLog, ArchaeoAttr
 
 DebugTAP = False
 Debug556 = False
@@ -39,6 +40,15 @@ DrumOffset = 0o00    # optional argument for (I think) loading 'drum dump' tapes
 #hist = wwinfra.OpCodeHistogram(cb)
 hist = None
 
+# Define a global info class for this file, since the prog is not class-based
+alog: ArchaeoLog = None
+class AlogInfo:
+    tapeFilenameLeaf: str = None
+
+def fatal (s: str):
+    alog.log (AlogInfo.tapeFilenameLeaf, "error", "fatal")
+    cb.log.fatal (s)
+    
 def breakp(why: str):
     print("breakpoint: %s" % why)
 
@@ -139,6 +149,7 @@ def write_petra_file(block_list, filename_7ch, base_output_filename, min_file_si
     ww_file.octal_block_list = block_list
     ignored_files = write_core_wrapper(filename_7ch, base_output_filename, ww_file, sequence, "", min_file_size)
     sequence += 1
+
     stats = {'good_xsum_count': 0, 'bad_xsum_count': 0, 'no_xsum_count': 0,
              'jump_to_count': 0, 'outputfile_sequence': sequence,
              'ignored_files_count': ignored_files, "non_556_block_count": len(block_list)}
@@ -160,12 +171,9 @@ def write_core_wrapper(input_file: str, base_filename: str, ww_file, sequence: i
 
     if (is_octal_block ^ is_556) is False:
         print("Error: Write_core(): 556=%d and Octal=%d: Pick one or the other!!" % (is_556, is_octal_block))
-    file_extension = "tcore"
-    if is_octal_block:
-        if is_petra_file:
-            file_extension = "petrA"
-        else:
-            file_extension = "ocore"
+
+    file_extension = ww_file.get_file_extension()
+
     title = ww_file.title
     if title is None:
         title = ''
@@ -173,13 +181,21 @@ def write_core_wrapper(input_file: str, base_filename: str, ww_file, sequence: i
         title = '_' + title
     title = title.replace('\\n', '')
     if base_filename is not None:
-        core_file_name = "%s_gs%03d%s.%s" % (base_filename, sequence, title, file_extension)
+        # LAS took "title" out of name since can be bogus
+        # core_file_name = "%s_gs%03d%s.%s" % (base_filename, sequence, title, file_extension)
+        core_file_name = "%s_gs%03d.%s" % (base_filename, sequence, file_extension)
         core_file_name = core_file_name.replace(" ", "#")
         input_file += '/' + core_file_name  # "input file" is a comment that goes into the core file
         if DebugTAP:
             print("(write core file %s)" % core_file_name)
     else:
         core_file_name = None  # None sends output to stdout
+
+    if core_file_name is not None:
+        alog.log (AlogInfo.tapeFilenameLeaf, ArchaeoAttr.utdToCore, core_file_name)
+        alog.log (core_file_name, ArchaeoAttr.fileType, file_extension)
+        alog.log (core_file_name, ArchaeoAttr.jumpTo, jump_to)
+        alog.log (core_file_name, ArchaeoAttr.jumpToCount, ww_file.jump_to_count)
 
     if is_556:
         core_list.append(core)
@@ -211,8 +227,11 @@ def write_core_wrapper(input_file: str, base_filename: str, ww_file, sequence: i
         string_list = scan_for_strings(core_list, is_octal_block)
         packed_string_list = scan_for_packed_strings (core_list, is_octal_block)
         wwinfra.write_core(cb, core_list, 0, is_octal_block, input_file, title, jump_to, core_file_name,
-                           string_list + packed_string_list, block_msg, stats_string)
+                           string_list + packed_string_list, block_msg, stats_string, fatal_fcn=fatal)
+        alog.log (core_file_name, ArchaeoAttr.fileSize, os.path.getsize (core_file_name))
+        alog.log (core_file_name, ArchaeoAttr.tapeId, title)
     else:
+        alog.log (core_file_name, ArchaeoAttr.error, "ignored")
         ignored_files += 1
     return ignored_files
 
@@ -483,11 +502,19 @@ class WWFileClass:
         self.good_xsum = False
         self.bad_xsum = False
         self.jump_to = None
+        self.jump_to_count = 0
         self.core = [None for _ in range(cbl.CORE_SIZE)]
         self.octal_block_list = []   # this is a list of blocks, not all blocks concatenated into one array
         if Debug556:
             print(" ** New FileClass ** ")
-
+    def get_file_extension (self) -> str:
+        file_extension = "tcore"
+        if self.is_octal_block:
+            if self.is_petra_file:
+                file_extension = "petrA"
+            else:
+                file_extension = "ocore"
+        return file_extension
 
 def decode_ww_loader_format(word_record, ww_file, long_octal_dump):
     """ word_record: array of 16-bit words read from the tape
@@ -750,11 +777,16 @@ def write_flexo_file(block_array: List[List[int]], input_filename: str, base_fil
         try:
             fout = open(txt_filename, 'wt')
         except IOError:
-            cb.log.fatal("can't open %s for writing" % txt_filename)
+            fatal("can't open %s for writing" % txt_filename)
 
     fout.write("%%File %s\n" % input_filename)
     fout.write(ascii_str)
+    fout.close()
 
+    alog.log (AlogInfo.tapeFilenameLeaf, ArchaeoAttr.utdToFc, txt_filename)
+    alog.log (txt_filename, ArchaeoAttr.fileType, "fc")
+    alog.log (txt_filename, ArchaeoAttr.fileSize, os.path.getsize (txt_filename))
+    pass
 
 # decode 556 blocks until we hit end of file
 # A JumpTo causes the current core file to be written and a new one started
@@ -813,6 +845,7 @@ def decode_556_file(block_array: List[List[int]],
 
         if ww_file.jump_to or (block == block_array[len(block_array) - 1]):  # this would be set by decode_556_blocks
             jump_to_count += 1
+            ww_file.jump_to_count = jump_to_count
             if jump_to_count > 1:
                 cb.log.warn("more than one jumpto in decode_556_file")
             if ww_file.jump_to:
@@ -901,7 +934,7 @@ def classify_paper_tape_blocks(block_array: List[List[int]], bt_list: List[List[
                         change_type = 'loader'
 
             else:
-                cb.log.fatal("classify_paper_tape_blocks: unexpected type %s, %s" % (current_list_type, btype_txt))
+                fatal("classify_paper_tape_blocks: unexpected type %s, %s" % (current_list_type, btype_txt))
 
         if change_type:
             if current_list_type == "loader":
@@ -1066,7 +1099,7 @@ def read_7ch(cb, filename:str):
         fd = open(filename, "rb")   # open as a file of bytes, not characters
     except IOError:
         fd = None  # this prevents an uninitialized var warning in fd.read below
-        cb.log.fatal("Can't open tape file %s" % filename)
+        fatal("Can't open tape file %s" % filename)
 
     block_array = []
     block = []
@@ -1118,6 +1151,7 @@ def read_7ch(cb, filename:str):
 def main():
     global DebugTAP, Debug556, hist
     global cb
+    global alog
 
     # instantiate the class full of constants
     parser = wwinfra.StdArgs().getParser ('Decode a Whirlwind tape image.')
@@ -1150,6 +1184,9 @@ def main():
     wwinfra.theConstWWbitClass = cb
     cb.log = wwinfra.LogFactory().getLog(quiet=args.Quiet)
     hist = wwinfra.OpCodeHistogram(cb)
+    
+    alog = ArchaeoLog()
+    alog.log ("wwutd", "args", sys.argv)        # For debugging
 
     if args.DebugTAP:
         DebugTAP = True
@@ -1167,13 +1204,17 @@ def main():
         if re.search('\\.' + file_type_instance + '$', args.tape_file):
             file_type = file_type_instance
 
+    AlogInfo.tapeFilenameLeaf = os.path.basename (args.tape_file)
+
     if args.Ch7Format:
         file_type = "7ch"
     if args.TapFormat:
         file_type = "tap"
 
     if file_type is None:
-        cb.log.fatal("Please specify either .7ch or .tap file, or --TapFormat or --Ch7Format")
+        fatal("Please specify either .7ch or .tap file, or --TapFormat or --Ch7Format")
+
+    alog.log (AlogInfo.tapeFilenameLeaf, ArchaeoAttr.fileType, file_type)
 
     if args.OutputFile:
         base_output_filename = args.OutputFile
@@ -1200,7 +1241,7 @@ def main():
 
     if file_type == "tap":
         if args.FlexoForce:
-            cb.log.fatal("Write Some Code:  Flexo mag tape not implemented yet!")
+            fatal("Write Some Code:  Flexo mag tape not implemented yet!")
         # good_xsum, bad_xsum, no_xsum, jump_tos, ignored_files
         stats, completion_string = read_tap_file(args.tape_file, base_output_filename,
                                                  min_file_size, read_past_eof,
@@ -1229,7 +1270,7 @@ def main():
                                                                   args.tape_file, base_output_filename, min_file_size)
 
     else:
-        cb.log.fatal("?? how'd we get here? file_type=%s" % file_type)
+        fatal("?? how'd we get here? file_type=%s" % file_type)
 
     cb.log.info("Completed %s of tape %s" % (completion_string, base_output_filename))
     if len(stats) > 0:
@@ -1239,6 +1280,7 @@ def main():
         cb.log.info("556 Checksum summary: Good=%d(d), Bad=%d(d), Missing=%d(d), Jump_To's=%d(d), Non_556_blocks=%d(d)"
                     % (stats['good_xsum_count'], stats['bad_xsum_count'], stats['no_xsum_count'],
                         stats['jump_to_count'], stats['non_556_block_count']))
+        alog.log (AlogInfo.tapeFilenameLeaf, ArchaeoAttr.utdIgnoredCoreFiles, stats["ignored_files_count"])
 
     if hist.local_histogram is False:
         hist_list = hist.normalize_histogram()
@@ -1249,6 +1291,7 @@ def main():
             op += 1
         print("Op Code Histogram: %s" % hstr)
 
+    alog.close()
 
 if __name__ == "__main__":
     main()

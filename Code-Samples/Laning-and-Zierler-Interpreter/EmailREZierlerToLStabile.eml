@@ -1,0 +1,399 @@
+Return-Path: <gzierler@uw.edu>
+Delivered-To: l.stabile@comcast.net
+Received: from dovdir2-asa-03o.email.comcast.net ([96.102.167.146])
+	by dovback2-asa-19o.email.comcast.net with LMTP
+	id uOP3Oc6Od2nbBTQArlMGVw:P1:P1
+	(envelope-from <gzierler@uw.edu>)
+	for <l.stabile@comcast.net>; Mon, 26 Jan 2026 15:57:03 +0000
+Received: from dovpxy-asb-12o.email.comcast.net ([96.102.167.146])
+	by dovdir2-asa-03o.email.comcast.net with LMTP
+	id uOP3Oc6Od2nbBTQArlMGVw:P1
+	(envelope-from <gzierler@uw.edu>)
+	for <l.stabile@comcast.net>; Mon, 26 Jan 2026 15:57:03 +0000
+Received: from resimta-h2p-561938.sys.comcast.net ([96.102.167.146])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	by dovpxy-asb-12o.email.comcast.net with LMTPS
+	id uOP3Oc6Od2nbBTQArlMGVw
+	(envelope-from <gzierler@uw.edu>)
+	for <l.stabile@comcast.net>; Mon, 26 Jan 2026 15:57:03 +0000
+Received: from mx0a-00641c01.pphosted.com ([205.220.165.146])
+	by resimta-h2p-561938.sys.comcast.net with ESMTPS
+	id kOxZvkfnPaTqOkOxZvAXxd; Mon, 26 Jan 2026 15:57:02 +0000
+X-CAA-SPAM: F00000
+X-Originating-IP: [205.220.165.146]
+X-Authority-Analysis: v=2.4 cv=MfjGfZ/f c=1 sm=1 tr=0 ts=69778ece
+ cx=a_idp_d:c_cmc a=0SwA1HD5KYPJ9rXWJtnWNQ==:117 a=0SwA1HD5KYPJ9rXWJtnWNQ==:17
+ a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19
+ a=xqWC_Br6kY4A:10 a=vUbySO9Y5rIA:10 a=C2eM4oOPwNUA:10 a=x7bEGLp0ZPQA:10
+ a=tnVwPKPvby0A:10 a=_xF4OgItSMwA:10 a=RdetQaYE2FfLLfqn9CcA:9
+ a=lqcHg5cX4UMA:10 a=CjuIK1q_8ugA:10 a=yMhMjlubAAAA:8 a=SSmOFEACAAAA:8
+ a=b2dTQ6SG5SJ1fHdU3JoA:9 a=7nhzs3PAMN4goP-f:21 a=gKO2Hq4RSVkA:10
+ a=UiCQ7L4-1S4A:10 a=hTZeC7Yk6K0A:10 a=frz4AuCg-hUA:10
+ a=Vm-LjPgoFAfNn1u6IMAA:9 a=HXjIzolwW10A:10 a=T6a71-JsGAwA:10
+ a=YI8P42sZqdMMTYyKVM0s:22
+X-Xfinity-Message-Heuristics: IPv6:N;TLS=1;SPF=1;DMARC=P;ASEO=N
+Xfinity-Larsen: YVBMOE5vc0puMGNTRFQvWjJobnhsaDBmV2h3dnNyOW5BbHpQeGlyU1Z3eUpBRXJaV2xPUnliWUZ2aitsWmY2cVlrMDlXRDBVa21BVytLUjFwUnArZE0zVjI0U1lXeEFYN0xUVkFPUk16NlpqOXJxRU4xMVBpMEhPeU1WbDBqUXN5eVc2eXdqNEpMbmdKS3RaUWd0UkhzWE1uVS9qcnllRFhLWlZKUGt3dHo4PQ==
+Authentication-Results: resimta-h2p-561938.sys.comcast.net;
+	dkim=pass header.d=uw.edu header.b=UBnkdLOB;
+	dkim=pass header.d=uwnetid.onmicrosoft.com header.b=BHrRfmtC
+Received: from pps.filterd (m0247473.ppops.net [127.0.0.1])
+	by mx0a-00641c01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 60QFtj7g1318742
+	for <l.stabile@comcast.net>; Mon, 26 Jan 2026 15:57:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uw.edu; h=
+	content-type:date:from:message-id:mime-version:subject:to; s=
+	Jan2024; bh=8UZ9XI/J8XBC3KjVmu3s9MekIe2/ihrWmwqsEZLYWHc=; b=UBnk
+	dLOBY5N5JREhoZOJUy2UrhYtCPnPltPjXFm7Og8cCEhVWuIBWhNXLnNWvXihYC6K
+	ypjouqxOx0bMTsLuelS/6DU7MTFHqXeodLt1GXxK5VRQ4VRdgrqvR6/Z5nn/xorE
+	9rzqhjiGXEq+byri6K7xkhxjsCNwDsvejVsrazdyNAeIUYAyGfSovB5/fgqlZBVt
+	OHoAXd6FjAJ2GkJ/6d2oyrHLwLtXa2NB0jDJvmRnKYqk4KXGldX7TuREw9ELo7Ls
+	YN/27M/jg+mN7Vm3yaXT1XuZFbrunzpn1aprMGZAsKf434+3FdZz+4giVcTTzv2w
+	vF6Z66UK1ppuwuqHJw==
+Received: from mxout31.s.uw.edu (mxout31.s.uw.edu [140.142.32.141])
+	by mx0a-00641c01.pphosted.com (PPS) with ESMTPS id 4bxb5srf3h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+	for <l.stabile@comcast.net>; Mon, 26 Jan 2026 15:57:00 +0000 (GMT)
+Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011012.outbound.protection.outlook.com [52.101.62.12])
+	by mxout31.s.uw.edu (8.16.1+UW24.12/8.14.4+UW24.02) with ESMTPS id 60QFuxP8025968
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
+	for <l.stabile@comcast.net>; Mon, 26 Jan 2026 07:57:00 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=bevAnNQPylo8o4r41Q08ah4MeR7mQJpnRHdzk/hSsZQ9j1131xmbM7rDeC7v+YEWWpOniAVcrv88VPLXu5onQ+kV8nXqSCr6zsHrBMiYkc9+Z2vQu1QTgf0OIWtWYmeS2j1lro71a2nRZ6epBPI6DAnJkY6ygf0zqtbbYM9csVtZz+sUPciwVsOQdA9gCnzETaSCw5xJiw3QsQt2zZgsFq9BKHYZBGKc41gRPV+l5RRR98mXFpQ6fwSn47Gx6FpMfmRRj9aZFHHWPlsyP/xa1YZePq8wJjQQeBIK3qhjW1MzNjKTeUhT3F7dpTKZg/CdRGTx0KpTy4tdFMA7T3GJWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8UZ9XI/J8XBC3KjVmu3s9MekIe2/ihrWmwqsEZLYWHc=;
+ b=DjUPafE5LILtCilZiDK9SEhRhl6+N4RgKFrcyJzeR2iVomqgYXeGfl6lXbE9NyyTHfrF/uCImoKCn7IDdVWj9I8MewiWkW0gVeDBgbRcI3c2zXDzvuqln3J9SO3NmHIJJ63OY9KYJFo4K7BQkp8GvWCcjV5yP3oxBMkMVlrliNtX1QsmbZ1MrFrtlp0PH3zZPhRFVEDU3uCsw2jF5hAEucRrfuQZ26sEYQVDSj+BLhlTMuId2qucPnhxlWnVrYC2zkQsFXLXeK+k64JiViBnIEBiKRggPJBdwBNhcTp1iyJjWHFhIy5GcqHhNdIby0j9Ms3vpbf5pPhHG1z1g4dPMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=uw.edu; dmarc=pass action=none header.from=uw.edu; dkim=pass
+ header.d=uw.edu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=uwnetid.onmicrosoft.com; s=selector2-uwnetid-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8UZ9XI/J8XBC3KjVmu3s9MekIe2/ihrWmwqsEZLYWHc=;
+ b=BHrRfmtCZaAOQKmkx7L8+e24MqLf1DZmnmHXjDLrTOa6n2wi1jr+7o4XKhLTZe86sXHy3U303kjh5MRs3TpBQA4cN2srKIytjj6s3SJilziT/8dy/vIgOkES4mmpIXDFeGDuA8hoEw1YrWwknf2RKjfPNnKsaunxp6dhaEPRxA3j7d0vHlViBSrUI4msOg3Ta3LFKiy6Ea2Qzz0ncsBPFvK6riuCFMZpBdyceFd31z0kxPShSXWiG0IqyWoslHCXq+qTw/8CJJ7N3KLlFi/H2xgb7w+9Jwj08XDex3uehkvbjAGuCL8zTKHrn6F2XqscCfJ6KrqCxmul4yc7Ore9rA==
+Received: from MN2PR08MB6349.namprd08.prod.outlook.com (2603:10b6:208:1a1::22)
+ by CH3PR08MB9475.namprd08.prod.outlook.com (2603:10b6:610:1c3::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9542.16; Mon, 26 Jan
+ 2026 15:56:56 +0000
+Received: from MN2PR08MB6349.namprd08.prod.outlook.com
+ ([fe80::778f:61e5:73f3:d974]) by MN2PR08MB6349.namprd08.prod.outlook.com
+ ([fe80::778f:61e5:73f3:d974%4]) with mapi id 15.20.9542.010; Mon, 26 Jan 2026
+ 15:56:56 +0000
+From: R E Zierler <gzierler@uw.edu>
+To: "l.stabile@comcast.net" <l.stabile@comcast.net>
+Subject: Laning/Zierler compiler-interpreter 
+Thread-Topic: Laning/Zierler compiler-interpreter 
+Thread-Index: AdyO1Jn1RnC2gH1qRjCT8AzJopxC4A==
+Date: Mon, 26 Jan 2026 15:56:56 +0000
+Message-ID:
+ <MN2PR08MB6349AE3F2DA9990AB4D961C6BA93A@MN2PR08MB6349.namprd08.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN2PR08MB6349:EE_|CH3PR08MB9475:EE_
+x-ms-office365-filtering-correlation-id: d3d287e2-84ec-4b4f-5e19-08de5cf38829
+x-uw-exo-rulemarker: Beginning_StopProccessing_Rules
+x-uw-exo-last-ruleset: 6.6
+x-uw-ex-1st-seen: ExO
+x-uw-exo-last-exlforwarded: false
+x-uw-exo-last-uwforwarded: false
+x-uw-exo-last-uwforwardedby: false
+x-uw-exo-1st-uwforwarded: false
+x-uw-exo-last-direction: Originating
+x-uw-exo-last-sender-realm: Inside
+x-uw-exo-last-recipentdomain: non-tracked
+x-uw-exo-last-check-uwash-spam: none
+x-uw-exo-last-scl-override: None
+x-uw-exo-last-deliverto: mxoutexch
+x-uw-exo-routed_to_mxoutexch: true
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|19092799006|366016|376014|786006|1800799024|4053099003|8096899003|38070700021;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?oVSThzMdRoJ6amOTYtTZ/mHc5th82XyvviRcs1CT1ETmzcvx3r25sUHkHwvt?=
+ =?us-ascii?Q?DU3VhxfpXhnhCjkcG+FO5ZPehDBY2BqaYQPfPrrI8CFi2NcThB/X8NSeGtRs?=
+ =?us-ascii?Q?SRIaUaFTWUeGfaIuAQ5SD6hhNelBWKAX1aa/26USC9Oqx39GBy758/KkihYD?=
+ =?us-ascii?Q?EksJm3TbOZzo4HeljFC0Sc1PR+fSsogKrJpRT+CiEDy+9f/xOV7zEinRDvL/?=
+ =?us-ascii?Q?PyFGCgPPPsoUVbKCCKLFu9kW6Mb9uOVFnFxLvpIsGft7qAIib/7RFsZNshrN?=
+ =?us-ascii?Q?LRj5y/TVVE75scG2WIGUwowu+ObAMLlqDdwKLeWHkWP6oxpKtELeHZ/g7qux?=
+ =?us-ascii?Q?5nrOpMWimeUj8bDaEqLUcYkI+w1auatqhaj/XTnyAUoM8EZsixshdMKgLMwb?=
+ =?us-ascii?Q?Nnu9+GUZ8JNAJRfCOqVw6fLivFubCCSsDJbbfgJe4BUSBLrHelPq5JzSL122?=
+ =?us-ascii?Q?XQgnIGhLZV83Dz2Y0jxC3wIXamIZYApIADGMdO5s7Vv6Zdo2cZ7RwVhEfF6F?=
+ =?us-ascii?Q?fobRqwcTDB6AGY+6gSLVMb9iNHH6wx8U96rRLXSHW5emPb9Y6r8w9vi5Kh6h?=
+ =?us-ascii?Q?eUlNvMetaDEMo5itOBUMXRQWWv6cbooZnOPjZfuow41Gm0pIVUI/AzXBkOZa?=
+ =?us-ascii?Q?vZGQ5qQMzgMGXAXlpXCxnam3fXALY3+jBGpF3VfOtdXlPpE35Y00LZpNwmff?=
+ =?us-ascii?Q?LIpZfS+69CXnLygq2QCozvwhcda8ngiiP1XOZlifSRUxvL4QZuStAPcEXETu?=
+ =?us-ascii?Q?wUPHMJU4aGMlRubbN09aMDXqD95jlIJJIsL+1LyAJ06yYP3wIe7YvnO5Bd0d?=
+ =?us-ascii?Q?1N1mMjgVBHdG8M2vVVs0cSw/A7OlF8LOoyPXcFjWDjKDuSNuJHU1X+DmVV6T?=
+ =?us-ascii?Q?vPzIUBQK5mQIVRSxP0UZ0XbXE41wPgpM+Jg6kbrkKcWPMFqcgGSZ0MowzB+0?=
+ =?us-ascii?Q?fDkUa5abfShsi1oc6TvC/kugTr/NA813L1Y0bnn3FmMqUj1OPBnmgZkCaFZw?=
+ =?us-ascii?Q?CsELGDwea6ma0v2rn5bugoAhpkic5MQIsetvevVhoH0hBYKgYyV2Ad/dVr7r?=
+ =?us-ascii?Q?sz/V3EZIui3ZtnIH8nSNlBU8GRSfbfsSdGo8MlxDpkh1X1PBiBpZ5iIIuyWD?=
+ =?us-ascii?Q?jFCo+N8EKwj8U2QWPXw6Y1Zte/bCCOWVe/Dyn4bcAC8LWB4HIPZ57Dqen2qQ?=
+ =?us-ascii?Q?lYMOjEE8bK7/ib8WHch67peiAg0q2t+czL4t3UcF/44V0UF/Ur1CuCvvPL6o?=
+ =?us-ascii?Q?+Qjprg+LHV5FsXXXuzTj+Heo1GgrFUDsYa1vtBB5dxjOgIiF6TuEIIO+xiwz?=
+ =?us-ascii?Q?WmRvYqMMpWpL8fiMsBfnajC7pxtqYXpQ5mbJJlk43tqfF2J6GyT18LSfLu53?=
+ =?us-ascii?Q?A5dxN/NdF+P99jMcsNbZz6Pm+esdejv9GGcrzEey4E7oSMy5V7urkPOb73yb?=
+ =?us-ascii?Q?7FoTfGpGODxbAHhGUaxqK3BonDAXgCHwp0nECXIeKQVgqb6PbaAYt4l6QG+M?=
+ =?us-ascii?Q?MDj7teDq+AZDmMzdj6KRMRoZWvPhXcgK6vx8XVqgh51i9MiDh/IdjnGaQlqN?=
+ =?us-ascii?Q?QY/XNOPo7eToQqncq0sGxliiLBkOqvfPGMICjQjnnt200GAmvSfwomcl0Xvy?=
+ =?us-ascii?Q?Ea4rdumXSHmPDp5VPVwwOxk=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR08MB6349.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(366016)(376014)(786006)(1800799024)(4053099003)(8096899003)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?gk/smAr52crgM/rvwCebZlTNfc+k/imbHl3WBPEYEcrm/vTpnpA1MxMsikVj?=
+ =?us-ascii?Q?2awH3zyJGL/1KKzNTdXI25iJ+F4cfOTqnudMMZwJ2ja/9SiAMmUURUMxR3Oz?=
+ =?us-ascii?Q?qoyMVJt1qr33KminuwhdNqoqNdsUnaUFI4EkR/zEb38FXhc4M9f+Pqnz3WLV?=
+ =?us-ascii?Q?G80TfSyeK2szv9Bfo8h7IAkfmA+oTWY4sEsjW5/92LytbXR91C9hfKOx83Ob?=
+ =?us-ascii?Q?0tSC+K6jUdKNA7KHGyEbEzQ1t5rOf5hCvlnS3eQaJZyMby+XK5j9+DemVNUW?=
+ =?us-ascii?Q?pEKDea6m1Z1tdPl3LaAbVq3EGDFyA8joAYm5Sl/g03aweBxTNqdNUhj6F6uZ?=
+ =?us-ascii?Q?5EvpOyhXYbcew0KN48h3kLGAOBm/gzhOft8MjZFYYwFyXF+dF4443aHOHawh?=
+ =?us-ascii?Q?uC8FpQyCcZHrq632eBANKK9efuyldzQvn9c+kT72U/PxnOPCXjSpRheAp/9r?=
+ =?us-ascii?Q?yOrRIMQLz80endk8H5akdyqdE9KsRffJGhNzDbQMNrtiTwg4760BKdbqrXOZ?=
+ =?us-ascii?Q?CXLB6UYkBBXhiqTBcEfQosLrddoZtRDdAIKtja/YPkEKGp78ZuwKMztYOnM+?=
+ =?us-ascii?Q?4VuyR+R+AzCbLXqc8RFYVFl0PZL2NOPbNBDkcdGes2XjhsQ5JuYrwjYcJnFZ?=
+ =?us-ascii?Q?Xl9bJA13JMT7qYIzvFpvWmat8ipo83S3OJsEE7CaNuza0OoTxENPOfZCJizI?=
+ =?us-ascii?Q?nuJFF+TPY8xE/GxUva9V7xawD+J8iOH4EPmbqRqEyaLNd7tvyCUWTJE9Y24Q?=
+ =?us-ascii?Q?RthEsaikUdb2Ci/6OAmzSqsw3XJMdP67YW78sRE63MDHbHeWh5VZ1vyMvM4z?=
+ =?us-ascii?Q?CGjZBhgHhlQWqfZg8sBLgsnMHvJQQxHtWhLbqZxIhzk5rswoMfSwmLsM5g9r?=
+ =?us-ascii?Q?TncbXsBeZnQ4czuhrziz1sMJqCw5SxL/+2QHIfHiXsTJptjZoUbJVJ0mEUvf?=
+ =?us-ascii?Q?4riIwp/MzhuetIqtyKW3Eo6RDKmF6fkiKz6jhfqLnsCDcKcgnQCF1xm7yqbu?=
+ =?us-ascii?Q?94/1W3J5iwhd0tMbAo0gtWvl6Y2JygbMebJs4zrDhbS+VHbMva9U9icJracC?=
+ =?us-ascii?Q?jauXKEUnq9fEITGaxiVB6gsOs1PXmRcd0tGZzJkvhUn62U41MhJNMY40PsH9?=
+ =?us-ascii?Q?88NQytfA0FuZHgfbsadV6QJ/knBy0ZvWBpuf0XsadUaxXuknlyDAu7RW7mBu?=
+ =?us-ascii?Q?F7QJyHVM8nqYMmLGQo4rTOKtAukpg9sQz+lxtdNzzYzb+vId8NVU26koN0Wu?=
+ =?us-ascii?Q?LfMkcH44/x23w7QayJxGk0Y6h8yqTMaPvTuQBiZz2occbJAd2V0CiGO2yeC4?=
+ =?us-ascii?Q?W6U7gb2YOBItBHUzuDzmmfNp8yHjiv98Og45eWtbbdb0ecMXi4G9oyNI+Cnk?=
+ =?us-ascii?Q?rma+UBIf+4DJUJ8AoWTmE9CE7mYHft7en6aVGXAidGBdeOb4VwMaIQMYdDMS?=
+ =?us-ascii?Q?mP9sSMjGdg7UgAdSO+xWBmmcfa114bbBSHjWiDkJ3xEUlW0p7flW1ELlPgtl?=
+ =?us-ascii?Q?nUWg0RBl5W12mj7pRovxVYGNdd0xvRMhiqnb5PHkj4AgEmacq1kKqMUqxx2b?=
+ =?us-ascii?Q?dJmD8S/gjJ3wheWcWdMBEdcNrJfVZVmdMp2DT72m2RchQGJApqmTjoFFUgep?=
+ =?us-ascii?Q?P76qDIcoZdTl/qGD+IB/Ju3eBbbzOVWakT7+5tX98+8R0a9TgebRNZxlwXR4?=
+ =?us-ascii?Q?NdpT8NZvtmUIxzOO1RA16PW2MVeuyGnytPCIZF7x9mLZWNYO?=
+Content-Type: multipart/related;
+	boundary="_004_MN2PR08MB6349AE3F2DA9990AB4D961C6BA93AMN2PR08MB6349namp_";
+	type="multipart/alternative"
+MIME-Version: 1.0
+X-OriginatorOrg: uw.edu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR08MB6349.namprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d3d287e2-84ec-4b4f-5e19-08de5cf38829
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jan 2026 15:56:56.4251
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: f6b6dd5b-f02f-441a-99a0-162ac5060bd2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gt4PX5i8jebyIasw55+5W96BHKHzhXtLSMUsANMqV3EDZrxHj9KLEGr9HijskPzQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR08MB9475
+X-Proofpoint-GUID: uxoU20k_TgpXSWEca_djeS61NgY-KccA
+X-Proofpoint-ORIG-GUID: uxoU20k_TgpXSWEca_djeS61NgY-KccA
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTI2MDEzNSBTYWx0ZWRfX0HZGuKun0YN3
+ 4OELobtkO87qb0Xzncn7pJosiG//RAYNeyMSvnQL8RFNBbKvTHM4cot15X/89+Z7BK0hJ/YmfCl
+ 4aZOZUHOW/PSZetCUM+r6N2OKrp7aRZhPifuDjSqS6H3MDOJy/72nShr53weYeiBjSzd96s+4GK
+ Ohy9/GSXRc0HGoYI7Ij4+EulsISMxaP5R4/BxFNahQtOY2j8QV/rs9lO0o1qJgBeLC/gVkv/Il1
+ dqR2gyxpNLbkcVW8kIOMk53sdewBump9kmjwDehG9t0qnJ375V4fkCljy2ManzNBC4LMr4AC3Om
+ G3cfayJ+x8Da1uMoBwreNXX0xV6EFingpq8EcYBSEbwEC1HFJCNNMXvzTvpTWE0y9Nxaos2FfWn
+ O36mHbxh3b6d0MCrii9AXOek0uA2KxMG4GLZW95a3gQYwRF6ELltwxf6uaOuO2nFjFcNzZrS8AD
+ vO1wOXA/3OvWJtzxoZg==
+X-Proofpoint-Virus-Version: 
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 impostorscore=0 clxscore=1011 spamscore=0 malwarescore=0
+ suspectscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0 phishscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2601150000 definitions=main-2601260135
+X-CMAE-Envelope: MS4xfGCm//qmQ5oV8WNcVdgdoMWZP4VvvTBCCVZFiVxMfjraVYOBdijb7qKkAiQ3L7U6kgrCL33QOeqdp0uanQUmsOaakz7Vrm9+5yUr7rMDQ18kcgzgidai
+ 0XerEsdybYjs/UsWoBJnTa2Yc2JD3v6uzcnOk/6AEVusTioU0yauyH+dzBYE1oz+72pMcUs0R49omjTZ+AMu66gZHblnjHRCwy0=
+
+--_004_MN2PR08MB6349AE3F2DA9990AB4D961C6BA93AMN2PR08MB6349namp_
+Content-Type: multipart/alternative;
+	boundary="_000_MN2PR08MB6349AE3F2DA9990AB4D961C6BA93AMN2PR08MB6349namp_"
+
+--_000_MN2PR08MB6349AE3F2DA9990AB4D961C6BA93AMN2PR08MB6349namp_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Larry - Your message to Erin Zierler was forwarded to me for a response.  E=
+rin is my daughter, and Neal Zierler is my father.  Unfortunately, Neal pas=
+sed away last year just a few months before his 99th birthday.
+
+I am not a mathematician or computer scientist, but I am somewhat familiar =
+with the Laning/Zierler compiler-interpreter you refer to.  If there is any=
+ additional material that I might be able to provide for the work you are d=
+oing, please let me know.
+
+Gene Zierler
+
+R. Eugene Zierler, MD, RPVI
+[cid:image001.png@01DC8E91.DA52BDD0]
+Professor of Surgery
+Medical Director, D. E. Strandness Jr. Vascular Laboratory
+University of Washington Medical Center and Harborview Medical Center
+Division of Vascular Surgery | Department of Surgery | UW Medicine
+1959 NE Pacific St | Box 356410 | Seattle, WA, 98195
+OFFICE:    206.598.8299  EMAIL:   gzierler@uw.edu<mailto:gzierler@uw.edu>
+
+
+--_000_MN2PR08MB6349AE3F2DA9990AB4D961C6BA93AMN2PR08MB6349namp_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<!--[if !mso]><style>v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]--><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Aptos;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	font-size:12.0pt;
+	font-family:"Aptos",sans-serif;
+	mso-ligatures:standardcontextual;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:"Aptos",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+--></style>
+</head>
+<body lang=3D"EN-US" link=3D"#467886" vlink=3D"#96607D" style=3D"word-wrap:=
+break-word">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal">Larry &#8211; Your message to Erin Zierler was forwa=
+rded to me for a response.&nbsp; Erin is my daughter, and Neal Zierler is m=
+y father.&nbsp; Unfortunately, Neal passed away last year just a few months=
+ before his 99<sup>th</sup> birthday.<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">I am not a mathematician or computer scientist, but =
+I am somewhat familiar with the Laning/Zierler compiler-interpreter you ref=
+er to.&nbsp; If there is any additional material that I might be able to pr=
+ovide for the work you are doing, please
+ let me know.<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Gene Zierler<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<div>
+<div>
+<div>
+<div>
+<div>
+<div>
+<div>
+<div>
+<div>
+<div>
+<div>
+<div>
+<div>
+<div>
+<div>
+<div>
+<div>
+<div>
+<p class=3D"MsoNormal"><b><i><span style=3D"font-size:11.0pt">R. Eugene Zie=
+rler, MD, RPVI</span></i></b><i><span style=3D"font-size:11.0pt">&nbsp;<o:p=
+></o:p></span></i></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt"><img width=3D"50" h=
+eight=3D"34" style=3D"width:.5208in;height:.3541in" id=3D"Picture_x0020_1" =
+src=3D"cid:image001.png@01DC8E91.DA52BDD0"><br>
+</span><b><span style=3D"font-size:10.0pt">Professor of Surgery&nbsp;</span=
+></b><span style=3D"font-size:10.0pt"><o:p></o:p></span></p>
+<p class=3D"MsoNormal"><b><span style=3D"font-size:10.0pt">Medical Director=
+, D. E. Strandness Jr. Vascular Laboratory<o:p></o:p></span></b></p>
+<p class=3D"MsoNormal"><b><span style=3D"font-size:10.0pt">University of Wa=
+shington Medical Center and Harborview Medical Center</span></b><b><span st=
+yle=3D"font-size:9.0pt"><br>
+</span></b><span style=3D"font-size:9.0pt">Division of Vascular Surgery&nbs=
+p;| Department of Surgery |
+<b>UW Medicine</b>&nbsp;<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:9.0pt;mso-ligatures:none">1=
+959 NE Pacific St | Box 356410 | Seattle, WA, 98195<br>
+<b>OFFICE</b>:&nbsp;&nbsp;&nbsp; 206.598.8299&nbsp;&nbsp;<b>EMAIL</b>: &nbs=
+p; <a href=3D"mailto:gzierler@uw.edu">
+<span style=3D"color:#467886">gzierler@uw.edu</span></a><b> &nbsp;</b><o:p>=
+</o:p></span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+</body>
+</html>
+
+--_000_MN2PR08MB6349AE3F2DA9990AB4D961C6BA93AMN2PR08MB6349namp_--
+
+--_004_MN2PR08MB6349AE3F2DA9990AB4D961C6BA93AMN2PR08MB6349namp_
+Content-Type: image/png; name="image001.png"
+Content-Description: image001.png
+Content-Disposition: inline; filename="image001.png"; size=1276;
+	creation-date="Mon, 26 Jan 2026 15:56:55 GMT";
+	modification-date="Mon, 26 Jan 2026 15:56:56 GMT"
+Content-ID: <image001.png@01DC8E91.DA52BDD0>
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgoAAAANSUhEUgAAADIAAAAiCAYAAAAd6YoqAAAAAXNSR0IArs4c6QAAAJBlWElmTU0A
+KgAAAAgABgEGAAMAAAABAAIAAAESAAMAAAABAAEAAAEaAAUAAAABAAAAVgEbAAUAAAABAAAAXgEo
+AAMAAAABAAIAAIdpAAQAAAABAAAAZgAAAAAAAACQAAAAAQAAAJAAAAABAAOgAQADAAAAAQABAACg
+AgAEAAAAAQAAADKgAwAEAAAAAQAAACIAAAAAT3NkmAAAAAlwSFlzAAAWJQAAFiUBSVIk8AAAAm9p
+VFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0
+YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDYuMC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRw
+Oi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNj
+cmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFk
+b2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpSZXNvbHV0aW9uVW5pdD4yPC90aWZm
+OlJlc29sdXRpb25Vbml0PgogICAgICAgICA8dGlmZjpYUmVzb2x1dGlvbj4xNDQ8L3RpZmY6WFJl
+c29sdXRpb24+CiAgICAgICAgIDx0aWZmOllSZXNvbHV0aW9uPjE0NDwvdGlmZjpZUmVzb2x1dGlv
+bj4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRhdGlvbj4KICAgICAg
+ICAgPHRpZmY6Q29tcHJlc3Npb24+MTwvdGlmZjpDb21wcmVzc2lvbj4KICAgICAgICAgPHRpZmY6
+UGhvdG9tZXRyaWNJbnRlcnByZXRhdGlvbj4yPC90aWZmOlBob3RvbWV0cmljSW50ZXJwcmV0YXRp
+b24+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgpg
+tfwkAAABiklEQVRYCe2VTUvDQBCG39lsGhWk9CIUFfHipVdBwZO/yr/hSfAPiRdPVYrgoVqT2ghW
+sY3N146TerAFba9b2IGEyX7A874zuwFcOAecA84B54BzwDngHLDOAeKrnXXrqJYB7cqCnryaAaPz
+zBgFrLGxfbxsn3XzH0KkMh+vRYn9egyjSw3f7FkHuhDIA0pZ4DNJkiHBGLrIiDtHg4X7bJoUdOgp
+UI6xeYHhGPAuwWaowdiyifVflkpEFYwcTCmII8kLaMrAKtPIqjqtQNQUYAQ8554IGMDQOYyKkMVt
+fJpUZlckjFTCYCIiYnn6YA4ReH2gkdBpd6JRk8Nja/y2k1SiCEVIDKILkAqRDtso6190eJNX+Bok
+kzZH1TPMUg2KJJGWKiMoGmAzmFDrR0SFr2HMmc06pmxVWyn1BPZGGL89oKFTat1ls9wauXqcHbAu
+r65bX4S8y3mgtQlO7hOi6Z9kDlUjCa/nRmz8aGrGbbfEgVy8f4iwEdkxOQecA84B54BzwDngHBAH
+vgEFXI/rVNnlOgAAAABJRU5ErkJggg==
+
+--_004_MN2PR08MB6349AE3F2DA9990AB4D961C6BA93AMN2PR08MB6349namp_--
