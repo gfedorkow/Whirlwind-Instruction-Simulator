@@ -381,6 +381,7 @@ class StdArgs:
         parser = argparse.ArgumentParser (description)
         parser.add_argument("--LogDir",
                             help="Directory into which to store logs. Default is current wd.", type=str)
+        parser.add_argument ("--ArchaeoLog", help="Write data to the archaeolog dir.", action="store_true")
         return parser
 
 class ConstWWbitClass:
@@ -1399,7 +1400,7 @@ def hash_to_fingerprint(hash_obj, word_count):
 # In that case, "offset" simply represents the number of bytes from the start of the tape.
 #  [Careful, there's another write_core in wwasm.py.  oops.]
 def write_core(cb, corelist, offset, byte_stream, ww_filename, ww_tapeid,
-               jump_to, output_file, string_list, block_msg=None, stats_string=''):
+               jump_to, output_file, string_list, block_msg=None, stats_string='', fatal_fcn=None):
     flexo = FlexToCsyntaxFlascii()
     op_table = InstructionOpTable()
     hash_obj = hashlib.md5()  # create an object to store the hash of the file contents
@@ -1422,7 +1423,12 @@ def write_core(cb, corelist, offset, byte_stream, ww_filename, ww_tapeid,
         try:
             fout = open(output_file, 'wt')
         except IOError:
-            cb.log.fatal("can't open output file %s" % output_file)
+            msg = "can't open output file %s" % output_file
+            # Passing in the fatal fcn allows us to intercept eg in wwutd
+            if fatal_fcn is not None:
+                fatal_fcn (msg)
+            else:
+                cb.log.fatal (msg)
         print("%s %d(d) words, output to file %s" % (filetype, file_size, output_file))
     fout.write("\n; *** %s ***\n" % filetype)
     if block_msg is not None:

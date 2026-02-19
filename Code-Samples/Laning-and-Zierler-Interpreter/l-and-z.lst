@@ -1693,7 +1693,7 @@
 @2470.1336:116526                        su r72                   ;  |
 @2471.1337:155017                        slh 15                   ;  |
 @2472.1338:116437 .if (1 - do_floathack)   su r17                   ;  |- Form (2**-2/x**2)' (Use Euclid's algorithm)  ; [LAS Looks like this should say (2**-2/x2)' -- Uses remainder arith, hence the Euclid ref]
-;                                                      .if do_floathack       sp floathack             ;                                                  ; [LAS 3/30/25 Using r17 broke dv, but looks like it works now in more cases than before.
+;                  .if do_floathack       sp floathack             ;                                                  ; [LAS 3/30/25 Using r17 broke dv, but looks like it works now in more cases than before.
                                          ;                        ;                                                  ; Still breaks e.g. on sqrt2 test.
                                          ;                        ;                                                  ; Can't find what changed to enable this, but we'll switch between the original
                                          ;                        ;                                                  ; and floathack as needed.

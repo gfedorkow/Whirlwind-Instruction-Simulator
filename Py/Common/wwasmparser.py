@@ -19,7 +19,9 @@ class AsmExprEvalError (Exception):
     pass
 
 AsmTokenType = Enum ("AsmTokenType", ["Operator", "Comment", "AutoComment",
-                                      "DigitString", "Identifier", "DotPrint", "DotExec",
+                                      "DigitString",
+                                      "NumberString",                             # Any number type; the tokenStr is its rep. Used by ArchaeoLog.
+                                      "Identifier", "DotPrint", "DotExec",
                                       "String", "EndOfString", "Null"])
 
 class AsmToken:
@@ -268,6 +270,10 @@ class AsmTokenizer:
                         self.state = 9
                         self.pos += 1
                         self.push ("\n")
+                    elif c == "\"":
+                        self.state = 9
+                        self.pos += 1
+                        self.push ("\"")
                     else:
                         self.state = 9
                         self.push ("\\")
@@ -279,7 +285,9 @@ AsmExprType = Enum ("AsmExprType", ["BinaryPlus", "BinaryMinus",
                                     "BinaryMult", "BinaryDiv",
                                     "BinaryDot", "BinaryComma",
                                     "BinaryBitAnd", "BinaryBitOr",
-                                    "Variable", "LiteralString", "LiteralDigits",
+                                    "Variable", "LiteralString",
+                                    "LiteralDigits",
+                                    "LiteralNumber",
                                     "ParenWrapper", "Null"])
 
 # LAS 11/14/24 We have three numerical value types, each constrained to a bit
@@ -335,11 +343,11 @@ class AsmExprValue:
             return str (self.type) + " " + str (self.value)
 
 # We use a generic function here so that an eval may be done from contexts
-# outside the parser module, without requirng the parser module to import all
+# outside the parser module, without requiring the parser module to import all
 # sorts of extra stuff. This maintains modularity and also helps avoid circular
 # refs, which python really seems to hate. So e.g., in wwasm.py tables are
 # built for labels and other vars and we just pass those to the AsmExprEnv
-# subclass that support the lookup fcn.
+# subclass that supports the lookup fcn.
 
 class AsmExprEnv:
     def __init__ (self):
@@ -375,7 +383,8 @@ class AsmExpr:
         elif t in [AsmExprType.UnaryPlus, AsmExprType.UnaryMinus, AsmExprType.UnaryZeroOh, AsmExprType.ParenWrapper]:
             print (" " * indent + t.name)
             self.leftSubExpr.print (indent = indent + 3)
-        elif t in [AsmExprType.Variable, AsmExprType.LiteralString, AsmExprType.LiteralDigits, AsmExprType.Null]:
+        elif t in [AsmExprType.Variable, AsmExprType.LiteralString,
+                   AsmExprType.LiteralDigits, AsmExprType.LiteralNumber, AsmExprType.Null]:
             print (" " * indent + t.name, self.exprData)
     def listingString (self, quoteStrings: bool = True):
         if self.exprType in [AsmExprType.BinaryPlus, AsmExprType.BinaryMinus,
@@ -396,7 +405,7 @@ class AsmExpr:
             return self.exprData
     # Convert newlines back to escapes, etc.
     def strToSrcFormat (self, s: str) -> str:
-        return s.replace("\n", "\\n").replace("\b", "\\b").replace("\t", "\\t")
+        return s.replace("\n", "\\n").replace("\b", "\\b").replace("\t", "\\t").replace("\"", "\\\"")
     def getIdStr (self):    # Just for test/debug print
         return "AsmExpr-" + str (id (self))
     def evalError (self, msg: str):
@@ -597,16 +606,6 @@ class AsmParsedLine:
             self.log.error (self.lineNo,
                             "%s at char pos %d%s" % (e, self.tokenizer.pos, self.tokenizer.caratString (self.lineStr, self.tokenizer.pos - 1)))
             return False
-    # Called from DbgDebugger for command-line processing
-    def parseDbgLine (self) -> bool:
-        try:
-            self.parseDbgInst()
-            return True
-        except AsmParseSyntaxError as e:
-            sys.stdout.flush()
-            self.log.error (self.lineNo,
-                            "%s at char pos %d%s" % (e, self.tokenizer.pos, self.tokenizer.caratString (self.lineStr, self.tokenizer.pos - 1)))
-            return False
     def parsePrefixAddr (self) -> bool:
         errMsg = "Syntax error in prefix address"
         tok = self.gtok()
@@ -700,21 +699,6 @@ class AsmParsedLine:
         elif tok1.tokenType == AsmTokenType.DotPrint or tok1.tokenType == AsmTokenType.DotExec:
             self.opname = "print" if  tok1.tokenType == AsmTokenType.DotPrint else "exec"
             self.operand = AsmExpr (AsmExprType.LiteralString, tok1.tokenStr)
-            return True
-        else:
-            self.ptok (tok1)
-            return False
-    def parseDbgInst (self) -> bool:
-        tok1 = self.gtok()
-        if tok1.tokenType == AsmTokenType.Identifier:
-            tok2 = self.gtok()
-            if tok2.tokenType == AsmTokenType.EndOfString:
-                e = AsmExpr (AsmExprType.Null, "")
-            else:
-                self.ptok (tok2)
-                e = self.parseExpr()
-            self.operand = e
-            self.opname = tok1.tokenStr
             return True
         else:
             self.ptok (tok1)
@@ -898,6 +882,7 @@ class AsmParsedLine:
         tok = self.gtok()
         tokTypeDict = {
             AsmTokenType.DigitString: AsmExprType.LiteralDigits,
+            AsmTokenType.NumberString: AsmExprType.LiteralNumber,
             AsmTokenType.Identifier: AsmExprType.Variable,
             AsmTokenType.String: AsmExprType.LiteralString
             }
@@ -919,6 +904,66 @@ class AsmParsedLine:
         else:
             self.ptok (tok)
             return None
+
+# The debugger language is almost identical to the asm language, the main
+# difference being support for then, eg:
+#    b ax then p mra, fm
+
+class DbgParsedLine (AsmParsedLine):
+    def __init__ (self, str, verbose = False):
+        super().__init__ (str, 0, verbose = verbose)
+        self.thenOpname = None
+        self.thenOperand: AsmExpr = None
+        pass
+    def print (self):
+        super().print()
+        if self.thenOpname is not None:
+            s = " "*3
+            print ("Then:\n",
+                   s + "thenOpname=", self.thenOpname, "\n",
+                   s + "thenOperand=", "AsmExpr-" + str (id (self.thenOperand)) if self.thenOperand is not None else "None")
+        pass
+    def parseLine (self) -> bool:
+        try:
+            self.parseStmt()
+            return True
+        except AsmParseSyntaxError as e:
+            sys.stdout.flush()
+            self.log.error (self.lineNo,
+                            "%s at char pos %d%s" % (e, self.tokenizer.pos, self.tokenizer.caratString (self.lineStr, self.tokenizer.pos - 1)))
+        pass
+    def parseStmt (self) -> bool:
+        r = self.parseInst()
+        if r is not None:
+            (self.opname, self.operand) = r
+        else:
+            return False
+        tok = self.gtok()
+        if tok.tokenType == AsmTokenType.Identifier and tok.tokenStr == "then":
+            r = self.parseInst()
+            if r is not None:
+                (self.thenOpname, self.thenOperand) = r
+            else:
+                return False
+        elif tok.tokenType == AsmTokenType.EndOfString:
+            return True
+        else:
+            self.error ("Illegal text following statement")
+        pass
+    def parseInst (self) -> (str, AsmExpr):
+        tok1 = self.gtok()
+        if tok1.tokenType == AsmTokenType.Identifier:
+            tok2 = self.gtok()
+            if tok2.tokenType == AsmTokenType.EndOfString:
+                e = AsmExpr (AsmExprType.Null, "")
+            else:
+                self.ptok (tok2)
+                e = self.parseExpr()
+            return (tok1.tokenStr, e)
+        else:
+            self.ptok (tok1)
+            return None
+        pass
 
 class AsmParseTest:
     def __init__ (self, cmdArgs):
