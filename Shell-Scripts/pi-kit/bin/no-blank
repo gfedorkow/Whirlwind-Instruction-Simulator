@@ -1,0 +1,6 @@
+#!/bin/sh
+
+
+xset s 0
+xset dpms 24000 24000 24000 
+

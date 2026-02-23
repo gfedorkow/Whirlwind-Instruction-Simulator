@@ -1,0 +1,4 @@
+
+# export PYTHONPATH=/home/guyfe/guy/Whirlwind/GitHub/Py/Common
+/home/guyfe/ww-venv/bin/python ${WWROOT}/Py/Sim/wwsim.py $*
+

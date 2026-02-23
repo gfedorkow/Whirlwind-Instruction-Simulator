@@ -1,0 +1,40 @@
+# steps to configure a new RasPi for WW Sim
+# Guy Fedorkow, Dec 24, 2025
+
+# Optionally set screen size
+# (but I don't recall how...)
+
+
+# add ww-demo and guyfe
+sudo adduser guyfe --firstgid 1000 --firstuid 1000
+sudo adduser ww-demo --firstgid 1000 --firstuid 1000
+
+
+# copy in git-token
+# this isn't automated, as it needs to be updated periodically
+mkdir git-token
+chmod 700 git-token
+
+
+# run the installkit.sh script
+#    copy in 
+#       .vimrc  .viminfo  .nanorc .bash_profile .gitconfig 
+#    copy in ~/bin
+#    make .git directories
+#    copy in .git/config(s) to two directories
+
+
+#use rapi-config to enable ssh, vnc, i2c and spi
+
+apt install vim
+
+# add python modules
+apt install python3-full
+apt install python3-screeninfo
+
+# link desktop image to /usr/share/rpd-wallpaper
+# Using the GUI, select wallpaper with RasPi Preferences -> -> Control Center -> Desktop
+
+
+# set up auto-login -- .config/autostart
+# (How's this done again??)
