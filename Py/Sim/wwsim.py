@@ -1925,10 +1925,10 @@ def main_run_sim(args, cb):
         #                # radar_class.AircraftClass('T3', -110.0, -70.0,  33.0, 200.0, 0, ''),  # add in a stray aircraft
         #                ]
         # Jan 23, 2026 - scale the distances down so none are larger than 64 miles to avoid an overflow problem
-                                        # T1 was 24, -60
-        target_list = [radar_class.AircraftClass('T1',  50.0,  -20.0, 350.0, 200.0, 0, ''),  # wait 3 revolutions
-                       radar_class.AircraftClass('I1',  60.0,  -12.0, 350.0, 250.0, 3, 'I'), # wait 7 revolutions
-                       radar_class.AircraftClass('T2', -42.0,  -60.0,  17.7, 200.0, 0, ''),  # add in a stray aircraft
+                                        # T1 was 24, -60, T2 was -42, -60
+        target_list = [radar_class.AircraftClass('T1',  50.0,  -20.0, 350.0, 200.0, 0, 'T'),  # wait x revolutions
+                       radar_class.AircraftClass('I1',  60.0,  -12.0, 350.0, 250.0, 2, 'I'), # wait x revolutions
+                       radar_class.AircraftClass('T2',  -42.0, -60.0,  17.7, 200.0, 0,''),  # add in a stray aircraft
                        radar_class.AircraftClass('T3', -60.0,  -12.0,  33.0, 200.0, 0, ''),  # add in a stray aircraft
                        ]
         radar = radar_class.RadarClass(target_list, cb, cpu, args.AutoClick)

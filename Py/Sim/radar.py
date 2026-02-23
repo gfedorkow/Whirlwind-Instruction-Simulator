@@ -330,7 +330,7 @@ class RadarClass:
                 elif click_type == 'I':
                     self.light_gun_ff_reg = 0o100000
                 else:
-                    self.log.info ("  Autoclick: Invalid Type: %s, aircraft %s", (click_type, tgt_name))
+                    self.log.info ("  Autoclick: Invalid Type: %s, aircraft %s" % (click_type, tgt_name))
 
 
     def draw_axis(self, crt):
