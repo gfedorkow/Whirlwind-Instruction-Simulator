@@ -8,6 +8,9 @@
                           .dbwgt FF_angle
                           .dbwgt Veloc_I
 
+                          .PP VERBOSE, 0           ; make this non-zero for a ton of debug analysis
+                          .PP TRACK_DISP, 1        ; make this PP non-zero to add a graphic to the display showing the id of each tracked aircraft
+
                           .jumpto 285
                           ; presets as listed on pg 50 of M-1343
                           .ORG 0
@@ -91,16 +94,20 @@
 @0100:110037      rng_in: ad num37777              ; process a radar Range reading; turn the rng back into a positive number @@JumpedToBy a0046
 @0101:070220              cp zero_rng              ; hmm, -0o37777 + 0o37777 must be -0, so branch if negative, i.e., zero
 
+
+                          ;  Range Response is read as a 16-bit word and is formatted as follows
+                          ;  0    0  r6 r5    r4 r3 r2   r1 r0 0    0  0  0    0  0  0
+
                           ; if we get a non-zero range, display the point and check for a light-gun hit
-@0102:040420   non_z_rng: ts 272                   ;  positive number of miles (times two?); store in a temp
+@0102:040420   non_z_rng: ts 272                   ;  positive number of miles ; store in a temp (range is seven bits shifted left by seven bits)
 @0103:144360              mh 240                   ;  [this number is probably cosine of the azimuth]
 @0104:154005              sl 5                     ;  compute the x position for display
 @0105:030422              qh 274                   ;  ... and store it at 274
-@0106:104420              cs 272                   ;  Retrieve the number of miles
+@0106:104420              cs 272                   ;  Retrieve the number of half-miles
 @0107:144421              mh 273                   ;  [this number is probably sine of the azimuth]
 @0110:154005              sl 5
 @0111:034420              qd 272                   ;  display the Y value, and save it at 272
-                          ;.exec wwlog("range conversion: x=%s, y=%s" % (deci(cm.rd(274)), deci(cm.rd(272))))
+                          .exec wwlog("range conversion: x=%s, y=%s" % (deci(cm.rd(274)), deci(cm.rd(272))))
 @0112:100027              ca Lt_GunFF              ; Read Light Gun to see if there's anything spotted, i.e., any negative value
 @0113:070177              cp lg_hit                ;  branch if light-gun hit
 
@@ -125,7 +132,10 @@
 @0124:070216              cp 142
 
 @0125:100373              ca x_smoo0               ;  "Display Tracked Aircraft on F-Scope"
-                          .exec wwlog("     @085 Found - Display Tracked Aircraft %s on F-Scope; Time0=%s, x_smoo0=%d, y_smoo0=%d" % (which_plane(cm), deci(cm.rd(rl("time0"))), cm.rd(rl("x_smoo0")), cm.rd(rl("y_smoo0"))))
+;             							.if VERBOSE .exec wwlog("     @085 Found - Display Tracked Aircraft %s on F-Scope; Time0=%s, x_smoo0=%d, y_smoo0=%d" % (which_plane(cm), deci(cm.rd(rl("time0"))), cm.rd(rl("x_smoo0")), cm.rd(rl("y_smoo0"))))
+
+             .if TRACK_DISP   .exec display_tracking_symbol(cm, deci, rl, cb, which_plane(cm), "x_smoo0", "y_smoo0", "x_velo0", "y_velo0")
+
 @0126:030000              qh 000                   ; @@ReadBy a0353 a0356
 @0127:100374              ca y_smoo0
 @0130:060374              qf y_smoo0
@@ -178,7 +188,7 @@
                           ; Note that we do both Target and Intercept check on each radar return, so in a normal cycle, that would be
                           ; four times per rotation of the antenna.
                           ; This routine should print (about) two times per rotation.
-                          .exec if cm.rd(rl("which_tgt")) > 32*1024: dump_tracking_state(cm, deci, rl, long=True)
+;            							.if VERBOSE .exec if cm.rd(rl("which_tgt")) > 32*1024: dump_tracking_state(cm, deci, rl, long=True)
 @0174:070042              cp wait
 
 @0175:064027              qe Lt_GunFF
@@ -213,6 +223,7 @@
                           ; and computes the heading to direct the interceptor to the target
 @0220:104405    zero_rng: cs x_smoo1               ; @@JumpedToBy a0101
                           ; .exec if cm.rd(251) != 0 and cm.rd(261) != 0: cb.TracePC = 70
+                          .exec dump_tracking_state(cm, deci, rl, long=True)
 @0221:110373              ad x_smoo0
 @0222:040431              ts dx                    ;  store Target_x - Interceptor_x
 @0223:104406              cs y_smoo1
@@ -324,7 +335,7 @@
 
                           ; on entry to this block, AC contains (Time0 - 0d200)
 @0330:104422 not_covered: cs 274                   ; Branch here if we're "in" a search sector and have a candidate radar response @@JumpedToBy a0117
-                          .exec wwlog("  @216 Radar response is in search zone for Aircraft %s; Time0=%s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
+;            							.if VERBOSE .exec wwlog("  @216 Radar response is in search zone for Aircraft %s; Time0=%s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
 @0331:124373              sa x_smoo0
 @0332:040415              ts 269
 @0333:140415              mr 269

@@ -109,11 +109,13 @@
 @S0435: start
 @S0442: num71300
 @S0443: vIsqd32
-@E0126: exec: wwlog("     @085 Found - Display Tracked Aircraft %s on F-Scope; Time0=%s, x_smoo0=%d, y_smoo0=%d" % (which_plane(cm), deci(cm.rd(rl("time0"))), cm.rd(rl("x_smoo0")), cm.rd(rl("y_smoo0"))))
-@E0174: exec: if cm.rd(rl("which_tgt")) > 32*1024: dump_tracking_state(cm, deci, rl, long=True)
+@S0000: VERBOSE
+@S0001: TRACK_DISP
+@E0112: exec: wwlog("range conversion: x=%s, y=%s" % (deci(cm.rd(274)), deci(cm.rd(272))))
+@E0126: exec: display_tracking_symbol(cm, deci, rl, cb, which_plane(cm), "x_smoo0", "y_smoo0", "x_velo0", "y_velo0")
 @E0202: exec: wwlog("@129 Initiate Aircraft %s; set time to %s" % (which_plane(cm), deci(cm.rd(rl("time0"))))) \n exec: record_initiation(cm, cb)
+@E0221: exec: dump_tracking_state(cm, deci, rl, long=True)
 @E0325: exec: print_ff_heading(cm, deci, rl, cb)
-@E0331: exec: wwlog("  @216 Radar response is in search zone for Aircraft %s; Time0=%s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
 @N0001:  value is '1/4'  (not the usual 0o000001)
 @N0002:  Switch Numbers are in Octal
 @N0027:  addr 0o27
@@ -135,11 +137,11 @@
 @N0067:   exit here if all done in this loop
 @N0100:  process a radar Range reading; turn the rng back into a positive number
 @N0101:  hmm, -0o37777 + 0o37777 must be -0, so branch if negative, i.e., zero
-@N0102:   positive number of miles (times two?); store in a temp
+@N0102:   positive number of miles ; store in a temp (range is seven bits shifted left by seven bits)
 @N0103:   [this number is probably cosine of the azimuth]
 @N0104:   compute the x position for display
 @N0105:   ... and store it at 274
-@N0106:   Retrieve the number of miles
+@N0106:   Retrieve the number of half-miles
 @N0107:   [this number is probably sine of the azimuth]
 @N0111:   display the Y value, and save it at 272
 @N0112:  Read Light Gun to see if there's anything spotted, i.e., any negative value
