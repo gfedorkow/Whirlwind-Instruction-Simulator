@@ -69,6 +69,7 @@ class AircraftClass:
         # That's easy with the mouse, but hard to get it predictable
         self.autoclick_revolutions = autoclick_revolutions
         self.autoclick_type = autoclick_type
+        self.shot_down = False   # set this to True to remove the aircraft from the simulation
 
 
     def get_current_position(self, current_time, radial = True):  # current_time in seconds
@@ -138,7 +139,7 @@ class RadarClass:
         self.last_azimuth = -1
         self.slots_into_rotation = 0  # count how many transmission slots we are into the antenna rotation
 
-        self.targets = target_list
+        self.target_list = target_list
         self.elapsed_time = 0
         self.antenna_revolutions = 0
         self.azimuth_next = True   # We (roughly) alternate sending Range and Azimuth
@@ -178,7 +179,9 @@ class RadarClass:
     # this routine returns the radial coords of all the current aircraft at the given time increment
     def where_are_they_now(self, current_time, radial = True):  # time in seconds
         ret = []
-        for tgt in self.targets:
+        for tgt in self.target_list:
+            if tgt.shot_down == True:
+                continue
             rng, angle = tgt.get_current_position(current_time, radial=radial)
             if rng < 128:
                 ret.append((tgt.name, rng, angle))
@@ -310,12 +313,13 @@ class RadarClass:
             return   # don't even try
         if self.mouse_clicked_once_for_autostart == False and self.cpu.scope.crt and \
                 self.cpu.scope.crt.win and self.antenna_revolutions == 1 and self.current_azimuth == 10:
-            self.log.info ("wait for mouse")
-            self.cpu.scope.crt.win.getMouse()
+            # Uncomment these two lines to make the sim wait for a mouse click before starting
+            # self.log.info ("wait for mouse")
+            # self.cpu.scope.crt.win.getMouse()
             self.log.info ("let's go!")
             self.mouse_clicked_once_for_autostart = True
 
-        for tgt in self.targets:
+        for tgt in self.target_list:
             if self.antenna_revolutions > 0 and \
                 self.antenna_revolutions == tgt.autoclick_revolutions and tgt_name == tgt.name:
                 click_type = tgt.autoclick_type
@@ -326,7 +330,7 @@ class RadarClass:
                 elif click_type == 'I':
                     self.light_gun_ff_reg = 0o100000
                 else:
-                    self.log.info ("  Autoclick: Invalid Type: %s, aircraft %s", (click_type, tgt_name))
+                    self.log.info ("  Autoclick: Invalid Type: %s, aircraft %s" % (click_type, tgt_name))
 
 
     def draw_axis(self, crt):
