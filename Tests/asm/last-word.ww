@@ -1,11 +1,8 @@
-
       .org 0o3774
-@3774:000211   w3774:  si  0o211   ; select I/O: PhotoElectric Reader @@ WrittenBy: a3456 ReadBy: a0052 a2523 a2541  
-@3775:177777   w3775:  md  i3777   ; multiply digits no roundoff (AND) @@ WrittenBy: a3672 ReadBy: a3500  
-@3776:077613   r3776:  sp  i3777   ; sub-program @@ ReadBy: a2745 a2751  
-
-@3777:076735   i3777:  sp  i2735   ; sub-program @@ Return from Subroutine JumpedToBy: i2132 a3513 WrittenBy: a0056 i0155 ReadBy: r0550 w3747 w3751 w3753 w3756 w3771 w3772 w3775  
-;
-;                       .JumpTo 0o32
-;                       .WW_File "C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302395_box36\102663725_fb1320_weinstein.7ch/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Paper-Tapes\062302395_box36\102663725_fb1320_weinstein_gs001_fb1320.tcore"
-;                       .WW_TapeID "_fb1320+_fb+_FB+_fb+_fb"
+	  ca 0o3774
+	  srr 10
+	  ad 0o3774
+	  si 0
+     .JumpTo 0o3774
+     .WW_File "C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302395_box36\102663725_fb1320_weinstein.7ch/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Paper-Tapes\062302395_box36\102663725_fb1320_weinstein_gs001_fb1320.tcore"
+     .WW_TapeID "_fb1320+_fb+_FB+_fb+_fb"

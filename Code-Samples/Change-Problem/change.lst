@@ -1,0 +1,432 @@
+
+
+                                   ; Original taken from disasm of 102782306_change_problem_gs001_fb100-6-150.tcore
+
+                                   ; The change program accepts a sale amount and amount received via the
+                                   ; panel's "intervention registers." Key in a digit in the left IR, and
+                                   ; add the digit via the activation button in the right IR. The left
+                                   ; activation button then triggers the next phase, either asking for
+                                   ; input or computing and printing the change. A negative input causes a
+                                   ; backspace and an overstrike x, indicating an erasure.
+
+                                   ; Should be run with --FlexoWin, otherweise you get no flex prints until a cr.
+
+
+                                   ; Text blocks are packed big-endian as octal {0|1}xx0yy.
+                                   ; A set sign bit indicates end-of-string.
+
+                                   .pp i0000, 0
+                                   .pp r0001, 1
+
+                                   .ww_file "102782306_change_problem_gs001_fb100-6-150"
+                                   .jumpto start
+                                   .org 0o00040
+
+@0040:000000          amount_sale: .word 0                  ; Amount of sale
+@0041:000000         amount_accum: .word 0                  ; Amount accumulated by-digit
+@0042:000000          amount_rcvd: .word 0                  ; Amount received
+
+@0043:023420                w0044: .word 10000
+@0044:100042                i0045: ca amount_rcvd
+@0045:114040                w0046: su amount_sale
+@0046:040041                       ts amount_accum
+@0047:070153                       cp i0154
+
+@0050:100167                       ca r0170
+@0051:044055                r0052: td w0056
+@0052:104000                i0053: cs i0000
+@0053:040163                       ts w0164
+@0054:100041                i0055: ca amount_accum
+@0055:114203                w0056: su r0204
+@0056:070062                       cp i0063
+
+@0057:040041                i0060: ts amount_accum
+@0060:130163                       ao w0164
+@0061:074054                       sp i0055
+
+@0062:134000                i0063: dm i0000
+@0063:070131                r0064: cp i0132
+
+@0064:100163                i0065: ca w0164
+@0065:070124                       cp i0125
+
+@0066:110415                       ad r0416
+@0067:044070                       td w0071
+@0070:100000                w0071: ca i0000
+@0071:024000                       rc 0o0
+@0072:100416                       ca r0417
+@0073:024000                       rc 0o0
+@0074:100055                w0075: ca w0056
+@0075:114167                       su r0170
+@0076:110113                       ad r0114
+@0077:044100                       td w0101
+@0100:100000                w0101: ca i0000
+@0101:040103                       ts w0104
+@0102:074135                       sp print_string
+@0103:000000                w0104: .word 0o0
+@0104:100103                       ca w0104
+@0105:114175                       su r0176
+@0106:070126                       cp i0127
+
+@0107:100163                i0110: ca w0164
+@0110:114001                       su r0001
+@0111:070114                       cp i0115
+@0112:100165                       ca r0166
+
+                                   ; This is used in an ad and is very bizarre! It looks like they're using the fact that the rc
+                                   ; inst generally ignores its operand, so it can be used as storage. In this case it points to
+                                   ; the string address table.
+                                   ;
+@0113:024170                r0114: rc r0170 + 1
+
+@0114:100166                i0115: ca r0167
+@0115:024000                       rc 0o0
+@0116:104000                       cs i0000
+@0117:064164                       ex w0165
+@0120:070124                       cp i0125
+
+@0121:100166                       ca r0167
+@0122:024000                       rc 0o0
+@0123:074301                       sp start
+
+@0124:130055                i0125: ao w0056
+@0125:074052                       sp i0053
+
+@0126:074135                i0127: sp print_string
+@0127:000216                       .word dollar_bill_str
+@0130:074107                       sp i0110
+@0131:130163                i0132: ao w0164
+@0132:100000                       ca i0000
+@0133:040164                       ts w0165
+@0134:074064                       sp i0065
+
+                                   ; Print string at address given by arg at next addr of caller
+                     print_string:
+@0135:050140                i0136: ta w0141
+@0136:050150                       ta w0151
+@0137:130150                       ao w0151
+@0140:100000                w0141: ca i0000
+@0141:044142                       td i0143
+@0142:100000                i0143: ca i0000
+@0143:171001                       clh 0o00001
+@0144:024000                       rc 0o0
+@0145:171011                       clh 0o00011
+@0146:024000                       rc 0o0
+@0147:170026                       clc 0o00026
+@0150:070000                w0151: cp i0000
+@0151:130142                       ao i0143
+@0152:074142                       sp i0143                 ; End of print_string
+
+
+@0153:134000                i0154: dm i0000
+@0154:070160                       cp i0161
+
+@0155:074135                       sp print_string
+@0156:000224                       .word impossible_str
+@0157:074301                       sp start
+
+@0160:074135                i0161: sp print_string
+@0161:000233                       .word no_change_str
+@0162:074301                       sp start
+
+@0163:000000                w0164: .word 0o0
+@0164:177777                w0165: .word 0o177777
+@0165:024000                r0166: .word 0o024000           ; "s"
+@0166:122000                r0167: .word 0o122000           ; "\n"
+@0167:114203                r0170: su r0204
+
+                                   ; String address table
+@0170:000242                       .word fifty_str
+@0171:000245                       .word twenty_str
+@0172:000250                       .word ten_str
+@0173:000252                       .word five_str
+@0174:000254                       .word two_str
+@0175:000256                r0176: .word one_str
+@0176:000260                       .word half_dollar_str
+@0177:000266                       .word quarter_str
+@0200:000272                       .word dime_str
+@0201:000274                       .word nickel_str
+@0202:000277                       .word cent_str
+
+                                   ; Cents in denomination...
+@0203:011610                r0204: .word 5000               ; fifty
+@0204:003720                       .word 2000               ; twenty
+@0205:001750                       .word 1000               ; ten
+@0206:000764                       .word 500                ; five
+@0207:000310                       .word 200                ; two
+@0210:000144                       .word 100                ; one
+@0211:000062                       .word 50                 ; half-dollar
+@0212:000031                       .word 25                 ; quarter
+@0213:000012                r0214: .word 10                 ; dime
+@0214:000005                       .word 5                  ; nickel
+@0215:000001                       .word 1                  ; cent
+
+                  dollar_bill_str:
+                                   ; "dollar bill"
+@0216:010022                       .word 0o010022
+@0217:060044                       .word 0o060044
+@0220:044006                       .word 0o044006
+@0221:024010                       .word 0o024010
+@0222:062014                       .word 0o062014
+@0223:144044                       .word 0o144044
+
+                   impossible_str:
+                                   ; "Impossible\n\n"
+@0224:071014                       .word 0o071014
+@0225:075070                       .word 0o075070
+@0226:054060                       .word 0o054060
+@0227:012012                       .word 0o012012
+@0230:014062                       .word 0o014062
+@0231:044002                       .word 0o044002
+@0232:151051                       .word 0o151051
+
+                    no_change_str:
+                                   ; "No change\n\n"
+@0233:071030                       .word 0o071030
+@0234:075060                       .word 0o075060
+@0235:010034                       .word 0o010034
+@0236:050006                       .word 0o050006
+@0237:030064                       .word 0o030064
+@0240:002051                       .word 0o002051
+@0241:151000                       .word 0o151000
+
+                        fifty_str:
+                                   ; "fifty"
+@0242:032014                       .word 0o032014
+@0243:032040                       .word 0o032040
+@0244:152000                       .word 0o152000
+
+                       twenty_str:
+                                   ; "twenty"
+@0245:040046                       .word 0o040046
+@0246:002030                       .word 0o002030
+@0247:140052                       .word 0o140052
+
+                          ten_str:
+                                   ; "ten"
+@0250:040002                       .word 0o040002
+@0251:130000                       .word 0o130000
+
+                         five_str:
+                                   ; "five"
+@0252:032014                       .word 0o032014
+@0253:174002                       .word 0o174002
+
+                          two_str:
+                                   ; "two"
+@0254:040046                       .word 0o040046
+@0255:160000                       .word 0o160000
+
+                          one_str:
+                                   ; "one"
+@0256:060030                       .word 0o060030
+@0257:102000                       .word 0o102000
+
+                  half_dollar_str:
+                                   ; "half-dollar"
+@0260:050006                       .word 0o050006
+@0261:044032                       .word 0o044032
+@0262:035022                       .word 0o035022
+@0263:060044                       .word 0o060044
+@0264:044006                       .word 0o044006
+@0265:124000                       .word 0o124000
+
+                      quarter_str:
+                                   ; "quarter"
+@0266:056016                       .word 0o056016
+@0267:006024                       .word 0o006024
+@0270:040002                       .word 0o040002
+@0271:124000                       .word 0o124000
+
+                         dime_str:
+                                   ; "dime"
+@0272:022014                       .word 0o022014
+@0273:170002                       .word 0o170002
+
+                       nickel_str:
+                                   ; "nickel"
+@0274:030014                       .word 0o030014
+@0275:034036                       .word 0o034036
+@0276:102044                       .word 0o102044
+
+                         cent_str:
+                                   ; "cent"
+@0277:034002                       .word 0o034002
+@0300:130040                       .word 0o130040
+
+                            start:
+@0301:000225                i0302: si 0o225
+@0302:100000                       ca i0000
+@0303:040041                       ts amount_accum
+@0304:074135                       sp print_string
+@0305:000431                       .word amount_of_sale_str
+@0306:000300                i0307: si 0o300
+@0307:014000                       rd 0o0
+@0310:070350                       cp i0351
+
+@0311:170001                       clc 0o00001
+@0312:070314                       cp i0315
+@0313:074306                       sp i0307
+
+@0314:050342                i0315: ta i0343
+@0315:000336                       si 0o336
+@0316:014000                       rd 0o0
+@0317:000225                       si 0o225
+@0320:070343                       cp i0344
+
+@0321:040412                       ts w0413
+@0322:110415                       ad r0416
+@0323:044340                       td w0341
+@0324:100412                       ca w0413
+@0325:114413                       su r0414
+@0326:070332                       cp i0333
+
+@0327:074135                       sp print_string
+@0330:000444                       .word digit_too_large_str
+@0331:074301                       sp start
+
+@0332:100041                i0333: ca amount_accum
+@0333:040414                       ts w0415
+@0334:144213                       mh r0214
+@0335:155017                       slh 0o00017
+@0336:110412                       ad w0413
+@0337:040041                       ts amount_accum
+@0340:100000                w0341: ca i0000
+@0341:024000                       rc 0o0
+@0342:074000                i0343: sp i0000
+
+@0343:100414                i0344: ca w0415
+@0344:040041                       ts amount_accum
+@0345:074135                       sp print_string
+@0346:000464                       .word backspace
+@0347:074342                       sp i0343
+
+@0350:100000                i0351: ca i0000
+@0351:040414                       ts w0415
+@0352:064041                       ex amount_accum
+@0353:040040                       ts amount_sale
+@0354:000225                       si 0o225
+@0355:074366                       sp i0367
+@0356:074135                       sp print_string
+@0357:000465                       .word amount_rcvd_str
+@0360:000300                i0361: si 0o300
+@0361:014000                       rd 0o0
+@0362:070403                       cp i0404
+
+@0363:170001                       clc 0o00001
+@0364:070314                       cp i0315
+@0365:074360                       sp i0361
+
+@0366:050402                i0367: ta w0403
+@0367:134043                       dm w0044
+@0370:070374                       cp i0375
+
+@0371:074135                       sp print_string
+@0372:000500                       .word amount_too_large_str
+@0373:074301                       sp start
+
+@0374:100416                i0375: ca r0417
+@0375:024000                       rc 0o0
+@0376:074135                       sp print_string
+@0377:000277                       .word cent_str
+@0400:100165                       ca r0166
+@0401:024000                       rc 0o0
+@0402:074000                w0403: sp i0000
+
+@0403:100041                i0404: ca amount_accum
+@0404:040042                       ts amount_rcvd
+@0405:000225                       si 0o225
+@0406:074366                       sp i0367
+@0407:100166                       ca r0167
+@0410:024000                       rc 0o0
+@0411:074044                       sp i0045
+
+@0412:000000                w0413: .word 0o0
+@0413:000011                r0414: .word 9
+@0414:000000                w0415: .word 0o0
+@0415:000417                r0416: .word digit_strs
+
+                                   ; This block is just a space and the digits, each char in the high end (including sign)
+
+@0416:020000                r0417: .word 0o020000           ; " "
+                       digit_strs:
+@0417:174000                       .word 0o174000           ; "0"
+@0420:052000                       .word 0o052000           ; "1"
+@0421:036000                       .word 0o036000           ; "2"
+@0422:016000                       .word 0o016000           ; "3"
+@0423:026000                       .word 0o026000           ; "4"
+@0424:046000                       .word 0o046000           ; "5"
+@0425:066000                       .word 0o066000           ; "6"
+@0426:056000                       .word 0o056000           ; "7"
+@0427:006000                       .word 0o006000           ; "8"
+@0430:154000                       .word 0o154000           ; "9"
+
+               amount_of_sale_str:
+                                   ; "\n\nAmount of sale:"
+@0431:051051                       .word 0o051051
+@0432:071006                       .word 0o071006
+@0433:075070                       .word 0o075070
+@0434:060016                       .word 0o060016
+@0435:030040                       .word 0o030040
+@0436:010060                       .word 0o010060
+@0437:032010                       .word 0o032010
+@0440:012006                       .word 0o012006
+@0441:044002                       .word 0o044002
+@0442:071011                       .word 0o071011
+@0443:175010                       .word 0o175010
+
+              digit_too_large_str:
+                                   ; "\tThe next digit was too large\n"
+@0444:045071                       .word 0o045071
+@0445:040075                       .word 0o040075
+@0446:050002                       .word 0o050002
+@0447:010030                       .word 0o010030
+@0450:002072                       .word 0o002072
+@0451:040010                       .word 0o040010
+@0452:022014                       .word 0o022014
+@0453:064014                       .word 0o064014
+@0454:040010                       .word 0o040010
+@0455:046006                       .word 0o046006
+@0456:012010                       .word 0o012010
+@0457:040060                       .word 0o040060
+@0460:060010                       .word 0o060010
+@0461:044006                       .word 0o044006
+@0462:024064                       .word 0o024064
+@0463:102051                       .word 0o102051
+
+                        backspace:
+                                   ;  "\bx"
+@0464:143072                       .word 0o143072
+
+                  amount_rcvd_str:
+                                   ; "\tAmount received:"
+@0465:045071                       .word 0o045071
+@0466:006075                       .word 0o006075
+@0467:070060                       .word 0o070060
+@0470:016030                       .word 0o016030
+@0471:040010                       .word 0o040010
+@0472:024002                       .word 0o024002
+@0473:034002                       .word 0o034002
+@0474:014074                       .word 0o014074
+@0475:002022                       .word 0o002022
+@0476:071011                       .word 0o071011
+@0477:175010                       .word 0o175010
+
+             amount_too_large_str:
+                                   ; "\tThis amount is too large\n"
+@0500:045071                       .word 0o045071
+@0501:040075                       .word 0o040075
+@0502:050014                       .word 0o050014
+@0503:012010                       .word 0o012010
+@0504:006070                       .word 0o006070
+@0505:060016                       .word 0o060016
+@0506:030040                       .word 0o030040
+@0507:010014                       .word 0o010014
+@0510:012010                       .word 0o012010
+@0511:040060                       .word 0o040060
+@0512:060010                       .word 0o060010
+@0513:044006                       .word 0o044006
+@0514:024064                       .word 0o024064
+@0515:102051                       .word 0o102051
+
+

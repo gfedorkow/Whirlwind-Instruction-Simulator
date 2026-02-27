@@ -1037,8 +1037,12 @@ def test():
 #MacOS fix 2
 #tk.Toplevel(_root).destroy()
 
+# LAS 10/3/25 -- I commented out this update call since it messes up window
+# focus, apparently only on cygwin. It does not look like Mac is affected wrt
+# the work we're doing.
+    
 # MacOS fix 1
-update()
+# update()
 
 if __name__ == "__main__":
     test()

@@ -1,0 +1,99 @@
+start at 0o1000
+Flexo: a = 1,
+Flexo: PRINT a.
+Flexo: y = 0,
+Flexo: x = -24,
+Flexo: 1 y = a + y,
+Flexo: PRINT y.
+Flexo: x = x + 1,
+Flexo: CP 1,
+Flexo: STOP
+LZ output: 1
+Flexo: a=+.10000000+01 
+LZ output: 1
+Flexo: y=+.10000000+01 
+LZ output: 2
+Flexo: y=+.20000000+01 
+LZ output: 3
+Flexo: y=+.30000001+01 
+LZ output: 4
+Flexo: y=+.40000000+01 
+LZ output: 5
+Flexo: y=+.50000000+01 
+LZ output: 6
+Flexo: y=+.60000002+01 
+LZ output: 7
+Flexo: y=+.69999998+01 
+LZ output: 8
+Flexo: y=+.80000001+01 
+LZ output: 9
+Flexo: y=+.90000003+01 
+LZ output: 10
+Flexo: y=+.10000000+02 
+LZ output: 11
+Flexo: y=+.11000000+02 
+LZ output: 12
+Flexo: y=+.12000000+02 
+LZ output: 13
+Flexo: y=+.13000001+02 
+LZ output: 14
+Flexo: y=+.14000000+02 
+LZ output: 15
+Flexo: y=+.15000000+02 
+LZ output: 16
+Flexo: y=+.16000001+02 
+LZ output: 17
+Flexo: y=+.17000000+02 
+LZ output: 18
+Flexo: y=+.18000000+02 
+LZ output: 19
+Flexo: y=+.18999999+02 
+LZ output: 20
+Flexo: y=+.20000000+02 
+LZ output: 21
+Flexo: y=+.21000002+02 
+LZ output: 22
+Flexo: y=+.22000001+02 
+LZ output: 23
+Flexo: y=+.23000000+02 
+LZ output: 24
+Flexo: y=+.24000000+02 
+Halt Instruction!  (Code=0) at pc=02765
+Alarm 'Program Halt' (5) at PC=0o2765 (0d1525)
+
+Flexowriter Said:
+a = 1,
+PRINT a.
+y = 0,
+x = -24,
+1 y = a + y,
+PRINT y.
+x = x + 1,
+CP 1,
+STOP
+a=+.10000000+01 
+y=+.10000000+01 
+y=+.20000000+01 
+y=+.30000001+01 
+y=+.40000000+01 
+y=+.50000000+01 
+y=+.60000002+01 
+y=+.69999998+01 
+y=+.80000001+01 
+y=+.90000003+01 
+y=+.10000000+02 
+y=+.11000000+02 
+y=+.12000000+02 
+y=+.13000001+02 
+y=+.14000000+02 
+y=+.15000000+02 
+y=+.16000001+02 
+y=+.17000000+02 
+y=+.18000000+02 
+y=+.18999999+02 
+y=+.20000000+02 
+y=+.21000002+02 
+y=+.22000001+02 
+y=+.23000000+02 
+y=+.24000000+02 
+

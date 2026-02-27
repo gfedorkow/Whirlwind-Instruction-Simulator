@@ -21,7 +21,6 @@
 
                    max: .word 0o037777
 
-
              floathack: ta fhrtn
                         ts ac_save
                         ca ac_save
@@ -241,7 +240,7 @@
                         su r50                   ; -|- Form x1 - 2**-15
                         ts r02                   ; -|
 
-                  r122: cs r03                   ; -|- Complement x1'                               ; [LAS was transcription error ca r03]             ;   114r->
+                  r122: cs r03                   ; -|- Complement x1'                               ; 114r->                                           ; [LAS was transcription error ca r03]
                         ts r03                   ; -|
 
                         mr r02                   ; -|- Form x1*x1'

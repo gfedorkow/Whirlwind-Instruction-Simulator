@@ -1,439 +1,443 @@
-                  .ORG 0
-@0000:000000  zero:  .word 0
-@0001:000001  one:   .word 1
-               .ORG 0o40
-@0040:100000   i0040:  ca   0000  ;clear and add        @@ JumpedToBy: a0412 a0522  
-@0041:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0042:024000           rc      0  ;record                
-@0043:014000           rd      0  ;read                  
-@0044:070523           cp  i0523  ;conditional program   ; branch if reset button is clicked
+        .ORG 0
+  zero: .word 0
+   one: .word 1
+        .ORG 0o40
+ i0040: ca 0000
+        si 0o645                 ;                                                  ; Auto-Annotate I/O: Display Points
+        rc 0
+        rd 0
+        cp i0523                 ; branch if reset button is clicked
 
-@0045:100556           ca  r0556  ;clear and add         
-@0046:003625           si 0o3625  ;select I/O: Device Display Characters base=14, mask=1  
-@0047:024560           rc    560  ;record                
-@0050:110556           ad  r0556  ;add                   
-@0051:024561           rc    561  ;record                
-@0052:110556           ad  r0556  ;add                   
-@0053:024562           rc    562  ;record                
-@0054:110556           ad  r0556  ;add                   
-@0055:024561           rc    561  ;record                
-@0056:110556           ad  r0556  ;add                   
-@0057:024563           rc    563  ;record                
-@0060:110557           ad  r0557  ;add                   
-@0061:024564           rc    564  ;record      
+        ca r0556
+        si 0o3625                ;                                                  ; Auto-Annotate I/O: Display Characters
+        rc r0560
+        ad r0556
+        rc r0561
+        ad r0556
+        rc r0562
+        ad r0556
+        rc r0561
+        ad r0556
+        rc r0563
+        ad r0557
+        rc r0564
 
-                 ; dot #1          
-@0062:100535   i0062:  ca  w0535  ;clear and add    ; return here at the end of the Reset Button action    @@ JumpedToBy: a0532  
-@0063:070076           cp  i0076  ;conditional program   ; once it's been clicked, w0535 contains -1 for this dot, and it's not drawn
+        ; dot #1
+ i0062: ca w0535                 ; return here at the end of the Reset Button action
+        cp i0076                 ; once it's been clicked, w0535 contains -1 for this dot, and it's not drawn
 
-@0064:100572           ca  r0572  ;clear and add         ; load 020000 into ACC; 
-@0065:001656           si 0o1656  ;select I/O: Device Display Vectors base=14, mask=1  ; set the x axis to ACC
-@0066:104571           cs  r0571  ;clear and subtract    ; load -030000
-@0067:024565           rc    565  ;record                ; draw a line 
-@0070:100572           ca  r0572  ;clear and add         ; load 020000 into ACC; 
-@0071:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0072:104571           cs  r0571  ;clear and subtract    ; load -030000
-@0073:024000           rc      0  ;record                ; draw a point
-@0074:014000           rd      0  ;read                  
-@0075:070413           cp  i0413  ;conditional program   ; branch if light gun hit
-                                    ; the place it branches to does this... write -1 to a location tested for this dot, then return
-                                    ;   i0413:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0075  
-                                    ;           ts  w0535  ;transfer to storage   
-                                    ;           sp  i0076  ;sub-program        
+        ca r0572                 ; load 020000 into ACC                             ;
+        si 0o1656                ; set the x axis to ACC                            ; Auto-Annotate I/O: Display Vectors
+        cs r0571                 ; load -030000
+        rc 0o565                 ; draw a line
+        ca r0572                 ; load 020000 into ACC                             ;
+        si 0o645                 ;                                                  ; Auto-Annotate I/O: Display Points
+        cs r0571                 ; load -030000
+        rc 0                     ; draw a point
+        rd 0
+        cp i0413                 ; branch if light gun hit
+        ; the place it branches to does this... write -1 to a location tested for this dot, then return
+        ;   i0413:  cs   0001
+        ;           ts  w0535
+        ;           sp  i0076
 
-                 ; dot #2         
-@0076:100536   i0076:  ca  w0536  ;clear and add        @@ JumpedToBy: a0063 a0415  
-@0077:070112           cp  i0112  ;conditional program   
-@0100:100572           ca  r0572  ;clear and add         
-@0101:001656           si 0o1656  ;select I/O: Device Display Vectors base=14, mask=1  
-@0102:104572           cs  r0572  ;clear and subtract    
-@0103:024565           rc    565  ;record                
-@0104:100572           ca  r0572  ;clear and add         
-@0105:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0106:104572           cs  r0572  ;clear and subtract    
-@0107:024000           rc      0  ;record                
-@0110:014000           rd      0  ;read                  
-@0111:070416           cp  i0416  ;conditional program   
+        ; dot #2
+ i0076: ca w0536
+        cp i0112
+        ca r0572
+        si 0o1656                ; Auto-Annotate I/O: Display Vectors
+        cs r0572
+        rc 0o565
+        ca r0572
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        cs r0572
+        rc 0
+        rd 0
+        cp i0416
 
-                 ; dot #3
-@0112:100537   i0112:  ca  w0537  ;clear and add        @@ JumpedToBy: a0077 a0420  
-@0113:070126           cp  i0126  ;conditional program   
-@0114:100572           ca  r0572  ;clear and add         
-@0115:001656           si 0o1656  ;select I/O: Device Display Vectors base=14, mask=1  
-@0116:104573           cs  r0573  ;clear and subtract    
-@0117:024565           rc  0o565  ;record                
-@0120:100572           ca  r0572  ;clear and add         
-@0121:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0122:104573           cs  r0573  ;clear and subtract    
-@0123:024000           rc      0  ;record                
-@0124:014000           rd      0  ;read                  
-@0125:070421           cp  i0421  ;conditional program   
+        ; dot #3
+ i0112: ca w0537
+        cp i0126
+        ca r0572
+        si 0o1656                ; Auto-Annotate I/O: Display Vectors
+        cs r0573
+        rc 0o565
+        ca r0572
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        cs r0573
+        rc 0
+        rd 0
+        cp i0421
 
-                 ; dot #4
-@0126:100540   i0126:  ca  w0540  ;clear and add        @@ JumpedToBy: a0113 a0423  
-@0127:070142           cp  i0142  ;conditional program   
-@0130:100572           ca  r0572  ;clear and add         
-@0131:001656           si 0o1656  ;select I/O: Device Display Vectors base=14, mask=1  
-@0132:100000           ca   0000  ;clear and add         
-@0133:024565           rc  0o565  ;record                
-@0134:100572           ca  r0572  ;clear and add         
-@0135:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0136:100000           ca   0000  ;clear and add         
-@0137:024000           rc      0  ;record                
-@0140:014000           rd      0  ;read                  
-@0141:070424           cp  i0424  ;conditional program   
+        ; dot #4
+ i0126: ca w0540
+        cp i0142
+        ca r0572
+        si 0o1656                ; Auto-Annotate I/O: Display Vectors
+        ca 0000
+        rc 0o565
+        ca r0572
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        ca 0000
+        rc 0
+        rd 0
+        cp i0424
 
-                 ; dot #5
-@0142:100541   i0142:  ca  w0541  ;clear and add        @@ JumpedToBy: a0127 a0426  
-@0143:070156           cp  i0156  ;conditional program   
-@0144:100572           ca  r0572  ;clear and add         
-@0145:001656           si 0o1656  ;select I/O: Device Display Vectors base=14, mask=1  
-@0146:100573           ca  r0573  ;clear and add         
-@0147:024565           rc  0o565  ;record                
-@0150:100572           ca  r0572  ;clear and add         
-@0151:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0152:100573           ca  r0573  ;clear and add         
-@0153:024000           rc      0  ;record                
-@0154:014000           rd      0  ;read                  
-@0155:070427           cp  i0427  ;conditional program   
+        ; dot #5
+ i0142: ca w0541
+        cp i0156
+        ca r0572
+        si 0o1656                ; Auto-Annotate I/O: Display Vectors
+        ca r0573
+        rc 0o565
+        ca r0572
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        ca r0573
+        rc 0
+        rd 0
+        cp i0427
 
-                 ; dot #6
-@0156:100542   i0156:  ca  w0542  ;clear and add        @@ JumpedToBy: a0143 a0431  
-@0157:070172           cp  i0172  ;conditional program   
-@0160:100572           ca  r0572  ;clear and add         
-@0161:001656           si 0o1656  ;select I/O: Device Display Vectors base=14, mask=1  
-@0162:100572           ca  r0572  ;clear and add         
-@0163:024565           rc  0o565  ;record                
-@0164:100572           ca  r0572  ;clear and add         
-@0165:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0166:100572           ca  r0572  ;clear and add         
-@0167:024000           rc      0  ;record                
-@0170:014000           rd      0  ;read                  
-@0171:070432           cp  i0432  ;conditional program   
+        ; dot #6
+ i0156: ca w0542
+        cp i0172
+        ca r0572
+        si 0o1656                ; Auto-Annotate I/O: Display Vectors
+        ca r0572
+        rc 0o565
+        ca r0572
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        ca r0572
+        rc 0
+        rd 0
+        cp i0432
 
-                 ; dot #7          
-@0172:100543   i0172:  ca  w0543  ;clear and add        @@ JumpedToBy: a0157 a0434  
-@0173:070206           cp  i0206  ;conditional program   
-@0174:100572           ca  r0572  ;clear and add         
-@0175:001656           si 0o1656  ;select I/O: Device Display Vectors base=14, mask=1  
-@0176:100571           ca  r0571  ;clear and add         
-@0177:024565           rc  0o565  ;record                
-@0200:100572           ca  r0572  ;clear and add         
-@0201:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0202:100571           ca  r0571  ;clear and add         
-@0203:024000           rc      0  ;record                
-@0204:014000           rd      0  ;read                  
-@0205:070435           cp  i0435  ;conditional program   
+        ; dot #7
+ i0172: ca w0543
+        cp i0206
+        ca r0572
+        si 0o1656                ; Auto-Annotate I/O: Display Vectors
+        ca r0571
+        rc 0o565
+        ca r0572
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        ca r0571
+        rc 0
+        rd 0
+        cp i0435
 
-                       ; this must be the eighth dot, right hand column.  It's always displayed, and when clicked,
-					   ; it sets the previous seven dots to -1, i.e., turned off
-@0206:100572   i0206:  ca  r0572  ;clear and add        @@ JumpedToBy: a0173 a0437  
-@0207:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0210:100574           ca  r0574  ;clear and add         
-@0211:024000           rc      0  ;record                
-@0212:014000           rd      0  ;read                  
-@0213:070473           cp  i0473  ;conditional program   
-
-
-; second row of five dots
-@0214:100544   i0214:  ca  w0544  ;clear and add        @@ JumpedToBy: a0503  
-@0215:070230           cp  i0230  ;conditional program   
-@0216:100573           ca  r0573  ;clear and add         
-@0217:001656           si 0o1656  ;select I/O: Device Display Vectors base=14, mask=1  
-@0220:104572           cs  r0572  ;clear and subtract    
-@0221:024565           rc  0o565  ;record                
-@0222:100573           ca  r0573  ;clear and add         
-@0223:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0224:104572           cs  r0572  ;clear and subtract    
-@0225:024000           rc      0  ;record                
-@0226:014000           rd      0  ;read                  
-@0227:070440           cp  i0440  ;conditional program   
-
-@0230:100545   i0230:  ca  w0545  ;clear and add        @@ JumpedToBy: a0215 a0442  
-@0231:070244           cp  i0244  ;conditional program   
-@0232:100573           ca  r0573  ;clear and add         
-@0233:001656           si 0o1656  ;select I/O: Device Display Vectors base=14, mask=1  
-@0234:104573           cs  r0573  ;clear and subtract    
-@0235:024565           rc  0o565  ;record                
-@0236:100573           ca  r0573  ;clear and add         
-@0237:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0240:104573           cs  r0573  ;clear and subtract    
-@0241:024000           rc      0  ;record                
-@0242:014000           rd      0  ;read                  
-@0243:070443           cp  i0443  ;conditional program   
-
-@0244:100546   i0244:  ca  w0546  ;clear and add        @@ JumpedToBy: a0231 a0445  
-@0245:070260           cp  i0260  ;conditional program   
-@0246:100573           ca  r0573  ;clear and add         
-@0247:001656           si 0o1656  ;select I/O: Device Display Vectors base=14, mask=1  
-@0250:100000           ca   0000  ;clear and add         
-@0251:024565           rc  0o565  ;record                
-@0252:100573           ca  r0573  ;clear and add         
-@0253:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0254:100000           ca   0000  ;clear and add         
-@0255:024000           rc      0  ;record                
-@0256:014000           rd      0  ;read                  
-@0257:070446           cp  i0446  ;conditional program   
-
-@0260:100547   i0260:  ca  w0547  ;clear and add        @@ JumpedToBy: a0245 a0450  
-@0261:070274           cp  i0274  ;conditional program   
-@0262:100573           ca  r0573  ;clear and add         
-@0263:001656           si 0o1656  ;select I/O: Device Display Vectors base=14, mask=1  
-@0264:100573           ca  r0573  ;clear and add         
-@0265:024565           rc  0o565  ;record                
-@0266:100573           ca  r0573  ;clear and add         
-@0267:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0270:100573           ca  r0573  ;clear and add         
-@0271:024000           rc      0  ;record                
-@0272:014000           rd      0  ;read                  
-@0273:070451           cp  i0451  ;conditional program   
-
-@0274:100550   i0274:  ca  w0550  ;clear and add        @@ JumpedToBy: a0261 a0453  
-@0275:070310           cp  i0310  ;conditional program   
-@0276:100573           ca  r0573  ;clear and add         
-@0277:001656           si 0o1656  ;select I/O: Device Display Vectors base=14, mask=1  
-@0300:100572           ca  r0572  ;clear and add         
-@0301:024565           rc  0o565  ;record                
-@0302:100573           ca  r0573  ;clear and add         
-@0303:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0304:100572           ca  r0572  ;clear and add         
-@0305:024000           rc      0  ;record                
-@0306:014000           rd      0  ;read                  
-@0307:070454           cp  i0454  ;conditional program   
-
-@0310:100573   i0310:  ca  r0573  ;clear and add        @@ JumpedToBy: a0275 a0456  
-@0311:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0312:100574           ca  r0574  ;clear and add         
-@0313:024000           rc      0  ;record                
-@0314:014000           rd      0  ;read                  
-@0315:070504           cp  i0504  ;conditional program   
+        ; this must be the eighth dot, right hand column.  It's always displayed, and when clicked,
+        ; it sets the previous seven dots to -1, i.e., turned off
+ i0206: ca r0572
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        ca r0574
+        rc 0
+        rd 0
+        cp i0473
 
 
-                       ; third row of three dots
-@0316:100551   i0316:  ca  w0551  ;clear and add        @@ JumpedToBy: a0512  
-@0317:070332           cp  i0332  ;conditional program   
-@0320:104573           cs  r0573  ;clear and subtract    
-@0321:001656           si 0o1656  ;select I/O: Device Display Vectors base=14, mask=1  
-@0322:104573           cs  r0573  ;clear and subtract    
-@0323:024565           rc  0o565  ;record                
-@0324:104573           cs  r0573  ;clear and subtract    
-@0325:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0326:104573           cs  r0573  ;clear and subtract    
-@0327:024000           rc      0  ;record                
-@0330:014000           rd      0  ;read                  
-@0331:070457           cp  i0457  ;conditional program   
+        ; second row of five dots
+ i0214: ca w0544
+        cp i0230
+        ca r0573
+        si 0o1656                ; Auto-Annotate I/O: Display Vectors
+        cs r0572
+        rc 0o565
+        ca r0573
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        cs r0572
+        rc 0
+        rd 0
+        cp i0440
 
-@0332:100552   i0332:  ca  w0552  ;clear and add        @@ JumpedToBy: a0317 a0461  
-@0333:070346           cp  i0346  ;conditional program   
-@0334:104573           cs  r0573  ;clear and subtract    
-@0335:001656           si 0o1656  ;select I/O: Device Display Vectors base=14, mask=1  
-@0336:100000           ca   0000  ;clear and add         
-@0337:024565           rc  0o565  ;record                
-@0340:104573           cs  r0573  ;clear and subtract    
-@0341:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0342:100000           ca   0000  ;clear and add         
-@0343:024000           rc      0  ;record                
-@0344:014000           rd      0  ;read                  
-@0345:070462           cp  i0462  ;conditional program   
+ i0230: ca w0545
+        cp i0244
+        ca r0573
+        si 0o1656                ; Auto-Annotate I/O: Display Vectors
+        cs r0573
+        rc 0o565
+        ca r0573
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        cs r0573
+        rc 0
+        rd 0
+        cp i0443
 
-@0346:100553   i0346:  ca  w0553  ;clear and add        @@ JumpedToBy: a0333 a0464  
-@0347:070362           cp  i0362  ;conditional program   
-@0350:104573           cs  r0573  ;clear and subtract    
-@0351:001656           si 0o1656  ;select I/O: Device Display Vectors base=14, mask=1  
-@0352:100573           ca  r0573  ;clear and add         
-@0353:024565           rc  0o565  ;record                
-@0354:104573           cs  r0573  ;clear and subtract    
-@0355:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0356:100573           ca  r0573  ;clear and add         
-@0357:024000           rc      0  ;record                
-@0360:014000           rd      0  ;read                  
-@0361:070465           cp  i0465  ;conditional program   
+ i0244: ca w0546
+        cp i0260
+        ca r0573
+        si 0o1656                ; Auto-Annotate I/O: Display Vectors
+        ca 0000
+        rc 0o565
+        ca r0573
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        ca 0000
+        rc 0
+        rd 0
+        cp i0446
 
-@0362:104573   i0362:  cs  r0573  ;clear and subtract   @@ JumpedToBy: a0347 a0467  
-@0363:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0364:100574           ca  r0574  ;clear and add         
-@0365:024000           rc      0  ;record                
-@0366:014000           rd      0  ;read                  
-@0367:070513           cp  i0513  ;conditional program   
+ i0260: ca w0547
+        cp i0274
+        ca r0573
+        si 0o1656                ; Auto-Annotate I/O: Display Vectors
+        ca r0573
+        rc 0o565
+        ca r0573
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        ca r0573
+        rc 0
+        rd 0
+        cp i0451
 
-                ; last row(?) of one dot
-@0370:100554   i0370:  ca  w0554  ;clear and add        @@ JumpedToBy: a0517  
-@0371:070404           cp  i0404  ;conditional program   
-@0372:104572           cs  r0572  ;clear and subtract    
-@0373:001656           si 0o1656  ;select I/O: Device Display Vectors base=14, mask=1  
-@0374:100000           ca   0000  ;clear and add         
-@0375:024565           rc  0o565  ;record                
-@0376:104572           cs  r0572  ;clear and subtract    
-@0377:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0400:100000           ca   0000  ;clear and add         
-@0401:024000           rc      0  ;record                
-@0402:014000           rd      0  ;read                  
-@0403:070470           cp  i0470  ;conditional program   
+ i0274: ca w0550
+        cp i0310
+        ca r0573
+        si 0o1656                ; Auto-Annotate I/O: Display Vectors
+        ca r0572
+        rc 0o565
+        ca r0573
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        ca r0572
+        rc 0
+        rd 0
+        cp i0454
 
-@0404:104572   i0404:  cs  r0572  ;clear and subtract   @@ JumpedToBy: a0371 a0472  
-@0405:000645           si  0o645  ;select I/O: Device Display Points base=14, mask=1  
-@0406:100574           ca  r0574  ;clear and add         
-@0407:024000           rc      0  ;record                
-@0410:014000           rd      0  ;read                  
-@0411:070520           cp  i0520  ;conditional program   
-
-                   ; at the end of the scan loop, we head back to the start and do it all again.
-@0412:074040           sp  i0040  ;sub-program           
-
-
-                   ; each of the following 16 routines corresponds to one dot, and is called
-				   ; to turn the dot off.
-@0413:104001   i0413:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0075  
-@0414:040535           ts  w0535  ;transfer to storage   
-@0415:074076           sp  i0076  ;sub-program        
-   
-@0416:104001   i0416:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0111  
-@0417:040536           ts  w0536  ;transfer to storage   
-@0420:074112           sp  i0112  ;sub-program         
-  
-@0421:104001   i0421:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0125  
-@0422:040537           ts  w0537  ;transfer to storage   
-@0423:074126           sp  i0126  ;sub-program           
-
-@0424:104001   i0424:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0141  
-@0425:040540           ts  w0540  ;transfer to storage   
-@0426:074142           sp  i0142  ;sub-program           
-
-@0427:104001   i0427:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0155  
-@0430:040541           ts  w0541  ;transfer to storage   
-@0431:074156           sp  i0156  ;sub-program           
-
-@0432:104001   i0432:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0171  
-@0433:040542           ts  w0542  ;transfer to storage   
-@0434:074172           sp  i0172  ;sub-program           
-
-@0435:104001   i0435:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0205  
-@0436:040543           ts  w0543  ;transfer to storage   
-@0437:074206           sp  i0206  ;sub-program           
-
-@0440:104001   i0440:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0227  
-@0441:040544           ts  w0544  ;transfer to storage   
-@0442:074230           sp  i0230  ;sub-program           
-
-@0443:104001   i0443:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0243  
-@0444:040545           ts  w0545  ;transfer to storage   
-@0445:074244           sp  i0244  ;sub-program           
-
-@0446:104001   i0446:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0257  
-@0447:040546           ts  w0546  ;transfer to storage   
-@0450:074260           sp  i0260  ;sub-program           
-
-@0451:104001   i0451:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0273  
-@0452:040547           ts  w0547  ;transfer to storage   
-@0453:074274           sp  i0274  ;sub-program           
-
-@0454:104001   i0454:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0307  
-@0455:040550           ts  w0550  ;transfer to storage   
-@0456:074310           sp  i0310  ;sub-program           
-
-@0457:104001   i0457:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0331  
-@0460:040551           ts  w0551  ;transfer to storage   
-@0461:074332           sp  i0332  ;sub-program           
-
-@0462:104001   i0462:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0345  
-@0463:040552           ts  w0552  ;transfer to storage   
-@0464:074346           sp  i0346  ;sub-program           
-
-@0465:104001   i0465:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0361  
-@0466:040553           ts  w0553  ;transfer to storage   
-@0467:074362           sp  i0362  ;sub-program           
-
-@0470:104001   i0470:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0403  
-@0471:040554           ts  w0554  ;transfer to storage   
-@0472:074404           sp  i0404  ;sub-program           
+ i0310: ca r0573
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        ca r0574
+        rc 0
+        rd 0
+        cp i0504
 
 
-                 ; the following four routines correspond to the four 'master' dots down
-				 ; the right side of the display, each clearing the whole row.
-@0473:104001   i0473:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0213  
-@0474:040535           ts  w0535  ;transfer to storage   
-@0475:040536           ts  w0536  ;transfer to storage   
-@0476:040537           ts  w0537  ;transfer to storage   
-@0477:040540           ts  w0540  ;transfer to storage   
-@0500:040541           ts  w0541  ;transfer to storage   
-@0501:040542           ts  w0542  ;transfer to storage   
-@0502:040543           ts  w0543  ;transfer to storage   
-@0503:074214           sp  i0214  ;sub-program           
+        ; third row of three dots
+ i0316: ca w0551
+        cp i0332
+        cs r0573
+        si 0o1656                ; Auto-Annotate I/O: Display Vectors
+        cs r0573
+        rc 0o565
+        cs r0573
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        cs r0573
+        rc 0
+        rd 0
+        cp i0457
 
-@0504:104001   i0504:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0315  
-@0505:040544           ts  w0544  ;transfer to storage   
-@0506:040545           ts  w0545  ;transfer to storage   
-@0507:040546           ts  w0546  ;transfer to storage   
-@0510:040547           ts  w0547  ;transfer to storage   
-@0511:040550           ts  w0550  ;transfer to storage   
-@0512:074316           sp  i0316  ;sub-program           
+ i0332: ca w0552
+        cp i0346
+        cs r0573
+        si 0o1656                ; Auto-Annotate I/O: Display Vectors
+        ca 0000
+        rc 0o565
+        cs r0573
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        ca 0000
+        rc 0
+        rd 0
+        cp i0462
 
-@0513:104001   i0513:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0367  
-@0514:040551           ts  w0551  ;transfer to storage   
-@0515:040552           ts  w0552  ;transfer to storage   
-@0516:040553           ts  w0553  ;transfer to storage   
-@0517:074370           sp  i0370  ;sub-program           
+ i0346: ca w0553
+        cp i0362
+        cs r0573
+        si 0o1656                ; Auto-Annotate I/O: Display Vectors
+        ca r0573
+        rc 0o565
+        cs r0573
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        ca r0573
+        rc 0
+        rd 0
+        cp i0465
 
-@0520:104001   i0520:  cs   0001  ;clear and subtract   @@ JumpedToBy: a0411  
-@0521:040554           ts  w0554  ;transfer to storage   
-@0522:074040           sp  i0040  ;sub-program           
+ i0362: cs r0573
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        ca r0574
+        rc 0
+        rd 0
+        cp i0513
+
+        ; last row(?) of one dot
+ i0370: ca w0554
+        cp i0404
+        cs r0572
+        si 0o1656                ; Auto-Annotate I/O: Display Vectors
+        ca 0000
+        rc 0o565
+        cs r0572
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        ca 0000
+        rc 0
+        rd 0
+        cp i0470
+
+ i0404: cs r0572
+        si 0o645                 ; Auto-Annotate I/O: Display Points
+        ca r0574
+        rc 0
+        rd 0
+        cp i0520
+
+        ; at the end of the scan loop, we head back to the start and do it all again.
+        sp i0040
 
 
-; Jump here if the Reset button is clicked
-@0523:100000   i0523:  ca   0000  ;clear and add        ; clear ACC           @@ JumpedToBy: a0044 a0527  
-@0524:040535   w0524:  ts  w0535  ;transfer to storage  ; store zero at 0533  @@ WrittenBy: a0531 ReadBy: a0525  
-@0525:130524           ao  w0524  ;add one              ; increment the address pointer, leave the new instruction in ACC
-@0526:114533           su  r0533  ;subtract             ; subtract from a pointer to the end of the data block 
-@0527:070523           cp  i0523  ;conditional program   
-@0530:100534           ca  r0534  ;clear and add        ; put 0535 into the ACC
-@0531:044524           td  w0524  ;transfer digits      ; reset the transfer-to-storage instruction at 0524
-@0532:074062           sp  i0062  ;sub-program          ; done; back to the main loop
+        ; each of the following 16 routines corresponds to one dot, and is called
+        ; to turn the dot off.
+ i0413: cs 0001
+        ts w0535
+        sp i0076
 
-; here begins the data segment
-@0533:040555   r0533:  ts  w0555  ;transfer to storage  @@ ReadBy: a0526  
-@0534:000535   r0534:  si  0o535  ;select I/O: Unknown Device @@ ReadBy: a0530  
-  ; these 16 vars hold the state of the 16 dots
-@0535:000000   w0535: .word 0 @@ WrittenBy: a0414 a0474 w0524 ReadBy: i0062  
-@0536:000000   w0536: .word 0 @@ WrittenBy: a0417 a0475 ReadBy: i0076  
-@0537:000000   w0537: .word 0 @@ WrittenBy: a0422 a0476 ReadBy: i0112  
-@0540:000000   w0540: .word 0 @@ WrittenBy: a0425 a0477 ReadBy: i0126  
-@0541:000000   w0541: .word 0 @@ WrittenBy: a0430 a0500 ReadBy: i0142  
-@0542:000000   w0542: .word 0 @@ WrittenBy: a0433 a0501 ReadBy: i0156  
-@0543:000000   w0543: .word 0 @@ WrittenBy: a0436 a0502 ReadBy: i0172  
-@0544:000000   w0544: .word 0 @@ WrittenBy: a0441 a0505 ReadBy: i0214  
-@0545:000000   w0545: .word 0 @@ WrittenBy: a0444 a0506 ReadBy: i0230  
-@0546:000000   w0546: .word 0 @@ WrittenBy: a0447 a0507 ReadBy: i0244  
-@0547:000000   w0547: .word 0 @@ WrittenBy: a0452 a0510 ReadBy: i0260  
-@0550:000000   w0550: .word 0 @@ WrittenBy: a0455 a0511 ReadBy: i0274  
-@0551:000000   w0551: .word 0 @@ WrittenBy: a0460 a0514 ReadBy: i0316  
-@0552:000000   w0552: .word 0 @@ WrittenBy: a0463 a0515 ReadBy: i0332  
-@0553:000000   w0553: .word 0 @@ WrittenBy: a0466 a0516 ReadBy: i0346  
-@0554:000000   w0554: .word 0 @@ WrittenBy: a0471 a0521 ReadBy: i0370  
+ i0416: cs 0001
+        ts w0536
+        sp i0112
 
-@0555:000000   w0555: .word 0 @@ WrittenBy: r0533  
+ i0421: cs 0001
+        ts w0537
+        sp i0126
 
-  ; these two constants gives the character spacing when printing "RESET"
-@0556:002000   r0556:  si   2000  ;select I/O: Unknown Device @@ ReadBy: a0045 a0050 a0052 a0054 a0056  
-@0557:002000   r0557:  si   2000  ;select I/O: Unknown Device @@ ReadBy: a0060  
+ i0424: cs 0001
+        ts w0540
+        sp i0142
 
-                  ; the following five numbers/constants are the characters to be drawn ("RESET", sort of)
-@0560:057400           ck 0o3400  ;check                 
-@0561:067000           ex 0o3000  ;exchange              
-@0562:037000           cf 0o3000  ;cf read-back  
-@0563:001000           si 0o1000  ;select I/O: Unknown Device  
-@0564:043000           ts 0o3000  ;transfer to storage   
+ i0427: cs 0001
+        ts w0541
+        sp i0156
 
-  ;these four appear to be unused words
-@0565:000140           si  0o140  ;select I/O: Unknown Device  
-@0566:020000           bo   0000  ;block transfer out    
-@0567:000334           si  0o334  ;select I/O: Unknown Device  
-@0570:156000          slr  0000  ;shift left and roundoff  
+ i0432: cs 0001
+        ts w0542
+        sp i0172
 
-@0571:030000   r0571:  sd   0000  ;sum digits - XOR     @@ ReadBy: a0066 a0072 a0176 a0202  
-@0572:020000   r0572:  bo   0000  ;block transfer out   @@ ReadBy: a0064 a0070 a0100 a0102 a0104 a0106 a0114 a0120 a0130 a0134 a0144 a0150 a0160 a0162 a0164 a0166 a0174 a0200 i0206 a0220 a0224 a0300 a0304 a0372 a0376 i0404  
-@0573:010000   r0573:  bi   0000  ;block transfer in    @@ ReadBy: a0116 a0122 a0146 a0152 a0216 a0222 a0232 a0234 a0236 a0240 a0246 a0252 a0262 a0264 a0266 a0270 a0276 a0302 i0310 a0320 a0322 a0324 a0326 a0334 a0340 a0350 a0352 a0354 a0356 i0362  
-@0574:035000   r0574:  cf 0o1000  ;cf read-back @@ ReadBy: a0210 a0312 a0364 a0406  
+ i0435: cs 0001
+        ts w0543
+        sp i0206
 
-                       .JumpTo 0o40
-                       .WW_File "102684113_mad_game_m_hurvitz.7ch"
-                       .WW_TapeID "fb0"
+ i0440: cs 0001
+        ts w0544
+        sp i0230
+
+ i0443: cs 0001
+        ts w0545
+        sp i0244
+
+ i0446: cs 0001
+        ts w0546
+        sp i0260
+
+ i0451: cs 0001
+        ts w0547
+        sp i0274
+
+ i0454: cs 0001
+        ts w0550
+        sp i0310
+
+ i0457: cs 0001
+        ts w0551
+        sp i0332
+
+ i0462: cs 0001
+        ts w0552
+        sp i0346
+
+ i0465: cs 0001
+        ts w0553
+        sp i0362
+
+ i0470: cs 0001
+        ts w0554
+        sp i0404
+
+
+        ; the following four routines correspond to the four 'master' dots down
+        ; the right side of the display, each clearing the whole row.
+ i0473: cs 0001
+        ts w0535
+        ts w0536
+        ts w0537
+        ts w0540
+        ts w0541
+        ts w0542
+        ts w0543
+        sp i0214
+
+ i0504: cs 0001
+        ts w0544
+        ts w0545
+        ts w0546
+        ts w0547
+        ts w0550
+        sp i0316
+
+ i0513: cs 0001
+        ts w0551
+        ts w0552
+        ts w0553
+        sp i0370
+
+ i0520: cs 0001
+        ts w0554
+        sp i0040
+
+
+        ; Jump here if the Reset button is clicked
+ i0523: ca 0000                  ; clear ACC
+ w0524: ts w0535                 ; store zero at 0533
+        ao w0524                 ; increment the address pointer, leave the new instruction in ACC
+        su r0533                 ; subtract from a pointer to the end of the data block
+        cp i0523
+        ca r0534                 ; put 0535 into the ACC
+        td w0524                 ; reset the transfer-to-storage instruction at 0524
+        sp i0062                 ; done -- back to the main loop
+
+        ; here begins the data segment
+ r0533: .word 0o040555
+ r0534: .word 0o000535
+        ; these 16 vars hold the state of the 16 dots
+ w0535: .word 0
+ w0536: .word 0
+ w0537: .word 0
+ w0540: .word 0
+ w0541: .word 0
+ w0542: .word 0
+ w0543: .word 0
+ w0544: .word 0
+ w0545: .word 0
+ w0546: .word 0
+ w0547: .word 0
+ w0550: .word 0
+ w0551: .word 0
+ w0552: .word 0
+ w0553: .word 0
+ w0554: .word 0
+
+ w0555: .word 0
+
+        ; these two constants gives the character spacing when printing "RESET"
+        ; LAS -- I "fixed" the "T" below as the space needed to complete it looked too large. So it's
+        ; reduced in the .if 0 below, so the T looks more like a T.
+		; However I left the default as in the original code, via the .if 1.
+ r0556: .word 0o2000
+ .if 1 r0557: .word 0o2000
+ .if 0 r0557: .word 0o1000 - 100
+
+        ; the following five numbers/constants are the characters to be drawn ("RESET", sort of)
+ r0560: .word 0o057400
+ r0561: .word 0o067000
+ r0562: .word 0o037000
+ r0563: .word 0o001000
+ r0564: .word 0o043000
+
+        ;these four appear to be unused words
+        .word 0o000140
+        .word 0o020000
+        .word 0o000334
+        .word 0o154000
+
+ r0571: .word 0o030000
+ r0572: .word 0o020000
+ r0573: .word 0o010000
+ r0574: .word 0o035000
+
+        .JumpTo 0o40
+        .WW_File "102684113_mad_game_m_hurvitz.7ch"
+        .WW_TapeID "fb0"

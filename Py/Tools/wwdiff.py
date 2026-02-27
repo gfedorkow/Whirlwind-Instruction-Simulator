@@ -113,14 +113,16 @@ def diff_core(core_a, core_b, cb):
     # most of the metadata is just string-compare...
     for s in ("ww_tapeid", "hash", "strings", "stats", "filename_from_core"):
         if core_a.metadata[s] != core_b.metadata[s]:
-            print("< meta %s: %s" % (s, core_a.metadata[s]))
-            print("> meta %s: %s" % (s, core_b.metadata[s]))
+            if not cb.suppressMeta:
+                print("< meta %s: %s" % (s, core_a.metadata[s]))
+                print("> meta %s: %s" % (s, core_b.metadata[s]))
             metadata_diffs += 1
 
     # ...but jump-to is an integer
     if core_a.metadata["jumpto"] != core_b.metadata["jumpto"]:
-        print("< meta %s: %s" % (s, core_a.metadata["jumpto"]))
-        print("> meta %s: %s" % (s, core_b.metadata["jumpto"]))
+        if not cb.suppressMeta:
+            print("< meta %s: %s" % (s, core_a.metadata["jumpto"]))
+            print("> meta %s: %s" % (s, core_b.metadata["jumpto"]))
         metadata_diffs += 1
         # metadata_goto = jumpto_addr
 
@@ -178,12 +180,16 @@ def main():
     parser.add_argument("-m", "--Merge", help="Merge files into File A", action="store_true")
     parser.add_argument("-5", "--Debug556", help="WW 556 block debug info", action="store_true")
     parser.add_argument("-s", "--Similarity", help="Measure similarity of Core A and Core B", action="store_true")
+    parser.add_argument("-u", "--SuppressMeta", help="Don't report metadata diff mismatches except in the count", action="store_true")
 
     args = parser.parse_args()
 
     cb = wwinfra.ConstWWbitClass(get_screen_size=False, args=args)
     wwinfra.theConstWWbitClass = cb
     cb.log = wwinfra.LogFactory().getLog(quiet=args.Quiet)
+
+    # Invent a cb attribute on-the-fly
+    cb.suppressMeta = args.SuppressMeta
 
     cpu = CpuClass(cb)
     cb.cpu = cpu

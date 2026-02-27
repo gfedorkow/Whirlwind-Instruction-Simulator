@@ -9,6 +9,9 @@ from enum import Enum
 from wwasmparser import AsmExprValue, AsmExprValueType, AsmExprEnv, AsmExpr, AsmExprType, AsmParsedLine
 from wwflex import FlasciiToFlex
 
+class AsmFatalError (Exception):
+    pass
+
 AsmOperandType = Enum ("AsmOperandType", ["None",       # it's a pseudo-op
                                           "Jump",       # the address is a jump target
                                           "WrData",     # the instruction writes to address 
@@ -19,7 +22,7 @@ AsmOperandType = Enum ("AsmOperandType", ["None",       # it's a pseudo-op
 class OpCodeInfo:
     def __init__ (self, opcode: int, type: AsmOperandType):
         self.opcode = opcode
-        self.opcodeWitdth: int = None   # subclass def
+        self.opcodeWidth: int = None   # subclass def
         self.type = type
         self.className = AsmWwOpInst
         
@@ -211,15 +214,22 @@ class AsmInst:
         # def passOneOp (self):         # Subclass def
         # def passTwoOp (self):         # Subclass def
         self.instruction: int = 0       # 16 bits, may be a ww instruction or data
+        self.operand: int = 0           # Lower part of instruction word
         self.address: int = self.prog.nextCoreAddress   # All instructions even pseudo-ops get an address
-        self.prog.coreToInst[self.address] = self
+        # Only pseudo-ops can be beyond core so don't store xref and dump any comment 
+        if self.address < self.prog.coreSize:
+            self.prog.coreToInst[self.address] = self
+            # If it has a comment, record it
+            if self.parsedLine.comment is not None:
+                self.prog.commentTab[self.address] = self.parsedLine.comment
         self.relativeAddressBase: int = 0
         # If it has a label, record it
         if self.parsedLine.label != "":
             self.prog.labelTab.insert (parsedLine.label, self)
-        # If it has a comment, record it
-        if self.parsedLine.comment != "":
-            self.prog.commentTab[self.address] = self.parsedLine.comment
+        self.isStartBb: bool = None        # This inst is the start of a basic block
+        self.isEndBb: bool = None          # This inst is the end of a basic block
+        self.startBb: AsmInst = None       # This will point to the start of the block if this obj is a bb end
+
     #
     # Given an int detect sign and range and generate a 16-bit one's complement
     # representation.
@@ -284,28 +294,42 @@ class AsmInst:
         sys.stdout.flush()
         sys.stderr.flush()
         """
-        self.cb.log.fatal ("line: %d, %s:\n%s" % (self.parsedLine.lineNo, msg, self.parsedLine.lineStr))
+        # self.cb.log.fatal ("line: %d, %s:\n%s" % (self.parsedLine.lineNo, msg, self.parsedLine.lineStr))
+        self.cb.log.error (self.parsedLine.lineNo, "%s:\n%s" % (msg, self.parsedLine.lineStr))
+        raise AsmFatalError
         pass
     def operandTypeError (self, val: AsmExprValue):
         # Grab the undefined error as it's too noisy, e.g., always comes with unbound var.
         if val.type != AsmExprValueType.Undefined:
             self.error ("Incorrect operand type %s" % val.asString())
+    # Used to check if we're writing instructions or words above the allowable max address
+    def checkAddressError (self, address):
+        if address >= self.prog.coreSize:
+            msg = "Cannot store an instruction above address 0o%o" % (self.prog.coreSize - 1)
+            self.fatalError (msg)
     def addrRangeError (self, addr: int):
         self.error ("Address 0o%o out of range" % addr)
-    # Return a string for the prefix address, perhaps with decimal addresses and perhaps with content
+    # Return a string for the prefix address, perhaps with decimal addresses
+    # and perhaps with content. Services the variants of prefxAddrStr()
+    # Private
     def fmtPrefixAddrStr (self, address: int,
-                          contents: int = None) -> str:
+                          contents: int = None,
+                          invis: bool = False) -> str:
         da = self.cb.decimal_addresses
         daStr = ".%04d" % address if da else ""
-        if contents is not None:
+        if invis:
+            return (" "*5 + " "*len (daStr) + " "*7)
+        elif contents is not None:
             return ("@%04o" + daStr + ":%06o") % (address, contents)
         else:
-            return (" "*5 + " "*len (daStr) + " "*7)
+            return ("@%04o" + daStr) % address
     def opnamePrefix (self):
         return ""
     # Look for semicolons and justify
     # LAS 4/3/25 This and listingString() have a lot of hacks and should be replaced by a proper FSM scanner
     def formatComment (self, comment: str, inst: str) -> (str, int):
+        if comment is None:
+            return (None, None)
         nSemis = 0
         cw = self.prog.commentWidth
         if cw == 0:
@@ -347,6 +371,8 @@ class AsmInst:
             dotIf = ""
         prefixAddr = self.prefixAddrStr() if not minimalListing else ""
         autoComment = self.xrefs.listingString() if not minimalListing and not omitAutoComment else ""
+        # LAS -- Activate this to get basic block markers in the listing
+        # autoComment = ("S" if self.isStartBb else "") + ("E" if self.isEndBb else "")
         maxLabelLen = self.prog.labelTab.maxLabelLen
         commentWidth = self.prog.commentWidth
         if omitUnrefedLabels and p.label not in self.prog.labelRef:
@@ -361,8 +387,20 @@ class AsmInst:
         s2 = s1 + inst
         commentColumn = len (s1) + self.prog.commentColumn
         sp2 = sp*(commentColumn - len (s2)) if p.label != "" or p.opname != "" else ""
-        s3 = (sp2 + ";" + comment + " " + autoComment) if comment + autoComment != "" else ""
+        if autoComment != "" and comment is None:
+            comment = ""
+        s3 = (sp2 + ";" + comment + " " + autoComment) if comment is not None else ""
         return (s2 + s3).rstrip (" ")
+    def getGvNodeDesc (self) -> str:
+        return None
+    def getGvEdgeDesc (self) -> [str]:
+        return None
+    # Returns int addr of target if this inst is a branch, else None
+    def getBranchTarget (self) -> int:
+        return None
+    # Returning None will cause the caller to bypass classes not part of the scan (e.g., pseudo-ops)
+    def setBasicBlockState (self, branchTargets: dict, nextStart: bool, isLast: bool, prevInst) -> bool:
+        return None
 
 class AsmWwOpInst (AsmInst):
     def __init__ (self, *args):
@@ -389,7 +427,9 @@ class AsmWwOpInst (AsmInst):
             if val.value < 0 or val.value >= self.prog.coreSize:
                 self.addrRangeError (val.value)
             else:
-                self.instruction = self.opcode | val.value      # mask not needed because we've checked range
+                self.operand = val.value
+                self.instruction = self.opcode | self.operand      # mask not needed because we've checked range
+                self.checkAddressError (self.address)
                 self.prog.coreMem[self.address] = self.instruction
                 self.addXref (val.value)
         else:
@@ -415,7 +455,65 @@ class AsmWwOpInst (AsmInst):
                         otherInst.xrefs.jumpedToByStr += thisLabelOrAddr
                     case AsmOperandType.Param:
                         pass
-                    
+    def getGvNodeDesc (self) -> str:
+        id = "n%o" % self.address
+        if self.parsedLine.label != "":
+            label = self.parsedLine.label + ": "
+        else:
+            label = ""
+        inst = "%s 0o%o" % (self.parsedLine.opname, self.operand)
+        if self.parsedLine.comment is not None:
+            comment = " ; " + re.sub (" +", " ", self.parsedLine.comment)
+            comment = comment.replace('"', '\\"')
+        else:
+            comment = ""
+        prefixAddrStr = self.fmtPrefixAddrStr (self.address)
+        r = "%s %s%s%s" % (prefixAddrStr, label, inst, comment)
+        return r
+    def getGvEdgeDesc (self) -> [str]:
+        if self.parsedLine.opname == "cp":
+            startInst = self.startBb
+            srcId = "n%o" % startInst.address
+            targetId = "n%o" % self.operand
+            nextId = "n%o" % (self.address + 1)
+            edge1 = "%s:s -> %s:n [label=\"\"; style=solid, color=\"black\"]" % (srcId, targetId)
+            edge2 = "%s:s -> %s:n [label=\"\"; style=solid, color=\"black\"]" % (srcId, nextId)
+            return [edge1, edge2]
+        elif self.parsedLine.opname == "sp":
+            startInst = self.startBb
+            srcId = "n%o" % startInst.address
+            targetId = "n%o" % self.operand
+            edge1 = "%s:s -> %s:n [label=\"\"; style=solid, color=\"black\"]" % (srcId, targetId)
+            return [edge1]
+        elif self.isEndBb:
+            startInst = self.startBb
+            srcId = "n%o" % startInst.address
+            nextId = "n%o" % (self.address + 1)
+            edge2 = "%s:s -> %s:n [label=\"\"; style=solid, color=\"black\"]" % (srcId, nextId)
+            return [edge2]
+        else:
+            return None
+    # Returns int addr of target if this inst is a branch, else None
+    def getBranchTarget (self) -> int:
+        if self.parsedLine.opname in ("sp", "cp"):
+            targetAddr: int = self.operand
+            return targetAddr
+    # Sets the basic block state and returns bool whether next inst should be a basic-block-start
+    def setBasicBlockState (self, branchTargets: dict, nextStart: bool, isLast: bool, prevInst: AsmInst) -> bool:
+        if isLast:
+            self.isEndBb = True
+        if nextStart:
+            self.isStartBb = True
+            nextStart = False
+        if self.address in branchTargets or prevInst is None:
+            self.isStartBb = True
+            if prevInst is not None:
+                prevInst.isEndBb = True
+        if self.parsedLine.opname in ("sp", "cp"):
+            self.isEndBb = True
+            nextStart = True
+        return nextStart
+
 class AsmWwSiOpInst (AsmWwOpInst):
     def __init__ (self, *args):
         super().__init__ (*args)
@@ -424,7 +522,7 @@ class AsmWwSiOpInst (AsmWwOpInst):
         val = self.operandVal
         if val.type == AsmExprValueType.Integer:
             d: str = "; Auto-Annotate I/O: %s" % self.cb.Decode_IO (val.value)
-            if d not in self.parsedLine.comment:
+            if self.parsedLine.comment is not None and d not in self.parsedLine.comment:
                 self.xrefs.annotateIoStr = d
         else:
             self.operandTypeError (val)
@@ -432,8 +530,8 @@ class AsmWwSiOpInst (AsmWwOpInst):
 class AsmPseudoOpInst (AsmInst):
     def __init__ (self, *args):
         super().__init__ (*args)
-    def prefixAddrStr (self) -> str:      # A pseudo-op by default displays only the address in the prefix addr string
-        return self.fmtPrefixAddrStr (self.address)
+    def prefixAddrStr (self) -> str:
+        return self.fmtPrefixAddrStr (self.address, invis = True)
     def opnamePrefix (self):
         return "."
     def wwWord (self, val: AsmExprValue) -> int:
@@ -490,8 +588,10 @@ class AsmDotIfInst (AsmInst):
         self.instParsedLine: AsmParsedLine = instParsedLine
         self.prog = prog
         self.cb = wwinfra.theConstWWbitClass
+        self.isStartBb = False
+        self.isEndBb = False
     def prefixAddrStr (self) -> str:
-        return self.fmtPrefixAddrStr (0)
+        return self.fmtPrefixAddrStr (0, invis = True)
     def listingString (self, **kwargs) -> str:
         return (";" if not self.prog.reformat else "")  + self.prefixAddrStr() + self.instParsedLine.lineStr
     def passOneOp (self):
@@ -556,6 +656,7 @@ class AsmDotWordInst (AsmPseudoOpInst):
     def passTwoOp (self):
         val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
         self.instruction = self.wwWord (val)
+        self.checkAddressError (self.address)
         self.prog.coreMem[self.address] = self.instruction
 
 class AsmDotWordsInst (AsmDotWordInst):
@@ -596,6 +697,7 @@ class AsmDotWordsInst (AsmDotWordInst):
     def passTwoOp (self):
         self.instruction = self.fillInst
         for i in range (0, len (self.block)):
+            self.checkAddressError (self.address+i)
             self.prog.coreMem[self.address+i] = self.block[i]
 
 class AsmDotFloatInst (AsmDotWordsInst):
@@ -652,6 +754,7 @@ class AsmDotFloatInst (AsmDotWordsInst):
                 self.error (".float takes two operands")
         else:
             self.operandTypeError (val)
+        self.checkAddressError (self.address+1)
         self.prog.coreMem[self.address] = self.block[0]
         self.prog.coreMem[self.address+1] = self.block[1]
 
@@ -713,6 +816,7 @@ class AsmDotFlexlhInst (AsmDotWordsInst):
         if 0 in self.block:        # We need at least this one entry
             self.instruction = self.block[0]
             for i in range (0, len (self.block)):
+                self.checkAddressError (self.address+i)
                 self.prog.coreMem[self.address+i] = self.block[i]
 
 class AsmDotJumpToInst (AsmPseudoOpInst):
@@ -984,7 +1088,7 @@ class AsmDotIsaInst (AsmPseudoOpInst):
 # LAS 12/16/24 ww code will need to be converted to use comma-separated
 # operands, rather than space-separated.
 #
-# Again I'm stoppping short of a full-pipeline revamp of this since I don't
+# Again I'm stopping short of a full-pipeline revamp of this since I don't
 # want to modify the sim if I can help it. Below though we have everything in
 # parsed format, and we'll change it back to text for the sim to parse again.
 #
@@ -1029,6 +1133,25 @@ class AsmDotSwitchInst (AsmPseudoOpInst):
         else:
             self.error (".switch syntax error")
 
+#
+# Gather up info about a program for gv
+#
+class AsmProgramInfo:
+    def __init__ (self, prog): # prog: AsmProgram
+        self.prog = prog
+        pass
+    def getGvLegendDesc (self) -> str:
+        gv = "legend [label=\"%s\"; fontname=courier;fontsize=30;fontcolor=red;shape=box3d]"
+        j = self.prog.wwJumpToAddress
+        t = self.prog.wwTapeId
+        w = self.prog.wwFilename
+        s = "Legend\n"
+        s += ("Jump To: 0o%o\\l" % j) if j is not None else ""
+        s += (("Tape id: %s\\l") % t) if t != "" else ""
+        # File id is too long
+        # s += (("File id: %s\\l") % w) if w != "" else ""
+        s = gv % s
+        return s
 
 class AsmProgramEnv (AsmExprEnv):
     def __init__ (self, prog): # prog: AsmProgram
@@ -1062,9 +1185,10 @@ class AsmLabelTab:
 class AsmProgram:
     def __init__ (self,
                   inFilename, inStream,
-                  coreOutFilename, listingOutFilename,
+                  coreOutFilename, listingOutFilename, flowgraphOutFilename,
                   verbose, debug, minimalListing, isa1950,
-                  reformat, omitUnrefedLabels, commentColumn, commentWidth, omitAutoComment):
+                  reformat, omitUnrefedLabels,
+                  commentColumn, commentWidth, omitAutoComment):
         #
         # The "fundamental constants" of the machine. Masks, which can hide
         # bugs, are not used. Ranges of fields are checked.
@@ -1088,7 +1212,6 @@ class AsmProgram:
         self.metaOpcode = self.opCodeTables.meta_op_code
 
         self.cb = wwinfra.theConstWWbitClass
-        self.flexoClass = wwinfra.FlexoClass (self.cb, log = wwinfra.LogFactory().getLog())   # want a non-asm log at the low-level
 
         # [Guy says:] I think the CSII assembler defaults to starting to load
         # instructions at 0o40, the first word of writable core.  Of course a
@@ -1133,9 +1256,12 @@ class AsmProgram:
         self.inStream = inStream
         self.coreOutFilename = coreOutFilename
         self.listingOutFilename = listingOutFilename
+        self.flowgraphOutFilename = flowgraphOutFilename
 
         self.inFilenameStack: [str] = []
         self.inStreamStack: [] = []
+
+        self.progInfo = AsmProgramInfo (self)
 
         # LAS 12/27/24 As of now these options are detected on the cmd line but
         # there are no statements using them in the code
@@ -1305,10 +1431,91 @@ class AsmProgram:
                                                         omitUnrefedLabels = self.omitUnrefedLabels,
                                                         omitAutoComment = self.omitAutoComment) + "\n")
         listingOutStream.close()
+        pass
+    
+    #
+    # This is intended for use with the flowgraph, but it's currently called
+    # during assemble(), since it may prove useful for other analysis or
+    # transform work. We need to see be sure we don't get too much perf hit,
+    # since it does make three more passes.
+    #
+    def markBasicBlocks (self):
+        branchTargets = {}  # Set of branch target addrs
+        for inst in self.insts:
+            targetAddr = inst.getBranchTarget()
+            if targetAddr is not None:
+                branchTargets[targetAddr] = True
+        nextStart: bool = False
+        prevInst: AsmInst = None
+        l = len (self.insts)
+        for i in range (0, l):
+            inst = self.insts[i]
+            r = inst.setBasicBlockState (branchTargets, nextStart, i == l - 1, prevInst)
+            if r is not None:
+                nextStart = r
+                prevInst = inst
+        startInst = None
+        for inst in self.insts:
+            if inst.isStartBb:
+                startInst = inst
+            if inst.isEndBb:
+                if startInst is not None:
+                    inst.startBb = startInst
+        pass
+
+    def getGvBlockDesc (self, instIndex: int) -> str:
+        inst = self.insts[instIndex]
+        if inst.isStartBb:
+            s = ""
+            for i in range (instIndex, len (self.insts)):
+                inst = self.insts[i]
+                nd = inst.getGvNodeDesc()
+                if nd is not None:
+                    s += nd + "\\l"
+                if inst.isEndBb:
+                    break
+            return s
+        else:
+            return None
+
+    def writeFlowgraph (self):
+        if self.flowgraphOutFilename is not None:
+            print ("Flowgraph output to file %s" % self.flowgraphOutFilename)
+            fout = open (self.flowgraphOutFilename, 'wt')
+            fout.write ("digraph flowchart {\n")
+            fout.write (self.progInfo.getGvLegendDesc() + "\n")
+            wroteNodes: bool = False
+            wroteEdges: bool = False
+            for i in range (0, len (self.insts)):
+                inst = self.insts[i]
+                gvStr = self.getGvBlockDesc (i)
+                if gvStr is not None:
+                    wroteNodes = True
+                    id = "n%o" % inst.address
+                    gv = "%s [label=\"%s\"; fontname=courier;shape=box3d]" % (id, gvStr)
+                    fout.write (gv + "\n")
+            for i in range (0, len (self.insts)):
+                inst = self.insts[i]
+                gvStrs = inst.getGvEdgeDesc()
+                if gvStrs is not None:
+                    wroteEdges = True
+                    for gvStr in gvStrs:
+                        fout.write (gvStr + "\n")
+            fout.write ("}\n")
+            fout.close()
+            # If no data, make a zero-length gv file
+            if not wroteNodes:
+                fout = open (self.flowgraphOutFilename, 'wt')
+                fout.close()
+        pass
 
     def assemble (self):
-        self.passOne()
-        self.passTwo()
+        try:
+            self.passOne()
+            self.passTwo()
+            self.markBasicBlocks()  # Can be moved to flowgraph if desired
+        except AsmFatalError:
+            pass
         errorCount = self.cb.log.error_count
         if errorCount != 0:     # Don't write files if picked up errors
             print ("Error Count = %d; output files suppressed" % errorCount)
@@ -1326,6 +1533,7 @@ class AsmProgram:
                 self.writeCore()
                 print ("Listing output to file %s" % self.listingOutFilename)
                 self.writeListing()
+                self.writeFlowgraph()
 
 def main():
     parser = wwinfra.StdArgs().getParser ("Assemble a Whirlwind Program.")
@@ -1340,6 +1548,7 @@ def main():
     parser.add_argument("--ISA_1950", help="Use the 1950 version of the instruction set", action="store_true")
     parser.add_argument("--Reformat", help="Prettify the source .ww file and move the original to .ww.bak", action="store_true")
     parser.add_argument("--OmitUnrefedLabels", help="Don't put unreferenced labels in the listing", action="store_true")
+    parser.add_argument("-f", "--FlowGraph", help="Generate a static flow graph. Output file <output-file-base-name.flow.static.gv", action="store_true")
     # Suggested for comment columns is "--CommentColumn 25 --CommentWidth 50"
     parser.add_argument("--CommentColumn", type=int, help="Column after labels for comments in listing. Default 25")
     parser.add_argument("--CommentWidth", type=int, help="Space to allocate to each comment field in listing. If not specified or zero, no field detection")
@@ -1374,12 +1583,14 @@ def main():
     # cb.CoreFileName = os.path.basename (outFileBaseName)  # There does not seem to be a reason store this in cb in the assembler
     coreOutFilename = outFileBaseName + ".acore"
     listingOutFilename = outFileBaseName + ".lst"
+    flowgraphOutFilename =  outFileBaseName + ".flow.static.gv" if args.FlowGraph else None
     inStream = open (inFilename, "r")
     prog = AsmProgram (
         inFilename, inStream,
-        coreOutFilename, listingOutFilename,
+        coreOutFilename, listingOutFilename, flowgraphOutFilename,
         verbose, debug, minimalListing, isa1950,
-        reformat, omitUnrefedLabels, commentColumn, commentWidth, omitAutoComment)
+        reformat, omitUnrefedLabels,
+        commentColumn, commentWidth, omitAutoComment)
     prog.assemble()
 
 main()

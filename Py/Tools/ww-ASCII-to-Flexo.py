@@ -86,7 +86,7 @@ def main():
         output_str = format_tcodes(input_string, flexo_codes)
         if args.Readable:
             # LAS
-            output_str += "\n;\n;\n" + (FlexToComment (flexo_codes).getComment())
+            output_str += "\n;\n;\n" + FlexToComment().addCodes(flexo_codes).getComment()
 
         if out_fd:
             out_fd.write(output_str)
