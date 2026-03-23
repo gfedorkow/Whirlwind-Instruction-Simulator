@@ -444,6 +444,7 @@ class ConstWWbitClass:
         self.DIVIDE_ALARM = 9    # a real alarm for an overflow in Divide
         self.READIN_ALARM = 10   # synthetic alarm to return to ReadIn state due to control panel button
         self.KBD_INT_ALARM = 11  # Keyboard interrupt alarm
+        self.DISPATCHER_ALARM = 12   # synthetic alarm to return to dispatch to a new demo program in HNF mode
 
         self.AlarmMessage = {self.NO_ALARM: "No Alarm",
                              self.OVERFLOW_ALARM: "Overflow Alarm",
@@ -456,7 +457,8 @@ class ConstWWbitClass:
                              self.IO_ERROR_ALARM: "I/O Error Alarm",
                              self.DIVIDE_ALARM: "Divide Error Alarm",
                              self.READIN_ALARM: "Return-to-Readin Alarm",
-                             self.KBD_INT_ALARM: "Keyboard Interrupt"
+                             self.KBD_INT_ALARM: "Keyboard Interrupt",
+                             self.DISPATCHER_ALARM: "Return-to-HNF-Dispatcher Alarm",
                              }
 
         self.COLOR_BR = "\033[93m"  # Yellow color code for Branch Instructions in console trace if color_trace is True
@@ -787,6 +789,9 @@ class WWSwitchClass:
         return write_protect_list, validated_str
 
 
+    # This routine reads a line of text for presetting a switch from a core file, checks the syntax
+    # and them applies the setting.
+    # The routine is also called from the HNF Program Dispatcher to set up special switch conditions
     def parse_switch_directive(self, args):    # return one for error, zero for ok.
         if args[0] == "FFRegAssign":  # special case syntax for assigning FF Register addresses
             args.append('')   # cheap trick; add a null on the end to make sure the next statement doesn't trap
@@ -825,8 +830,11 @@ class WWSwitchClass:
 
     def read_switch(self, name):
         # go to the panel if it's anything but a Flip Flop Register Preset, or if it's an FF Preset that's in the list
-        if self.cb.panel and (name in self.cb.panel.ff_preset_list or not re.match("FlipFlopPreset", name)):
-            return self.cb.panel.read_register(self.SwitchNameDict[name][2])
+        if name not in self.SwitchNameDict:
+            self.cb.log.fatal(" unknown switch in panel.read_switch: %s" % name)
+        internal_sw_name = self.SwitchNameDict[name][2]
+        if self.cb.panel and (internal_sw_name in self.cb.panel.switch_list):
+            return self.cb.panel.read_register(internal_sw_name)
         else:
             return self.SwitchNameDict[name][0]
 

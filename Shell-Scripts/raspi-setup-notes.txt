@@ -1,5 +1,5 @@
 # steps to configure a new RasPi for WW Sim
-# Guy Fedorkow, Dec 24, 2025
+# Guy Fedorkow, Dec 24, 2025, updated Mar 5, 2026 to add power control
 
 # Optionally set screen size
 # (but I don't recall how...)
@@ -9,6 +9,7 @@
 sudo adduser guyfe --firstgid 1000 --firstuid 1000
 sudo adduser ww-demo --firstgid 1000 --firstuid 1000
 
+Pair with the BlueTooth keyboard
 
 # copy in git-token
 # this isn't automated, as it needs to be updated periodically
@@ -25,8 +26,13 @@ chmod 700 git-token
 
 
 #use rapi-config to enable ssh, vnc, i2c and spi
+# Power control
+# add the following line to /boot/firmware/config.txt
+  dtoverlay=gpio-shutdown,gpio_pin=13
+
 
 apt install vim
+apt install nano
 
 # add python modules
 apt install python3-full

@@ -270,6 +270,8 @@ def main_run_sim(args, cb):
     if cpu.isa_1950 == False and args.Radar:
         cb.log.fatal("Radar device can only be used with 1950 ISA")
 
+    if cb.panel and cb.panel.hnf_program_dispatcher:
+        cb.panel.hnf_program_dispatcher.apply_switch_presets(cpu)
     flowgraph = None
     if args.FlowGraph:
         flowgraph = ww_flow_graph.FlowGraph (args.FlowGraph, args.FlowGraphOutFile, args.FlowGraphOutDir, cb)
@@ -401,6 +403,10 @@ def main_run_sim(args, cb):
                 if cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # just idle here, watching for mouse clicks on the panel
                     alarm_state = cb.QUIT_ALARM
                     break  # bail out of the While True loop if display update says to stop due to Red-X hit
+                if args.HnfProgramDispatcher:
+                    if cb.panel.hnf_program_dispatcher.test_for_mir_change(cb):
+                        alarm_state = cb.DISPATCHER_ALARM
+                        break  # bail out if there was a timeouot
                 time.sleep(0.1)
                 continue
 
@@ -428,6 +434,10 @@ def main_run_sim(args, cb):
                 if cb.panel:
                     if cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # watch for mouse clicks on the panel
                         exit_alarm = cb.QUIT_ALARM
+                    if args.HnfProgramDispatcher:
+                        if cb.panel.hnf_program_dispatcher.test_for_mir_change(cb):
+                            alarm_state = cb.DISPATCHER_ALARM
+
                     if cb.sim_state == cb.SIM_STATE_READIN:
                         alarm_state = cb.READIN_ALARM
                         break
@@ -474,11 +484,15 @@ def main_run_sim(args, cb):
                         cb.sim_state = cb.SIM_STATE_STOP
 #                if cb.panel and cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # watch for mouse clicks on the panel
 #                    break
+                if (alarm_state == cb.DISPATCHER_ALARM):
+                    cb.panel.hnf_program_dispatcher.dispatch_to_core(cb)
+                    break
                 else:
                     # the normal case with cmd-line wwsim is to stop on an alarm; if the command line flag says not to, we'll try to keep going
                     # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
                     if not args.NoAlarmStop or \
-                            alarm_state == cb.QUIT_ALARM  or alarm_state == cb.HALT_ALARM or alarm_state == cb.READIN_ALARM:
+                            alarm_state == cb.QUIT_ALARM  or alarm_state == cb.HALT_ALARM or \
+                            alarm_state == cb.READIN_ALARM or alarm_state == cb.DISPATCHER_ALARM:
                         break
             sim_cycle += 1
             checkpoint_cycle_interval = 2000000
@@ -629,6 +643,8 @@ def main():
                         help="File to store Persistent state for WW Drum", type=str)
     parser.add_argument("--MuseumMode",
                         help="Cycle through states endlessly for museum display", action="store_true")
+    parser.add_argument("--HnfProgramDispatcher",
+                        help="Activate the special-purpose Demo Program Dispatcher for use at HNF", action="store_true")
     parser.add_argument("-d", "--Debugger",
                         help="Start simulation under the debugger", action="store_true")
     parser.add_argument("--ZeroizeCore",
@@ -659,7 +675,8 @@ def main():
         cb.log.warn("No BlinkenLights Hardware available")
 
     if args.Panel or args.BlinkenLights or args.MicroWhirlwind:
-        cb.panel = control_panel.PanelClass(cb, args.Panel, args.BlinkenLights, args.MicroWhirlwind)
+        cb.panel = control_panel.PanelClass(cb, args.Panel, args.BlinkenLights, args.MicroWhirlwind,
+                                            hnf_program_dispatcher_mode=args.HnfProgramDispatcher)
 
     # WW programs may read paper tape.  If the simulator is invoked specifically with a
     # name for the file containing paper tape bytes, use it.  If not, try taking the name

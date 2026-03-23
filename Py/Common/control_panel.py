@@ -21,6 +21,7 @@
 from graphics import *
 from blinkenlights import BlinkenLightsClass
 from micro_whirlwind import PanelMicroWWClass
+import hnf_dispatcher
 import re
 
 
@@ -661,12 +662,12 @@ class PanelXwinClass:
                     "FF06Sw": [self.ffreg[3].read_switch_register, self.ffreg[3].set_switch_register],
                     }
 
-    # The Panels contain a subset of the Flip Flop Register Preset switches; this method returns
+    # The Panel contains a subset of the supported switches; this method returns
     # this list of names supported by this panel
-    def get_ff_preset_list(self):
+    def get_switch_list(self, omit_MIR=False):
         ret = []
         for sw in self.dispatch:
-            if re.match("FF[0-9][0-9]Sw", sw):
+            if (not re.match("FF[0-9][0-9]$", sw)) and not (omit_MIR and (sw == "LMIR" or sw == "RMIR")):
                 ret.append(sw)
         return ret
 
@@ -682,7 +683,7 @@ class PanelXwinClass:
             self.cpu_reg_pc.write_cpu_register(cpu.PC + (bank << 12))
             self.cpu_reg_mar.write_cpu_register(cpu.cm.mem_addr_reg)
             par = cpu.cm.mem_data_reg
-            if par:  # make sure we're not sending None to the PAR lights register
+            if par is not None:  # make sure we're not sending None to the PAR lights register
                 self.cpu_reg_par.write_cpu_register(par)
             if init_PC:
                 self.pc_toggle_sw.set_button_vector(init_PC)
@@ -695,6 +696,8 @@ class PanelXwinClass:
         pt = self.win.checkMouse()
         if pt[0]:
             # print("Panel mouse x=%d, y=%d" % (pt[0].x, pt[0].y))
+            if cb.panel.hnf_program_dispatcher:
+                cb.panel.hnf_program_dispatcher.reset_inactivity_timer()
 
             self.dual_ir.test_ir_hit(pt[0].x, pt[0].y)
             # print("Left Intervention Register set to  0o%06o" % self.dual_ir.read_register("left_ir"))
@@ -811,19 +814,32 @@ def compensate_justification(txt, font=9):
 # =================
 # the following class serves as a dispatcher for the three possible Panel technologies, one
 # with the xwindow emulated buttons, one with a few I2C buttons and lights, and the microWhirlwind panel
-# Both can be enabled at once, but the results probably aren't too predictable.
+# Both can be enabled at once, but the results probably aren't too predictable
+#  The arg hnf-Program_dispatcher turns on a mode for use with control panels to allow the bottom three
+# bits of the LMIR to be used to dispatch the simulator to run a different Demo program.  This has the
+# side effect of disconnecting the control panel MIR buttons from the LMIR/MIR presets in .acore files
 class PanelClass:
-    def __init__(self, cb, panel_xwin=False, panel_blinken=False, panel_microWW=False, left_init=0, right_init=0):
+    def __init__(self, cb, panel_xwin=False, panel_blinken=False, panel_microWW=False,
+                 left_init=0, right_init=0, hnf_program_dispatcher_mode=0):
         self.ff_preset_list = []
+        self.switch_list = []
         self.panel_xwin = panel_xwin
         self.panel_blinken = panel_blinken
         self.panel_mWW = panel_microWW
+        self.hnf_program_dispatcher_mode = hnf_program_dispatcher_mode
+        if hnf_program_dispatcher_mode:
+            self.hnf_program_dispatcher = hnf_dispatcher.HnfDispatcherClass(cb)
+        else:
+            self.hnf_program_dispatcher = None
+
         if panel_xwin:
             self.panel_xwin = PanelXwinClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
-            self.ff_preset_list = self.panel_xwin.get_ff_preset_list()  # obtain a list of all the FF presets on this panel
+            # self.ff_preset_list = self.panel_xwin.get_ff_preset_list()  # obtain a list of all the FF presets on this panel
+            self.switch_list = self.panel_xwin.get_switch_list(omit_MIR=hnf_program_dispatcher_mode != 0)  # obtain a list of all the switches on this panel
         if panel_microWW:
             self.panel_mWW = PanelMicroWWClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
-            self.ff_preset_list = self.panel_mWW.get_ff_preset_list()  # obtain a list of all the FF presets on this panel
+            # self.ff_preset_list = self.panel_mWW.get_ff_preset_list()  # obtain a list of all the FF presets on this panel
+            self.switch_list = self.panel_mWW.get_switch_list()  # obtain a list of all the switches on this panel
         if panel_blinken:
             self.panel_blinken = BlinkenLightsClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
 
@@ -845,6 +861,10 @@ class PanelClass:
             return False
         return True
 
+#    def hnf_program_dispatch(self, cb):
+#        print(" LeftInterventionReg = %d" %
+#              self.read_register("LMIR"))
+
     # read a register from the switches and lights panel.
     # It would normally be called with a string giving the name, so an FF Reg number can also be used
     # The read routine simply returns an integer value
@@ -859,7 +879,16 @@ class PanelClass:
 
     # write a register to the switches and lights panel.
     # there's no error return signal
-    def write_register(self, which_one, value):
+    # When operating with hnf_program_dispatcher, we need to disconnect the LMIR & RMIR control panel
+    # buttons from the switch settings found as metadata in the core file.  This routine tests for that
+    # case and returns before doing the write.
+    def write_register(self, which_one, value, set_from_dispatcher=False):
+        # print("panel.write_register: which_one=%s, value=%d" % (which_one, value))
+        # discard the write if this is coming from a core file
+        # This is done to allow the MIR to be used as part of the hnf ad-hoc program dispatcher
+        if self.hnf_program_dispatcher_mode and set_from_dispatcher == False:
+            if which_one == "LMIR" or which_one == "RMIR":
+                return
         if self.panel_blinken:
             self.panel_blinken.write_register(which_one, value)
         if self.panel_xwin:
