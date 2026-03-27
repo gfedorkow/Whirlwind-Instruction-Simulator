@@ -129,6 +129,9 @@ def write_core_dump(cb, core_dump_file_name, cm):
 # Whirlwind core memory variables are identified with either the usual label or numeric core addresses.
 # Variables in the python environment are preceded by a dot, followed by a Python var name, scoped to run
 # in the CPU object (I think!).
+# Modified Mar 26, 2026 to allow the debug widget to show/control Switch Register settings.  If the arg starts
+# with a '%' we'll try looking it up in the Switch table.  The switch name is stored with the % in the same list
+# as Py labels.
 def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
     cb.DebugWidgetPyVars = wwinfra.DebugWidgetPyVarsClass(cb)
     for args in dbwgt_list:
@@ -148,6 +151,12 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
                 eval("cb.DebugWidgetPyVars." + py_wgt_label)
             except AttributeError:
                 cb.log.warn("Debug Widget: Can't find Python Label 'cb.%s'" % py_wgt_label)
+                py_wgt_label = ''
+        if args[0][0] == '%':
+            address = -1
+            py_wgt_label = args[0]
+            if cb.cpu.cpu_switches.validate_switch_register_name(args[0][1:]) == False:
+                cb.log.warn("Debug Widget: Can't find switch Label '%s'" % py_wgt_label[1:])
                 py_wgt_label = ''
         elif args[0][0].isdigit():
             address = int(args[0], 8)
@@ -207,6 +216,8 @@ def poll_sim_io(cpu, cb):
             key = cpu.scope.crt.win.checkKey()
         if key != '':
             print("key: %s, 0x%x" % (key, ord(key[0])))
+            if cb.panel and cb.panel.hnf_program_dispatcher:
+                cb.panel.hnf_program_dispatcher.reset_inactivity_timer()
         if key == 'q' or key == 'Q':
             ret = cb.QUIT_ALARM
         if wgt and key == "Up":

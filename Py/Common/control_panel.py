@@ -341,6 +341,7 @@ class OneInterventionRegisterClass:
         self.diameter = self.x_step * 16/20
         self.rbc.append(ButtonVectorClass(win, 2, "%s-0" % name, x, y + 6 * self.x_step, 0, self.y_step, self.diameter,
                                           initial_value=(1 - (initial_value >> 15))))
+        self.button_pressed = False  # This is a mailbox to signal six levels up that a button has been pressed
 
         # the remaining five columns each have eight octal-coded buttons
         for i in range(1, 6):
@@ -362,11 +363,16 @@ class OneInterventionRegisterClass:
             bn = self.rbc[i].test_button_vector_hit(x, y)
             if bn is not None:
                 self.rbc[i].flip_a_button(self.rbc[i].n_button - 1 - bn)
+                self.button_pressed = True  # this is cleared when read by self.report_radio_push()
         act = self.activate.button.bbox.in_bbox(x, y)
         if act:
             self.activate.lamp.set_lamp(True)
             # print("hit %s Activate button" % self.name)
 
+    def report_radio_push(self):
+        ret = self.button_pressed
+        self.button_pressed = False  # this is cleared when read by self.report_radio_push()
+        return ret
 
     def read_register(self):
         ret = 0
@@ -739,6 +745,13 @@ class PanelXwinClass:
         # element zero in the dispatch is the Read entry; element one is the Set entry
         return self.dispatch[which_one][0]()
 
+    def test_for_MIR_button_press(self):
+        if self.dual_ir.left_ir.report_radio_push():
+            return True
+        if self.dual_ir.right_ir.report_radio_push():
+            return True
+        return False
+
     # write a register to the switches and lights panel.
     # It would normally be called with a string giving the name.  Inside the simulator
     # sometimes it's easier to find a number for the flip-flop registers
@@ -821,6 +834,7 @@ def compensate_justification(txt, font=9):
 class PanelClass:
     def __init__(self, cb, panel_xwin=False, panel_blinken=False, panel_microWW=False,
                  left_init=0, right_init=0, hnf_program_dispatcher_mode=0):
+        self.cb = cb
         self.ff_preset_list = []
         self.switch_list = []
         self.panel_xwin = panel_xwin
@@ -886,15 +900,23 @@ class PanelClass:
         # print("panel.write_register: which_one=%s, value=%d" % (which_one, value))
         # discard the write if this is coming from a core file
         # This is done to allow the MIR to be used as part of the hnf ad-hoc program dispatcher
-        if self.hnf_program_dispatcher_mode and set_from_dispatcher == False:
-            if which_one == "LMIR" or which_one == "RMIR":
-                return
+        #if self.hnf_program_dispatcher_mode and set_from_dispatcher == False:
+        #    if which_one == "LMIR" or which_one == "RMIR":
+        #        return
         if self.panel_blinken:
             self.panel_blinken.write_register(which_one, value)
         if self.panel_xwin:
             self.panel_xwin.write_register(which_one, value)
         if self.panel_mWW:
             self.panel_mWW.write_register(which_one, value)
+
+
+    # dispatch the test for a recent button press
+    def test_for_MIR_button_press(self):
+        if self.panel_xwin:
+            return self.panel_xwin.test_for_MIR_button_press()
+        else:
+            self.cb.log.fatal("unimplemented test_for_MIR_button_press")
 
 
     def reset_ff_registers(self, function, log=None, info_str=''):
