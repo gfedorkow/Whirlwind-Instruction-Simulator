@@ -1,0 +1,657 @@
+
+; Alpha Character display code
+; Guy Fedorkow
+; Nov 21, 2025; Mar 7, 2026
+; This program displays a simple text message on the WW CRT display
+; The text of the message is one of eight messages, selected by the low three bits
+; of FF Register 2
+
+; constants for SI graphics instruction
+            .pp scope_vector, 0o1677   ; draw a vector on all scopes
+            .pp scope_point, 0o0677   ; draw a point on all scopes
+
+
+; Alias for Flip-Flop-Register
+            .pp FFReg02, 02
+            .pp FFReset, 0o10     ; SI instruction to copy presets into the FF Registers
+
+
+            .org 0
+zero:       .word 0
+one:        .word 1
+
+
+            .org 0o40
+
+main:       sp init                 ; call the init subroutine
+            sp refresh_loop         ; branch to main display refresh loop
+            
+msgtab_ptr: .word msgtab0            
+msgtab0:    .word msg0
+msgtab1:    .word msg1
+msgtab2:    .word msg2
+msgtab3:    .word msg3
+msgtab4:    .word msg4
+msgtab5:    .word msg5
+msgtab6:    .word msg6
+msgtab7:    .word msg7
+
+
+; display a string on the CRT, lengthening it by one character until it's full length, then
+; reset the count and start again.  
+refresh_loop: 
+            si FFReset      ; copy preset switches into FF Regs
+            ca FFReg02      ; figure out what message to print
+            md const_7      ; mask to three bits
+            ts msg_num
+            ad msgtab_ptr   ; this is the address into the message table
+            td rl_ld_msgp
+rl_ld_msgp: ca 0            ; fetch the message pointer from the table
+            ts msgp         ; store a pointer to the start of the string to print.
+            
+            ca zero         ; initialize the length of the string to zero
+            ts msg_strlen
+msg_loop:
+            ca msg_strlen
+            ts ds_arglen
+            ; start the string near the top left edge of the screen
+            cs c_scope_edge
+            ts ds_argx
+            ca c_scope_edge     
+            su char_yspacing    ; character origin is the lower-left corner, so make sure it doesn't overflow Y axis
+            ts ds_argy
+            ca msgp
+            sp draw_str         ; this routine prints the string until either a negative character terminator OR the count is exhausted
+            ;si 0
+
+            ; on each pass, make the string longer by two, up to the max length
+            ao msg_strlen
+            ao msg_strlen
+            su msg_maxlen
+            cp msg_loop
+
+            ca zero
+            ts msg_strlen
+            sp refresh_loop
+
+loop_count:  ; used only in top-level routines for drawing the game board
+          .word 0
+
+init:     ta init_ret
+init_ret: sp 0    
+
+
+msg_maxlen:  .word 0o100
+msg_strlen:  .word 0     ; we lengthen the string by one char until it reaches the end and we've counted to msg_maxlen
+msg_num:     .word 0     ; this should be an offset into the table of messages to select just one
+
+msg0:       .flexl "WHIRLWIND\nEMULATOR\nVibrating String", -1  
+msg1:       .flexl "WHIRLWIND\nEMULATOR\nBounce w/ Hole", -1  ; remember that the converted string will count shift-up/down as characters
+msg2:       .flexl "WHIRLWIND\nEMULATOR\n34-word Bounce", -1
+msg3:       .flexl "WHIRLWIND\nEMULATOR\nBlackjack", -1  
+msg4:       .flexl "WHIRLWIND\nEMULATOR\nTic Tac Toe", -1  
+msg5:       .flexl "WHIRLWIND\nEMULATOR\nNumber Display", -1  
+msg6:       .flexl "WHIRLWIND\nEMULATOR\nMad Game", -1  
+msg7:       .flexl "WHIRLWIND\nEMULATOR\nunused program 7", -1  
+
+
+
+; ****************************************
+
+
+; Constants
+const_2:  .word 2
+const_3:  .word 3
+const_4:  .word 4
+const_6:  .word 6
+const_7:  .word 7
+const_8:  .word 8
+const_9:  .word 9
+const_10: .word 10
+const_11: .word 11    ; loop counter for 12 iterations
+const_12: .word 12
+
+; constants
+c_15:           .word 15
+c_32:           .word 32
+c_scope_edge:   .word 950 * 32        ; close to the edge of the scope screen
+c_msg_x_pos:    .word 800 * 32
+
+; these two constants give the delta values to draw a "maximum short vector"
+horiz_line_seg:    .word 0o174 * 0o400   ; +32 in the top half of the word
+vert_line_seg:     .word 0o174            ; +32 in the bottom half of the word
+diag_up_right_seg: .word 0o174 * 0o400 + 0o174
+diag_dn_left_seg:  .word 0o200 * 0o400 + 0o200
+diag_dn_right_seg: .word 0o174 * 0o400 + 0o200
+diag_up_left_seg:  .word 0o200 * 0o400 + 0o174
+
+
+; ---------------------------------------
+
+panic_stop:
+        ca 0
+        .print "panic stop"
+        si 0
+
+
+
+; 
+;=====================================================================================
+
+; /* 16-segment character generator, originally in Core Memory Clock
+;  *
+;  * Guy Fedorkow, Feb 22, 2025
+;  *  originally for Arduino Mega
+;  *
+;  */
+;
+
+ut_maxlen:  .word 0o60
+ut_strlen:  .word 0
+
+msgp:       .word unit_msg 
+unit_msg:   .flexl "WHIRLWIND\nEMULATOR\nBounce", -1  ; remember that the converted string will count shift-up/down as characters
+            .word 0
+
+
+
+; -----------------------------------------
+; draw a character string on the CRT
+; AC contains a pointer to the string, terminated by the first negative 'character'
+; ds_argx and ds_argy give the initial (x, y) location
+; ds_arglen gives a maximum character count.  (i.e., the string terminates either when 
+;       the count is exhausted or a negative character is encountered)
+draw_str:
+            ta ds_ret
+            td ds_lcl_charp      ; save the character pointer passed in the ACC
+ds_loop:
+            ca ds_argx
+            ts d16c_argx
+            ca ds_argy
+            ts d16c_argy
+            ca ds_lcl_charp     ; walk the string from start to finish
+            td ds_get_char
+ds_get_char:
+            ca 0                ; fetch the next character in the string
+            sp draw_16seg_char    ; actually draw the character!
+
+            ao ds_lcl_charp       ; prepare for next char in loop
+            td ds_test_str_end
+ds_test_str_end:  ; bail out if the next char is negative, or if the loop count is exhausted
+            ca 0
+            cp ds_ret       ; test for a negative number as the marker for the string end; branch out if done
+            ca ds_arglen    ; ; decrement the length count
+            su one
+            ts ds_arglen
+            cp ds_ret
+            
+            ; I moved the x and y auto-increment into the character-drawing routine draw_16seg_char
+            sp ds_loop
+
+ds_ret:
+            sp 0
+
+ds_lcl_charp: .word 0    ; pointer to the next character to display
+ds_argx:    .word 0
+ds_argy:    .word 0
+ds_arglen:  .word 10
+
+; ---------------------------
+
+
+c_newline: .word 0o51              ; character value for Carriage Return
+c_upper:   .word 0o71              ; character value for Shift Upper
+c_lower:   .word 0o75              ; character value for Shift Lower
+
+; Draw a Flexo character passed in to this routine in the ACC
+; First, find the segment map for a given character.  Input is a Flexo-coded character.
+; The routine returns a 16-bit int where each bit represents one stroke in the character.  If the
+; bit is one, draw the stroke; if not, don't draw.
+; Character position is given by the args d16c_argx, d16c_argy.
+lcl_ds16_char:  .word 0   ; local storage for the character to be displayed
+draw_16seg_char:
+        ta d16c_ret
+        ts lcl_ds16_char    ; save the incoming character to be printed
+
+        su c_upper          ; test to see if we've got a "Shift Upper" character
+        dm 0
+        dm 0                ; negative zero if acc == c_upper
+        cp ds16_shift_to_upper   ; adjust the current Case, then exit
+
+        ca lcl_ds16_char
+        su c_lower
+        dm 0
+        dm 0                ; negative zero if acc == c_lower
+        cp ds16_shift_to_lower   ; adjust the current Case, then exit
+
+        ca lcl_ds16_char
+        su c_newline
+        dm 0
+        dm 0                ; negative zero if acc == c_newline
+        cp ds16_newline   ; execute a newline, then exit
+
+        ; if it's not a shift character, just keep going and print with the current case
+        ca lcl_ds16_char        ; re-fetch the input character
+ds16_offset:
+        ad SixteenSegmentFlexop     ; add the table start addr to the offset in ACC
+;        .print "draw_16seg_char:  char=%ao. d16c_argx=%o, d16c_argy=%o", d16c_argx, d16c_argy
+        td d16c_rd
+d16c_rd:
+        ca 0                        ; fetch the bit map
+        ts d16c_lcl_seg_map
+
+        ; draw the sixteen segments, starting with the most significant bit
+        cs c_15                     ; prep for 16 times around the loop
+        ts d16c_lcl_loop_cnt
+        ca seg_tab_endp             ; walk the segment table back to front
+        td d16c_read_seg_tabx       ; first table entry
+;        td tmp_tabx
+        ad one
+        td d16c_read_seg_taby       ; second table entry
+;        td tmp_taby
+        ad one
+        td d16c_read_seg_tabdxy     ; third table entry
+
+; I've commented out a bit of debug code here to draw dots at each of the junction points in the
+; 16-segment figure.  Use this to verify that the line segments are the right length...
+d16s_loop:
+        ; this strip draws dots at the intersection points
+;        ca 0  ; no op
+;tmp_taby:
+;        ca 0
+;        si scope_point
+;tmp_tabx:
+;        ca 0
+;        rc 0
+        ; end of debug hack
+        ca d16c_lcl_seg_map
+        cp d16c_draw_seg            ; branch if most significant bit is on
+
+d16s_loop_continue:
+        ca d16c_lcl_seg_map
+        clc 1                       ; shift AC left by one bit
+        ts d16c_lcl_seg_map
+        ca d16c_read_seg_tabx
+        su const_3
+        td d16c_read_seg_tabx
+;        td tmp_tabx
+        ca d16c_read_seg_taby
+        su const_3
+        td d16c_read_seg_taby
+;        td tmp_taby
+        ca d16c_read_seg_tabdxy
+        su const_3
+        td d16c_read_seg_tabdxy
+        ao d16c_lcl_loop_cnt
+        cp d16s_loop
+
+        ; fall through here when the count is exhausted
+        ; advance x position to the next character
+        ca ds_argx
+        ad char_xspacing
+        ts ds_argx
+        sp d16c_ret                 ; bail out when count exhausted
+
+; on entry to this code block, the three entries in the segment table should give relative positions:
+;   _tab1 = X pos'n
+;   _tab2 = Y pos'n
+;   _tab3 = XY Delta vector
+d16c_draw_seg:                      ; branch here if we're doing a segment, then return to the loop
+        ; the SI uses the AC to set Y coord
+d16c_read_seg_taby:
+        ca 0
+        ad d16c_argy
+        si scope_vector    ; initialize vector gen with the y-coord in ACC
+
+        ; the RC uses AC to set X coord and mem address for the vector length
+d16c_read_seg_tabx:
+        ca 0
+        ad d16c_argx
+d16c_read_seg_tabdxy:
+        rc 0
+        sp d16s_loop_continue
+
+ds16_shift_to_upper:
+        ca SixteenSegmentUpperp
+        ts SixteenSegmentFlexop    ; shift pointer to Upper Case table & exit
+        sp d16c_ret
+
+ds16_shift_to_lower:
+        ca SixteenSegmentLowerp
+        ts SixteenSegmentFlexop    ; shift pointer to Lower Case table & exit
+        sp d16c_ret
+
+ds16_newline:
+        cs c_scope_edge
+        ts ds_argx
+        ca ds_argy     
+        su char_yspacing 
+        ts ds_argy
+
+        sp d16c_ret
+
+
+d16c_ret:   ;; Return from draw_16seg_char
+        sp 0
+
+d16c_argx:
+        .word 0
+d16c_argy:
+        .word 0
+d16c_lcl_seg_map:
+        .word 0
+d16c_lcl_loop_cnt:
+        .word 0
+;
+
+
+; ---------------------------
+; The following table, indexed by ASCII character, gives a bit map of which of the 16
+; segments should be lit for each symbol.
+; This pointer gets overwritten by one of the following two depending on the last Shift character
+SixteenSegmentFlexop:
+            .word flexo_lcase       ; flexowriter defaults to lower case
+SixteenSegmentUpperp:
+            .word flexo_ucase
+SixteenSegmentLowerp:
+            .word flexo_lcase
+
+flexo_ucase:
+        .word 0o125074   ; /* # */
+        .word 0o125074   ; /* # */
+        .word 0o100363   ; /* E */
+        .word 0o104377   ; /* 8 */
+        .word 0o125074   ; /* # */
+        .word 0o000060   ; /* _ */
+        .word 0o104317   ; /* A */
+        .word 0o004077   ; /* 3 */
+        .word 0o000000   ; /* (space) */
+        .word 0o021000   ; /* : */
+        .word 0o104273   ; /* S */
+        .word 0o104214   ; /* 4 */
+        .word 0o021063   ; /* I */
+        .word 0o042000   ; /* / */
+        .word 0o000374   ; /* U */
+        .word 0o104167   ; /* 2 */
+        .word 0o177777   ; /* (del) */
+        .word 0o040400   ; /* ) */
+        .word 0o021077   ; /* D */
+        .word 0o110263   ; /* 5 */
+        .word 0o114307   ; /* R */
+        .word 0o002014   ; /* 1 */
+        .word 0o000174   ; /* J */
+        .word 0o000017   ; /* 7 */
+        .word 0o010714   ; /* N */
+        .word 0o012000   ; /* ( */
+        .word 0o100303   ; /* F */
+        .word 0o104373   ; /* 6 */
+        .word 0o000363   ; /* C */
+        .word 0o104000   ; /* - */
+        .word 0o112300   ; /* K */
+        .word 0o125074   ; /* # */
+        .word 0o021003   ; /* T */
+        .word 0o125074   ; /* # */
+        .word 0o042063   ; /* Z */
+        .word 0o177777   ; /* (del) */
+        .word 0o000360   ; /* L */
+        .word 0o000000   ; /* (space) */
+        .word 0o050314   ; /* W */
+        .word 0o125074   ; /* # */
+        .word 0o104314   ; /* H */
+        .word 0o000000   ; /* (space) */
+        .word 0o104274   ; /* Y */
+        .word 0o125074   ; /* # */
+        .word 0o104307   ; /* P */
+        .word 0o125074   ; /* # */
+        .word 0o010377   ; /* Q */
+        .word 0o125074   ; /* # */
+        .word 0o000377   ; /* O */
+        .word 0o177777   ; /* (del) */
+        .word 0o025077   ; /* B */
+        .word 0o125074   ; /* # */
+        .word 0o004373   ; /* G */
+        .word 0o125074   ; /* # */
+        .word 0o104277   ; /* 9 */
+        .word 0o125074   ; /* # */
+        .word 0o002714   ; /* M */
+        .word 0o177777   ; /* (del) */
+        .word 0o052400   ; /* X */
+        .word 0o125074   ; /* # */
+        .word 0o042300   ; /* V */
+        .word 0o177777   ; /* (del) */
+        .word 0o042377   ; /* 0 */
+        .word 0o177777   ; /* (del) */
+
+
+;SixteenSegmentLower:
+flexo_lcase:
+        .word 0o125074   ; /* # */
+        .word 0o125074   ; /* # */
+        .word 0o140140   ; /* e */
+        .word 0o104377   ; /* 8 */
+        .word 0o125074   ; /* # */
+        .word 0o021000   ; /* | */
+        .word 0o120160   ; /* a */
+        .word 0o004077   ; /* 3 */
+        .word 0o000000   ; /* (space) */
+        .word 0o104060   ; /* = */
+        .word 0o120241   ; /* s */
+        .word 0o104214   ; /* 4 */
+        .word 0o020000   ; /* i */
+        .word 0o125000   ; /* + */
+        .word 0o020140   ; /* u */
+        .word 0o104167   ; /* 2 */
+        .word 0o177777   ; /* (del) */
+        .word 0o010000   ; /* . */
+        .word 0o024034   ; /* d */
+        .word 0o110263   ; /* 5 */
+        .word 0o100100   ; /* r */
+        .word 0o002014   ; /* 1 */
+        .word 0o021140   ; /* j */
+        .word 0o000017   ; /* 7 */
+        .word 0o120100   ; /* n */
+        .word 0o040000   ; /* , */
+        .word 0o125002   ; /* f */
+        .word 0o104373   ; /* 6 */
+        .word 0o100140   ; /* c */
+        .word 0o104000   ; /* - */
+        .word 0o033000   ; /* k */
+        .word 0o125074   ; /* # */
+        .word 0o100340   ; /* t */
+        .word 0o125074   ; /* # */
+        .word 0o140040   ; /* z */
+        .word 0o177777   ; /* (del) */
+        .word 0o000300   ; /* l */
+        .word 0o000000   ; /* (space) */
+        .word 0o050110   ; /* w */
+        .word 0o125074   ; /* # */
+        .word 0o120300   ; /* h */
+        .word 0o000000   ; /* (space) */
+        .word 0o005034   ; /* y */
+        .word 0o125074   ; /* # */
+        .word 0o101301   ; /* p */
+        .word 0o125074   ; /* # */
+        .word 0o121201   ; /* q */
+        .word 0o125074   ; /* # */
+        .word 0o120140   ; /* o */
+        .word 0o177777   ; /* (del) */
+        .word 0o120340   ; /* b */
+        .word 0o125074   ; /* # */
+        .word 0o121241   ; /* g */
+        .word 0o125074   ; /* # */
+        .word 0o104277   ; /* 9 */
+        .word 0o125074   ; /* # */
+        .word 0o124110   ; /* m */
+        .word 0o177777   ; /* (del) */
+        .word 0o052400   ; /* x */
+        .word 0o125074   ; /* # */
+        .word 0o040100   ; /* v */
+        .word 0o177777   ; /* (del) */
+        .word 0o042377   ; /* 0 */
+        .word 0o177777   ; /* (del) */
+
+
+; // size of 16-segment characters
+        .pp WIDTH_16SEG, 0o60
+        .pp HEIGHT_16SEG, 0o110
+        .pp OFFSET_16SEG, 0o10  ; 0d08
+        .pp SPACING_16SEGX, (WIDTH_16SEG + WIDTH_16SEG/4) * 64
+        .pp SPACING_16SEGY, (HEIGHT_16SEG + HEIGHT_16SEG/4) * 64
+;
+        ; Delta word for vectors
+        ;  Left 8 bits are horizontal, right 8 are vertical
+        ;  Of each, only the six left bits are used
+
+        .pp DOWN_LEFT, ((127 - (OFFSET_16SEG - 3)) * 256 * 2) + (255 - HEIGHT_16SEG)
+        .pp UP_RIGHT,     (OFFSET_16SEG - 3) * 256 * 2   +       HEIGHT_16SEG
+        .pp HORIZ_RIGHT,       WIDTH_16SEG * 256
+
+        .pp UP_RIGHT_DIAG,   ((OFFSET_16SEG + WIDTH_16SEG) * 256)  +        HEIGHT_16SEG
+        .pp DOWN_RIGHT_DIAG, ((WIDTH_16SEG - OFFSET_16SEG) * 256)  + (255 - HEIGHT_16SEG)
+
+;
+; // these defines give the relative offsets for the points
+; // that make up a 16-segment display
+        .pp P0x, 64* OFFSET_16SEG
+        .pp P0y, 64* HEIGHT_16SEG
+
+        .pp P1x, 64* (OFFSET_16SEG + WIDTH_16SEG/2)  
+        .pp P1y, 64* HEIGHT_16SEG
+
+        .pp P2x, 64* (OFFSET_16SEG + WIDTH_16SEG)
+        .pp P2y, 64* HEIGHT_16SEG
+
+        .pp P3x, 64* (OFFSET_16SEG/2 + WIDTH_16SEG)
+        .pp P3y, 64* HEIGHT_16SEG/2
+
+        .pp P4x, 64* WIDTH_16SEG
+        .pp P4y, 64* 0
+
+        .pp P5x, 64* WIDTH_16SEG/2      ;  P0...P1...P2
+        .pp P5y, 64* 0                  ;  .         . 
+                                        ;  .         .
+        .pp P6x, 64* 0                  ;  .         .
+        .pp P6y, 64* 0                  ;  P7...P8...P3
+                                        ;  .         .
+        .pp P7x, 64* OFFSET_16SEG/2     ;  .         .
+        .pp P7y, 64* HEIGHT_16SEG/2     ;  .         .
+                                        ;  P6...P5...P4
+
+        .pp P8x, 64* (OFFSET_16SEG/2 + WIDTH_16SEG/2)
+        .pp P8y, 64* HEIGHT_16SEG/2
+
+;
+; // and this array gives sixteen starting points and delta for each line
+; // segment in the 16-segment display character.
+
+seg_tab_startp:
+        .word seg00x
+
+seg00x: .word P0x  ;   {P0, P1}
+seg00y: .word P0y
+seg00d: .word HORIZ_RIGHT
+
+seg01x: .word P1x  ;   {P1, P2},
+seg01y: .word P1y
+seg01d: .word HORIZ_RIGHT
+
+seg02x: .word P2x  ;   {P2, P3},
+seg02y: .word P2y
+seg02d: .word DOWN_LEFT
+
+seg03x: .word P3x  ;   {P3, P4},
+seg03y: .word P3y
+seg03d: .word DOWN_LEFT
+
+seg04x: .word P5x  ;   {P4, P5},
+seg04y: .word P5y
+seg04d: .word HORIZ_RIGHT
+
+seg05x: .word P6x  ;   {P5, P6},
+seg05y: .word P6y
+seg05d: .word HORIZ_RIGHT
+
+seg06x: .word P6x  ;   {P6, P7},
+seg06y: .word P6y
+seg06d: .word UP_RIGHT
+
+seg07x: .word P7x  ;   {P7, P0},
+seg07y: .word P7y
+seg07d: .word UP_RIGHT
+
+seg08x: .word P0x  ;   {P0, P8},
+seg08y: .word P0y
+seg08d: .word DOWN_RIGHT_DIAG
+
+seg09x: .word P1x                  ;   {P1, P8},
+seg09y: .word P1y
+seg09d: .word DOWN_LEFT 
+; 
+seg10x: .word P8x                  ;   {P2, P8}, 
+seg10y: .word P8y
+seg10d: .word UP_RIGHT_DIAG
+ 
+seg11x: .word P8x                  ;   {P3, P8},
+seg11y: .word P8y
+seg11d: .word HORIZ_RIGHT
+
+seg12x: .word P8x                 ;   {P4, P8},  
+seg12y: .word P8y
+seg12d: .word DOWN_RIGHT_DIAG
+
+seg13x: .word P8x                 ;   {P5, P8},
+seg13y: .word P8y
+seg13d: .word DOWN_LEFT
+
+seg14x: .word P6x                 ;   {P6, P8},
+seg14y: .word P6y
+seg14d: .word UP_RIGHT_DIAG
+                  
+seg15x: .word P7x                  ;   {P7, P8},
+seg15y: .word P7y
+seg15d: .word HORIZ_RIGHT       
+
+seg_tab_endp:
+        .word seg15x
+char_xspacing:
+        .word SPACING_16SEGX
+char_yspacing:
+        .word SPACING_16SEGY
+
+
+;
+;
+;
+; Character Table license
+;
+; /*
+;  *  Project     Segmented LED Display - ASCII Library
+;  *  @author     David Madison
+;  *  @link       github.com/dmadison/Segmented-LED-Display-ASCII
+;  *  @license    MIT - Copyright (c) 2017 David Madison
+;  *
+;  * Permission is hereby granted, free of charge, to any person obtaining a copy
+;  * of this software and associated documentation files (the "Software"), to deal
+;  * in the Software without restriction, including without limitation the rights
+;  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+;  * copies of the Software, and to permit persons to whom the Software is
+;  * furnished to do so, subject to the following conditions:
+;  *
+;  * The above copyright notice and this permission notice shall be included in
+;  * all copies or substantial portions of the Software.
+;  *
+;  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+;  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+;  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+;  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+;  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+;  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+;  * THE SOFTWARE.
+;  *
+;  */
+;
+;
+; /*********************************************************************************************************
+;   END FILE
+; *********************************************************************************************************/
+

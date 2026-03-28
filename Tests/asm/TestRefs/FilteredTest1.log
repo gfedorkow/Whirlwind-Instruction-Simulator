@@ -6,7 +6,7 @@ AsmParsedLine:
     label=  
     opname=  
     operand= None 
-    comment=  
+    comment= None 
     auto-comment= 
 
 AsmParsedLine:
@@ -108,7 +108,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= print 
-    comment=  
+    comment= None 
     auto-comment= 
    BinaryComma
       LiteralString LAS WW1 %o %o and %ad
@@ -125,7 +125,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= exec 
-    comment=  
+    comment= None 
     auto-comment= 
    LiteralString wwlog ("LAS WW2")
 Eval operand:
@@ -148,7 +148,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= word 
-    comment=  
+    comment= None 
     auto-comment= 
    UnaryZeroOh
       LiteralDigits 4200

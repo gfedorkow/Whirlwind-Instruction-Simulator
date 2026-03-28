@@ -550,7 +550,7 @@ class AsmParsedLine:
         self.label = ""
         self.opname = ""
         self.operand: AsmExpr = None
-        self.comment = ""
+        self.comment = None
         self.autoComment = ""
     def gtok (self) -> AsmToken:
         if self.tokenBuf != []:

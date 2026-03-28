@@ -1,0 +1,8 @@
+               .org 0o3774
+@3774:103774   ca 0o3774
+@3775:160012   srr 10
+@3776:113774   ad 0o3774
+@3777:000000   si 0
+               .JumpTo 0o3774
+               .WW_File "C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Source-Images\Paper-Tapes\062302395_box36\102663725_fb1320_weinstein.7ch/C:\Users\guyfe\Documents\guy\History-of-Computing\Whirlwind\GitHub\Recovered-Tapes\Translated-Files\Paper-Tapes\062302395_box36\102663725_fb1320_weinstein_gs001_fb1320.tcore"
+               .WW_TapeID "_fb1320+_fb+_FB+_fb+_fb"

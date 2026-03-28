@@ -1,5 +1,5 @@
 
- *** Core Image ***
+; *** Core Image ***
 %File: 102766758_fc131-204-10_watson.7ch
 %TapeID: fc TAPE 131-204-6 WATSON
 %JumpTo 0o334
@@ -31,6 +31,8 @@
 @C0410: 0110420 0040000 0040000 0040425 0130411 0130412 0074370 0074373 
 @C0420: 0000000 0000000 0000000 0000000 0041751 0000000  None    None   
 @C1750: 0000000  None    None    None    None    None    None    None   
+; initialize the last word in the data area to avoid a simulator error warning; added Mar 5, 2026
+@C2050: 0000000
 @S0334: f1
 @S0363: f4
 @S0370: f6

@@ -1,0 +1,177 @@
+
+This material from WW-pg 36 of Third Quarter Summary Report #20
+filename "Summary Report No. 20, Third Quarter 1949.pdf"
+
+
+6.25 Demonstration Programs Using Special
+Display
+The recent installation of special display equipment
+(see Sections 2.22 and 5.2 of this report) provided
+an opportunity to try some programs intended
+for use with test storage and the display scope,
+such as the programs discussed in E-220. An important
+convenience factor had to be considered,
+namely that it is desirable to be able to alter the
+
+
+Register No. Order
+1 ca 10
+2 ad 11
+3 qd 10
+4 mh 10
+5 qd 9
+6 mh 10
+7 qd 9
+8 sp 1
+(FF register) 9
+(FF register) 10
+(FF register) 11
+
+Description
+Puts the content of register No. 10, originally -1 + 2 5 , into AC
+Adds the desired increment to the x in AC
+Stores the new value of x in register No. 10 and displays x on the display scope
+Multiplies x in AC by x from register No. 10, forming x2 in AC
+2 2
+Stores x in a dummy register and displays x on the display scope
+Multiplies x in AC by x from register No. 10, forming x ' in AC
+Stores r ina dummy register and displays T? on the display scope
+Returns to the order in Register No. 1, thus repeating the cycle for a new value of x
+Temporary storage
+Contains x, reset to 1.000000000000000 initially
+Contains h equals approximately 2"7
+
+program slightly or even to change me yt ob . .....
+completely by using the switches on the test-control
+racks. By use of the switches which determine the
+numbers to which the flip-flop storage registers
+and the program counter are reset, a change can
+be introduced without any interruption while the
+computer is in operation, since the registers in
+question are actually reset only by a pulse from
+special display during the flyback time of the display
+scope. The switches of toggle-switch storage
+(since they, unlike the reset switches, actually pass
+video pulses) are in the computer room and hence,
+although readily accessible, are not "front panel"
+controls.
+With these factors in mind, two quite elementary
+programs were written, each being quite short so
+that both can be stored simultaneously in toggleswitch
+storage, and either one selected at will by
+changing the program counter reset switches (the
+same scheme was used in the conversion program,
+Section 6.24 above).
+The first of these programs simply plots the
+values of x, x , and y? for x between -1 and 1. In
+this powers-of-x program, the values are plotted
+for -1 + 2" 5 + nh, where n simply increases until
+a value of x greater than 1 is reached and where
+the value of the increment h can be chosen at will,
+using the reset switches of a flip-flop register.
+Photographs of the resultant curves are shown in
+connection with Section 2.22 of this report. The
+program used proceeds as follows (see Summary
+Report 19 for explanation of code):
+
+
+
+6. MATHEMATICS, CODING, AND APPUCATIONS 37
+No provision Is made to prevent the val.ie of x from
+overflowing (becoming greater man »;. me <u mimetic
+check pulse is suppressed by means of a
+front panel switch for this program so that no alarm
+occurs. The effect of an overflow is, therefore, to
+start over again at - 1 . The plot of values of x from
+-1 to 1 i s therefore simply repeated until the display
+scope ends its sweep and starts the whole program
+over again; thus by adjustment of the display
+
+Register No.
+(FF register) 1
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+(FF register) 21
+(FF register) 22
+(FF register) 23
+Order
+ca 16
+mh 21
+mh
+qd
+OS
+qd
+ao
+su
+cp
+21
+24
+24
+24
+1
+23
+1
+ca 21
+ad 22
+ts 21
+ca 20
+ts 1
+sp 1
+0.111111111111111
+0.100000000000000
+0.010000000000000
+0.000000000000000
+ca 16
+sweep frequency the cycle can be stopped before x
+C::CLL'JL: 1 Msdthffowrflow prevented if *o dMirwl,
+The second display program is designed to plot
+the pairs of curves + Ax for - K x <1 andfor several
+values of A in the range 1> A^ 0. The program
+used is as follows; the registers used are in
+practice chosen so that they will not conflict with the
+powers-of-x program (the actual program is given
+in E-300).
+Description
+Puts a value of A (initially from register No. 16)
+into AC
+Multiplies by x (initially -1 + 2"15) from register
+No. 21
+Multiplies again by x
+Displays Ax2 and stores it in register No. 24
+Puts -Ax2 into AC
+Displays -Ax2 and stores it in register No. 24
+Increases the content of register No. 1 by 2" (initially
+changingfromca 16toca 17), thereby selecting
+a new value of A
+Subtracts ca 15 + n from the quantity ca 16 + n inAC
+(where n i s the number of pairs of curves desired)
+If the result is negative or 0, meaning that fewer
+than n pairs have been plotted, control is returned
+to register No. 1 to plot another pair
+All the curves having been plotted for one value of
+x, x is put into AC
+h i s added to x, thereby giving a new value of x
+The sum i s stored in register No. 21
+The order ca 16 comes to AC from register No. 20
+The order ca 16 is stored in register No. 1, thus preparing
+to repeat the whole cycle for the new value of x
+Control is returned to register No. 1 to repeat the
+whole cycle
+1 - 2 -«
+1/2
+1/4
+0
+Contains x, reset to 1.000000000000000
+Contains h, equal approximately to 2 - 7
+Reset to ca 15 + n, where n is the number of pairs
+of curves desired
+(FF register) 24 Temporary or dummy storage

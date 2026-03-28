@@ -15,19 +15,16 @@ then
 	echo "Accepting..."
 	rm -rf TestRefs/
 	mkdir TestRefs
-	cp ErrorTest.log FilteredTest1.log FilteredTest2.log inc1.lst flextest.lst flextest.sim.log TestRefs/
+	cp ErrorTest.log FilteredTest1.log FilteredTest2.log inc1.lst flextest.lst flextest.sim.log last-word.sim.log last-word.lst TestRefs/
 else
 	asmp="$PYTHONPATH/../../Py/Common/wwasmparser.py"		# Use quotes since can't resolve backslash yet -- it's needed for file name translation
 	asm="$PYTHONPATH/../../Py/Assembler/wwasm.py"
 	sim="$PYTHONPATH/../../Py/Sim/wwsim.py"
 
-
 	# Test parsing and some eval-ing, only
 	echo "Test Parsing..."
 	python $asmp -v test1.ww >&test1.log		# Should produce an eval error and that's ok so it's in the log
 	python $asmp -v test2.ww >&test2.log
-  dos2unix test1.log
-  dos2unix test2.log
 	grep -v "AsmExpr-" test1.log >FilteredTest1.log
 	grep -v "AsmExpr-" test2.log >FilteredTest2.log
 
@@ -89,7 +86,7 @@ else
 	echo "Test .flexh and .flexl..."
 	rm -f flextest.lst flextest.acore flextest.sim.log 
 	python $asm --OmitAutoComment flextest.ww >&flextest.asm.log
-	python $sim -q flextest.acore |& grep -v cycles >flextest.sim.log 
+	python $sim flextest.acore |& grep -v cycles >flextest.sim.log 
    	diff -s TestRefs/flextest.lst flextest.lst
 	status6=$?
 	diff -s flextest.sim.log TestRefs/flextest.sim.log
@@ -104,7 +101,7 @@ else
 
 	# last-word test
 	echo "Test use of last memory word"
-	rm -f last-word.lst last-word.acore last-word.sim.log 
+	rm -f last-word.lst last-word.acore last-word.sim.log  last-word.asm.log
 	python $asm --OmitAutoComment last-word.ww >&last-word.asm.log
 	python $sim -q last-word.acore |& grep -v cycles >last-word.sim.log 
    	diff -s last-word.lst TestRefs/last-word.lst

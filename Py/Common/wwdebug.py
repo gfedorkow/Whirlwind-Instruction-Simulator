@@ -2,6 +2,7 @@ import os
 import sys
 import re
 import math
+import shutil
 import traceback
 import argparse
 import wwinfra
@@ -31,7 +32,11 @@ class DbgBrks:
     def __init__ (self, dbg):
         self.dbg = dbg
         self.jumpOpcodes = [0o16, 0o17] # cp, sp
-        self.writeOpcodes = [0o10, 0o11, 0o12, 0o15, 0o26] # ts, td, ta, ao, ex
+        self.writeOpcodes = [0o10, 0o11, 0o12, 0o15, 0o26, 0o35] # ts, td, ta, ex, ao, sf
+        self.readOpcodes = [ # bo, sd, ck, ab, ex, ca, cs, ad, su, cm, sa, ao, dm, mr, mh, dv, md
+            0o4, 0o6, 0o12, 0o13, 0o15, 0o20, 0o21,
+            0o22, 0o23, 0o24, 0o25, 0o26, 0o27, 0o30, 0o31, 0o32, 0o37
+            ]
         self.reset()
     def reset (self):
         self.brkTab = {}
@@ -39,6 +44,7 @@ class DbgBrks:
         self.pcToBrkPtTab = {}
         self.addrToWrBrkTab = {}
         self.addrToRdBrkTab = {}
+        self.opcodeToInstBrkTab = {}
     def list (self):
         for brkId in self.brkTab:
             brk = self.brkTab[brkId]
@@ -79,6 +85,10 @@ class DbgBrks:
                 (opcode, short_opcode, address, label, ac, br) = info
                 if opcode in self.writeOpcodes and address in self.addrToWrBrkTab:
                     r = self.addrToWrBrkTab[address]
+                elif opcode in self.readOpcodes and address in self.addrToRdBrkTab:
+                    r = self.addrToRdBrkTab[address]
+                elif opcode in self.opcodeToInstBrkTab:
+                    r = self.opcodeToInstBrkTab[opcode]
                 else:
                     r = None
         if r is not None and r.disabled:
@@ -135,6 +145,22 @@ class DbgReadWatchPt (DbgBrk):
     def delete (self, brkId: int):
         del self.brks.addrToRdBrkTab[self.addr]
 
+class DbgInstWatchPt (DbgBrk):
+    def __init__ (self, brks: DbgBrks, opname: str):
+        super().__init__ (brks)
+        self.opname = opname
+        opcode = self.brks.dbg.opnameToOpcodeFcn (opname)
+        if opcode is not None:
+            self.brks.opcodeToInstBrkTab[opcode] = self
+            pass
+    def prompt (self):
+        return "Instruction breakpoint:"
+    def listStr (self):
+        return "instruction watch %s" % self.opname
+    def delete (self, brkId: int):
+        del self.brks.opcodeToInstBrkTab[self.opcode]
+        pass
+
 # This state is set by the debugger -- i.e., it's the state of the prog from the debugger's viewpoint
 DbgProgState = Enum ("DbgProgState", ["Running", "Stepping", "Restarting", "Stopped"])
 
@@ -148,7 +174,7 @@ class DbgDebugger:
     def __init__ (self):
         self.jumpOpcodes = [0o16, 0o17] # cp, sp
         self.writeOpcodes = [0o10, 0o11, 0o12, 0o15, 0o26] # ts, td, ta, ao, ex
-        self.formatStrs = ["fl", "fr", "fm", "fx", "i", "o", "d"]
+        self.formatStrs = ["fl", "fr", "fm", "i", "o", "d"]
         self.brks = DbgBrks (self)
     # If program exits then we want to return to initial dbg stopped state, but
     # breakpoints and other info should be preserved; hence any such state to
@@ -161,6 +187,7 @@ class DbgDebugger:
                addrToSymTab: dict,
                fmtPrinterFcn,
                asmLineFcn,
+               opnameToOpcodeFcn,
                getRegFcn,
                getInstInfoFcn,
                updatePanelFcn):
@@ -169,6 +196,7 @@ class DbgDebugger:
         self.addrToSymTab = addrToSymTab
         self.fmtPrinterFcn = fmtPrinterFcn
         self.asmLineFcn = asmLineFcn
+        self.opnameToOpcodeFcn = opnameToOpcodeFcn
         self.getRegFcn = getRegFcn
         self.getInstInfoFcn = getInstInfoFcn
         self.updatePanelFcn = updatePanelFcn
@@ -275,25 +303,23 @@ class DbgCmd:
         self.dbg.error()
     def helpStrs (self) -> [str]:
         return ["Help!"]
-    # Run fcn on each expr in the comma-expr.
-    # Signature of fcn is fcn (expr: AsmExpr, pos: int)
-    # Nop if it's not a comma-expr.
+    # Run fcn on each expr in the comma-expr, or on just the initial expr if
+    # it's not a comma-expr.  Signature of fcn is fcn (expr: AsmExpr, pos: int)
     def walkCommaExpr (self, exprIn: AsmExpr, fcn):
-        if exprIn.exprType == AsmExprType.BinaryComma:
-            expr = exprIn
-            pos = 0
-            while True:
-                if expr.exprType == AsmExprType.BinaryComma:
-                    left = expr.leftSubExpr
-                    fcn (left, pos)
-                    expr = expr.rightSubExpr
-                    pos += 1
-                else:
-                    # Assume here that a null expr is considered a "terminator"
-                    # and is not of interest
-                    if expr.exprType != AsmExprType.Null:
-                        fcn (expr, pos)
-                    return
+        expr = exprIn
+        pos = 0
+        while True:
+            if expr.exprType == AsmExprType.BinaryComma:
+                left = expr.leftSubExpr
+                fcn (left, pos)
+                expr = expr.rightSubExpr
+                pos += 1
+            else:
+                # Assume here that a null expr is considered a "terminator"
+                # and is not of interest
+                if expr.exprType != AsmExprType.Null:
+                    fcn (expr, pos)
+                return
         pass
     def formatAddr (self, expr: AsmExpr, addr: int, fmtIn: str) -> str:
         fmt = fmtIn if fmtIn in ["o", "d"] else "o"
@@ -322,7 +348,7 @@ class DbgCmd_p (DbgCmd):
     def helpStrs (self) -> [str]:
         r = [
             "p expr [, block-len] [, format]",
-            "Format = o: octal, d: decimal, fr: fraction, fl: 24,6 float, fm: 30,15 float, fx: flexo-to-ascii, i: instruction.",
+            "Format = o: octal, d: decimal, fr: fraction, fl: 24,6 float, fm: 30,15 float, i: instruction.",
             "Print an address or block and its contents, or just the value if a register is specfied.",
             "Default format is octal."
             ]
@@ -420,7 +446,7 @@ class DbgCmd_rs (DbgCmd):
         super().__init__ (*args)
         pass
     def helpStrs (self) -> [str]:
-        r = ["rs", "Restart program"]
+        r = ["rs", "Reset program ('r' starts it again)"]
         return r
     def execute (self):
         self.dbg.state = DbgProgState.Restarting
@@ -470,7 +496,7 @@ class DbgRangeCmd (DbgCmd):
             if expr.exprData == "all":
                 self.all = True
             else:
-                error()
+                self.error()
         elif expr.exprType == AsmExprType.LiteralDigits:
             v = int (expr.exprData)
             self.rangeList.append ([v, v])
@@ -636,6 +662,59 @@ class DbgCmd_wwr (DbgCmd):
         else:
             self.error()
 
+# wrd -- watch read
+class DbgCmd_wrd (DbgCmd):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+        pass
+    def helpStrs (self) -> [str]:
+        r = [
+            "wrd addr1, ..., addrN",
+            "Watch for memory read. When any read instruction",
+            "(bo, sd, ck, ab, ex, ca, cs, ad, su, cm, sa, ao, dm, mr, mh, dv, md)",
+            "is executed which reads one of the given addresses, break."
+            ]
+        return r
+    def execute (self):
+        valList = self.eval()
+        if len (valList) > 0:
+            for val in valList:
+                if val.type == AsmExprValueType.Integer:
+                    addr = val.value
+                    DbgReadWatchPt (self.dbg.brks, addr)
+                else:
+                    self.error()
+        else:
+            self.error()
+            
+# wi -- watch for instruction
+class DbgCmd_wi (DbgCmd):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+        self.walkCommaExpr (self.parsedLine.operand, self.literalizeStrings)
+        pass
+    def literalizeStrings (self, expr: AsmExpr, pos: int):
+        if expr.exprType == AsmExprType.Variable:
+            expr.exprType = AsmExprType.LiteralString
+    def helpStrs (self) -> [str]:
+        r = [
+            "wi opname1,..., opnameN",
+            "Watch for the execution of any of the given instructions,",
+            "and break prior to that execution."
+            ]
+        return r
+    def execute (self):
+        valList = self.eval()
+        if len (valList) > 0:
+            for val in valList:
+                if val.type == AsmExprValueType.String:
+                    opname = val.value
+                    DbgInstWatchPt (self.dbg.brks, opname)
+                else:
+                    self.error()
+        else:
+            self.error()
+
 # wr -- write mem loc
 class DbgCmd_wr (DbgCmd):
     def __init__ (self, *args):
@@ -668,6 +747,87 @@ class DbgCmd_wr (DbgCmd):
         else:
             self.error()
 
+# LAS 9/1/25 Added Justifier class to print syms in neat columns. Could be
+# generally useful and may pull into Common.  Algorithm adapted from ls.c. That
+# one looks more time efficient, passing over the string list only once, but
+# using a fair bit of memory, to hold info on the max number of possible
+# columns, e.g. screen-width/3. Mine just formats for 1,2, ... columns until it
+# won't fit, then backs off to the previous.
+
+class Justifier:
+    def __init__ (self, splitString: bool = False):
+        self.splitString = splitString
+        pass
+    #
+    # Usage eg a = makeArray([10,20,30]) makes 10x20x30 3-D array
+    #
+    # Note tried syntax array = [[None]*10]*5 and variants but that just dups the
+    # inner array
+    #
+    # private:
+    def makeArray (self, dims: [int], initVal = None) -> []:
+        if dims == []:
+            return initVal
+        else:
+            l = []
+            size = dims[0]
+            dims.pop(0)
+            for i in range (0, size):
+                l.append (self.makeArray (dims.copy(), initVal = initVal))
+            return l
+    # public:
+    def printStrings (self, strList: [str]):
+        nStrs = len (strList)
+        (h, v) = shutil.get_terminal_size()
+        # (osh, osv) = os.get_terminal_size()
+        maxCols = h // 3
+        maxRowLen = h
+        uncle: bool = False
+        nCols = 1
+        while True:
+            nRows = math.ceil (nStrs / nCols)
+            strs = self.makeArray ([nRows, nCols], initVal = "")
+            maxColLen = self.makeArray ([nCols], initVal = 0)
+            n = 0
+            for col in range (0, nCols):
+                for row in range (0, nRows):
+                    if n < nStrs:
+                        s = strList[n]
+                    else:
+                        s = ""
+                    l = len (s) + 1
+                    maxColLen[col] = max (maxColLen[col], l)
+                    strs[row][col] = s
+                    n += 1
+                    if n >= nStrs:
+                        break
+            if uncle:
+                break
+            if nCols >= maxCols:
+                break
+            sumMaxColLen = 0
+            for col in range (0, nCols):
+                sumMaxColLen += maxColLen[col]
+            sumMaxColLen += 1
+            if sumMaxColLen + nCols*5 + 5 > maxRowLen:
+                uncle = True
+                nCols -= 1
+            else:
+                nCols += 1
+            pass
+        for row in range (0, nRows):
+            line = ""
+            for col in range (0, nCols):
+                s = strs[row][col]
+                if s != "":
+                    if self.splitString:
+                        # Split at space and left-justify left string and right-justify right strings
+                        (l, r) = s.split()
+                        line += l + " "*(maxColLen[col] - len (r) - len (l) + 1) + r + " "*5
+                    else:
+                        line += s + " "*(maxColLen[col] - len (s) + 1)
+            print (line)
+
 # syms -- print all symbols and their values
 class DbgCmd_syms (DbgCmd):
     def __init__ (self, *args):
@@ -680,15 +840,23 @@ class DbgCmd_syms (DbgCmd):
             ]
         return r
     def execute (self):
-        (h, v) = os.get_terminal_size()
-        print ("LAS42", h, v)
+        # (h, v) = os.get_terminal_size()
+        (h, v) = shutil.get_terminal_size()
         maxSymLen = 0
+        """
+        # This commented-out section is the orginal single-column output.
         for sym in self.dbg.symToAddrTab:
             if len (sym) > maxSymLen:
                 maxSymLen = len (sym)
         for sym in self.dbg.symToAddrTab:
             val = self.dbg.symToAddrTab[sym]
             print ("%s%s 0o%o" % (sym, " "*(maxSymLen - len (sym)), val))
+        """
+        strList = []
+        for sym in self.dbg.symToAddrTab:
+            val = self.dbg.symToAddrTab[sym]
+            strList.append ("%s 0o%o" % (sym, val))
+        Justifier(splitString=True).printStrings (strList)
 
 # h -- help
 class DbgCmd_h (DbgCmd):

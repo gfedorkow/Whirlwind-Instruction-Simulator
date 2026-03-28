@@ -227,5 +227,5 @@
 @0334:044030           td  0o0030   ; transfer digits  
 @0335:044030   r0335:  td  0o0030   ; transfer digits @@ ReadBy: a0303  
                        .JumpTo 0o40
-                       .WW_File ../../Paper-Tapes/ww_ptp-from-AlKossow-Apr-2018/ww1quickbrn_1233m105_3-7-57.bin
-                       .WW_TapeID fbl233ml05
+                       .WW_File "../../Paper-Tapes/ww_ptp-from-AlKossow-Apr-2018/ww1quickbrn_1233m105_3-7-57.bin"
+                       .WW_TapeID "fbl233ml05"

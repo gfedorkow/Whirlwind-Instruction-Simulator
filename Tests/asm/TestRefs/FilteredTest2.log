@@ -5,7 +5,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= dbwgt 
-    comment=  
+    comment= None 
     auto-comment= 
    Variable Vy
 Eval operand:
@@ -18,7 +18,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= dbwgt 
-    comment=  
+    comment= None 
     auto-comment= 
    BinaryComma
       Variable R
@@ -36,7 +36,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= dbwgt 
-    comment=  
+    comment= None 
     auto-comment= 
    BinaryComma
       Variable Xi
@@ -52,7 +52,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= dbwgt 
-    comment=  
+    comment= None 
     auto-comment= 
    BinaryComma
       Variable Yi
@@ -68,7 +68,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label= nobounce 
     opname= sp 
-    comment=  
+    comment= None 
     auto-comment= 
    BinaryPlus
       Variable x
@@ -83,7 +83,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= word 
-    comment=  
+    comment= None 
     auto-comment= 
    UnaryZeroOh
       LiteralDigits 4270
@@ -97,7 +97,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= word 
-    comment=  
+    comment= None 
     auto-comment= 
    BinaryDot
       UnaryMinus
@@ -113,7 +113,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= print 
-    comment=  
+    comment= None 
     auto-comment= 
    BinaryComma
       LiteralString This is a message %s
@@ -130,7 +130,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= ts 
-    comment=  
+    comment= None 
     auto-comment= 
    UnaryMinus
       LiteralDigits 0
@@ -144,7 +144,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= sp 
-    comment=  
+    comment= None 
     auto-comment= 
    BinaryPlus
       Variable x
@@ -160,7 +160,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= exec 
-    comment=  
+    comment= None 
     auto-comment= 
    LiteralString for i in range(0, 10): print(f"### data[{i}] = {py_int(cm.rd(rl('data') + i))} ###")
 Eval operand:
@@ -173,7 +173,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= sp 
-    comment=  
+    comment= None 
     auto-comment= 
    UnaryZeroOh
       LiteralDigits 12345
@@ -187,7 +187,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= sp 
-    comment=  
+    comment= None 
     auto-comment= 
    BinaryComma
       Variable xyz
@@ -226,7 +226,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= ca 
-    comment=  
+    comment= None 
     auto-comment= 
    BinaryBitOr
       BinaryBitAnd
@@ -246,7 +246,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= sp 
-    comment=  
+    comment= None 
     auto-comment= 
    BinaryBitOr
       BinaryBitAnd
@@ -266,7 +266,7 @@ AsmParsedLine:
     prefixAddr= {} 
     label=  
     opname= sp 
-    comment=  
+    comment= None 
     auto-comment= 
    BinaryDot
       LiteralDigits 1
@@ -282,5 +282,5 @@ AsmParsedLine:
     label=  
     opname=  
     operand= None 
-    comment=  
+    comment= None 
     auto-comment= 

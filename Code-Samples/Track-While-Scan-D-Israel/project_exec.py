@@ -2,6 +2,13 @@
 # These project-specific files would usually contain functions called by .exec statements
 # embedded in ww source code.
 
+# Run this sim with --CrtFade 8 to increase phosphor persistence
+
+# Modified Jan 20, 2026  -- added tracking symbols to display
+#  to do - chase down overflow alarms when targets are too far from the radial origin
+#        - measure "closest approach" in preparation for automatic intercept detection
+#        - remove the Target from the sim on 'automatic intercept'
+#        - revise Autoclick to designate the interceptor from the start
 
 import wwinfra
 import numpy as np
@@ -16,11 +23,33 @@ def deg_to_rad(deg):
     return deg / 360.0 * (2 * np.pi)
 
 
+BIGNUM = 100000
 Radar = None
 Interceptor = None
 Target = None
+MinApproach = BIGNUM         # keep track of the closest approach between Interceptor and Target
 
+# ad-hoc reverse symbol table
+LocalRevLabels = {
+          250: "time",
+          251: "x_smoo",
+          252: "y_smoo",
+          253: "y_velo",
+          254: "x_velo",
+          255: "x_diff",
+          256: "y_diff",
+          257: "srch_i",
+          258: "srch_r",
+          259: " @259 "}
 
+LocalLabels = {"x_smoo": 251,
+          "y_smoo": 252,
+          "y_velo": 253,
+          "x_velo": 254,
+          "x_diff": 255,
+          "y_diff": 256,}
+
+# keep a local copy of the Radar state, if it's initialized in sim.py
 def project_register_radar(radar_arg):
     global Radar
     Radar = radar_arg
@@ -41,10 +70,10 @@ def which_plane(cm):  # figure out which plane we're scanning at the moment
 
 # When the simulator identifies a radar return as the Interceptor, we want to record which aircraft
 # that is, so later we can start to steer the interceptor towards the target.
-# Called from .exec when the sim initiates tracking of the last echo return
+# Called from .exec when the sim initiates tracking of the most recent echo return
 def record_initiation(cm, cb):
     global Radar
-    global Interceptor, Target
+    global Interceptor, Target, MinApproach
     global SmootherState
 
     # which_plane returns a string to say whether the WW code is considering Target or Interceptor
@@ -53,8 +82,9 @@ def record_initiation(cm, cb):
     # from there, we can set Globals inside project_exec to remember which is which
     state = which_plane(cm)
     which_tgt = None
+    MinApproach = BIGNUM
     nametag = Radar.last_aircraft_name_sent
-    for tgt in Radar.targets:
+    for tgt in Radar.target_list:
         if tgt.name == nametag:
             which_tgt = tgt
     if which_tgt is None:
@@ -67,6 +97,11 @@ def record_initiation(cm, cb):
         SmootherState.set_nametag('T', which_tgt.name)
         if cb.DebugWidgetPyVars.TargetHeading is not None:
             cb.DebugWidgetPyVars.TargetHeading.register(which_tgt)
+    report_initiation_status(cb)
+
+
+def report_initiation_status(cb):
+    global SmootherState
 
     msg = 'Initiated: '
     for pl in ('T', 'I'):
@@ -77,6 +112,23 @@ def record_initiation(cm, cb):
         msg += "%s: %s  " % (function[pl], name)
 #    msg = "Initiate %s, aircraft %s" % (state, which_tgt.name)
     cb.dbwgt.add_screen_print(2, msg)
+
+
+# Jan 2026 - I've added code to take a Target aircraft out of the simulation
+# if the interceptor gets "close enough".  When that happens, we mark the aircraft
+# as "shot down", so it won't appear on radar again.  But to continue the simulation,
+# we need to convince the Whirlwind code to forget the plane too, so the user can
+# select the next aircraft.
+# If we don't actively "forget" the target, the WW code may receive the interceptor
+# radar echo first and mistake it for the target it had been tracking (since they're both
+# inside their search zones)
+def cancel_initiation(cm, cb):
+    global LocalLabels
+
+    for lbl in (LocalLabels):
+        cm.wr(LocalLabels[lbl], 0)
+    report_initiation_status(cb)
+
 
 
 def add_overflow_check(cpu, cm, addr_a, addr_b):
@@ -313,18 +365,9 @@ SmootherState = SmootherStateClass()
 def dump_long_tracking_state(cm, decif, rl, long, last_py_heading, py_smoother):
     global First
     global Radar
-    global SmootherState
+    global SmootherState, LocalRevLabels
 
-    # ad-hoc reverse symbol table
-    labels = {251: "x_smoo",
-              252: "y_smoo",
-              253: "y_velo",
-              254: "x_velo",
-              255: "x_diff",
-              256: "y_diff",
-              257: "srch_i",
-              258: "srch_r",
-              259: " @259 "}
+    labels = LocalRevLabels
     more_state = {
         29: "Tau_inv",
         281: "dx",
@@ -332,7 +375,7 @@ def dump_long_tracking_state(cm, decif, rl, long, last_py_heading, py_smoother):
         30: "Veloc_i",
         280: "vel_i_sq",
     }
-    if True:  # long == 'csv':  # this format is meant to be imported to Excel
+    if False:  # long == 'csv':  # this format is meant to be imported to Excel
         # Essentially, we're dumping "everything" so I can analyze the results in a spreadsheet.
         # the following routine by default returns Range and Azimuth, but if radial=False, you get (x, y)
         rloc = Radar.where_are_they_now(Radar.elapsed_time, radial=False)
@@ -459,24 +502,36 @@ def octal_to_bin(octal):
 # Python-calculated interceptor heading
 def print_ff_heading(cm, decif, rl, cb):
     global LastPyHeading
-    global Interceptor, Target
+    global Interceptor, Target, MinApproach
 
     heading = cm.rd(rl("FF_angle"))
     lights, py_int = octal_to_bin(heading)
     off_by = py_int - LastPyHeading
 
     heading_change = False
-    delta_distance = "(none)"
+    delta_distance_str = "(none)"
 
     if Target is not None and Interceptor is not None:
-        delta_distance = "%4.2f" % math.sqrt((Target.last_x - Interceptor.last_x)**2 +\
+        delta_d = math.sqrt((Target.last_x - Interceptor.last_x)**2 +\
                                              (Target.last_y - Interceptor.last_y)**2)
+        delta_distance_str = "%4.2f" % delta_d
+        if delta_d < MinApproach:
+            MinApproach = delta_d
+        if delta_d <= 2.5:  # miles of spacing
+            print("Target %s is shot down" % Target.name)
+            Target.shot_down = True
+            Target = None
+            # tell the WW code to stop tracking the target and go back to waiting for initiation
+            cancel_initiation(cm, cb)
+
     #    heading_change = True
     if cb.ana_scope:
         cb.ana_scope.setTargetInterceptLEDs((Target is not None), (Interceptor is not None))
 
     # heading_summary = ""
-    for tgt in Radar.targets:
+    for tgt in Radar.target_list:
+        if tgt.shot_down:
+            continue
         if tgt.last_heading is None:
             tgt.last_heading = tgt.heading
             heading_change = True   # This ensures that the heading will print below on the first time through
@@ -491,10 +546,85 @@ def print_ff_heading(cm, decif, rl, cb):
     if Target:
         Target.change_heading(Radar.elapsed_time, Target.heading)
     if heading_change:
-        msg = "WW-Heading %s, PyHeading=%d, off_by %d, gap:%s at t=%4.2f" % \
-              (lights, LastPyHeading, off_by, delta_distance, Radar.elapsed_time)
+        msg = "WW-Heading %s, PyHeading=%d, off_by %d, gap:%s at t=%4.2f, MinApproach=%4.2f" % \
+              (lights, LastPyHeading, off_by, delta_distance_str, Radar.elapsed_time, MinApproach)
         cb.dbwgt.add_screen_print(1, msg)
         print(msg)
+
+
+
+class SegmentClass:
+    def __init__(self):
+        B1 = 0o40000
+        B2 = 0o20000
+        B3 = 0o10000
+        B4 = 0o04000
+        B5 = 0o02000
+        B6 = 0o01000
+        B7 = 0o00400
+
+        self.character_table = {
+            "0": B1 | B2 | B3 | B5 | B6 | B7,  # Zero
+            "1": B3 | B7,  # One
+            "2": B1 | B2 | B4 | B6 | B7,  # Two
+            "3": B2 | B3 | B4 | B6 | B7,  # Three
+            "4": B3 | B4 | B5 | B7,  # Four
+            "5": B2 | B3 | B4 | B5 | B6,  # Five
+            "6": B1 | B2 | B3 | B4 | B5,  # Six
+            "7": B3 | B6 | B7,  # Seven
+            "8": B1 | B2 | B3 | B4 | B5 | B6 | B7,  # Eight
+            "9": B3 | B4 | B5 | B6 | B7,  # Nine
+            "U": B1 | B2 | B3 | B5 | B7,
+            "F": B1 | B5 | B4 | B6,
+            "H": B1 | B4 | B3 | B5 | B7,
+        }
+
+    def lookup_char(self, c):
+        return(self.character_table[c] >> 8)
+
+
+CharacterMap = SegmentClass()
+
+# this call places a tracking symbol on the screen for the given aircraft, at the heading, velocity ans x,y,
+# (x and y measured in screen coordinates)
+def display_tracking_symbol(cm, decif, rl, cb, which, x_label, y_label, x_vel_label, y_vel_label):
+
+    # convert from ww integer to py integer, then divide by 32 to make WW screen coords
+    x = cb.cpu.wwint_to_py(cm.rd(rl(x_label)))[0] // 32
+    y = cb.cpu.wwint_to_py(cm.rd(rl(y_label)))[0] // 32
+    vx = cb.cpu.wwint_to_py(cm.rd(rl(x_vel_label)))[0] // 2
+    vy = cb.cpu.wwint_to_py(cm.rd(rl(y_vel_label)))[0] // 2
+    phi = np.arctan2(vy, vx) / (2 * np.pi) * 360
+
+    heading = int(90.0 - phi)
+    if heading < 0:
+        heading += 360
+
+    # print("display %s at (%d, %d) velocity=(%d, %d) phi=%2.3f heading=%2.3f" % (which, x, y, vx, vy, phi, heading))
+
+    crt = cb.cpu.scope.crt
+    text_offset = 40
+    char_spacing = 40
+
+    tag_letter = "U"    # SAGE apparently tagged aircraft as Hostile, Friendly or Unknown
+                        # ... whereas I've been using Target and Interceptor
+    if which[0] == "T": tag_letter = "H"
+    if which[0] == "I": tag_letter = "F"
+    tag = "%03d %s" % (heading, tag_letter)
+
+    if heading > 90 and heading < 270:
+        t_off = text_offset
+    else:
+        t_off = -text_offset
+    crt.ww_draw_line(x, y, vx, vy, scope=None)
+    crt.ww_draw_point(x, y, scope=None)
+
+    for c in tag:
+        if c != ' ':
+            mask = CharacterMap.lookup_char(c)
+            crt.ww_draw_char(x, y + t_off, mask, expand=2.0, scope=None)
+        x += char_spacing
+
 
 
 # def main():

@@ -1,0 +1,487 @@
+
+; *** Core Image ***
+%File: idle-msg.ww
+%TapeID: 
+@C0000: 0000000 0000001  None    None    None    None    None    None   
+@C0040: 0074106 0074053 0000043 0000113 0000167 0000243 0000313 0000356 
+@C0050: 0000427 0000501 0000545 0000010 0100002 0174621 0040112 0110042 
+@C0060: 0044061 0100000 0040645 0100000 0040111 0100111 0040736 0104631 
+@C0070: 0040734 0100631 0115342 0040735 0100645 0074707 0130111 0130111 
+@C0100: 0114110 0070065 0100000 0040111 0074053 0000000 0050107 0074000 
+@C0110: 0000100 0000000 0000000 0000071 0000046 0000050 0000014 0000024 
+@C0120: 0000044 0000046 0000014 0000030 0000022 0000075 0000051 0000071 
+@C0130: 0000002 0000070 0000016 0000044 0000006 0000040 0000060 0000024 
+@C0140: 0000075 0000051 0000071 0000074 0000075 0000014 0000062 0000024 
+@C0150: 0000006 0000040 0000014 0000030 0000064 0000010 0000071 0000012 
+@C0160: 0000075 0000040 0000024 0000014 0000030 0000064 0177776 0000071 
+@C0170: 0000046 0000050 0000014 0000024 0000044 0000046 0000014 0000030 
+@C0200: 0000022 0000075 0000051 0000071 0000002 0000070 0000016 0000044 
+@C0210: 0000006 0000040 0000060 0000024 0000075 0000051 0000071 0000062 
+@C0220: 0000075 0000060 0000016 0000030 0000034 0000002 0000010 0000046 
+@C0230: 0000071 0000015 0000075 0000010 0000071 0000050 0000075 0000060 
+@C0240: 0000044 0000002 0177776 0000071 0000046 0000050 0000014 0000024 
+@C0250: 0000044 0000046 0000014 0000030 0000022 0000075 0000051 0000071 
+@C0260: 0000002 0000070 0000016 0000044 0000006 0000040 0000060 0000024 
+@C0270: 0000075 0000051 0000007 0000013 0000035 0000046 0000060 0000024 
+@C0300: 0000022 0000010 0000071 0000062 0000075 0000060 0000016 0000030 
+@C0310: 0000034 0000002 0177776 0000071 0000046 0000050 0000014 0000024 
+@C0320: 0000044 0000046 0000014 0000030 0000022 0000075 0000051 0000071 
+@C0330: 0000002 0000070 0000016 0000044 0000006 0000040 0000060 0000024 
+@C0340: 0000075 0000051 0000071 0000062 0000075 0000044 0000006 0000034 
+@C0350: 0000036 0000026 0000006 0000034 0000036 0177776 0000071 0000046 
+@C0360: 0000050 0000014 0000024 0000044 0000046 0000014 0000030 0000022 
+@C0370: 0000075 0000051 0000071 0000002 0000070 0000016 0000044 0000006 
+@C0400: 0000040 0000060 0000024 0000075 0000051 0000071 0000040 0000075 
+@C0410: 0000014 0000034 0000010 0000071 0000040 0000075 0000006 0000034 
+@C0420: 0000010 0000071 0000040 0000075 0000060 0000002 0177776 0000071 
+@C0430: 0000046 0000050 0000014 0000024 0000044 0000046 0000014 0000030 
+@C0440: 0000022 0000075 0000051 0000071 0000002 0000070 0000016 0000044 
+@C0450: 0000006 0000040 0000060 0000024 0000075 0000051 0000071 0000030 
+@C0460: 0000075 0000016 0000070 0000062 0000002 0000024 0000010 0000071 
+@C0470: 0000022 0000075 0000014 0000012 0000054 0000044 0000006 0000052 
+@C0500: 0177776 0000071 0000046 0000050 0000014 0000024 0000044 0000046 
+@C0510: 0000014 0000030 0000022 0000075 0000051 0000071 0000002 0000070 
+@C0520: 0000016 0000044 0000006 0000040 0000060 0000024 0000075 0000051 
+@C0530: 0000071 0000070 0000075 0000006 0000022 0000010 0000071 0000064 
+@C0540: 0000075 0000006 0000070 0000002 0177776 0000071 0000046 0000050 
+@C0550: 0000014 0000024 0000044 0000046 0000014 0000030 0000022 0000075 
+@C0560: 0000051 0000071 0000002 0000070 0000016 0000044 0000006 0000040 
+@C0570: 0000060 0000024 0000075 0000051 0000016 0000030 0000016 0000012 
+@C0600: 0000002 0000022 0000010 0000054 0000024 0000060 0000064 0000024 
+@C0610: 0000006 0000070 0000010 0000027 0177776 0000002 0000003 0000004 
+@C0620: 0000006 0000007 0000010 0000011 0000012 0000013 0000014 0000017 
+@C0630: 0000040 0073300 0062000 0076000 0000174 0076174 0100200 0076200 
+@C0640: 0100174 0100000 0000000 0000060 0000000 0000646 0000071 0000046 
+@C0650: 0000050 0000014 0000024 0000044 0000046 0000014 0000030 0000022 
+@C0660: 0000075 0000051 0000071 0000002 0000070 0000016 0000044 0000006 
+@C0670: 0000040 0000060 0000024 0000075 0000051 0000071 0000062 0000075 
+@C0700: 0000060 0000016 0000030 0000034 0000002 0177776 0000000 0050732 
+@C0710: 0044733 0100734 0041050 0100735 0041051 0100733 0044717 0100000 
+@C0720: 0074743 0130733 0044723 0100000 0070732 0100736 0114001 0040736 
+@C0730: 0070732 0074711 0074000 0000000 0000000 0000000 0000012 0000051 
+@C0740: 0000071 0000075 0000000 0051047 0040742 0114740 0134000 0134000 
+@C0750: 0071033 0100742 0114741 0134000 0134000 0071036 0100742 0114737 
+@C0760: 0134000 0134000 0071041 0100742 0111054 0044766 0100000 0041052 
+@C0770: 0104627 0041053 0101340 0045027 0110001 0045024 0110001 0045031 
+@C1000: 0101052 0071024 0101052 0170001 0041052 0101027 0114616 0045027 
+@C1010: 0101024 0114616 0045024 0101031 0114616 0045031 0131053 0071000 
+@C1020: 0100734 0111341 0040734 0075047 0100000 0111051 0001677 0100000 
+@C1030: 0111050 0024000 0075002 0101055 0041054 0075047 0101056 0041054 
+@C1040: 0075047 0104631 0040734 0100735 0115342 0040735 0075047 0074000 
+@C1050: 0000000 0000000 0000000 0000000 0001157 0001057 0001157 0125074 
+@C1060: 0125074 0100363 0104377 0125074 0000060 0104317 0004077 0000000 
+@C1070: 0021000 0104273 0104214 0021063 0042000 0000374 0104167 0177777 
+@C1100: 0040400 0021077 0110263 0114307 0002014 0000174 0000017 0010714 
+@C1110: 0012000 0100303 0104373 0000363 0104000 0112300 0125074 0021003 
+@C1120: 0125074 0042063 0177777 0000360 0000000 0050314 0125074 0104314 
+@C1130: 0000000 0104274 0125074 0104307 0125074 0010377 0125074 0000377 
+@C1140: 0177777 0025077 0125074 0004373 0125074 0104277 0125074 0002714 
+@C1150: 0177777 0052400 0125074 0042300 0177777 0042377 0177777 0125074 
+@C1160: 0125074 0140140 0104377 0125074 0021000 0120160 0004077 0000000 
+@C1170: 0104060 0120241 0104214 0020000 0125000 0020140 0104167 0177777 
+@C1200: 0010000 0024034 0110263 0100100 0002014 0021140 0000017 0120100 
+@C1210: 0040000 0125002 0104373 0100140 0104000 0033000 0125074 0100340 
+@C1220: 0125074 0140040 0177777 0000300 0000000 0050110 0125074 0120300 
+@C1230: 0000000 0005034 0125074 0101301 0125074 0121201 0125074 0120140 
+@C1240: 0177777 0120340 0125074 0121241 0125074 0104277 0125074 0124110 
+@C1250: 0177777 0052400 0125074 0040100 0177777 0042377 0177777 0001260 
+@C1260: 0001000 0011000 0030000 0004000 0011000 0030000 0007000 0011000 
+@C1270: 0172267 0006400 0004400 0172267 0003000 0000000 0030000 0000000 
+@C1300: 0000000 0030000 0000000 0000000 0005110 0000400 0004400 0005110 
+@C1310: 0001000 0011000 0024267 0004000 0011000 0172267 0003400 0004400 
+@C1320: 0034110 0003400 0004400 0030000 0003400 0004400 0024267 0003400 
+@C1330: 0004400 0172267 0000000 0000000 0034110 0000400 0004400 0030000 
+@C1340: 0001335 0007400 0013200  None    None    None    None    None   
+@S0000: zero
+@S0001: one
+@S0040: main
+@S0042: msgtab_ptr
+@S0043: msgtab0
+@S0044: msgtab1
+@S0045: msgtab2
+@S0046: msgtab3
+@S0047: msgtab4
+@S0050: msgtab5
+@S0051: msgtab6
+@S0052: msgtab7
+@S0053: refresh_loop
+@S0061: rl_ld_msgp
+@S0065: msg_loop
+@S0105: loop_count
+@S0106: init
+@S0107: init_ret
+@S0110: msg_maxlen
+@S0111: msg_strlen
+@S0112: msg_num
+@S0113: msg0
+@S0167: msg1
+@S0243: msg2
+@S0313: msg3
+@S0356: msg4
+@S0427: msg5
+@S0501: msg6
+@S0545: msg7
+@S0615: const_2
+@S0616: const_3
+@S0617: const_4
+@S0620: const_6
+@S0621: const_7
+@S0622: const_8
+@S0623: const_9
+@S0624: const_10
+@S0625: const_11
+@S0626: const_12
+@S0627: c_15
+@S0630: c_32
+@S0631: c_scope_edge
+@S0632: c_msg_x_pos
+@S0633: horiz_line_seg
+@S0634: vert_line_seg
+@S0635: diag_up_right_seg
+@S0636: diag_dn_left_seg
+@S0637: diag_dn_right_seg
+@S0640: diag_up_left_seg
+@S0641: panic_stop
+@S0643: ut_maxlen
+@S0644: ut_strlen
+@S0645: msgp
+@S0646: unit_msg
+@S0707: draw_str
+@S0711: ds_loop
+@S0717: ds_get_char
+@S0723: ds_test_str_end
+@S0732: ds_ret
+@S0733: ds_lcl_charp
+@S0734: ds_argx
+@S0735: ds_argy
+@S0736: ds_arglen
+@S0737: c_newline
+@S0740: c_upper
+@S0741: c_lower
+@S0742: lcl_ds16_char
+@S0743: draw_16seg_char
+@S0764: ds16_offset
+@S0766: d16c_rd
+@S1000: d16s_loop
+@S1002: d16s_loop_continue
+@S1024: d16c_draw_seg
+@S1024: d16c_read_seg_taby
+@S1027: d16c_read_seg_tabx
+@S1031: d16c_read_seg_tabdxy
+@S1033: ds16_shift_to_upper
+@S1036: ds16_shift_to_lower
+@S1041: ds16_newline
+@S1047: d16c_ret
+@S1050: d16c_argx
+@S1051: d16c_argy
+@S1052: d16c_lcl_seg_map
+@S1053: d16c_lcl_loop_cnt
+@S1054: SixteenSegmentFlexop
+@S1055: SixteenSegmentUpperp
+@S1056: SixteenSegmentLowerp
+@S1057: flexo_ucase
+@S1157: flexo_lcase
+@S1257: seg_tab_startp
+@S1260: seg00x
+@S1261: seg00y
+@S1262: seg00d
+@S1263: seg01x
+@S1264: seg01y
+@S1265: seg01d
+@S1266: seg02x
+@S1267: seg02y
+@S1270: seg02d
+@S1271: seg03x
+@S1272: seg03y
+@S1273: seg03d
+@S1274: seg04x
+@S1275: seg04y
+@S1276: seg04d
+@S1277: seg05x
+@S1300: seg05y
+@S1301: seg05d
+@S1302: seg06x
+@S1303: seg06y
+@S1304: seg06d
+@S1305: seg07x
+@S1306: seg07y
+@S1307: seg07d
+@S1310: seg08x
+@S1311: seg08y
+@S1312: seg08d
+@S1313: seg09x
+@S1314: seg09y
+@S1315: seg09d
+@S1316: seg10x
+@S1317: seg10y
+@S1320: seg10d
+@S1321: seg11x
+@S1322: seg11y
+@S1323: seg11d
+@S1324: seg12x
+@S1325: seg12y
+@S1326: seg12d
+@S1327: seg13x
+@S1330: seg13y
+@S1331: seg13d
+@S1332: seg14x
+@S1333: seg14y
+@S1334: seg14d
+@S1335: seg15x
+@S1336: seg15y
+@S1337: seg15d
+@S1340: seg_tab_endp
+@S1341: char_xspacing
+@S1342: char_yspacing
+@S1677: scope_vector
+@S0677: scope_point
+@S0002: FFReg02
+@S0010: FFReset
+@S0060: WIDTH_16SEG
+@S0110: HEIGHT_16SEG
+@S0010: OFFSET_16SEG
+@S7400: SPACING_16SEGX
+@S13200: SPACING_16SEGY
+@S172267: DOWN_LEFT
+@S5110: UP_RIGHT
+@S30000: HORIZ_RIGHT
+@S34110: UP_RIGHT_DIAG
+@S24267: DOWN_RIGHT_DIAG
+@S1000: P0x
+@S11000: P0y
+@S4000: P1x
+@S11000: P1y
+@S7000: P2x
+@S11000: P2y
+@S6400: P3x
+@S4400: P3y
+@S6000: P4x
+@S0000: P4y
+@S3000: P5x
+@S0000: P5y
+@S0000: P6x
+@S0000: P6y
+@S0400: P7x
+@S4400: P7y
+@S3400: P8x
+@S4400: P8y
+@E0642: print: "panic stop"
+@N0040:  call the init subroutine
+@N0041:  branch to main display refresh loop
+@N0053:  copy preset switches into FF Regs
+@N0054:  figure out what message to print
+@N0055:  mask to three bits
+@N0057:  this is the address into the message table
+@N0061:  fetch the message pointer from the table
+@N0062:  store a pointer to the start of the string to print.
+@N0063:  initialize the length of the string to zero
+@N0067:  start the string near the top left edge of the screen
+@N0072:  character origin is the lower-left corner, so make sure it doesn't overflow Y axis
+@N0075:  this routine prints the string until either a negative character terminator OR the count is exhausted
+@N0076:  on each pass, make the string longer by two, up to the max length
+@N0105:  used only in top-level routines for drawing the game board
+@N0111:  we lengthen the string by one char until it reaches the end and we've counted to msg_maxlen
+@N0112:  this should be an offset into the table of messages to select just one
+@N0167:  remember that the converted string will count shift-up/down as characters
+@N0615:  Constants
+@N0625:  loop counter for 12 iterations
+@N0627:  constants
+@N0631:  close to the edge of the scope screen
+@N0633:  +32 in the top half of the word
+@N0634:  +32 in the bottom half of the word
+@N0641:  ---------------------------------------
+@N0646:  remember that the converted string will count shift-up/down as characters
+@N0707:        the count is exhausted or a negative character is encountered)
+@N0710:  save the character pointer passed in the ACC
+@N0715:  walk the string from start to finish
+@N0717:  fetch the next character in the string
+@N0720:  actually draw the character!
+@N0721:  prepare for next char in loop
+@N0723:  bail out if the next char is negative, or if the loop count is exhausted
+@N0724:  test for a negative number as the marker for the string end; branch out if done
+@N0725:  ; decrement the length count
+@N0731:  I moved the x and y auto-increment into the character-drawing routine draw_16seg_char
+@N0733:  pointer to the next character to display
+@N0737:  character value for Carriage Return
+@N0740:  character value for Shift Upper
+@N0741:  character value for Shift Lower
+@N0742:  local storage for the character to be displayed
+@N0744:  save the incoming character to be printed
+@N0745:  test to see if we've got a "Shift Upper" character
+@N0747:  negative zero if acc == c_upper
+@N0750:  adjust the current Case, then exit
+@N0754:  negative zero if acc == c_lower
+@N0755:  adjust the current Case, then exit
+@N0761:  negative zero if acc == c_newline
+@N0762:  execute a newline, then exit
+@N0763:  re-fetch the input character
+@N0764:  add the table start addr to the offset in ACC
+@N0765:         .print "draw_16seg_char:  char=%ao. d16c_argx=%o, d16c_argy=%o", d16c_argx, d16c_argy
+@N0766:  fetch the bit map
+@N0770:  prep for 16 times around the loop
+@N0772:  walk the segment table back to front
+@N0773:  first table entry
+@N0774:         td tmp_tabx
+@N0775:  second table entry
+@N0776:         td tmp_taby
+@N0777:  third table entry
+@N1000:  end of debug hack
+@N1001:  branch if most significant bit is on
+@N1003:  shift AC left by one bit
+@N1010:         td tmp_tabx
+@N1013:         td tmp_taby
+@N1020:  advance x position to the next character
+@N1023:  bail out when count exhausted
+@N1024:  the SI uses the AC to set Y coord
+@N1026:  initialize vector gen with the y-coord in ACC
+@N1027:  the RC uses AC to set X coord and mem address for the vector length
+@N1034:  shift pointer to Upper Case table & exit
+@N1037:  shift pointer to Lower Case table & exit
+@N1047: ; Return from draw_16seg_char
+@N1054:  flexowriter defaults to lower case
+@N1057:  /* # */
+@N1060:  /* # */
+@N1061:  /* E */
+@N1062:  /* 8 */
+@N1063:  /* # */
+@N1064:  /* _ */
+@N1065:  /* A */
+@N1066:  /* 3 */
+@N1067:  /* (space) */
+@N1070:  /* : */
+@N1071:  /* S */
+@N1072:  /* 4 */
+@N1073:  /* I */
+@N1074:  /* / */
+@N1075:  /* U */
+@N1076:  /* 2 */
+@N1077:  /* (del) */
+@N1100:  /* ) */
+@N1101:  /* D */
+@N1102:  /* 5 */
+@N1103:  /* R */
+@N1104:  /* 1 */
+@N1105:  /* J */
+@N1106:  /* 7 */
+@N1107:  /* N */
+@N1110:  /* ( */
+@N1111:  /* F */
+@N1112:  /* 6 */
+@N1113:  /* C */
+@N1114:  /* - */
+@N1115:  /* K */
+@N1116:  /* # */
+@N1117:  /* T */
+@N1120:  /* # */
+@N1121:  /* Z */
+@N1122:  /* (del) */
+@N1123:  /* L */
+@N1124:  /* (space) */
+@N1125:  /* W */
+@N1126:  /* # */
+@N1127:  /* H */
+@N1130:  /* (space) */
+@N1131:  /* Y */
+@N1132:  /* # */
+@N1133:  /* P */
+@N1134:  /* # */
+@N1135:  /* Q */
+@N1136:  /* # */
+@N1137:  /* O */
+@N1140:  /* (del) */
+@N1141:  /* B */
+@N1142:  /* # */
+@N1143:  /* G */
+@N1144:  /* # */
+@N1145:  /* 9 */
+@N1146:  /* # */
+@N1147:  /* M */
+@N1150:  /* (del) */
+@N1151:  /* X */
+@N1152:  /* # */
+@N1153:  /* V */
+@N1154:  /* (del) */
+@N1155:  /* 0 */
+@N1156:  /* (del) */
+@N1157:  /* # */
+@N1160:  /* # */
+@N1161:  /* e */
+@N1162:  /* 8 */
+@N1163:  /* # */
+@N1164:  /* | */
+@N1165:  /* a */
+@N1166:  /* 3 */
+@N1167:  /* (space) */
+@N1170:  /* = */
+@N1171:  /* s */
+@N1172:  /* 4 */
+@N1173:  /* i */
+@N1174:  /* + */
+@N1175:  /* u */
+@N1176:  /* 2 */
+@N1177:  /* (del) */
+@N1200:  /* . */
+@N1201:  /* d */
+@N1202:  /* 5 */
+@N1203:  /* r */
+@N1204:  /* 1 */
+@N1205:  /* j */
+@N1206:  /* 7 */
+@N1207:  /* n */
+@N1210:  /* , */
+@N1211:  /* f */
+@N1212:  /* 6 */
+@N1213:  /* c */
+@N1214:  /* - */
+@N1215:  /* k */
+@N1216:  /* # */
+@N1217:  /* t */
+@N1220:  /* # */
+@N1221:  /* z */
+@N1222:  /* (del) */
+@N1223:  /* l */
+@N1224:  /* (space) */
+@N1225:  /* w */
+@N1226:  /* # */
+@N1227:  /* h */
+@N1230:  /* (space) */
+@N1231:  /* y */
+@N1232:  /* # */
+@N1233:  /* p */
+@N1234:  /* # */
+@N1235:  /* q */
+@N1236:  /* # */
+@N1237:  /* o */
+@N1240:  /* (del) */
+@N1241:  /* b */
+@N1242:  /* # */
+@N1243:  /* g */
+@N1244:  /* # */
+@N1245:  /* 9 */
+@N1246:  /* # */
+@N1247:  /* m */
+@N1250:  /* (del) */
+@N1251:  /* x */
+@N1252:  /* # */
+@N1253:  /* v */
+@N1254:  /* (del) */
+@N1255:  /* 0 */
+@N1256:  /* (del) */
+@N1257:  // segment in the 16-segment display character.
+@N1260:    {P0, P1}
+@N1263:    {P1, P2},
+@N1266:    {P2, P3},
+@N1271:    {P3, P4},
+@N1274:    {P4, P5},
+@N1277:    {P5, P6},
+@N1302:    {P6, P7},
+@N1305:    {P7, P0},
+@N1310:    {P0, P8},
+@N1313:    {P1, P8},
+@N1316:    {P2, P8},
+@N1321:    {P3, P8},
+@N1324:    {P4, P8},
+@N1327:    {P5, P8},
+@N1332:    {P6, P8},
+@N1335:    {P7, P8},
+@N1343:  *********************************************************************************************************/

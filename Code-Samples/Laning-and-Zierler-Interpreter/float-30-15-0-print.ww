@@ -43,8 +43,15 @@ flt_print_rtn:        sp 0
              nm_loop:
                       cm t
                       su float1
-                      cp nm_not_ge_1
+					  ts ftmp0
+					  cm ftmp0
+					  su 0
+					  cp nm_ge_1
+					  cm t
+                      su float1
+                      cp nm_not_ge_1	
                       ; setup 0.1 loop         ; |x| >= 1
+	  		  nm_ge_1:
                       sp ax                    ; Spax out
                       ca nm_mr_float_point_1
                       ts nm_calc_mr

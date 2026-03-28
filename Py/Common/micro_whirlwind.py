@@ -166,8 +166,26 @@ class PanelMicroWWClass:
 
     # The Panels contain a subset of the Flip Flop Register Preset switches; this method returns
     # this list of names supported by this panel
-    def get_ff_preset_list(self):
-        return ["FF02Sw", "FF03Sw"]
+    # def get_ff_preset_list(self):
+    #    return ["FF02Sw", "FF03Sw"]
+
+
+    # The Panel contains a subset of the supported switches; this method returns
+    # this list of names supported by this panel
+    def get_switch_list(self, omit_MIR=False):
+        ret = [
+            "FF02Sw",
+            "FF03Sw",
+            "PC",  # This is actually the PC Preset switches/lights
+            "ActivationReg0",
+            "CheckAlarmSpecial",
+            "StopOnS1",
+            "StopOnAddr",
+        ]
+        if omit_MIR == False:
+            ret.append("LMIR")
+            ret.append("RMIR")
+        return ret
 
 
    # read a register from the switches and lights panel.
