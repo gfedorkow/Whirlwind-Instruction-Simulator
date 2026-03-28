@@ -16,6 +16,7 @@ cp auto-ping  no-blank  pinger.sh  run-ww  wwasm  ww-shell  wwsim  ~/bin
 cd  $GPATH/pi-kit/
 cp -r  config-ww ~/config-ww
 
+sudo cp  $GPATH/pi-kit/etc/hosts /etc hosts
 mkdir -p  ~/History-of-Computing/Whirlwind/GitHub/.git
 mkdir -p  ~/History-of-Computing/Whirlwind/Hardware/Micro-Whirlwind/GitHub/.git
 
