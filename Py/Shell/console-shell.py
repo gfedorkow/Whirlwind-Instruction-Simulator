@@ -58,12 +58,14 @@ Programs = [
     WwAppClass("Vector Clock", dir="Code-Samples/Vector-Clock", exec="vector-clock.acore", is_WW=True),
     WwAppClass("Lorenz Attractor", dir="Code-Samples/Lorenz", exec="lorenz.acore", is_WW=True),
     WwAppClass("Rocket", dir="Py/Shell", exec="vecIF.py", is_WW=False),
-    WwAppClass("77 to Exit" ),  # Exit Hack
+    WwAppClass("77 to Exit", exec=None ),  # Exit Hack
 ]
 
 
 def exec_program(pgm, args):
     global Sim_Path
+    if pgm.executable_name is None:
+        return
     exec_dir = WW_Root + '/' + pgm.directory
     sim_path = WW_Root + Sim_Path
     if pgm.is_WW:
@@ -132,7 +134,7 @@ def main():
             print("add --Anal to args")
             args += ["--Anal"]
         choice &= 0o77
-        if choice >= len(Programs):
+        if choice >= len(Programs) - 1:  # The last entry is "press 77 to exit", i.e., not a real thing
             print("\nEnter a number from the list above please")
             continue
         else:
