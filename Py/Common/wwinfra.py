@@ -1753,7 +1753,7 @@ class ScreenDebugWidgetClass:
             val = eval(name_and_context)
         else:       # Otherwise
             # direction==None, we just return the current value of the switch
-            # If direction!=None, we add incr the the value and write it back
+            # If direction!=None, we add incr the value and write it back
             val = self.cb.cpu.cpu_switches.read_switch(var_name[1:])
             if direction_up is not None:
                 val += incr

@@ -1,0 +1,354 @@
+
+;  Rainer's Ballistic Missile Rocket Launch, Converted to WW by guy
+;  Mar 2026
+; """
+;   Simple ballistic Rocket launch
+;   without air resistance
+; """
+
+        .org 0
+zero:   .word 0
+one:    .word 1
+
+; constants for SI graphics instruction
+        .pp scope_vector, 0o1677   ; draw a vector on all scopes
+        .pp scope_point, 0o0677   ; draw a point on all scopes
+
+        .org 0o40
+
+start:  sp main
+
+        
+; def do_rocket(mode) :
+
+; Data definitions
+;     # gravitation 
+;     grav = 0.003
+;     # launch angle in degrees
+;     launchdir = 87.0
+;     # fuel left
+;     fuel = 1.0
+;     # rocket speed
+;     xspeed = 0.0
+;     yspeed = 0.0
+;     # rocket position
+;     xpos = -0.9
+;     ypos = 0.0
+;     # acceleration per fuel unit
+;     accel = 0.005
+;     # 
+;     burn = 0.05
+;               
+;  definitions of initial condidtions
+launchdir:      .word 87   ; degrees; not used directly
+grav:           .word +0.003
+cos_launchdir:  .word +0.02     ;+0.05233
+sin_launchdir:  .word +0.99863
+launch_speed:   .word +0.01     ; initial velocity at launch
+accel:          .word +0.005    ;+0.005
+burn:           .word +0.05
+
+; constants
+;                 scaled number     unscaled number
+c_miny:         .word -0.05       ;      -0.1    ; slightly below ground level
+c_minx:         .word -0.45
+c_maxx:         .word +0.45       ;      +0.9
+c_maxy:         .word +0.45       ;      +0.9  
+c_fuel:         .word +0.99
+
+; dynamic variables
+; these two numbers are scaled down by a factor of two to avoid overflow
+;                 scaled number     unscaled number
+xspeed:         .word 0
+yspeed:         .word 0
+xpos:           .word -0.45       ;      -0.9
+ypos:           .word 0
+
+; fuel simply declines from +1 to 0 by an increment each cycle
+fuel:           .word +0.9999
+
+; Ephemeral variables
+tmp1:   .word 0
+speed:  .word 0
+loop_count:  ; used only in top-level routines for drawing the game board
+          .word 0
+
+; ************ Rocket Code *************
+;     
+;     # upon launch, set inital speeds
+;     xspeed = 0.01 * math.cos(math.radians(launchdir))
+;     yspeed = 0.01 * math.sin(math.radians(launchdir))
+
+main:   ca launch_speed
+        mh cos_launchdir
+        ts xspeed
+        ca launch_speed
+        mh sin_launchdir
+        ts yspeed
+
+        ; initialize the flight variables
+        ca zero
+        ts ypos
+        ca c_minx
+        ts xpos
+        
+        ca c_fuel
+        ts fuel
+
+; 
+;     
+;     # main loop: accelerate while fuel, show fuel and speed
+;     while ypos >= -0.1 and ypos < 1.0 and xpos < 1.0 :
+loop:
+        ca ypos     ; test all the loop exit conditions
+        su c_miny
+        cp loop_exit
+        ca c_maxy
+        su ypos
+        cp loop_exit
+        ca c_maxx
+        su xpos
+        cp loop_exit
+
+;         speed = math.sqrt(xspeed*xspeed + yspeed*yspeed)
+        ; the following stands in for lack of sqrt (so far); "speed = abs(xspeed) + abs(yspeed)"
+        ca xspeed
+        dm zero
+        ts tmp1
+        ca yspeed
+        dm zero
+        ad tmp1
+        ts speed
+        
+;         # accelerate if still fuel
+;         if fuel > 0.0 :
+        ca fuel
+        cp no_fuel
+        
+        ;; continue here if there's still fuel
+;             # no need to calculate flight angle, just the speed
+;             xspeed += (xspeed / speed) * accel
+;             yspeed += (yspeed / speed) * accel
+;             fuel -= burn
+        ca xspeed 
+        dv speed
+        slh 16
+        mh accel
+        ad xspeed
+        ts xspeed
+
+     ; and do this again for yspeed   
+        ca yspeed 
+        dv speed
+        slh 16
+        mh accel
+        ad yspeed
+        ts yspeed
+     
+        ca fuel
+        su burn
+        ts fuel
+;
+no_fuel:
+        ; continue here whether there's fuel or not
+;         # gavitation is always in y direction
+;         yspeed -= grav
+        ca yspeed
+        su grav
+        ts yspeed
+        
+;         # integrate to positions
+;         xpos += xspeed
+;         ypos += yspeed
+        ca xpos
+        ad xspeed
+        ts xpos
+        ca ypos
+        ad yspeed
+        ts ypos
+
+;         # always draw actual point and base line
+;         drawPoint(xpos, ypos)
+;         drawVector(-1.0, 0.0, 1.0, 0.0)
+;         drawCharacter(0.0, -0.8, digits[mode])
+
+        ca ypos           ; draw the rocket's position as a point
+        si scope_point    ; initialize point gen with the y-coord in ACC
+        ca xpos
+        rc 0          ; Draw a pont with ACC = x
+
+draw_baseline:
+        ca zero
+        ts y_arg          
+        ca const_2
+        ts x_arg
+        cs const_11
+        ts n_segments  ; segment count should be negative, ie, we will incr the value until positive
+        sp draw_x_line
+
+; 
+;         # show fuel as bar at the left side
+;         if fuel > 0.0:
+;             drawVector(-0.99, 0.0, -0.99, fuel)
+draw_fuel_guage:
+        ca fuel
+        cp draw_speed_guage
+
+        ca const_2
+        ts x_arg
+        ca zero
+        ts y_arg          
+        ca fuel
+        srh 8
+        ts y_len          ; total length of line in pixels
+        sp draw_y_line
+
+        
+        ca fuel           ; draw a point at the end of the line
+        srh 1
+        si scope_point    ; initialize point gen with the y-coord in ACC
+        ca const_2
+        su const_8
+        slr 12
+        rc 0          ; Draw a point with ACC = x
+
+;         # drawPoint(-0.99, fuel)   # show end point
+;         
+
+;             # show velocity
+;             drawVector(0.99, 0.0, 0.99, speed*10.0)
+
+draw_speed_guage:
+        ca const_14
+        ts x_arg
+        ca zero
+        ts y_arg          
+        ca speed
+        srh 5
+        ts y_len  ; total length of line in pixels
+        sp draw_y_line
+
+        ca speed           ; draw a point at the end of the line
+        slh 2
+        si scope_point    ; initialize point gen with the y-coord in ACC
+        ca xpos
+        ca const_14
+        slr 12
+        rc 0          ; Draw a point with ACC = x
+
+;         
+;         # mode 1 and 2:
+;         if mode == 1 or mode == 2 :
+;            drawCharacter(-0.9, -0.3, digits[fueli // 10])
+;            drawCharacter(-0.8, -0.3, digits[fueli % 10])
+;            drawCharacter(0.8, -0.3, digits[speedi // 10])
+;            drawCharacter(0.9, -0.3, digits[speedi % 10])
+;          
+; 
+;         # mode 2: speed vector 
+;         if mode == 2 :
+;             drawVector(xpos, ypos, xpos + 8*xspeed, ypos + 8*yspeed)          
+;         
+
+          sp loop
+
+loop_exit:
+          sp main
+
+
+; ************ Graphics Support **************
+; constants
+
+const_2:  .word 2
+const_3:  .word 3
+const_4:  .word 4
+const_6:  .word 6
+const_7:  .word 7
+const_8:  .word 8
+const_9:  .word 9
+const_10: .word 10
+const_11: .word 11    ; loop counter for 12 iterations
+const_12: .word 12
+const_14: .word 14
+const_32: .word 32
+const_64: .word 64
+
+; these two constants give the delta values to draw a "maximum short vector"
+horiz_line_seg:    .word 0o174 * 0o400   ; +32 in the top half of the word
+vert_line_seg:     .word 0o174            ; +32 in the bottom half of the word
+diag_up_right_seg: .word 0o174 * 0o400 + 0o174
+diag_dn_left_seg:  .word 0o200 * 0o400 + 0o200
+diag_dn_right_seg: .word 0o174 * 0o400 + 0o200
+diag_up_left_seg:  .word 0o200 * 0o400 + 0o174
+
+; ephemeral args used for passing parameters
+x_arg:    .word 0
+y_arg:    .word 0
+n_segments: .word 0   ; loop counter
+y_len:    .word 0
+
+; subroutine to draw a horizontal line
+draw_x_line:
+          ta draw_x_line_ret  ; save the return address
+          ca y_arg
+          su const_8    ; shift from 0-15 axis to -8 to +7
+          slr 12        ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+          si scope_vector    ; initialize vector gen
+          ca x_arg
+          su const_8    ; shift from 0-15 axis to -8 to +7
+          ts x_arg
+next_x_seg:
+          ca x_arg      ; re-fetch the next x_arg
+          slr 12        ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+          
+          rc horiz_line_seg  ; Draw a segment with x=ACC
+          ao x_arg
+          ao n_segments  ; increment the segment counter
+          cp next_x_seg
+draw_x_line_ret:
+          sp 0
+          
+
+; subroutine to draw a vertical line
+draw_y_line:
+          ta draw_y_line_ret  ; save the return address
+          ca y_len
+          su const_32
+          cp draw_last_segment
+
+next_y_seg:          
+          ca y_arg
+          slr 12        ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+          si scope_vector    ; initialize vector gen with the y-coord in ACC
+          ca x_arg
+          su const_8    ; shift from 0-15 axis to -8 to +7
+          slr 12        ; gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+          
+          rc vert_line_seg  ; Draw a segment with x=ACC
+          ao y_arg
+          ca y_len
+          su const_32
+          ts y_len
+          cp draw_y_undo
+          sp next_y_seg
+
+draw_y_undo: ca y_len
+          ad const_32   ; undo the subtract in the end of the nex_y_seg loop
+          ts y_len
+draw_last_segment:
+          ca y_len
+          slh 2
+          ts y_len
+          ca y_arg
+          slr 12        ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+          si scope_vector    ; initialize vector gen with the y-coord in ACC
+          ca x_arg
+          su const_8    ; shift from 0-15 axis to -8 to +7
+          slr 12        ; gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+draw_seg: rc y_len  ; Draw a segment with x=ACC
+
+
+draw_y_line_ret:          
+          sp 0
+
+
