@@ -124,6 +124,14 @@ class PanelMicroWWClass:
         button_press = self.sw.check_buttons()
         return button_press
 
+
+    # return a flag that says if any button has been pressed since the last check
+    def test_for_MIR_button_press(self):
+        pressed = self.sw.button_pressed
+        self.sw.button_pressed = False
+        return pressed
+
+
     # def set_cpu_state_lamps(self, cb, sim_state, alarm_state):
 
     def update_panel(self, cb, bank, alarm_state=0, standalone=False, init_PC=None):
@@ -549,6 +557,8 @@ class MappedSwitchClass:
         self.tca84_u4 = tc_init_u4(log, i2c_bus.bus, TCA8414_1_ADDR)
         # self.i2c_bus = smbus2.SMBus(1)
         if MwwPanelDebug: self.log.info("  tca init done")
+        self.button_pressed = False  # This is a mailbox to signal six levels up that a button has been pressed
+
 
         self.tca84_u4.init_gp_out()
         if MwwPanelDebug: self.log.info("  TCA8414 init done")
@@ -597,6 +607,7 @@ class MappedSwitchClass:
                 button_press = self.u3_switch_map[col](row, col)
                 if MwwPanelDebug: self.log.info("Pressed U3 %s: row=%d, col=%d" % (button_press, row, col))
                 if button_press:
+                    self.button_pressed = True
                     return button_press
         elif self.tca84_u4.available() > 0:
             key = self.tca84_u4.getEvent()
@@ -618,6 +629,9 @@ class MappedSwitchClass:
 #                    print("you pressed ", msvcrt.getch(), " so now i will sleep")
 #                    time.sleep(3)
 #                    button_press = input("type function button name: ")
+
+        if button_press:
+            self.button_pressed = True  # This is a mailbox to signal six levels up that a button has been pressed
         return button_press
 
     def fn_no_sw(self, row, col):

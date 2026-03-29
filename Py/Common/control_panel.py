@@ -916,7 +916,7 @@ class PanelClass:
         if self.panel_xwin:
             return self.panel_xwin.test_for_MIR_button_press()
         else:
-            self.cb.log.fatal("unimplemented test_for_MIR_button_press")
+            return self.panel_mWW.test_for_MIR_button_press()
 
 
     def reset_ff_registers(self, function, log=None, info_str=''):
