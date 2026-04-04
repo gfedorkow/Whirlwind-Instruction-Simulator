@@ -6,6 +6,8 @@
 ;   without air resistance
 ; """
 
+        .dbwgt c_fuel 0o400
+
         .org 0
 zero:   .word 0
 one:    .word 1
@@ -37,24 +39,25 @@ start:  sp main
 ;     # acceleration per fuel unit
 ;     accel = 0.005
 ;     # 
-;     burn = 0.05
+;     burn = 0.08    ; 0.05
 ;               
 ;  definitions of initial condidtions
 launchdir:      .word 87   ; degrees; not used directly
-cos_launchdir:  .word +0.075     ;+0.05233
+cos_launchdir:  .word +0.2   ;+0.075     ;+0.05233
 sin_launchdir:  .word +0.99
 grav:           .word +0.0015    ;+0.003
 launch_speed:   .word +0.01     ; initial velocity at launch
-accel:          .word +0.002    ; +0.005
-burn:           .word +0.03     ; +0.05
+accel:          .word +0.003    ; +0.002
+burn:           .word +0.04     ; +0.03
 
 ; constants
 ;                 scaled number     unscaled number
-c_miny:         .word -0.05       ;      -0.1    ; slightly below ground level
+c_miny:         .word -0.45      ;      -0.1    ; slightly below ground level, i.e. y_baseline
 c_minx:         .word -0.45
-c_maxx:         .word +0.45       ;      +0.9
-c_maxy:         .word +0.45       ;      +0.9  
-c_fuel:         .word +0.99       ;      +0.99
+c_maxx:         .word +0.45      ;      +0.9
+c_maxy:         .word +0.45      ;      +0.9  
+c_fuel:         .word +0.7       ; initial fuel load
+y_baseline:     .word -0.4       ; y-axis position of the 'zero point'
 
 ; dynamic variables
 ; these two numbers are scaled down by a factor of two to avoid overflow
@@ -87,7 +90,7 @@ main:   ca launch_speed
         ts yspeed
 
         ; initialize the flight variables
-        ca zero
+        ca y_baseline
         ts ypos
         ca c_minx
         ts xpos
@@ -106,9 +109,9 @@ loop:
         ca c_maxy
         su ypos
         cp loop_exit
-        ca c_maxx
-        su xpos
-        cp loop_exit
+;        ca c_maxx      ; comment these out so if the rocket flies to far to the right, you get a trap
+;        su xpos
+;        cp loop_exit
 
 ;         speed = math.sqrt(xspeed*xspeed + yspeed*yspeed)
 ; the sqrt isn't working quite yet...  for cases where the angle is close to 0 or 90 degrees
@@ -121,6 +124,16 @@ loop:
 ;          ad tmp1
 ;          sp SQRT
 ;          ts speed
+
+;          ; check for Speed less than either xspeed or yspeed.
+;          su xspeed     ; if xspeed < speed, we're good
+;          cp ytest1
+;          
+;          ca xspeed
+;          ts speed      ; correct an error in speed
+;          
+;  ytest1: ca yspeed
+;          cp negYtest
                 
         ; the following stands in for lack of sqrt (so far); "speed = abs(xspeed) + abs(yspeed)"        
         ca xspeed
@@ -189,7 +202,7 @@ no_fuel:
         rc 0          ; Draw a pont with ACC = x
 
 draw_baseline:
-        ca zero
+        ca y_baseline
         ts y_arg          
         ca const_2
         ts x_arg
@@ -207,16 +220,17 @@ draw_fuel_guage:
 
         ca const_2
         ts x_arg
-        ca zero
+        ca y_baseline
         ts y_arg          
         ca fuel
-        srh 8
+        srh 6
         ts y_len          ; total length of line in pixels
         sp draw_y_line
 
         
         ca fuel           ; draw a point at the end of the line
-        srh 1
+        ;srh 1
+        ad y_baseline
         si scope_point    ; initialize point gen with the y-coord in ACC
         ca const_2
         su const_8
@@ -232,21 +246,24 @@ draw_fuel_guage:
 draw_speed_guage:
         ca const_14
         ts x_arg
-        ca zero
+        ca y_baseline
         ts y_arg          
         ca speed
-        srh 5
+        srh 3
         ts y_len  ; total length of line in pixels
         sp draw_y_line
 
         ca speed           ; draw a point at the end of the line
-        slh 2
+        slh 3
+        ad y_baseline
         si scope_point    ; initialize point gen with the y-coord in ACC
         ca xpos
         ca const_14
         slr 12
         rc 0          ; Draw a point with ACC = x
-
+        
+draw_digits:
+        ca 0          ; placeholder
 ;         
 ;         # mode 1 and 2:
 ;         if mode == 1 or mode == 2 :
@@ -281,8 +298,12 @@ const_10: .word 10
 const_11: .word 11    ; loop counter for 12 iterations
 const_12: .word 12
 const_14: .word 14
+const_31: .word 31
 const_32: .word 32
 const_64: .word 64
+const_128: .word 128
+const_8K:  .word 8102
+const_16K: .word 16384
 
 ; these two constants give the delta values to draw a "maximum short vector"
 horiz_line_seg:    .word 0o174 * 0o400   ; +32 in the top half of the word
@@ -302,9 +323,8 @@ y_len:    .word 0
 draw_x_line:
           ta draw_x_line_ret  ; save the return address
           ca y_arg
-          su const_8    ; shift from 0-15 axis to -8 to +7
-          slr 12        ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
-          si scope_vector    ; initialize vector gen
+          ;slr 11        ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+          si scope_vector    ; initialize vector gen; Y offset in ACC
           ca x_arg
           su const_8    ; shift from 0-15 axis to -8 to +7
           ts x_arg
@@ -321,41 +341,48 @@ draw_x_line_ret:
           
 
 ; subroutine to draw a vertical line
+; x_arg and y_arg give the starting point for the line in 16ths of the screen size
+; y_len gives the length in pixel units
+; The line is drawn as a series of max-len segments, followed by a partial segment 
+; to get the exct length.
 draw_y_line:
           ta draw_y_line_ret  ; save the return address
+          ;.print "draw_y_line y_len=%d, y_arg=%d", y_len, y_arg
           ca y_len
-          su const_32
+          su const_31
           cp draw_last_segment
 
 next_y_seg:          
           ca y_arg
-          slr 12        ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+          ;.print "draw next segment y_len=%d, y_arg=%d", y_len, y_arg
           si scope_vector    ; initialize vector gen with the y-coord in ACC
           ca x_arg
           su const_8    ; shift from 0-15 axis to -8 to +7
-          slr 12        ; gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+          slr 12        ;  +/- 1024 screen coords, multiply by 64 to get to bit 0
           
-          rc vert_line_seg  ; Draw a segment with x=ACC
-          ao y_arg
+          rc vert_line_seg  ; Draw a segment with x=ACC, length=32 in vert_line_seg
+          ca const_32
+          slr 6
+          ad y_arg          ; move up one segment
+          ts y_arg
           ca y_len
-          su const_32
+          su const_32       ; shorten the remaining length by 32
           ts y_len
-          cp draw_y_undo
-          sp next_y_seg
+          su const_31       ; test to see if y_len remaining is less than 32
+          cp draw_last_segment
+          sp next_y_seg     ; otherwise, go round again for the next segment
 
-draw_y_undo: ca y_len
-          ad const_32   ; undo the subtract in the end of the nex_y_seg loop
-          ts y_len
 draw_last_segment:
-          ca y_len
-          slh 2
+          ca y_len      ; pick up remaining length in pixels
+          ;.print "last seg y_len=%d, y_arg=%d", y_len, y_arg
+          slh 2         ; shift into to bits 8-13
           ts y_len
           ca y_arg
-          slr 12        ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+          ;slr 11        ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
           si scope_vector    ; initialize vector gen with the y-coord in ACC
           ca x_arg
           su const_8    ; shift from 0-15 axis to -8 to +7
-          slr 12        ; gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+          slr 12        ;  +/- 1024 screen coords, multiply by 64 to get to bit 0
 draw_seg: rc y_len  ; Draw a segment with x=ACC
 
 draw_y_line_ret:          
