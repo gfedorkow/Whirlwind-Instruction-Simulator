@@ -854,6 +854,9 @@ class PanelClass:
             self.panel_mWW = PanelMicroWWClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
             # self.ff_preset_list = self.panel_mWW.get_ff_preset_list()  # obtain a list of all the FF presets on this panel
             self.switch_list = self.panel_mWW.get_switch_list()  # obtain a list of all the switches on this panel
+            # normally we default to RMIR, but for hnf mode, we need to switch the defuault to LMIR
+            if hnf_program_dispatcher_mode:
+                self.panel_mWW.sw.set_which_mir("LMIR")
         if panel_blinken:
             self.panel_blinken = BlinkenLightsClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
 
