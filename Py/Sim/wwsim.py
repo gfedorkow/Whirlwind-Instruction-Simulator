@@ -688,6 +688,8 @@ def main():
     if args.Panel or args.BlinkenLights or args.MicroWhirlwind:
         cb.panel = control_panel.PanelClass(cb, args.Panel, args.BlinkenLights, args.MicroWhirlwind,
                                             hnf_program_dispatcher_mode=args.HnfProgramDispatcher)
+        if args.HnfProgramDispatcher and not args.QuickStart:
+            cb.log.fatal("HNF Mode ought to work without --Quickstart, but it doesn't (yet)")
 
     # WW programs may read paper tape.  If the simulator is invoked specifically with a
     # name for the file containing paper tape bytes, use it.  If not, try taking the name

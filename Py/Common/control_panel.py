@@ -582,6 +582,10 @@ class PanelXwinClass:
         self.XBOX = 20
         self.win = GraphWin("Control Panel Layout", self.PANEL_X_SIZE, self.PANEL_Y_SIZE)
         self.win.setBackground("Gray30")
+        root = self.win.master
+        # Position the window (e.g., at x=100, y=100)
+        # Format is "width x height + Xoffset + Yoffset"
+        root.geometry('+80+100')
 
         self.y_step = 20
         self.x_step = 20

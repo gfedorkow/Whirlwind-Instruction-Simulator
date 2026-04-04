@@ -1939,6 +1939,10 @@ class XwinCrt:
 
             win_name = "Whirlwind CoreFile: %s" % cb.CoreFileName
             self.win = self.gfx.GraphWin(win_name, self.WIN_MAX_COORD, win_y_size, autoflush=False)
+            root = self.win.master
+            # Position the window (e.g., at x=100, y=100)
+            # Format is "width x height + Xoffset + Yoffset"
+            root.geometry('+600+100')
 
             self.win.setBackground("Gray10")
             if cb.museum_mode:
