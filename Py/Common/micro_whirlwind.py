@@ -605,9 +605,9 @@ class MappedSwitchClass:
                 row = key // 10
                 col = key % 10
                 button_press = self.u3_switch_map[col](row, col)
+                self.button_pressed = True
                 if MwwPanelDebug: self.log.info("Pressed U3 %s: row=%d, col=%d" % (button_press, row, col))
                 if button_press:
-                    self.button_pressed = True
                     return button_press
         elif self.tca84_u4.available() > 0:
             key = self.tca84_u4.getEvent()

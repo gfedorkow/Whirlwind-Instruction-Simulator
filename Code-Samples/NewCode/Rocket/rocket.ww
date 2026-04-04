@@ -6,6 +6,8 @@
 ;   without air resistance
 ; """
 
+        .dbwgt c_fuel 0o400
+
         .org 0
 zero:   .word 0
 one:    .word 1
@@ -50,11 +52,11 @@ burn:           .word +0.04     ; +0.03
 
 ; constants
 ;                 scaled number     unscaled number
-c_miny:         .word -0.45       ;      -0.1    ; slightly below ground level
+c_miny:         .word -0.45      ;      -0.1    ; slightly below ground level, i.e. y_baseline
 c_minx:         .word -0.45
-c_maxx:         .word +0.45       ;      +0.9
-c_maxy:         .word +0.45       ;      +0.9  
-c_fuel:         .word +0.7       ;      +0.99
+c_maxx:         .word +0.45      ;      +0.9
+c_maxy:         .word +0.45      ;      +0.9  
+c_fuel:         .word +0.7       ; initial fuel load
 y_baseline:     .word -0.4       ; y-axis position of the 'zero point'
 
 ; dynamic variables
@@ -107,9 +109,9 @@ loop:
         ca c_maxy
         su ypos
         cp loop_exit
-        ca c_maxx
-        su xpos
-        cp loop_exit
+;        ca c_maxx      ; comment these out so if the rocket flies to far to the right, you get a trap
+;        su xpos
+;        cp loop_exit
 
 ;         speed = math.sqrt(xspeed*xspeed + yspeed*yspeed)
 ; the sqrt isn't working quite yet...  for cases where the angle is close to 0 or 90 degrees
