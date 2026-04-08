@@ -1729,7 +1729,7 @@ def main():
         tests += 1
 
     if args.MicroWhirlwind:
-        mWW = control_panel.PanelClass(cb.log, None, panel_microWW=True)
+        mWW = control_panel.PanelClass(cb, None, panel_microWW=True)
         tests += 1
 
 
