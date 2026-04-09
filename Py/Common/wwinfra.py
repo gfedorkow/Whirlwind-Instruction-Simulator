@@ -1111,7 +1111,10 @@ class CorememClass:
             else:
                 if self._toggle_switch_mem_default[addr][0] != val:
                     if not force and self._toggle_switch_mem_default[addr][1]:
-                        if not self.cb.no_toggle_switch_warn:
+                        # warning if some program writes to a read-only toggle switch
+                        # The catch is that programs do often write to address zero, knowing that
+                        # there's no side effect
+                        if not self.cb.no_toggle_switch_warn and addr != 0:
                             self.cb.log.warn("Can't write a read-only toggle switch at addr=0o%o" % addr)
                         return
                     if force and self._toggle_switch_mem_default[addr][1]:  # issue a warning if it's Read Only
@@ -1939,6 +1942,10 @@ class XwinCrt:
 
             win_name = "Whirlwind CoreFile: %s" % cb.CoreFileName
             self.win = self.gfx.GraphWin(win_name, self.WIN_MAX_COORD, win_y_size, autoflush=False)
+            root = self.win.master
+            # Position the window (e.g., at x=100, y=100)
+            # Format is "width x height + Xoffset + Yoffset"
+            root.geometry('+600+100')
 
             self.win.setBackground("Gray10")
             if cb.museum_mode:

@@ -6,7 +6,7 @@
 ;   without air resistance
 ; """
 
-        .dbwgt c_fuel 0o400
+        .dbwgt c_fuel, 0o400
 
         .org 0
 zero:   .word 0
@@ -43,7 +43,7 @@ start:  sp main
 ;               
 ;  definitions of initial condidtions
 launchdir:      .word 87   ; degrees; not used directly
-cos_launchdir:  .word +0.2   ;+0.075     ;+0.05233
+cos_launchdir:  .word +0.1   ;+0.075     ;+0.05233
 sin_launchdir:  .word +0.99
 grav:           .word +0.0015    ;+0.003
 launch_speed:   .word +0.01     ; initial velocity at launch
@@ -116,33 +116,23 @@ loop:
 ;         speed = math.sqrt(xspeed*xspeed + yspeed*yspeed)
 ; the sqrt isn't working quite yet...  for cases where the angle is close to 0 or 90 degrees
 ;   in which case, the sqrt error may make a result smaller than the larger of the two speed vars
-;          ca xspeed
-;          mh xspeed
-;          ts tmp1
-;          ca yspeed
-;          mh yspeed
-;          ad tmp1
-;          sp SQRT
-;          ts speed
-
-;          ; check for Speed less than either xspeed or yspeed.
-;          su xspeed     ; if xspeed < speed, we're good
-;          cp ytest1
-;          
-;          ca xspeed
-;          ts speed      ; correct an error in speed
-;          
-;  ytest1: ca yspeed
-;          cp negYtest
-                
-        ; the following stands in for lack of sqrt (so far); "speed = abs(xspeed) + abs(yspeed)"        
         ca xspeed
-        dm zero
+        mh xspeed
         ts tmp1
         ca yspeed
-        dm zero
+        mh yspeed
         ad tmp1
+        sp SQRT
         ts speed
+                
+        ; the following stands in for lack of sqrt (so far); "speed = abs(xspeed) + abs(yspeed)"        
+;        ca xspeed
+;        dm zero
+;        ts tmp1
+;        ca yspeed
+;        dm zero
+;        ad tmp1
+;        ts speed
         
 ;         # accelerate if still fuel
 ;         if fuel > 0.0 :
@@ -298,6 +288,7 @@ const_10: .word 10
 const_11: .word 11    ; loop counter for 12 iterations
 const_12: .word 12
 const_14: .word 14
+const_15: .word 15
 const_31: .word 31
 const_32: .word 32
 const_64: .word 64
@@ -393,6 +384,9 @@ draw_y_line_ret:
 ; SUBROUTINE: SQRT
 ; Compute fixed-point square root via Newton-Raphson iteration.
 ; written by Claude.ai & guy, Mar 30, 2026
+; [contrary to Claude's assertion, this sqrt approximation is off by
+; much more than one LSB; There's a big correction factor at the end to
+; prevent overflows elsewhere]
 ;
 ; Input:  AC = S, fixed-point, 0 < S < 1
 ;         (1.0 = 0o077777, 0.25 = 0o020000, etc.)
@@ -478,6 +472,7 @@ SQRT:
         ca   SQEST
         srh  1
         ad   sqtmp
+        ad   const_15    ; ensure the result is greater or equal to the actual sqrt
 
 SQRET:  sp   0
 
