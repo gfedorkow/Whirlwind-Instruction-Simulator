@@ -16,6 +16,9 @@ Pair with the BlueTooth keyboard
 mkdir git-token
 chmod 700 git-token
 
+# use the desktop to set the screen wallpaper
+# set the screen blank timeout in .bash_profile
+xset dpms 7200 7200 7200
 
 # run the installkit.sh script
 #    copy in 
@@ -44,3 +47,8 @@ apt install python3-screeninfo
 
 # set up auto-login -- .config/autostart
 # (How's this done again??)
+
+# install PyCharm; start with a generic app installer called pi-apps
+wget -qO- https://raw.githubusercontent.com/Botspot/pi-apps/master/install | bash
+#  instructions in https://github.com/Botspot/pi-apps
+

@@ -127,8 +127,8 @@ class PanelMicroWWClass:
 
     # return a flag that says if any button has been pressed since the last check
     def test_for_MIR_button_press(self):
-        pressed = self.sw.button_pressed
-        self.sw.button_pressed = False
+        pressed = self.sw.mir_button_pressed
+        self.sw.mir_button_pressed = False
         return pressed
 
 
@@ -148,6 +148,8 @@ class PanelMicroWWClass:
                                     run_state=cb.sim_state != cb.SIM_STATE_STOP, alarm_state=alarm_state)
         bn = self.check_buttons()
         if bn:
+            if cb.panel.hnf_program_dispatcher:
+                cb.panel.hnf_program_dispatcher.reset_inactivity_timer()
             if bn in self.local_state_change_buttons:
                 self.local_state_change(bn)
             cpu_control_switches = \
@@ -557,7 +559,7 @@ class MappedSwitchClass:
         self.tca84_u4 = tc_init_u4(log, i2c_bus.bus, TCA8414_1_ADDR)
         # self.i2c_bus = smbus2.SMBus(1)
         if MwwPanelDebug: self.log.info("  tca init done")
-        self.button_pressed = False  # This is a mailbox to signal six levels up that a button has been pressed
+        self.mir_button_pressed = False  # This is a mailbox to signal six levels up that a button has been pressed
 
 
         self.tca84_u4.init_gp_out()
@@ -630,9 +632,8 @@ class MappedSwitchClass:
 #                    time.sleep(3)
 #                    button_press = input("type function button name: ")
 
-        if button_press:
-            self.button_pressed = True  # This is a mailbox to signal six levels up that a button has been pressed
         return button_press
+
 
     def fn_no_sw(self, row, col):
         self.log.warn("unknown switch row %d, col %d" %(row, col))
@@ -692,6 +693,16 @@ class MappedSwitchClass:
         self.md.set_preset_switch_leds(pc=regf, pc_bank=None)
 
 
+    def set_which_mir(self, mir_name):
+        if mir_name == "RMIR":
+            self.md.which_mir = 1  # switch to Right MIR
+        elif mir_name == "LMIR":
+            self.md.which_mir = 0   # switch to Right MIR
+        else:
+            self.log.fatal("trying to set_which_mir to %s" % mir_name)
+
+
+
     def fn_mir_sw(self, row, col):
         # mir buttons are columns 0-5, rows 0-7
         activate = 0
@@ -712,6 +723,7 @@ class MappedSwitchClass:
                 if MwwPanelDebug: self.log.info("Upper Activate Button")
         else:
             # if MwwPanelDebug: self.log.info("mir switch row %d, col %d" %(row, col))
+            self.mir_button_pressed = True
             reg = self.md.mir_state[self.md.which_mir]
             val = row & 7  # it can't be more than three bits anyways...
             mask = 0o177777 ^ (7 << 3 * ((5 - col)))   # mir switches are col 0-5

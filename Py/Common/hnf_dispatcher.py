@@ -123,8 +123,9 @@ class HnfDispatcherClass:
         # cache the length of the timeout allowed for the current program; set when the program is dispatched
         self.running_time = 0
 
-        # root = os.getenv("WWROOT")
-        root = "c:/Users/guyfe/Documents/guy/History-of-Computing/Whirlwind/GitHub"
+        root = os.getenv("WWROOT")
+        # root = "/home/guyfe/WW/GitHub"
+        # root = "c:/Users/guyfe/Documents/guy/History-of-Computing/Whirlwind/GitHub"
         if root:
             self.code_root = root + "/Code-Samples/"
         else:
@@ -139,6 +140,7 @@ class HnfDispatcherClass:
         if (self.stop_at_time):
             now = time.time()
             if now > self.stop_at_time:
+                t1 = now - self.stop_at_time
                 change = True
                 cb.log.info(" Inactivity Timeout"  )
                 #  If the next_app has a MIR Switch Value, write it to the LMIR
