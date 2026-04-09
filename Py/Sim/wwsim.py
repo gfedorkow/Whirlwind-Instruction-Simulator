@@ -562,7 +562,7 @@ def main_run_sim(args, cb):
     if core_dump_file_name is not None:
         write_core_dump(cb, core_dump_file_name, CoreMem)
 
-    del CoreMem     # Not sure if this is needed, but I seem to have explicitly
+    # del CoreMem     # Not sure if this is needed, but I seem to have explicitly
                     # remove this instance to make it completely go away in HNF Mode
     # LAS 10/5/25 Removed log output from these
 
