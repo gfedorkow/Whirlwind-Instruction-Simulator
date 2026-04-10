@@ -1567,6 +1567,8 @@ class MappedDisplayTestDriverClass:
         self.reg_list.append(RegListClass(var_name=self.ff3_preset,  num_bits=16, fn="preset"))  # 7
 
         self.reg_list.append(RegListClass(var_name=self.mir_preset,  num_bits=16, fn="mir_preset"))  # 8
+        self.mir_state = [0]*2  # two element array to remember the MIR settings, Left=0, Right=1
+        self.which_mir = 1      # this element remembers which MIR value to display
 
 
     def step(self, delay):
@@ -1594,6 +1596,10 @@ class MappedDisplayTestDriverClass:
 
         time.sleep(delay)
 
+    def set_mir_preset_switch_leds(self, pc=None, pc_bank=None, ff2=None, ff3=None, bank_test=False):
+        pass
+    def read_preset_switch_leds(self):
+        return 0
 
 # --------------------
 # this module gives a standalone test program that exercises
