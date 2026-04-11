@@ -1357,8 +1357,8 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             # We have to parse the items later to get all the symbolic addresses and their translations at once
             # Format:  %DbWgt: <addr> [increment]
             args = input_minus_comment.split()[1:]
-            if len(args) < 1 or len(args) > 3:
-                cb.log.warn("read_core: %%DbWgt takes one, two or three args, got %d" % len(args))
+            if len(args) < 1 or len(args) > 5:
+                cb.log.warn("read_core: %%DbWgt takes from one to five args, got %d" % len(args))
             screen_debug_widgets.append(args)
 
         else:
@@ -1658,7 +1658,9 @@ class ScreenDebugWidgetClass:
         self.mem_addrs = []   # physical address to be monitored
         self.labels = []      # label that matches the address, if any
         self.py_labels = []      # label that matches the address, if any
-        self.increments = []  # amount to be added when the 'increment' key is hit
+        self.increments = []     # amount to be added when the 'increment' key is hit
+        self.mins = []           # min permitted value of widget
+        self.maxes = []          # max permitted value of widget
         self.format_str = []  # how to format the widget value when printing; should be "%d", "%o", etc
 
         # screen print lines (i.e., not from core memory, but strings created by a python stmt)
@@ -1694,11 +1696,13 @@ class ScreenDebugWidgetClass:
         self.y_delta = (self.point_size + 5) * int(self.gfx_scale_factor)
 
 
-    def add_widget(self, cb, addr, label, py_label, increment, format_str):
+    def add_widget(self, cb, addr, label, py_label, increment, min, max, format_str):
         self.mem_addrs.append(addr)
         self.labels.append(label)
         self.py_labels.append(py_label)
         self.increments.append(increment)
+        self.mins.append(min)
+        self.maxes.append(max)
         self.format_str.append(format_str)
         self.input_selector = 0
 
@@ -1805,6 +1809,9 @@ class ScreenDebugWidgetClass:
             #  For a WW var, read the current value, add or subtract (and wrap), then write it back
             rd = cm.rd(addr)
             incr = self.increments[wgt]
+            # LAS 4/8/26 Added min and max here as a placeholder -- no checking is performed yet
+            min = self.mins[wgt]
+            max = self.maxes[wgt]
             if direction_up:
                 wr = rd + incr
                 if rd <= 0o77777 and wr >= 0o77777:  # don't roll over from Max-Plus to Max-Minus

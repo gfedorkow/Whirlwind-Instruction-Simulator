@@ -1,0 +1,3 @@
+Error: Line 9: Invalid keyword parameter xxx. Legal names are ['incr', 'min', 'max', 'fmt']:
+.if test_error .dbwgt 0o42, incr = 57, min = 42, max = 99, fmt = "%o", xxx = 570
+Error Count = 1; output files suppressed
