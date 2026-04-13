@@ -45,6 +45,10 @@ import signal
 from wwcpu import CpuClass
 
 from typing import List, Dict, Tuple, Sequence, Union, Any
+from mem_top import mem_top
+import memory_graph as mg
+# from pympler import tracker
+# MemTracker = tracker.SummaryTracker()
 
 TTYoutput = []
 Debug = False
@@ -129,6 +133,9 @@ def write_core_dump(cb, core_dump_file_name, cm):
 # Whirlwind core memory variables are identified with either the usual label or numeric core addresses.
 # Variables in the python environment are preceded by a dot, followed by a Python var name, scoped to run
 # in the CPU object (I think!).
+# Modified Mar 26, 2026 to allow the debug widget to show/control Switch Register settings.  If the arg starts
+# with a '%' we'll try looking it up in the Switch table.  The switch name is stored with the % in the same list
+# as Py labels.
 def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
     cb.DebugWidgetPyVars = wwinfra.DebugWidgetPyVarsClass(cb)
     for args in dbwgt_list:
@@ -150,6 +157,12 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
                 eval("cb.DebugWidgetPyVars." + py_wgt_label)
             except AttributeError:
                 cb.log.warn("Debug Widget: Can't find Python Label 'cb.%s'" % py_wgt_label)
+                py_wgt_label = ''
+        if args[0][0] == '%':
+            address = -1
+            py_wgt_label = args[0]
+            if cb.cpu.cpu_switches.validate_switch_register_name(args[0][1:]) == False:
+                cb.log.warn("Debug Widget: Can't find switch Label '%s'" % py_wgt_label[1:])
                 py_wgt_label = ''
         elif args[0][0].isdigit():
             address = int(args[0], 8)
@@ -214,6 +227,8 @@ def poll_sim_io(cpu, cb):
             key = cpu.scope.crt.win.checkKey()
         if key != '':
             print("key: %s, 0x%x" % (key, ord(key[0])))
+            if cb.panel and cb.panel.hnf_program_dispatcher:
+                cb.panel.hnf_program_dispatcher.reset_inactivity_timer()
         if key == 'q' or key == 'Q':
             ret = cb.QUIT_ALARM
         if wgt and key == "Up":
@@ -277,6 +292,8 @@ def main_run_sim(args, cb):
     if cpu.isa_1950 == False and args.Radar:
         cb.log.fatal("Radar device can only be used with 1950 ISA")
 
+    if cb.panel and cb.panel.hnf_program_dispatcher:
+        cb.panel.hnf_program_dispatcher.apply_switch_presets(cpu)
     flowgraph = None
     if args.FlowGraph:
         flowgraph = ww_flow_graph.FlowGraph (args.FlowGraph, args.FlowGraphOutFile, args.FlowGraphOutDir, cb)
@@ -408,6 +425,10 @@ def main_run_sim(args, cb):
                 if cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # just idle here, watching for mouse clicks on the panel
                     alarm_state = cb.QUIT_ALARM
                     break  # bail out of the While True loop if display update says to stop due to Red-X hit
+                if args.HnfProgramDispatcher:
+                    if cb.panel.hnf_program_dispatcher.test_for_mir_change(cb):
+                        alarm_state = cb.DISPATCHER_ALARM
+                        break  # bail out if there was a timeouot
                 time.sleep(0.1)
                 continue
 
@@ -435,6 +456,10 @@ def main_run_sim(args, cb):
                 if cb.panel:
                     if cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # watch for mouse clicks on the panel
                         exit_alarm = cb.QUIT_ALARM
+                    if args.HnfProgramDispatcher:
+                        if cb.panel.hnf_program_dispatcher.test_for_mir_change(cb):
+                            alarm_state = cb.DISPATCHER_ALARM
+
                     if cb.sim_state == cb.SIM_STATE_READIN:
                         alarm_state = cb.READIN_ALARM
                         break
@@ -481,11 +506,15 @@ def main_run_sim(args, cb):
                         cb.sim_state = cb.SIM_STATE_STOP
 #                if cb.panel and cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # watch for mouse clicks on the panel
 #                    break
+                if (alarm_state == cb.DISPATCHER_ALARM):
+                    cb.panel.hnf_program_dispatcher.dispatch_to_core(cb)
+                    break
                 else:
                     # the normal case with cmd-line wwsim is to stop on an alarm; if the command line flag says not to, we'll try to keep going
                     # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
                     if not args.NoAlarmStop or \
-                            alarm_state == cb.QUIT_ALARM  or alarm_state == cb.HALT_ALARM or alarm_state == cb.READIN_ALARM:
+                            alarm_state == cb.QUIT_ALARM  or alarm_state == cb.HALT_ALARM or \
+                            alarm_state == cb.READIN_ALARM or alarm_state == cb.DISPATCHER_ALARM:
                         break
             sim_cycle += 1
             checkpoint_cycle_interval = 2000000
@@ -496,6 +525,10 @@ def main_run_sim(args, cb):
                 cycle_time = interval * 1000000 / checkpoint_cycle_interval
                 print("cycle %2.1fM; %4.1f usec/instruction, mem=%dMB" %
                       (sim_cycle / (1000000.0), cycle_time, psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
+
+                # debug memory leaks
+                # print(mem_top())
+
             if cycle_limit and sim_cycle == cycle_limit:
                 if not cb.museum_mode:  # this is the normal case, not configured for Museum Mode forever-cycles
                     cb.log.warn("Cycle Count Exceeded")
@@ -536,6 +569,8 @@ def main_run_sim(args, cb):
     if core_dump_file_name is not None:
         write_core_dump(cb, core_dump_file_name, CoreMem)
 
+    # del CoreMem     # Not sure if this is needed, but I seem to have explicitly
+                    # remove this instance to make it completely go away in HNF Mode
     # LAS 10/5/25 Removed log output from these
 
     for d in cpu.IODeviceList:
@@ -572,6 +607,7 @@ def main_run_sim(args, cb):
             if d.crt is not None:
                 if args.NoCloseOnStop:
                     d.crt.get_mouse_blocking()  # wait to see what was on the display in case of a trap
+                d.crt.win.items.clear()
                 d.crt.close_display()
 
         if d.name == "Drum":  # d points to a DrumClass object
@@ -636,6 +672,8 @@ def main():
                         help="File to store Persistent state for WW Drum", type=str)
     parser.add_argument("--MuseumMode",
                         help="Cycle through states endlessly for museum display", action="store_true")
+    parser.add_argument("--HnfProgramDispatcher",
+                        help="Activate the special-purpose Demo Program Dispatcher for use at HNF", action="store_true")
     parser.add_argument("-d", "--Debugger",
                         help="Start simulation under the debugger", action="store_true")
     parser.add_argument("--ZeroizeCore",
@@ -666,7 +704,10 @@ def main():
         cb.log.warn("No BlinkenLights Hardware available")
 
     if args.Panel or args.BlinkenLights or args.MicroWhirlwind:
-        cb.panel = control_panel.PanelClass(cb, args.Panel, args.BlinkenLights, args.MicroWhirlwind)
+        cb.panel = control_panel.PanelClass(cb, args.Panel, args.BlinkenLights, args.MicroWhirlwind,
+                                            hnf_program_dispatcher_mode=args.HnfProgramDispatcher)
+        if args.HnfProgramDispatcher and not args.QuickStart:
+            cb.log.fatal("HNF Mode ought to work without --Quickstart, but it doesn't (yet)")
 
     # WW programs may read paper tape.  If the simulator is invoked specifically with a
     # name for the file containing paper tape bytes, use it.  If not, try taking the name
@@ -724,6 +765,7 @@ def main():
     if "Windows" in platform.platform():
         os.system ("color")
 
+    sim_runs_count = 0   # debug to catch problems after many cycles in HNF mode
     # This loop runs the main part of the simulator.
     # It's a loop so that it can be restarted from the control panel, if that's in use.
     # When the Control Panel is Not in use, the sim halts with any return of an Alarm.
@@ -736,6 +778,13 @@ def main():
                 print("Ran %d cycles; Used mem=%dMB" % (sim_cycle, psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
             if not UseDebugger:
                 break
+#         sim_runs_count += 1
+#         print("Debug - sim_runs_count=%d" % sim_runs_count)
+#         if sim_runs_count > 100:  # debug mem usage
+#             if cb.cpu.IODeviceClass:
+#                 print("gfx items: %d" % len(cb.cpu.IODeviceClass.crt.win.items))
+#                 # mg.show(cb.cpu.IODeviceClass.crt.win, "my_graph.svg")
+#             print(mem_top())
     if CoreMem.corememinfo is not None:
         CoreMem.corememinfo.writeMapFile()
     
