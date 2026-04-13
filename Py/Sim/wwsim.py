@@ -147,6 +147,8 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
         py_wgt_label = ''
         address = 0
         increment = 1
+        min = 1
+        max = 2**16 - 1
         format_str = "0o%o"   # by default, numbers should be displayed as octal
         if args[0][0] == '.':
             address = -1
@@ -180,10 +182,15 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
                 increment = int(args[1], 8)
             except ValueError:
                 print("can't parse Debug Widget increment arg %s in %s" % (args[1], args[0]))
-        if len(args) == 3:
+        if len(args) >= 3:
             format_str = args[2]
+        if len(args) >= 4:
+            min = args[3]
+        if len(args) == 5:
+            max = args[4]
+
         if address >= 0 or len(py_wgt_label):
-            dbwgt.add_widget(cb, address, label, py_wgt_label, increment, format_str)
+            dbwgt.add_widget(cb, address, label, py_wgt_label, increment, min, max, format_str)
 
 #
 # ############# Main #############
