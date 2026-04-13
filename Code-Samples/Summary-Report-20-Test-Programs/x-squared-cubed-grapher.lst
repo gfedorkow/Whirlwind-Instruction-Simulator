@@ -1,0 +1,32 @@
+
+                        ; original code
+                        ; 1 ca 10
+                        ; 2 ad 11
+                        ; 3 qd 10
+                        ; 4 mh 10
+                        ; 5 qd 9
+                        ; 6 mh 10
+                        ; 7 qd 9
+                        ; 8 sp 1
+                        ; (FF register) 9
+                        ; (FF register) 10
+                        ; (FF register) 11
+
+
+                        .org 2         ;  
+@0002:000000       ff9: .word 0         ;  
+@0003:100000      ff10: .word 1.00000   ;  @@ReadBy loop a0044 a0046 
+                        .org 5         ;  
+@0005:000400      ff11: .word 0.00400   ;  @@ReadBy a0041 
+
+                        .org 0o40      ;  
+@0040:100003      loop: ca   ff10      ;  @@JumpedToBy a0050 
+@0041:110005            ad   ff11      ;  
+@0042:030003            qh   ff10      ;  
+@0043:034003            qd   ff10      ;  
+@0044:144003            mh   ff10      ;  
+@0045:034002            qd   ff9       ;  
+@0046:144003            mh   ff10      ;  
+@0047:034002            qd   ff9       ;  
+@0050:074040            sp   loop      ;  
+

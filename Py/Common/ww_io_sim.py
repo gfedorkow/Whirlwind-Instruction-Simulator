@@ -969,7 +969,7 @@ class InterventionAndActivateClass:
             self.activate_reg = device
             getiolog().info("SI: configured Activate device %o" % self.activate_reg)
             return self.cb.NO_ALARM
-        else:  # i.e., if the device is #2 to #32d, it's an Activate register
+        else:  # i.e., if the device is #2 to #32d, it's an Intervention register
             self.intervention_reg = device
             if device in self.intervention_reg_name:
                 name = self.intervention_reg_name[device]

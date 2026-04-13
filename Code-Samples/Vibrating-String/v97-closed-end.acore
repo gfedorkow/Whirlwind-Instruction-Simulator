@@ -25,6 +25,8 @@
 @C0230: 0040621 0040711 0130231 0130230 0114244 0070224 0074040 0074041 
 @C0240: 0000000 0000000 0000000 0040621 0040707  None    None    None   
 @C0620: 0000000  None    None    None    None    None    None    None   
+; initialize the last word in the data area to avoid a simulator error warning; added Mar 5, 2026
+@C0720: 0000000
 @S0002: scope_amp
 @S0003: elastic
 @S0040: c1

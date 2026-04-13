@@ -445,6 +445,7 @@ class ConstWWbitClass:
         self.DIVIDE_ALARM = 9    # a real alarm for an overflow in Divide
         self.READIN_ALARM = 10   # synthetic alarm to return to ReadIn state due to control panel button
         self.KBD_INT_ALARM = 11  # Keyboard interrupt alarm
+        self.DISPATCHER_ALARM = 12   # synthetic alarm to return to dispatch to a new demo program in HNF mode
 
         self.AlarmMessage = {self.NO_ALARM: "No Alarm",
                              self.OVERFLOW_ALARM: "Overflow Alarm",
@@ -457,7 +458,8 @@ class ConstWWbitClass:
                              self.IO_ERROR_ALARM: "I/O Error Alarm",
                              self.DIVIDE_ALARM: "Divide Error Alarm",
                              self.READIN_ALARM: "Return-to-Readin Alarm",
-                             self.KBD_INT_ALARM: "Keyboard Interrupt"
+                             self.KBD_INT_ALARM: "Keyboard Interrupt",
+                             self.DISPATCHER_ALARM: "Return-to-HNF-Dispatcher Alarm",
                              }
 
         self.COLOR_BR = "\033[93m"  # Yellow color code for Branch Instructions in console trace if color_trace is True
@@ -720,6 +722,23 @@ class ConstWWbitClass:
         return devname
 
 
+class AdjustSwitchWidgetClass:
+    def __init__(self, switch_dict):
+        self.switch_dict = switch_dict
+
+    def rd(self, name):
+        return self.switch_dict[name]
+
+    def incr(self, name, val):
+        if name is None or val is None:
+            return
+        else:
+            self.target.heading += val
+            if self.target.heading >= 360.0:
+                self.target.heading -= 360.0
+            if self.target.heading < 0.0:
+                self.target.heading += 360.0
+
 class WWSwitchClass:
     def __init__(self, cb):
         self.cb = cb
@@ -787,7 +806,14 @@ class WWSwitchClass:
             write_protect_list[val] = False
         return write_protect_list, validated_str
 
+    def validate_switch_register_name(self, name):
+        ret = self.SwitchNameDict.get(name)
+        return ret
 
+
+    # This routine reads a line of text for presetting a switch from a core file, checks the syntax
+    # and them applies the setting.
+    # The routine is also called from the HNF Program Dispatcher to set up special switch conditions
     def parse_switch_directive(self, args):    # return one for error, zero for ok.
         if args[0] == "FFRegAssign":  # special case syntax for assigning FF Register addresses
             args.append('')   # cheap trick; add a null on the end to make sure the next statement doesn't trap
@@ -807,7 +833,6 @@ class WWSwitchClass:
         if name not in self.SwitchNameDict:
             self.cb.log.warn(("No machine switch named %s" % name))
             return 1
-
         try:
             val = int(args[1], 8)
         except:
@@ -818,18 +843,30 @@ class WWSwitchClass:
         if (~mask & val) != 0:
             self.cb.log.warn(("max value for switch %s is 0o%o, got 0o%o" % (name, mask, val)))
             return 1
-        self.SwitchNameDict[name][0] = val
-        if self.cb.panel:
-            self.cb.panel.write_register(panel_name, val)
+        self.set_switch(name, val)
         self.cb.log.info((".SWITCH %s (%s) set to 0o%o" % (name, panel_name, val)))
         return 0
 
+    def set_switch(self, name, val):
+        # go to the panel if it's anything but a Flip Flop Register Preset, or if it's an FF Preset that's in the list
+        if name not in self.SwitchNameDict:
+            self.cb.log.fatal(" unknown switch in panel.set_switch: %s" % name)
+        internal_sw_name = self.SwitchNameDict[name][2]
+        if self.cb.panel and (internal_sw_name in self.cb.panel.switch_list):
+            self.cb.panel.write_register(internal_sw_name, val)
+        self.SwitchNameDict[name][0] = val
+
+
     def read_switch(self, name):
         # go to the panel if it's anything but a Flip Flop Register Preset, or if it's an FF Preset that's in the list
-        if self.cb.panel and (name in self.cb.panel.ff_preset_list or not re.match("FlipFlopPreset", name)):
-            return self.cb.panel.read_register(self.SwitchNameDict[name][2])
+        if name not in self.SwitchNameDict:
+            self.cb.log.fatal(" unknown switch in panel.read_switch: %s" % name)
+        internal_sw_name = self.SwitchNameDict[name][2]
+        if self.cb.panel and (internal_sw_name in self.cb.panel.switch_list):
+            return self.cb.panel.read_register(internal_sw_name)
         else:
             return self.SwitchNameDict[name][0]
+
 
     def dump_switches(self):
         for name in self.SwitchNameDict:
@@ -1075,7 +1112,10 @@ class CorememClass:
             else:
                 if self._toggle_switch_mem_default[addr][0] != val:
                     if not force and self._toggle_switch_mem_default[addr][1]:
-                        if not self.cb.no_toggle_switch_warn:
+                        # warning if some program writes to a read-only toggle switch
+                        # The catch is that programs do often write to address zero, knowing that
+                        # there's no side effect
+                        if not self.cb.no_toggle_switch_warn and addr != 0:
                             self.cb.log.warn("Can't write a read-only toggle switch at addr=0o%o" % addr)
                         return
                     if force and self._toggle_switch_mem_default[addr][1]:  # issue a warning if it's Read Only
@@ -1709,15 +1749,28 @@ class ScreenDebugWidgetClass:
     def add_screen_print(self, line, text):
         self.screen_print_text[line] = text
 
+    # This routine links a Debug Widget with a Python function that controls a variable.
+    # If the var_name is just a plain label, we'll try to dispatch to a rd() or incr() function
+    # If the Var starts with a %, we'll interpret it as a "switch", as in SwitchNameDict[]
     def eval_py_var(self, var_name, direction_up=None, incr=1):
+        val = None
         if direction_up is None:
             op = ".rd()"
-        elif direction_up == True:
-            op = ".incr(%d)" % incr
         else:
-            op = ".incr(%d)" % -incr
-        name_and_context = "self.cb.DebugWidgetPyVars." + var_name + op
-        val = eval(name_and_context)
+            if direction_up == False:
+                incr = -incr   # just reverse the sign
+            op = ".incr(%d)" % incr
+
+        if var_name[0] != "%":  # This is an ordinary Python debug widget, which calls into its own class
+            name_and_context = "self.cb.DebugWidgetPyVars." + var_name + op
+            val = eval(name_and_context)
+        else:       # Otherwise
+            # direction==None, we just return the current value of the switch
+            # If direction!=None, we add incr the value and write it back
+            val = self.cb.cpu.cpu_switches.read_switch(var_name[1:])
+            if direction_up is not None:
+                val += incr
+                self.cb.cpu.cpu_switches.set_switch(var_name[1:], val)
         return val
 
 
@@ -1902,6 +1955,10 @@ class XwinCrt:
 
             win_name = "Whirlwind CoreFile: %s" % cb.CoreFileName
             self.win = self.gfx.GraphWin(win_name, self.WIN_MAX_COORD, win_y_size, autoflush=False)
+            root = self.win.master
+            # Position the window (e.g., at x=100, y=100)
+            # Format is "width x height + Xoffset + Yoffset"
+            root.geometry('+600+100')
 
             self.win.setBackground("Gray10")
             if cb.museum_mode:

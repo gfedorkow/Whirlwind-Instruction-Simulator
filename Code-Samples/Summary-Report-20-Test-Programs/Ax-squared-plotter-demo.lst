@@ -1,0 +1,64 @@
+
+                        ; original code from Q3 1949 Summary Report
+                        ; pg 37
+
+                        ; 1    ca 16
+                        ; 2    mh 21
+                        ; 3    mh
+                        ; 4    qd
+                        ; 5    OS
+                        ; 6    qd
+                        ; 7    ao
+                        ; 8    su
+                        ; 9    cp
+                        ; 10   ca 21
+                        ; 11   ad 22
+                        ; 12   ts 21
+                        ; 13   ca 20
+                        ; 14   ts 1
+                        ; 15   sp 1
+
+                        ; 16  0.111111111111111
+                        ; 17  0.100000000000000
+                        ; 18  0.010000000000000
+                        ; 19  0.000000000000000
+                        ; 20  ca 16
+
+                        .isa 1950      ;  
+                        .org 2         ;  
+@0002:100000      ff21: .word 1.00000   ; contains 'x' @@WrittenBy a0055 ReadBy start a0043 a0044 a0053 
+                        .org 5         ;  
+@0005:000400      ff22: .word 0.00400   ;  @@ReadBy a0054 
+@0006:100047      ff23: ca   index + 5  ;  @@ReadBy a0051 
+@0007:000000      ff24: .word 0.00000   ;  @@ReadBy a0046 
+
+
+                        .org 32        ;  
+@0040:100002     start: ca   ff21      ;  @@JumpedToBy a0052 a0060 
+@0041:030000            qh   0         ; use X to set Horizontal; note side effect of copying AC to 0 
+@0042:100061     index: ca   c1        ; 1 @@WrittenBy a0050 a0057 ReadBy a0050 c5 
+@0043:144002            mh   ff21      ; 2 
+@0044:144002            mh   ff21      ; 3 
+                        ; qh 0             ; 3a set horizontal position; copy AC to /dev/null
+@0045:034007            qd   ff24      ; 4 
+@0046:104007            cs   ff24      ; 5 
+@0047:034007            qd   ff24      ; 6 @@ReadBy ff23 
+@0050:130042            ao   index     ; 7 
+@0051:114006            su   ff23      ; 8 
+@0052:070040            cp   start     ; 9 
+@0053:100002            ca   ff21      ; 10 
+@0054:110005            ad   ff22      ; 11 
+@0055:040002            ts   ff21      ; 12 
+@0056:100065            ca   c5        ; 13 
+@0057:040042            ts   index     ; 14 
+@0060:074040            sp   start     ; 15 
+
+                        ; constants
+@0061:077777        c1: .word 0.77777   ; 16   1 - 2**-15 @@ReadBy index 
+@0062:040000        c2: .word 0.40000   ; 17   1/2 
+@0063:020000        c3: .word 0.20000   ; 18   1/4 
+@0064:000000        c4: .word 0.00000   ; 19   zero 
+@0065:100042        c5: ca   index     ; 20   value to reinitialize location Start @@ReadBy a0056 
+
+                        .jumpto start     ;  
+
