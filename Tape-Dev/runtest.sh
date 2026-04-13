@@ -41,7 +41,7 @@ dotest () {
 	python $utd $test_path --Ch7Format |& egrep -v "FileName|input file" >&wwutd.log
 	diff -s TestRefs/wwutd.log wwutd.log
 	status1=$?	
-	diff -s TestRefs/${test_file_base}.fc ${test_file_base}.fc
+	diff -s --ignore-matching-lines="%File" TestRefs/${test_file_base}.fc ${test_file_base}.fc
 	status2=$?
 	status=$(($status1 + $status2))
 	if [ "$status" == "0" ];
@@ -59,10 +59,10 @@ dotest () {
 	python $utd $test_path --Ch7Format |& egrep -v "FileName|input file" >&wwutd.hmg.log
 	diff -s TestRefs/wwutd.hmg.log wwutd.hmg.log
 	status3=$?	
-	diff -s TestRefs/${test_file_base}.fc ${test_file_base}.fc
+	diff -s --ignore-matching-lines="%File" TestRefs/${test_file_base}.fc ${test_file_base}.fc
 	status4=$?
 	python $sim -c 10000 -v 102684113_mad_game_m_hurvitz_gs001_fb0.tcore |& egrep -v "cycles" >&wwsim.hmg.log
-	diff -s TestRefs/wwsim.hmg.log wwsim.hmg.log
+	diff -s --ignore-matching-lines="Info: Whirlwind tape file name" TestRefs/wwsim.hmg.log wwsim.hmg.log
 	status5=$?
 	status=$(($status3 + $status4 + $status5))
 	if [ "$status" == "0" ];
@@ -94,7 +94,10 @@ then
 	exit
 elif [ "$1" == "--Build" ];
 then
- 	echo "Nothing to build yet"
+	./runtest.sh --ReadTapes
+	./runtest.sh --DisAsm
+	./runtest.sh --Asm
+	./runtest.sh  --Dot
 	exit
 fi
 if [ $(checkarg "--Test1") == 0 ];
@@ -108,11 +111,20 @@ then
 	./runtest.sh --Test1
 	exit
 fi
+# This option is not needed to produce tcore and other derived files
+if [ $(checkarg "--CopyTapes") == 0 ];
+then
+	echo "Copying tapes *.7ch, *.7CH, and *.tap to tmp..."
+	cd tmp
+	rm *.7ch *.7CH *.tap
+	time /bin/find $tapepath  \( -name "*.7ch" -o -name "*.7CH" -o -name "*.tap" \) -print -exec cp -b {} . \; >&copylog
+	cd ..
+fi
 if [ $(checkarg "--ReadTapes") == 0 ];
 then
 	echo "Producing tcore, ocore, or fc files from all tapes, writing to tmp..."
 	cd tmp
-	time /bin/find $tapepath  \( -name "*.7ch" -o -name "*.7CH" -o -name "*.tap" \) -print -exec python $utd {} \; >&tapelog
+	time /bin/find $tapepath  \( -name "*.7ch" -o -name "*.7CH" -o -name "*.tap" \) -print -exec python $utd --ArchaeoLog {} \; >&tapelog
 	cd ..
 fi
 if [ $(checkarg "--ShortReadTapes") == 0 ];
