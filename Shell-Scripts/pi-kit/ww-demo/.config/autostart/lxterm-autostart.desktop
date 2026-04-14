@@ -1,0 +1,6 @@
+
+[Desktop Entry]
+Encoding=UTF-8
+Name=Terminal autostart
+Comment=Start a terminal and list directory
+Exec=/usr/bin/lxterminal -e '. ~/.bash_profile ; python  ${WWROOT}/Py/Shell/console-shell.py -m ; lxterminal'  

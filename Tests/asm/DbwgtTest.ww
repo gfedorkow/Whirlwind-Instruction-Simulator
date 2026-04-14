@@ -1,0 +1,8 @@
+
+	.include "ErrorFlag.ww"	
+	.dbwgt 0o42, 57, "%o", min = 42
+	.dbwgt 0o42, 57, "%o", min = 42, max = 99
+	.dbwgt 0o42, incr = 57, min = 42, max = 99, fmt = "%o"
+
+.if test_error .dbwgt 0o42, incr = 57, min = 42, max = 99, fmt = "%o", xxx = 570
+

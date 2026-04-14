@@ -925,9 +925,58 @@ literal-digit-seq												Decimal inreger
           the doc.
 		  [Guy: most panels work woith two rosw of lights, one red and one "clear" or "white". 
 
+	* Guy reported a bug where if you use spaces instead of commas in
+      an asm program it does not pick up the error. The top-level
+      parse routine was not checking for end-of-string. [Fixed]
+	- Debugger: Guy reports that if you say "p -h" (to get less
+      verbose output than "h"), it crashes.
+	* Guy requests (see mail from 4/5/26):: 
 
+					    .dbwgt c_fuel 0o400 "%o"
+						.org 0o40
+				c_fuel: .word 0o55
+		
+			  At the moment, turning the knob increments/decrements 'forever',
+			  i.e., wraps positive to negative, etc, with potentially all
+			  kinds of quirky results.  I'd like to extend the syntax to
+			  specify a min and a max value, e.g., something like:
+		  
+				.dbwgt c_fuel, "incr=0o400;max=0o4000;min=0o100", "%o"
+		
+			  I'm not committed to this syntax, but something allowing the sim
+			  to default to 1, 65535 and 0 in the absence of specific
+			  instructions would help.
 
+	  What I did:
 
+	  	  Syntax of .dbwgt is now:
+
+		  		 .dbwgt Address|ParamName [, Incr [, Format [, Min [, Max]]]]
+
+				 or using keyword args, e.g.:
+				
+ 		  		 .dbwgt Address|ParamName, incr = 42, min = 10, max = 999, fmt = "%o"
+
+				 or a combination of the two:
+
+ 		  		 .dbwgt Address|ParamName, [<by-pos arg>,...,<by-pos-arg] [<keyword-arg>, ...,<keyword-arg>]
+	
+		   where by-position args will be accepted in order,
+		   followed by keyword args, and a by-position arg is not
+		   permitted within the keyword-arg list.
+
+		   The core file format has been extended to 5 fields, adding
+		   min and max. The code which proceeses these reads the new
+		   fields, but will also read the old format, so core files
+		   don't need to be reassembled.
+
+		   Min and max default to 1 and 65535 respectively. I added
+		   them to parse_and_save_screen_debug_widgets, and to
+		   ScreenDebugWidgetClass.increment_addr_location.  In the
+		   latter I just added and populated the min and max vars, but
+		   I'll leave it to you to put them to use as required.
+
+		   Let me know of omissions or other issues.
 
 	- C-ish
 	- Get "everything" into git: tape images, images on code, etc.
@@ -1504,56 +1553,9 @@ files. A batch script would normally clear this dir and rebuild the
 files.  It will be active only with a program option --ArchaeoLog.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-archaeobase
-archaeo-base
-
-
-archaeolog
-archaeo-log
-
 ArchaeoLog
-
+Alog
 archaeology
-
-
-
 
 "Everett-Tape-manual-read.7ch", utd-to, "Everett-Tape-manual-read_gs001.tcore"
 "Everett-Tape-manual-read.7ch", utd-to, "Everett-Tape-manual-read_gs002.tcore"
@@ -1572,9 +1574,6 @@ wwutd.44477
 wwutd.23823
 wwasm.43846
 wwdisasm.48282
-
-
-Could reduce random names by using one of the keys but doesn't seem worth it.
 
 log ("Everett-Tape-manual-read.7ch", "utd-to", "Everett-Tape-manual-read_gs001.tcore"
 
@@ -1822,7 +1821,7 @@ VPython isn't bad, but without the source code you're lost, since much
 is omitted from the doc. However I have my doubts that this will be a
 good way to build interactive realistic-looking Whirlwind panels of
 lights, switches, knobs, and meters. VPython/Glowscript has been
-around foe a long time, and has evolved from Python-only to web-based,
+around for a long time, and has evolved from Python-only to web-based,
 with translations to javascript at first but then more recently a
 client-server approach.
 

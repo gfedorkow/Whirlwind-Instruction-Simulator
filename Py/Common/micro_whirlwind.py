@@ -124,6 +124,14 @@ class PanelMicroWWClass:
         button_press = self.sw.check_buttons()
         return button_press
 
+
+    # return a flag that says if any button has been pressed since the last check
+    def test_for_MIR_button_press(self):
+        pressed = self.sw.mir_button_pressed
+        self.sw.mir_button_pressed = False
+        return pressed
+
+
     # def set_cpu_state_lamps(self, cb, sim_state, alarm_state):
 
     def update_panel(self, cb, bank, alarm_state=0, standalone=False, init_PC=None):
@@ -140,6 +148,8 @@ class PanelMicroWWClass:
                                     run_state=cb.sim_state != cb.SIM_STATE_STOP, alarm_state=alarm_state)
         bn = self.check_buttons()
         if bn:
+            if cb.panel.hnf_program_dispatcher:
+                cb.panel.hnf_program_dispatcher.reset_inactivity_timer()
             if bn in self.local_state_change_buttons:
                 self.local_state_change(bn)
             cpu_control_switches = \
@@ -166,8 +176,26 @@ class PanelMicroWWClass:
 
     # The Panels contain a subset of the Flip Flop Register Preset switches; this method returns
     # this list of names supported by this panel
-    def get_ff_preset_list(self):
-        return ["FF02Sw", "FF03Sw"]
+    # def get_ff_preset_list(self):
+    #    return ["FF02Sw", "FF03Sw"]
+
+
+    # The Panel contains a subset of the supported switches; this method returns
+    # this list of names supported by this panel
+    def get_switch_list(self, omit_MIR=False):
+        ret = [
+            "FF02Sw",
+            "FF03Sw",
+            "PC",  # This is actually the PC Preset switches/lights
+            "ActivationReg0",
+            "CheckAlarmSpecial",
+            "StopOnS1",
+            "StopOnAddr",
+        ]
+        if omit_MIR == False:
+            ret.append("LMIR")
+            ret.append("RMIR")
+        return ret
 
 
    # read a register from the switches and lights panel.
@@ -531,6 +559,8 @@ class MappedSwitchClass:
         self.tca84_u4 = tc_init_u4(log, i2c_bus.bus, TCA8414_1_ADDR)
         # self.i2c_bus = smbus2.SMBus(1)
         if MwwPanelDebug: self.log.info("  tca init done")
+        self.mir_button_pressed = False  # This is a mailbox to signal six levels up that a button has been pressed
+
 
         self.tca84_u4.init_gp_out()
         if MwwPanelDebug: self.log.info("  TCA8414 init done")
@@ -577,6 +607,7 @@ class MappedSwitchClass:
                 row = key // 10
                 col = key % 10
                 button_press = self.u3_switch_map[col](row, col)
+                self.button_pressed = True
                 if MwwPanelDebug: self.log.info("Pressed U3 %s: row=%d, col=%d" % (button_press, row, col))
                 if button_press:
                     return button_press
@@ -600,7 +631,9 @@ class MappedSwitchClass:
 #                    print("you pressed ", msvcrt.getch(), " so now i will sleep")
 #                    time.sleep(3)
 #                    button_press = input("type function button name: ")
+
         return button_press
+
 
     def fn_no_sw(self, row, col):
         self.log.warn("unknown switch row %d, col %d" %(row, col))
@@ -660,6 +693,16 @@ class MappedSwitchClass:
         self.md.set_preset_switch_leds(pc=regf, pc_bank=None)
 
 
+    def set_which_mir(self, mir_name):
+        if mir_name == "RMIR":
+            self.md.which_mir = 1  # switch to Right MIR
+        elif mir_name == "LMIR":
+            self.md.which_mir = 0   # switch to Right MIR
+        else:
+            self.log.fatal("trying to set_which_mir to %s" % mir_name)
+
+
+
     def fn_mir_sw(self, row, col):
         # mir buttons are columns 0-5, rows 0-7
         activate = 0
@@ -680,6 +723,7 @@ class MappedSwitchClass:
                 if MwwPanelDebug: self.log.info("Upper Activate Button")
         else:
             # if MwwPanelDebug: self.log.info("mir switch row %d, col %d" %(row, col))
+            self.mir_button_pressed = True
             reg = self.md.mir_state[self.md.which_mir]
             val = row & 7  # it can't be more than three bits anyways...
             mask = 0o177777 ^ (7 << 3 * ((5 - col)))   # mir switches are col 0-5
@@ -1523,6 +1567,8 @@ class MappedDisplayTestDriverClass:
         self.reg_list.append(RegListClass(var_name=self.ff3_preset,  num_bits=16, fn="preset"))  # 7
 
         self.reg_list.append(RegListClass(var_name=self.mir_preset,  num_bits=16, fn="mir_preset"))  # 8
+        self.mir_state = [0]*2  # two element array to remember the MIR settings, Left=0, Right=1
+        self.which_mir = 1      # this element remembers which MIR value to display
 
 
     def step(self, delay):
@@ -1550,6 +1596,10 @@ class MappedDisplayTestDriverClass:
 
         time.sleep(delay)
 
+    def set_mir_preset_switch_leds(self, pc=None, pc_bank=None, ff2=None, ff3=None, bank_test=False):
+        pass
+    def read_preset_switch_leds(self):
+        return 0
 
 # --------------------
 # this module gives a standalone test program that exercises
@@ -1697,7 +1747,7 @@ def main():
         tests += 1
 
     if args.MicroWhirlwind:
-        mWW = control_panel.PanelClass(cb.log, None, panel_microWW=True)
+        mWW = control_panel.PanelClass(cb, None, panel_microWW=True)
         tests += 1
 
 

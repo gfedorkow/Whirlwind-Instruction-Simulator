@@ -12,7 +12,10 @@ cd ~/bin
 cp auto-ping  no-blank  pinger.sh  run-ww  wwasm  ww-shell  wwsim  $GPATH/pi-kit/bin
 
 cd
-cp -r  ~/config-ww $GPATH/pi-kit/config-ww
+cp -r  ~/config-ww $GPATH/pi-kit/
+
+cd /etc
+cp hosts $GPATH/pi-kit/etc
 
 cp ~/History-of-Computing/Whirlwind/GitHub/.git/config  $GPATH/pi-kit/History-of-Computing/Whirlwind/GitHub/.git/
 

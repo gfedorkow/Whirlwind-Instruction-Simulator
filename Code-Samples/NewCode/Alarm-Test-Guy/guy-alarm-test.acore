@@ -1,0 +1,10 @@
+
+; *** Core Image ***
+%File: guy-alarm-test.ww
+%TapeID: 
+@C0040: 0100000 0040047 0100046 0110046 0040047 0074040 0077777 0000000 
+@S0040: main
+@S0046: bignum
+@S0047: answer
+@N0040:  this code simply makes an alarm happen as soon as possible
+@N0043:  integer overflow

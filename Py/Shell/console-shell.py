@@ -46,9 +46,9 @@ Programs = [
     WwAppClass("TicTacToe vs WW", dir="Code-Samples/Tic-Tac-Toe", exec="tic-tac-toe.acore", is_WW=True),
     WwAppClass("R-196 Bounce", dir="Code-Samples/Bounce/BlinkenLights-Bounce", exec="bounce-control-panel.acore", is_WW=True),
     WwAppClass("Bounce w/ Hole", dir="Code-Samples/Bounce/Bounce-Tape-with-Hole", exec="bounce-no-velocity.acore", is_WW=True, args=["--Crt", "10"]),
-    WwAppClass("Mad Game", dir="Code-Samples/Mad-Game", exec="mad-game.acore", is_WW=True),
+    WwAppClass("Mad Game", dir="Code-Samples/Mad-Game", exec="mad-game-annotated.acore", is_WW=True),
     WwAppClass("Black-Jack", dir="Code-Samples/Blackjack", exec="bjack.acore", is_WW=True),
-    WwAppClass("CRT Test", dir="Code-Samples/Diags", exec="crt-test-68_001_fbl00-0-50.tcore", is_WW=True),
+    WwAppClass("CRT Test", dir="Code-Samples/CRT-Test", exec="crt-test-68_001_fbl00-0-50.tcore", is_WW=True),
     WwAppClass("Vibrating String, fixed ends", dir="Code-Samples/Vibrating-String", exec="v97-closed-end.acore", is_WW=True, args=["--NoWarn"]),
     WwAppClass("Vibrating String, open end", dir="Code-Samples/Vibrating-String", exec="v204-open-end.acore", is_WW=True, args=["--NoWarn"]),
     WwAppClass("Nim", dir="Code-Samples/Nim", exec="nim-fb.acore", is_WW=True, args=["--CrtFade", "3"]),
@@ -56,14 +56,16 @@ Programs = [
     WwAppClass("Air Defense", dir="Code-Samples/Track-While-Scan-D-Israel", exec="annotated-track-while-scan.acore", 
                is_WW=True, args=["-D", "-r", "--CrtF", "15", "--NoToggl", "--NoAlarmStop"]),
     WwAppClass("Vector Clock", dir="Code-Samples/Vector-Clock", exec="vector-clock.acore", is_WW=True),
-    WwAppClass("Lorenz Attractor", dir="Code-Samples/Lorenz", exec="lorenz.acore", is_WW=True),
+    WwAppClass("Lorenz Attractor", dir="Code-Samples/NewCode/Lorenz", exec="lorenz.acore", is_WW=True),
     WwAppClass("Rocket", dir="Py/Shell", exec="vecIF.py", is_WW=False),
-    WwAppClass("77 to Exit" ),  # Exit Hack
+    WwAppClass("77 to Exit", exec=None ),  # Exit Hack
 ]
 
 
 def exec_program(pgm, args):
     global Sim_Path
+    if pgm.executable_name is None:
+        return
     exec_dir = WW_Root + '/' + pgm.directory
     sim_path = WW_Root + Sim_Path
     if pgm.is_WW:
@@ -132,7 +134,7 @@ def main():
             print("add --Anal to args")
             args += ["--Anal"]
         choice &= 0o77
-        if choice >= len(Programs):
+        if choice >= len(Programs) - 1:  # The last entry is "press 77 to exit", i.e., not a real thing
             print("\nEnter a number from the list above please")
             continue
         else:

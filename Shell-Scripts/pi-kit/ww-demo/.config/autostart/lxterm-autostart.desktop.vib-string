@@ -1,0 +1,6 @@
+
+[Desktop Entry]
+Encoding=UTF-8
+Name=Terminal autostart
+Comment=Start a terminal and list directory
+Exec=/usr/bin/lxterminal -e 'printenv; bin/wwsim ${WWROOT}/Code-Samples/Vibrating-String/v204-open-end.acore -q -m --Zero ; lxterminal'  

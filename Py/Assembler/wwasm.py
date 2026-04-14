@@ -359,7 +359,7 @@ class AsmInst:
                     s += comment[i]
         return (r, nSemis)
     def listingString (self,
-                       quoteStrings: bool = True,
+                       verbatimStrings: bool = False,
                        minimalListing: bool = False,
                        omitUnrefedLabels: bool = False,
                        omitAutoComment: bool = False) -> str:
@@ -381,7 +381,7 @@ class AsmInst:
             plabel = p.label
         sp1 = sp*(maxLabelLen - len (plabel) - len (dotIf))
         label = "%s%s" % (sp1, plabel) + (":" if plabel != "" else sp)
-        inst = self.opnamePrefix() + p.opname + (sp + p.operand.listingString (quoteStrings = quoteStrings)) if p.operand is not None else ""
+        inst = self.opnamePrefix() + p.opname + (sp + p.operand.listingString (verbatimStrings = verbatimStrings)) if p.operand is not None else ""
         (comment, nSemis) = self.formatComment (p.comment, inst)
         s1 = prefixAddr + sp + dotIf + label + sp 
         s2 = s1 + inst
@@ -836,22 +836,85 @@ class AsmDotJumpToInst (AsmPseudoOpInst):
             self.operandTypeError (val)
 
 class DebugWidgetClass:
-    def __init__(self, lineNo: int, addr: int, paramName: str, incr: int, format: str):
+    def __init__(self, lineNo: int, addr: int, paramName: str, incr: int,
+                 format: str, min: int, max: int):
         self.lineNo = lineNo
         self.addr = addr            # A widget uses either a numerical address or a param name. Addr if paramName is empty
         self.paramName = paramName
         self.incr = incr
         self.format = format
+        self.min = min
+        self.max = max
 
 class AsmDotDbwgtInst (AsmPseudoOpInst):
     def __init__ (self, *args):
         super().__init__ (*args)
+        self.argInfo = {
+            "incr": AsmExprValueType.Integer,
+            "min": AsmExprValueType.Integer,
+            "max": AsmExprValueType.Integer,
+            "fmt": AsmExprValueType.String
+            }
+        self.keywordToValue = {}    # map keyword to AsmExpValue
+        self.keywordToPos = {}      # map keyword string to position of value in comma list
+        self.firstKwPos = None
+        self.nByPosArgs: int = 0
+        self.bail = False           # If pass one finds a fatal issue, pass two will not run
+        pass
+    # Cloned from wwdebug.py
+    # Run fcn on each expr in the comma-expr, or on just the initial expr if
+    # it's not a comma-expr.  Signature of fcn is fcn (expr: AsmExpr, pos: int)
+    def walkCommaExpr (self, exprIn: AsmExpr, fcn):
+        expr = exprIn
+        pos = 0
+        while True:
+            if expr.exprType == AsmExprType.BinaryComma:
+                left = expr.leftSubExpr
+                fcn (left, pos)
+                expr = expr.rightSubExpr
+                pos += 1
+            else:
+                # Assume here that a null expr is considered a "terminator"
+                # and is not of interest
+                if expr.exprType != AsmExprType.Null:
+                    fcn (expr, pos)
+                return
+        pass
+    def setupKeywordInfo (self, expr: AsmExpr, pos: int):
+        if expr.exprType == AsmExprType.Assignment:
+            if expr.leftSubExpr.exprType != AsmExprType.Variable:
+                self.error ("keyword parameter name must be a variable.")
+            else:
+                keyword = expr.leftSubExpr.exprData
+                self.keywordToPos[keyword] = pos
+                self.firstKwPos = pos
+        else:
+            if self.firstKwPos is not None:
+                self.error ("By-position parameters must all precede keyword parameters")
+            else:
+                self.nByPosArgs += 1
+        pass
     def passOneOp (self):
+        self.walkCommaExpr (self.parsedLine.operand, self.setupKeywordInfo)
+        for kw in self.keywordToPos:
+            if kw not in self.argInfo:
+                self.error ("Invalid keyword parameter %s. Legal names are %s" % (kw, str (list (self.argInfo.keys()))))
+                self.bail = True
         pass
     def passTwoOp (self):
-        # We can have a max of three args for the debug widget:
-        #   [Address [, Incr [, Format]]]
-        # Address can be any address expression
+        if self.bail:
+            return
+        # We can have a max of five args for the debug widget:
+        #           .dbwgt Address|ParamName [, Incr [, Format [, Min [, Max]]]]
+        # or using keyword args, e.g.:
+        #           .dbwgt Address|ParamName, incr = 42, min = 10, max = 999, fmt = "%o"
+        # or a combination of the two:
+        #           .dbwgt Address|ParamName, [<by-pos arg>,...,<by-pos-arg] [<keyword-arg>, ...,<keyword-arg>]
+        # where by-position args will be accepted in order, followed by keyword
+        # args, and a by-position arg is not permitted within the keyword-arg
+        # list.
+        #
+        # Address can be any address expression. ParamName is a (quoted) string.
         # Incr is an integer
         # Format is a %-style format string
         env = self.prog.env
@@ -862,40 +925,55 @@ class AsmDotDbwgtInst (AsmPseudoOpInst):
             o = val.value
         addr = 0
         paramName = ""
-        incr = 1
-        format = "%o"
-        if len (o) == 0:
+        self.keywordToValue["incr"] = AsmExprValue (AsmExprValueType.Integer, 1)
+        self.keywordToValue["fmt"] = AsmExprValue (AsmExprValueType.String, "%o")
+        self.keywordToValue["min"] = AsmExprValue (AsmExprValueType.Integer, 1)
+        self.keywordToValue["max"] = AsmExprValue (AsmExprValueType.Integer, 2**16 - 1)
+        n = self.nByPosArgs
+        if n > 3:
+            self.error ("Too many args to .dbwgt")
+            return
+        if n == 0:
             self.error ("Internal error: .dbwgt zero-length operand list")
-        if len (o) >= 1:
+            return
+        if n >= 1:
             if o[0].type == AsmExprValueType.Integer:
                 addr = o[0].value
             elif o[0].type == AsmExprValueType.String:
                 paramName = o[0].value
             else:
                 self.operandTypeError (o[0])
-        if len (o) >= 2:
-            if o[1].type == AsmExprValueType.Integer:
-                incr = o[1].value
+        if n >= 2:
+            if o[1].type == self.argInfo["incr"]:
+                self.keywordToValue["incr"] = o[1]
             else:
                 self.operandTypeError (o[1])
-        if len (o) == 3:
-            if o[2].type == AsmExprValueType.String:
-                format = o[2].value
+        if n == 3:
+            if o[2].type == self.argInfo["fmt"]:
+                self.keywordToValue["fmt"] = o[2]
             else:
                 self.operandTypeError (o[2])
-        self.prog.dbwgtTab.append (DebugWidgetClass (self.parsedLine.lineNo, addr, paramName, incr, format))
+        for kw in self.keywordToPos:
+            val = o[self.keywordToPos[kw]]
+            if val.type == self.argInfo[kw]:
+                self.keywordToValue[kw] = val
+            else:
+                self.operandTypeError (val)
+        self.prog.dbwgtTab.append (DebugWidgetClass (self.parsedLine.lineNo, addr, paramName,
+                                                     self.keywordToValue["incr"].value, self.keywordToValue["fmt"].value,
+                                                     self.keywordToValue["min"].value, self.keywordToValue["max"].value))
 
 class AsmDotExecInst (AsmPseudoOpInst):
     def __init__ (self, *args):
         super().__init__ (*args)
     def listingString (self,
-                       quoteStrings: bool = True,
+                       verbatimStrings: bool = False,
                        minimalListing: bool = False,
                        **kwargs) -> str:
         p = self.parsedLine
         prefixAddr = self.prefixAddrStr() if not minimalListing else ""
         autoComment = self.xrefs.listingString
-        return super().listingString (quoteStrings = False,
+        return super().listingString (verbatimStrings = True,
                                       minimalListing = minimalListing,
                                       **kwargs)
     def passOneOp (self):
@@ -1394,7 +1472,7 @@ class AsmProgram:
             fout.write("%%Switch: %s %s\n" % (s, self.switchTab[s]))
         for w in self.dbwgtTab:
             addrStr = w.paramName if w.paramName != "" else "0o%03o" % w.addr
-            fout.write("%%DbWgt:  %s  0o%02o %s\n" % (addrStr, w.incr, w.format))
+            fout.write("%%DbWgt:  %s  0o%02o %s 0o%02o 0o%02o\n" % (addrStr, w.incr, w.format, w.min, w.max))
         columns = 8
         addr = 0
         while addr < self.coreSize:

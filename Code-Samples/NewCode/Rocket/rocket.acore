@@ -1,0 +1,211 @@
+
+; *** Core Image ***
+%File: rocket.ww
+%TapeID: 
+%DbWgt:  0o054  0o400 %o
+@C0000: 0000000 0000001  None    None    None    None    None    None   
+@C0040: 0074066 0000127 0006315 0077270 0000061 0000510 0000142 0002437 
+@C0050: 0143145 0143145 0034632 0034632 0054632 0146314 0000000 0000000 
+@C0060: 0143145 0000000 0000000 0000000 0000000 0000000 0100045 0144042 
+@C0070: 0040056 0100045 0144043 0040057 0100055 0040061 0100051 0040060 
+@C0100: 0100054 0040062 0100061 0114050 0070230 0100053 0114061 0070230 
+@C0110: 0100056 0144056 0040063 0100057 0144057 0110063 0074340 0040064 
+@C0120: 0100062 0070141 0100056 0150064 0155017 0144046 0110056 0040056 
+@C0130: 0100057 0150064 0155017 0144046 0110057 0040057 0100062 0114047 
+@C0140: 0040062 0100057 0114044 0040057 0100060 0110056 0040060 0100061 
+@C0150: 0110057 0040061 0100061 0000677 0100060 0024000 0100055 0040262 
+@C0160: 0100231 0040261 0104241 0040263 0074265 0100062 0070206 0100231 
+@C0170: 0040261 0100055 0040262 0100062 0161006 0040264 0074302 0100062 
+@C0200: 0110055 0000677 0100231 0114236 0154014 0024000 0100243 0040261 
+@C0210: 0100055 0040262 0100064 0161003 0040264 0074302 0100064 0155003 
+@C0220: 0110055 0000677 0100060 0100243 0154014 0024000 0100000 0074102 
+@C0230: 0074066 0000002 0000003 0000004 0000006 0000007 0000010 0000011 
+@C0240: 0000012 0000013 0000014 0000016 0000017 0000037 0000040 0000100 
+@C0250: 0000200 0017646 0040000 0076000 0000174 0076174 0100200 0076200 
+@C0260: 0100174 0000000 0000000 0000000 0000000 0050301 0100262 0001677 
+@C0270: 0100261 0114236 0040261 0100261 0154014 0024253 0130261 0130263 
+@C0300: 0070273 0074000 0050337 0100264 0114245 0070326 0100262 0001677 
+@C0310: 0100261 0114236 0154014 0024254 0100246 0154006 0110262 0040262 
+@C0320: 0100264 0114246 0040264 0114245 0070326 0074306 0100264 0155002 
+@C0330: 0040264 0100262 0001677 0100261 0114236 0154014 0024264 0074000 
+@C0340: 0050425 0040426 0161001 0110430 0040427 0100426 0150427 0155016 
+@C0350: 0040431 0100427 0161001 0110431 0040427 0100426 0150427 0155016 
+@C0360: 0040431 0100427 0161001 0110431 0040427 0100426 0150427 0155016 
+@C0370: 0040431 0100427 0161001 0110431 0040427 0100426 0150427 0155016 
+@C0400: 0040431 0100427 0161001 0110431 0040427 0100426 0150427 0155016 
+@C0410: 0040431 0100427 0161001 0110431 0040427 0100426 0150427 0155016 
+@C0420: 0040431 0100427 0161001 0110431 0110244 0074000 0000000 0000000 
+@C0430: 0040000 0000000  None    None    None    None    None    None   
+@S0000: zero
+@S0001: one
+@S0040: start
+@S0041: launchdir
+@S0042: cos_launchdir
+@S0043: sin_launchdir
+@S0044: grav
+@S0045: launch_speed
+@S0046: accel
+@S0047: burn
+@S0050: c_miny
+@S0051: c_minx
+@S0052: c_maxx
+@S0053: c_maxy
+@S0054: c_fuel
+@S0055: y_baseline
+@S0056: xspeed
+@S0057: yspeed
+@S0060: xpos
+@S0061: ypos
+@S0062: fuel
+@S0063: tmp1
+@S0064: speed
+@S0065: loop_count
+@S0066: main
+@S0102: loop
+@S0141: no_fuel
+@S0156: draw_baseline
+@S0165: draw_fuel_guage
+@S0206: draw_speed_guage
+@S0226: draw_digits
+@S0230: loop_exit
+@S0231: const_2
+@S0232: const_3
+@S0233: const_4
+@S0234: const_6
+@S0235: const_7
+@S0236: const_8
+@S0237: const_9
+@S0240: const_10
+@S0241: const_11
+@S0242: const_12
+@S0243: const_14
+@S0244: const_15
+@S0245: const_31
+@S0246: const_32
+@S0247: const_64
+@S0250: const_128
+@S0251: const_8K
+@S0252: const_16K
+@S0253: horiz_line_seg
+@S0254: vert_line_seg
+@S0255: diag_up_right_seg
+@S0256: diag_dn_left_seg
+@S0257: diag_dn_right_seg
+@S0260: diag_up_left_seg
+@S0261: x_arg
+@S0262: y_arg
+@S0263: n_segments
+@S0264: y_len
+@S0265: draw_x_line
+@S0273: next_x_seg
+@S0301: draw_x_line_ret
+@S0302: draw_y_line
+@S0306: next_y_seg
+@S0326: draw_last_segment
+@S0336: draw_seg
+@S0337: draw_y_line_ret
+@S0340: SQRT
+@S0425: SQRET
+@S0426: SQARG
+@S0427: SQEST
+@S0430: SQHALF
+@S0431: sqtmp
+@S1677: scope_vector
+@S0677: scope_point
+@N0002:  draw a point on all scopes
+@N0040:  """
+@N0041:  degrees; not used directly
+@N0042: +0.075     ;+0.05233
+@N0044: +0.003
+@N0045:  initial velocity at launch
+@N0046:  +0.002
+@N0047:  +0.03
+@N0050:       -0.1    ; slightly below ground level, i.e. y_baseline
+@N0052:       +0.9
+@N0053:       +0.9
+@N0054:  initial fuel load
+@N0055:  y-axis position of the 'zero point'
+@N0056:                  scaled number     unscaled number
+@N0060:       -0.9
+@N0062:  fuel simply declines from +1 to 0 by an increment each cycle
+@N0063:  Ephemeral variables
+@N0065:  used only in top-level routines for drawing the game board
+@N0066:      yspeed = 0.01 * math.sin(math.radians(launchdir))
+@N0074:  initialize the flight variables
+@N0102:  test all the loop exit conditions
+@N0110:    in which case, the sqrt error may make a result smaller than the larger of the two speed vars
+@N0120:          if fuel > 0.0 :
+@N0122:              fuel -= burn
+@N0124:  this should probably be 15
+@N0130:  and do this again for yspeed
+@N0141:          yspeed -= grav
+@N0144:          ypos += yspeed
+@N0152:  draw the rocket's position as a point
+@N0153:  initialize point gen with the y-coord in ACC
+@N0155:  Draw a pont with ACC = x
+@N0163:  segment count should be negative, ie, we will incr the value until positive
+@N0165:              drawVector(-0.99, 0.0, -0.99, fuel)
+@N0175:  total length of line in pixels
+@N0177:  draw a point at the end of the line
+@N0200: srh 1
+@N0201:  initialize point gen with the y-coord in ACC
+@N0205:  Draw a point with ACC = x
+@N0206:              drawVector(0.99, 0.0, 0.99, speed*10.0)
+@N0214:  total length of line in pixels
+@N0216:  draw a point at the end of the line
+@N0221:  initialize point gen with the y-coord in ACC
+@N0225:  Draw a point with ACC = x
+@N0226:  placeholder
+@N0231:  constants
+@N0241:  loop counter for 12 iterations
+@N0253:  +32 in the top half of the word
+@N0254:  +32 in the bottom half of the word
+@N0261:  ephemeral args used for passing parameters
+@N0263:  loop counter
+@N0265:  save the return address
+@N0267:  initialize vector gen; Y offset in ACC
+@N0271:  shift from 0-15 axis to -8 to +7
+@N0273:  re-fetch the next x_arg
+@N0274:  multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0275:  Draw a segment with x=ACC
+@N0277:  increment the segment counter
+@N0302:  save the return address
+@N0303: .print "draw_y_line y_len=%d, y_arg=%d", y_len, y_arg
+@N0307:  initialize vector gen with the y-coord in ACC
+@N0311:  shift from 0-15 axis to -8 to +7
+@N0312:   +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0313:  Draw a segment with x=ACC, length=32 in vert_line_seg
+@N0316:  move up one segment
+@N0321:  shorten the remaining length by 32
+@N0323:  test to see if y_len remaining is less than 32
+@N0325:  otherwise, go round again for the next segment
+@N0326:  pick up remaining length in pixels
+@N0327:  shift into to bits 8-13
+@N0332:  initialize vector gen with the y-coord in ACC
+@N0334:  shift from 0-15 axis to -8 to +7
+@N0335:   +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0336:  Draw a segment with x=ACC
+@N0340:  =============================================================
+@N0341:  save S; AC still = S
+@N0342:  AC = S/2
+@N0343:  AC = S/2 + 0.5
+@N0344:  x0
+@N0345:  --- Iteration 1 ---
+@N0346:  BR = S / x  (AC = remainder, ignore)
+@N0347:  AC = quotient from BR
+@N0351:  AC = S/x + x
+@N0352:  AC = (S/x + x) / 2
+@N0354:  x1
+@N0355:  --- Iteration 2 ---
+@N0364:  x2
+@N0365:  --- Iteration 3 ---
+@N0374:  x3
+@N0375:  --- Iteration 4 ---
+@N0404:  x4
+@N0405:  --- Iteration 5 ---
+@N0414:  x5
+@N0415:  --- Iteration 6: result stays in AC, no ts needed ---
+@N0424:  ensure the result is greater or equal to the actual sqrt
+@N0426:  saved input S
+@N0427:  current Newton estimate
+@N0430:  0.5 in fixed-point

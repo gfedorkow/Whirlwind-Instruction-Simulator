@@ -28,6 +28,7 @@ class AsmToken:
     def __init__(self, tokenType: AsmTokenType, tokenStr: str):
         self.tokenType = tokenType
         self.tokenStr = tokenStr
+        self.pos = None
     def print (self):
         print ("AsmToken ", self.tokenType, self.tokenStr)
 
@@ -44,11 +45,11 @@ class AsmTokenizer:
         self.log = AsmLogFactory().getLog()
     def isWhitespace (self, c) -> bool:
         return c in [' ', '\n', '\r', '\t']
-    def caratString (self, str, pos) -> str:
-        s = " " * pos
+    def caretString (self, str, pos) -> str:
+        s = " " * max (0, pos - 1)
         return ":\n" + str.rstrip ("\r\n") + "\n" + s + "^\n"
     def isSingleCharOper (self, c) -> bool:
-        return c in ['+', '-', '@', ':', '.', ';', ',', '*', '/', '|', '&', '(', ')']
+        return c in ['+', '-', '@', ':', '.', ';', ',', '*', '/', '|', '&', '(', ')', '=']
     def isDigit (self, c) -> bool:
         return ord (c) >= ord ('0') and ord (c) <= ord ('9')
     def isExtAlphaChar (self, c) -> bool:
@@ -95,6 +96,13 @@ class AsmTokenizer:
                     return token1
             else:
                 return token1
+    def asmToken (self, tokenType: AsmTokenType, tokenStr: str, pos: int = None) -> AsmToken:
+        tok = AsmToken (tokenType, tokenStr)
+        if pos is not None:
+            tok.pos = pos
+        else:
+            tok.pos = self.pos
+        return tok
     def getRawToken (self) -> AsmToken:
         while self.pos <= self.slen:
             if self.pos < self.slen:
@@ -105,7 +113,7 @@ class AsmTokenizer:
                 case 0:
                     if c == self.endOfString:
                         self.state = 0
-                        return AsmToken (AsmTokenType.EndOfString, "")
+                        return self.asmToken (AsmTokenType.EndOfString, "")
                     if self.isWhitespace (c):
                         self.state = 0
                         self.pos += 1
@@ -118,7 +126,7 @@ class AsmTokenizer:
                     elif self.isSingleCharOper (c):
                         self.state = 0
                         self.pos += 1
-                        return AsmToken (AsmTokenType.Operator, c)
+                        return self.asmToken (AsmTokenType.Operator, c)
                     elif c == '0':
                         self.state = 8
                         self.pos += 1
@@ -142,11 +150,11 @@ class AsmTokenizer:
                         self.pos += 1
                     else:
                         self.state = 0
-                        return AsmToken (AsmTokenType.Operator, "@")
+                        return self.asmToken (AsmTokenType.Operator, "@")
                 case 2:
                     if c == self.endOfString:
                         self.state = 0
-                        return AsmToken (AsmTokenType.AutoComment, self.pop())
+                        return self.asmToken (AsmTokenType.AutoComment, self.pop())
                     else:
                         self.state = 2
                         self.pos += 1
@@ -154,18 +162,18 @@ class AsmTokenizer:
                 case 3:
                     if c == self.endOfString:
                         self.state = 0
-                        return AsmToken (AsmTokenType.DigitString, self.pop())
+                        return self.asmToken (AsmTokenType.DigitString, self.pop())
                     if self.isDigit (c):
                         self.state = 3
                         self.pos += 1
                         self.push (c)
                     elif self.isSingleCharOper (c):
                         self.state = 0
-                        return AsmToken (AsmTokenType.DigitString, self.pop())
+                        return self.asmToken (AsmTokenType.DigitString, self.pop())
                     elif self.isWhitespace (c):
                         self.state = 0
                         self.pos += 1
-                        return AsmToken (AsmTokenType.DigitString, self.pop())
+                        return self.asmToken (AsmTokenType.DigitString, self.pop())
                     elif self.isExtAlphaChar (c):
                         self.state = 4
                         self.pos += 1
@@ -175,18 +183,18 @@ class AsmTokenizer:
                 case 4:
                     if c == self.endOfString:
                         self.state = 0
-                        return AsmToken (AsmTokenType.Identifier, self.pop())
+                        return self.asmToken (AsmTokenType.Identifier, self.pop())
                     elif self.isExtAlphaNumChar (c):
                         self.state = 4
                         self.pos += 1
                         self.push (c)
                     elif self.isSingleCharOper (c):
                         self.state = 0
-                        return AsmToken (AsmTokenType.Identifier, self.pop())
+                        return self.asmToken (AsmTokenType.Identifier, self.pop())
                     elif self.isWhitespace (c):
                         self.state = 0
                         self.pos += 1
-                        return AsmToken (AsmTokenType.Identifier, self.pop())
+                        return self.asmToken (AsmTokenType.Identifier, self.pop())
                     else:
                         self.illegalChar (c, self.pos, self.str, self.state)
                 case 5:
@@ -195,7 +203,7 @@ class AsmTokenizer:
                         self.pos += 1
                     elif c == self.endOfString:
                         self.state = 0
-                        return AsmToken (AsmTokenType.Comment, self.pop())
+                        return self.asmToken (AsmTokenType.Comment, self.pop())
                     else:
                         self.state = 5
                         self.pos += 1
@@ -204,14 +212,14 @@ class AsmTokenizer:
                     if c == '@':
                         self.state = 7
                         self.pos += 1
-                        return AsmToken (AsmTokenType.Comment, self.pop())
+                        return self.asmToken (AsmTokenType.Comment, self.pop())
                     else:
                         self.push ('@')     # We want the previous atsign
                         self.state = 5
                 case 7:
                     if c == self.endOfString:
                         self.state = 0
-                        return AsmToken (AsmTokenType.AutoComment, self.pop())
+                        return self.asmToken (AsmTokenType.AutoComment, self.pop())
                     else:
                         self.state = 7
                         self.pos += 1
@@ -221,11 +229,11 @@ class AsmTokenizer:
                         self.state = 3
                         self.pos += 1
                         self.pop()
-                        return AsmToken (AsmTokenType.Operator, "0o")
+                        return self.asmToken (AsmTokenType.Operator, "0o")
                     elif c == self.endOfString:
                         self.state = 0
                         self.pop()
-                        return AsmToken (AsmTokenType.DigitString, "0")
+                        return self.asmToken (AsmTokenType.DigitString, "0")
                     elif self.isDigit (c):
                         self.state = 3
                         self.pos += 1
@@ -234,11 +242,11 @@ class AsmTokenizer:
                         self.state = 0
                         self.pos += 1
                         self.pop()
-                        return AsmToken (AsmTokenType.DigitString, "0")
+                        return self.asmToken (AsmTokenType.DigitString, "0")
                     elif self.isSingleCharOper (c):
                         self.state = 0
                         self.pop()
-                        return AsmToken (AsmTokenType.DigitString, "0")
+                        return self.asmToken (AsmTokenType.DigitString, "0")
                     elif self.isExtAlphaNumChar (c):
                         self.state = 4
                     else:
@@ -247,7 +255,7 @@ class AsmTokenizer:
                     if c == '"':
                         self.state = 0
                         self.pos += 1
-                        return AsmToken (AsmTokenType.String, self.pop())
+                        return self.asmToken (AsmTokenType.String, self.pop())
                     elif c == "\\":
                         self.state = 10
                         self.pos += 1
@@ -277,7 +285,7 @@ class AsmTokenizer:
                     else:
                         self.state = 9
                         self.push ("\\")
-        return AsmToken()
+        return self.asmToken (AsmTokenType.Null, "")
 
 
 AsmExprType = Enum ("AsmExprType", ["BinaryPlus", "BinaryMinus",
@@ -285,6 +293,7 @@ AsmExprType = Enum ("AsmExprType", ["BinaryPlus", "BinaryMinus",
                                     "BinaryMult", "BinaryDiv",
                                     "BinaryDot", "BinaryComma",
                                     "BinaryBitAnd", "BinaryBitOr",
+                                    "Assignment",
                                     "Variable", "LiteralString",
                                     "LiteralDigits",
                                     "LiteralNumber",
@@ -370,7 +379,7 @@ class AsmExpr:
         if t in [AsmExprType.BinaryPlus, AsmExprType.BinaryMinus,
                  AsmExprType.BinaryMult, AsmExprType.BinaryDiv, AsmExprType.BinaryDot,
                  AsmExprType.BinaryBitAnd, AsmExprType.BinaryBitOr,
-                 AsmExprType.BinaryComma]:
+                 AsmExprType.BinaryComma, AsmExprType.Assignment]:
             print (" " * indent + t.name)
             if self.leftSubExpr is not None:
                 self.leftSubExpr.print (indent = indent + 3)
@@ -386,10 +395,10 @@ class AsmExpr:
         elif t in [AsmExprType.Variable, AsmExprType.LiteralString,
                    AsmExprType.LiteralDigits, AsmExprType.LiteralNumber, AsmExprType.Null]:
             print (" " * indent + t.name, self.exprData)
-    def listingString (self, quoteStrings: bool = True):
+    def listingString (self, verbatimStrings: bool = False):
         if self.exprType in [AsmExprType.BinaryPlus, AsmExprType.BinaryMinus,
                              AsmExprType.BinaryMult, AsmExprType.BinaryDiv, AsmExprType.BinaryBitAnd,
-                             AsmExprType.BinaryBitOr]:
+                             AsmExprType.BinaryBitOr, AsmExprType.Assignment]:
             return self.leftSubExpr.listingString() + " " + self.exprData + " " + self.rightSubExpr.listingString()
         elif self.exprType in [AsmExprType.BinaryDot, AsmExprType.BinaryComma]:
             opStr = "." if self.exprType == AsmExprType.BinaryDot else ", "
@@ -397,8 +406,11 @@ class AsmExpr:
         elif self.exprType in [AsmExprType.UnaryPlus, AsmExprType.UnaryMinus, AsmExprType.UnaryZeroOh]:
             return self.exprData + self.leftSubExpr.listingString()
         elif self.exprType in [AsmExprType.LiteralString]:
-            s = self.strToSrcFormat (self.exprData)
-            return "\"" + s + "\"" if quoteStrings else s
+            if not verbatimStrings:
+                s = self.strToSrcFormat (self.exprData)
+            else:
+                s = self.exprData
+            return "\"" + s + "\"" if not verbatimStrings else s
         elif self.exprType == AsmExprType.ParenWrapper:
             return "(" + self.leftSubExpr.listingString() + ")"
         else:
@@ -441,7 +453,7 @@ class AsmExpr:
             """
             p.log.error (p.lineNo,
                          "Char pos %d: %s%s" %
-                         (p.tokenizer.pos, e, p.tokenizer.caratString (p.lineStr, p.tokenizer.pos - 1)))
+                         (p.tokenizer.pos, e, p.tokenizer.caretString (p.lineStr, p.tokenizer.pos - 1)))
             """
             return AsmExprValue (AsmExprValueType.Undefined, "")
     def eval (self, env: AsmExprEnv) -> AsmExprValue:
@@ -538,6 +550,10 @@ class AsmExpr:
                     return AsmExprValue (AsmExprValueType.List, [x])
             else:
                 return AsmExprValue (AsmExprValueType.List, [x, y])
+        elif self.exprType == AsmExprType.Assignment:
+            # self.leftSubExpr is variable, which we ignore here
+            y = self.rightSubExpr.eval (env)
+            return y
         elif self.exprType == AsmExprType.ParenWrapper:
             return self.leftSubExpr.eval (env)
         elif self.exprType == AsmExprType.Null:
@@ -600,11 +616,14 @@ class AsmParsedLine:
             self.parseInst()
             self.parseComment()
             self.parseAutoComment()
+            tok = self.gtok()
+            if tok.tokenType != AsmTokenType.EndOfString:
+                raise AsmParseSyntaxError ("Extraneous text")
             return True
         except AsmParseSyntaxError as e:
             sys.stdout.flush()
             self.log.error (self.lineNo,
-                            "%s at char pos %d%s" % (e, self.tokenizer.pos, self.tokenizer.caratString (self.lineStr, self.tokenizer.pos - 1)))
+                            "%s at char pos %d%s" % (e, self.tokenizer.pos, self.tokenizer.caretString (self.lineStr, self.tokenizer.pos)))
             return False
     def parsePrefixAddr (self) -> bool:
         errMsg = "Syntax error in prefix address"
@@ -750,7 +769,7 @@ class AsmParsedLine:
     # clone, since it's right-associative, and everything else is
     # left-associative.
     def parseCommaOper (self, leftExpr: AsmExpr = None) -> AsmExpr:
-        e1 = self.parseBitOrOper()
+        e1 = self.parseAssignmentOper()
         if e1 is not None:
             tok = self.gtok()
             if tok.tokenType == AsmTokenType.Operator and tok.tokenStr == ",":
@@ -767,6 +786,24 @@ class AsmParsedLine:
                 return e1
         else:
             self.error ("Comma operator syntax error")
+    def parseAssignmentOper (self, leftExpr: AsmExpr = None) -> AsmExpr:
+        e1 = self.parseBitOrOper()
+        if e1 is not None:
+            tok = self.gtok()
+            if tok.tokenType == AsmTokenType.Operator and tok.tokenStr == "=":
+                e2 = self.parseBitOrOper()
+                if e2 is not None:
+                    e = AsmExpr (AsmExprType.Assignment, tok.tokenStr)
+                    e.leftSubExpr = e1
+                    e.rightSubExpr = e2
+                    return e
+                else:
+                    self.error ("Assignment operator syntax error")
+            else:
+                self.ptok (tok)
+                return e1
+        else:
+            self.error ("Assignment operator syntax error")
     def parseBitOrOper (self, leftExpr: AsmExpr = None) -> AsmExpr:
         e1 = self.parseBitAndOper()
         if e1 is not None:
@@ -930,7 +967,7 @@ class DbgParsedLine (AsmParsedLine):
         except AsmParseSyntaxError as e:
             sys.stdout.flush()
             self.log.error (self.lineNo,
-                            "%s at char pos %d%s" % (e, self.tokenizer.pos, self.tokenizer.caratString (self.lineStr, self.tokenizer.pos - 1)))
+                            "%s at char pos %d%s" % (e, self.tokenizer.pos, self.tokenizer.caretString (self.lineStr, self.tokenizer.pos - 1)))
         pass
     def parseStmt (self) -> bool:
         r = self.parseInst()
