@@ -5,4 +5,4 @@
 	.dbwgt 0o42, incr = 57, min = 42, max = 99, fmt = "%o"
 
 .if test_error .dbwgt 0o42, incr = 57, min = 42, max = 99, fmt = "%o", xxx = 570
-
+.if test_error .dbwgt 0o42, 57, min = 42, 99, fmt = "%o"

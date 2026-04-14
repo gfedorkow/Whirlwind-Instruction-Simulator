@@ -45,8 +45,8 @@ import signal
 from wwcpu import CpuClass
 
 from typing import List, Dict, Tuple, Sequence, Union, Any
-from mem_top import mem_top
-import memory_graph as mg
+# from mem_top import mem_top
+# import memory_graph as mg
 # from pympler import tracker
 # MemTracker = tracker.SummaryTracker()
 
