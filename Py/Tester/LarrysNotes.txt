@@ -801,9 +801,8 @@ literal-digit-seq												Decimal inreger
 		  [Found round issue! Now looks better, ie, more like
             original, as in sample in Laning letter. But the point
             remains that they probably used an algorithm similar to
-            mine, and didn't go overbaard try to detect integer or
+            mine, and didn't go overboard trying to detect integer or
             other property.]
-			
 	* LZ Paper:
 		- -32767 -- fractional behavior
 		- Fig 5 -- wrong; it's not the 24,6 routine

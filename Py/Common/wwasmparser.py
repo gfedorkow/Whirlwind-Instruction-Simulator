@@ -540,6 +540,7 @@ class AsmExpr:
             else:
                 self.evalError ("Unbound variable %s" % self.exprData)
         elif self.exprType == AsmExprType.BinaryComma:
+            # Comma operator
             x = self.leftSubExpr.eval (env)
             y = self.rightSubExpr.eval (env)
             if y.type == AsmExprValueType.List:
@@ -551,10 +552,12 @@ class AsmExpr:
             else:
                 return AsmExprValue (AsmExprValueType.List, [x, y])
         elif self.exprType == AsmExprType.Assignment:
-            # self.leftSubExpr is variable, which we ignore here
+            # Assignment Operator
+            # self.leftSubExpr is the lvalue (variable), which we ignore here
             y = self.rightSubExpr.eval (env)
             return y
         elif self.exprType == AsmExprType.ParenWrapper:
+            # Paren wrapper (for listing string)
             return self.leftSubExpr.eval (env)
         elif self.exprType == AsmExprType.Null:
             return AsmExprValue (AsmExprValueType.Undefined, "")

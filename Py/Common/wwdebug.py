@@ -5,9 +5,10 @@ import math
 import shutil
 import traceback
 import argparse
+from functools import cmp_to_key
 import wwinfra
 from enum import Enum
-from wwasmparser import AsmExprValue, AsmExprValueType, AsmExprValueSubType, AsmExprEnv, AsmExpr, AsmExprType, DbgParsedLine # AsmParsedLine
+from wwasmparser import AsmExprValue, AsmExprValueType, AsmExprValueSubType, AsmExprEnv, AsmExpr, AsmExprType, DbgParsedLine
 
 class DbgException (Exception):
     pass
@@ -878,6 +879,60 @@ class DbgCmd_syms (DbgCmd):
             "Print all symbols and their values."
             ]
         return r
+    def isDigit (self, c) -> bool:
+        return ord (c) >= ord ('0') and ord (c) <= ord ('9')
+    def alphaNumComp (self, x: [], y: []) -> int:
+        xk = self.alphaNumKey (x)
+        yk = self.alphaNumKey (y)
+        l = min (len (xk), len (yk))
+        for i in range (0, l):
+            if type (xk[i]) == type (yk[i]):
+                if xk[i] < yk[i]:
+                    return -1
+                elif xk[i] > yk[i]:
+                    return 1
+            else:
+                xs = str (xk[i])
+                ys = str (yk[i])
+                if xs < ys:
+                    return -1
+                elif xs > ys:
+                    return 1
+                else:
+                    return 0
+        if len (xk) != len (yk):
+            if len (xk) < len (yk):
+                return -1
+            elif len (xk) > len (yk):
+                return 1
+        else:
+            return 0
+    def alphaNumKey (self, x: str) -> []:
+        n: str = None
+        s: str = None
+        r = []
+        for c in x:
+            if self.isDigit (c):
+                if s is not None:
+                    r.append (s)
+                    s = None
+                if n is not None:
+                    n = n + c
+                else:
+                    n = c
+            else:
+                if n is not None:
+                    r.append (int (n))
+                    n = None
+                if s is not None:
+                    s = s + c
+                else:
+                    s = c
+        if n is not None:
+            r.append (int (n))
+        if s is not None:
+            r.append (s)
+        return r
     def execute (self):
         # (h, v) = os.get_terminal_size()
         (h, v) = shutil.get_terminal_size()
@@ -892,7 +947,9 @@ class DbgCmd_syms (DbgCmd):
             print ("%s%s 0o%o" % (sym, " "*(maxSymLen - len (sym)), val))
         """
         strList = []
-        for sym in self.dbg.symToAddrTab:
+        syms = list (self.dbg.symToAddrTab.keys())
+        syms = sorted (syms, key = cmp_to_key (self.alphaNumComp))
+        for sym in syms:
             val = self.dbg.symToAddrTab[sym]
             strList.append ("%s 0o%o" % (sym, val))
         Justifier(splitString=True).printStrings (strList)
