@@ -61,7 +61,7 @@ dotest () {
 	status3=$?	
 	diff -s --ignore-matching-lines="%File" TestRefs/${test_file_base}.fc ${test_file_base}.fc
 	status4=$?
-	python $sim -c 10000 -v 102684113_mad_game_m_hurvitz_gs001_fb0.tcore |& egrep -v "cycles" >&wwsim.hmg.log
+	python $sim -c 10000 -v 102684113_mad_game_m_hurvitz_gs001.tcore |& egrep -v "cycles" >&wwsim.hmg.log
 	diff -s --ignore-matching-lines="Info: Whirlwind tape file name" TestRefs/wwsim.hmg.log wwsim.hmg.log
 	status5=$?
 	status=$(($status3 + $status4 + $status5))
