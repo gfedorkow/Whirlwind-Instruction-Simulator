@@ -6,7 +6,6 @@ Info: Whirlwind tape identifier: _fb0
 Info: corefile JumpTo address = 040o
 Info: starting corefile blocknum 00o
 Info: Switch CheckAlarmSpecial=0
-start at 0o40
 Info: opening XwinCrt
 Info: DisplayScope SI: configured display mode Points, scope 0o45, vertical=0o0
 Info: DisplayScope RC: record to scope 0o45, mode=Point, x=0o0, y=0o0
@@ -7798,5 +7797,3 @@ Info: DisplayScope SI: configured display mode Points, scope 0o45, vertical=0o20
 Info: DisplayScope RC: record to scope 0o45, mode=Point, x=0o-200, y=0o200
 Info: ww_draw_point: x=-128, y=128, scope=37, gun_enable=1
 Info: RC: Record to Device DisplayScope: Dev=0645o, Output Word=0167777o, (0) Sub-Address 00000o
-Warning: Cycle Count Exceeded
-close display...
