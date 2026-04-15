@@ -10,6 +10,13 @@ echo "Assembler Test:"
 thisfile=$0
 cd ${thisfile%/*}/
 
+realdiff=`which diff`
+
+diff () {
+	echo diff $*
+	$realdiff $*
+}
+
 if [ "$1" == "--Accept" ];
 then
 	echo "Accepting..."
