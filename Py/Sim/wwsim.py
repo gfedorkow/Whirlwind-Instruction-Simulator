@@ -45,8 +45,12 @@ import signal
 from wwcpu import CpuClass
 
 from typing import List, Dict, Tuple, Sequence, Union, Any
-from mem_top import mem_top
-import memory_graph as mg
+
+# I spent (burned up!) some time Apr 2026 chasing a memory leak.  Not sure I understand what
+# was happening, but I think on closing the graphics display, I was not Erasing / Undrawing objects
+# on the screen, leving stale graphics objects sitting around.
+# from mem_top import mem_top
+# import memory_graph as mg   # https://pypi.org/project/memory-graph/
 # from pympler import tracker
 # MemTracker = tracker.SummaryTracker()
 
@@ -596,12 +600,11 @@ def main_run_sim(args, cb):
                 cb.log.info ("End Ttyout")
                 """
 
-        if d.name == "DisplayScope":
-            if d.crt is not None:
-                if args.NoCloseOnStop:
-                    d.crt.get_mouse_blocking()  # wait to see what was on the display in case of a trap
-                d.crt.win.items.clear()
-                d.crt.close_display()
+#        if d.name == "DisplayScope":
+        # Don't close the display here...  in HNF Mode, that causes a flash when we switch
+        # from one demo code to another, and the window closes then immediately re-opens
+        # Apr 17 2026 - I moved the check for NoClose into the outer loop, so it only checks when
+        # actually preparing to quit.
 
         if d.name == "Drum":  # d points to a DrumClass object
             if args.DrumStateFile:
@@ -780,7 +783,18 @@ def main():
 #             print(mem_top())
     if CoreMem.corememinfo is not None:
         CoreMem.corememinfo.writeMapFile()
-    
+
+    # Close the display, but only just before we exit.  Unless... the NoClose arg keeps the
+    # CRT screen visible in case of a backtrace, so there's some hope of see what was going
+    # on the screen at the time of the error.
+    for d in cb.cpu.IODeviceList:
+        if d.name == "DisplayScope":
+            if d.crt is not None:
+                if args.NoCloseOnStop:
+                    d.crt.get_mouse_blocking()  # wait to see what was on the display in case of a trap
+                d.crt.win.items.clear()
+                d.crt.close_display()
+
     # sys.exit(alarm_state != cb.NO_ALARM)
     sys.exit(0)         # return zero for an ordinary exit
 

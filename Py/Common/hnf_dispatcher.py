@@ -46,23 +46,26 @@ class HnfDispatcherClass:
         # This dispatch table defines which programs should run on the exhibit.
         # Entries 0-7 are bound to the eight least-significant MIR buttons on the HNF display
         # Entries 8 and beyond are automatically selected by stepping through the default displays
+
+        # The first entry in the table is the directory in which the program is found, the second is
+        # the core-file name
         self.dispatch_table = []
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Vibrating-String", "knob-v97-closed-end.acore", self.default_attract_timeout, 8))                # 0
+            "Bounce/Bounce-Tape-with-Hole", "bounce-no-velocity.acore", self.default_app_timeout, 8))   # 0
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Bounce/Bounce-Tape-with-Hole", "bounce-no-velocity.acore", self.default_app_timeout, 8))   # 1
+            "Bounce/BlinkenLights-Bounce", "bounce-control-panel.acore", self.default_app_timeout, 8))  # 1
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Bounce/BlinkenLights-Bounce", "bounce-control-panel.acore", self.default_app_timeout, 8))  # 2
+            "Vibrating-String", "knob-v97-closed-end.acore", self.default_attract_timeout, 8))          # 2
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Blackjack", "bjack.acore", self.default_app_timeout, 8))                                   # 3
+            "NewCode/Rocket", "number-display-annotated.acore", self.default_app_timeout, 8))           # 3
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Mad-Game", "mad-game-annotated.acore", self.default_app_timeout, 8))                       # 4
+            "Tic-Tac-Toe", "tic-tac-toe.acore", self.default_app_timeout, 8))                           # 4
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Tic-Tac-Toe", "tic-tac-toe.acore", self.default_app_timeout, 8))                           # 5
+            "Blackjack", "bjack.acore", self.default_app_timeout, 8))                                   # 5
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Track-While-Scan-D-Israel", "annotated-track-while-scan.acore", self.default_app_timeout, 8)) # 6
+            "Mad-Game", "mad-game-annotated.acore", self.default_app_timeout, 8))                       # 6
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Number-Display", "number-display-annotated.acore", self.default_app_timeout, 8))           # 7
+            "Track-While-Scan-D-Israel", "annotated-track-while-scan.acore", self.default_app_timeout, 8)) # 7
 
         # The remainder form a state machine to step through all the demo apps
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 8
@@ -104,7 +107,7 @@ class HnfDispatcherClass:
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 19,
                     switch_args=[["FlipFlopPreset02", "5"]], MIR_switch_number = 5))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 19
-            "Number-Display", "number-display-annotated.acore", self.default_attract_timeout, 20,
+            "NewCode/Rocket", "rocket.acore", self.default_attract_timeout, 20,
                     MIR_switch_number = 5))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 20
