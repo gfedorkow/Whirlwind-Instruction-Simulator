@@ -6,6 +6,9 @@
 ; The text of the message is one of eight messages, selected by the low three bits
 ; of FF Register 2
 
+; Modified Apr 19, 2026 to position the message in the center of the screen
+; Modified Apr 19, 2026 to make descenders on g, j, p, y, q
+
 ; constants for SI graphics instruction
             .pp scope_vector, 0o1677   ; draw a vector on all scopes
             .pp scope_point, 0o0677   ; draw a point on all scopes
@@ -55,9 +58,9 @@ msg_loop:
             ca msg_strlen
             ts ds_arglen
             ; start the string near the top left edge of the screen
-            cs c_scope_edge
+            ca c_msg_x_pos
             ts ds_argx
-            ca c_scope_edge     
+            ca c_msg_y_pos     
             su char_yspacing    ; character origin is the lower-left corner, so make sure it doesn't overflow Y axis
             ts ds_argy
             ca msgp
@@ -87,14 +90,14 @@ msg_num:     .word 0     ; this should be an offset into the table of messages t
 
 ;msg0:       .flexl "WHIRLWIND\nEMULATOR\nabcdefghijklm\nnopqrstuvwxyz", -1  ; remember that the converted string will count shift-up/down as characters
 
-msg0:       .flexl "WHIRLWIND\nEMULATOR\nVibrating String", -1  
-msg1:       .flexl "WHIRLWIND\nEMULATOR\nBounce w/ Hole", -1  ; remember that the converted string will count shift-up/down as characters
-msg2:       .flexl "WHIRLWIND\nEMULATOR\n34-word Bounce", -1
-msg3:       .flexl "WHIRLWIND\nEMULATOR\nBlackjack", -1  
+msg0:       .flexl "WHIRLWIND\nEMULATOR\nVibrating\n String", -1  
+msg1:       .flexl "WHIRLWIND\nEMULATOR\nBounce\n w/ Hole", -1  ; remember that the converted string will count shift-up/down as characters
+msg2:       .flexl "WHIRLWIND\nEMULATOR\n34-word\n Bounce", -1
+msg3:       .flexl "WHIRLWIND\nEMULATOR\nBlack\njack", -1  
 msg4:       .flexl "WHIRLWIND\nEMULATOR\nTic Tac Toe", -1  
-msg5:       .flexl "WHIRLWIND\nEMULATOR\nRocket Trajectory", -1  
+msg5:       .flexl "WHIRLWIND\nEMULATOR\nRocket\nTrajectory", -1  
 msg6:       .flexl "WHIRLWIND\nEMULATOR\nMad Game", -1  
-msg7:       .flexl "WHIRLWIND\nEMULATOR\nunused program 7", -1  
+msg7:       .flexl "WHIRLWIND\nEMULATOR\nunused\nprogram 7", -1  
 
 
 
@@ -116,8 +119,8 @@ const_12: .word 12
 ; constants
 c_15:           .word 15
 c_32:           .word 32
-c_scope_edge:   .word 950 * 32        ; close to the edge of the scope screen
-c_msg_x_pos:    .word 800 * 32
+c_msg_x_pos:    .word -550 * 32      ; coord of left edge of message
+c_msg_y_pos:    .word 350 * 32       ; coord of top edge of message
 
 ; these two constants give the delta values to draw a "maximum short vector"
 horiz_line_seg:    .word 0o174 * 0o400   ; +32 in the top half of the word
@@ -331,7 +334,7 @@ ds16_shift_to_lower:
         sp d16c_ret
 
 ds16_newline:
-        cs c_scope_edge
+        ca c_msg_x_pos
         ts ds_argx
         ca ds_argy     
         su char_yspacing 
