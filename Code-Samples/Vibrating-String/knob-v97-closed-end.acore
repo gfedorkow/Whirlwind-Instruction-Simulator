@@ -7,7 +7,7 @@
 %Switch: RightInterventionReg  0o040000
 %Switch: FlipFlopPreset02  0o000010
 %Switch: FlipFlopPreset03  0o070000
-%DbWgt:  %FlipFlopPreset02 0o01 %o
+%DbWgt:  %FlipFlopPreset02  0o01 %o 0o-1 0o40
 @C0000: 0000000 0000001 0000010 0070000  None    None    None    None   
 @C0040: 0000336 0000336 0014000 0040142 0100142 0114001 0114001 0040143 
 @C0050: 0100142 0164000 0050060 0040150 0130060 0130060 0100147 0150150 
@@ -26,8 +26,7 @@
 @C0230: 0040621 0040711 0130231 0130230 0114244 0070224 0074040 0074041 
 @C0240: 0000000 0000000 0000000 0040621 0040707  None    None    None   
 @C0620: 0000000  None    None    None    None    None    None    None   
-; initialize the last word in the data area to avoid a simulator error warning; added Mar 5, 2026
-@C0720: 0000000
+@C0720: 0000000  None    None    None    None    None    None    None   
 @S0002: scope_amp
 @S0003: elastic
 @S0040: c1
@@ -78,7 +77,6 @@
 @N0056:  fetch constant S2 = 0.37760
 @N0057:  divide contents of AC by npts_norm, result in BR; 0.37760 / 0.4 = almost 1.0
 @N0060:  Red ;Shift by eight bits *and round off* --> 0o400
-@N0061: 	.print "xxx9 %ao %bo"
 @N0062:  Red; Outer display loop;  Fetch a One
 @N0063:   T2+1 must contain a loop counter; initialize it to One
 @N0064:  Reset Flip Flop Registers to default from switches
@@ -115,7 +113,6 @@
 @N0123:  add current
 @N0124:  save the result in temp t6
 @N0125:   Scope Amplitude, default 0o10
-@N0126: 	.print "xxx10 %ao %bo"
 @N0127:  Select Display Points ; the vertical axis setting is in AC[0:9]
 @N0130:  Fetch current point in first data array
 @N0131:  Save it on the current point of the second array
@@ -144,7 +141,6 @@
 @N0213:  this puts 1 in the incr location, and 400 in the AC
 @N0214:  20r ; multiply 0.00001 times 0.00400 = 0.00000 0.01000
 @N0215:  AC=0o400
-@N0216: 	.print "xxx5 %ao %bo"
 @N0220:  double the increment value; now it's TWO
 @N0221:  @25r ; save the increment step size
 @N0223:  initialize the y-offset to the negative of the number of points = -0o400
@@ -155,5 +151,5 @@
 @N0233:  @35r
 @N0236:  spliced by guy
 @N0240:  @40r
+@N0245:  added by guy to initialize an uninitialized last word in the data segment
 @N0620:  so is this supposed to be 400 or 401??
-@N0621:   pass through the loop, but it seems to be used for a few things along the way
