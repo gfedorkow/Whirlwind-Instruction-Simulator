@@ -62,7 +62,7 @@ class HnfDispatcherClass:
         self.dispatch_table.append(HnfDispatchProgramClass(
             "Vibrating-String", "knob-v97-closed-end.acore", self.default_attract_timeout, 8))          # 2
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "NewCode/Rocket", "number-display-annotated.acore", self.default_app_timeout, 8))           # 3
+            "NewCode/Rocket", "rocket.acore", self.default_app_timeout, 8))           # 3
         self.dispatch_table.append(HnfDispatchProgramClass(
             "Tic-Tac-Toe", "tic-tac-toe.acore", self.default_app_timeout, 8))                           # 4
         self.dispatch_table.append(HnfDispatchProgramClass(
@@ -143,9 +143,10 @@ class HnfDispatcherClass:
             if not GotSerial:
                 cb.log.fatal("Can't import Serial Library")
 
-            tty_path = "/dev/tty/" + tty_name
+            tty_path = "/dev/" + tty_name
             try:
                 self.tty = serial.Serial(tty_path, 9600)
+                self.send_selection_to_tty('S')
             except IOError:
                 cb.log.fatal("Can't open tty %s" % tty_path)
         else:
@@ -219,7 +220,7 @@ class HnfDispatcherClass:
             self.stop_at_time = 0
 
         if self.tty:        # signal to an external media display that we're running a new program
-            self.send_selection_to_tty(press)
+            self.send_selection_to_tty("%d" % press)
         return
 
     def apply_switch_presets(self, cpu):
@@ -227,11 +228,11 @@ class HnfDispatcherClass:
         if self.dispatch_table[press].switch_args:
             for sw in self.dispatch_table[press].switch_args:
                 (sw_name, sw_val) = sw
-                print("XXX Override switch %s to val 0o%s" % (sw_name, sw_val))
+                print("HNF-Dispatch: Override switch %s to val 0o%s" % (sw_name, sw_val))
                 cpu.cpu_switches.parse_switch_directive([sw_name, sw_val])
 
     def send_selection_to_tty(self, selection):
-        text = "%d\r\n" % selection
+        text = "%s\r\n" % selection
         self.tty.write(text.encode('ascii'))
 
     def test_tty_rx_activity(self):
