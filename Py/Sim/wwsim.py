@@ -151,7 +151,7 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
         py_wgt_label = ''
         address = 0
         increment = 1
-        min = 1
+        min = -(2**15)+1
         max = 2**16 - 1
         format_str = "0o%o"   # by default, numbers should be displayed as octal
         if args[0][0] == '.':
@@ -185,13 +185,19 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
             try:
                 increment = int(args[1], 8)
             except ValueError:
-                print("can't parse Debug Widget increment arg %s in %s" % (args[1], args[0]))
+                cb.log.warn("can't parse Debug Widget increment arg %s in %s" % (args[1], args[0]))
         if len(args) >= 3:
             format_str = args[2]
         if len(args) >= 4:
-            min = args[3]
+            try:
+                min = int(args[3], 8)
+            except ValueError:
+                cb.log.warn("can't parse Debug Widget Min arg %s in %s" % (args[3], args[0]))
         if len(args) == 5:
-            max = args[4]
+            try:
+                max = int(args[4], 8)
+            except ValueError:
+                cb.log.warn("can't parse Debug Widget Max arg %s in %s" % (args[4], args[0]))
 
         if address >= 0 or len(py_wgt_label):
             dbwgt.add_widget(cb, address, label, py_wgt_label, increment, min, max, format_str)
@@ -683,6 +689,8 @@ def main():
                         help="Return zero for uninitialized core memory", action="store_true")
     parser.add_argument("-map", "--MemoryMap",
                         help="Produce a memory map (.map) file of the access types during this run", action="store_true")
+    parser.add_argument("--TTYname",
+                        help="Configure TTY name to access external media controller", type=str)
 
     args = parser.parse_args()
 
@@ -708,7 +716,7 @@ def main():
 
     if args.Panel or args.BlinkenLights or args.MicroWhirlwind:
         cb.panel = control_panel.PanelClass(cb, args.Panel, args.BlinkenLights, args.MicroWhirlwind,
-                                            hnf_program_dispatcher_mode=args.HnfProgramDispatcher)
+                                            hnf_program_dispatcher_mode=args.HnfProgramDispatcher, tty_name=args.TTYname)
         if args.HnfProgramDispatcher and not args.QuickStart:
             cb.log.fatal("HNF Mode ought to work without --Quickstart, but it doesn't (yet)")
 

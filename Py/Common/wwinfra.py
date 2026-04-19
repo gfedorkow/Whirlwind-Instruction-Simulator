@@ -1752,14 +1752,14 @@ class ScreenDebugWidgetClass:
     # This routine links a Debug Widget with a Python function that controls a variable.
     # If the var_name is just a plain label, we'll try to dispatch to a rd() or incr() function
     # If the Var starts with a %, we'll interpret it as a "switch", as in SwitchNameDict[]
-    def eval_py_var(self, var_name, direction_up=None, incr=1):
+    def eval_py_var(self, var_name, direction_up=None, incr=1, min=-32767, max=32767):
         val = None
         if direction_up is None:
             op = ".rd()"
         else:
             if direction_up == False:
                 incr = -incr   # just reverse the sign
-            op = ".incr(%d)" % incr
+            op = ".incr(%d, min=%d, max=%d)" % (incr, min, max)
 
         if var_name[0] != "%":  # This is an ordinary Python debug widget, which calls into its own class
             name_and_context = "self.cb.DebugWidgetPyVars." + var_name + op
@@ -1770,6 +1770,10 @@ class ScreenDebugWidgetClass:
             val = self.cb.cpu.cpu_switches.read_switch(var_name[1:])
             if direction_up is not None:
                 val += incr
+                if val > max:
+                    val = max
+                if val < min:
+                    val = min
                 self.cb.cpu.cpu_switches.set_switch(var_name[1:], val)
         return val
 
@@ -1871,16 +1875,21 @@ class ScreenDebugWidgetClass:
                     wr = 0o77777
                 if wr >= 0o177777:
                     wr = (wr + 1) & 0o77777  # this corrects for ones-complement going from -1 to +0
+                if wr > max:
+                    wr = max
             else:
                 wr = rd - incr
                 if rd >= 0o100000 and wr <= 0o77777:  # don't roll over from Max-Minus to Max-Plus
                     wr = 0o100000
                 if wr < 0:   # if it turns to a Pythonic negative, subtract one for 1's comp, and mask to 16 bits
                     wr = (wr - 1) & 0o177777  # this corrects for ones-complement going from +0 to -1
+                if wr < min:
+                    wr = min
 
             cm.wr(self.mem_addrs[wgt], wr)
         else:
-            self.eval_py_var(self.py_labels[wgt], direction_up=direction_up, incr=self.increments[wgt])
+            self.eval_py_var(self.py_labels[wgt], direction_up=direction_up,
+                             incr=self.increments[wgt], min=self.mins[wgt], max=self.maxes[wgt])
 
 # This routine should probably go somewhere else...  it's a general-purpose number
 # converter, but I need it in call the analog scope modules.
