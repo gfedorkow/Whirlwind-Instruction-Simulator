@@ -381,6 +381,7 @@ class StdArgs:
         parser = argparse.ArgumentParser (description)
         parser.add_argument("--LogDir",
                             help="Directory into which to store logs. Default is current wd.", type=str)
+        parser.add_argument ("--ArchaeoLog", help="Write data to the archaeolog dir.", action="store_true")
         return parser
 
 class ConstWWbitClass:
@@ -1396,8 +1397,8 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             # We have to parse the items later to get all the symbolic addresses and their translations at once
             # Format:  %DbWgt: <addr> [increment]
             args = input_minus_comment.split()[1:]
-            if len(args) < 1 or len(args) > 3:
-                cb.log.warn("read_core: %%DbWgt takes one, two or three args, got %d" % len(args))
+            if len(args) < 1 or len(args) > 5:
+                cb.log.warn("read_core: %%DbWgt takes from one to five args, got %d" % len(args))
             screen_debug_widgets.append(args)
 
         else:
@@ -1439,7 +1440,7 @@ def hash_to_fingerprint(hash_obj, word_count):
 # In that case, "offset" simply represents the number of bytes from the start of the tape.
 #  [Careful, there's another write_core in wwasm.py.  oops.]
 def write_core(cb, corelist, offset, byte_stream, ww_filename, ww_tapeid,
-               jump_to, output_file, string_list, block_msg=None, stats_string=''):
+               jump_to, output_file, string_list, block_msg=None, stats_string='', fatal_fcn=None):
     flexo = FlexToCsyntaxFlascii()
     op_table = InstructionOpTable()
     hash_obj = hashlib.md5()  # create an object to store the hash of the file contents
@@ -1462,7 +1463,12 @@ def write_core(cb, corelist, offset, byte_stream, ww_filename, ww_tapeid,
         try:
             fout = open(output_file, 'wt')
         except IOError:
-            cb.log.fatal("can't open output file %s" % output_file)
+            msg = "can't open output file %s" % output_file
+            # Passing in the fatal fcn allows us to intercept eg in wwutd
+            if fatal_fcn is not None:
+                fatal_fcn (msg)
+            else:
+                cb.log.fatal (msg)
         print("%s %d(d) words, output to file %s" % (filetype, file_size, output_file))
     fout.write("\n; *** %s ***\n" % filetype)
     if block_msg is not None:
@@ -1692,7 +1698,9 @@ class ScreenDebugWidgetClass:
         self.mem_addrs = []   # physical address to be monitored
         self.labels = []      # label that matches the address, if any
         self.py_labels = []      # label that matches the address, if any
-        self.increments = []  # amount to be added when the 'increment' key is hit
+        self.increments = []     # amount to be added when the 'increment' key is hit
+        self.mins = []           # min permitted value of widget
+        self.maxes = []          # max permitted value of widget
         self.format_str = []  # how to format the widget value when printing; should be "%d", "%o", etc
 
         # screen print lines (i.e., not from core memory, but strings created by a python stmt)
@@ -1728,11 +1736,13 @@ class ScreenDebugWidgetClass:
         self.y_delta = (self.point_size + 5) * int(self.gfx_scale_factor)
 
 
-    def add_widget(self, cb, addr, label, py_label, increment, format_str):
+    def add_widget(self, cb, addr, label, py_label, increment, min, max, format_str):
         self.mem_addrs.append(addr)
         self.labels.append(label)
         self.py_labels.append(py_label)
         self.increments.append(increment)
+        self.mins.append(min)
+        self.maxes.append(max)
         self.format_str.append(format_str)
         self.input_selector = 0
 
@@ -1742,14 +1752,14 @@ class ScreenDebugWidgetClass:
     # This routine links a Debug Widget with a Python function that controls a variable.
     # If the var_name is just a plain label, we'll try to dispatch to a rd() or incr() function
     # If the Var starts with a %, we'll interpret it as a "switch", as in SwitchNameDict[]
-    def eval_py_var(self, var_name, direction_up=None, incr=1):
+    def eval_py_var(self, var_name, direction_up=None, incr=1, min=-32767, max=32767):
         val = None
         if direction_up is None:
             op = ".rd()"
         else:
             if direction_up == False:
                 incr = -incr   # just reverse the sign
-            op = ".incr(%d)" % incr
+            op = ".incr(%d, min=%d, max=%d)" % (incr, min, max)
 
         if var_name[0] != "%":  # This is an ordinary Python debug widget, which calls into its own class
             name_and_context = "self.cb.DebugWidgetPyVars." + var_name + op
@@ -1760,6 +1770,10 @@ class ScreenDebugWidgetClass:
             val = self.cb.cpu.cpu_switches.read_switch(var_name[1:])
             if direction_up is not None:
                 val += incr
+                if val > max:
+                    val = max
+                if val < min:
+                    val = min
                 self.cb.cpu.cpu_switches.set_switch(var_name[1:], val)
         return val
 
@@ -1852,22 +1866,30 @@ class ScreenDebugWidgetClass:
             #  For a WW var, read the current value, add or subtract (and wrap), then write it back
             rd = cm.rd(addr)
             incr = self.increments[wgt]
+            # LAS 4/8/26 Added min and max here as a placeholder -- no checking is performed yet
+            min = self.mins[wgt]
+            max = self.maxes[wgt]
             if direction_up:
                 wr = rd + incr
                 if rd <= 0o77777 and wr >= 0o77777:  # don't roll over from Max-Plus to Max-Minus
                     wr = 0o77777
                 if wr >= 0o177777:
                     wr = (wr + 1) & 0o77777  # this corrects for ones-complement going from -1 to +0
+                if wr > max:
+                    wr = max
             else:
                 wr = rd - incr
                 if rd >= 0o100000 and wr <= 0o77777:  # don't roll over from Max-Minus to Max-Plus
                     wr = 0o100000
                 if wr < 0:   # if it turns to a Pythonic negative, subtract one for 1's comp, and mask to 16 bits
                     wr = (wr - 1) & 0o177777  # this corrects for ones-complement going from +0 to -1
+                if wr < min:
+                    wr = min
 
             cm.wr(self.mem_addrs[wgt], wr)
         else:
-            self.eval_py_var(self.py_labels[wgt], direction_up=direction_up, incr=self.increments[wgt])
+            self.eval_py_var(self.py_labels[wgt], direction_up=direction_up,
+                             incr=self.increments[wgt], min=self.mins[wgt], max=self.maxes[wgt])
 
 # This routine should probably go somewhere else...  it's a general-purpose number
 # converter, but I need it in call the analog scope modules.

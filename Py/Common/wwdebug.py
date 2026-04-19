@@ -7,7 +7,7 @@ import traceback
 import argparse
 import wwinfra
 from enum import Enum
-from wwasmparser import AsmExprValue, AsmExprValueType, AsmExprValueSubType, AsmExprEnv, AsmExpr, AsmExprType, AsmParsedLine
+from wwasmparser import AsmExprValue, AsmExprValueType, AsmExprValueSubType, AsmExprEnv, AsmExpr, AsmExprType, DbgParsedLine # AsmParsedLine
 
 class DbgException (Exception):
     pass
@@ -39,16 +39,24 @@ class DbgBrks:
             ]
         self.reset()
     def reset (self):
-        self.brkTab = {}
+        self.brkTab = {}        # Id to DbgBrk
         self.idSeq = 0
         self.pcToBrkPtTab = {}
         self.addrToWrBrkTab = {}
         self.addrToRdBrkTab = {}
         self.opcodeToInstBrkTab = {}
     def list (self):
+        maxLen = 0
         for brkId in self.brkTab:
             brk = self.brkTab[brkId]
-            print ("% 3d %s %s" % (brk.id, "disabled" if brk.disabled else "enabled ", brk.listStr()))
+            maxLen = max (maxLen, len (brk.listStr()))
+        for brkId in self.brkTab:
+            brk = self.brkTab[brkId]
+            print ("% 3d %s %s %s %s" % (brk.id,
+                                         "disabled" if brk.disabled else "enabled ",
+                                         brk.listStr() + " "*(maxLen - len (brk.listStr())),
+                                         "disabled" if brk.thenDisabled else "enabled " if brk.thenOpname is not None else "",
+                                         brk.thenAsString()))
     # Note no error if id does not exist. Easier to capture
     # ranges. Doesn't seem worth it to flag those over the max in the table.
     def delete (self, brkId: int):
@@ -58,23 +66,16 @@ class DbgBrks:
             del self.brkTab[brkId]
     def deleteAll (self):
         self.reset()
-    # No error here or in enable either; see above comment.
-    def disable (self, brkId: int):
-        if brkId in self.brkTab:
+    # No error here; see above comment.
+    # This is a grab-bag routine for the different enable/disable combos.
+    def setDisabled (self, brkId: int, disabled = False, thenDisabled = False, all = False):
+        for brkId in (self.brkTab if all else [brkId]):
             brk = self.brkTab[brkId]
-            brk.disabled = True
-    def disableAll (self):
-        for brkId in self.brkTab:
-            brk = self.brkTab[brkId]
-            brk.disabled = True
-    def enable (self, brkId: int):
-        if brkId in self.brkTab:
-            brk = self.brkTab[brkId]
-            brk.disabled = False
-    def enableAll (self):
-        for brkId in self.brkTab:
-            brk = self.brkTab[brkId]
-            brk.disabled = False
+            if brk.disabled != disabled:
+                brk.disabled = disabled
+            if brk.thenOpname is not None and brk.thenDisabled != thenDisabled:
+                brk.thenDisabled = thenDisabled
+            pass
     # Checks for all kinds of breaks
     def checkBrk (self, pc): # Returns subclass of DbgBrk
         if pc in self.pcToBrkPtTab:
@@ -98,15 +99,28 @@ class DbgBrks:
 class DbgBrk:
     def __init__ (self, brks: DbgBrks):
         self.brks = brks
+        self.thenOpname = None
+        self.thenOperand = None
         self.id = self.brks.idSeq
         self.brks.idSeq += 1
         self.brks.brkTab[self.id] = self
         self.disabled = False
+        self.thenDisabled = False
         pass
     def formatLabel (self, addr):
         dbg = self.brks.dbg
         sym = "(" + dbg.addrToSymTab[addr][0] + ")" if addr in dbg.addrToSymTab else ""
         return "0o%o%s" % (addr, sym)
+    def setThenInfo (self, parsedLine: DbgParsedLine):
+        self.thenOpname = parsedLine.thenOpname
+        self.thenOperand = parsedLine.thenOperand
+        return self
+    def thenAsString (self) -> str:
+        if self.thenOpname is not None:
+            return "then " + self.thenOpname + " " + self.thenOperand.listingString()
+        else:
+            return ""
+        pass
 
 class DbgBrkPt (DbgBrk):
     def __init__ (self, brks: DbgBrks, pc: int):
@@ -152,11 +166,11 @@ class DbgInstWatchPt (DbgBrk):
         opcode = self.brks.dbg.opnameToOpcodeFcn (opname)
         if opcode is not None:
             self.brks.opcodeToInstBrkTab[opcode] = self
-            pass
+        pass
     def prompt (self):
         return "Instruction breakpoint:"
     def listStr (self):
-        return "instruction watch %s" % self.opname
+        return "instr watch %s" % self.opname
     def delete (self, brkId: int):
         del self.brks.opcodeToInstBrkTab[self.opcode]
         pass
@@ -208,19 +222,6 @@ class DbgDebugger:
         self.tbSize = 100
     def checkAddrRange (self, v: int) -> bool:
         return v >= 0 and v <= 0o3777
-    def addBkpt (self, addr: int) -> bool:
-        if self.checkAddrRange (addr):
-            if addr not in self.addrToBkptIdTab:
-                self.bkptIdToAddrTab[self.bkptId] = addr
-                self.addrToBkptIdTab[addr] = self.bkptId
-                print (self.fmtBkpt (self.bkptId))
-                self.bkptId += 1
-            else:
-                bkptId = self.addrToBkptIdTab[addr]
-                print (self.fmtBkpt (bkptId))
-            return True
-        else:
-            return False
     def getInstStr (self, addr: int) -> str:
         info = self.getInstInfoFcn (addr)
         if info is not None:
@@ -250,7 +251,19 @@ class DbgDebugger:
                 if brk is None:
                     return False
                 else:
-                    print (brk.prompt())
+                    if brk.thenOpname is not None and not brk.thenDisabled:
+                        # print ("Then: \n" +  brk.thenOpname + "\n")
+                        # brk.thenOperand.print()
+                        cmdClassName = "DbgCmd_" + brk.thenOpname
+                        if cmdClassName in globals():
+                            parsedLine = DbgParsedLine ("")
+                            parsedLine.opname = brk.thenOpname
+                            parsedLine.operand = brk.thenOperand
+                            cmd = globals()[cmdClassName](parsedLine, self)
+                            cmd.execute()
+                        return False
+                    else:
+                        print (brk.prompt())
         self.updatePanelFcn()
         print (self.asmLineFcn (pc))
         while True:
@@ -262,8 +275,8 @@ class DbgDebugger:
                 return False
             else:
                 try:
-                    parsedLine = AsmParsedLine (s, 0)
-                    status = parsedLine.parseDbgLine()
+                    parsedLine = DbgParsedLine (s)
+                    status = parsedLine.parseLine()
                     if status:
                         # parsedLine.print()
                         cmdClassName = "DbgCmd_" + parsedLine.opname
@@ -287,7 +300,7 @@ class DbgDebugger:
         pass
 
 class DbgCmd:
-    def __init__ (self, parsedLine: AsmParsedLine, dbg: DbgDebugger):
+    def __init__ (self, parsedLine: DbgParsedLine, dbg: DbgDebugger):
         self.parsedLine = parsedLine        # Contains opname and operands
         self.dbg = dbg
     def eval (self) -> [AsmExprValue]:
@@ -459,8 +472,12 @@ class DbgCmd_b (DbgCmd):
         pass
     def helpStrs (self) -> [str]:
         r = [
-            "b addr1,...,addrN",
-            "Define a breakpoint for each given address. Prints id and corresponding address."
+            "b addr1,...,addrN [then Cmd]",
+            "Define a breakpoint for each given address.",
+            "If Cmd is supplied, it must be a valid debugger command,",
+            "and Cmd will be executed instead of stopping at the breakpoint.",
+            "E.g. 'b bounce then p Xcoord, fr' will print Xcoord as a fraction",
+            "when executing at the label bounce, and continue."
             ]
         return r
     def execute (self):
@@ -469,7 +486,8 @@ class DbgCmd_b (DbgCmd):
             for val in valList:
                 if val.type == AsmExprValueType.Integer:
                     addr = val.value
-                    DbgBrkPt (self.dbg.brks, addr)
+                    # This is very C++-ish. Hacking with python args loses its appeal after a while.
+                    DbgBrkPt (self.dbg.brks, addr).setThenInfo (self.parsedLine)
                 else:
                     self.error()
         else:
@@ -564,10 +582,21 @@ class DbgCmd_bdis (DbgRangeCmd):
             ]
         return r
     def operate (self, id):
-        if id == -1:
-            self.dbg.brks.disableAll()
-        else:
-            self.dbg.brks.disable (id)
+        self.dbg.brks.setDisabled (id, disabled = True, all = id == -1)
+
+# tdis -- disable "then" clause of a breakpoint
+class DbgCmd_tdis (DbgRangeCmd):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+        pass
+    def helpStrs (self) -> [str]:
+        r = [
+            "tdis id-range1,...,id-rangeN",
+            "Disable 'then' clause on breakpoint or watchpoint defined by each given id, id range, or all."
+            ]
+        return r
+    def operate (self, id):
+        self.dbg.brks.setDisabled (id, thenDisabled = True, all = id == -1)
 
 # ben -- enable breakpoint
 class DbgCmd_ben (DbgRangeCmd):
@@ -581,10 +610,21 @@ class DbgCmd_ben (DbgRangeCmd):
             ]
         return r
     def operate (self, id):
-        if id == -1:
-            self.dbg.brks.enableAll()
-        else:
-            self.dbg.brks.enable (id)
+        self.dbg.brks.setDisabled (id, disabled = False, all = id == -1)
+
+# ten -- enable "then" clause of a breakpoint
+class DbgCmd_ten (DbgRangeCmd):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+        pass
+    def helpStrs (self) -> [str]:
+        r = [
+            "ten id-range1,...,id-rangeN",
+            "Enable 'then' clause on breakpoint or watchpoint defined by each given id, id range, or all."
+            ]
+        return r
+    def operate (self, id):
+        self.dbg.brks.setDisabled (id, thenDisabled = False, all = id == -1)
 
 # tb -- traceback
 class DbgCmd_tb (DbgCmd):
@@ -644,10 +684,9 @@ class DbgCmd_wwr (DbgCmd):
         pass
     def helpStrs (self) -> [str]:
         r = [
-            "wwr addr1, ..., addrN",
+            "wwr addr1, ..., addrN [then Cmd]",
             "Watch for memory write. When any write instruction (ts, td, ta, ao, ex)",
-            "is executed which writes at one of the given addresses, break.",
-            "Prints watchpoint id and corresponding address."
+            "is executed which writes at one of the given addresses, break."
             ]
         return r
     def execute (self):
@@ -656,7 +695,7 @@ class DbgCmd_wwr (DbgCmd):
             for val in valList:
                 if val.type == AsmExprValueType.Integer:
                     addr = val.value
-                    DbgWriteWatchPt (self.dbg.brks, addr)
+                    DbgWriteWatchPt (self.dbg.brks, addr).setThenInfo (self.parsedLine)
                 else:
                     self.error()
         else:
@@ -669,7 +708,7 @@ class DbgCmd_wrd (DbgCmd):
         pass
     def helpStrs (self) -> [str]:
         r = [
-            "wrd addr1, ..., addrN",
+            "wrd addr1, ..., addrN [then Cmd]",
             "Watch for memory read. When any read instruction",
             "(bo, sd, ck, ab, ex, ca, cs, ad, su, cm, sa, ao, dm, mr, mh, dv, md)",
             "is executed which reads one of the given addresses, break."
@@ -681,7 +720,7 @@ class DbgCmd_wrd (DbgCmd):
             for val in valList:
                 if val.type == AsmExprValueType.Integer:
                     addr = val.value
-                    DbgReadWatchPt (self.dbg.brks, addr)
+                    DbgReadWatchPt (self.dbg.brks, addr).setThenInfo (self.parsedLine)
                 else:
                     self.error()
         else:
@@ -698,7 +737,7 @@ class DbgCmd_wi (DbgCmd):
             expr.exprType = AsmExprType.LiteralString
     def helpStrs (self) -> [str]:
         r = [
-            "wi opname1,..., opnameN",
+            "wi opname1,..., opnameN [then Cmd]",
             "Watch for the execution of any of the given instructions,",
             "and break prior to that execution."
             ]
@@ -709,7 +748,7 @@ class DbgCmd_wi (DbgCmd):
             for val in valList:
                 if val.type == AsmExprValueType.String:
                     opname = val.value
-                    DbgInstWatchPt (self.dbg.brks, opname)
+                    DbgInstWatchPt (self.dbg.brks, opname).setThenInfo (self.parsedLine)
                 else:
                     self.error()
         else:
@@ -864,12 +903,12 @@ class DbgCmd_h (DbgCmd):
         super().__init__ (*args)
         self.helpEntries = []
         self.maxInitStrLen = 0
-        self.dummyParsedLine = AsmParsedLine ("ca 0", 0)
-        self.dummyParsedLine.parseDbgLine()
+        self.dummyParsedLine = DbgParsedLine ("ca 0")
+        self.dummyParsedLine.parseLine()
         pass
     def helpStrs (self) -> [str]:
         return ["h", "Print help"]
-    def buildHelpEntries (self, cls) -> []:
+    def buildHelpEntries (self, cls):
         subs = cls.__subclasses__()
         if len (subs) == 0:
             className = cls.__name__

@@ -27,6 +27,11 @@
 
 import time
 import os
+try:
+    import serial
+    GotSerial = True
+except ImportError:
+    GotSerial = False
 
 class HnfDispatchProgramClass:
     def __init__(self, file_dir=None, file_name=None, timeout=0, next_index=0,
@@ -40,29 +45,32 @@ class HnfDispatchProgramClass:
 
 
 class HnfDispatcherClass:
-    def __init__(self, cb):
+    def __init__(self, cb, tty_name):
         self.default_app_timeout = 10  # user inactivity timeout, measured in seconds
         self.default_attract_timeout = 7  # Attract Screen cycle timer, measured in seconds
         # This dispatch table defines which programs should run on the exhibit.
         # Entries 0-7 are bound to the eight least-significant MIR buttons on the HNF display
         # Entries 8 and beyond are automatically selected by stepping through the default displays
+
+        # The first entry in the table is the directory in which the program is found, the second is
+        # the core-file name
         self.dispatch_table = []
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Vibrating-String", "knob-v97-closed-end.acore", self.default_attract_timeout, 8))                # 0
+            "Bounce/Bounce-Tape-with-Hole", "bounce-no-velocity.acore", self.default_app_timeout, 8))   # 0
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Bounce/Bounce-Tape-with-Hole", "bounce-no-velocity.acore", self.default_app_timeout, 8))   # 1
+            "Bounce/BlinkenLights-Bounce", "bounce-control-panel.acore", self.default_app_timeout, 8))  # 1
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Bounce/BlinkenLights-Bounce", "bounce-control-panel.acore", self.default_app_timeout, 8))  # 2
+            "Vibrating-String", "knob-v97-closed-end.acore", self.default_attract_timeout, 8))          # 2
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Blackjack", "bjack.acore", self.default_app_timeout, 8))                                   # 3
+            "NewCode/Rocket", "number-display-annotated.acore", self.default_app_timeout, 8))           # 3
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Mad-Game", "mad-game-annotated.acore", self.default_app_timeout, 8))                       # 4
+            "Tic-Tac-Toe", "tic-tac-toe.acore", self.default_app_timeout, 8))                           # 4
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Tic-Tac-Toe", "tic-tac-toe.acore", self.default_app_timeout, 8))                           # 5
+            "Blackjack", "bjack.acore", self.default_app_timeout, 8))                                   # 5
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Track-While-Scan-D-Israel", "annotated-track-while-scan.acore", self.default_app_timeout, 8)) # 6
+            "Mad-Game", "mad-game-annotated.acore", self.default_app_timeout, 8))                       # 6
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Number-Display", "number-display-annotated.acore", self.default_app_timeout, 8))           # 7
+            "Track-While-Scan-D-Israel", "annotated-track-while-scan.acore", self.default_app_timeout, 8)) # 7
 
         # The remainder form a state machine to step through all the demo apps
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 8
@@ -104,7 +112,7 @@ class HnfDispatcherClass:
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 19,
                     switch_args=[["FlipFlopPreset02", "5"]], MIR_switch_number = 5))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 19
-            "Number-Display", "number-display-annotated.acore", self.default_attract_timeout, 20,
+            "NewCode/Rocket", "rocket.acore", self.default_attract_timeout, 20,
                     MIR_switch_number = 5))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 20
@@ -131,11 +139,37 @@ class HnfDispatcherClass:
         else:
             cb.log.fatal("Please set env var WWROOT")
 
+        if tty_name:
+            if not GotSerial:
+                cb.log.fatal("Can't import Serial Library")
+
+            tty_path = "/dev/tty/" + tty_name
+            try:
+                self.tty = serial.Serial(tty_path, 9600)
+            except IOError:
+                cb.log.fatal("Can't open tty %s" % tty_path)
+        else:
+            self.tty = None
+
+
+    #
     def reset_inactivity_timer(self):
         if self.stop_at_time:
             self.stop_at_time = time.time() + self.running_time  # use this to extend the Inactivity timer
 
+
+    # this routine is called periodically to see if we should change state.
+    # It has several functions --
+    #   - we test the serial port to see if there's activity reported by an attached HNF media display
+    #      If so, we just extend the inactivity timer
+    #   - we test if the inactivity timer has expired
+    #      If so, we dispatch to a new program
+    #   - we test if there's a press on the MIR selection buttons
+    #      If so, we dispatch to a new program
+    # The routine doesn't do the changing, it just reports if it should be done...
     def test_for_mir_change(self, cb):
+        if self.tty and self.test_tty_rx_activity():
+            self.reset_inactivity_timer()
         change = False
         if (self.stop_at_time):
             now = time.time()
@@ -183,6 +217,9 @@ class HnfDispatcherClass:
             self.stop_at_time = time.time() + running_time  # use this to implement the Inactivity timer
         else:
             self.stop_at_time = 0
+
+        if self.tty:        # signal to an external media display that we're running a new program
+            self.send_selection_to_tty(press)
         return
 
     def apply_switch_presets(self, cpu):
@@ -192,3 +229,38 @@ class HnfDispatcherClass:
                 (sw_name, sw_val) = sw
                 print("XXX Override switch %s to val 0o%s" % (sw_name, sw_val))
                 cpu.cpu_switches.parse_switch_directive([sw_name, sw_val])
+
+    def send_selection_to_tty(self, selection):
+        text = "%d\r\n" % selection
+        self.tty.write(text.encode('ascii'))
+
+    def test_tty_rx_activity(self):
+        ret = None
+        if self.tty.in_waiting > 0:
+            # Read the available bytes without blocking
+            data = self.tty.read(self.tty.in_waiting)
+            print(f"TTY Received: {data}")
+            ret = data
+        return ret
+
+
+
+# ------------------ Serial test code -----------
+""" 
+    import serial
+    # Initialize serial port
+    ser = serial.Serial('/dev/ttyAMA0', 9600)
+    
+    while True:
+        # Check if there are bytes waiting in the input buffer
+        if ser.in_waiting > 0:
+            # Read the available bytes without blocking
+            data = ser.read(ser.in_waiting)
+            print(f"Received: {data}")
+    
+        # Perform other tasks here; the loop continues even if no data is present
+        print("Doing other work...")
+        text = "str %d\r\n" % i
+        ser.write(text.encode('ascii'))
+        time.sleep(0.5) 
+"""
