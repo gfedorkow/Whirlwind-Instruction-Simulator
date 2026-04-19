@@ -114,7 +114,9 @@ class RadarAdjustHeadingWidgetClass:
         else:
             return int(self.target.heading)
 
-    def incr(self, val):
+    # the increment method can take min and max limits, but I'm not using them in
+    # this case...  we're just wrapping the 360 degree setting to zero
+    def incr(self, val, min=0, max=0):
         if self.target is None:
             return
         else:
