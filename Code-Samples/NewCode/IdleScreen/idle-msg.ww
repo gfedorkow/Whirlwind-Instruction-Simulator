@@ -6,6 +6,9 @@
 ; The text of the message is one of eight messages, selected by the low three bits
 ; of FF Register 2
 
+; Modified Apr 19, 2026 to position the message in the center of the screen
+; Modified Apr 19, 2026 to make descenders on g, j, p, y, q
+
 ; constants for SI graphics instruction
             .pp scope_vector, 0o1677   ; draw a vector on all scopes
             .pp scope_point, 0o0677   ; draw a point on all scopes
@@ -55,9 +58,9 @@ msg_loop:
             ca msg_strlen
             ts ds_arglen
             ; start the string near the top left edge of the screen
-            cs c_scope_edge
+            ca c_msg_x_pos
             ts ds_argx
-            ca c_scope_edge     
+            ca c_msg_y_pos     
             su char_yspacing    ; character origin is the lower-left corner, so make sure it doesn't overflow Y axis
             ts ds_argy
             ca msgp
@@ -81,18 +84,20 @@ init:     ta init_ret
 init_ret: sp 0    
 
 
-msg_maxlen:  .word 0o100
+msg_maxlen:  .word 0o200
 msg_strlen:  .word 0     ; we lengthen the string by one char until it reaches the end and we've counted to msg_maxlen
 msg_num:     .word 0     ; this should be an offset into the table of messages to select just one
 
-msg0:       .flexl "WHIRLWIND\nEMULATOR\nVibrating String", -1  
-msg1:       .flexl "WHIRLWIND\nEMULATOR\nBounce w/ Hole", -1  ; remember that the converted string will count shift-up/down as characters
-msg2:       .flexl "WHIRLWIND\nEMULATOR\n34-word Bounce", -1
-msg3:       .flexl "WHIRLWIND\nEMULATOR\nBlackjack", -1  
+;msg0:       .flexl "WHIRLWIND\nEMULATOR\nabcdefghijklm\nnopqrstuvwxyz", -1  ; remember that the converted string will count shift-up/down as characters
+
+msg0:       .flexl "WHIRLWIND\nEMULATOR\nVibrating\n String", -1  
+msg1:       .flexl "WHIRLWIND\nEMULATOR\nBounce\n w/ Hole", -1  ; remember that the converted string will count shift-up/down as characters
+msg2:       .flexl "WHIRLWIND\nEMULATOR\n34-word\n Bounce", -1
+msg3:       .flexl "WHIRLWIND\nEMULATOR\nBlack\njack", -1  
 msg4:       .flexl "WHIRLWIND\nEMULATOR\nTic Tac Toe", -1  
-msg5:       .flexl "WHIRLWIND\nEMULATOR\nRocket Trajectory", -1  
+msg5:       .flexl "WHIRLWIND\nEMULATOR\nRocket\nTrajectory", -1  
 msg6:       .flexl "WHIRLWIND\nEMULATOR\nMad Game", -1  
-msg7:       .flexl "WHIRLWIND\nEMULATOR\nunused program 7", -1  
+msg7:       .flexl "WHIRLWIND\nEMULATOR\nunused\nprogram 7", -1  
 
 
 
@@ -114,8 +119,8 @@ const_12: .word 12
 ; constants
 c_15:           .word 15
 c_32:           .word 32
-c_scope_edge:   .word 950 * 32        ; close to the edge of the scope screen
-c_msg_x_pos:    .word 800 * 32
+c_msg_x_pos:    .word -550 * 32      ; coord of left edge of message
+c_msg_y_pos:    .word 350 * 32       ; coord of top edge of message
 
 ; these two constants give the delta values to draw a "maximum short vector"
 horiz_line_seg:    .word 0o174 * 0o400   ; +32 in the top half of the word
@@ -150,7 +155,7 @@ ut_maxlen:  .word 0o60
 ut_strlen:  .word 0
 
 msgp:       .word unit_msg 
-unit_msg:   .flexl "WHIRLWIND\nEMULATOR\nBounce", -1  ; remember that the converted string will count shift-up/down as characters
+unit_msg:   .flexl "WHIRLWIND\nEMULATOR\nabcdefghijklmnopqrstuvwxyz", -1  ; remember that the converted string will count shift-up/down as characters
             .word 0
 
 
@@ -233,12 +238,18 @@ draw_16seg_char:
         ; if it's not a shift character, just keep going and print with the current case
         ca lcl_ds16_char        ; re-fetch the input character
 ds16_offset:
+        slh 1                   ; multiply by two; two words per table entry
         ad SixteenSegmentFlexop     ; add the table start addr to the offset in ACC
 ;        .print "draw_16seg_char:  char=%ao. d16c_argx=%o, d16c_argy=%o", d16c_argx, d16c_argy
         td d16c_rd
+        ad one
+        td d16c_drd
 d16c_rd:
         ca 0                        ; fetch the bit map
         ts d16c_lcl_seg_map
+d16c_drd:
+        ca 0                        ; fetch the bit map
+        ts d16c_lcl_descender
 
         ; draw the sixteen segments, starting with the most significant bit
         cs c_15                     ; prep for 16 times around the loop
@@ -299,8 +310,9 @@ d16s_loop_continue:
 d16c_draw_seg:                      ; branch here if we're doing a segment, then return to the loop
         ; the SI uses the AC to set Y coord
 d16c_read_seg_taby:
-        ca 0
-        ad d16c_argy
+        ca 0               ; overwritten by the table y value
+        ad d16c_lcl_descender   ; if the character has a descender, reduce the y value
+        ad d16c_argy       ; add the current screen y value
         si scope_vector    ; initialize vector gen with the y-coord in ACC
 
         ; the RC uses AC to set X coord and mem address for the vector length
@@ -322,7 +334,7 @@ ds16_shift_to_lower:
         sp d16c_ret
 
 ds16_newline:
-        cs c_scope_edge
+        ca c_msg_x_pos
         ts ds_argx
         ca ds_argy     
         su char_yspacing 
@@ -340,6 +352,8 @@ d16c_argy:
         .word 0
 d16c_lcl_seg_map:
         .word 0
+d16c_lcl_descender:
+        .word 0
 d16c_lcl_loop_cnt:
         .word 0
 ;
@@ -348,147 +362,284 @@ d16c_lcl_loop_cnt:
 ; ---------------------------
 ; The following table, indexed by ASCII character, gives a bit map of which of the 16
 ; segments should be lit for each symbol.
-; This pointer gets overwritten by one of the following two depending on the last Shift character
+; This pointer gets overwritten by one of the following two depending on the last Shift character.
+; Apr 19, 2026 - I modified the table to add a second word per character to give an extra y-offset to
+; each character, to accommodate lower case descenders.
 SixteenSegmentFlexop:
             .word flexo_lcase       ; flexowriter defaults to lower case
+;DescenderFlexop:
+;            .word descender_lcase       ; flexowriter defaults to lower case
 SixteenSegmentUpperp:
             .word flexo_ucase
+;DescenderUpperp:
+;            .word descender_ucase 
 SixteenSegmentLowerp:
             .word flexo_lcase
+;DescenderLowerp:
+;            .word descender_lcase
 
 flexo_ucase:
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o100363   ; /* E */
+        .word 0
         .word 0o104377   ; /* 8 */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o000060   ; /* _ */
+        .word 0
         .word 0o104317   ; /* A */
+        .word 0
         .word 0o004077   ; /* 3 */
+        .word 0
         .word 0o000000   ; /* (space) */
+        .word 0
         .word 0o021000   ; /* : */
+        .word 0
         .word 0o104273   ; /* S */
+        .word 0
         .word 0o104214   ; /* 4 */
+        .word 0
         .word 0o021063   ; /* I */
+        .word 0
         .word 0o042000   ; /* / */
+        .word 0
         .word 0o000374   ; /* U */
+        .word 0
         .word 0o104167   ; /* 2 */
+        .word 0
         .word 0o177777   ; /* (del) */
+        .word 0
         .word 0o040400   ; /* ) */
+        .word 0
         .word 0o021077   ; /* D */
+        .word 0
         .word 0o110263   ; /* 5 */
+        .word 0
         .word 0o114307   ; /* R */
+        .word 0
         .word 0o002014   ; /* 1 */
+        .word 0
         .word 0o000174   ; /* J */
+        .word 0
         .word 0o000017   ; /* 7 */
+        .word 0
         .word 0o010714   ; /* N */
+        .word 0
         .word 0o012000   ; /* ( */
+        .word 0
         .word 0o100303   ; /* F */
+        .word 0
         .word 0o104373   ; /* 6 */
+        .word 0
         .word 0o000363   ; /* C */
+        .word 0
         .word 0o104000   ; /* - */
+        .word 0
         .word 0o112300   ; /* K */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o021003   ; /* T */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o042063   ; /* Z */
+        .word 0
         .word 0o177777   ; /* (del) */
+        .word 0
         .word 0o000360   ; /* L */
+        .word 0
         .word 0o000000   ; /* (space) */
+        .word 0
         .word 0o050314   ; /* W */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o104314   ; /* H */
+        .word 0
         .word 0o000000   ; /* (space) */
+        .word 0
         .word 0o104274   ; /* Y */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o104307   ; /* P */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o010377   ; /* Q */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o000377   ; /* O */
+        .word 0
         .word 0o177777   ; /* (del) */
+        .word 0
         .word 0o025077   ; /* B */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o004373   ; /* G */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o104277   ; /* 9 */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o002714   ; /* M */
+        .word 0
         .word 0o177777   ; /* (del) */
+        .word 0
         .word 0o052400   ; /* X */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o042300   ; /* V */
+        .word 0
         .word 0o177777   ; /* (del) */
+        .word 0
         .word 0o042377   ; /* 0 */
+        .word 0
         .word 0o177777   ; /* (del) */
+        .word 0
+
 
 
 ;SixteenSegmentLower:
 flexo_lcase:
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o140140   ; /* e */
+        .word 0
         .word 0o104377   ; /* 8 */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o021000   ; /* | */
+        .word 0
         .word 0o120160   ; /* a */
+        .word 0
         .word 0o004077   ; /* 3 */
+        .word 0
         .word 0o000000   ; /* (space) */
+        .word 0
         .word 0o104060   ; /* = */
+        .word 0
         .word 0o120241   ; /* s */
+        .word 0
         .word 0o104214   ; /* 4 */
+        .word 0
         .word 0o020000   ; /* i */
+        .word 0
         .word 0o125000   ; /* + */
+        .word 0
         .word 0o020140   ; /* u */
+        .word 0
         .word 0o104167   ; /* 2 */
+        .word 0
         .word 0o177777   ; /* (del) */
+        .word 0
         .word 0o010000   ; /* . */
+        .word 0
         .word 0o024034   ; /* d */
+        .word 0
         .word 0o110263   ; /* 5 */
+        .word 0
         .word 0o100100   ; /* r */
+        .word 0
         .word 0o002014   ; /* 1 */
+        .word 0
         .word 0o021140   ; /* j */
+        .word -HEIGHT_16SEG/2 * 64          ; descender
         .word 0o000017   ; /* 7 */
+        .word 0
         .word 0o120100   ; /* n */
+        .word 0
         .word 0o040000   ; /* , */
+        .word 0
         .word 0o125002   ; /* f */
+        .word 0
         .word 0o104373   ; /* 6 */
+        .word 0
         .word 0o100140   ; /* c */
+        .word 0
         .word 0o104000   ; /* - */
+        .word 0
         .word 0o033000   ; /* k */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o100340   ; /* t */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o140040   ; /* z */
+        .word 0
         .word 0o177777   ; /* (del) */
+        .word 0
         .word 0o000300   ; /* l */
+        .word 0
         .word 0o000000   ; /* (space) */
+        .word 0
         .word 0o050110   ; /* w */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o120300   ; /* h */
+        .word 0
         .word 0o000000   ; /* (space) */
+        .word 0
         .word 0o005034   ; /* y */
+        .word -HEIGHT_16SEG/2 * 64          ; descender
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o101301   ; /* p */
+        .word -HEIGHT_16SEG/2 * 64          ; descender
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o121201   ; /* q */
+        .word -HEIGHT_16SEG/2 * 64          ; descender
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o120140   ; /* o */
+        .word 0
         .word 0o177777   ; /* (del) */
+        .word 0
         .word 0o120340   ; /* b */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o121241   ; /* g */
+        .word -HEIGHT_16SEG/2 * 64          ; descender
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o104277   ; /* 9 */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o124110   ; /* m */
+        .word 0
         .word 0o177777   ; /* (del) */
+        .word 0
         .word 0o052400   ; /* x */
+        .word 0
         .word 0o125074   ; /* # */
+        .word 0
         .word 0o040100   ; /* v */
+        .word 0
         .word 0o177777   ; /* (del) */
+        .word 0
         .word 0o042377   ; /* 0 */
+        .word 0
         .word 0o177777   ; /* (del) */
+        .word 0
 
 
 ; // size of 16-segment characters
