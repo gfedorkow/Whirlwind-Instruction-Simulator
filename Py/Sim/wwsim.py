@@ -162,7 +162,7 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
             except AttributeError:
                 cb.log.warn("Debug Widget: Can't find Python Label 'cb.%s'" % py_wgt_label)
                 py_wgt_label = ''
-        if args[0][0] == '%':
+        elif args[0][0] == '%':
             address = -1
             py_wgt_label = args[0]
             if cb.cpu.cpu_switches.validate_switch_register_name(args[0][1:]) == False:
