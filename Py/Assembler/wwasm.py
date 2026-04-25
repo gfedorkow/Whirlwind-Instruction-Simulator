@@ -1458,6 +1458,15 @@ class AsmProgram:
         for inst in self.insts:
             inst.passTwoOp()
 
+    # simple helper function to convert numbers to signed octal, like "-0o12"
+    def format_signed_octal(self, number):
+        if number < 0:
+            oct = "-0o%02o" % -number
+        else:
+            oct = "0o%02o" % number
+        return oct
+
+
     def writeCore (self):
         print ("Corefile output to file %s" % self.coreOutFilename)
         fout = open (self.coreOutFilename, 'wt')
@@ -1472,7 +1481,11 @@ class AsmProgram:
             fout.write("%%Switch: %s %s\n" % (s, self.switchTab[s]))
         for w in self.dbwgtTab:
             addrStr = w.paramName if w.paramName != "" else "0o%03o" % w.addr
-            fout.write("%%DbWgt:  %s  0o%02o %s 0o%02o 0o%02o\n" % (addrStr, w.incr, w.format, w.min, w.max))
+            # changed by guy to output negative numbers in octal that are parsable by int(str)
+            # fout.write("%%DbWgt:  %s  0o%02o %s 0o%02o 0o%02o\n" % (addrStr, w.incr, w.format, w.min, w.max))
+            fout.write("%%DbWgt:  %s  %s %s %s %s\n" % (addrStr,
+                self.format_signed_octal(w.incr), w.format,
+                self.format_signed_octal(w.min), self.format_signed_octal(w.max)))
         columns = 8
         addr = 0
         while addr < self.coreSize:
