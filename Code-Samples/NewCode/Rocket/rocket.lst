@@ -384,6 +384,9 @@
                                 ; SUBROUTINE: SQRT
                                 ; Compute fixed-point square root via Newton-Raphson iteration.
                                 ; written by Claude.ai & guy, Mar 30, 2026
+                                ; [contrary to Claude's assertion, this sqrt approximation is off by
+                                ; much more than one LSB; There's a big correction factor at the end to
+                                ; prevent overflows elsewhere]
                                 ;
                                 ; Input:  AC = S, fixed-point, 0 < S < 1
                                 ;         (1.0 = 0o077777, 0.25 = 0o020000, etc.)
