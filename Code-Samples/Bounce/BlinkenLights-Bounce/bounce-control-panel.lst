@@ -70,7 +70,7 @@
 
                        .ORG 0o201
 @0201:000000       Vy: .word 0                  ; current i'th value of velocity of y @@WrittenBy a0045 a0060 a0064 ReadBy bounce nobounce
-@0202:107777        R: .word 1.07777            ; "coefficient of Restitution", i.e., energy loss during the bounce.  This number should be negative to reverse the ball's direction @@ReadBy a0057
+@0202:106177        R: .word 1.06177            ; "coefficient of Restitution", i.e., energy loss during the bounce.  This number should be negative to reverse the ball's direction @@ReadBy a0057
 @0203:001000      Gdt: .word 0.01000            ; constant graviational constant times delta t @@ReadBy a0063
 @0204:040000       dt: .word 0.40000            ; constant time step (delta t) @@ReadBy continue
 @0205:117777       XI: .word 1.17777            ; (-0.600)         ; constant starting position for X @@ReadBy main
