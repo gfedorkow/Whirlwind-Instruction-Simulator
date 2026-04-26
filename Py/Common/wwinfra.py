@@ -1967,7 +1967,10 @@ class XwinCrt:
             root = self.win.master
             # Position the window (e.g., at x=100, y=100)
             # Format is "width x height + Xoffset + Yoffset"
-            root.geometry('+600+100')
+            if cb.panel.panel_mWW:
+                root.geometry('+20+50')
+            else:
+                root.geometry('+600+100')
 
             self.win.setBackground("Gray10")
             if cb.museum_mode:
