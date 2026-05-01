@@ -18,6 +18,13 @@ testtapepath=$PYTHONPATH/../../Recovered-Tapes/Source-Images/Paper-Tapes/
 test_file_base=102766758_fc131-204-10_watson
 tapepath=$PYTHONPATH/../../Recovered-Tapes/Source-Images/
 
+
+realdiff=`which diff`
+diff () {
+	echo diff $*
+	$realdiff $*
+}
+
 arglist=$*
 
 checkarg () {
@@ -62,7 +69,8 @@ dotest () {
 	diff -s --ignore-matching-lines="%File" TestRefs/${test_file_base}.fc ${test_file_base}.fc
 	status4=$?
 	python $sim -c 10000 -v 102684113_mad_game_m_hurvitz_gs001.tcore |& grep "Info:" |& egrep -v "cycles" >&wwsim.hmg.log
-	diff -s --ignore-matching-lines="Info: Whirlwind tape file name" TestRefs/wwsim.hmg.log wwsim.hmg.log
+	# This one doesn't work with the shell fcn due to the quotes
+	$realdiff -s --ignore-matching-lines="Info: Whirlwind tape file name" TestRefs/wwsim.hmg.log wwsim.hmg.log
 	status5=$?
 	status=$(($status3 + $status4 + $status5))
 	if [ "$status" == "0" ];

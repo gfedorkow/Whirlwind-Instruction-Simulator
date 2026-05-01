@@ -171,6 +171,7 @@ class OpCodeTables:
        "switch": AsmDotSwitchInst,
        "jumpto": AsmDotJumpToInst,
         "dbwgt": AsmDotDbwgtInst,
+     "simparam": AsmSimParamInst,
       "ww_file": AsmDotWwFilenameInst,
     "ww_tapeid": AsmDotWwTapeIdInst,
           "isa": AsmDotIsaInst,         # Directive to switch to the older 1950 instruction set
@@ -230,6 +231,25 @@ class AsmInst:
         self.isEndBb: bool = None          # This inst is the end of a basic block
         self.startBb: AsmInst = None       # This will point to the start of the block if this obj is a bb end
 
+    # Cloned from wwdebug.py
+    # Run fcn on each expr in the comma-expr, or on just the initial expr if
+    # it's not a comma-expr.  Signature of fcn is fcn (expr: AsmExpr, pos: int)
+    def walkCommaExpr (self, exprIn: AsmExpr, fcn):
+        expr = exprIn
+        pos = 0
+        while True:
+            if expr.exprType == AsmExprType.BinaryComma:
+                left = expr.leftSubExpr
+                fcn (left, pos)
+                expr = expr.rightSubExpr
+                pos += 1
+            else:
+                # Assume here that a null expr is considered a "terminator"
+                # and is not of interest
+                if expr.exprType != AsmExprType.Null:
+                    fcn (expr, pos)
+                return
+        pass
     #
     # Given an int detect sign and range and generate a 16-bit one's complement
     # representation.
@@ -861,25 +881,6 @@ class AsmDotDbwgtInst (AsmPseudoOpInst):
         self.nByPosArgs: int = 0
         self.bail = False           # If pass one finds a fatal issue, pass two will not run
         pass
-    # Cloned from wwdebug.py
-    # Run fcn on each expr in the comma-expr, or on just the initial expr if
-    # it's not a comma-expr.  Signature of fcn is fcn (expr: AsmExpr, pos: int)
-    def walkCommaExpr (self, exprIn: AsmExpr, fcn):
-        expr = exprIn
-        pos = 0
-        while True:
-            if expr.exprType == AsmExprType.BinaryComma:
-                left = expr.leftSubExpr
-                fcn (left, pos)
-                expr = expr.rightSubExpr
-                pos += 1
-            else:
-                # Assume here that a null expr is considered a "terminator"
-                # and is not of interest
-                if expr.exprType != AsmExprType.Null:
-                    fcn (expr, pos)
-                return
-        pass
     def setupKeywordInfo (self, expr: AsmExpr, pos: int):
         if expr.exprType == AsmExprType.Assignment:
             if expr.leftSubExpr.exprType != AsmExprType.Variable:
@@ -963,6 +964,50 @@ class AsmDotDbwgtInst (AsmPseudoOpInst):
                                                      self.keywordToValue["incr"].value, self.keywordToValue["fmt"].value,
                                                      self.keywordToValue["min"].value, self.keywordToValue["max"].value))
 
+class AsmSimParamInst (AsmPseudoOpInst):
+    def __init__ (self, *args):
+        super().__init__ (*args)
+        self.keywords = []          # Keywords in left-to-right order
+        self.bail = False           # If pass one finds a fatal issue, pass two will not run
+        pass
+    def setupKeywordInfo (self, expr: AsmExpr, pos: int):
+        if expr.exprType == AsmExprType.Assignment:
+            if expr.leftSubExpr.exprType != AsmExprType.Variable:
+                self.error ("Keyword parameter name must be a variable")
+                self.bail = True
+            else:
+                keyword = expr.leftSubExpr.exprData
+                self.keywords.append (keyword)
+        else:
+            self.error ("Only keyword parameters are permitted")
+            self.bail = True
+        pass
+    def passOneOp (self):
+        self.walkCommaExpr (self.parsedLine.operand, self.setupKeywordInfo)
+        pass
+    def passTwoOp (self):
+        if self.bail:
+            return
+        env = self.prog.env
+        val: AsmExprValue = self.parsedLine.operand.evalMain (env, self.parsedLine)
+        if val.type != AsmExprValueType.List:
+            o = [val]
+        else:
+            o = val.value
+        if len (o) != len (self.keywords):
+            self.error ("Internal error: number of keywords not equal to number of values")
+            return
+        else:
+            for i in range (0, len (o)):
+                key = self.keywords[i]
+                v: AsmExprValue = o[i]
+                if v.type not in (AsmExprValueType.String, AsmExprValueType.Integer):
+                    self.operandTypeError (v)
+                    return
+                else:
+                    self.prog.simParamKeyToValue[key] = v.value
+        pass
+        
 class AsmDotExecInst (AsmPseudoOpInst):
     def __init__ (self, *args):
         super().__init__ (*args)
@@ -1307,6 +1352,7 @@ class AsmProgram:
         self.omitAutoComment = omitAutoComment
         self.opCodeTable: list = []
         self.isa1950: bool = False
+        self.simParamKeyToValue: dict = {}
 
         self.insts: [AsmInst] = []
 
@@ -1466,6 +1512,8 @@ class AsmProgram:
             fout.write("%%ISA: %s\n" % "1950")
         fout.write("%%File: %s\n" % self.wwFilename)
         fout.write("%%TapeID: %s\n" % self.wwTapeId)
+        if len (self.simParamKeyToValue) != 0:
+            fout.write("%%SimParam: %s\n" % wwinfra.SimParam().dictToStr (self.simParamKeyToValue))
         if self.wwJumpToAddress is not None:
             fout.write('%%JumpTo 0o%o\n' % self.wwJumpToAddress)
         for s in self.switchTab:  # switch tab is indexed by name, contains a validated string for the value

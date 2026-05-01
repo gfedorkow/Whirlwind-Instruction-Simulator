@@ -3,6 +3,13 @@
 thisfile=$0
 cd ${thisfile%/*}/
 
+realdiff=`which diff`
+
+diff () {
+	echo diff $*
+	$realdiff $*
+}
+
 echo "Test proc call:"
 if [ "$1" == "--Accept" ];
 then

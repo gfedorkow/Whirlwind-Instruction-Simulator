@@ -534,7 +534,7 @@ def main():
     # read the core file from the tape-decoder
 #    (CoreMem, jump_to, WW_file, WW_TapeID) = read_core(args.basename + ".tcore")
     ret = coremem.read_core(input_file_name, cpu, cb)
-    (core_symtab, sym_to_addr_tab, jump_to, WW_file, WW_TapeID, screen_debug_widgets) = ret
+    (core_symtab, sym_to_addr_tab, jump_to, WW_file, WW_TapeID, screen_debug_widgets, sim_param_dict) = ret
 
     ManualSymTab, SwitchTab = read_sym(base_filename + ".sym")
     ManualSymTab.update(core_symtab)  # combine the sym tabs

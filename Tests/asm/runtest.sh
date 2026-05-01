@@ -23,7 +23,7 @@ then
 	rm -rf TestRefs/
 	mkdir TestRefs
 	cp ErrorTest.log FilteredTest1.log FilteredTest2.log inc1.lst flextest.lst flextest.sim.log last-word.sim.log last-word.lst TestRefs/
-	cp DbwgtTest0.asm.log DbwgtTest1.asm.log DbwgtTest.acore.log TestRefs/
+	cp PseudoOpTest0.asm.log PseudoOpTest1.asm.log PseudoOpTest.acore.log TestRefs/
 else
 	asmp="$PYTHONPATH/../../Py/Common/wwasmparser.py"		# Use quotes since can't resolve backslash yet -- it's needed for file name translation
 	asm="$PYTHONPATH/../../Py/Assembler/wwasm.py"
@@ -124,20 +124,20 @@ else
 		echo "Test FAILED"
 	fi
 
-	# .dbwgt test
+	# Pseudo-op test
 	# ErrorFlag.ww is used to switch between a verison with errors and a clean version
-	echo "Test .dbwgt"
-	rm -f ErrorFlag.ww DbwgtTest.acore DbwgtTest.lst DbwgtTest0.asm.log DbwgtTest1.asm.log DbwgtTest.acore.log
+	echo "Test pseudo-opes .dbwgt and .simparam"
+	rm -f ErrorFlag.ww PseudoOpTest.acore PseudoOpTest.lst PseudoOpTest0.asm.log PseudoOpTest1.asm.log PseudoOpTest.acore.log
 	echo ".pp test_error, 0" >ErrorFlag.ww
-	python $asm DbwgtTest.ww >&DbwgtTest0.asm.log
-	grep %DbWgt DbwgtTest.acore >DbwgtTest.acore.log
+	python $asm PseudoOpTest.ww >&PseudoOpTest0.asm.log
+	egrep "%DbWgt|%SimParam" PseudoOpTest.acore >PseudoOpTest.acore.log
 	echo ".pp test_error, 1" >ErrorFlag.ww
-	python $asm DbwgtTest.ww >&DbwgtTest1.asm.log
-	diff -s DbwgtTest0.asm.log TestRefs/DbwgtTest0.asm.log
+	python $asm PseudoOpTest.ww >&PseudoOpTest1.asm.log
+	diff -s PseudoOpTest0.asm.log TestRefs/PseudoOpTest0.asm.log
 	status10=$?
-	diff -s DbwgtTest1.asm.log TestRefs/DbwgtTest1.asm.log
+	diff -s PseudoOpTest1.asm.log TestRefs/PseudoOpTest1.asm.log
 	status11=$?
-	diff -s DbwgtTest.acore.log TestRefs/DbwgtTest.acore.log
+	diff -s PseudoOpTest.acore.log TestRefs/PseudoOpTest.acore.log
 	status12=$?
 	status=$(($status10 + $status11 + $status12))
 	if [ "$status" == "0" ];
