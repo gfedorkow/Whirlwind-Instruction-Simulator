@@ -251,7 +251,7 @@ def poll_sim_io(cpu, cb):
             wgt.increment_addr_location(direction_up = False)
     return ret
 
-def main_run_sim(args, cb):
+def main_run_sim(args, cb, cpu):
     global CoreMem, CommentTab   # should have put this in the CPU Class...
     global UseDebugger, Debugger
 
@@ -262,10 +262,10 @@ def main_run_sim(args, cb):
         cb.log.info("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
     """
 
-    CoreMem = wwinfra.CorememClass(cb)
-    cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
-    cb.cpu = cpu
-    cpu.cpu_switches = wwinfra.WWSwitchClass(cb)
+#    CoreMem = wwinfra.CorememClass(cb)
+#    cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
+#    cb.cpu = cpu
+#    cpu.cpu_switches = wwinfra.WWSwitchClass(cb)
     cb.dbwgt = wwinfra.ScreenDebugWidgetClass(cb, CoreMem, args.AnalogScope)
 
     cycle_limit = 0  # default limit for number of sim cycles to run; 'zero' means 'forever'
@@ -628,6 +628,7 @@ def main_run_sim(args, cb):
 def main():
     global BlinkenLightsModule
     global UseDebugger
+    global CoreMem
     parser = wwinfra.StdArgs().getParser ("Run a Whirlwind Simulation.")
     parser.add_argument("corefile", help="file name of simulation core file")
     parser.add_argument("-t", "--TracePC", help="Trace PC for each instruction", action="store_true")
@@ -646,6 +647,7 @@ def main():
     parser.add_argument("-r", "--Radar", help="Incorporate Radar Data Source", action="store_true")
     parser.add_argument("--AutoClick", help="Execute pre-programmed mouse clicks during simulation", action="store_true")
     parser.add_argument("--AnalogScope", help="Display graphical output on an analog CRT", action="store_true")
+    # the following arg should be revised to take the full geometry as "width x height + Xoffset + Yoffset"
     parser.add_argument("--xWinSize", help="specify the size of an xWinCrt pseudo-scope display in pixels", type=int)
     parser.add_argument("--FlexoWin", help="Display Flexowriter output in its own window", action="store_true")
     parser.add_argument("--NoXWin", help="Don't open any x-windows", action="store_true")
@@ -768,6 +770,11 @@ def main():
     cb.no_toggle_switch_warn = args.NoToggleSwitchWarning
     cb.record_core_info = args.MemoryMap
 
+    CoreMem = wwinfra.CorememClass(cb)
+    cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
+    cb.cpu = cpu
+    cpu.cpu_switches = wwinfra.WWSwitchClass(cb)
+
     # I added colored text to the trace log using ANSI escape sequences.  This works by default with
     # Cygwin xterm, but for DOS Command Shell there's a special command to enable ANSI parsing.
     # The command doesn't seem to exist in xterm, but running it doesn't break anything (yet).
@@ -783,7 +790,7 @@ def main():
     # When the control panel _is_ in use, the sim only halts when there's an explicit Quit, e.g.
     # a click of the red box.
     while True:
-        (alarm_state, sim_cycle) = main_run_sim(args, cb)
+        (alarm_state, sim_cycle) = main_run_sim(args, cb, cpu)
         if (alarm_state == cb.QUIT_ALARM) or (cb.panel is None and alarm_state != cb.NO_ALARM):
             if not cb.TraceQuiet:
                 print("Ran %d cycles; Used mem=%dMB" % (sim_cycle, psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
