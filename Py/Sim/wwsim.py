@@ -285,7 +285,7 @@ def main_run_sim(args, cb, cpu):
         core_dump_file_name = args.DumpCoreToFile
 
     if args.RestoreCoreFromFile:
-        (a, b, c, d, e, dbwgt) = CoreMem.read_core(args.RestoreCoreFromFile, cpu, cb)
+        (a, b, c, d, e, dbwgt, sim_param_dict) = CoreMem.read_core(args.RestoreCoreFromFile, cpu, cb)
     if args.DrumStateFile:
         cpu.drum.restore_drum_state(args.DrumStateFile)
 
@@ -296,8 +296,10 @@ def main_run_sim(args, cb, cpu):
         CycleDelayTime = ns.instruction_cycle_delay
         cb.crt_fade_delay_param = ns.crt_fade_delay
 
-    (cpu.SymTab, cpu.SymToAddrTab, JumpTo, WWfile, WWtapeID, dbwgt_list) = \
+    (cpu.SymTab, cpu.SymToAddrTab, JumpTo, WWfile, WWtapeID, dbwgt_list, sim_param_dict) = \
         CoreMem.read_core(cb.CoreFileName, cpu, cb)
+    # LAS Test print for sim params
+    # print ("LAS", sim_param_dict)
     cpu.set_isa(CoreMem.metadata["isa"])
     if cpu.isa_1950 == False and args.Radar:
         cb.log.fatal("Radar device can only be used with 1950 ISA")
