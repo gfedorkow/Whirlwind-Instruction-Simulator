@@ -1,0 +1,12 @@
+; Cause the simulator to halt
+; used for testing crash recovery with HNF exhibit
+; Guy Fedorkow, May 10, 2026
+
+	.org 0o40
+	ca 0
+	ts 0
+	.exec exit(-1)
+	ca 0
+	.word 0		; simulation halt; this won't stop the sim in HNF mode
+ 
+	.jumpto 0o040
