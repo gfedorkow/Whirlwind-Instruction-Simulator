@@ -359,6 +359,20 @@ class ArgsTokenizer (Tokenizer):
         super().__init__ (str)
         self.delimiter = ' '
 
+class SimParam (Tokenizer):
+    def __init__(self, cb):
+        self.simparams = {}
+        self.simparams["Radar"] = False
+        self.cb = cb
+
+    def set_sim_param(self, name, value):
+        self.simparams[name] = value
+
+    def get_sim_param(self, name):
+        if name not in self.simparams:
+            self.cb.log.fatal("unknown get_sim_parameter %s" % name)
+        return self.simparams[name]
+
 
 # simple routine to print an octal number that might be 'None'
 def octal_or_none(number):
@@ -1255,8 +1269,9 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
     blocknum = 0
     core_word_count = 0
     screen_debug_widgets = []
-    isa = "1958"   # assume it's the 1958 instruction set unless there's a directive saying otherwise
     file_type = '?'  # default, assume it's a "core" file, not a tape stream (which would be 'T')
+    isa = "1958"   # assume it's the 1958 instruction set unless there's a directive saying otherwise
+    simparams = {"Radar": False}
 
     symtab = {}
     sym_to_addr_tab = {}
@@ -1335,7 +1350,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             address = int(tokens[0][2:], 8)
             commenttab[address] = tokens[1]  # save the string
 
-        elif re.match("^@E", input_minus_comment):
+        elif re.match("^@E", input_minus_comment):   # Python exec pseudo-op
             tokens = re.split("[: \t][: \t]*", line, maxsplit = 1)
             address = int(tokens[0][2:], 8)
             exec = tokens[1]
@@ -1411,8 +1426,10 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
     cm.metadata['filename_from_core'] = ww_file
     cm.metadata['ww_tapeid'] = ww_tapeid
     cm.metadata['core_word_count'] = core_word_count
-    cm.metadata['isa'] = isa   # return a string with the instruction set to be used
     cm.metadata['file_type'] = file_type
+    cm.metadata['isa'] = isa   # return a string with the instruction set to be used
+    for param in simparams:
+        cm.metadata[param] = simparams[param]
 
     return symtab, sym_to_addr_tab, jumpto_addr, ww_file, ww_tapeid, screen_debug_widgets
 

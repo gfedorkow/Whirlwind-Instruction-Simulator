@@ -299,7 +299,7 @@ def main_run_sim(args, cb, cpu):
     (cpu.SymTab, cpu.SymToAddrTab, JumpTo, WWfile, WWtapeID, dbwgt_list) = \
         CoreMem.read_core(cb.CoreFileName, cpu, cb)
     cpu.set_isa(CoreMem.metadata["isa"])
-    if cpu.isa_1950 == False and args.Radar:
+    if cpu.isa_1950 == False and CoreMem.metadata["Radar"]:
         cb.log.fatal("Radar device can only be used with 1950 ISA")
 
     if cb.panel and cb.panel.hnf_program_dispatcher:
@@ -308,7 +308,7 @@ def main_run_sim(args, cb, cpu):
     if args.FlowGraph:
         flowgraph = ww_flow_graph.FlowGraph (args.FlowGraph, args.FlowGraphOutFile, args.FlowGraphOutDir, cb)
 
-    if args.Radar:
+    if CoreMem.metadata["Radar"]:
                                         # heading is given as degrees from North, counting up clockwise
                                         # name   start x/y   heading  mph  auto-click-time Target-or-Interceptor
 
@@ -481,7 +481,7 @@ def main_run_sim(args, cb, cpu):
             if CycleDelayTime:
                 time.sleep(CycleDelayTime/1000)  # Sleep() takes time in fractional seconds
 
-            if args.Radar and (sim_cycle % 30 == 0):
+            if CoreMem.metadata["Radar"] and (sim_cycle % 30 == 0):
                 # the radar should return something every 20 msec, about every thousand instructions.
                 # This is **like totally forever**, and I'm not taking it any more!
                 # So I'll snoop the radar mailbox.  When the code picks up a new value, it sets the mailbox
@@ -569,7 +569,7 @@ def main_run_sim(args, cb, cpu):
         if not cb.TraceQuiet:
             cb.log.raw("Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec\n" %
                        (sim_cycle, cpu.PC, wall_clock_time, 1000000.0 * float(wall_clock_time) / float(sim_cycle)))
-        if args.Radar:
+        if CoreMem.metadata["Radar"]:
             print("    elapsed radar time = %4.1f minutes (%4.1f revolutions)" %
                   (radar.elapsed_time / 60.0, radar.antenna_revolutions))
     if cb.tracelog:
