@@ -174,13 +174,13 @@ class CpuClass:
         self.kbd_int = 0    # Count of keyboard interrupts
 
     def set_isa(self, isa_name):
-        if isa_name == "1950":
+        if isa_name == "isa1950":
             self.op_decode = self.op_decode_1950
             self.isa_1950 = True
-        elif isa_name == "1958":
+        elif isa_name == "isa1958":
             self.op_decode = self.op_decode_1958
         else:
-            self.cb.log.warn("Error setting isa; must be 1950 or 1958, not %s" % isa_name)
+            self.cb.log.warn("Error setting isa; must be isa1950 or isa1954, not %s" % isa_name)
             sys.exit(-1)
 
     # convert a ones-complement integer to a string, including negative number notation

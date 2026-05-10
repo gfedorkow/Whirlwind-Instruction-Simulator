@@ -44,6 +44,16 @@ class HnfDispatchProgramClass:
         self.MIR_switch_number = MIR_switch_number
 
 
+# Here's the Official Program Numbers to be shown on the HNF demonstrator
+#   7 – Bounce (30 line)
+#   6 – Bouncing Game
+#   5 – Tic Tac Toe
+#   4 – Vibrating String
+#   3 – Missile Trajectory
+#   2 – Mad Game
+#   1 – Blackjack
+#   0 – Air Defense
+
 class HnfDispatcherClass:
     def __init__(self, cb, tty_name):
         self.default_app_timeout = 10  # user inactivity timeout, measured in seconds

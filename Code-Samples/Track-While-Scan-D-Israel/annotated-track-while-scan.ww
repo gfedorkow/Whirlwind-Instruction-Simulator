@@ -2,11 +2,13 @@
                         ;  David Israel's 1950 Track-and-Scan from M-1343
 						; Annotated by guy, Feb 11, 2021
 						
-                            .isa 1950      ;  "Sherman, Set the Instruction-Set Wayback Machine to 1950"
+                             .isa "isa1950"      ;  "Sherman, Set the Instruction-Set Wayback Machine to 1950"
 
               .dbwgt ".TargetHeading", 5, "%d"
 							.dbwgt FF_angle
 							.dbwgt Veloc_I  
+              
+              .simparam Radar = 1
               
               .PP VERBOSE, 0        ; make this non-zero for a ton of debug analysis
               .PP TRACK_DISP, 1     ; make this PP non-zero to add a graphic to the display showing the id of each tracked aircraft

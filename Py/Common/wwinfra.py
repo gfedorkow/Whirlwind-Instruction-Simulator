@@ -432,7 +432,9 @@ class SimParamTokenizer (Tokenizer):
 
 class SimParam:
     def __init__ (self):
-        pass
+        # self.sim_param_dict = {}
+        self.sim_param_dict = {"Radar": 0}  # temporary initialization
+
     # private
     def strToInt (self, s: str) -> int:
         r = None
@@ -444,7 +446,6 @@ class SimParam:
         return r
     # public
     def strToDict (self, line: str) -> dict:
-        keyToValue = {}
         t = SimParamTokenizer (line)
         t.getToken()    # Remove core file tag
         while True:
@@ -456,8 +457,8 @@ class SimParam:
                 break       # Prob should be error
             valueNum = self.strToInt (valueStr)
             value = valueNum if valueNum is not None else valueStr
-            keyToValue[key] = value
-        return keyToValue
+            self.sim_param_dict[key] = value
+        return self.sim_param_dict
     # public
     def dictToStr (self, keyToValue: dict) -> str:
         s = ""
@@ -1364,10 +1365,10 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
     core_word_count = 0
     screen_debug_widgets = []
     file_type = '?'  # default, assume it's a "core" file, not a tape stream (which would be 'T')
-    isa = "1958"   # assume it's the 1958 instruction set unless there's a directive saying otherwise
+    isa = "isa1958"   # assume it's the 1958 instruction set unless there's a directive saying otherwise
+    sim_param = SimParam()
 
     symtab = {}
-    sim_param_dict = {"Radar": 0}   # temporary initialization
     sym_to_addr_tab = {}
     switch_class = cpu.cpu_switches
     commenttab = cpu.CommentTab
@@ -1509,7 +1510,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
                 cb.log.warn("read_core: %%DbWgt takes from one to five args, got %d" % len(args))
             screen_debug_widgets.append(args)
         elif re.match("^%SimParam:", input_minus_comment):
-            sim_param_dict = SimParam().strToDict (input_minus_comment)
+            sim_param.strToDict (input_minus_comment)  # add terms to the sim_param_dict
             pass
         else:
             cb.log.warn("read_core: unexpected line '%s' in %s, Line %d" % (line, filename, line_number))
@@ -1523,8 +1524,8 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
     cm.metadata['core_word_count'] = core_word_count
     cm.metadata['file_type'] = file_type
     cm.metadata['isa'] = isa   # return a string with the instruction set to be used
-    for param in sim_param_dict:
-        cm.metadata[param] = sim_param_dict[param]
+    for param in sim_param.sim_param_dict:
+        cm.metadata[param] = sim_param.sim_param_dict[param]
 
     return symtab, sym_to_addr_tab, jumpto_addr, ww_file, ww_tapeid, screen_debug_widgets
 

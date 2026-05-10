@@ -646,7 +646,7 @@ def main():
                         action="store_true")
     parser.add_argument("-c", "--CycleLimit", help="Specify how many instructions to run (zero->'forever')", type=int)
     parser.add_argument("--CycleDelayTime", help="Specify how many msec delay to insert after each instruction", type=int)
-    parser.add_argument("-r", "--Radar", help="Incorporate Radar Data Source", action="store_true")
+    # parser.add_argument("-r", "--Radar", help="Incorporate Radar Data Source", action="store_true")
     parser.add_argument("--AutoClick", help="Execute pre-programmed mouse clicks during simulation", action="store_true")
     parser.add_argument("--AnalogScope", help="Display graphical output on an analog CRT", action="store_true")
     # the following arg should be revised to take the full geometry as "width x height + Xoffset + Yoffset"
