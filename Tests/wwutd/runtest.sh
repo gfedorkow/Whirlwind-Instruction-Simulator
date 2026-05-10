@@ -3,6 +3,13 @@
 thisfile=$0
 cd ${thisfile%/*}/
 
+realdiff=`which diff`
+
+diff () {
+	echo diff $*
+	$realdiff $*
+}
+
 test_file=102663328_fb131-0-2690_new_decoders_3of4
 
 echo "Universal Tape Decoder tests:"

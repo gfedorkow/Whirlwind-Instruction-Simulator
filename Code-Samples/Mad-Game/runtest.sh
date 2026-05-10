@@ -17,7 +17,7 @@ else
 	sim="$PYTHONPATH/../../Py/Sim/wwsim.py"
 	rm mad-game-annotated.acore mad-game-annotated.lst wwsim.log wwasm.log
 	python $asm mad-game-annotated.ww |& egrep "Warning|Error" >&wwasm.log
-	python $sim -v --CycleLimit 10000  mad-game-annotated.acore |& egrep -v "cycles" >&wwsim.log
+	python $sim -v --CycleLimit 10000  mad-game-annotated.acore |& grep "Info:" |& egrep -v "cycles" >&wwsim.log
 	diff -s TestRefs/wwasm.log wwasm.log
 	status1=$?
 	diff -s TestRefs/wwsim.log wwsim.log

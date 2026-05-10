@@ -359,21 +359,115 @@ class ArgsTokenizer (Tokenizer):
         super().__init__ (str)
         self.delimiter = ' '
 
-class SimParam (Tokenizer):
-    def __init__(self, cb):
-        self.simparams = {}
-        self.simparams["Radar"] = False
-        self.cb = cb
-
-    def set_sim_param(self, name, value):
-        self.simparams[name] = value
-
-    def get_sim_param(self, name):
-        if name not in self.simparams:
-            self.cb.log.fatal("unknown get_sim_parameter %s" % name)
-        return self.simparams[name]
+## class SimParam (Tokenizer):
+##     def __init__(self, cb):
+##         self.simparams = {}
+##         self.simparams["Radar"] = False
+##         self.cb = cb
 
 
+class SimParamTokenizer (Tokenizer):
+    def __init__ (self, str):
+        super().__init__ (str)
+        pass
+    def getToken (self) -> str:
+        token = ""
+        while self.pos <= self.slen:
+            if self.pos < self.slen:
+                c = self.str[self.pos]
+            else:
+                c = self.endOfString
+            if self.state == 0:
+                if self.isWhitespace (c):
+                    self.pos += 1
+                elif c == '"':
+                    self.state = 1
+                    self.pos += 1
+                else:
+                    self.state = 3
+                    token = token + c
+                    self.pos += 1
+            elif self.state == 1:
+                if c == '\\':
+                    self.state = 2
+                    self.pos += 1
+                elif c == '"':
+                    self.state = 0
+                    self.pos += 1
+                    return token
+                else:
+                    token = token + c
+                    self.pos += 1
+            elif self.state == 2:
+                    token = token + c
+                    self.state = 1
+                    self.pos += 1
+            elif self.state == 3:
+                if self.isWhitespace (c):
+                    self.state = 0
+                    self.pos += 1
+                    return token
+                elif c == self.endOfString:
+                    self.state = 4
+                    return token
+                else:
+                    token = token + c
+                    self.pos += 1
+            elif self.state == 4:
+                self.state = 0
+                return self.endOfString
+            else:
+                print ("Unexpected state %d in SimParamTokenizer" % self.state)
+                exit (-1)
+        return self.endOfString
+
+##    def set_sim_param(self, name, value):
+##        self.simparams[name] = value
+##
+##    def get_sim_param(self, name):
+##        if name not in self.simparams:
+##            self.cb.log.fatal("unknown get_sim_parameter %s" % name)
+##        return self.simparams[name]
+
+
+class SimParam:
+    def __init__ (self):
+        pass
+    # private
+    def strToInt (self, s: str) -> int:
+        r = None
+        try:
+            r = int (s, 0)
+            return r
+        except ValueError as e:
+            pass
+        return r
+    # public
+    def strToDict (self, line: str) -> dict:
+        keyToValue = {}
+        t = SimParamTokenizer (line)
+        t.getToken()    # Remove core file tag
+        while True:
+            key = t.getToken()
+            if key == t.endOfString:
+                break
+            valueStr = t.getToken()
+            if key == t.endOfString:
+                break       # Prob should be error
+            valueNum = self.strToInt (valueStr)
+            value = valueNum if valueNum is not None else valueStr
+            keyToValue[key] = value
+        return keyToValue
+    # public
+    def dictToStr (self, keyToValue: dict) -> str:
+        s = ""
+        for key in keyToValue:
+            s += key + " "
+            value = keyToValue[key]
+            s += str (value) if type (value) == int else "\"" + value + "\""
+            s += " "
+        return s
+    
 # simple routine to print an octal number that might be 'None'
 def octal_or_none(number):
     ret = " None "
@@ -1271,9 +1365,9 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
     screen_debug_widgets = []
     file_type = '?'  # default, assume it's a "core" file, not a tape stream (which would be 'T')
     isa = "1958"   # assume it's the 1958 instruction set unless there's a directive saying otherwise
-    simparams = {"Radar": False}
 
     symtab = {}
+    sim_param_dict = {"Radar": 0}   # temporary initialization
     sym_to_addr_tab = {}
     switch_class = cpu.cpu_switches
     commenttab = cpu.CommentTab
@@ -1406,7 +1500,6 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             tokens = input_minus_comment.split()
             isa = tokens[1]
             cb.log.info("Setting instruction set architecture to '%s'" % isa)
-
         elif re.match("^%DbWgt:", input_minus_comment):  # On-screen Debug Widget
             # This directive says to put a real-time debug widget on the screen if the CRT is opened
             # We have to parse the items later to get all the symbolic addresses and their translations at once
@@ -1415,7 +1508,9 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             if len(args) < 1 or len(args) > 5:
                 cb.log.warn("read_core: %%DbWgt takes from one to five args, got %d" % len(args))
             screen_debug_widgets.append(args)
-
+        elif re.match("^%SimParam:", input_minus_comment):
+            sim_param_dict = SimParam().strToDict (input_minus_comment)
+            pass
         else:
             cb.log.warn("read_core: unexpected line '%s' in %s, Line %d" % (line, filename, line_number))
 
@@ -1428,8 +1523,8 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
     cm.metadata['core_word_count'] = core_word_count
     cm.metadata['file_type'] = file_type
     cm.metadata['isa'] = isa   # return a string with the instruction set to be used
-    for param in simparams:
-        cm.metadata[param] = simparams[param]
+    for param in sim_param_dict:
+        cm.metadata[param] = sim_param_dict[param]
 
     return symtab, sym_to_addr_tab, jumpto_addr, ww_file, ww_tapeid, screen_debug_widgets
 

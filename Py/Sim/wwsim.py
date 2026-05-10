@@ -298,6 +298,8 @@ def main_run_sim(args, cb, cpu):
 
     (cpu.SymTab, cpu.SymToAddrTab, JumpTo, WWfile, WWtapeID, dbwgt_list) = \
         CoreMem.read_core(cb.CoreFileName, cpu, cb)
+    # LAS Test print for sim params
+    # print ("LAS", sim_param_dict)
     cpu.set_isa(CoreMem.metadata["isa"])
     if cpu.isa_1950 == False and CoreMem.metadata["Radar"]:
         cb.log.fatal("Radar device can only be used with 1950 ISA")
