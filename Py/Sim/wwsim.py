@@ -721,6 +721,9 @@ def main():
     if args.ZeroizeCore:
         cb.ZeroizeCore = True
 
+    if args.LEDbrightness:
+        micro_whirlwind.parse_and_set_led_bright_arg(cb, args.LEDbrightness)
+
     if args.BlinkenLights and BlinkenLightsModule == False:
         cb.log.warn("No BlinkenLights Hardware available")
 
@@ -729,9 +732,6 @@ def main():
                                             hnf_program_dispatcher_mode=args.HnfProgramDispatcher, tty_name=args.TTYname)
         if args.HnfProgramDispatcher and not args.QuickStart:
             cb.log.fatal("HNF Mode ought to work without --Quickstart, but it doesn't (yet)")
-
-    if args.LEDbrightness:
-        micro_whirlwind.parse_and_set_led_bright_arg(cb, args.LEDbrightness)
 
     if args.CRTgeometry:
         cb.xWin_geometry = wwinfra.parse_xwin_geometry(cb, args.CRTgeometry)

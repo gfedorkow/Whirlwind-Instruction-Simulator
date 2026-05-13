@@ -353,22 +353,15 @@ def parse_and_set_led_bright_arg(cb,arg_str):
     return
 
 
-# This array of LED brightness is global so it can be called by the diagnostic as well as operational code
+# default LED brightness settings.  These can be overridden by --LEDbrightness on the cmd line
 RdB = 20
 WhB = 2
 BlB = 30
-                #  MAR                     MDR                 ACC                  BR
-u1_brightness = [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + \
-                [WhB]*8  + [RdB] + [WhB] + [RdB] + [WhB] + [RdB]*4   # IND + SAM + run/stop
-u2_brightness = [BlB]*192
-                #  PC                     FF3                 FF3                  unused
-u5_brightness = [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + \
-                [WhB]*16   # unused
 
 
 class MappedRegisterDisplayClass:
     def __init__(self, log, i2c_bus):
-        global RdB, WhB, BlB, u1_brightness, u2_brightness, u5_brightness
+        global RdB, WhB, BlB
         self.log = log
         self.run_state = 0
         self.alarm_state = 0
@@ -377,6 +370,15 @@ class MappedRegisterDisplayClass:
         self.check_alarm_special_state = 0
         self.stop_on_s1_state = 0
         self.stop_on_addr_state = 0
+
+        # This array of LED brightness [was] global so it can be called by the diagnostic as well as operational code
+                         #  MAR                     MDR                 ACC                  BR
+        u1_brightness = [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + \
+                        [WhB]*8  + [RdB] + [WhB] + [RdB] + [WhB] + [RdB]*4   # IND + SAM + run/stop
+        u2_brightness = [BlB]*192
+                        #  PC                     FF3                 FF3                  unused
+        u5_brightness = [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + \
+                        [WhB]*16   # unused
 
         self.u1_is31 = Is31(log, i2c_bus, IS31_1_ADDR_U1, brightness=u1_brightness)
         self.u2_is31 = Is31(log, i2c_bus, IS31_1_ADDR_U2, brightness=u2_brightness)
@@ -1673,7 +1675,7 @@ PassCount = 0
 
 def main():
     global PassCount, Verbose
-    global RdB, WhB, BlB, u1_brightness, u2_brightness, u5_brightness
+    global RdB, WhB, BlB
 
     parser = argparse.ArgumentParser(description='Diagnostic for MicroWhirlwind PCB')
     parser.add_argument("-v", "--Verbose", help="Print lots of chatter", action="store_true")
@@ -1696,6 +1698,15 @@ def main():
     parser.add_argument("-m", "--MicroWhirlwind", help="Test microWW drivers", action="store_true")
 
     args = parser.parse_args()
+
+    # This array of LED brightness [was] global so it can be called by the diagnostic as well as operational code
+                     #  MAR                     MDR                 ACC                  BR
+    u1_brightness = [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + \
+                    [WhB]*8  + [RdB] + [WhB] + [RdB] + [WhB] + [RdB]*4   # IND + SAM + run/stop
+    u2_brightness = [BlB]*192
+                    #  PC                     FF3                 FF3                  unused
+    u5_brightness = [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + \
+                    [WhB]*16   # unused
 
     tests = 0
     stop = False
