@@ -43,6 +43,7 @@ import math
 import traceback
 import signal
 from wwcpu import CpuClass
+import micro_whirlwind
 
 from typing import List, Dict, Tuple, Sequence, Union, Any
 
@@ -695,6 +696,11 @@ def main():
                         help="Produce a memory map (.map) file of the access types during this run", action="store_true")
     parser.add_argument("--TTYname",
                         help="Configure TTY name to access external media controller", type=str)
+    parser.add_argument("--LEDbrightness",
+                        help="Configure MicroWhirlwind LED intensity as three ints; r, w, b", type=str)
+    parser.add_argument("--CRTgeometry",
+                        help="Configure x-window screen geometry as <width>x<height>{+-}<xoffset>{+-}<yoffset>", type=str)
+
 
     args = parser.parse_args()
 
@@ -724,6 +730,13 @@ def main():
         if args.HnfProgramDispatcher and not args.QuickStart:
             cb.log.fatal("HNF Mode ought to work without --Quickstart, but it doesn't (yet)")
 
+    if args.LEDbrightness:
+        micro_whirlwind.parse_and_set_led_bright_arg(cb, args.LEDbrightness)
+
+    if args.CRTgeometry:
+        cb.xWin_geometry = wwinfra.parse_xwin_geometry(cb, args.CRTgeometry)
+        print(str(cb.xWin_geometry))
+
     # WW programs may read paper tape.  If the simulator is invoked specifically with a
     # name for the file containing paper tape bytes, use it.  If not, try taking the name
     # of the sim file, stripping the usual .acore and adding .petrA
@@ -745,8 +758,8 @@ def main():
         
     if args.NoXWin:
         cb.use_x_win = False
-    if args.xWinSize:
-        cb.xWin_size_arg = args.xWinSize
+#    if args.xWinSize:
+#        cb.xWin_size_arg = args.xWinSize
 
     if args.CrtFadeDelay:
         cb.crt_fade_delay_param = args.CrtFadeDelay

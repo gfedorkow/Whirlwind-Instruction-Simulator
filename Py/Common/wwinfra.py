@@ -1,6 +1,6 @@
 
 
-# Copyright 2024 Guy C. Fedorkow
+# Copyright 2026 Guy C. Fedorkow
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 # associated documentation files (the "Software"), to deal in the Software without restriction,
 # including without limitation the rights to use, copy, modify, merge, publish, distribute,
@@ -18,6 +18,8 @@
 # based on Whirlwind Instruction Set Manual 2M-0277
 # g fedorkow, Dec 30, 2017
 
+# used by Claude code
+from __future__ import annotations
 
 import re
 import hashlib
@@ -32,6 +34,11 @@ import traceback
 import graphics as gfx
 import time
 from wwflex import FlexToFlexoWin, FlexToFlascii, FlexToCsyntaxFlascii
+
+# used by Claude code
+from dataclasses import dataclass
+from typing import Optional
+
 
 theConstWWbitClass = None       # everything should use the same instance of the cb. Set in wwsim.
 
@@ -586,7 +593,6 @@ class ConstWWbitClass:
         self.analog_display = False   # set this flag to display on an analog oscilloscope instead of an x-window
         self.flexo_win = False;       # Window to display flexo output
         self.use_x_win = True         # clear this flag to completely turn off the xwin display, widgets and all
-        self.xWin_size_arg = None   # if this is set to a number by the cmd-line arg, use it as the size of the xWinCRT
         self.ana_scope = None   # this is a handle to the methods for operating the analog scope
         self.which_scope = 3    # default to showing both D and F scopes on the xwin display
         self.RasPi = False      # this will be set in microWhirlwind if it's running on a RasPi
@@ -601,6 +607,8 @@ class ConstWWbitClass:
         self.slow_execution_demo_mode = False  # When True, this flag makes the graphics a bit more visible
         if get_screen_size:
             (self.screen_x, self.screen_y, self.gfx_scale_factor) = self.get_display_size()
+        # self.xWin_size_arg = None   # if this is set to a number by the cmd-line arg, use it as the size of the xWinCRT
+        self.xWin_geometry = None  # this may be set by a cmd line arg
         self.TracePC = 0        # print a line for each instruction if this number is non-zero; decrement it if pos.
         self.LongTraceFormat = True  # prints more CPU registers for each trace line
         self.TraceALU = False   # print a line for add, multiply, negate, etc
@@ -2016,6 +2024,140 @@ def wwint2py(ww_num):
     ret = ww_num * sign
     return ret
 
+# -------------------
+# This lengthy section parses an x-windows window geometry argument.  Code written by Claude AI, May 2026
+
+"""
+x11_geometry.py
+---------------
+Parser for X11 / ImageMagick (Magick++) geometry strings of the form:
+
+    <width>x<height>{+-}<xoffset>{+-}<yoffset>
+
+Any of the four components may be omitted.  When a component is missing the
+parser returns ``None`` for that field, giving the caller predictable, easy
+to test results.
+
+Reference (format description):
+    https://imagemagick.org/Magick++/Geometry.html
+
+Notable rules from the spec that this parser enforces:
+
+* ``width`` and ``height`` are non-negative integers (pixels).
+* The size portion uses a literal ``x`` (or ``X``) as separator, e.g. ``640x480``.
+* Either side of the ``x`` may be omitted: ``640x``, ``x480``, or just ``x``
+  are all accepted.
+* The offset portion is a pair: ``{+|-}xoffset{+|-}yoffset``.  Per the spec,
+  offsets must be given as a pair -- you cannot supply only an xoffset or
+  only a yoffset.  A leading sign (``+`` or ``-``) is required for each.
+* The size portion and the offset portion are each optional, but at least
+  one of them must be present.
+
+Usage:
+    >>> from x11_geometry import parse_geometry, Geometry
+    >>> parse_geometry("640x480+10-20")
+    Geometry(width=640, height=480, xoffset=10, yoffset=-20)
+    >>> parse_geometry("+5+5")
+    Geometry(width=None, height=None, xoffset=5, yoffset=5)
+"""
+
+
+
+# ---------------------------------------------------------------------------
+# Public data type
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class Geometry:
+    """Parsed X11 geometry.  Missing components are ``None``."""
+    width:   Optional[int] = None
+    height:  Optional[int] = None
+    xoffset: Optional[int] = None
+    yoffset: Optional[int] = None
+
+    def __str__(self) -> str:
+        """Reconstruct a canonical geometry string from the parsed parts."""
+        size = ""
+        if self.width is not None or self.height is not None:
+            w = "" if self.width  is None else str(self.width)
+            h = "" if self.height is None else str(self.height)
+            size = f"{w}x{h}"
+
+        offs = ""
+        if self.xoffset is not None and self.yoffset is not None:
+            offs = f"{self.xoffset:+d}{self.yoffset:+d}"
+
+        return size + offs
+
+
+# ---------------------------------------------------------------------------
+# Regex
+# ---------------------------------------------------------------------------
+#
+# Layout:
+#   ^                                start
+#   (?: (\d+)? [xX] (\d+)? )?        optional size:  W?  x  H?
+#   (?: ([+-]\d+) ([+-]\d+) )?       optional offset pair (must come together)
+#   $                                end
+#
+# Both groups are optional individually, but the parser separately requires
+# that at least one of them be present (an empty string is not valid).
+
+_GEOMETRY_RE = re.compile(
+    r"""
+    ^
+    (?: (?P<w>\d+)? [xX] (?P<h>\d+)? )?
+    (?: (?P<xo>[+-]\d+) (?P<yo>[+-]\d+) )?
+    $
+    """,
+    re.VERBOSE,
+)
+
+# ---------------------------------------------------------------------------
+# Parser
+# ---------------------------------------------------------------------------
+def parse_xwin_geometry(cb, spec: str) -> Geometry:
+    """
+    Parse an X11 geometry string and return a :class:`Geometry`.
+
+    Components that are absent in the input come back as ``None``.
+
+    Raises :class:`GeometryParseError` if the input does not match the
+    grammar.
+    """
+    if spec is None:
+        cb.log.fatal("geometry string is None")
+
+    s = spec.strip()
+    if not s:
+        cb.log.fatal("geometry string is empty")
+
+    m = _GEOMETRY_RE.match(s)
+    if not m:
+        cb.log.fatal(f"cannot parse wxh+x+y geometry: {spec!r}")
+
+    w_text  = m.group("w")
+    h_text  = m.group("h")
+    xo_text = m.group("xo")
+    yo_text = m.group("yo")
+
+    # The regex permits a match in which *nothing* was actually captured
+    # (e.g. the input was something it accepted but had no real content).
+    # Make sure at least one component was supplied.
+    has_size   = ("x" in s) or ("X" in s)
+    has_offset = xo_text is not None and yo_text is not None
+    if not has_size and not has_offset:
+        cb.log.fatal(f"cannot parse wxh+x+y geometry: {spec!r}")
+
+    return Geometry(
+        width   = int(w_text)  if w_text  is not None else None,
+        height  = int(h_text)  if h_text  is not None else None,
+        xoffset = int(xo_text) if xo_text is not None else None,
+        yoffset = int(yo_text) if yo_text is not None else None,
+    )
+
+# ----------------------
+
 
 class XwinCrtObject:
     def __init__(self, x0, y0, x1, y1, graphical_type, char_mask, expand = 1.0):
@@ -2058,8 +2200,13 @@ class XwinCrt:
             #   If it's a large display, just use a fixed constant.
             #   If it's a small screen, shrink the size to fit the screen.
             # The xWin is square, so use the smallest dimension of x or y
-            if cb.xWin_size_arg:
-                screen_size = cb.xWin_size_arg
+            if cb.xWin_geometry:
+                cb.screen_y = cb.xWin_geometry.width
+                cb.screen_x = cb.xWin_geometry.height
+                screen_size = cb.screen_x
+                if cb.screen_y < screen_size:
+                    screen_size = cb.screen_y
+                screen_size -= 45   # reduce the available screen space to allow for a menu bar
             else:
                 screen_size = cb.screen_x
                 if cb.screen_y < screen_size:
@@ -2080,7 +2227,9 @@ class XwinCrt:
             root = self.win.master
             # Position the window (e.g., at x=100, y=100)
             # Format is "width x height + Xoffset + Yoffset"
-            if cb.panel and cb.panel.panel_mWW:
+            if cb.xWin_geometry:
+                root.geometry('+%d+%d' % (cb.xWin_geometry.xoffset, cb.xWin_geometry.yoffset))
+            elif cb.panel and cb.panel.panel_mWW:
                 root.geometry('+20+50')
             else:
                 root.geometry('+600+100')

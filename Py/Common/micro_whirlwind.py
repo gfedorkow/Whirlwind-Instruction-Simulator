@@ -53,6 +53,8 @@ I2CBusTimeout = 0
 def breakp():
     pass
 
+
+# the following class is only used when this script is run standalone...
 class localCpuClass:
     def __init__(self):
         self._BReg = 0
@@ -327,6 +329,28 @@ def bit_reverse_16(x):
     x = ((x & 0x0F0F) << 4) | ((x & 0xF0F0) >> 4)
     x = ((x & 0x00FF) << 8) | ((x & 0xFF00) >> 8)
     return x
+
+# There's a command line arg to adjust the brightness of the LEDs if the default values don't
+# look right.  The arg is simply three ints, 0-255 for Red/White/Blue, expressed as r,w,b
+def parse_and_set_led_bright_arg(cb,arg_str):
+    global RdB, WhB, BlB
+    vals = arg_str.split(',')
+    if len(vals) != 3:
+        default_setting = "\n  default settings: r=%d, w=%d, b=%d" % (RdB, WhB, BlB)
+        cb.log.fatal("led brightness takes three args: r,w,b" + default_setting)
+    try:
+        r = int(vals[0])
+        w = int(vals[1])
+        b = int(vals[2])
+    except ValueError:
+        cb.log.fatal("led brightness must be three ints: r,w,b")
+    if r < 0 or r > 255 or w < 0 or w > 255 or b < 0 or b > 255:
+        cb.log.fatal("r, w, b must be ints in the range 0 to 255")
+    RdB = r
+    WhB = w
+    BlB = b
+    print(" set LEDs to %d, %d, %d" % (RdB, WhB, BlB))
+    return
 
 
 # This array of LED brightness is global so it can be called by the diagnostic as well as operational code
