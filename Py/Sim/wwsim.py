@@ -697,7 +697,7 @@ def main():
     parser.add_argument("--TTYname",
                         help="Configure TTY name to access external media controller", type=str)
     parser.add_argument("--LEDbrightness",
-                        help="Configure MicroWhirlwind LED intensity as three ints; r, w, b", type=str)
+                        help="Configure MicroWhirlwind LED intensity as three ints; r,w,b", type=str)
     parser.add_argument("--CRTgeometry",
                         help="Configure x-window screen geometry as <width>x<height>{+-}<xoffset>{+-}<yoffset>", type=str)
 
