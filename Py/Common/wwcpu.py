@@ -27,15 +27,16 @@ import re
 import control_panel
 import math
 import traceback
+import types
 
 from typing import List, Dict, Tuple, Sequence, Union, Any
 
 # There can be a source file that contains subroutines that might be called by exec statements specific
 #   to the particular project under simulation.  If the file exists in the current working dir, import it.
-if os.path.exists("project_exec.py"):
-    sys.path.append('.')
-    from project_exec import *
-    print("imported project_exec.py")
+# if os.path.exists("project_exec.py"):
+#     sys.path.append('.')
+#     from project_exec import *
+#     print("imported project_exec.py")
 
 def getiolog():
     return ww_io_sim.getiolog()
@@ -172,6 +173,22 @@ class CpuClass:
         self.CommentTab = [None] * 2048
 
         self.kbd_int = 0    # Count of keyboard interrupts
+
+        self.project_exec = None
+
+
+    def re_fetch_project_exec(self):
+        # There can be a source file that contains subroutines that might be called by exec statements specific
+        #   to the particular project under simulation.  If the file exists in the current working dir, import it.
+        if self.project_exec:
+            del self.project_exec
+        self.project_exec = None
+        if os.path.exists("project_exec.py"):
+            sys.path.append('.')
+            import project_exec
+            print("imported project_exec.py")
+            self.project_exec = project_exec
+
 
     def set_isa(self, isa_name):
         if isa_name == "isa1950":
@@ -466,13 +483,31 @@ class CpuClass:
                 exec_op = "exec"
                 self.cb.log.warn("deprecated @E format: '%s'" % line)
             if exec_op == "exec":
+                # this got a lot more complicated when I found I needed to import project_exec files dynamically...
+                # You can't write "from foo import *" inside a function; you can write "import foo".
+                # But some exec stmts refer to functions that are part of wwsim, and others are imported from
+                # project_exec.  So I test to see which is which, and exec the "right" one.
+                fn = re.sub("[ (].*", "", line)
+
+                # I cannot see why this test does not work!
+                #if fn in globals() and callable(globals()[fn]):
+                #    print("local")
+                local = False
                 try:
                     exec(line)
-                except Exception as ex:
-                    # https://stackoverflow.com/questions/9823936/python-how-do-i-know-what-type-of-exception-occurred
-                    template = "An exception of type {0} occurred. Arguments:\n   {1!r}"
-                    message = template.format(type(ex).__name__, ex.args)
-                    self.cb.log.warn("Exec of '%s' failed at pc=0o%03o\n  %s" % (line, pc, message))
+                    local = True
+                except NameError:
+                    pass
+                if local == False:
+                    try:
+                        exec("self.project_exec." + line)
+                #    exec(line)
+
+                    except Exception as ex:
+                        # https://stackoverflow.com/questions/9823936/python-how-do-i-know-what-type-of-exception-occurred
+                        template = "An exception of type {0} occurred. Arguments:\n   {1!r}"
+                        message = template.format(type(ex).__name__, ex.args)
+                        self.cb.log.warn("Exec of '%s' failed at pc=0o%03o\n  %s" % (line, pc, message))
             elif exec_op == "print":
                 self.wwprint(line)
             else:

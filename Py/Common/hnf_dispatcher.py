@@ -27,6 +27,7 @@
 
 import time
 import os
+import sys
 try:
     import serial
     GotSerial = True
@@ -66,71 +67,71 @@ class HnfDispatcherClass:
         # the core-file name
         self.dispatch_table = []
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Bounce/Bounce-Tape-with-Hole", "bounce-no-velocity.acore", self.default_app_timeout, 8))   # 0
+            "Track-While-Scan-D-Israel", "annotated-track-while-scan.acore", self.default_app_timeout, 8)) # 0
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Bounce/BlinkenLights-Bounce", "bounce-control-panel.acore", self.default_app_timeout, 8))  # 1
+            "Blackjack", "bjack.acore", self.default_app_timeout, 8))                                   # 1
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Vibrating-String", "knob-v97-closed-end.acore", self.default_attract_timeout, 8))          # 2
+            "Mad-Game", "mad-game-annotated.acore", self.default_app_timeout, 8))                       # 2
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "NewCode/Rocket", "rocket.acore", self.default_app_timeout, 8))           # 3
+            "NewCode/Rocket", "rocket.acore", self.default_app_timeout, 8))                             # 3
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Tic-Tac-Toe", "tic-tac-toe.acore", self.default_app_timeout, 8))                           # 4
+            "Vibrating-String", "knob-v97-closed-end.acore", self.default_attract_timeout, 8))          # 4
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Blackjack", "bjack.acore", self.default_app_timeout, 8))                                   # 5
+            "Tic-Tac-Toe", "tic-tac-toe.acore", self.default_app_timeout, 8))                           # 5
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Mad-Game", "mad-game-annotated.acore", self.default_app_timeout, 8))                       # 6
+            "Bounce/Bounce-Tape-with-Hole", "bounce-no-velocity.acore", self.default_app_timeout, 8))   # 6
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Track-While-Scan-D-Israel", "annotated-track-while-scan.acore", self.default_app_timeout, 8)) # 7
+            "Bounce/BlinkenLights-Bounce", "bounce-control-panel.acore", self.default_app_timeout, 8))  # 7
 
         # The remainder form a state machine to step through all the demo apps
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 8
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 9,
-                    switch_args=[["FlipFlopPreset02", "0"]], MIR_switch_number = 0))
+                    switch_args=[["FlipFlopPreset02", "0"]], MIR_switch_number = 4))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 9
             "Vibrating-String", "knob-v97-closed-end.acore", self.default_attract_timeout, 10,
-                    MIR_switch_number = 0))
+                    MIR_switch_number = 4))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 10
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 11,
-                    switch_args=[["FlipFlopPreset02", "1"]], MIR_switch_number = 1))
+                    switch_args=[["FlipFlopPreset02", "1"]], MIR_switch_number = 6))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 11
             "Bounce/Bounce-Tape-with-Hole", "bounce-no-velocity.acore",
-                self.default_attract_timeout, 12, MIR_switch_number = 1))
+                self.default_attract_timeout, 12, MIR_switch_number = 6))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 12
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 13,
-                    switch_args=[["FlipFlopPreset02", "2"]], MIR_switch_number = 2))
+                    switch_args=[["FlipFlopPreset02", "2"]], MIR_switch_number = 7))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 13
             "Bounce/BlinkenLights-Bounce", "bounce-control-panel.acore",
-                    self.default_attract_timeout, 14, MIR_switch_number = 2))
+                    self.default_attract_timeout, 14, MIR_switch_number = 7))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 14
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 15,
-                    switch_args=[["FlipFlopPreset02", "3"]], MIR_switch_number = 3))
+                    switch_args=[["FlipFlopPreset02", "3"]], MIR_switch_number = 1))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 15
             "Blackjack", "bjack.acore", self.default_attract_timeout, 16,
-                    MIR_switch_number = 3))
+                    MIR_switch_number = 1))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 16
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 17,
-                    switch_args=[["FlipFlopPreset02", "4"]], MIR_switch_number = 4))
+                    switch_args=[["FlipFlopPreset02", "4"]], MIR_switch_number = 5))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 17
             "Tic-Tac-Toe", "tic-tac-toe.acore", self.default_attract_timeout, 18,
-                    MIR_switch_number = 4))
+                    MIR_switch_number = 5))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 18
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 19,
-                    switch_args=[["FlipFlopPreset02", "5"]], MIR_switch_number = 5))
+                    switch_args=[["FlipFlopPreset02", "5"]], MIR_switch_number = 3))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 19
             "NewCode/Rocket", "rocket.acore", self.default_attract_timeout, 20,
-                    MIR_switch_number = 5))
+                    MIR_switch_number = 3))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 20
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 21,
-                    switch_args=[["FlipFlopPreset02", "6"]], MIR_switch_number = 6))
+                    switch_args=[["FlipFlopPreset02", "6"]], MIR_switch_number = 2))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 21
             "Mad-Game", "mad-game-annotated.acore", self.default_attract_timeout, 8,
-                    MIR_switch_number = 6))
+                    MIR_switch_number = 2))
 
 
 
@@ -222,7 +223,7 @@ class HnfDispatcherClass:
         self.running_time = running_time
         self.next_app_to_run = next_app_to_run
         print("Dispatcher ReadIn Directory and Filename: %s  %s" % (dir, filename))
-        os.chdir(dir)
+        os.chdir(dir)   # this doesn't return an error, but will raise an exception if it fails
         cb.CoreFileName = filename
         if running_time:
             self.stop_at_time = time.time() + running_time  # use this to implement the Inactivity timer

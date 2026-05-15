@@ -136,7 +136,7 @@
 @0125.085:100373            ca  x_smoo0     ;  "Display Tracked Aircraft on F-Scope"
  							.if VERBOSE .exec wwlog("     @085 Found - Display Tracked Aircraft %s on F-Scope; Time0=%s, x_smoo0=%d, y_smoo0=%d" % (which_plane(cm), deci(cm.rd(rl("time0"))), cm.rd(rl("x_smoo0")), cm.rd(rl("y_smoo0"))))
               
-              .if TRACK_DISP .exec display_tracking_symbol(cm, deci, rl, cb, which_plane(cm), "x_smoo0", "y_smoo0", "x_velo0", "y_velo0")
+              .if TRACK_DISP .exec display_tracking_symbol(cm, deci, rl, cb, "x_smoo0", "y_smoo0", "x_velo0", "y_velo0")
               
 @0126.086:030000            qh   000       ;  @@ReadBy a0353 a0356 
 @0127.087:100374            ca  y_smoo0     ;  
@@ -225,7 +225,7 @@
 							; and computes the heading to direct the interceptor to the target
 @0220.144:104405  zero_rng: cs  x_smoo1     ;  @@JumpedToBy a0101 
 							; .exec if cm.rd(251) != 0 and cm.rd(261) != 0: cb.TracePC = 70
- 							.exec dump_tracking_state(cm, deci, rl, long=True)
+ 							.if VERBOSE .exec dump_tracking_state(cm, deci, rl, long=True)
 @0221.145:110373            ad  x_smoo0     ;  
 @0222.146:040431            ts   dx         ;  store Target_x - Interceptor_x
 @0223.147:104406            cs  y_smoo1     ;  

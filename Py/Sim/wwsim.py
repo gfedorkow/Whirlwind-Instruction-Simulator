@@ -286,7 +286,7 @@ def main_run_sim(args, cb, cpu):
         core_dump_file_name = args.DumpCoreToFile
 
     if args.RestoreCoreFromFile:
-        (a, b, c, d, e, dbwgt) = CoreMem.read_core(args.RestoreCoreFromFile, cpu, cb)
+        (a, b, c, d, e, f, dbwgt) = CoreMem.read_core(args.RestoreCoreFromFile, cpu, cb)
     if args.DrumStateFile:
         cpu.drum.restore_drum_state(args.DrumStateFile)
 
@@ -297,7 +297,7 @@ def main_run_sim(args, cb, cpu):
         CycleDelayTime = ns.instruction_cycle_delay
         cb.crt_fade_delay_param = ns.crt_fade_delay
 
-    (cpu.SymTab, cpu.SymToAddrTab, JumpTo, WWfile, WWtapeID, dbwgt_list) = \
+    (cpu.SymTab, cpu.SymToAddrTab, cpu.ExecTab, JumpTo, WWfile, WWtapeID, dbwgt_list) = \
         CoreMem.read_core(cb.CoreFileName, cpu, cb)
     # LAS Test print for sim params
     # print ("LAS", sim_param_dict)
@@ -310,6 +310,16 @@ def main_run_sim(args, cb, cpu):
     flowgraph = None
     if args.FlowGraph:
         flowgraph = ww_flow_graph.FlowGraph (args.FlowGraph, args.FlowGraphOutFile, args.FlowGraphOutDir, cb)
+
+    # There can be a source file that contains subroutines that might be called by exec statements specific
+    #   to the particular project under simulation.  If the file exists in the current working dir, import it.
+    if os.path.exists("project_exec.py"):
+        sys.path.append('.')
+        import project_exec
+        print("imported project_exec.py")
+        cb.project_exec = project_exec
+        cpu.re_fetch_project_exec()
+
 
     if CoreMem.metadata["Radar"]:
                                         # heading is given as degrees from North, counting up clockwise

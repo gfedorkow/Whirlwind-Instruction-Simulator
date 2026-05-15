@@ -167,7 +167,15 @@ class RadarClass:
 
         self.adjust_target_heading = RadarAdjustHeadingWidgetClass()
 
-        project_register_radar(self)
+        print("Current Working Directory: "+ os.getcwd())  # debug, May 14, 2026
+
+        if cb.project_exec:
+            cb.project_exec.project_register_radar(self)
+        else:
+            cb.log.fatal("File not found: Radar operation depends on project_exec.py")
+
+        #project_exec.project_register_radar(self)
+
 
 
     # the radar antenna rotates a full turn in 15 seconds.  There are 750 20-msec opportunities to send

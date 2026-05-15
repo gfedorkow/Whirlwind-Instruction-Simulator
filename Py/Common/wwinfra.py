@@ -34,6 +34,7 @@ import traceback
 import graphics as gfx
 import time
 from wwflex import FlexToFlexoWin, FlexToFlascii, FlexToCsyntaxFlascii
+import copy
 
 # used by Claude code
 from dataclasses import dataclass
@@ -645,6 +646,7 @@ class ConstWWbitClass:
         self.DebugWidgetPyVars = None   # this class links up the Python-based debug widget methods, it any
 
         self.host_os = os.getenv("OS")
+        self.project_exec = None  # this is used as a global for an imported Project_exec.py file, should there be one
         self.crt_fade_delay_param = 0
         self.radar = None   # set this if we're doing a radar-style display
         self.no_toggle_switch_warn = False  # Apologies for the double-negative, but the warning should normally
@@ -1184,6 +1186,7 @@ class CorememClass:
              [0o074036,  True], [0o050003,  True], [0o100032,  True], [0o000707,  True],  # 24d
              [0o020032,  True], [0o110026,  True], [0o000703,  True], [0o010036,  True],  # 28d
              ]
+        self._toggle_switch_mem =[[0, False]]*32
 
         self.cb = cb
         self.NBANKS = 6  # six 1K banks
@@ -1199,7 +1202,7 @@ class CorememClass:
         #     self._coremem[0][0] = 0
         #     self._coremem[0][1] = 1
         self.SymTab = None
-        self.tsr_callback = [None] * 32
+        self.restore_toggle_default()
         self.metadata = {}  # a dictionary for holding assorted metadata related to the core image
 #        self.metadata_hash = []
 #        self.metadata_stats = []
@@ -1211,7 +1214,12 @@ class CorememClass:
         self.mem_addr_reg = 0       # store the most recent memory access address and data for blinkenlights
         self.mem_data_reg = 0
         self.corememinfo = None
-        
+
+    def restore_toggle_default(self):
+        self._toggle_switch_mem = copy.deepcopy(self._toggle_switch_mem_default)
+        self.tsr_callback = [None] * 32
+
+
     # the WR method has two optional args
     # 'force' arg overwrites the "read only" toggle switches
     # 'track' is used only in the case of initializing the drum storage
@@ -1227,17 +1235,17 @@ class CorememClass:
             # put exactly what's there already right back again, we'll just skip the whole deal and
             # take a victory lap
             else:
-                if self._toggle_switch_mem_default[addr][0] != val:
-                    if not force and self._toggle_switch_mem_default[addr][1]:
+                if self._toggle_switch_mem[addr][0] != val:
+                    if not force and self._toggle_switch_mem[addr][1]:
                         # warning if some program writes to a read-only toggle switch
                         # The catch is that programs do often write to address zero, knowing that
                         # there's no side effect
                         if not self.cb.no_toggle_switch_warn and addr != 0:
                             self.cb.log.warn("Can't write a read-only toggle switch at addr=0o%o" % addr)
                         return
-                    if force and self._toggle_switch_mem_default[addr][1]:  # issue a warning if it's Read Only
+                    if force and self._toggle_switch_mem[addr][1]:  # issue a warning if it's Read Only
                         self.cb.log.info("Overwriting a read-only toggle switch at addr=0o%o, was 0o%o, is 0o%o" %
-                                         (addr, self._toggle_switch_mem_default[addr][0], val))
+                                         (addr, self._toggle_switch_mem[addr][0], val))
 
                     self.write_ff_reg(addr, val)
         if addr & self.cb.WWBIT5:  # High half of the address space, Group B
@@ -1248,7 +1256,8 @@ class CorememClass:
             self.corememinfo.registerWr (addr)
         pass
 
-    # memory is filled with None at the start, so read-before-write will cause a trap in my sim.
+
+            # memory is filled with None at the start, so read-before-write will cause a trap in my sim.
     #   Some programs don't seem to be too careful about that, so I fixed so most cases just get
     #   a warning, a zero and move on.  But returning a zero to an instruction fetch is not a good idea...
     # I don't know how to tell if the first 32 words of the address space are always test-storage, or if
@@ -1258,7 +1267,7 @@ class CorememClass:
             if self.tsr_callback[addr] is not None:
                 ret = self.tsr_callback[addr](addr, None)
             else:
-                ret = self._toggle_switch_mem_default[addr][0]
+                ret = self._toggle_switch_mem[addr][0]
             bank = 0
         elif addr & self.cb.WWBIT5:  # High half of the address space, Group B
             ret = self._coremem[self.MemGroupB][addr & self.cb.WWBIT6_15]
@@ -1310,14 +1319,14 @@ class CorememClass:
     # a One says Writable.  In the tsr array, a True means Read-only.
     def set_ff_reg_mask(self, write_protect_list):
         for addr in range(0, 32):
-            self._toggle_switch_mem_default[addr][1] = write_protect_list[addr]
+            self._toggle_switch_mem[addr][1] = write_protect_list[addr]
 
 
     # store a new value in a flip-flop reg
     # This is simply updating a table entry unless the Panel Display is enabled, in which
     # case it needs to be updated in two places...
     def write_ff_reg(self, addr, val):
-        self._toggle_switch_mem_default[addr][0] = val
+        self._toggle_switch_mem[addr][0] = val
         # if self.cb.panel:  #Mar 28, 2024 - I used to "push" ff changes to the panel, but I think it's better
         #    self.cb.panel.write_register(addr, val)    # to "pull" them when updating other registers
 
@@ -1333,10 +1342,10 @@ class CorememClass:
             val = cpu.cpu_switches.read_switch("FlipFlopPreset%02o" % addr)
             if val is not None:
                 # [addr][1] is True for Read-only addrs, False for FF Reg
-                if self._toggle_switch_mem_default[addr][1] is True and \
-                    self._toggle_switch_mem_default[addr][0] != val:
+                if self._toggle_switch_mem[addr][1] is True and \
+                    self._toggle_switch_mem[addr][0] != val:
                     self.cb.log.warn("Resetting 'read-only' toggle-switch register %02o from %o to %o" %
-                                        (addr, self._toggle_switch_mem_default[addr][0], val))
+                                     (addr, self._toggle_switch_mem[addr][0], val))
                 self.write_ff_reg(addr, val)  # None for switches not found in the .acore file
                 val_str = "0o%o" % val
                 self.cb.log.info(reset_info_string % (addr, addr, val_str))
@@ -1379,10 +1388,16 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
     symtab = {}
     sym_to_addr_tab = {}
     switch_class = cpu.cpu_switches
-    commenttab = cpu.CommentTab
-    exectab = cpu.ExecTab
+    commenttab = cpu.CommentTab  # This is a BUG...  the cpu.CommentTab is not cleared with each read_core invocation...
+    exectab = {}
     filedesc = None
     address = 0   # for 'tape' / .ocore files, we don't have addresses, so just start at zero
+    cm.restore_toggle_default()
+
+#    self.SymTab = {}
+#    self.SymToAddr = {}
+#    self.ExecTab = {}  # this table is for holding Python Exec statements interleaved with the WW code.
+#    self.CommentTab = [None] * 2048
 
     # note hack for a specialized use when the WW image to be punched is passed in as an array of
     # strings, one string per line, formatted as a core file, not as the name of a file which
@@ -1535,7 +1550,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
     for param in sim_param.sim_param_dict:
         cm.metadata[param] = sim_param.sim_param_dict[param]
 
-    return symtab, sym_to_addr_tab, jumpto_addr, ww_file, ww_tapeid, screen_debug_widgets
+    return symtab, sym_to_addr_tab, exectab, jumpto_addr, ww_file, ww_tapeid, screen_debug_widgets
 
 
 # used only in write_core to output a hash of the core image as metadata
@@ -2449,10 +2464,11 @@ class XwinCrt:
             else:
                 print(("OMG its a bug! WW_CHAR_SEQ[%d]=%s " % (i, self.WW_CHAR_SEQ[i])))
 
+            # I should optimmize out drawing the "black" segments
             if mask & 1 << (6 - i):
                 seg_color = color
             else:
-                seg_color = "Blue"
+                seg_color = "Black"
 
             char_segment = self.gfx.Line(self.gfx.Point(last_x, last_y), self.gfx.Point(x, y))
             char_segment.setOutline(seg_color)
