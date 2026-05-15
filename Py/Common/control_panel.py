@@ -855,7 +855,8 @@ class PanelClass:
             # self.ff_preset_list = self.panel_xwin.get_ff_preset_list()  # obtain a list of all the FF presets on this panel
             self.switch_list = self.panel_xwin.get_switch_list(omit_MIR=hnf_program_dispatcher_mode != 0)  # obtain a list of all the switches on this panel
         if panel_microWW:
-            self.panel_mWW = PanelMicroWWClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
+            self.panel_mWW = PanelMicroWWClass(cb, sim_state_machine_arg=self.sim_state_machine,
+                                               left_init=0, right_init=0, hnf_mode=hnf_program_dispatcher_mode)
             # self.ff_preset_list = self.panel_mWW.get_ff_preset_list()  # obtain a list of all the FF presets on this panel
             self.switch_list = self.panel_mWW.get_switch_list()  # obtain a list of all the switches on this panel
             # normally we default to RMIR, but for hnf mode, we need to switch the defuault to LMIR

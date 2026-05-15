@@ -861,6 +861,10 @@ class AdjustSwitchWidgetClass:
 class WWSwitchClass:
     def __init__(self, cb):
         self.cb = cb
+        self.SwitchNameDict = {}
+        self.clear_switch_tab()
+
+    def clear_switch_tab(self):
         # I modified this routine to accept any Flip Flop Preset Switch as a directive
         #  FF Presets are numbered by the address at which they appear
         # I actually don't know what they configured to tell which of the five FF Reg's showed up at which address...
@@ -1175,10 +1179,11 @@ class CorememClass:
         # 3l reads 0.00000        should read 0.l0036
 
         # the first 32 memory locations are "Toggle Switch Storage", a manually-programmed "ROM" with five RAM locations
+        # "True" means ReadOnly
         self._toggle_switch_mask = 0o37
         self._toggle_switch_mem_default =\
             [[0o000000,  True], [0o000001,  True], [0o000000, False], [0o000000, False],  # 0d
-             [0o100065,  True], [0o000000, False], [0o014174,  True], [0o000000, False],  # 4d
+             [0o100065,  True], [0o000000, False], [0o014174, False], [0o000000, False],  # 4d
              [0o130007,  True], [0o130003,  True], [0o150006,  True], [0o040024,  True],  # 8d
              [0o050002,  True], [0o130024,  True], [0o000337,  True], [0o014000,  True],  # 12d
              [0o134003,  True], [0o070001,  True], [0o074002,  True], [0o040024,  True],  # 16d
@@ -1370,6 +1375,10 @@ class CorememClass:
 # @C00210: 0040000 0000100 0000001 0000100 0000000  None    None    None  ; memory load
 # @S00202: Yi                                                             ; symbol for location 202
 # %Switch: chkalarm 0o5
+#
+# [May 2026] This routine primarily returns a core-file, an array of memory contents.  But it's grown
+# an increasing list of metadata elements, which are not returned in a uniform way; This needs
+# some refactoring to make it clearer what's being returned!
 def read_core_file(cm, filename, cpu, cb, file_contents=None):
     line_number = 1
     jumpto_addr = None
@@ -1393,6 +1402,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
     filedesc = None
     address = 0   # for 'tape' / .ocore files, we don't have addresses, so just start at zero
     cm.restore_toggle_default()
+    cpu.cpu_switches.clear_switch_tab()
 
 #    self.SymTab = {}
 #    self.SymToAddr = {}

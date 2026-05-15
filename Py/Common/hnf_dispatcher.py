@@ -135,7 +135,7 @@ class HnfDispatcherClass:
 
 
 
-        self.default_dispatch = 8  # where to start the default screen
+        self.default_dispatch = 7  # where to start the default screen
         self.next_app_to_run = self.dispatch_table[0].next_index   # what to run when the timeout times out
         self.last_dispatcher_press = self.default_dispatch
         self.stop_at_time = time.time() + self.default_attract_timeout

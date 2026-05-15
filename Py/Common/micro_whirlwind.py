@@ -70,7 +70,7 @@ class localCpuClass:
 
 
 class PanelMicroWWClass:
-    def __init__(self, cb, sim_state_machine_arg=None, left_init=0, right_init=0):
+    def __init__(self, cb, sim_state_machine_arg=None, left_init=0, right_init=0, hnf_mode=False):
 
         cb.RasPi = RasPi
 
@@ -82,7 +82,7 @@ class PanelMicroWWClass:
         try:
             i2c_bus = I2C(1)
             bus = i2c_bus.bus
-            gp_sw = gpio_switches(self.log)  # these are the switches and LEDs on Rainer's "Tap Board"
+            gp_sw = gpio_switches(self.log, hnf_mode=hnf_mode)  # these are the switches and LEDs on Rainer's "Tap Board"
         except IOError:
             self.micro_ww_module_present = False
             self.log.warn("No MicroWhirlwind Panel I2C/gpio Found")
@@ -796,12 +796,18 @@ class MappedSwitchClass:
 # Guy Fedorkow, Jun 2024
 
 class gpio_switches:
-    def __init__(self, log):
+    def __init__(self, log, hnf_mode=False):
         self.log = log
+        self.hnf_mode = hnf_mode
+
         gpio.setmode(gpio.BCM)
 
-        gpio.setup(pin_gpio_LED1, gpio.IN, pull_up_down=gpio.PUD_UP)
-        gpio.setup(pin_gpio_LED2, gpio.IN, pull_up_down=gpio.PUD_UP)
+        # we use two LEDs for heartbeat and Ethernet Link indicators when in HNF mode,
+        # so this test avoids claiming them for sim use.
+        if hnf_mode == False:
+            gpio.setup(pin_gpio_LED1, gpio.IN, pull_up_down=gpio.PUD_UP)
+            gpio.setup(pin_gpio_LED2, gpio.IN, pull_up_down=gpio.PUD_UP)
+
         gpio.setup(pin_gpio_LED3, gpio.IN, pull_up_down=gpio.PUD_UP)
         gpio.setup(pin_gpio_LED4, gpio.IN, pull_up_down=gpio.PUD_UP)
         gpio.setup(pin_gpio_isKey, gpio.IN, pull_up_down=gpio.PUD_UP)
@@ -814,14 +820,17 @@ class gpio_switches:
         Result in a bit pattern with LSB for the push button
         and the other four keys, left to right, with 2, 4, 8, and 16.
         Note that setKeys() can virtually set a key
+
+        Hands of LED1 and LED2 in HNF Demonstrator mode
         """
         res = 0
         if gpio.input(pin_gpio_isKey) == 0:
             res = 1
-        if gpio.input(pin_gpio_LED1) == 0:
-            res += 2
-        if gpio.input(pin_gpio_LED2) == 0:
-            res += 4
+        if self.hnf_mode == False:
+            if gpio.input(pin_gpio_LED1) == 0:
+                res += 2
+            if gpio.input(pin_gpio_LED2) == 0:
+                res += 4
         if gpio.input(pin_gpio_LED3) == 0:
             res += 8
         if gpio.input(pin_gpio_LED4) == 0:
@@ -831,9 +840,15 @@ class gpio_switches:
     def setKey(self, n, b):
         """
             [from Rainer] Set virtual key (i.e. the LED) on (1) or off (0)
+            n indicates which LED we're setting; ignore zero, use 1-4.
+            b says whether it should be set to zero or one
+
+            In HNF Demonstrator mode, we keep hands-off LED1 and LED2
         """
         if n == 0:
             return  # ignore key 0
+        if self.hnf_mode and (n == 1 or n == 2):
+            return  # ignore LED 1 and 2 if it's the HNF Demonstrator
         LEDs = [pin_gpio_LED1, pin_gpio_LED2, pin_gpio_LED3, pin_gpio_LED4]
         led = LEDs[n - 1]
         if b == 0:
