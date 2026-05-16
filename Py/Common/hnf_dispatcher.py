@@ -138,7 +138,9 @@ class HnfDispatcherClass:
         self.default_dispatch = 7  # where to start the default screen
         self.next_app_to_run = self.dispatch_table[0].next_index   # what to run when the timeout times out
         self.last_dispatcher_press = self.default_dispatch
-        self.stop_at_time = time.time() + self.default_attract_timeout
+        # Initializing stop_at_time to now() will make the dispatcher immediately switch to the first dispatch
+        # Adding a timer causes it to run the initial binary for a while first.
+        self.stop_at_time = time.time() # + self.default_attract_timeout
         # cache the length of the timeout allowed for the current program; set when the program is dispatched
         self.running_time = 0
 
