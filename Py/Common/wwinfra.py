@@ -440,8 +440,24 @@ class SimParamTokenizer (Tokenizer):
 
 class SimParam:
     def __init__ (self):
-        # self.sim_param_dict = {}
-        self.sim_param_dict = {"Radar": 0}  # temporary initialization
+        self.cmd_line_args = {}
+        self.sim_param_dict = {}
+
+    def reset_simparams(self):
+        self.sim_param_dict = {}
+
+    def set_simparam(self, tag, val):
+        self.sim_param_dict[tag] = val
+
+    def set_simparam_override(self, tag, val):
+        self.cmd_line_args[tag] = val
+
+    def get_simparam(self, tag):
+        if tag in self.cmd_line_args:
+            return self.cmd_line_args[tag]
+        if tag in self.sim_param_dict:
+            return self.sim_param_dict[tag]
+        return None
 
     # private
     def strToInt (self, s: str) -> int:
@@ -599,7 +615,7 @@ class ConstWWbitClass:
         self.RasPi = False      # this will be set in microWhirlwind if it's running on a RasPi
 
         # These two will be set by prog that needs them. Looks like only wwsim at this point. LAS 5/17/24
-        self.argAutoClick = False   # used in air defense and Nim (I think)
+        # self.argAutoClick = False   # used in air defense and Nim (I think); mAY 2026: seems to be unused...
         self.panel = None
 
         # use these vars to control how much Helpful Stuff emerges from the sim
@@ -640,6 +656,8 @@ class ConstWWbitClass:
         else:
             self.logDirSpecified = False
             self.logDir = "./"
+        self.sim_params = SimParam()
+
         self.cpu = None
 
         self.dbwgt = None  # This list gives all the currently active Debug Widgets
@@ -1392,7 +1410,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
     screen_debug_widgets = []
     file_type = '?'  # default, assume it's a "core" file, not a tape stream (which would be 'T')
     isa = "isa1958"   # assume it's the 1958 instruction set unless there's a directive saying otherwise
-    sim_param = SimParam()
+    sim_params = cb.sim_params
 
     symtab = {}
     sym_to_addr_tab = {}
@@ -1403,6 +1421,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
     address = 0   # for 'tape' / .ocore files, we don't have addresses, so just start at zero
     cm.restore_toggle_default()
     cpu.cpu_switches.clear_switch_tab()
+    sim_params.reset_simparams()
 
 #    self.SymTab = {}
 #    self.SymToAddr = {}
@@ -1530,9 +1549,10 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             tokens = input_minus_comment.split()
             blocknum = int(tokens[1], 8)
             cb.log.info("starting corefile blocknum 0%oo" % blocknum)
-        elif re.match("^%ISA:", input_minus_comment):
+        elif re.match("^%ISA:", input_minus_comment):  # "isa" is a special case that needs to be recorded for the asm
             tokens = input_minus_comment.split()
             isa = tokens[1]
+            sim_params.set_simparam("isa", isa)
             cb.log.info("Setting instruction set architecture to '%s'" % isa)
         elif re.match("^%DbWgt:", input_minus_comment):  # On-screen Debug Widget
             # This directive says to put a real-time debug widget on the screen if the CRT is opened
@@ -1543,7 +1563,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
                 cb.log.warn("read_core: %%DbWgt takes from one to five args, got %d" % len(args))
             screen_debug_widgets.append(args)
         elif re.match("^%SimParam:", input_minus_comment):
-            sim_param.strToDict (input_minus_comment)  # add terms to the sim_param_dict
+            sim_params.strToDict (input_minus_comment)  # add terms to the sim_param_dict
             pass
         else:
             cb.log.warn("read_core: unexpected line '%s' in %s, Line %d" % (line, filename, line_number))
@@ -1557,8 +1577,6 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
     cm.metadata['core_word_count'] = core_word_count
     cm.metadata['file_type'] = file_type
     cm.metadata['isa'] = isa   # return a string with the instruction set to be used
-    for param in sim_param.sim_param_dict:
-        cm.metadata[param] = sim_param.sim_param_dict[param]
 
     return symtab, sym_to_addr_tab, exectab, jumpto_addr, ww_file, ww_tapeid, screen_debug_widgets
 

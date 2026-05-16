@@ -3,7 +3,7 @@
 %ISA: isa1950
 %File: annotated-track-while-scan.ww
 %TapeID: 
-%SimParam: Radar 1 
+%SimParam: Radar 1 CrtFadeDelay 8 NoAlarmStop 1 AutoClick 1 
 %JumpTo 0o435
 %Switch: FFRegAssign  0o000010, 0o000027, 0o000034, 0o000035, 0o000036
 %Switch: FlipFlopPreset10  0o000000

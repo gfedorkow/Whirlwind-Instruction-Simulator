@@ -8,7 +8,7 @@
                           .dbwgt FF_angle
                           .dbwgt Veloc_I
 
-                          .simparam Radar = 1
+                          .simparam Radar = 1, CrtFadeDelay = 8, NoAlarmStop = 1, AutoClick = 1
 
                           .PP VERBOSE, 0           ; make this non-zero for a ton of debug analysis
                           .PP TRACK_DISP, 1        ; make this PP non-zero to add a graphic to the display showing the id of each tracked aircraft

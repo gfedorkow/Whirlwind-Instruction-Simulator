@@ -146,7 +146,10 @@ class RadarClass:
         self.antenna_revolutions = 0
         self.azimuth_next = True   # We (roughly) alternate sending Range and Azimuth
 
-        self.autoclick_enable = autoclick_enable
+        if autoclick_enable:
+            self.autoclick_enable = True
+        else:
+            self.autoclick_enable = False
         self.mouse_clicked_once_for_autostart = False
 
         # This program is the only one that uses the older Light Gun interface linked in through

@@ -262,7 +262,6 @@ def main_run_sim(args, cb, cpu):
         cb.crt_fade_delay_param = args.CrtFadeDelay
         cb.log.info("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
     """
-
 #    CoreMem = wwinfra.CorememClass(cb)
 #    cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
 #    cb.cpu = cpu
@@ -301,9 +300,15 @@ def main_run_sim(args, cb, cpu):
         CoreMem.read_core(cb.CoreFileName, cpu, cb)
     # LAS Test print for sim params
     # print ("LAS", sim_param_dict)
-    cpu.set_isa(CoreMem.metadata["isa"])
-    if cpu.isa_1950 == False and CoreMem.metadata["Radar"]:
+    cpu.set_isa(cb.sim_params.get_simparam("isa"))
+    if cpu.isa_1950 == False and cb.sim_params.get_simparam("Radar"):
         cb.log.fatal("Radar device can only be used with 1950 ISA")
+
+    if f := cb.sim_params.get_simparam("CrtFadeDelay"):
+        cb.crt_fade_delay_param = f
+        cb.log.warn("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
+
+    no_alarm_stop = cb.sim_params.get_simparam("NoAlarmStop") # cache this parameter
 
     if cb.panel and cb.panel.hnf_program_dispatcher:
         cb.panel.hnf_program_dispatcher.apply_switch_presets(cpu)
@@ -321,7 +326,7 @@ def main_run_sim(args, cb, cpu):
         cpu.re_fetch_project_exec()
 
 
-    if CoreMem.metadata["Radar"]:
+    if cb.sim_params.get_simparam("Radar"):
                                         # heading is given as degrees from North, counting up clockwise
                                         # name   start x/y   heading  mph  auto-click-time Target-or-Interceptor
 
@@ -334,12 +339,12 @@ def main_run_sim(args, cb, cpu):
         #                ]
         # Jan 23, 2026 - scale the distances down so none are larger than 64 miles to avoid an overflow problem
                                         # T1 was 24, -60, T2 was -42, -60
-        target_list = [radar_class.AircraftClass('T1',  50.0,  -20.0, 350.0, 200.0, 0, 'T'),  # wait x revolutions
-                       radar_class.AircraftClass('I1',  60.0,  -12.0, 350.0, 250.0, 2, 'I'), # wait x revolutions
+        target_list = [radar_class.AircraftClass('T1',  50.0,  -40.0, 350.0, 200.0, 0, 'T'),  # wait x revolutions
+                       radar_class.AircraftClass('I1',  60.0,  -12.0, 30.0, 250.0, 2, 'I'), # wait x revolutions
                        radar_class.AircraftClass('T2',  -42.0, -60.0,  17.7, 200.0, 0,''),  # add in a stray aircraft
                        radar_class.AircraftClass('T3', -60.0,  -12.0,  33.0, 200.0, 0, ''),  # add in a stray aircraft
                        ]
-        radar = radar_class.RadarClass(target_list, cb, cpu, args.AutoClick)
+        radar = radar_class.RadarClass(target_list, cb, cpu, cb.sim_params.get_simparam("AutoClick"))
         # register a callback for anything that accesses Register 0o27 (that's the Light Gun)
         CoreMem.add_tsr_callback(cb, 0o27, radar.mouse_check_callback)
         cb.radar = radar   # put a link to the radar class in cb, so we can use it to decide what kind of axis to draw
@@ -360,9 +365,6 @@ def main_run_sim(args, cb, cpu):
     if args.JumpTo:
         cpu.PC = int(args.JumpTo, 8)
     print("start at 0o%o" % cpu.PC)
-
-    #if project_exec_init is not None:
-    #    project_exec_init(args.AutoClick)
 
     start_time = time.time()        # use this to compute the total run time for the sim
     checkpoint_time = start_time    # use this to calculate instructions-per-second every X-zillion instructions
@@ -494,7 +496,7 @@ def main_run_sim(args, cb, cpu):
             if CycleDelayTime:
                 time.sleep(CycleDelayTime/1000)  # Sleep() takes time in fractional seconds
 
-            if CoreMem.metadata["Radar"] and (sim_cycle % 30 == 0):
+            if cb.sim_params.get_simparam("Radar") and (sim_cycle % 30 == 0):
                 # the radar should return something every 20 msec, about every thousand instructions.
                 # This is **like totally forever**, and I'm not taking it any more!
                 # So I'll snoop the radar mailbox.  When the code picks up a new value, it sets the mailbox
@@ -525,7 +527,7 @@ def main_run_sim(args, cb, cpu):
                 if cb.panel:
                     if alarm_state == cb.QUIT_ALARM:   # they said Quit, we'll quit.
                         break
-                    if not args.NoAlarmStop:  # here's the state where we hit an alarm, but it's not QUIT
+                    if not no_alarm_stop:  # here's the state where we hit an alarm, but it's not QUIT
                         cb.sim_state = cb.SIM_STATE_STOP
 #                if cb.panel and cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # watch for mouse clicks on the panel
 #                    break
@@ -535,7 +537,7 @@ def main_run_sim(args, cb, cpu):
                 else:
                     # the normal case with cmd-line wwsim is to stop on an alarm; if the command line flag says not to, we'll try to keep going
                     # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
-                    if not args.NoAlarmStop or \
+                    if not no_alarm_stop or \
                             alarm_state == cb.QUIT_ALARM  or alarm_state == cb.HALT_ALARM or \
                             alarm_state == cb.READIN_ALARM or alarm_state == cb.DISPATCHER_ALARM:
                         break
@@ -582,7 +584,7 @@ def main_run_sim(args, cb, cpu):
         if not cb.TraceQuiet:
             cb.log.raw("Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec\n" %
                        (sim_cycle, cpu.PC, wall_clock_time, 1000000.0 * float(wall_clock_time) / float(sim_cycle)))
-        if CoreMem.metadata["Radar"]:
+        if cb.sim_params.get_simparam("Radar"):
             print("    elapsed radar time = %4.1f minutes (%4.1f revolutions)" %
                   (radar.elapsed_time / 60.0, radar.antenna_revolutions))
     if cb.tracelog:
@@ -726,8 +728,8 @@ def main():
     # Many args are just slightly transformed and stored in the Universal Bit Bucket 'cb'
 
     if args.AutoClick:
-        cb.argAutoClick = True
-
+        #cb.argAutoClick = True # deprecated May 2026
+        cb.sim_params.set_simparam_override("AutoClick", True)
     if args.ZeroizeCore:
         cb.ZeroizeCore = True
 
@@ -772,8 +774,12 @@ def main():
 #        cb.xWin_size_arg = args.xWinSize
 
     if args.CrtFadeDelay:
-        cb.crt_fade_delay_param = args.CrtFadeDelay
-        cb.log.info("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
+        cb.sim_params.set_simparam_override("CrtFadeDelay", args.CrtFadeDelay)
+        # cb.crt_fade_delay_param = args.CrtFadeDelay
+        cb.log.info("CRT Fade Delay set to %d" % args.CrtFadeDelay)
+
+    if args.NoAlarmStop:
+        cb.sim_params.set_simparam_override("NoAlarmStop", True)
 
     cb.TraceQuiet = quiet
 

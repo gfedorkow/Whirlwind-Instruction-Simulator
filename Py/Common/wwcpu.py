@@ -194,7 +194,8 @@ class CpuClass:
         if isa_name == "isa1950":
             self.op_decode = self.op_decode_1950
             self.isa_1950 = True
-        elif isa_name == "isa1958":
+        elif isa_name == "isa1958" or isa_name is None:
+            self.isa_1950 = False
             self.op_decode = self.op_decode_1958
         else:
             self.cb.log.warn("Error setting isa; must be isa1950 or isa1954, not %s" % isa_name)
