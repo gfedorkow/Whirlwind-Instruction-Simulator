@@ -807,8 +807,8 @@ class gpio_switches:
         if hnf_mode == False:
             gpio.setup(pin_gpio_LED1, gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.setup(pin_gpio_LED2, gpio.IN, pull_up_down=gpio.PUD_UP)
+            gpio.setup(pin_gpio_LED3, gpio.IN, pull_up_down=gpio.PUD_UP)
 
-        gpio.setup(pin_gpio_LED3, gpio.IN, pull_up_down=gpio.PUD_UP)
         gpio.setup(pin_gpio_LED4, gpio.IN, pull_up_down=gpio.PUD_UP)
         gpio.setup(pin_gpio_isKey, gpio.IN, pull_up_down=gpio.PUD_UP)
         self.count = 0
@@ -821,7 +821,7 @@ class gpio_switches:
         and the other four keys, left to right, with 2, 4, 8, and 16.
         Note that setKeys() can virtually set a key
 
-        Hands of LED1 and LED2 in HNF Demonstrator mode
+        Hands off LED1, LED2 and LED3 in HNF Demonstrator mode
         """
         res = 0
         if gpio.input(pin_gpio_isKey) == 0:
@@ -831,8 +831,8 @@ class gpio_switches:
                 res += 2
             if gpio.input(pin_gpio_LED2) == 0:
                 res += 4
-        if gpio.input(pin_gpio_LED3) == 0:
-            res += 8
+            if gpio.input(pin_gpio_LED3) == 0:
+                res += 8
         if gpio.input(pin_gpio_LED4) == 0:
             res += 16
         return res
@@ -847,7 +847,7 @@ class gpio_switches:
         """
         if n == 0:
             return  # ignore key 0
-        if self.hnf_mode and (n == 1 or n == 2):
+        if self.hnf_mode and (n == 1 or n == 2 or n == 3):
             return  # ignore LED 1 and 2 if it's the HNF Demonstrator
         LEDs = [pin_gpio_LED1, pin_gpio_LED2, pin_gpio_LED3, pin_gpio_LED4]
         led = LEDs[n - 1]
