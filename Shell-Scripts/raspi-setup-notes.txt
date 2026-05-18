@@ -4,6 +4,11 @@
 # Optionally set screen size
 # (but I don't recall how...)
 
+sudo raspi-config
+   - turn on serial port with no login
+   - turn on ssh
+
+configure bluetooth & wifi
 
 # add ww-demo and guyfe
 sudo adduser guyfe --firstgid 1000 --firstuid 1000
