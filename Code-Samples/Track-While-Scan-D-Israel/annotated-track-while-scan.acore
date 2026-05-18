@@ -114,7 +114,7 @@
 @S0001: TRACK_DISP
 @E0112: exec: wwlog("range conversion: x=%s, y=%s" % (deci(cm.rd(274)), deci(cm.rd(272))))
 @E0126: exec: display_tracking_symbol(cm, deci, rl, cb, "x_smoo0", "y_smoo0", "x_velo0", "y_velo0")
-@E0202: exec: wwlog("@129 Initiate Aircraft %s; set time to %s" % (which_plane(cm), deci(cm.rd(rl("time0"))))) \n exec: record_initiation(cm, cb)
+@E0202: exec: wwlog("@129 Initiate Aircraft %s; set time to %s" % (self.project_exec.which_plane(cm), deci(cm.rd(rl("time0"))))) \n exec: record_initiation(cm, cb)
 @E0325: exec: print_ff_heading(cm, deci, rl, cb)
 @N0001:  value is '1/4'  (not the usual 0o000001)
 @N0027:  addr 0o27

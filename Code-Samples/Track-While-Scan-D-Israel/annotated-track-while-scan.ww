@@ -201,7 +201,7 @@
 @0200.128:070114            cp   76        ;  
 
 @0201.129:104371  initiate: cs  num_650b   ;  constant 650; this sets the beginning of the search area to 100 units before dead-center
-							.exec wwlog("@129 Initiate Aircraft %s; set time to %s" % (which_plane(cm), deci(cm.rd(rl("time0")))))
+							.exec wwlog("@129 Initiate Aircraft %s; set time to %s" % (self.project_exec.which_plane(cm), deci(cm.rd(rl("time0")))))
 							.exec record_initiation(cm, cb)
 @0202.130:040372            ts  time0      ;  reset time to wait for the next turn of the radar
 @0203.131:104000            cs   0         ;  

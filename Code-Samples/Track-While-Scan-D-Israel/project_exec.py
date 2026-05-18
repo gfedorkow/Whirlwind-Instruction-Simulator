@@ -22,6 +22,8 @@ def breakp():
 def deg_to_rad(deg):
     return deg / 360.0 * (2 * np.pi)
 
+def wwlog(*args):
+    return wwinfra.wwlog(args)
 
 BIGNUM = 100000
 Radar = None
