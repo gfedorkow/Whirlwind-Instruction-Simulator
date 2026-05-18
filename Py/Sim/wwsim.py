@@ -598,6 +598,10 @@ def main_run_sim(args, cb, cpu):
                     # remove this instance to make it completely go away in HNF Mode
     # LAS 10/5/25 Removed log output from these
 
+    if radar:       # delete the Radar class to erase the screen graticule and free some space
+        cb.radar = None
+        del(radar)
+
     for d in cpu.IODeviceList:
         if d.name == "Flexowriter":
             s = d.get_saved_output()
