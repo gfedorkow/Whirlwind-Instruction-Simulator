@@ -42,6 +42,7 @@ pin_gpio_LED2 = 6
 pin_gpio_LED3 = 20
 pin_gpio_LED4 = 21
 pin_gpio_isKey = 27
+pin_gpio_isGun1 = 25
 
 
 Verbose = False
@@ -70,14 +71,17 @@ class localCpuClass:
 
 
 class PanelMicroWWClass:
-    def __init__(self, cb, sim_state_machine_arg=None, left_init=0, right_init=0, hnf_mode=False):
+    def __init__(self, cb, sim_state_machine_arg=None, left_init=0, right_init=0,
+                 hnf_mode=False, hnf_hardware_present = False):
 
         cb.RasPi = RasPi
 
         self.log = cb.log
         self.sim_state_machine = sim_state_machine_arg
         self.micro_ww_module_present = True
+        self.hnf_hardware_present = hnf_hardware_present
         self.i2c_bus = None
+        self.pin_isGun1 = 25  # ugh... keep this aligned with analog-scope.py
         if MwwPanelDebug: self.log.info("I2C init: ")
         try:
             i2c_bus = I2C(1)
@@ -111,6 +115,16 @@ class PanelMicroWWClass:
 
         self.local_state_change_buttons = ("Stop on Addr", "Stop on CK", "Stop on S1")
 
+        # When used with Jurgen's HNF demonstrator, the "light gun" is a capacitive touch device
+        # gated by a switch linked to the gun's trigger.
+        # In the case where that hardware is present, we need to initialize that one GPIO so the
+        # pin can be read.
+        # The use of this pin is not exactly in conflict with the optical light gun --  the
+        # optical light gun can only work in --AnaScope mode, and in that case, HNF Hardware is not present...
+        if hnf_hardware_present:
+            gpio.setup(self.pin_isGun1, gpio.IN, pull_up_down=gpio.PUD_UP)
+
+
 
 #        # the first element in the dict is the switch Read entry point, the second is the one to set the switches
 #        self.dispatch = {"LMIR":[self.md.read_left_register, self.md.set_left_register],
@@ -125,6 +139,13 @@ class PanelMicroWWClass:
     def check_buttons(self):
         button_press = self.sw.check_buttons()
         return button_press
+
+    # Jurgen's "light gun" produces a One on isGun1 when the trigger is pulled
+    def is_light_gun_trigger_pulled(self):
+        if self.hnf_hardware_present == False:
+            return False
+        trigger_pull = gpio.input(pin_gpio_isGun1)
+        return trigger_pull
 
 
     # return a flag that says if any button has been pressed since the last check

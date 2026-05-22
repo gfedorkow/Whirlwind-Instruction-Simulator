@@ -835,9 +835,15 @@ def compensate_justification(txt, font=9):
 #  The arg hnf-Program_dispatcher turns on a mode for use with control panels to allow the bottom three
 # bits of the LMIR to be used to dispatch the simulator to run a different Demo program.  This has the
 # side effect of disconnecting the control panel MIR buttons from the LMIR/MIR presets in .acore files
+#
+# Modified May 22 2026 to add a config-switch for Jurgen's HNF demonstrator.   In this pass, the switch only
+# changes the way the mouse works, so that a mouse-click is only recognized if the trigger on the touch-
+# sensitive "ligh gun" is pulled.
+#  Other "hardware" changes are configured by HNF Dispatch, but those only change the behavior of some
+# of the LEDs (although I should probably convert them to use this config-switch as well).
 class PanelClass:
     def __init__(self, cb, panel_xwin=False, panel_blinken=False, panel_microWW=False,
-                 left_init=0, right_init=0, hnf_program_dispatcher_mode=0, tty_name=None):
+                 left_init=0, right_init=0, hnf_program_dispatcher_mode=0, hnf_hardware_present = 0, tty_name=None):
         self.cb = cb
         self.ff_preset_list = []
         self.switch_list = []
@@ -856,7 +862,8 @@ class PanelClass:
             self.switch_list = self.panel_xwin.get_switch_list(omit_MIR=hnf_program_dispatcher_mode != 0)  # obtain a list of all the switches on this panel
         if panel_microWW:
             self.panel_mWW = PanelMicroWWClass(cb, sim_state_machine_arg=self.sim_state_machine,
-                                               left_init=0, right_init=0, hnf_mode=hnf_program_dispatcher_mode)
+                                left_init=0, right_init=0,
+                                hnf_mode=hnf_program_dispatcher_mode, hnf_hardware_present = hnf_hardware_present)
             # self.ff_preset_list = self.panel_mWW.get_ff_preset_list()  # obtain a list of all the FF presets on this panel
             self.switch_list = self.panel_mWW.get_switch_list()  # obtain a list of all the switches on this panel
             # normally we default to RMIR, but for hnf mode, we need to switch the defuault to LMIR

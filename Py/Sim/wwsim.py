@@ -745,7 +745,8 @@ def main():
 
     if args.Panel or args.BlinkenLights or args.MicroWhirlwind:
         cb.panel = control_panel.PanelClass(cb, args.Panel, args.BlinkenLights, args.MicroWhirlwind,
-                                            hnf_program_dispatcher_mode=args.HnfProgramDispatcher, tty_name=args.TTYname)
+                                            hnf_program_dispatcher_mode=args.HnfProgramDispatcher,
+                                            hnf_hardware_present=args.HnfHardwarePresent ,tty_name=args.TTYname)
         if args.HnfProgramDispatcher and not args.QuickStart:
             cb.log.fatal("HNF Mode ought to work without --Quickstart, but it doesn't (yet)")
 

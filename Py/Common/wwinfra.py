@@ -2464,6 +2464,12 @@ class XwinCrt:
             pt, button = self.win.checkMouse()
             if pt is None:
                 return self.cb.NO_ALARM, None, 0
+            # if we're using the hnf "light gun", results are reported as a mouse click coupled with a trigger pull.
+            # If the trigger is not pulled, ignore the mouse click.
+            if cb.panel and cb.panel.panel_mWW:
+                if cb.panel.panel_mWW.is_light_gun_trigger_pulled() == 0:
+                    return self.cb.QUIT_ALARM, None, 0
+
             if self.last_pen_point is None:
                 cb.log.warn("Light Gun checked, but no dot displayed")
                 return self.cb.QUIT_ALARM, None, 0
