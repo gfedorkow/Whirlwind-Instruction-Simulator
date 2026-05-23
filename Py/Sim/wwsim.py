@@ -704,6 +704,10 @@ def main():
                         help="Cycle through states endlessly for museum display", action="store_true")
     parser.add_argument("--HnfProgramDispatcher",
                         help="Activate the special-purpose Demo Program Dispatcher for use at HNF", action="store_true")
+    parser.add_argument("--HnfIdleTimeout",
+                        help="Set the Idle/Inactivity timer in HNF mode, measured in seconds", type=int)
+    parser.add_argument("--HnfHardwarePresent",
+                        help="Activate the special-purpose Demo Program hardware for use at HNF", action="store_true")
     parser.add_argument("-d", "--Debugger",
                         help="Start simulation under the debugger", action="store_true")
     parser.add_argument("--ZeroizeCore",
@@ -746,7 +750,8 @@ def main():
     if args.Panel or args.BlinkenLights or args.MicroWhirlwind:
         cb.panel = control_panel.PanelClass(cb, args.Panel, args.BlinkenLights, args.MicroWhirlwind,
                                             hnf_program_dispatcher_mode=args.HnfProgramDispatcher,
-                                            hnf_hardware_present=args.HnfHardwarePresent ,tty_name=args.TTYname)
+                                            hnf_hardware_present=args.HnfHardwarePresent,
+                                            hnf_idle_timeout = args.HnfIdleTimeout, tty_name=args.TTYname)
         if args.HnfProgramDispatcher and not args.QuickStart:
             cb.log.fatal("HNF Mode ought to work without --Quickstart, but it doesn't (yet)")
 

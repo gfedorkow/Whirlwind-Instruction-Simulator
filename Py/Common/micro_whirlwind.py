@@ -592,6 +592,17 @@ class MappedRegisterDisplayClass:
                          self.stop_on_s1_state << 10 | self.check_alarm_special_state << 9 | self.stop_on_addr_state << 8
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # just need to write one word
 
+
+    def update_single_step_switch_leds(self, val):
+        # Bit 2
+        self.u2_led[7] = self.u2_led[7] & 0o177773 | (val & 1) << 2
+        self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # just need to write one word
+
+    def update_hnf_gun_switch_leds(self, val):
+        # Bit 2
+        self.u2_led[7] = self.u2_led[7] & 0o177737 | (~val & 1) << 5
+        self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # just need to write one word
+
     # write two bits to the LED array to indicate which 'scope (D and/or F) is enabled
     def set_scope_selector_leds(self, which):
         # Bits 11 & 12 of offset 7 in the LED array

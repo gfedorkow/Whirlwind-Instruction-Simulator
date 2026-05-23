@@ -34,6 +34,7 @@ try:
 except ImportError:
     GotSerial = False
 
+# this class is one instance per each program that can be run by the dispatcher
 class HnfDispatchProgramClass:
     def __init__(self, file_dir=None, file_name=None, timeout=0, next_index=0,
                  switch_args=None, MIR_switch_number=None ):
@@ -55,9 +56,17 @@ class HnfDispatchProgramClass:
 #   1 – Blackjack
 #   0 – Air Defense
 
+
+# Set the timeouts and other params when the class is created.
+# A timeout of Zero says "revert to wired-in defaults
 class HnfDispatcherClass:
-    def __init__(self, cb, tty_name):
-        self.default_app_timeout = 10  # user inactivity timeout, measured in seconds
+    def __init__(self, cb, tty_name, hnf_idle_timeout = 0):
+        if hnf_idle_timeout == 0 or hnf_idle_timeout is None:
+            self.default_app_timeout = 12  # user inactivity timeout, measured in seconds
+            cb.log.warn("HNF inactivity timer set to default, t=%d seconds" % self.default_app_timeout)
+        else:
+            self.default_app_timeout = hnf_idle_timeout  # user inactivity timeout, measured in seconds
+
         self.default_attract_timeout = 7  # Attract Screen cycle timer, measured in seconds
         # This dispatch table defines which programs should run on the exhibit.
         # Entries 0-7 are bound to the eight least-significant MIR buttons on the HNF display
@@ -75,7 +84,7 @@ class HnfDispatcherClass:
         self.dispatch_table.append(HnfDispatchProgramClass(
             "NewCode/Rocket", "rocket.acore", self.default_app_timeout, 8))                             # 3
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Vibrating-String", "knob-v97-closed-end.acore", self.default_attract_timeout, 8))          # 4
+            "Vibrating-String", "knob-v97-closed-end.acore", self.default_app_timeout, 8))          # 4
         self.dispatch_table.append(HnfDispatchProgramClass(
             "Tic-Tac-Toe", "tic-tac-toe.acore", self.default_app_timeout, 8))                           # 5
         self.dispatch_table.append(HnfDispatchProgramClass(
@@ -132,8 +141,6 @@ class HnfDispatcherClass:
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 21
             "Mad-Game", "mad-game-annotated.acore", self.default_attract_timeout, 8,
                     MIR_switch_number = 2))
-
-
 
         self.default_dispatch = 7  # where to start the default screen
         self.next_app_to_run = self.dispatch_table[0].next_index   # what to run when the timeout times out

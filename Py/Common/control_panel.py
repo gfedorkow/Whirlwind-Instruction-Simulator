@@ -843,7 +843,8 @@ def compensate_justification(txt, font=9):
 # of the LEDs (although I should probably convert them to use this config-switch as well).
 class PanelClass:
     def __init__(self, cb, panel_xwin=False, panel_blinken=False, panel_microWW=False,
-                 left_init=0, right_init=0, hnf_program_dispatcher_mode=0, hnf_hardware_present = 0, tty_name=None):
+                 left_init=0, right_init=0, hnf_program_dispatcher_mode=0,
+                 hnf_hardware_present = 0, hnf_idle_timeout = 0, tty_name=None):
         self.cb = cb
         self.ff_preset_list = []
         self.switch_list = []
@@ -852,7 +853,8 @@ class PanelClass:
         self.panel_mWW = panel_microWW
         self.hnf_program_dispatcher_mode = hnf_program_dispatcher_mode
         if hnf_program_dispatcher_mode:
-            self.hnf_program_dispatcher = hnf_dispatcher.HnfDispatcherClass(cb, tty_name)
+            self.hnf_program_dispatcher = hnf_dispatcher.HnfDispatcherClass(cb, tty_name,
+                                                hnf_idle_timeout = hnf_idle_timeout)
         else:
             self.hnf_program_dispatcher = None
 
@@ -871,6 +873,9 @@ class PanelClass:
                 self.panel_mWW.sw.set_which_mir("LMIR")
         if panel_blinken:
             self.panel_blinken = BlinkenLightsClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
+
+        self.tmp_val = 0  # temporary value to debug a switch LED
+
 
     # Check the mouse, and update any buttons.  The only return from this call should be True or False to say
     # whether the Exit box was clicked or not.
@@ -972,6 +977,11 @@ class PanelClass:
         if sw == "Order-by-Order":  # don't mess with the PC, just pick up from the last address
             cb.sim_state = cb.SIM_STATE_SINGLE_STEP
             cb.first_instruction_after_start = True
+            if self.panel_mWW.md:
+                # test code to illuminate these two LEDs
+                self.panel_mWW.md.update_single_step_switch_leds(self.tmp_val)
+                self.panel_mWW.md.update_hnf_gun_switch_leds(self.tmp_val)
+                self.tmp_val = self.tmp_val ^ 1
             return
 
         if sw == "Examine":  # don't mess with the PC, just pick up from the last address
