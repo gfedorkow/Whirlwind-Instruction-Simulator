@@ -1,8 +1,9 @@
 
 ; *** Core Image ***
-%ISA: 1950
+%ISA: isa1950
 %File: x-squared-cubed-grapher.ww
-%TapeID: None
+%TapeID: 
+%SimParam: NoAlarmStop 1 
 @C0000:  None    None   0000000 0100000  None   0000400  None    None   
 @C0040: 0100003 0110005 0030003 0034003 0144003 0034002 0144003 0034002 
 @C0050: 0074040  None    None    None    None    None    None    None   
@@ -10,3 +11,4 @@
 @S0003: ff10
 @S0005: ff11
 @S0040: loop
+@N0040:  (FF register) 11

@@ -58,6 +58,10 @@ Programs = [
     WwAppClass("Vector Clock", dir="Code-Samples/Vector-Clock", exec="vector-clock.acore", is_WW=True),
     WwAppClass("Lorenz Attractor", dir="Code-Samples/NewCode/Lorenz", exec="lorenz.acore", is_WW=True),
     WwAppClass("Rocket", dir="Py/Shell", exec="vecIF.py", is_WW=False),
+
+    WwAppClass("Ax-Squared", dir="Code-Samples/Summary-Report-20-Test-Programs", exec="Ax-squared-plotter-demo.acore", is_WW=True),
+    WwAppClass("x-Squared-Cubed", dir="Code-Samples/Summary-Report-20-Test-Programs", exec="x-squared-cubed-grapher.acore", is_WW=True),
+
     WwAppClass("77 to Exit", exec=None ),  # Exit Hack
 ]
 
