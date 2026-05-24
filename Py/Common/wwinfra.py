@@ -2463,6 +2463,9 @@ class XwinCrt:
             self.last_pen_point = None  # we don't need this var, but I don't want to break the xwin version
 
         else:
+            # check the mouse first to be sure to clear the queue of clicks whether we act on any
+            # of them or not; that ensures that the activity timer can be reset, and that the HNF
+            # trigger-pull test will work properly
             pt, button = self.win.checkMouse()
             if pt is None:
                 return self.cb.NO_ALARM, None, 0
@@ -2476,7 +2479,9 @@ class XwinCrt:
             # If the trigger is not pulled, ignore the mouse click.
             if cb.panel and cb.panel.panel_mWW:
                 if cb.panel.panel_mWW.is_light_gun_trigger_pulled() == 0:
-                    return self.cb.QUIT_ALARM, None, 0
+                    return self.cb.NO_ALARM, None, 0
+            if pt is None:
+                return self.cb.NO_ALARM, None, 0
 
             if self.last_pen_point is None:
                 cb.log.warn("Light Gun checked, but no dot displayed")

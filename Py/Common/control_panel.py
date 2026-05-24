@@ -24,8 +24,9 @@ from micro_whirlwind import PanelMicroWWClass
 import hnf_dispatcher
 import re
 
-
+#
 # ###########################################
+
 
 class DefaultColors:
     on_color = "dodger blue"
@@ -852,12 +853,14 @@ class PanelClass:
         self.panel_blinken = panel_blinken
         self.panel_mWW = panel_microWW
         self.hnf_program_dispatcher_mode = hnf_program_dispatcher_mode
+        # we blink an LED for single-step and when the WW program is seeking light gun input; this sets the time constant
+        self.BLINK_TIMEOUT = 5
         if hnf_program_dispatcher_mode:
             self.hnf_program_dispatcher = hnf_dispatcher.HnfDispatcherClass(cb, tty_name,
                                                 hnf_idle_timeout = hnf_idle_timeout)
         else:
             self.hnf_program_dispatcher = None
-
+ 
         if panel_xwin:
             self.panel_xwin = PanelXwinClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
             # self.ff_preset_list = self.panel_xwin.get_ff_preset_list()  # obtain a list of all the FF presets on this panel
@@ -865,7 +868,8 @@ class PanelClass:
         if panel_microWW:
             self.panel_mWW = PanelMicroWWClass(cb, sim_state_machine_arg=self.sim_state_machine,
                                 left_init=0, right_init=0,
-                                hnf_mode=hnf_program_dispatcher_mode, hnf_hardware_present = hnf_hardware_present)
+                                hnf_mode=hnf_program_dispatcher_mode, hnf_hardware_present = hnf_hardware_present,
+                                blink_timeout = self.BLINK_TIMEOUT)
             # self.ff_preset_list = self.panel_mWW.get_ff_preset_list()  # obtain a list of all the FF presets on this panel
             self.switch_list = self.panel_mWW.get_switch_list()  # obtain a list of all the switches on this panel
             # normally we default to RMIR, but for hnf mode, we need to switch the defuault to LMIR
@@ -977,11 +981,11 @@ class PanelClass:
         if sw == "Order-by-Order":  # don't mess with the PC, just pick up from the last address
             cb.sim_state = cb.SIM_STATE_SINGLE_STEP
             cb.first_instruction_after_start = True
-            if self.panel_mWW.md:
-                # test code to illuminate these two LEDs
-                self.panel_mWW.md.update_single_step_switch_leds(self.tmp_val)
-                self.panel_mWW.md.update_hnf_gun_switch_leds(self.tmp_val)
-                self.tmp_val = self.tmp_val ^ 1
+            if self.panel_mWW:
+                # Blink an LED light under the single_step switch
+                # The LED is actuall blinked on when it sees the timer set to this specific timeout value
+                #  i.e., don't change self.BLINK_TIMOUT; go look for the original definition!
+                self.panel_mWW.blink_single_step = self.BLINK_TIMEOUT
             return
 
         if sw == "Examine":  # don't mess with the PC, just pick up from the last address

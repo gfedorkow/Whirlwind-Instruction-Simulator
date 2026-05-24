@@ -72,7 +72,7 @@ class localCpuClass:
 
 class PanelMicroWWClass:
     def __init__(self, cb, sim_state_machine_arg=None, left_init=0, right_init=0,
-                 hnf_mode=False, hnf_hardware_present = False):
+                 hnf_mode=False, hnf_hardware_present = False, blink_timeout = 1):
 
         cb.RasPi = RasPi
 
@@ -82,6 +82,12 @@ class PanelMicroWWClass:
         self.hnf_hardware_present = hnf_hardware_present
         self.i2c_bus = None
         self.pin_isGun1 = 25  # ugh... keep this aligned with analog-scope.py
+
+        # two timers that time out one-shot blink LEDs
+        self.blink_single_step = 0
+        self.blink_hnf_gun = 0
+        self.BLINK_TIMEOUT = blink_timeout
+
         if MwwPanelDebug: self.log.info("I2C init: ")
         try:
             i2c_bus = I2C(1)
@@ -142,10 +148,16 @@ class PanelMicroWWClass:
 
     # Jurgen's "light gun" produces a One on isGun1 when the trigger is pulled
     def is_light_gun_trigger_pulled(self):
+        self.blink_hnf_gun = self.BLINK_TIMEOUT
         if self.hnf_hardware_present == False:
-            return False
+            return True  # if this is not HNF Hardware, we should assume a mouse click is always valid
         trigger_pull = gpio.input(pin_gpio_isGun1)
         return trigger_pull
+
+    # call this if the WW program is expecting light gun input, to blink an LED
+    # The LED is updated during the general control panel update; we just set the timer here
+    def blink_hnf_gun_led(self):
+        self.blink_hnf_gun = self.BLINK_TIMEOUT
 
 
     # return a flag that says if any button has been pressed since the last check
@@ -191,6 +203,19 @@ class PanelMicroWWClass:
             cpu.stop_on_address = self.md.read_preset_switch_leds()["pc"]  # if activated, set the address for the cpu to watch
         else:
             cpu.stop_on_address = None  # otherwise, deactivate the Stop on PC function
+
+        if self.blink_single_step != 0:
+            if self.blink_single_step == self.BLINK_TIMEOUT:
+                self.md.update_single_step_switch_led(1)
+            self.blink_single_step -= 1
+            if self.blink_single_step == 0:
+                self.md.update_single_step_switch_led(0)
+        if self.blink_hnf_gun != 0:
+            if self.blink_hnf_gun == self.BLINK_TIMEOUT:
+                self.md.update_hnf_gun_switch_led(1)
+            self.blink_hnf_gun -= 1
+            if self.blink_hnf_gun == 0:
+                self.md.update_hnf_gun_switch_led(0)
 
         if gpio.input(pin_gpio_isKey) == 0:   #
             return False
@@ -593,14 +618,14 @@ class MappedRegisterDisplayClass:
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # just need to write one word
 
 
-    def update_single_step_switch_leds(self, val):
-        # Bit 2
-        self.u2_led[7] = self.u2_led[7] & 0o177773 | (val & 1) << 2
+    # adjust the LED hidden under the single-step button
+    def update_single_step_switch_led(self, val):
+        self.u2_led[6] = self.u2_led[6] & 0o175777 | (val & 1) << 10
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # just need to write one word
 
-    def update_hnf_gun_switch_leds(self, val):
-        # Bit 2
-        self.u2_led[7] = self.u2_led[7] & 0o177737 | (~val & 1) << 5
+    # adjust the LED hidden under the restart button to indicate that the Light Gun is active
+    def update_hnf_gun_switch_led(self, val):
+        self.u2_led[6] = self.u2_led[6] & 0o157777 | (val & 1) << 13
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # just need to write one word
 
     # write two bits to the LED array to indicate which 'scope (D and/or F) is enabled
