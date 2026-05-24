@@ -3,6 +3,10 @@
 ; Guy Fedorkow
 ; Sep 26, 2024
 
+; May 24, 2026 - there's a non-critical bug still in the display of the WW
+; move in FF3 -- the first move is computed by table, and the result is the cell number
+; multiplied by 3.  To display the move properly, I "should" divide the number by 3.
+
 ; Simple game of tic-tac-toe written in Whirlwind assembly code.
 ; The game displays on the WW CRT, and can be played with the light gun
 ; (As of Sep 26, it's a two-person game, i.e., i alternates X and O plays)
@@ -35,6 +39,9 @@ zero:
 const_0:  .word 0
 one:
 const_1:  .word 1
+
+        .pp FF2_USER_MOVE, 02    ; display cell number of last User move
+        .pp FF3_WW_MOVE,   03    ; display cell number of last WW move
 
 
 ; constants for SI graphics instruction
@@ -533,6 +540,7 @@ lgh_y1_arg: ca 0        ; load the y value of the cell's address in the grid
             ; the cell number of the hit is passed below in ACC
             ; sp alternate_play_cell   ; do something with the light gun hit!; this call is for two-person play
             ts light_gun_mailbox
+            ts FF2_USER_MOVE   ; display the move
 
             sp is_there_winner       ; test to see if it's Game Over
 
@@ -638,6 +646,8 @@ table_play_move:
 tpm_fetch_move_table:
             ca 0                    ; fetch the offset of the computer move that will be used to respond
             ts lcl_tpm_table_move
+            ts FF3_WW_MOVE      ; display the autoplay move
+
             ad gb_table_start
             ad c_2
             td tpm_store_move
@@ -713,6 +723,8 @@ apm_copy_dst: ts 0
             ; .exec print_board(cm, rl("boardp"), rl("push_lcl_depth"), rl("player"), "calling findBestMove")
             sp findBestMove    ; return the cell number for the Best Move in ACC
             ts lcl_cell_for_move
+            ts FF3_WW_MOVE      ; display the autoplay move
+            
 
             ; prepare to make the suggested move permanent in the game board
             slr 1               ; multiply cell number by three
@@ -728,7 +740,7 @@ apm_copy_dst: ts 0
             ; ca dct1                 ; the code above should be "put back" to compute the right icon
             ; td apm_fetch_icon_fn
 
-            .exec print_experiment(cm, cb, "move game board player %d to cell %d, function 0o%o to gb offset 0o%o", ("player", "lcl_cell_for_move", "apm_fetch_icon_fn", "apm_store_move"), 0)
+            ; .exec print_experiment(cm, cb, "move game board player %d to cell %d, function 0o%o to gb offset 0o%o", ("player", "lcl_cell_for_move", "apm_fetch_icon_fn", "apm_store_move"), 0)
 
 apm_fetch_icon_fn:
             ca dct1    ; this address should be dynamically set, not fixed to "naught"
@@ -952,6 +964,10 @@ igb_table_ts: ts 0                  ; set a table entry to the default pointer
             ca const_0
             ts which_player
             ts g_game_over          ; clear the "game over" flag
+            
+            cs one
+            ts light_gun_mailbox
+            ts FF2_USER_MOVE            
 
             ;;;;;
             ; debug - pre-populate two moves
@@ -1759,7 +1775,7 @@ minmax_empty_cell1:             ; here, we know the cell we tested is empty, and
         ca player               ; fetch the Player marker 
 minmax_wr1: 
         ts 0                    ; ... and write it into the cell
-        .exec print_experiment(cm, cb, "Trying  game piece %d to cell %d, count %d, isMax==True", ("player", "minmax_lcl_next_cell", "minmax_lcl_loop_cnt"), "push_lcl_depth")
+        ; .exec print_experiment(cm, cb, "Trying  game piece %d to cell %d, count %d, isMax==True", ("player", "minmax_lcl_next_cell", "minmax_lcl_loop_cnt"), "push_lcl_depth")
         sd zero   ; no-op
 
         cs zero                 ; load negative zero, i.e. all ones    
