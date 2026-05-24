@@ -2458,12 +2458,20 @@ class XwinCrt:
                     button = 3  # return 'button 3' to emulate the PC Mouse right-click
                 pt = True       # if it were the CRT, we'd have to return an actual point, but here, it's just "hit"
                 print("Light Gun Hit: button=%d" % button)
+                if cb.panel.hnf_program_dispatcher:
+                    cb.panel.hnf_program_dispatcher.reset_inactivity_timer()
             self.last_pen_point = None  # we don't need this var, but I don't want to break the xwin version
 
         else:
             pt, button = self.win.checkMouse()
             if pt is None:
                 return self.cb.NO_ALARM, None, 0
+
+            # this call resets the HNF Activity Timeout; I'm interpreting this as meaning that any mouse/screen
+            # activity should count, regardless of whether the user actually hits a hot-spot or not.
+            if cb.panel.hnf_program_dispatcher:
+                cb.panel.hnf_program_dispatcher.reset_inactivity_timer()
+
             # if we're using the hnf "light gun", results are reported as a mouse click coupled with a trigger pull.
             # If the trigger is not pulled, ignore the mouse click.
             if cb.panel and cb.panel.panel_mWW:

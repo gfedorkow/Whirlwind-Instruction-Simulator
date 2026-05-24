@@ -92,55 +92,59 @@ class HnfDispatcherClass:
         self.dispatch_table.append(HnfDispatchProgramClass(
             "Bounce/BlinkenLights-Bounce", "bounce-control-panel.acore", self.default_app_timeout, 8))  # 7
 
+
+
         # The remainder form a state machine to step through all the demo apps
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 8
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 9,
-                    switch_args=[["FlipFlopPreset02", "0"]], MIR_switch_number = 4))
+                    switch_args=[["FlipFlopPreset02", "2"]], MIR_switch_number = 7))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 9
-            "Vibrating-String", "knob-v97-closed-end.acore", self.default_attract_timeout, 10,
-                    MIR_switch_number = 4))
+            "Bounce/BlinkenLights-Bounce", "bounce-control-panel.acore", self.default_attract_timeout, 10,
+                    MIR_switch_number = 7))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 10
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 11,
                     switch_args=[["FlipFlopPreset02", "1"]], MIR_switch_number = 6))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 11
             "Bounce/Bounce-Tape-with-Hole", "bounce-no-velocity.acore",
-                self.default_attract_timeout, 12, MIR_switch_number = 6))
+                self.default_attract_timeout, 12,
+                    MIR_switch_number = 6))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 12
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 13,
-                    switch_args=[["FlipFlopPreset02", "2"]], MIR_switch_number = 7))
+                    switch_args=[["FlipFlopPreset02", "4"]], MIR_switch_number = 5))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 13
-            "Bounce/BlinkenLights-Bounce", "bounce-control-panel.acore",
-                    self.default_attract_timeout, 14, MIR_switch_number = 7))
+            "Tic-Tac-Toe", "tic-tac-toe.acore", self.default_attract_timeout, 14,
+                    MIR_switch_number = 5))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 14
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 15,
-                    switch_args=[["FlipFlopPreset02", "3"]], MIR_switch_number = 1))
+                    switch_args=[["FlipFlopPreset02", "0"]], MIR_switch_number = 4))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 15
-            "Blackjack", "bjack.acore", self.default_attract_timeout, 16,
-                    MIR_switch_number = 1))
+            "Vibrating-String", "knob-v97-closed-end.acore", self.default_attract_timeout, 16,
+                    MIR_switch_number = 4))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 16
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 17,
-                    switch_args=[["FlipFlopPreset02", "4"]], MIR_switch_number = 5))
+                    switch_args=[["FlipFlopPreset02", "5"]], MIR_switch_number = 3))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 17
-            "Tic-Tac-Toe", "tic-tac-toe.acore", self.default_attract_timeout, 18,
-                    MIR_switch_number = 5))
+            "NewCode/Rocket", "rocket.acore", self.default_attract_timeout, 18,
+                    MIR_switch_number = 3))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 18
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 19,
-                    switch_args=[["FlipFlopPreset02", "5"]], MIR_switch_number = 3))
+                    switch_args=[["FlipFlopPreset02", "6"]], MIR_switch_number = 2))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 19
-            "NewCode/Rocket", "rocket.acore", self.default_attract_timeout, 20,
-                    MIR_switch_number = 3))
+            "Mad-Game", "mad-game-annotated.acore", self.default_attract_timeout, 20,
+                    MIR_switch_number = 2))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 20
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 21,
-                    switch_args=[["FlipFlopPreset02", "6"]], MIR_switch_number = 2))
+                    switch_args=[["FlipFlopPreset02", "3"]], MIR_switch_number = 1))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 21
-            "Mad-Game", "mad-game-annotated.acore", self.default_attract_timeout, 8,
-                    MIR_switch_number = 2))
+            "Blackjack", "bjack.acore", self.default_attract_timeout, 8,
+                    MIR_switch_number = 1))
+
 
         self.default_dispatch = 7  # where to start the default screen
         self.next_app_to_run = self.dispatch_table[0].next_index   # what to run when the timeout times out
