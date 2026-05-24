@@ -2467,6 +2467,11 @@ class XwinCrt:
             # of them or not; that ensures that the activity timer can be reset, and that the HNF
             # trigger-pull test will work properly
             pt, button = self.win.checkMouse()
+            # if we're using the hnf "light gun", results are reported as a mouse click coupled with a trigger pull.
+            # If the trigger is not pulled, ignore the mouse click.
+            if cb.panel and cb.panel.panel_mWW:
+                trigger_pull= cb.panel.panel_mWW.is_light_gun_trigger_pulled()
+
             if pt is None:
                 return self.cb.NO_ALARM, None, 0
 
@@ -2475,12 +2480,7 @@ class XwinCrt:
             if cb.panel.hnf_program_dispatcher:
                 cb.panel.hnf_program_dispatcher.reset_inactivity_timer()
 
-            # if we're using the hnf "light gun", results are reported as a mouse click coupled with a trigger pull.
-            # If the trigger is not pulled, ignore the mouse click.
-            if cb.panel and cb.panel.panel_mWW:
-                if cb.panel.panel_mWW.is_light_gun_trigger_pulled() == 0:
-                    return self.cb.NO_ALARM, None, 0
-            if pt is None:
+            if trigger_pull == 0:
                 return self.cb.NO_ALARM, None, 0
 
             if self.last_pen_point is None:
