@@ -522,7 +522,10 @@ class MappedRegisterDisplayClass:
     #  PC bank    R0-[12-14]
     #  FF2        R2-[8-15]         R3-[8-15]
     #  FF3        R4-[8-15]         R5-[8-15]
+    # None of these LEDs are used in the HNF demonstrator, so they should not be set
     def set_preset_switch_leds(self, pc=None, pc_bank=None, ff2=None, ff3=None, bank_test=False):
+        if self.hnf_hardware_present:
+            return
         bank = 0
         if pc is not None:
             self.u2_led[0] = pc & 0o003400 | bank & 0o7 << 12 | self.u2_led[0] & 0o377   # pc is only 11 bits
@@ -596,12 +599,13 @@ class MappedRegisterDisplayClass:
         self.u2_led[4] = 1 << ((mir >>  3) & 0o7) | (self.u2_led[4] & 0o0177400)   #
         self.u2_led[5] = 1 << ((mir      ) & 0o7) | (self.u2_led[5] & 0o0177400)   #
 
-        msg = ''
-        for i in range(0, 6):
-            msg += "%d:0o%06o, " % (i, self.u2_led[i])
-
-        if MwwPanelDebug: self.log.info("Setting U2 LEDs to %s; mir[0]=0o%o, mir[1]=0o%o, mir=0o%o, which=%d, activate=%d" %
+        if MwwPanelDebug:
+            msg = ''
+            for i in range(0, 6):
+                msg += "%d:0o%06o, " % (i, self.u2_led[i])
+            self.log.info("Setting U2 LEDs to %s; mir[0]=0o%o, mir[1]=0o%o, mir=0o%o, which=%d, activate=%d" %
             (msg, self.mir_state[0], self.mir_state[1], mir, self.which_mir, self.activate))
+
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # ought to be six, no?
 
 
