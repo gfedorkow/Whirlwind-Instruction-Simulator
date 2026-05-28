@@ -107,7 +107,7 @@ class PanelMicroWWClass:
                 self.pin_audio_click = 12  # audio pin
                 gpio.setup(self.pin_audio_click, gpio.OUT)
 
-            self.md = MappedRegisterDisplayClass(self.log, i2c_bus)  # pass in cb.log for printing log messages
+            self.md = MappedRegisterDisplayClass(self.log, i2c_bus, hnf_hardware_present=hnf_hardware_present)  # pass in cb.log for printing log messages
             self.sw = MappedSwitchClass(self.log, i2c_bus, self.md)
             # I think there's only one set of lights that need to be initialized from CB
             # The rest come from the ReadIn operation
@@ -406,7 +406,7 @@ BlB = 30
 
 
 class MappedRegisterDisplayClass:
-    def __init__(self, log, i2c_bus):
+    def __init__(self, log, i2c_bus, hnf_hardware_present=0):
         global RdB, WhB, BlB
         self.log = log
         self.run_state = 0
@@ -416,6 +416,7 @@ class MappedRegisterDisplayClass:
         self.check_alarm_special_state = 0
         self.stop_on_s1_state = 0
         self.stop_on_addr_state = 0
+        self.hnf_hardware_present = hnf_hardware_present
 
         # This array of LED brightness [was] global so it can be called by the diagnostic as well as operational code
                          #  MAR                     MDR                 ACC                  BR
@@ -438,11 +439,16 @@ class MappedRegisterDisplayClass:
         self.mir_state = [0]*2  # two element array to remember the MIR settings, Left=0, Right=1
         self.which_mir = 1      # this element remembers which MIR value to display
 
+    # Register Displays per Version
+    # Both versions include:  acc, pc, ff2, ff3, Alarm
+    # HNF excludes:  mdr, mar, b_reg, SAM
+
     def set_IndReg_leds(self, ind_register):
         self.ind_register = bit_reverse_16(ind_register) & 0xff
         self.set_cpu_reg_display()
 
     def set_cpu_reg_display(self, cpu=None, mdr=0, mar=0, mar_bank=0, ff2=0, ff3=0, run_state=0, alarm_state=None):
+        state_leds = 0
         if cpu:
             acc_r = bit_reverse_16(cpu._AC)
             pc_r = bit_reverse_16(cpu.PC & 0o3777)
@@ -460,15 +466,29 @@ class MappedRegisterDisplayClass:
             else:
                 ff3r = ff3
 
-            self.u1_led[0] = ~mar_r
-            self.u1_led[1] = mar_r
-            self.u1_led[2] = ~mdr_par_r
-            self.u1_led[3] = mdr_par_r
+            # leave unused banks of LEDs unlit to avoid Chalieplex Ghosts
+            if self.hnf_hardware_present == False:
+                self.u1_led[0] = ~mar_r
+                self.u1_led[1] = mar_r
+                self.u1_led[2] = ~mdr_par_r
+                self.u1_led[3] = mdr_par_r
+                self.u1_led[6] = ~b_reg_r
+                self.u1_led[7] = b_reg_r
+
+                # Carry-Out / SAM register
+                # Bit 8 -  0x0100 -> red -1 carry
+                # Bit 9 -  0x0200 -> white -1 carry
+                # Bit 10 - 0x0400 -> red +1 carry
+                # Bit 11 - 0x0800 -> white +1 carry
+                if cpu._SAM > 0:
+                    state_leds = 0x600
+                elif cpu._SAM < 0:
+                    state_leds = 0x900
+                else:
+                    state_leds = 0xa00
+
             self.u1_led[4] = ~acc_r
             self.u1_led[5] = acc_r
-            self.u1_led[6] = ~b_reg_r
-            self.u1_led[7] = b_reg_r
-
             self.u5_led[0] = pc_r
             self.u5_led[1] = ~pc_r
             self.u5_led[2] = ff3r
@@ -476,19 +496,6 @@ class MappedRegisterDisplayClass:
             self.u5_led[4] = ff2r
             self.u5_led[5] = ~ff2r
 
-            # Carry-Out / SAM register
-            # Bit 8 -  0x0100 -> red -1 carry
-            # Bit 9 -  0x0200 -> white -1 carry
-            # Bit 10 - 0x0400 -> red +1 carry
-            # Bit 11 - 0x0800 -> white +1 carry
-            if cpu._SAM > 0:
-                state_leds = 0x600
-            elif cpu._SAM < 0:
-                state_leds = 0x900
-            else:
-                state_leds = 0xa00
-        else:
-            state_leds = 0
         # Bit 13 - 0x2000 -> red Alarm
         # Bit 14 - 0x4000 -> red Stop
         # Bit 15 - 0x8000 -> red Run
@@ -1410,6 +1417,7 @@ class Is31:
         self.is31.init_IS31()
         if MwwPanelDebug: self.log.info("set brightness")
         self.is31.set_brightness(brightness)
+        #  self.hnf_hardware_present = hnf_hardware_present
 
         self.is31.selectFrame(0)   # do this once, so it doesn't have to be done with each write of the LEDs
         self.is31.write_16bit_led_rows(0, [0, 0, 0, 0, 0, 0, 0, 0, 0])  # clear all the LEDs

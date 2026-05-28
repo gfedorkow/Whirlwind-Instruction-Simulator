@@ -2471,13 +2471,15 @@ class XwinCrt:
             # If the trigger is not pulled, ignore the mouse click.
             if cb.panel and cb.panel.panel_mWW:
                 trigger_pull= cb.panel.panel_mWW.is_light_gun_trigger_pulled()
+            else:
+                trigger_pull = 1     # for anything but HNF hardware, this should be assumed True
 
             if pt is None:
                 return self.cb.NO_ALARM, None, 0
 
             # this call resets the HNF Activity Timeout; I'm interpreting this as meaning that any mouse/screen
             # activity should count, regardless of whether the user actually hits a hot-spot or not.
-            if cb.panel.hnf_program_dispatcher:
+            if cb.panel and cb.panel.hnf_program_dispatcher:
                 cb.panel.hnf_program_dispatcher.reset_inactivity_timer()
 
             if trigger_pull == 0:
