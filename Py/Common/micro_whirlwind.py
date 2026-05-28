@@ -524,8 +524,6 @@ class MappedRegisterDisplayClass:
     #  FF3        R4-[8-15]         R5-[8-15]
     # None of these LEDs are used in the HNF demonstrator, so they should not be set
     def set_preset_switch_leds(self, pc=None, pc_bank=None, ff2=None, ff3=None, bank_test=False):
-        if self.hnf_hardware_present:
-            return
         bank = 0
         if pc is not None:
             self.u2_led[0] = pc & 0o003400 | bank & 0o7 << 12 | self.u2_led[0] & 0o377   # pc is only 11 bits
@@ -542,6 +540,8 @@ class MappedRegisterDisplayClass:
             self.u2_led[5] = ((ff3 & 0o377) << 8) | self.u2_led[5] & 0o377
             # print("set_preset_switch_leds: preset LEDs FF3 set to 0o%o" % ff3)
 
+        if self.hnf_hardware_present:
+            return
         # send new settings to all u2 LEDs at once
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=6)
 
