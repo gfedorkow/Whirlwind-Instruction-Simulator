@@ -837,7 +837,7 @@ def compensate_justification(txt, font=9):
 # side effect of disconnecting the control panel MIR buttons from the LMIR/MIR presets in .acore files
 class PanelClass:
     def __init__(self, cb, panel_xwin=False, panel_blinken=False, panel_microWW=False,
-                 left_init=0, right_init=0, hnf_program_dispatcher_mode=0):
+                 left_init=0, right_init=0, hnf_program_dispatcher_mode=0, tty_name=None):
         self.cb = cb
         self.ff_preset_list = []
         self.switch_list = []
@@ -846,7 +846,7 @@ class PanelClass:
         self.panel_mWW = panel_microWW
         self.hnf_program_dispatcher_mode = hnf_program_dispatcher_mode
         if hnf_program_dispatcher_mode:
-            self.hnf_program_dispatcher = hnf_dispatcher.HnfDispatcherClass(cb)
+            self.hnf_program_dispatcher = hnf_dispatcher.HnfDispatcherClass(cb, tty_name)
         else:
             self.hnf_program_dispatcher = None
 

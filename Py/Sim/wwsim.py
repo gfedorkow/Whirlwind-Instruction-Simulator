@@ -46,8 +46,12 @@ from wwcpu import CpuClass
 from graphics import GraphicsError
 
 from typing import List, Dict, Tuple, Sequence, Union, Any
+
+# I spent (burned up!) some time Apr 2026 chasing a memory leak.  Not sure I understand what
+# was happening, but I think on closing the graphics display, I was not Erasing / Undrawing objects
+# on the screen, leving stale graphics objects sitting around.
 # from mem_top import mem_top
-# import memory_graph as mg
+# import memory_graph as mg   # https://pypi.org/project/memory-graph/
 # from pympler import tracker
 # MemTracker = tracker.SummaryTracker()
 
@@ -148,7 +152,7 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
         py_wgt_label = ''
         address = 0
         increment = 1
-        min = 1
+        min = -(2**15)+1
         max = 2**16 - 1
         format_str = "0o%o"   # by default, numbers should be displayed as octal
         if args[0][0] == '.':
@@ -159,7 +163,7 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
             except AttributeError:
                 cb.log.warn("Debug Widget: Can't find Python Label 'cb.%s'" % py_wgt_label)
                 py_wgt_label = ''
-        if args[0][0] == '%':
+        elif args[0][0] == '%':
             address = -1
             py_wgt_label = args[0]
             if cb.cpu.cpu_switches.validate_switch_register_name(args[0][1:]) == False:
@@ -182,13 +186,19 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
             try:
                 increment = int(args[1], 8)
             except ValueError:
-                print("can't parse Debug Widget increment arg %s in %s" % (args[1], args[0]))
+                cb.log.warn("can't parse Debug Widget increment arg %s in %s" % (args[1], args[0]))
         if len(args) >= 3:
             format_str = args[2]
         if len(args) >= 4:
-            min = int (args[3], 8)
+            try:
+                min = int(args[3], 8)
+            except ValueError:
+                cb.log.warn("can't parse Debug Widget Min arg %s in %s" % (args[3], args[0]))
         if len(args) == 5:
-            max = int (args[4], 8)
+            try:
+                max = int(args[4], 8)
+            except ValueError:
+                cb.log.warn("can't parse Debug Widget Max arg %s in %s" % (args[4], args[0]))
 
         if address >= 0 or len(py_wgt_label):
             dbwgt.add_widget(cb, address, label, py_wgt_label, increment, min, max, format_str)
@@ -246,7 +256,7 @@ def poll_sim_io(cpu, cb):
         pass
     return ret
 
-def main_run_sim(args, cb):
+def main_run_sim(args, cb, cpu):
     global CoreMem, CommentTab   # should have put this in the CPU Class...
     global UseDebugger, Debugger
 
@@ -257,10 +267,10 @@ def main_run_sim(args, cb):
         cb.log.info("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
     """
 
-    CoreMem = wwinfra.CorememClass(cb)
-    cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
-    cb.cpu = cpu
-    cpu.cpu_switches = wwinfra.WWSwitchClass(cb)
+#    CoreMem = wwinfra.CorememClass(cb)
+#    cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
+#    cb.cpu = cpu
+#    cpu.cpu_switches = wwinfra.WWSwitchClass(cb)
     cb.dbwgt = wwinfra.ScreenDebugWidgetClass(cb, CoreMem, args.AnalogScope)
 
     cycle_limit = 0  # default limit for number of sim cycles to run; 'zero' means 'forever'
@@ -609,14 +619,11 @@ def main_run_sim(args, cb):
                 cb.log.info ("Begin Ttyout:\n" + logstr)
                 cb.log.info ("End Ttyout")
                 """
-
-        if d.name == "DisplayScope":
-            if d.crt is not None:
-                if args.NoCloseOnStop:
-                    d.crt.get_mouse_blocking()  # wait to see what was on the display in case of a trap
-                if d.crt.win is not None:
-                    d.crt.win.items.clear()
-                d.crt.close_display()
+#        if d.name == "DisplayScope":
+        # Don't close the display here...  in HNF Mode, that causes a flash when we switch
+        # from one demo code to another, and the window closes then immediately re-opens
+        # Apr 17 2026 - I moved the check for NoClose into the outer loop, so it only checks when
+        # actually preparing to quit.
 
         if d.name == "Drum":  # d points to a DrumClass object
             if args.DrumStateFile:
@@ -627,6 +634,7 @@ def main_run_sim(args, cb):
 def main():
     global BlinkenLightsModule
     global UseDebugger
+    global CoreMem
     parser = wwinfra.StdArgs().getParser ("Run a Whirlwind Simulation.")
     parser.add_argument("corefile", help="file name of simulation core file")
     parser.add_argument("-t", "--TracePC", help="Trace PC for each instruction", action="store_true")
@@ -648,6 +656,7 @@ def main():
     parser.add_argument("--RemoteScope", help="Display graphical output on the remote scope server (default localhost)", action="store_true")
     parser.add_argument("--RemoteScopeOnly", help="Don't bring up scope on local machine too", action="store_true")
     parser.add_argument("--RemoteScopeServer", help="Remote scope server machine name or IP addr (default localhost)", type=str)
+    # the following arg should be revised to take the full geometry as "width x height + Xoffset + Yoffset"
     parser.add_argument("--xWinSize", help="specify the size of an xWinCrt pseudo-scope display in pixels", type=int)
     parser.add_argument("--FlexoWin", help="Display Flexowriter output in its own window", action="store_true")
     parser.add_argument("--NoXWin", help="Don't open any x-windows", action="store_true")
@@ -691,6 +700,8 @@ def main():
                         help="Return zero for uninitialized core memory", action="store_true")
     parser.add_argument("-map", "--MemoryMap",
                         help="Produce a memory map (.map) file of the access types during this run", action="store_true")
+    parser.add_argument("--TTYname",
+                        help="Configure TTY name to access external media controller", type=str)
 
     args = parser.parse_args()
 
@@ -716,7 +727,7 @@ def main():
 
     if args.Panel or args.BlinkenLights or args.MicroWhirlwind:
         cb.panel = control_panel.PanelClass(cb, args.Panel, args.BlinkenLights, args.MicroWhirlwind,
-                                            hnf_program_dispatcher_mode=args.HnfProgramDispatcher)
+                                            hnf_program_dispatcher_mode=args.HnfProgramDispatcher, tty_name=args.TTYname)
         if args.HnfProgramDispatcher and not args.QuickStart:
             cb.log.fatal("HNF Mode ought to work without --Quickstart, but it doesn't (yet)")
 
@@ -776,6 +787,11 @@ def main():
     cb.no_toggle_switch_warn = args.NoToggleSwitchWarning
     cb.record_core_info = args.MemoryMap
 
+    CoreMem = wwinfra.CorememClass(cb)
+    cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
+    cb.cpu = cpu
+    cpu.cpu_switches = wwinfra.WWSwitchClass(cb)
+
     # I added colored text to the trace log using ANSI escape sequences.  This works by default with
     # Cygwin xterm, but for DOS Command Shell there's a special command to enable ANSI parsing.
     # The command doesn't seem to exist in xterm, but running it doesn't break anything (yet).
@@ -791,7 +807,7 @@ def main():
     # When the control panel _is_ in use, the sim only halts when there's an explicit Quit, e.g.
     # a click of the red box.
     while True:
-        (alarm_state, sim_cycle) = main_run_sim(args, cb)
+        (alarm_state, sim_cycle) = main_run_sim(args, cb, cpu)
         if (alarm_state == cb.QUIT_ALARM) or (cb.panel is None and alarm_state != cb.NO_ALARM):
             if not cb.TraceQuiet:
                 print("Ran %d cycles; Used mem=%dMB" % (sim_cycle, psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2))
@@ -806,7 +822,18 @@ def main():
 #             print(mem_top())
     if CoreMem.corememinfo is not None:
         CoreMem.corememinfo.writeMapFile()
-    
+
+    # Close the display, but only just before we exit.  Unless... the NoClose arg keeps the
+    # CRT screen visible in case of a backtrace, so there's some hope of see what was going
+    # on the screen at the time of the error.
+    for d in cb.cpu.IODeviceList:
+        if d.name == "DisplayScope":
+            if d.crt is not None:
+                if args.NoCloseOnStop:
+                    d.crt.get_mouse_blocking()  # wait to see what was on the display in case of a trap
+                d.crt.win.items.clear()
+                d.crt.close_display()
+
     # sys.exit(alarm_state != cb.NO_ALARM)
     sys.exit(0)         # return zero for an ordinary exit
 
