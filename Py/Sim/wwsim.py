@@ -43,6 +43,7 @@ import math
 import traceback
 import signal
 from wwcpu import CpuClass
+from graphics import GraphicsError
 
 from typing import List, Dict, Tuple, Sequence, Union, Any
 # from mem_top import mem_top
@@ -213,32 +214,36 @@ def poll_sim_io(cpu, cb):
     if cb.ana_scope:
         if cb.ana_scope.getSimStopButton():
             return cb.QUIT_ALARM
-
-    if cpu.scope.crt is not None:
-        exit_alarm = cpu.scope.crt.ww_scope_update(CoreMem, cb)
-        if exit_alarm != cb.NO_ALARM:
-            return exit_alarm
-
-        wgt = cb.dbwgt
-        # check the keyboard in the CRT window for a key press
-        # But only if the laptop display is in use!  i.e., don't bother with this if the analog display is active
-        key = ''
-        if cpu.scope.crt.win:
-            key = cpu.scope.crt.win.checkKey()
-        if key != '':
-            print("key: %s, 0x%x" % (key, ord(key[0])))
-            if cb.panel and cb.panel.hnf_program_dispatcher:
-                cb.panel.hnf_program_dispatcher.reset_inactivity_timer()
-        if key == 'q' or key == 'Q':
-            ret = cb.QUIT_ALARM
-        if wgt and key == "Up":
-            wgt.select_next_widget(direction_up = True)
-        if wgt and key == "Down":
-            wgt.select_next_widget(direction_up = False)
-        if wgt and key == "Right":
-            wgt.increment_addr_location(direction_up = True)
-        if wgt and key == "Left":
-            wgt.increment_addr_location(direction_up = False)
+    try:
+        if cpu.scope.crt is not None:
+            exit_alarm = cpu.scope.crt.ww_scope_update(CoreMem, cb)
+            if exit_alarm != cb.NO_ALARM:
+                return exit_alarm
+    
+            wgt = cb.dbwgt
+            # check the keyboard in the CRT window for a key press
+            # But only if the laptop display is in use!  i.e., don't bother with this if the analog display is active
+            key = ''
+            if cpu.scope.crt.win:
+                key = cpu.scope.crt.win.checkKey()
+            if key != '':
+                print("key: %s, 0x%x" % (key, ord(key[0])))
+                if cb.panel and cb.panel.hnf_program_dispatcher:
+                    cb.panel.hnf_program_dispatcher.reset_inactivity_timer()
+            if key == 'q' or key == 'Q':
+                ret = cb.QUIT_ALARM
+            if wgt and key == "Up":
+                wgt.select_next_widget(direction_up = True)
+            if wgt and key == "Down":
+                wgt.select_next_widget(direction_up = False)
+            if wgt and key == "Right":
+                wgt.increment_addr_location(direction_up = True)
+            if wgt and key == "Left":
+                wgt.increment_addr_location(direction_up = False)
+    except GraphicsError:
+        # This picks up using the GUI's "X" to close the window
+        ret = cb.QUIT_ALARM
+        pass
     return ret
 
 def main_run_sim(args, cb):
@@ -609,7 +614,8 @@ def main_run_sim(args, cb):
             if d.crt is not None:
                 if args.NoCloseOnStop:
                     d.crt.get_mouse_blocking()  # wait to see what was on the display in case of a trap
-                d.crt.win.items.clear()
+                if d.crt.win is not None:
+                    d.crt.win.items.clear()
                 d.crt.close_display()
 
         if d.name == "Drum":  # d points to a DrumClass object
@@ -639,6 +645,9 @@ def main():
     parser.add_argument("-r", "--Radar", help="Incorporate Radar Data Source", action="store_true")
     parser.add_argument("--AutoClick", help="Execute pre-programmed mouse clicks during simulation", action="store_true")
     parser.add_argument("--AnalogScope", help="Display graphical output on an analog CRT", action="store_true")
+    parser.add_argument("--RemoteScope", help="Display graphical output on the remote scope server (default localhost)", action="store_true")
+    parser.add_argument("--RemoteScopeOnly", help="Don't bring up scope on local machine too", action="store_true")
+    parser.add_argument("--RemoteScopeServer", help="Remote scope server machine name or IP addr (default localhost)", type=str)
     parser.add_argument("--xWinSize", help="specify the size of an xWinCrt pseudo-scope display in pixels", type=int)
     parser.add_argument("--FlexoWin", help="Display Flexowriter output in its own window", action="store_true")
     parser.add_argument("--NoXWin", help="Don't open any x-windows", action="store_true")
@@ -726,6 +735,14 @@ def main():
     # This command line arg switches graphical output to an analog oscilloscope display
     if args.AnalogScope:
         cb.analog_display = True
+
+    if (args.RemoteScope or
+        args.RemoteScopeServer is not None or
+        args.RemoteScopeOnly):
+        cb.remote_scope = wwinfra.RemoteScope (args.RemoteScopeServer)
+
+    if args.RemoteScopeOnly:
+        cb.remote_scope_only = True
 
     if args.FlexoWin:
         cb.flexo_win = True
