@@ -22,6 +22,8 @@ def breakp():
 def deg_to_rad(deg):
     return deg / 360.0 * (2 * np.pi)
 
+def wwlog(*args):
+    return wwinfra.wwlog(args)
 
 BIGNUM = 100000
 Radar = None
@@ -587,8 +589,9 @@ CharacterMap = SegmentClass()
 
 # this call places a tracking symbol on the screen for the given aircraft, at the heading, velocity ans x,y,
 # (x and y measured in screen coordinates)
-def display_tracking_symbol(cm, decif, rl, cb, which, x_label, y_label, x_vel_label, y_vel_label):
+def display_tracking_symbol(cm, decif, rl, cb, x_label, y_label, x_vel_label, y_vel_label):
 
+    which = which_plane(cm)
     # convert from ww integer to py integer, then divide by 32 to make WW screen coords
     x = cb.cpu.wwint_to_py(cm.rd(rl(x_label)))[0] // 32
     y = cb.cpu.wwint_to_py(cm.rd(rl(y_label)))[0] // 32

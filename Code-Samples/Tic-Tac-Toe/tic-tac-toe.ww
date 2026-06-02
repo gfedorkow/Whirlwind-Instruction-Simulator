@@ -3,6 +3,10 @@
 ; Guy Fedorkow
 ; Sep 26, 2024
 
+; May 24, 2026 - there's a non-critical bug still in the display of the WW
+; move in FF3 -- the first move is computed by table, and the result is the cell number
+; multiplied by 3.  To display the move properly, I "should" divide the number by 3.
+
 ; Simple game of tic-tac-toe written in Whirlwind assembly code.
 ; The game displays on the WW CRT, and can be played with the light gun
 ; (As of Sep 26, it's a two-person game, i.e., i alternates X and O plays)
@@ -36,6 +40,18 @@ const_0:  .word 0
 one:
 const_1:  .word 1
 
+        .pp FF2_USER_MOVE, 02    ; display cell number of last User move
+        .pp FF3_WW_MOVE,   03    ; display cell number of last WW move
+
+;          ; state values for which_player var.  These index into state_msg_table
+;        .pp NAUGHT_PLAY_STATE,  0
+;        .pp CROSS_PLAY_STATE,   1
+;        .pp HWIN_PLAY_STATE,    2
+;        .pp CWIN_PLAY_STATE,    2
+;        .pp DRAW_PLAY_STATE,    2
+;
+        
+
 
 ; constants for SI graphics instruction
             .pp scope_vector, 0o1677   ; draw a vector on all scopes
@@ -55,9 +71,12 @@ c_32:       .word 32
 c_scope_edge: .word 950 * 32        ; close to the edge of the scope screen
 c_msg_x_pos:  .word 800 * 32
 
-refresh_loop: sp draw_game_board
+refresh_loop:
+            sp PRMPRMT   ; CALL - print "your move"
+refloop:
+            sp draw_game_board
             ca g_game_over          ; negative value means "game over"
-            cp refresh_loop
+            cp refloop
             sp is_there_winner      ; check to see if this user move ended the game
             ca which_player         ; if which_player is not zero, then the game has ended 
             dm zero
@@ -67,14 +86,14 @@ refresh_loop: sp draw_game_board
 rl_continue_game:
             ca light_gun_mailbox
             ad one                  ; convert -0 (cell zero) into +1 before the next CP test, then discard the result
-            cp refresh_loop
+            cp refloop
             .print "light gun hit at cell %d", light_gun_mailbox
             ; user_play_cell goes straight to the mailbox to find the current cell number.
             sp user_play_cell   ; do something with the light gun hit!  ; this call is for person-vs-computer play
             cs one                ; put -1 in the mailbox to indicate Empty
             ts light_gun_mailbox  ; mark the mailbox as empty
 
-            sp refresh_loop
+            sp refloop
 
 set_game_over:  cs one              ; the game_over flag starts set to zero by init_game_board
             ts g_game_over          ; But when the game is over, we set it to -1
@@ -87,6 +106,9 @@ set_game_over:  cs one              ; the game_over flag starts set to zero by i
 ; two horizontal lines first
 draw_game_board:
             ta draw_game_board_ret
+            
+            sp refresh_game_state  ; subroutine to collect the current board from the oxo algorithm
+            
             cs const_2
             ts loop_count
             ca const_6
@@ -157,6 +179,7 @@ gb_state_sp: sp 0   ; draw the X, O or dot; this call may have a side-effect of 
             cp gb_loop
 
 draw_current_player:            ; draw an alpha string at the bottom of the screen to show the state of the game
+
             ca which_player     ; see definition for this number
             md const_7          ; clear the sign bit in case of "Game Over"
             ad state_msg_tablep
@@ -176,8 +199,7 @@ draw_game_board_ret:    ; return from the 'board display' subroutine
             sp 0
 
 
-; Global variables
-move_number: .word 0    ; count the number of moves
+
           
 ; ephemeral loop state variables
 next_x_addr:  .word 0
@@ -218,10 +240,10 @@ dct1:       .word draw_naught
 
 state_msg_tablep:  .word state_msg_table
 state_msg_table:
-            .word msg_cross_play
             .word msg_naught_play
-            .word msg_x_win
+            .word msg_cross_play
             .word msg_o_win
+            .word msg_x_win
             .word msg_draw
 
 
@@ -531,8 +553,8 @@ lgh_y1_arg: ca 0        ; load the y value of the cell's address in the grid
             .print "light gun %o hit x=%o, y=%o, cell=%ao", lcl_gun_num, lcl_cell_x, lcl_cell_y
 
             ; the cell number of the hit is passed below in ACC
-            ; sp alternate_play_cell   ; do something with the light gun hit!; this call is for two-person play
             ts light_gun_mailbox
+            ts FF2_USER_MOVE   ; display the move
 
             sp is_there_winner       ; test to see if it's Game Over
 
@@ -589,341 +611,64 @@ user_play_cell:
 
             ca light_gun_mailbox     ; fetch the cell number
             ts lcl_uplay_cell_num    ; figure the pointer to the first cell draw function in game table
-            slh 1                   ;  thats table_start + 3*cell_num + 2
-            ad lcl_uplay_cell_num    ; multiply cell number by three for a table offset
-            ad gb_table_start
-            ad const_2
-            td upc_table_ts
-
-            ca player_icon_table    ; figure out what the new cell should be
-            ad which_player
-            td upc_ca0
-upc_ca0:    ca 0                    ; ACC should now contain the address of the X or O display routine
-upc_table_ts: ts 0                  ; store the display routine to the game state table
-
-            sp is_there_winner      ; check to see if this user move ended the game
-            cp upc_cleanup          ; negative means no more moves
+;                  slh 1                   ;  thats table_start + 3*cell_num + 2
+;                  ad lcl_uplay_cell_num    ; multiply cell number by three for a table offset
+;                  ad gb_table_start
+;                  ad const_2
+;                  td upc_table_ts
+;      
+;                  ca player_icon_table    ; figure out what the new cell should be
+;                  ad which_player
+;                  td upc_ca0
+;      upc_ca0:    ca 0                    ; ACC should now contain the address of the X or O display routine
+;      upc_table_ts: ts 0                  ; store the display routine to the game state table
+;      
+;                  sp is_there_winner      ; check to see if this user move ended the game
+;                  cp upc_cleanup          ; negative means no more moves
 
             ; now switch to the other player for the next move
-            ; table_play_move is used to optimize the first move by a simple table lookup
-            ; auto_play_move calls minimax to figure the best move, then makes the move
+            ; auto_play_move calls claude oxo to figure the best move, then makes the move
             ; by updating the icon on the game board.
-            ca move_number
-            dm 0            ; test if this is Move Zero, i.e., the first user move
-            cp upc_move_zero  ; branch for first move, fall through for subsequent moves
-
+            ; ACC contains the user-cell
             sp auto_play_move
-            sp upc_cleanup
 
-upc_move_zero:
-            ca lcl_uplay_cell_num
-            sp table_play_move
-
-upc_cleanup:
-            ao move_number
 user_play_cell_ret:
             sp 0
 lcl_uplay_cell_num: .word 0
 
 
-; The first move is optimized to avoid MinMax. by using a Table lookup
-; AC contains the cell number of the first human move
-table_play_move:
-            ta table_play_move_ret
-            ts lcl_tpm_user_move        ; stash the arg
-
-            ca first_move_table_start
-            ad lcl_tpm_user_move
-            td tpm_fetch_move_table
-tpm_fetch_move_table:
-            ca 0                    ; fetch the offset of the computer move that will be used to respond
-            ts lcl_tpm_table_move
-            ad gb_table_start
-            ad c_2
-            td tpm_store_move
-            ca dct1                 ; this is wired to have the machine move Naught
-tpm_store_move:
-            ts 0                    ; update the game state table
-            .print "User move to cell %d; Table-driven move to cell offset %d / 3, ts 0o%o 0o%ao", lcl_tpm_user_move, lcl_tpm_table_move, tpm_store_move
-            sd zero   ; no-op for Print
-
-table_play_move_ret:
-            sp 0
-
-lcl_tpm_user_move:
-            .word 0
-lcl_tpm_table_move:
-            .word 0
 
 
 
 ; set up to call findBestMove
+; Upon entry, ACC should be the cell the user wants to play
 auto_play_move:
             ta apm_ret
-            ca gb_table_start
-            ad const_2       ; the game piece is offset three from the table start 
-            td apm_copy_src
-            ca boardp
-            td apm_copy_dst
-            cs const_8
-            ts lcl_apm_copy_count
-
-apm_copy_src: ca 0
-            ts lcl_apm_cell_state
-
-apm_test_dot:   dm dot_fn_addr      ; test if it's a Dot
-            dm 0
-            cp apm_its_a_dot
-            sp apm_test_naught
-apm_its_a_dot:  ao lcl_dot_count
-            cs one                 ; store -1 for "unplayed"
-            sp apm_copy_dst
-
-apm_test_naught: ca lcl_apm_cell_state  ; retrieve the cell state
-            dm naught_fn_addr      ; test if it's an X
-            dm 0
-            cp apm_its_a_naught
-            sp apm_test_cross
-apm_its_a_naught:  ca c_oh           ; load the value for a Naught
-            sp apm_copy_dst
-
-apm_test_cross: ca lcl_apm_cell_state
-            dm cross_fn_addr      ; test if it's an X
-            dm 0
-            cp apm_its_a_cross
-            sp apm_panic           ; huh, it's not a dot, cross or naught
-apm_its_a_cross: ca c_XX             ; load value for a cross
-            ; fall through to finish the copy step
-
-apm_copy_dst: ts 0
-            ao apm_copy_dst  ; step the destination once
-            ao apm_copy_src  ; step the source three times
-            ao apm_copy_src
-            ao apm_copy_src
-            ao lcl_apm_copy_count
-            cp apm_copy_src  ; around the loop again
-            ; finished copying
-
-            ; this ought to test who's playing whom, but the code below has the
-            ; human player wired as Cross, the computer plays Nought
-            ca c_oh
-            ts player
-            ca c_XX
-            ts opponent
-            ; .exec print_board(cm, rl("boardp"), rl("push_lcl_depth"), rl("player"), "calling findBestMove")
-            sp findBestMove    ; return the cell number for the Best Move in ACC
-            ts lcl_cell_for_move
-
-            ; prepare to make the suggested move permanent in the game board
-            slr 1               ; multiply cell number by three
-            ad lcl_cell_for_move
-            ad c_2              ; point to cell state in game board table
-            ad gb_table_start
-            td apm_store_move
-
-            ; ca player           ;  "player" is (1, 2) for (X, O); offset for player_tab (0, 1) for (X, O)
-            ; su one
-            ; ad player_icon_table  ; form a pointer to the icon table
-            ; td apm_fetch_icon_fn
-            ; ca dct1                 ; the code above should be "put back" to compute the right icon
-            ; td apm_fetch_icon_fn
-
-            .exec print_experiment(cm, cb, "move game board player %d to cell %d, function 0o%o to gb offset 0o%o", ("player", "lcl_cell_for_move", "apm_fetch_icon_fn", "apm_store_move"), 0)
-
-apm_fetch_icon_fn:
-            ca dct1    ; this address should be dynamically set, not fixed to "naught"
-apm_store_move:
-            ts 0
-            sd zero  ; for debug
-
+            sp GETMOV     ; CALL to post the user's move and respond
 apm_ret:
             sp 0
 
 apm_panic:
-            .print "APM_Panic Halt: not dot, cross or naught in auto_play_move: lcl_apm_cell_state=0o%o", lcl_apm_cell_state
+            .print "APM_Panic Halt: not dot, cross or naught in auto_play_move"
             sp 0
 
-lcl_apm_copy_count:
-            .word 0
-lcl_apm_cell_state:
-            .word 0
-lcl_cell_for_move:
-            .word 0
 
 ;;;;;;;;;;;;;;;;;
 
-; Analyze game for a winner
-; This is done by counting X and O in each horiz & vert row, plus the two diagonals.
-; The routine is controlled by a table giving the start cell and increment.  For each
-; table entry, we count three cells in the game_board state array
-; This routing contains two nested loops, the outer one that walks the analysis table,
-; and the inner one that counts three cells
-; This long subroutine goes in two parts 
-;   a) count what's in each cell on each row, column and diagonal (eight in all)
-;   b) then see if anyone won
-;   [future part c might determine if anyone could win on the next round]
-; The second part also can determine if the game is tied, i.e., no open cells left to play
-;   [Use of this routine would be cleaner if it returned with +0 if there are more moves,
-;     or -0 if it's 'game over']
 is_there_winner:
             ta is_there_winner_ret
-            ; set up the outer loop
-            cs const_7
-            ts lcl_tb_loop_count
-            ca analysis_table_start  ; prepare pointers into the analysis table
-            td itw_st_ca
-            ad const_1
-            td itw_inc_gb
-            cs const_0          ; initialize with negative zero to simplify zero-detect later
-            ts lcl_total_dots        ; count all the unplayed cells
-
-            ; set up the inner loop
-itw_outer_loop: cs const_2
-            ts lcl_cell_loop_count
-itw_st_ca:  ca 0        ; load the starting cell number from the table
-            ts lcl_cell_number
-            slh 1
-            ad lcl_cell_number
-            ad gb_table_start
-            ad const_2          ; move to the gb_state val in gb table
-            td itw_cell_ts      ; pointer to first entry for this try in the gb table
-
-            ca const_0
-            ts lcl_naught_count
-            ts lcl_cross_count
-            ts lcl_dot_count
-
-itw_inner_loop:
-itw_cell_ts: ca 0               ; fetch whatever is in this cell
-            ts lcl_cell_state
-test_dot:   dm dot_fn_addr      ; test if it's a Dot
-            dm 0
-            cp its_a_dot
-            sp test_naught
-its_a_dot:  ao lcl_dot_count
-            ao lcl_total_dots
-
-test_naught: ca lcl_cell_state  ; retrieve the cell state
-            dm naught_fn_addr      ; test if it's an X
-            dm 0
-            cp its_a_naught
-            sp test_cross
-its_a_naught:  ao lcl_naught_count
-
-test_cross: ca lcl_cell_state
-            dm cross_fn_addr      ; test if it's an X
-            dm 0
-            cp its_a_cross
-            sp itw_inner_loop_test_end
-its_a_cross: ao lcl_cross_count
-
-itw_inner_loop_test_end:
-            ; move to next cell in the inner loop
-            ca itw_cell_ts      
-itw_inc_gb: ad 0                ; add whatever the analysis table says is the increment
-            ts itw_cell_ts
-            ao lcl_cell_loop_count
-            cp itw_inner_loop   ; end of inner loop
-
-            ; .print "analysis loop %o, dots=%o, crosses=%o, naughts=%o", lcl_tb_loop_count, lcl_dot_count, lcl_cross_count, lcl_naught_count
-            ; test to see if there's a winner
-            ca const_3
-            dm lcl_naught_count 
-            cp naught_win
-            ca const_3
-            dm lcl_cross_count 
-            cp cross_win
-            sp itw_next_outer_loop
-
-naught_win: ca const_o_win            ; 02 with the sign bit
-            ts which_player         ; mark the game as "over" and a Win
-            .print "naught win"
-            sp itw_next_outer_loop
-
-cross_win:  ca const_x_win
-            ts which_player         ; mark the game as "over" and a Win
-            .print "cross win"
-            sp itw_next_outer_loop
-
-            ; now move to next entry in outer loop
-itw_next_outer_loop:
-            ao itw_st_ca
-            ao itw_st_ca
-            ao itw_inc_gb
-            ao itw_inc_gb
-            ao lcl_tb_loop_count
-            cp itw_outer_loop
-
-            ; .print "unplayed cells=0d%d", lcl_total_dots
-            ca lcl_total_dots
-            cp its_a_tie            ; negative zero means its a tie (i.e., zero dots found)
-            sp is_there_winner_ret  ; so if it's not negative, we're done
-
-its_a_tie:  ca const_draw            ; table offset 04 with the sign bit
-            .print "game tie"
-            ts which_player         ; mark the game as "over" and a Draw
 
 is_there_winner_ret:
             sp 0
 
 
-; local variables
-lcl_tb_loop_count: .word 0
-lcl_cell_loop_count: .word 0
-lcl_naught_count: .word 0
-lcl_cross_count:  .word 0
-lcl_dot_count:    .word 0
-lcl_total_dots:   .word 0
-lcl_cell_number:  .word 0
-lcl_cell_state:   .word 0
+
 
 ; static addresses
 dot_fn_addr:    .word draw_dot
 cross_fn_addr:  .word draw_cross
 naught_fn_addr: .word draw_naught
 
-
-; This table gives the instructions for analyzing each horizontal, vertical
-; or diagonal possible win combinations.
-analysis_table_start:
-            .word analysis_table
-analysis_table:
-at0:        .word 0     ; start cell  ; horizontal cells
-            .word 1 * 3    ; increment
-at1:        .word 3     ; start cell
-            .word 1 * 3     ; increment
-at2:        .word 6     ; start cell
-            .word 1 * 3     ; increment
-at3:        .word 0     ; start cell  ; vertical cells
-            .word 3 * 3     ; increment
-at4:        .word 1     ; start cell
-            .word 3 * 3     ; increment
-at5:        .word 2     ; start cell
-            .word 3 * 3     ; increment
-at6:        .word 0     ; start cell  ; up-right diagonal
-            .word 4 * 3     ; increment
-at7:        .word 2     ; start cell  ; up-left diagonal
-            .word 2 * 3     ; increment
-
-
-; This table identifies a pre-computed machine response
-; to each of the possible first player moves
-; i.e., if the player puts a cross in cell zero, respond
-; with a naught in cell 4.
-; Cell numbers are multiplied by three so they can be used to
-; directly index the game state table.
-first_move_table_start:
-            .word first_move_table
-first_move_table:
-            .word 4 * 3  ;  0
-            .word 0 * 3  ;  1
-            .word 4 * 3  ;  2
-            .word 0 * 3  ;  3
-            .word 0 * 3  ;  4
-            .word 2 * 3  ;  5
-            .word 4 * 3  ;  6
-            .word 1 * 3  ;  7
-            .word 4 * 3  ;  8
 
 
 ;;;;;;;;;;;;;;;;
@@ -933,7 +678,10 @@ init_game_board:
             ta init_game_board_ret
 
             ca zero                 ; Reset the Move Counter to Zero
-            ts move_number
+            ts BRDX                 ; reset the Claude game state vars
+            ts BRDO
+            ts TURN
+            ts which_player
 
             ca gb_table_start       ; calculate the offset into the game state table for this cell
             ad const_2              ; offset to third table entry
@@ -949,24 +697,15 @@ igb_table_ts: ts 0                  ; set a table entry to the default pointer
             ao loop_count
             cp igb_loop             ; around the loop until we've hit all nine entries
 
-            ca const_0
+            ca zero
             ts which_player
             ts g_game_over          ; clear the "game over" flag
+            
+            cs one
+            ts light_gun_mailbox
+            ts FF2_USER_MOVE            
 
-            ;;;;;
-            ; debug - pre-populate two moves
-;            ca dct0  ; X icon
-;            ts gb0_state
-;            ca dct1  ; O icon
-;            ts gb1_state
-;            ca dct1  ; O icon
-;            ts gb2_state
-;            ca dct0  ; X icon
-;            ts gb3_state
-;            ca dct1  ; O icon
-;            ts gb4_state
-;            ca dct0  ; X icon
-;            ts gb7_state
+
 
             ;;;;;;
 init_game_board_ret:
@@ -1030,1014 +769,914 @@ c_1000: .word 1000  ; BigNum
 c_XX:   .word XX
 c_oh:   .word Oh
 
-; Global Variables
-;Default state to start the game: player = 'x', opponent = 'o';
-player:    .word XX
-opponent:  .word Oh
 
 
 
-;#define GAME1
-;#ifdef GAME1
-;    char board[3][3] = 
-;     { 
-;         { '_', 'o', 'x' }, 
-;         { 'x', 'o', '_' }, 
-;         { '_', '_', '_' } 
-;     }; 
-; #endif
-; #ifdef GAME2
-;    // X should win this game in one move, but it will try every possible alternative before figuring it out 
-;    char board[3][3] = 
-;    { 
-;        { '_', 'o', 'x' }, 
-;        { '_', 'o', 'x' }, 
-;        { '_', '_', '_' } 
-;    }; 
-; #endif
+;=====================================================================================
+; Claude-OXO to Guy-Code Glue and Conversion
+;=====================================================================================
+
+refresh_game_state:
+            ta rgs_ret
+            ca gb_table_start
+            ad const_1        
+            ad const_1
+            ts next_gb_state_addr
+        
+            ca   ZERO
+            ts   SQIDX
+
+            ; we shall proceed through this loop starting from cell 0
+glueLOOP:
+
+            ca next_gb_state_addr  ; this location contains a function pointer to say how to display the cell
+            td gl_ca_addr
+
+            ca   SQIDX
+            sp   MAKHOT            ; CALL - returns
+            ts   TBIT
+    
+            ca   TBIT
+            md   BRDX
+            dm   0
+            cp   glTRYO              ; zero -> not X
+            sp   glPBPX              ; JUMP 
+    glTRYO:
+            ca   TBIT
+            md   BRDO
+            dm   0
+            cp   glTRYEMPTY          ; zero -> not O
+            sp   glPBPO              ; JUMP 
+    glTRYEMPTY:
+            ca   dot_fn_addr
+            sp   glue_cont           ; JUMP
+    
+    glPBPX:
+            ca   cross_fn_addr
+            sp   glue_cont           ; JUMP
+    
+    glPBPO:
+            ca   naught_fn_addr
+
+            ; at this point, ACC contains the address of the function to fill in the cell, i.e., dot, x or o
+glue_cont:
+gl_ca_addr: ts 0   ; 
+
+            ; increment pointers and loop count for the next pass
+            ca next_gb_state_addr
+            ad const_3
+            ts next_gb_state_addr
+
+        ; test for loop end
+        ao   SQIDX
+        su   NINE_VAL
+        dm   0
+        cp   rgs_ret             ; zero -> done
+        sp   glueLOOP
+        
+rgs_ret: sp 0
 
 
-; pointers - yuck :-(  This cell points to the first of several board layouts
-BRD_SIZE:   .word board3 - board2  ; nine words per each boar layouts
-; BRDS_COUNT: .word -5    ; six test board layouts (so far!)
-; BRDS_COUNT: .word (first_boardp - boardp) / (board3 - board2) + 1    ; six test board layouts (so far!)
-BRDS_COUNT: .word 1       ; set the count to do just one board
-
-
-; Board Layout
-;   0  1  2
-;   3  4  5
-;   6  7  8
-
-first_boardp: .word board2
-
-;        { 'x', 'o', 'o' }, 
-;        { 'x', 'o', 'x' }, 
-;        { '_', '_', '_' } 
-board2: .word  XX       ; 0
-        .word  Oh
-        .word  Oh
-        .word  XX       ; 3
-        .word  Oh
-        .word  XX
-        .word  None     ; 6
-        .word  None
-        .word  None
-
-; X plays next, but Oh wins in one move
-;        { '_', 'o', 'o' }, 
-;        { 'x', 'o', 'x' }, 
-;        { '_', '_', '_' } 
-board3: .word  None     ; 0
-        .word  Oh
-        .word  Oh
-        .word  XX       ; 3
-        .word  Oh
-        .word  XX
-        .word  None     ; 6
-        .word  None
-        .word  None
-
-; Test evaluate_board, Rows
-; First row is Not a Win, second row should detect a win by X
-;        { '_', 'o', 'o' }, 
-;        { 'x', 'x', 'x' }, 
-;        { 'o', '_', '_' } 
-board_row_x_win:
-        .word  None     ; 0
-        .word  Oh
-        .word  Oh
-        .word  XX       ; 3
-        .word  XX
-        .word  XX
-        .word  Oh       ; 6
-        .word  None
-        .word  None
-
-; Test evaluate_board, Cols
-; First col is Not a Win, second col should detect a win by 0
-;        { '_', 'o', 'x' }, 
-;        { 'x', 'o', 'x' }, 
-;        { 'o', 'o', '_' } 
-board_col_o_win:
-        .word  None     ; 0
-        .word  Oh
-        .word  XX
-        .word  XX       ; 3
-        .word  Oh
-        .word  XX
-        .word  Oh       ; 6
-        .word  Oh
-        .word  None
-
-; Test evaluate_board, 2-4-6 diagonal
-;        { '_', 'o', 'x' }, 
-;        { 'o', 'x', 'o' }, 
-;        { 'x', 'o', '_' } 
-board_2_4_6_diagonal:
-        .word  None     ; 0
-        .word  Oh
-        .word  XX
-        .word  Oh       ; 3
-        .word  XX
-        .word  Oh
-        .word  XX       ; 6
-        .word  Oh
-        .word  None
-
-; X plays next, and 'should' play cell 8
-;        { 'o', 'x', '_' }, 
-;        { '_', 'o', '_' }, 
-;        { '_', '_', '_' } 
-board4: .word  Oh     ; 0
-        .word  XX
-        .word  None
-        .word  None       ; 3
-        .word  Oh
-        .word  None
-        .word  None     ; 6
-        .word  None
-        .word  None
-
-
-boardp: .word board4   ; board2 to scan all the games
-
-; // This function returns true if there are moves 
-; // remaining on the board. It returns false if 
-; // there are no moves left to play. 
-; bool isMovesLeft() 
-; { 
-;     for (int i = 0; i<3; i++) 
-;         for (int j = 0; j<3; j++) 
-;             if (board[i][j]=='_') 
-;                 return true; 
-;     //printf("IsMovesLeft --> false\n");
-;     return false; 
-; } 
-; IsMovesLeft returns positive if there are more moves, negative if there
-; are no empty cells
-isMovesLeft:
-        ta isMovesLeftRet
-        ca boardp
-        td iML_bptr         ; store a pointer to the start of the game board
-        ca c_8n
-        ts iML_cnt
-iML_bptr: ca 0              ; read the cell under test; If the cell is empty, there are move moves, we can stop
-        cp iML_empty        ; branch if the cell is empty, ie, neither X or O.  
-
-        ca one              ; non-empty cell; prepare to return positive
-        ts iML_ret
-        ao iML_bptr         ; update the pointer to the next cell
-iML_lp: ao iML_cnt          ; increment the loop count
-        cp iML_bptr          ; branch if not done yet
-
-        cs one              ; no empty cells; return -1
-        sp isMovesLeftRet
-
-iML_empty:
-        ca one              ; return One for more moves left
-
-isMovesLeftRet:
-        sp 0
-     
-; local variables
-iML_cnt:  .word 0           ; loop counter
-iML_ret:  .word 0           ; return code
-
-
-; Helper routine for Evaluate_Board
-; Check three adjacent cells to determine if they have the same player identifier
-; Return the negative of the value if it's the same, or +1 if different (or if all three are -1, unoccupied)
-; The offset from the start of the table is in ACC, the stride is in the "local"
-; variable equ3_arg_stride
-; The return value in the AC is inverted to make the test one level up a step
-; simpler...  -1 or -2 means the row contains all X's or O's, +1 means they're not all
-; the same.  The caller can then branch on negative to determine if the search for
-; a winner is complete.
-equ3:
-        ta equ3_ret
-        ad boardp       ; add base pointer to the board array to offset
-        td rd_brd1
-rd_brd1: ca 0            ; read the first element
-        cp equ3_ret_not_equal
-        ts equ3_lcl_first_read    ; remember what's in the first cell
-
-        ca rd_brd1      ; calculate address for second cell by adding stride
-        ad equ3_arg_stride
-        td rd_brd2
-rd_brd2: ca 0           ; read the second element
-        su equ3_lcl_first_read    ; compare it to the first element read
-        dm zero
-        cp equ3_brd3    ; negative zero means they're the same; so test the third cell
-        sp equ3_ret_not_equal   ; otherwise, bail out
-
-equ3_brd3:
-        ca rd_brd2
-        ad equ3_arg_stride
-        td rd_brd3
-rd_brd3: ca 0
-        su equ3_lcl_first_read
-        dm zero
-        cp equ3_ret_equal     ; negative zero means they're the same
-        sp equ3_ret_not_equal
-
-equ3_ret_equal:
-        cs equ3_lcl_first_read  ; return negative one or two
-        sp equ3_ret
-
-equ3_ret_not_equal:
-        ca one
-        ; fall through to equ3_ret
-
-equ3_ret:
-        sp 0
-; local vars and arguments
-equ3_arg_stride:
-        .word 0
-equ3_lcl_first_read:
-        .word 0
-
-
-
-
-; // This is the evaluation function as discussed 
-; // in the previous article ( http://goo.gl/sJgv68 ) 
-; int evaluate() {
 ; 
-;     // Checking for Rows for X or O victory. 
-;     for (int row = 0; row<3; row++) 
-;     { 
-;         if (board[row][0]==board[row][1] &&   // stride = +1
-;             board[row][1]==board[row][2]) 
-;         { 
-;             if (board[row][0]==player) 
-;                 return +10; 
-;             else if (board[row][0]==opponent) 
-;                 return -10; 
-;         } 
-;     } 
-;   
-;     // Checking for Columns for X or O victory. 
-;     for (int col = 0; col<3; col++) 
-;     { 
-;         if (board[0][col]==board[1][col] &&  // stride = +3  
-;             board[1][col]==board[2][col]) 
-;         { 
-;             if (board[0][col]==player) 
-;                 return +10; 
-;             else if (board[0][col]==opponent) 
-;                 return -10; 
-;         } 
-;     } 
-;   
-;     // Checking for Diagonals for X or O victory. 
-;     if (board[0][0]==board[1][1] && board[1][1]==board[2][2])  // stride = +4 
-;     { 
-;         if (board[0][0]==player) 
-;             return +10; 
-;         else if (board[0][0]==opponent) 
-;             return -10; 
-;     } 
-;   
-;     if (board[0][2]==board[1][1] && board[1][1]==board[2][0])   // stride = +2
-;     { 
-;         if (board[0][2]==player) 
-;             return +10; 
-;         else if (board[0][2]==opponent) 
-;             return -10; 
-;     } 
-;   
-;     // Else if none of them have won then return 0 
-;     return 0; 
-; } 
-
-; Evaluate the current board for win, lose or incomplete
-; If it's a Win for the Player, return +10; if it's a Lose for the Player, return -10
-; If the game is undecided, return zero
-; This routine takes no input arguments
-evaluate_board:
-        ta eval_ret
-eval_chk_row:
-        ; check rows for a win; stride of three, starting at zero
-        ca one
-        ts equ3_arg_stride      ; set the equ3 stride to one, i.e., three adjacent horizontal cells
-        ca zero                 ; set the equ3 starting cell to row zero
-        ts eval_lcl_nxt_cell
-        ca c_2n                 ; initialize loop counter; prepare to go around the loop three times
-        ts eval_lcl_loop_count
-eval_row_loop:
-        ca eval_lcl_nxt_cell    ; place offset of first cell to check in AC
-        sp equ3                 ; check one row
-        cp eval_score_players    ; match -- figure out who won
-
-eval_chk_nxt_row:
-        ca c_3                  ; next row is three cells forward
-        ad eval_lcl_nxt_cell    ; compute the first cell of the next row
-        ts eval_lcl_nxt_cell
-        ao eval_lcl_loop_count
-        cp eval_row_loop        ; branch if there's another row to check, fall through if we've checked three rows
-
-        ; no one won on rows, so go on to check columns
-
-eval_chk_col:
-        ; check cols for a win; stride of three, starting at zero
-        ca c_3
-        ts equ3_arg_stride      ; set the equ3 stride to three, i.e., three adjacent vertical cells
-        ca zero                 ; set the equ3 starting cell to col zero
-        ts eval_lcl_nxt_cell
-        ca c_2n                 ; initialize loop counter; prepare to go around the loop three times
-        ts eval_lcl_loop_count
-eval_col_loop:
-        ca eval_lcl_nxt_cell    ; place offset of first cell to check in AC
-        sp equ3                 ; check one row
-        cp eval_score_players    ; match -- figure out who won
-
-eval_chk_nxt_col:
-        ca one                  ; next col is one cell forward
-        ad eval_lcl_nxt_cell    ; compute the first cell of the next row
-        ts eval_lcl_nxt_cell
-        ao eval_lcl_loop_count
-        cp eval_col_loop        ; branch if there's another row to check, fall through if we've checked three rows
-
-        ; there are only two diagonals, no loops here; just test 0, 4, 8 then 2, 4, 6
-eval_chk_diagonal0:
-        ca c_4
-        ts equ3_arg_stride      ; set the equ3 stride to four, i.e., 0, 4, 8 diagonal cells
-        ca zero                 ; set the equ3 starting cell to col zero
-        sp equ3                 ; check one row
-        cp eval_score_players    ; match -- figure out who won
-
-eval_chk_diagonal1:
-        ca c_2
-        ts equ3_arg_stride     ; set the equ3 stride to two, i.e., 2, 4, 6 diagonal cells
-        ca c_2                 ; set the equ3 starting cell to cell 2
-        sp equ3                ; check one row
-        cp eval_score_players    ; match -- figure out who won
-
-        ; nobody won; return 0
-        ca zero
-        sp eval_ret
-
-        ; somebody won; check if it's the Player or Opponent
-        ; The winner cell is -1 or -2 in AC; convert that to a score (recall equ3 results are inverted)
-        ; depending on whether who's Player and who's Opponent at the moment
-eval_score_players:
-        ad player           ; test to see if the current Player is the one that was found to have three winning cells
-        dm zero
-        cp eval_player_win
-
-eval_opp_win:
-        cs c_10             ; score an opponent win as -10
-        sp eval_ret
-
-eval_player_win:
-        ca c_10             ; score a Player win as +10        
-        sp eval_ret
-
-eval_ret:
-        ; .print "  Evaluate_Score returns %ad"
-        sp 0
-eval_lcl_nxt_cell:
-        .word 0
-eval_lcl_loop_count:
-        .word 0
+;=====================================================================================
+; Start of Claude Code for OXO Algorithm
+;=====================================================================================
 
 
-; ================  MINIMAX Section =====================
+; Code from Claude AI chatbot
+; Mar 12, 2026
+; Corrected Mar 14, 2026
+; Revised Mar 15, 2026: MAKHOT extracted as subroutine,
+;   SP annotations added, call graph added
+
+; Corrections from original:
+;  Octal numbers should be prefaced by "0o"
+;  Strings terminated with -1 are faster
+;  rc and rd need operands; default would be "0"
+;  All non-instruction words in memory must be allocated with .word <value>
+;  I haven't implemented a Flexowriter RD operation
+;  sd not xr for XOR
+;  md for AND (Multiply Digits)
+;  sp is unconditional branch, cp is conditional (branches if AC negative)
+;  dm 0 normalizes zero to -0 (negative); so cp after dm 0 branches on ZERO,
+;    not nonzero -- many branches were inverted in original code
+;  WINTBLADDR must equal actual address of WINTBL
+;  CWLD address field must be reloaded from WINTBLADDR at start of each CWLOOP call
+;  slh changed to srh in MAKHOT (squares go right from SQ0MASK, not left)
+;  MAKHOT extracted as proper subroutine (was inlined in 4 places)
+
+; =============================================================
+; TIC-TAC-TOE FOR WHIRLWIND I
+; MIT Lincoln Laboratory, circa 1958
 ;
-; Two helper functions to save state for recursive calls
-; to "push" onto the stack, we copy all the local minimax variables to
-; where ever the stack pointer is pointing, then increment the stack
-; pointer by the size of the frame
-push_minmax:
-        ta push_ret
-        ts push_pop_lcl_acc_stash  ; stash the AC
-        ca stack_size
-        su push_lcl_depth          ; test to be sure we're not running over the allocated space
-        cp panic_stop              ; branch if overflow
+; Board squares numbered 0-8:
+;   0 | 1 | 2
+;   ----------
+;   3 | 4 | 5
+;   ----------
+;   6 | 7 | 8
+;
+; Board state: two words BRDX (computer=X) and BRDO (human=O).
+; Each is a 9-bit pattern in bit positions 6..14 of a 16-bit word.
+; Bit 6 (value 2^-6 = octal 01000) = square 0
+; Bit 7 (value 2^-7 = octal 00400) = square 1
+; ...
+; Bit 14 (value 2^-14 = octal 00002) = square 8
+;
+; Since BRDX and BRDO are always disjoint, sd (XOR) == OR for them.
+;
+; Square masks:
+;   sq0 = 01000, sq1 = 00400, sq2 = 00200
+;   sq3 = 00100, sq4 = 00040, sq5 = 00020
+;   sq6 = 00010, sq7 = 00004, sq8 = 00002
+;
+; Win-line masks (OR of three square masks):
+;   Row 0: 01600  Row 1: 00160  Row 2: 00016
+;   Col 0: 01110  Col 1: 00444  Col 2: 00222
+;   Diag0: 01042  Diag1: 00250
+;
+; SUBROUTINE LINKAGE (standard Whirlwind pattern):
+;   Caller:      sp   SUBNAME       ; CALL - returns
+;   Entry:       ta   SUBRET        ; save return addr from AR
+;   Exit:        sp   SUBRET
+;   Placeholder: SUBRET: sp 0
+;
+; SP ANNOTATION CONVENTION:
+;   sp  LABEL   ; CALL - returns    (subroutine call, will return)
+;   sp  LABEL   ; JUMP - no return  (unconditional jump, does not return)
+;
+; ONES-COMPLEMENT NOTES:
+;   Zero test: dm 0 normalizes +-0 to -0; then cp branches on zero.
+;   cp branches if AC is NEGATIVE.
+;   After dm 0: zero result -> -0 (negative) -> cp BRANCHES
+;               nonzero result -> positive -> cp FALLS THROUGH
+;   So the idiom is:
+;     dm 0
+;     cp  ISZERO     ; branches here if zero
+;                    ; falls through if nonzero
+;   All integers stored as n * 2^-15 (fractional representation).
+;   UNIT = 1 * 2^-15 = smallest positive value = octal 00001.
+;
+; =============================================================
+; CALL GRAPH
+;
+; START / GAMELOOP (main program, not a subroutine)
+;   sp PRBANNER         ; CALL
+;     sp PRSTR          ; CALL
+;   sp PRMBOARD         ; CALL
+;     sp MAKHOT         ; CALL (x9, once per square)
+;     sp PRSEP          ; CALL (x2, after rows 0 and 1)
+;   sp PRMPRMT          ; CALL
+;     sp PRSTR          ; CALL
+;   sp GETMOV           ; CALL
+;     sp MAKHOT         ; CALL
+;     sp CWLOOP         ; CALL (win check for human)
+;     sp COMPMOV        ; CALL
+;       sp TRYMOVES     ; CALL (x2, win and block)
+;         sp MAKHOT     ; CALL (once per square tried)
+;         sp CWLOOP     ; CALL (once per free square)
+;       sp TRYFREE      ; CALL (up to 8 times, corners+edges)
+;     sp CWLOOP         ; CALL (win check for computer)
+;     sp PRMCOMPMOV     ; CALL
+;       sp PRSTR        ; CALL
+;       sp MAKHOT       ; CALL (once per square searched)
+;   sp PRMHWIN/PRMCWIN/PRMDRAW/PRMBADMOV/PRMSQTKN  ; CALL
+;     sp PRSTR          ; CALL
+;
+; NOTE: MAKHOT is never active simultaneously with itself,
+;   so it is safe as a non-reentrant subroutine.
+; NOTE: CWLOOP calls nothing, so no reentrancy issue even
+;   though it is called from within TRYMOVES.
+; NOTE: PRSTR is never called while another PRSTR is active.
+; =============================================================
 
-        cs frame_size
-        ad one
-        ts push_pop_word_count     ; initialize the loop counter
-        ca minimax_retp            ; fetch the "source pointer"
-        td push_src
-        ca stackp                  ; fetch the "destination pointer"
-        td push_dst
-
-push_src:                          ; copy loop
-        ca 0                       ; filled in above
-push_dst:
-        ts 0
-        ao push_src
-        ao push_dst
-        ao push_pop_word_count
-        cp push_src                ; around the loop until the entire stack frame is copied
-
-        ca stackp                  ; update the stack pointer for next time
-        ad frame_size
-        td stackp
-        ao push_lcl_depth
-
-        ca push_pop_lcl_acc_stash  ; retrieve the AC
-push_ret:
-        sp 0                       ; subroutine return
-
-
-pop_minmax:
-        ta pop_ret
-        ts push_pop_lcl_acc_stash  ; stash the AC
-        ca stackp                  ; back up the stack pointer
-        su frame_size
-        td stackp
-        ca push_lcl_depth
-        su one
-        ts push_lcl_depth
-
-        cs frame_size
-        ad one
-        ts push_pop_word_count     ; initialize the loop counter
-        ca minimax_retp            ; fetch the "destination pointer"
-        td pop_dst
-        ca stackp                  ; fetch the "source pointer"
-        td pop_src
-
-pop_src:                          ; copy loop
-        ca 0                       ; filled in above
-pop_dst:
-        ts 0
-        ao pop_src
-        ao pop_dst
-        ao push_pop_word_count
-        cp pop_src                ; around the loop until the entire stack frame is copied
-
-        ca push_pop_lcl_acc_stash  ; retrieve the AC
-pop_ret:
-        sp 0
-
-push_lcl_depth:
-        .word  0
-push_pop_lcl_acc_stash:
-        .word 0
-push_pop_word_count:             ; this var is the copy-word counter for push and pop
-        .word 0
-
-; calculate the size of a single push on the stack
-frame_size:  .word minmax_lcl_data_end - minmax_ret
-minimax_retp:    ; Here's the address of the minimax local data to be pushed onto stack
-        .word minmax_ret
-stack_size:
-        .word 10                ; I've allocated ten frames below for use of the stack
-
-
-stackp: .word stack0
-stack0: .word 0   ; frame 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0   ; frame 1
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0   ; frame 2
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0   ; frame 3
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0   ; frame 4
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0   ; frame 5
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0   ; frame 6
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0   ; frame 7
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0   ; frame 8
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0   ; frame 9
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-        .word 0
-eos:    .word 0   ; end of stack
-stack_endp: .word eos
+; =============================================================
+; MAIN PROGRAM
+; =============================================================
+; START:
+;         ca   ZERO
+;         ts   BRDX
+;         ts   BRDO
+;         ts   TURN
+; 
+;         sp   PRBANNER          ; CALL - returns
+; 
+; GAMELOOP:
+;         sp   PRMBOARD          ; CALL - returns
+;         sp   PRMPRMT           ; CALL - returns
+;         sp   GETMOV            ; CALL - returns
+;         sp   GAMELOOP          ; JUMP - no return
 
 
 
-
-; // This is the minimax function. It considers all 
-; // the possible ways the game can go and returns 
-; // the value of the board 
-; int minimax(int depth, bool isMax) 
-; { 
-;     int score = evaluate(board); 
-;     int m;
-;     int best;
-;   
-;     ; printf("%sMinimax Start\n", indent[depth+1]);
-;     // If Maximizer has won the game return his/her 
-;     // evaluated score 
-;     if (score == 10) {
-;         return score; 
-;         ; printf("%sMaximizer wins\n", indent[depth+1]);
-;     }
-;   
-;     // If Minimizer has won the game return his/her 
-;     // evaluated score 
-;     if (score == -10) {
-;         ; printf("%sMinimizer Wins\n", indent[depth+1]);
-;         return score; 
-;     }
-;   
-;     // If there are no more moves and no winner then 
-;     // it is a tie 
-;     if (isMovesLeft(board)==false) {
-;         ; printf("%sMinimax: No More Moves\n", indent[depth+1] );
-;         return 0; 
-;     }
-;   
-;     // If this maximizer's move 
-;     if (isMax) 
-;     { 
-;         best = -1000; 
-;   
-;         // Traverse all cells 
-;         for (int i = 0; i<3; i++) 
-;         { 
-;             for (int j = 0; j<3; j++) 
-;            { 
-;                // Check if cell is empty 
-;                if (board[i][j]=='_') 
-;                { 
-;                    // Make the move 
-;                    board[i][j] = player; 
-;  
-;                    // Call minimax recursively and choose 
-;                    // the maximum value 
-;                    //best = max( best, 
-;                    //    minimax(board, depth+1, !isMax) ); 
-;                    m = minimax(depth+1, !isMax);
-;                    //added by guy:
-;                    m -= depth;
-;                    ; printf("%sminimax isMAX=%d returned score %d  ", indent[depth+1], isMax, m);
-;                    if (m > best) {
-;                        best = m;
-;                        ; printf("%sBest Higher\n", indent[depth+1]);
-;                    } else {
-;                        ; printf("\n");
-;                    }
-;                    ; print_board(depth);
-;  
-;                    // Undo the move 
-;                    board[i][j] = '_'; 
-;                } 
-;            } 
-;         } 
-;         return best; 
-;     } 
-;   
-;     // If this minimizer's move 
-;     else
-;     { 
-;         best = 1000; 
-;   
-;         // Traverse all cells 
-;         for (int i = 0; i<3; i++) 
-;         { 
-;             for (int j = 0; j<3; j++) 
-;             { 
-;                 // Check if cell is empty 
-;                 if (board[i][j]=='_') 
-;                 { 
-;                     // Make the move 
-;                     board[i][j] = opponent; 
-;   
-;                     // Call minimax recursively and choose 
-;                     // the minimum value 
-;                     // best = min(best, 
-;                     //       minimax(depth+1, !isMax)); 
-;                     m = minimax(depth+1, !isMax);
-;                     ; for (int s = 0; s < depth; s++) printf("  ");
-;                    //added by guy:
-;                     m += depth;
-;                     ; printf("    minimax isMAX=%d returned score %d  ", isMax, m);
-;                      if (m < best) {
-;                         best = m;
-;                         ; printf("Best Lower\n");
-;                     } else {
-;                         ; printf("\n");
-;                     }
-;                     ; print_board(depth);
-;   
-;                     // Undo the move 
-;                     board[i][j] = '_'; 
-;                 } 
-;             } 
-;         } 
-;         return best; 
-;     } 
-; } 
+; =============================================================
+; SUBROUTINE: GETMOV
+; Read next human move, validate, convert to one-hot in BMOVE,
+; take computer turn, check for end of game.
+; User cell number is in the ACC
+; =============================================================
+GETMOV:
+        ta   GMRET
+;        ts   input   ; save the input cell number
 
 
-; This is the recursive module that tries all the combinations to find the 
-; best move.
-; The routine takes one arg to say if we're trying to do Max or Min; Max is +1
-; Min is -1, passed in AC
-minimax:
-        ta minmax_ret
-        ts minmax_lcl_isMax
-        sp push_minmax          ; store state on "the stack"
-        ; .exec print_indent(cm, "Starting minimax: IsMax:%d, player: %d opponent %d, depth: %d" % (cm.rd(rl("minmax_lcl_isMax")), cm.rd(rl("player")), cm.rd(rl("opponent")), cm.rd(rl("push_lcl_depth"))), rl("push_lcl_depth"))
-        sd zero   ; no-op
-        ; .exec print_board(cm, rl("boardp"), rl("push_lcl_depth"), rl("player"), "Starting Minimax")
-        sp evaluate_board       ; figure out how we're doing
-        ts minmax_lcl_score
+        ; Validate <= 8:
+        ts   SQIDX             ; save the input cell number
+        su   NINE_VAL          ; negative if index < 9
+        cp   GOODRANGE
+        sp   BADMOV            ; JUMP - no return
 
-minmax_test_max:                ; test if Maximizer has won
-        ca minmax_lcl_score
-        su c_10
-        dm 0                    ; test to see if score is +10
-        cp minmax_max_won       ; branch if yes
-        sp minmax_test_min
+GOODRANGE:
+        ca   SQIDX
+        sp   MAKHOT            ; CALL - returns
+        ts   BMOVE
 
-minmax_max_won:
-        ; .print "Maximizer Won, score %d", minmax_lcl_score
-        ca minmax_lcl_score
-        ts minmax_lcl_best      ; set up the return code
-        sp minmax_exit           ; all done
+        ; Check square not taken by X:
+        ca   BMOVE
+        md   BRDX
+        dm   0
+        cp   CHKOFREE          ; zero -> not taken by X
+        sp   SQTKN             ; JUMP - no return
+CHKOFREE:
+        ; Check square not taken by O:
+        ca   BMOVE
+        md   BRDO
+        dm   0
+        cp   PLACEO            ; zero -> not taken by O
+        sp   SQTKN             ; JUMP - no return
+PLACEO:
+        ; Place human's O:
+        ca   BRDO
+        sd   BMOVE
+        ts   BRDO
+        
+        ; print the users move on the Flexo
+        ca   SQIDX
+        ad   flexo_num_tbl_ptr
+        td   char_conv2
+char_conv2: ca 0
+        
+        clc  0o12
+        si   0o225
+        rc 0
+        
+        ao   TURN
 
-minmax_test_min:
-        ca minmax_lcl_score
-        ad c_10
-        dm 0                    ; test to see if score is -10
-        cp minmax_min_won       ; branch if yes
-        sp minmax_test_tie
+        ; Check if human won:
+        ca   ZERO
+        ts   WINFLG
+        ca   BRDO
+        ts   CWBD
+        ca   EIGHT_VAL
+        ts   CWLCNT
+        sp   CWLOOP            ; CALL - returns
 
-minmax_min_won:
-        ; .print "Minimizer Won, score %d", minmax_lcl_score
-        ca minmax_lcl_score
-        ts minmax_lcl_best      ; set up the return code
-        sp minmax_exit           ; all done
+        ca   WINFLG
+        dm   0
+        cp   H_NON_WIN        ; zero -> human did not win
+        sp   HUMAN_WIN         ; JUMP - no return
+H_NON_WIN:
 
-minmax_test_tie:
-        sp isMovesLeft          ; test if there are more moves to go
-        ;.print "minmax_test_tie: isMovesLeft = %ad"
-        cp minmax_tie           ; Negative means "no more empty cells"
-        sp minmax_prepare_scan
+        ; Check draw:
+        ca   TURN
+        su   NINE_VAL
+        dm   0
+        cp   DRAW              ; JUMP - no return (zero -> draw)
 
-minmax_tie:
-        ca zero
-        ;.print "Minimax Tie"
-        ts minmax_lcl_best      ; set up the return code
-        sp minmax_exit           ; bail out
+        ; Computer's turn:
+        sp   COMPMOV           ; CALL - returns
 
-minmax_prepare_scan:
-        ca minmax_lcl_isMax
-        cp minmax_not_isMax     ; branch if isMax == False
+        ; Place computer's X:
+        ca   BRDX
+        sd   BMOVE
+        ts   BRDX
 
-        ; ======== This section is "isMax == True" =============
-minmax_isMax:
-        cs c_1000
-        ts minmax_lcl_best      ; initialize to Most Negative
-        ca zero                 ; prepare to scan all cells starting w/zero
-        ts minmax_lcl_next_cell
-        ca c_8n                 ; loop nine times
-        ts minmax_lcl_loop_cnt
-minmax_loop1:
-        ca boardp               ; get the base board ptr to read the next cell
-        ad minmax_lcl_next_cell
-        td minmax_rd1
-        td minmax_wr1
-        td minmax_lcl_undo_move         ; this is only used _after_ the recursive call, and will need to be restored from stack
-minmax_rd1:
-        ca 0                    ; fetch the next cell
-        cp minmax_empty_cell1   ; continue if the cell is empty
-        sp minmax_loop1_end     ; go to the next loop step if the cell is not empty
+        ao   TURN
 
-minmax_empty_cell1:             ; here, we know the cell we tested is empty, and a candidate for analysis
-        ca player               ; fetch the Player marker 
-minmax_wr1: 
-        ts 0                    ; ... and write it into the cell
-        .exec print_experiment(cm, cb, "Trying  game piece %d to cell %d, count %d, isMax==True", ("player", "minmax_lcl_next_cell", "minmax_lcl_loop_cnt"), "push_lcl_depth")
-        sd zero   ; no-op
+        ; Check if computer won:
+        ca   ZERO
+        ts   WINFLG
+        ca   BRDX
+        ts   CWBD
+        ca   EIGHT_VAL
+        ts   CWLCNT
+        sp   CWLOOP            ; CALL - returns
 
-        cs zero                 ; load negative zero, i.e. all ones    
-        sd minmax_lcl_isMax     ; Sum Digits, i.e., xor, will reverse isMax
-        cs one                   ; load -1 to signal isMax should be False
-        ; here begins the recursion
-        ; .exec print_indent(cm, "starting recursive call to minimax: isMax==True-branch, cell at %d, depth: %d, loop_count: %d" % (cm.rd(rl("minmax_lcl_next_cell")), cm.rd(rl("push_lcl_depth")), cm.rd(rl("minmax_lcl_loop_cnt"))), rl("push_lcl_depth"))
-        sp minimax
-        ; the following adjustment probably shouldn't be done if the answer is Zero
-        su one  ; push_lcl_depth       ; reduce the score by the calling depth
-        ts mm_lcl_ret_val       ; very local storage for the minimax return call
-        ; .exec print_indent(cm, "finished recursive call to minimax: isMax==True-branch, cell at %d, depth: %d, loop_count: %d, score: 0o%o" % (cm.rd(rl("minmax_lcl_next_cell")), cm.rd(rl("push_lcl_depth")), cm.rd(rl("minmax_lcl_loop_cnt")), cm.rd(rl("mm_lcl_ret_val"))), rl("push_lcl_depth"))
-        su minmax_lcl_best      ; determine if this was the "best" score so far
-        cp minmax_not_best0     ; branch if we've seen a better score already
+        ca   WINFLG
+        dm   0
+        cp   AFTER_CWIN        ; zero -> computer did not win
+        sp   COMP_WIN          ; JUMP - no return
+AFTER_CWIN:
 
-        ca mm_lcl_ret_val       ; save this result as the Best Score So Far
-        ts minmax_lcl_best
+        sp   PRMCOMPMOV        ; CALL - returns
+        sp   PRMBOARD          ; CALL - returns
 
-minmax_not_best0:
-        ca minmax_lcl_undo_move ; remember that modified instruction addresses are effectively local variables, so restore this one from the stack
-        ;.exec print_experiment(cm, cb, "Undoing game piece %d in cell %d at 0o%o, isMax==True", ("player", "minmax_lcl_next_cell", "minmax_lcl_undo_move"), "push_lcl_depth")
-        td minmax_undo_move0
-        cs one                  ; undo the trial move
-minmax_undo_move0:
-        ts 0
-
-minmax_loop1_end:                ; get ready for the next cell iteration
-        ao minmax_lcl_next_cell
-        ao minmax_lcl_loop_cnt
-        ; .print "decrement loop count to %ad, depth: %d, isMax==True-branch", push_lcl_depth
-        cp minmax_loop1             ; go around again if the loop cnt is not exhausted
-
-        ca minmax_lcl_best       ; return the best score found in AC
-        sp minmax_exit           ; all done with this pass of isMax == True
+GMRET:  sp   0
 
 
+BADMOV:
+        sp   PRMBADMOV         ; CALL - returns
+        .word 0o0              ; HALT
+        sp   GETMOV            ; JUMP - no return (dead after HALT)
 
-        ; ======== This section is "isMax == False" =============
-minmax_not_isMax:
-        ca c_1000
-        ts minmax_lcl_best      ; initialize to Most Positive
-        ca zero                 ; prepare to scan all cells starting w/zero
-        ts minmax_lcl_next_cell
-        ca c_8n                 ; loop nine times
-        ts minmax_lcl_loop_cnt
-minmax_loop2:
-        ca boardp               ; get the base board ptr to read the next cell
-        ad minmax_lcl_next_cell
-        td minmax_rd2
-        td minmax_wr2
-        td minmax_lcl_undo_move ; store this address on the 'stack' for now
-minmax_rd2:
-        ca 0                    ; fetch the next cell
-        cp minmax_empty_cell2   ; continue if the cell is empty
-        sp minmax_loop2_end     ; go to the next loop step if the cell is not empty
+SQTKN:
+        sp   PRMSQTKN          ; CALL - returns
+        .word 0o0              ; HALT
+        sp   GETMOV            ; JUMP - no return (dead after HALT)
 
-minmax_empty_cell2:             ; here, we know the cell we tested is empty, and a candidate for analysis
-        ca opponent             ; fetch the Opponent marker 
-minmax_wr2: 
-        ts 0                    ; ... and write it into the cell
-        ; .exec print_experiment(cm, cb, "Trying  game piece %d in cell %d, count %d, isMax==False", ("opponent", "minmax_lcl_next_cell", "minmax_lcl_loop_cnt"), "push_lcl_depth")
-        sd zero  ; no-op
-;        cs zero                 ; load negative zero, i.e. all ones    
-;        sd minmax_lcl_isMax     ; Sum Digits, i.e., xor, will reverse isMax
-        ca one                   ; load -1 to signal isMax should be True
-        ; here begins the recursion
-        ; .exec print_indent(cm, "starting recursive call to minimax: isMax==False-branch, cell at %d, depth: %d, loop_count: %d" % (cm.rd(rl("minmax_lcl_next_cell")), cm.rd(rl("push_lcl_depth")), cm.rd(rl("minmax_lcl_loop_cnt"))), rl("push_lcl_depth"))
-        sp minimax
-        ; the following adjustment probably shouldn't be done if the answer is Zero
-        ad one;  push_lcl_depth       ; increase the (negative) score by the calling depth
-        ts mm_lcl_ret_val       ; very local storage for the minimax return value
-        ; .exec print_indent(cm, "finished recursive call to minimax: isMax==False-branch, cell at %d, depth: %d, loop_count: %d, score: 0o%o" % (cm.rd(rl("minmax_lcl_next_cell")), cm.rd(rl("push_lcl_depth")), cm.rd(rl("minmax_lcl_loop_cnt")), cm.rd(rl("mm_lcl_ret_val"))), rl("push_lcl_depth"))
-
-
-        su minmax_lcl_best      ; determine if this was the "best" score so far
-        cp minmax_best2
-        sp minmax_not_best2     ; branch if we've seen a better score already
-
-minmax_best2:
-        ca mm_lcl_ret_val       ; save this result as the Best Score So Far
-        ts minmax_lcl_best
-
-minmax_not_best2:
-
-        ca minmax_lcl_undo_move ; remember that modified instruction addresses are effectively local variables, so restore this one from the stack
-        ; .exec print_experiment(cm, cb, "Undoing game piece %d in cell %d at 0o%o, isMax==False", ("player", "minmax_lcl_next_cell", "minmax_lcl_undo_move"), "push_lcl_depth")
-        td minmax_undo_move2
-        cs one                  ; undo the trial move
-minmax_undo_move2:
-        ts 0
-
-minmax_loop2_end:                ; get ready for the next cell iteration
-        ao minmax_lcl_next_cell
-        ao minmax_lcl_loop_cnt
-        cp minmax_loop2             ; go around again if the loop cnt is not exhausted
-
-        ca minmax_lcl_best       ; return the best score found in AC
-        sp minmax_exit           ; all done with this pass of isMax == False
-
-
-minmax_exit:
-        sd zero ; no-op for .exec
-        ; .exec print_indent(cm, "Exiting minimax: IsMax:%d, depth: %d, score: %d" % (cm.rd(rl("minmax_lcl_isMax")), cm.rd(rl("push_lcl_depth")), cm.rd(rl("minmax_lcl_best"))), rl("push_lcl_depth"))
-        sd zero         ; this is a no-op
-        ; .exec print_board(cm, rl("boardp"), rl("push_lcl_depth"), rl("player") )
-        ca minmax_lcl_best
-
-        ; note that we stash and retrieve the AC during PoP
-        sp pop_minmax
-minmax_ret:
-        sp 0
-
-; the 'local data' for minmax must be copied/retrieved from the "stack" for recursion
-; a "stack frame" must store from minmax_ret to minmax_lcl_data_end
-minmax_lcl_isMax:       .word 0
-minmax_lcl_score:       .word 0
-minmax_lcl_next_cell:   .word 0
-minmax_lcl_loop_cnt:    .word 0
-minmax_lcl_best:        .word 0
-minmax_lcl_undo_move:   .word 0
-minmax_lcl_data_end:    .word 0   ; this is just a marker for the end of data to be pushed
-
-mm_lcl_ret_val:         .word 0
-
-
-;   
-; // This will return the best possible move for the player 
-; // This routine used to return row and move with a single pointer to a struct.
-; // Not a WW Kind of Thing, so I changed it to return two ints via args
-; // struct Move findBestMove) 
-; void findBestMove(int *move_row, int *move_col) 
-; { 
-;     int bestVal = -1000; 
-;     int bestMove_row = -1; 
-;     int bestMove_col = -1; 
-;   
-;     // Traverse all cells, evaluate minimax function for 
-;     // all empty cells. And return the cell with optimal 
-;     // value. 
-;     for (int i = 0; i<3; i++) 
-;     { 
-;         for (int j = 0; j<3; j++) 
-;         { 
-;             // Check if cell is empty 
-;             if (board[i][j]=='_') 
-;             { 
-;                 // Make the move 
-;                 board[i][j] = player; 
-;   
-;                 // compute evaluation function for this 
-;                 // move. 
-;                 int moveVal = minimax(0, false); 
-;   
-;                 // Undo the move 
-;                 board[i][j] = '_'; 
-;   
-;                 // If the value of the current move is 
-;                 // more than the best value, then update 
-;                 // best/ 
-;                 printf("minimax returned %d  ", moveVal);
-;                 if (moveVal > bestVal) 
-;                 { 
-;                     bestMove_row = i; 
-;                     bestMove_col = j; 
-;                     bestVal = moveVal; 
-;                     printf("Best\n");
-;                 } 
-;                 else {
-;                     printf("\n");
-;                 }
-;             } 
-;         } 
-;     } 
-;   
-;     printf("The value of the best Move for Player %c is : %d\n", 
-;             player, bestVal); 
-;   
-;     *move_row = bestMove_row;
-;     *move_col = bestMove_col;
-;     // return // bestMove; 
-; } 
-;   
-
-; findBestMove cycles through the board to find the move that results 
-; in the best score for the current Player
-; The routine takes no explicit argument, but assumes that Player is the
-; one we're trying to advance
-; the assumption on calling this routine is that there's at least one move available to be tried
-; This routine can take a while, so it redraws the screen a couple of times.  To indicate who'S
-; doing what, we reverse the "player" bit temporarily.
-findBestMove:
-        ta fBM_ret
-
-        ; switch the display to the machine player
-        ca which_player
-        sd const_1              ; xor a 1 into the LSB; i.e. 0->1 or 1->0
+HUMAN_WIN:
+        sp   PRMBOARD          ; CALL - returns
+        sp   PRMHWIN           ; CALL - returns
+        ca const_o_win
         ts which_player
+        sp   refresh_loop      ; JUMP - no return
 
-        ; initialize the 'best stuff' detector
-        cs c_1000
-        ts fBM_lcl_best_value
-        ; .print "Starting findBestMove, player=%d, opponent=%d", player, opponent
-        cs one
-        ts fBM_lcl_best_move
-        ca c_8n
-        ts fBM_lcl_loop_count
-        ca zero
-        ts fBM_lcl_current_cell
-        ca boardp               ; we always start from cell zero`
-        td fBM_fetch_cell
-        td fBM_set_cell
-        td fBM_clear_cell
-
-        ; we start the loop here, but the first test will bypass the rest of the loop if the cell is already spoken for
-fBM_fetch_cell: 
-        ca 0                    ; read the current cell into AC
-        cp fBM_try_move         ; if the cell is empty, go on to try out a move
-        sp fBM_next_loop        ; take a pass on this non-empty cell, go on to the next one
-
-fBM_try_move:
-        ca player
-        ; try out a move on this cell
-        .print "fBM: try  empty cell %d, player=%d", fBM_lcl_current_cell, player
-fBM_set_cell:
-        ts 0
-        sp draw_game_board    ; be careful to not trigger unintended recursion...
-
-        cs one                  ; tell Minimax to try for a Min score on this cell
-        ; .print "fBM: call minimax, player=%d, IsMax=%ad", player
-        sp minimax              ; call the optimizer; best-score comes back in AC
-        ;.print "fBM: minimax returned %ad"
-        ts fBM_lcl_tmp_score    ; stash the score for now
-
-        cs one                  ; undo the trial move, then evaluate the results of minimax
-fBM_clear_cell:
-        ts 0
-
-        ; see if we bested a previous score
-        ca fBM_lcl_tmp_score    ; compare the new result with previous best
-        su fBM_lcl_best_value   ; branch if the old one was better; i.e., skip updating the eval_score_players
-        cp fBM_next_loop
-
-        ca fBM_lcl_tmp_score
-        ts fBM_lcl_best_value   ; save the New Best Score
-        ca fBM_lcl_current_cell ; and remember how we got here, i.e., which cell we tried
-        .print "fBM new Best Move: score %d, cell %d, loop: %d", fBM_lcl_tmp_score, fBM_lcl_current_cell, fBM_lcl_loop_count
-        ts fBM_lcl_best_move
-
-fBM_next_loop:
-        ao fBM_fetch_cell
-        ao fBM_set_cell
-        ao fBM_clear_cell
-        ao fBM_lcl_current_cell
-        ao fBM_lcl_loop_count
-        cp fBM_fetch_cell       ; go 'round the loop again
-
-        ; now switch the display back to the original (human) player
-        ca which_player
-        sd const_1              ; xor a 1 into the LSB; i.e. 0->1 or 1->0
+COMP_WIN:
+        sp   PRMBOARD          ; CALL - returns
+        sp   PRMCWIN           ; CALL - returns
+        ca const_o_win
         ts which_player
+        sp   refresh_loop      ; JUMP - no return
 
-        ; when we're done with the loop, return the best move found (not the score, the cell that played best)
-        ca fBM_lcl_best_move
-        .print "fBM findBestMove for player %d returns move to cell %ad, score=%d", player, fBM_lcl_best_value
-fBM_ret:
-        sp 0
-fBM_lcl_best_value:     ; best score found so far
-        .word 0
-fBM_lcl_best_move:      ; remember the move that resulted in the best score
-        .word 0
-fBM_lcl_loop_count:
-        .word 0
-fBM_lcl_current_cell:
-        .word 0
-fBM_lcl_tmp_score:
-        .word 0
+DRAW:
+        sp   PRMBOARD          ; CALL - returns
+        sp   PRMDRAW           ; CALL - returns
+        ca const_draw
+        ts which_player
+        sp   refresh_loop      ; JUMP - no return
+
+;input:  .word 0
+
+; =============================================================
+; SUBROUTINE: MAKHOT
+; Convert square index to one-hot mask.
+; Input:  AC = square index (0..8)
+; Output: AC = one-hot mask (SQ0MASK shifted right by index)
+; Uses:   CURMSK, CNTR
+; =============================================================
+MAKHOT:
+        ta   MHRET
+        ts   CNTR              ; CNTR = shift count = square index
+        ca   SQ0MASK
+        ts   CURMSK
+MHLOOP:
+        ca   CNTR
+        dm   0
+        cp   MHDONE            ; zero -> done
+        sp   MHSHIFT           ; JUMP - no return
+MHSHIFT:
+        ca   CURMSK
+        srh  1                 ; shift right 1, hold
+        ts   CURMSK
+        ca   CNTR
+        su   UNIT
+        ts   CNTR
+        sp   MHLOOP            ; JUMP - no return
+MHDONE:
+        ca   CURMSK
+MHRET:  sp   0
+
+; =============================================================
+; SUBROUTINE: CWLOOP
+; Check whether board CWBD has a winning line.
+; Inputs:  CWBD    = board word to check
+;          CWLCNT  = number of lines to check (init to 8)
+; Output:  WINFLG  = UNIT if win found, ZERO otherwise
+; =============================================================
+CWLOOP:
+        ta   CWRET
+        ca   WINTBLADDR
+        td   CWLD              ; reload CWLD to point at WINTBL[0]
+
+CWLD:   ca   0                 ; address field = WINTBL+i
+        ts   CWMSK
+
+        ca   CWBD
+        md   CWMSK
+        su   CWMSK             ; zero iff CWBD contains all bits of CWMSK
+        dm   0
+        cp   CWWON             ; zero -> win!
+
+        ao   CWLD              ; advance to next win mask
+
+        ca   CWLCNT
+        su   UNIT
+        ts   CWLCNT
+        dm   0
+        cp   CWDONE            ; zero -> all lines checked, no win
+        sp   CWLD              ; JUMP - no return (skip td reload)
+
+CWWON:
+        ca   UNIT
+        ts   WINFLG
+
+CWDONE:
+        sp   CWRET             ; JUMP - no return
+CWRET:  sp   0
+
+; =============================================================
+; SUBROUTINE: COMPMOV
+; Computer picks best move, sets BMOVE.
+; Priority: 1) Win  2) Block  3) Center  4) Corner  5) Edge
+; =============================================================
+COMPMOV:
+        ta   CMRET
+
+        ; --- 1. Try to win ---
+        ca   BRDX
+        ts   TRYBRD
+        sp   TRYMOVES          ; CALL - returns
+        ca   WINMOV
+        dm   0
+        cp   CMTRYBLOCK        ; zero -> no win found
+        sp   CMRET             ; JUMP - no return
+CMTRYBLOCK:
+
+        ; --- 2. Try to block ---
+        ca   BRDO
+        ts   TRYBRD
+        sp   TRYMOVES          ; CALL - returns
+        ca   WINMOV
+        dm   0
+        cp   CMTRYCTR          ; zero -> no block found
+        sp   CMRET             ; JUMP - no return
+CMTRYCTR:
+
+        ; --- 3. Center ---
+        ca   CTR4MSK
+        ts   T1
+        ca   BRDX
+        sd   BRDO
+        ts   OCCP
+        ca   T1
+        md   OCCP
+        dm   0
+        cp   CTRFREE           ; zero -> center is free
+        sp   TRYNEXT1          ; JUMP - no return
+CTRFREE:
+        ca   CTR4MSK
+        ts   BMOVE
+        sp   CMRET             ; JUMP - no return
+
+        ; --- 4. Corners ---
+TRYNEXT1:
+        ca   CORNR0
+        sp   TRYFREE           ; CALL - returns
+        dm   0
+        cp   TRYNC2            ; zero -> corner 0 free
+        sp   CMRET             ; JUMP - no return
+TRYNC2:
+        ca   CORNR2
+        sp   TRYFREE           ; CALL - returns
+        dm   0
+        cp   TRYNC6
+        sp   CMRET             ; JUMP - no return
+TRYNC6:
+        ca   CORNR6
+        sp   TRYFREE           ; CALL - returns
+        dm   0
+        cp   TRYNC8
+        sp   CMRET             ; JUMP - no return
+TRYNC8:
+        ca   CORNR8
+        sp   TRYFREE           ; CALL - returns
+        dm   0
+        cp   TRYNE1            ; zero -> all corners taken
+        sp   CMRET             ; JUMP - no return
+
+        ; --- 5. Edges ---
+TRYNE1:
+        ca   EDGE1
+        sp   TRYFREE           ; CALL - returns
+        dm   0
+        cp   TRYNE3
+        sp   CMRET             ; JUMP - no return
+TRYNE3:
+        ca   EDGE3
+        sp   TRYFREE           ; CALL - returns
+        dm   0
+        cp   TRYNE5
+        sp   CMRET             ; JUMP - no return
+TRYNE5:
+        ca   EDGE5
+        sp   TRYFREE           ; CALL - returns
+        dm   0
+        cp   TRYNE7
+        sp   CMRET             ; JUMP - no return
+TRYNE7:
+        ca   EDGE7
+        sp   TRYFREE           ; CALL - returns
+        dm   0
+        cp   CMRET             ; zero -> all edges taken (shouldn't happen)
+        sp   CMRET             ; JUMP - no return
+
+CMRET:  sp   0
+
+; =============================================================
+; SUBROUTINE: TRYMOVES
+; Try each empty square for TRYBRD; find first winning move.
+; Input:  TRYBRD = board of side to find winning move for
+; Output: WINMOV = one-hot of winning square, or ZERO if none
+;         BMOVE  = same as WINMOV if found
+; =============================================================
+TRYMOVES:
+        ta   TMRET
+        ca   ZERO
+        ts   WINMOV
+        ts   SQIDX
+
+TMSQLP:
+        ca   SQIDX
+        sp   MAKHOT            ; CALL - returns
+        ts   BMOVE
+
+        ; Check if square free:
+        ca   BRDX
+        sd   BRDO
+        ts   OCCP
+        ca   BMOVE
+        md   OCCP
+        dm   0
+        cp   TMSQFREE          ; zero -> free
+        sp   TMNEXT            ; JUMP - no return
+
+TMSQFREE:
+        ca   TRYBRD
+        sd   BMOVE
+        ts   TRYTMP
+
+        ca   ZERO
+        ts   WINFLG
+        ca   TRYTMP
+        ts   CWBD
+        ca   EIGHT_VAL
+        ts   CWLCNT
+        sp   CWLOOP            ; CALL - returns
+
+        ca   WINFLG
+        dm   0
+        cp   TMNEXT            ; zero -> no win
+        sp   TMWIN             ; JUMP - no return
+
+TMNEXT:
+        ao   SQIDX
+        ca   SQIDX
+        su   NINE_VAL
+        dm   0
+        cp   TMRET             ; zero -> all squares tried
+        sp   TMSQLP            ; JUMP - no return
+
+TMWIN:
+        ca   BMOVE
+        ts   WINMOV
+TMRET:  sp   0
+
+; =============================================================
+; SUBROUTINE: TRYFREE
+; Check if square (one-hot mask in AC) is free.
+; Input:  AC = one-hot square mask
+; Output: AC = UNIT (positive) if free, BMOVE set
+;         AC = -0 (negative) if occupied
+; =============================================================
+TRYFREE:
+        ta   TFRET
+        ts   TFMSK
+        ca   BRDX
+        sd   BRDO
+        ts   OCCP
+        ca   TFMSK
+        md   OCCP
+        dm   0
+        cp   TFFREE            ; zero -> free
+        ca   NEGZ              ; occupied: return -0
+        sp   TFRET             ; JUMP - no return
+TFFREE:
+        ca   TFMSK
+        ts   BMOVE
+        ca   UNIT
+TFRET:  sp   0
+
+; =============================================================
+; SUBROUTINE: PRMBOARD
+; Print current board state on Flexowriter.
+; =============================================================
+PRMBOARD:
+        ta   PBRET
+        ca   ZERO
+        ts   SQIDX
+
+PBLOOP:
+        ca   SQIDX
+        sp   MAKHOT            ; CALL - returns
+        ts   TBIT
+
+        ca   TBIT
+        md   BRDX
+        dm   0
+        cp   TRYO              ; zero -> not X
+        sp   PBPX              ; JUMP - no return
+TRYO:
+        ca   TBIT
+        md   BRDO
+        dm   0
+        cp   TRYEMPTY          ; zero -> not O
+        sp   PBPO              ; JUMP - no return
+TRYEMPTY:
+        si   0o225
+        ca   CHRDOT
+        rc 0
+        sp   PBSEP             ; JUMP - no return
+
+PBPX:
+        si   0o225
+        ca   CHRX
+        rc 0
+        sp   PBSEP             ; JUMP - no return
+
+PBPO:
+        si   0o225
+        ca   CHRO
+        rc 0
+
+PBSEP:
+        ao   SQIDX
+
+        ca   SQIDX
+        su   THREE_VAL
+        dm   0
+        cp   PBROWSEP          ; zero -> row separator after row 0
+
+        ca   SQIDX
+        su   SIX_VAL
+        dm   0
+        cp   PBROWSEP          ; zero -> row separator after row 1
+
+        ca   SQIDX
+        su   NINE_VAL
+        dm   0
+        cp   PBEND             ; zero -> done
+
+        si   0o225
+        ca   CHRBAR
+        rc 0
+        sp   PBLOOP            ; JUMP - no return
+
+PBROWSEP:
+        si   0o225
+        ca   CHRNL
+        rc 0
+        sp   PRSEP             ; CALL - returns
+        sp   PBLOOP            ; JUMP - no return
+
+PBEND:
+        si   0o225
+        ca   CHRNL
+        rc 0
+PBRET:  sp   0
+
+; =============================================================
+; SUBROUTINE: PRSEP
+; Print "-----\n" row separator.
+; =============================================================
+PRSEP:
+        ta   PSRET
+        si   0o225
+        ca   CHRDSH
+        rc 0
+        si   0o225
+        ca   CHRDSH
+        rc 0
+        si   0o225
+        ca   CHRDSH
+        rc 0
+        si   0o225
+        ca   CHRDSH
+        rc 0
+        si   0o225
+        ca   CHRDSH
+        rc 0
+        si   0o225
+        ca   CHRNL
+        rc 0
+PSRET:  sp   0
+
+; =============================================================
+; SUBROUTINE: PRBANNER
+; =============================================================
+PRBANNER:
+        ta   PBNRET
+        sp   PRSTR             ; CALL - returns
+        .word BNNSTR
+PBNRET: sp   0
+
+; =============================================================
+; SUBROUTINE: PRMPRMT
+; =============================================================
+PRMPRMT:
+        ta   PPRET
+        sp   PRSTR             ; CALL - returns
+        .word PRMSTR
+PPRET:  sp   0
+
+; =============================================================
+; SUBROUTINE: PRSTR
+; Print string of Flexo codes terminated by -1.
+; String address passed in word following sp PRSTR call.
+; Characters in lower 6 bits; clc shifts them to top 6.
+; =============================================================
+PRSTR:
+        ta   PRRET
+        ca   PRRET
+        td   PRaddr
+PRaddr: ca   0
+        td   PRLOOP
+        ao   PRRET
+
+PRLOOP: ca   0
+        cp   PREND             ; negative (-1) -> done
+        clc  0o12
+        si   0o225
+        rc 0
+        ao   PRLOOP
+        sp   PRLOOP            ; JUMP - no return
+PREND:
+        sp   PRRET             ; JUMP - no return
+PRRET:  sp   0
+
+; =============================================================
+; SUBROUTINE: PRMCOMPMOV
+; Print "COMPUTER PLAYS SQUARE N\n"
+; =============================================================
+PRMCOMPMOV:
+        ta   PCMRET
+        sp   PRSTR             ; CALL - returns
+        .word CMVSTR
+
+        ca   ZERO
+        ts   SQIDX
+PCMLP:
+        ca   SQIDX
+        sp   MAKHOT            ; CALL - returns
+        su   BMOVE
+        dm   0
+        cp   PCMFND            ; zero -> found matching square
+        ao   SQIDX
+        sp   PCMLP             ; JUMP - no return
+
+PCMFND:
+        ca   SQIDX
+        ad   flexo_num_tbl_ptr
+        td   char_conv1
+char_conv1: ca 0
+        
+;               ad   FCHAR1
+        clc  0o12
+        si   0o225
+        rc 0
+        si   0o225
+        ca   CHRNL
+        rc 0
+PCMRET: sp   0
+
+; =============================================================
+; MESSAGE SUBROUTINES
+; =============================================================
+PRMHWIN:
+        ta   PHWRET
+        sp   PRSTR             ; CALL - returns
+        .word HWSTR
+PHWRET: sp   0
+
+PRMCWIN:
+        ta   PCWRET
+        sp   PRSTR             ; CALL - returns
+        .word CWSTR
+PCWRET: sp   0
+
+PRMDRAW:
+        ta   PDRET
+        sp   PRSTR             ; CALL - returns
+        .word DWSTR
+PDRET:  sp   0
+
+PRMBADMOV:
+        ta   PBMRET
+        sp   PRSTR             ; CALL - returns
+        .word BDSTR
+PBMRET: sp   0
+
+PRMSQTKN:
+        ta   PSTRET
+        sp   PRSTR             ; CALL - returns
+        .word STSTR
+PSTRET: sp   0
+
+
+
+; =============================================================
+; DATA AREA
+; =============================================================
+        .org  0o2000
+
+BRDX:   .word 0o0
+BRDO:   .word 0o0
+TURN:   .word 0o0
+WINFLG: .word 0o0
+BMOVE:  .word 0o0
+SQIDX:  .word 0o0
+CNTR:   .word 0o0              ; MAKHOT loop counter
+CWBD:   .word 0o0
+CWMSK:  .word 0o0
+CWLCNT: .word 0o0
+WINMOV: .word 0o0
+TRYBRD: .word 0o0
+TRYTMP: .word 0o0
+OCCP:   .word 0o0
+TFMSK:  .word 0o0
+CURMSK: .word 0o0              ; MAKHOT shifted mask
+TBIT:   .word 0o0
+T1:     .word 0o0
+T2:     .word 0o0
+T3:     .word 0o0
+PRPTR:  .word 0o0
+
+; =============================================================
+; CONSTANTS
+; =============================================================
+ZERO:       .word 0o0
+ONE:        .word 0o1
+NEGZ:       .word 0o177777
+UNIT:       .word 0o00001
+FCHAR1:     .word 0o000100     ; Flexo code for '1' (check Table 1)
+NINE_VAL:   .word 0o000011
+EIGHT_VAL:  .word 0o000010
+THREE_VAL:  .word 0o000003
+SIX_VAL:    .word 0o000006
+
+SQ0MASK:    .word 0o001000
+CTR4MSK:    .word 0o000040
+CORNR0:     .word 0o001000
+CORNR2:     .word 0o000200
+CORNR6:     .word 0o000010
+CORNR8:     .word 0o000002
+EDGE1:      .word 0o000400
+EDGE3:      .word 0o000100
+EDGE5:      .word 0o000020
+EDGE7:      .word 0o000004
+
+CHRDOT:     .flexh "."
+CHRX:       .flexh "x"
+CHRO:       .flexh "o"
+CHRBAR:     .flexh "|"
+CHRNL:      .flexh "\n"
+CHRDSH:     .flexh "-"
+
+; =============================================================
+; WIN-LINE TABLE
+; =============================================================
+WINTBL:
+        .word 0o001600         ; row 0: sq0|sq1|sq2
+        .word 0o000160         ; row 1: sq3|sq4|sq5
+        .word 0o000016         ; row 2: sq6|sq7|sq8
+        .word 0o001110         ; col 0: sq0|sq3|sq6
+        .word 0o000444         ; col 1: sq1|sq4|sq7
+        .word 0o000222         ; col 2: sq2|sq5|sq8
+        .word 0o001042         ; diag0: sq0|sq4|sq8
+        .word 0o000250         ; diag1: sq2|sq4|sq6
+
+WINTBLADDR: .word WINTBL
+
+; =============================================================
+; STRING DATA
+; =============================================================
+BNNSTR: .flexl "TIC TAC TOE\n", -1
+PRMSTR: .flexl "YOUR MOVE (1-9): \n", -1
+HWSTR:  .flexl "YOU WIN\n", -1
+CWSTR:  .flexl "COMPUTER WINS\n", -1
+DWSTR:  .flexl "DRAW.\n", -1
+BDSTR:  .flexl "INVALID - TRY AGAIN\n", -1
+STSTR:  .flexl "SQUARE TAKEN - TRY AGAIN\n", -1
+CMVSTR: .flexl "  COMPUTER PLAYS SQUARE ", -1
+
+PLOSTR: .flexl "Player O"
+
 
 ; 
+;=====================================================================================
+; End of Claude Code for OXO
+;=====================================================================================
+
+; table to convert a cell number into a flexo code
+flexo_num_tbl_ptr:  .word flexo_num_tbl
+flexo_num_tbl:      .flexl "0123456789"
+
+
+
+
+
+; 
+;=====================================================================================
+; On-screen String Print routines
 ;=====================================================================================
 
 ; /* 16-segment character generator, originally in Core Memory Clock

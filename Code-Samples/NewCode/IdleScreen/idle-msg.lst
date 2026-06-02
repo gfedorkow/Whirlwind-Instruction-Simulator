@@ -20,8 +20,8 @@
 
 
                                    .org 0
-@0000:000000                 zero: .word 0                  ; @@ReadBy rl_ld_msgp a0063 a0102 a0650 a0750 a0754 a0777 a1000 a1004 a1005 a1011 a1012 a1022 a1024 a1062 a1066 JumpedToBy init_ret a0763 a1106
-@0001:000001                  one: .word 1                  ; @@ReadBy a0757 a1020 a1032 a1034
+@0000:000000                 zero: .word 0                  ; @@ReadBy rl_ld_msgp a0063 a0102 a0646 a0746 a0752 a0775 a0776 a1002 a1003 a1007 a1010 a1020 a1022 a1060 a1064 JumpedToBy init_ret a0761 a1104
+@0001:000001                  one: .word 1                  ; @@ReadBy a0755 a1016 a1030 a1032
 
 
                                    .org 0o40                ; @@ReadBy a0054
@@ -32,12 +32,12 @@
 @0042:000043           msgtab_ptr: .word msgtab0            ; @@ReadBy a0057
 @0043:000113              msgtab0: .word msg0
 @0044:000170              msgtab1: .word msg1
-@0045:000245              msgtab2: .word msg2
-@0046:000316              msgtab3: .word msg3
-@0047:000362              msgtab4: .word msg4
-@0050:000433              msgtab5: .word msg5
-@0051:000510              msgtab6: .word msg6
-@0052:000554              msgtab7: .word msg7
+@0045:000240              msgtab2: .word msg2
+@0046:000312              msgtab3: .word msg3
+@0047:000360              msgtab4: .word msg4
+@0050:000431              msgtab5: .word msg5
+@0051:000507              msgtab6: .word msg6
+@0052:000553              msgtab7: .word msg7
 
 
                                    ; display a string on the CRT, lengthening it by one character until it's full length, then
@@ -45,26 +45,26 @@
                      refresh_loop:
 @0053:000010                       si FFReset               ; copy preset switches into FF Regs ; Auto-Annotate I/O: unknown i/o device@@JumpedToBy a0041 a0104
 @0054:100002                       ca FFReg02               ; figure out what message to print
-@0055:174630                       md const_7               ; mask to three bits
+@0055:174626                       md const_7               ; mask to three bits
 @0056:040112                       ts msg_num
 @0057:110042                       ad msgtab_ptr            ; this is the address into the message table
 @0060:044061                       td rl_ld_msgp
 @0061:100000           rl_ld_msgp: ca 0                     ; fetch the message pointer from the table @@WrittenBy a0060
-@0062:040654                       ts msgp                  ; store a pointer to the start of the string to print.
+@0062:040652                       ts msgp                  ; store a pointer to the start of the string to print.
 
 @0063:100000                       ca zero                  ; initialize the length of the string to zero
 @0064:040111                       ts msg_strlen
                          msg_loop:
 @0065:100111                       ca msg_strlen            ; @@JumpedToBy a0101
-@0066:040767                       ts ds_arglen
+@0066:040765                       ts ds_arglen
                                    ; start the string near the top left edge of the screen
-@0067:100640                       ca c_msg_x_pos
-@0070:040765                       ts ds_argx
-@0071:100641                       ca c_msg_y_pos
-@0072:115602                       su char_yspacing         ; character origin is the lower-left corner, so make sure it doesn't overflow Y axis
-@0073:040766                       ts ds_argy
-@0074:100654                       ca msgp
-@0075:074740                       sp draw_str              ; this routine prints the string until either a negative character terminator OR the count is exhausted
+@0067:100636                       ca c_msg_x_pos
+@0070:040763                       ts ds_argx
+@0071:100637                       ca c_msg_y_pos
+@0072:115600                       su char_yspacing         ; character origin is the lower-left corner, so make sure it doesn't overflow Y axis
+@0073:040764                       ts ds_argy
+@0074:100652                       ca msgp
+@0075:074736                       sp draw_str              ; this routine prints the string until either a negative character terminator OR the count is exhausted
                                    ;si 0
 
                                    ; on each pass, make the string longer by two, up to the max length
@@ -88,6 +88,7 @@
 @0111:000000           msg_strlen: .word 0                  ; we lengthen the string by one char until it reaches the end and we've counted to msg_maxlen @@WrittenBy a0064 a0076 a0077 a0103 ReadBy a0065 a0076 a0077
 @0112:000000              msg_num: .word 0                  ; this should be an offset into the table of messages to select just one @@WrittenBy a0056
 
+                                   ; when counting characters in messages, remember that the converted string will count shift-up/down as characters
                                    ;msg0:       .flexl "WHIRLWIND\nEMULATOR\nabcdefghijklm\nnopqrstuvwxyz", -1  ; remember that the converted string will count shift-up/down as characters
 
 @0113:000071                 msg0: .flexl "WHIRLWIND\nEMULATOR\nVibrating\n String", -1
@@ -135,7 +136,7 @@
 @0165:000030
 @0166:000064
 @0167:177776
-@0170:000071                 msg1: .flexl "WHIRLWIND\nEMULATOR\nBounce\n w/ Hole", -1; remember that the converted string will count shift-up/down as characters
+@0170:000071                 msg1: .flexl "WHIRLWIND\nEMULATOR\nBounce\n Game", -1
 @0171:000046
 @0172:000050
 @0173:000014
@@ -168,257 +169,255 @@
 @0226:000002
 @0227:000051
 @0230:000010
-@0231:000046
-@0232:000071
-@0233:000015
-@0234:000075
-@0235:000010
-@0236:000071
-@0237:000050
-@0240:000075
-@0241:000060
-@0242:000044
-@0243:000002
-@0244:177776
-@0245:000071                 msg2: .flexl "WHIRLWIND\nEMULATOR\n34-word\n Bounce", -1
+@0231:000071
+@0232:000064
+@0233:000075
+@0234:000006
+@0235:000070
+@0236:000002
+@0237:177776
+@0240:000071                 msg2: .flexl "WHIRLWIND\nEMULATOR\nBouncing\n Ball", -1
+@0241:000046
+@0242:000050
+@0243:000014
+@0244:000024
+@0245:000044
 @0246:000046
-@0247:000050
-@0250:000014
-@0251:000024
-@0252:000044
-@0253:000046
-@0254:000014
-@0255:000030
-@0256:000022
-@0257:000075
-@0260:000051
-@0261:000071
-@0262:000002
-@0263:000070
-@0264:000016
-@0265:000044
-@0266:000006
-@0267:000040
-@0270:000060
-@0271:000024
-@0272:000075
-@0273:000051
-@0274:000007
-@0275:000013
-@0276:000035
-@0277:000046
-@0300:000060
-@0301:000024
-@0302:000022
-@0303:000051
-@0304:000010
-@0305:000071
-@0306:000062
-@0307:000075
-@0310:000060
-@0311:000016
-@0312:000030
-@0313:000034
-@0314:000002
-@0315:177776
-@0316:000071                 msg3: .flexl "WHIRLWIND\nEMULATOR\nBlack\njack", -1
-@0317:000046
-@0320:000050
+@0247:000014
+@0250:000030
+@0251:000022
+@0252:000075
+@0253:000051
+@0254:000071
+@0255:000002
+@0256:000070
+@0257:000016
+@0260:000044
+@0261:000006
+@0262:000040
+@0263:000060
+@0264:000024
+@0265:000075
+@0266:000051
+@0267:000071
+@0270:000062
+@0271:000075
+@0272:000060
+@0273:000016
+@0274:000030
+@0275:000034
+@0276:000014
+@0277:000030
+@0300:000064
+@0301:000051
+@0302:000010
+@0303:000071
+@0304:000062
+@0305:000075
+@0306:000006
+@0307:000044
+@0310:000044
+@0311:177776
+@0312:000071                 msg3: .flexl "WHIRLWIND\nEMULATOR\nBlack\nJack", -1
+@0313:000046
+@0314:000050
+@0315:000014
+@0316:000024
+@0317:000044
+@0320:000046
 @0321:000014
-@0322:000024
-@0323:000044
-@0324:000046
-@0325:000014
-@0326:000030
-@0327:000022
-@0330:000075
-@0331:000051
-@0332:000071
-@0333:000002
-@0334:000070
-@0335:000016
-@0336:000044
-@0337:000006
-@0340:000040
-@0341:000060
-@0342:000024
+@0322:000030
+@0323:000022
+@0324:000075
+@0325:000051
+@0326:000071
+@0327:000002
+@0330:000070
+@0331:000016
+@0332:000044
+@0333:000006
+@0334:000040
+@0335:000060
+@0336:000024
+@0337:000075
+@0340:000051
+@0341:000071
+@0342:000062
 @0343:000075
-@0344:000051
-@0345:000071
-@0346:000062
-@0347:000075
-@0350:000044
-@0351:000006
-@0352:000034
-@0353:000036
-@0354:000051
-@0355:000026
-@0356:000006
-@0357:000034
-@0360:000036
-@0361:177776
-@0362:000071                 msg4: .flexl "WHIRLWIND\nEMULATOR\nTic Tac Toe", -1
-@0363:000046
-@0364:000050
-@0365:000014
-@0366:000024
-@0367:000044
-@0370:000046
-@0371:000014
-@0372:000030
-@0373:000022
-@0374:000075
-@0375:000051
-@0376:000071
-@0377:000002
-@0400:000070
-@0401:000016
-@0402:000044
-@0403:000006
-@0404:000040
-@0405:000060
-@0406:000024
-@0407:000075
-@0410:000051
-@0411:000071
-@0412:000040
-@0413:000075
-@0414:000014
-@0415:000034
-@0416:000010
-@0417:000071
-@0420:000040
-@0421:000075
-@0422:000006
-@0423:000034
-@0424:000010
-@0425:000071
-@0426:000040
-@0427:000075
-@0430:000060
-@0431:000002
-@0432:177776
-@0433:000071                 msg5: .flexl "WHIRLWIND\nEMULATOR\nRocket\nTrajectory", -1
-@0434:000046
-@0435:000050
-@0436:000014
-@0437:000024
-@0440:000044
-@0441:000046
-@0442:000014
-@0443:000030
-@0444:000022
-@0445:000075
-@0446:000051
-@0447:000071
-@0450:000002
-@0451:000070
-@0452:000016
-@0453:000044
-@0454:000006
-@0455:000040
-@0456:000060
-@0457:000024
-@0460:000075
-@0461:000051
-@0462:000071
-@0463:000024
-@0464:000075
-@0465:000060
-@0466:000034
-@0467:000036
+@0344:000044
+@0345:000006
+@0346:000034
+@0347:000036
+@0350:000051
+@0351:000071
+@0352:000026
+@0353:000075
+@0354:000006
+@0355:000034
+@0356:000036
+@0357:177776
+@0360:000071                 msg4: .flexl "WHIRLWIND\nEMULATOR\nTic Tac Toe", -1
+@0361:000046
+@0362:000050
+@0363:000014
+@0364:000024
+@0365:000044
+@0366:000046
+@0367:000014
+@0370:000030
+@0371:000022
+@0372:000075
+@0373:000051
+@0374:000071
+@0375:000002
+@0376:000070
+@0377:000016
+@0400:000044
+@0401:000006
+@0402:000040
+@0403:000060
+@0404:000024
+@0405:000075
+@0406:000051
+@0407:000071
+@0410:000040
+@0411:000075
+@0412:000014
+@0413:000034
+@0414:000010
+@0415:000071
+@0416:000040
+@0417:000075
+@0420:000006
+@0421:000034
+@0422:000010
+@0423:000071
+@0424:000040
+@0425:000075
+@0426:000060
+@0427:000002
+@0430:177776
+@0431:000071                 msg5: .flexl "WHIRLWIND\nEMULATOR\nMissile\nTrajectory", -1
+@0432:000046
+@0433:000050
+@0434:000014
+@0435:000024
+@0436:000044
+@0437:000046
+@0440:000014
+@0441:000030
+@0442:000022
+@0443:000075
+@0444:000051
+@0445:000071
+@0446:000002
+@0447:000070
+@0450:000016
+@0451:000044
+@0452:000006
+@0453:000040
+@0454:000060
+@0455:000024
+@0456:000075
+@0457:000051
+@0460:000071
+@0461:000070
+@0462:000075
+@0463:000014
+@0464:000012
+@0465:000012
+@0466:000014
+@0467:000044
 @0470:000002
-@0471:000040
-@0472:000051
-@0473:000071
-@0474:000040
-@0475:000075
-@0476:000024
-@0477:000006
-@0500:000026
-@0501:000002
-@0502:000034
-@0503:000040
-@0504:000060
-@0505:000024
-@0506:000052
-@0507:177776
-@0510:000071                 msg6: .flexl "WHIRLWIND\nEMULATOR\nMad Game", -1
-@0511:000046
-@0512:000050
-@0513:000014
-@0514:000024
-@0515:000044
-@0516:000046
-@0517:000014
-@0520:000030
-@0521:000022
-@0522:000075
-@0523:000051
-@0524:000071
-@0525:000002
-@0526:000070
-@0527:000016
-@0530:000044
-@0531:000006
-@0532:000040
-@0533:000060
-@0534:000024
-@0535:000075
-@0536:000051
-@0537:000071
-@0540:000070
-@0541:000075
-@0542:000006
-@0543:000022
-@0544:000010
-@0545:000071
-@0546:000064
-@0547:000075
-@0550:000006
-@0551:000070
-@0552:000002
-@0553:177776
-@0554:000071                 msg7: .flexl "WHIRLWIND\nEMULATOR\nunused\nprogram 7", -1
-@0555:000046
-@0556:000050
-@0557:000014
-@0560:000024
-@0561:000044
-@0562:000046
-@0563:000014
-@0564:000030
-@0565:000022
-@0566:000075
-@0567:000051
-@0570:000071
-@0571:000002
-@0572:000070
-@0573:000016
-@0574:000044
-@0575:000006
-@0576:000040
-@0577:000060
-@0600:000024
-@0601:000075
-@0602:000051
-@0603:000016
-@0604:000030
-@0605:000016
-@0606:000012
-@0607:000002
-@0610:000022
-@0611:000051
-@0612:000054
-@0613:000024
-@0614:000060
-@0615:000064
-@0616:000024
-@0617:000006
-@0620:000070
-@0621:000010
-@0622:000027
-@0623:177776
+@0471:000051
+@0472:000071
+@0473:000040
+@0474:000075
+@0475:000024
+@0476:000006
+@0477:000026
+@0500:000002
+@0501:000034
+@0502:000040
+@0503:000060
+@0504:000024
+@0505:000052
+@0506:177776
+@0507:000071                 msg6: .flexl "WHIRLWIND\nEMULATOR\nMad Game", -1
+@0510:000046
+@0511:000050
+@0512:000014
+@0513:000024
+@0514:000044
+@0515:000046
+@0516:000014
+@0517:000030
+@0520:000022
+@0521:000075
+@0522:000051
+@0523:000071
+@0524:000002
+@0525:000070
+@0526:000016
+@0527:000044
+@0530:000006
+@0531:000040
+@0532:000060
+@0533:000024
+@0534:000075
+@0535:000051
+@0536:000071
+@0537:000070
+@0540:000075
+@0541:000006
+@0542:000022
+@0543:000010
+@0544:000071
+@0545:000064
+@0546:000075
+@0547:000006
+@0550:000070
+@0551:000002
+@0552:177776
+@0553:000071                 msg7: .flexl "WHIRLWIND\nEMULATOR\nAir Defense", -1
+@0554:000046
+@0555:000050
+@0556:000014
+@0557:000024
+@0560:000044
+@0561:000046
+@0562:000014
+@0563:000030
+@0564:000022
+@0565:000075
+@0566:000051
+@0567:000071
+@0570:000002
+@0571:000070
+@0572:000016
+@0573:000044
+@0574:000006
+@0575:000040
+@0576:000060
+@0577:000024
+@0600:000075
+@0601:000051
+@0602:000071
+@0603:000006
+@0604:000075
+@0605:000014
+@0606:000024
+@0607:000010
+@0610:000071
+@0611:000022
+@0612:000075
+@0613:000002
+@0614:000032
+@0615:000002
+@0616:000030
+@0617:000012
+@0620:000002
+@0621:177776
 
 
 
@@ -426,38 +425,38 @@
 
 
                                    ; Constants
-@0624:000002              const_2: .word 2
-@0625:000003              const_3: .word 3                  ; @@ReadBy a1044 a1047 a1052
-@0626:000004              const_4: .word 4
-@0627:000006              const_6: .word 6
-@0630:000007              const_7: .word 7                  ; @@ReadBy a0055
-@0631:000010              const_8: .word 8
-@0632:000011              const_9: .word 9
-@0633:000012             const_10: .word 10
-@0634:000013             const_11: .word 11                 ; loop counter for 12 iterations
-@0635:000014             const_12: .word 12
+@0622:000002              const_2: .word 2
+@0623:000003              const_3: .word 3                  ; @@ReadBy a1042 a1045 a1050
+@0624:000004              const_4: .word 4
+@0625:000006              const_6: .word 6
+@0626:000007              const_7: .word 7                  ; @@ReadBy a0055
+@0627:000010              const_8: .word 8
+@0630:000011              const_9: .word 9
+@0631:000012             const_10: .word 10
+@0632:000013             const_11: .word 11                 ; loop counter for 12 iterations
+@0633:000014             const_12: .word 12
 
                                    ; constants
-@0636:000017                 c_15: .word 15                 ; @@ReadBy a1026
-@0637:000040                 c_32: .word 32
-@0640:135477          c_msg_x_pos: .word -550 * 32          ; coord of left edge of message @@ReadBy a0067 a1100
-@0641:025700          c_msg_y_pos: .word 350 * 32           ; coord of top edge of message @@ReadBy a0071
+@0634:000017                 c_15: .word 15                 ; @@ReadBy a1024
+@0635:000040                 c_32: .word 32
+@0636:135477          c_msg_x_pos: .word -550 * 32          ; coord of left edge of message @@ReadBy a0067 a1076
+@0637:025700          c_msg_y_pos: .word 350 * 32           ; coord of top edge of message @@ReadBy a0071
 
                                    ; these two constants give the delta values to draw a "maximum short vector"
-@0642:076000       horiz_line_seg: .word 0o174 * 0o400      ; +32 in the top half of the word
-@0643:000174        vert_line_seg: .word 0o174              ; +32 in the bottom half of the word
-@0644:076174    diag_up_right_seg: .word 0o174 * 0o400 + 0o174
-@0645:100200     diag_dn_left_seg: .word 0o200 * 0o400 + 0o200
-@0646:076200    diag_dn_right_seg: .word 0o174 * 0o400 + 0o200
-@0647:100174     diag_up_left_seg: .word 0o200 * 0o400 + 0o174
+@0640:076000       horiz_line_seg: .word 0o174 * 0o400      ; +32 in the top half of the word
+@0641:000174        vert_line_seg: .word 0o174              ; +32 in the bottom half of the word
+@0642:076174    diag_up_right_seg: .word 0o174 * 0o400 + 0o174
+@0643:100200     diag_dn_left_seg: .word 0o200 * 0o400 + 0o200
+@0644:076200    diag_dn_right_seg: .word 0o174 * 0o400 + 0o200
+@0645:100174     diag_up_left_seg: .word 0o200 * 0o400 + 0o174
 
 
                                    ; ---------------------------------------
 
                        panic_stop:
-@0650:100000                       ca 0
+@0646:100000                       ca 0
                                    .print "panic stop"
-@0651:000000                       si 0
+@0647:000000                       si 0
 
 
 
@@ -472,61 +471,61 @@
                                    ;  */
                                    ;
 
-@0652:000060            ut_maxlen: .word 0o60
-@0653:000000            ut_strlen: .word 0
+@0650:000060            ut_maxlen: .word 0o60
+@0651:000000            ut_strlen: .word 0
 
-@0654:000655                 msgp: .word unit_msg           ; @@WrittenBy a0062 ReadBy a0074
-@0655:000071             unit_msg: .flexl "WHIRLWIND\nEMULATOR\nabcdefghijklmnopqrstuvwxyz", -1; remember that the converted string will count shift-up/down as characters
-@0656:000046
-@0657:000050
-@0660:000014
-@0661:000024
-@0662:000044
-@0663:000046
-@0664:000014
-@0665:000030
-@0666:000022
-@0667:000075
-@0670:000051
-@0671:000071
-@0672:000002
-@0673:000070
-@0674:000016
-@0675:000044
-@0676:000006
-@0677:000040
-@0700:000060
-@0701:000024
-@0702:000075
-@0703:000051
-@0704:000006
-@0705:000062
-@0706:000034
-@0707:000022
-@0710:000002
-@0711:000032
-@0712:000064
-@0713:000050
-@0714:000014
-@0715:000026
-@0716:000036
-@0717:000044
-@0720:000070
-@0721:000030
-@0722:000060
-@0723:000054
-@0724:000056
-@0725:000024
-@0726:000012
-@0727:000040
-@0730:000016
-@0731:000074
-@0732:000046
-@0733:000072
-@0734:000052
-@0735:000042
-@0736:177776
-@0737:000000                       .word 0
+@0652:000653                 msgp: .word unit_msg           ; @@WrittenBy a0062 ReadBy a0074
+@0653:000071             unit_msg: .flexl "WHIRLWIND\nEMULATOR\nabcdefghijklmnopqrstuvwxyz", -1; remember that the converted string will count shift-up/down as characters
+@0654:000046
+@0655:000050
+@0656:000014
+@0657:000024
+@0660:000044
+@0661:000046
+@0662:000014
+@0663:000030
+@0664:000022
+@0665:000075
+@0666:000051
+@0667:000071
+@0670:000002
+@0671:000070
+@0672:000016
+@0673:000044
+@0674:000006
+@0675:000040
+@0676:000060
+@0677:000024
+@0700:000075
+@0701:000051
+@0702:000006
+@0703:000062
+@0704:000034
+@0705:000022
+@0706:000002
+@0707:000032
+@0710:000064
+@0711:000050
+@0712:000014
+@0713:000026
+@0714:000036
+@0715:000044
+@0716:000070
+@0717:000030
+@0720:000060
+@0721:000054
+@0722:000056
+@0723:000024
+@0724:000012
+@0725:000040
+@0726:000016
+@0727:000074
+@0730:000046
+@0731:000072
+@0732:000052
+@0733:000042
+@0734:177776
+@0735:000000                       .word 0
 
 
 
@@ -537,101 +536,101 @@
                                    ; ds_arglen gives a maximum character count.  (i.e., the string terminates either when
                                    ;       the count is exhausted or a negative character is encountered)
                          draw_str:
-@0740:050763                       ta ds_ret                ; @@JumpedToBy a0075
-@0741:044764                       td ds_lcl_charp          ; save the character pointer passed in the ACC
+@0736:050761                       ta ds_ret                ; @@JumpedToBy a0075
+@0737:044762                       td ds_lcl_charp          ; save the character pointer passed in the ACC
                           ds_loop:
-@0742:100765                       ca ds_argx               ; @@JumpedToBy a0762
-@0743:041107                       ts d16c_argx
-@0744:100766                       ca ds_argy
-@0745:041110                       ts d16c_argy
-@0746:100764                       ca ds_lcl_charp          ; walk the string from start to finish
-@0747:044750                       td ds_get_char
+@0740:100763                       ca ds_argx               ; @@JumpedToBy a0760
+@0741:041105                       ts d16c_argx
+@0742:100764                       ca ds_argy
+@0743:041106                       ts d16c_argy
+@0744:100762                       ca ds_lcl_charp          ; walk the string from start to finish
+@0745:044746                       td ds_get_char
                       ds_get_char:
-@0750:100000                       ca 0                     ; fetch the next character in the string @@WrittenBy a0747
-@0751:074774                       sp draw_16seg_char       ; actually draw the character!
+@0746:100000                       ca 0                     ; fetch the next character in the string @@WrittenBy a0745
+@0747:074772                       sp draw_16seg_char       ; actually draw the character!
 
-@0752:130764                       ao ds_lcl_charp          ; prepare for next char in loop
-@0753:044754                       td ds_test_str_end
+@0750:130762                       ao ds_lcl_charp          ; prepare for next char in loop
+@0751:044752                       td ds_test_str_end
                   ds_test_str_end:                          ; bail out if the next char is negative, or if the loop count is exhausted
-@0754:100000                       ca 0                     ; @@WrittenBy a0753
-@0755:070763                       cp ds_ret                ; test for a negative number as the marker for the string end; branch out if done
-@0756:100767                       ca ds_arglen             ; ; decrement the length count
-@0757:114001                       su one
-@0760:040767                       ts ds_arglen
-@0761:070763                       cp ds_ret
+@0752:100000                       ca 0                     ; @@WrittenBy a0751
+@0753:070761                       cp ds_ret                ; test for a negative number as the marker for the string end; branch out if done
+@0754:100765                       ca ds_arglen             ; ; decrement the length count
+@0755:114001                       su one
+@0756:040765                       ts ds_arglen
+@0757:070761                       cp ds_ret
 
                                    ; I moved the x and y auto-increment into the character-drawing routine draw_16seg_char
-@0762:074742                       sp ds_loop
+@0760:074740                       sp ds_loop
 
                            ds_ret:
-@0763:074000                       sp 0                     ; @@WrittenBy a0740 JumpedToBy a0755 a0761
+@0761:074000                       sp 0                     ; @@WrittenBy a0736 JumpedToBy a0753 a0757
 
-@0764:000000         ds_lcl_charp: .word 0                  ; pointer to the next character to display @@WrittenBy a0741 a0752 ReadBy a0746 a0752
-@0765:000000              ds_argx: .word 0                  ; @@WrittenBy a0070 a1060 a1101 ReadBy a0742 a1056
-@0766:000000              ds_argy: .word 0                  ; @@WrittenBy a0073 a1104 ReadBy a0744 a1102
-@0767:000012            ds_arglen: .word 10                 ; @@WrittenBy a0066 a0760 ReadBy a0756
+@0762:000000         ds_lcl_charp: .word 0                  ; pointer to the next character to display @@WrittenBy a0737 a0750 ReadBy a0744 a0750
+@0763:000000              ds_argx: .word 0                  ; @@WrittenBy a0070 a1056 a1077 ReadBy a0740 a1054
+@0764:000000              ds_argy: .word 0                  ; @@WrittenBy a0073 a1102 ReadBy a0742 a1100
+@0765:000012            ds_arglen: .word 10                 ; @@WrittenBy a0066 a0756 ReadBy a0754
 
                                    ; ---------------------------
 
 
-@0770:000051            c_newline: .word 0o51               ; character value for Carriage Return @@ReadBy a1010
-@0771:000071              c_upper: .word 0o71               ; character value for Shift Upper @@ReadBy a0776
-@0772:000075              c_lower: .word 0o75               ; character value for Shift Lower @@ReadBy a1003
+@0766:000051            c_newline: .word 0o51               ; character value for Carriage Return @@ReadBy a1006
+@0767:000071              c_upper: .word 0o71               ; character value for Shift Upper @@ReadBy a0774
+@0770:000075              c_lower: .word 0o75               ; character value for Shift Lower @@ReadBy a1001
 
                                    ; Draw a Flexo character passed in to this routine in the ACC
                                    ; First, find the segment map for a given character.  Input is a Flexo-coded character.
                                    ; The routine returns a 16-bit int where each bit represents one stroke in the character.  If the
                                    ; bit is one, draw the stroke; if not, don't draw.
                                    ; Character position is given by the args d16c_argx, d16c_argy.
-@0773:000000        lcl_ds16_char: .word 0                  ; local storage for the character to be displayed @@WrittenBy a0775 ReadBy a1002 a1007 a1014
+@0771:000000        lcl_ds16_char: .word 0                  ; local storage for the character to be displayed @@WrittenBy a0773 ReadBy a1000 a1005 a1012
                   draw_16seg_char:
-@0774:051106                       ta d16c_ret              ; @@JumpedToBy a0751
-@0775:040773                       ts lcl_ds16_char         ; save the incoming character to be printed
+@0772:051104                       ta d16c_ret              ; @@JumpedToBy a0747
+@0773:040771                       ts lcl_ds16_char         ; save the incoming character to be printed
 
-@0776:114771                       su c_upper               ; test to see if we've got a "Shift Upper" character
-@0777:134000                       dm 0
-@1000:134000                       dm 0                     ; negative zero if acc == c_upper
-@1001:071072                       cp ds16_shift_to_upper   ; adjust the current Case, then exit
+@0774:114767                       su c_upper               ; test to see if we've got a "Shift Upper" character
+@0775:134000                       dm 0
+@0776:134000                       dm 0                     ; negative zero if acc == c_upper
+@0777:071070                       cp ds16_shift_to_upper   ; adjust the current Case, then exit
 
-@1002:100773                       ca lcl_ds16_char
-@1003:114772                       su c_lower
-@1004:134000                       dm 0
-@1005:134000                       dm 0                     ; negative zero if acc == c_lower
-@1006:071075                       cp ds16_shift_to_lower   ; adjust the current Case, then exit
+@1000:100771                       ca lcl_ds16_char
+@1001:114770                       su c_lower
+@1002:134000                       dm 0
+@1003:134000                       dm 0                     ; negative zero if acc == c_lower
+@1004:071073                       cp ds16_shift_to_lower   ; adjust the current Case, then exit
 
-@1007:100773                       ca lcl_ds16_char
-@1010:114770                       su c_newline
-@1011:134000                       dm 0
-@1012:134000                       dm 0                     ; negative zero if acc == c_newline
-@1013:071100                       cp ds16_newline          ; execute a newline, then exit
+@1005:100771                       ca lcl_ds16_char
+@1006:114766                       su c_newline
+@1007:134000                       dm 0
+@1010:134000                       dm 0                     ; negative zero if acc == c_newline
+@1011:071076                       cp ds16_newline          ; execute a newline, then exit
 
                                    ; if it's not a shift character, just keep going and print with the current case
-@1014:100773                       ca lcl_ds16_char         ; re-fetch the input character
+@1012:100771                       ca lcl_ds16_char         ; re-fetch the input character
                       ds16_offset:
-@1015:155001                       slh 1                    ; multiply by two; two words per table entry
-@1016:111114                       ad SixteenSegmentFlexop  ; add the table start addr to the offset in ACC
+@1013:155001                       slh 1                    ; multiply by two; two words per table entry
+@1014:111112                       ad SixteenSegmentFlexop  ; add the table start addr to the offset in ACC
                                    ;        .print "draw_16seg_char:  char=%ao. d16c_argx=%o, d16c_argy=%o", d16c_argx, d16c_argy
-@1017:045022                       td d16c_rd
-@1020:110001                       ad one
-@1021:045024                       td d16c_drd
+@1015:045020                       td d16c_rd
+@1016:110001                       ad one
+@1017:045022                       td d16c_drd
                           d16c_rd:
-@1022:100000                       ca 0                     ; fetch the bit map @@WrittenBy a1017
-@1023:041111                       ts d16c_lcl_seg_map
+@1020:100000                       ca 0                     ; fetch the bit map @@WrittenBy a1015
+@1021:041107                       ts d16c_lcl_seg_map
                          d16c_drd:
-@1024:100000                       ca 0                     ; fetch the bit map @@WrittenBy a1021
-@1025:041112                       ts d16c_lcl_descender
+@1022:100000                       ca 0                     ; fetch the bit map @@WrittenBy a1017
+@1023:041110                       ts d16c_lcl_descender
 
                                    ; draw the sixteen segments, starting with the most significant bit
-@1026:104636                       cs c_15                  ; prep for 16 times around the loop
-@1027:041113                       ts d16c_lcl_loop_cnt
-@1030:101600                       ca seg_tab_endp          ; walk the segment table back to front
-@1031:045066                       td d16c_read_seg_tabx    ; first table entry
+@1024:104634                       cs c_15                  ; prep for 16 times around the loop
+@1025:041111                       ts d16c_lcl_loop_cnt
+@1026:101576                       ca seg_tab_endp          ; walk the segment table back to front
+@1027:045064                       td d16c_read_seg_tabx    ; first table entry
                                    ;        td tmp_tabx
-@1032:110001                       ad one
-@1033:045062                       td d16c_read_seg_taby    ; second table entry
+@1030:110001                       ad one
+@1031:045060                       td d16c_read_seg_taby    ; second table entry
                                    ;        td tmp_taby
-@1034:110001                       ad one
-@1035:045070                       td d16c_read_seg_tabdxy  ; third table entry
+@1032:110001                       ad one
+@1033:045066                       td d16c_read_seg_tabdxy  ; third table entry
 
                                    ; I've commented out a bit of debug code here to draw dots at each of the junction points in the
                                    ; 16-segment figure.  Use this to verify that the line segments are the right length...
@@ -645,33 +644,33 @@
                                    ;        ca 0
                                    ;        rc 0
                                    ; end of debug hack
-@1036:101111                       ca d16c_lcl_seg_map      ; @@JumpedToBy a1055
-@1037:071062                       cp d16c_draw_seg         ; branch if most significant bit is on
+@1034:101107                       ca d16c_lcl_seg_map      ; @@JumpedToBy a1053
+@1035:071060                       cp d16c_draw_seg         ; branch if most significant bit is on
 
                d16s_loop_continue:
-@1040:101111                       ca d16c_lcl_seg_map      ; @@JumpedToBy a1071
-@1041:170001                       clc 1                    ; shift AC left by one bit
-@1042:041111                       ts d16c_lcl_seg_map
-@1043:101066                       ca d16c_read_seg_tabx
-@1044:114625                       su const_3
-@1045:045066                       td d16c_read_seg_tabx
+@1036:101107                       ca d16c_lcl_seg_map      ; @@JumpedToBy a1067
+@1037:170001                       clc 1                    ; shift AC left by one bit
+@1040:041107                       ts d16c_lcl_seg_map
+@1041:101064                       ca d16c_read_seg_tabx
+@1042:114623                       su const_3
+@1043:045064                       td d16c_read_seg_tabx
                                    ;        td tmp_tabx
-@1046:101062                       ca d16c_read_seg_taby
-@1047:114625                       su const_3
-@1050:045062                       td d16c_read_seg_taby
+@1044:101060                       ca d16c_read_seg_taby
+@1045:114623                       su const_3
+@1046:045060                       td d16c_read_seg_taby
                                    ;        td tmp_taby
-@1051:101070                       ca d16c_read_seg_tabdxy
-@1052:114625                       su const_3
-@1053:045070                       td d16c_read_seg_tabdxy
-@1054:131113                       ao d16c_lcl_loop_cnt
-@1055:071036                       cp d16s_loop
+@1047:101066                       ca d16c_read_seg_tabdxy
+@1050:114623                       su const_3
+@1051:045066                       td d16c_read_seg_tabdxy
+@1052:131111                       ao d16c_lcl_loop_cnt
+@1053:071034                       cp d16s_loop
 
                                    ; fall through here when the count is exhausted
                                    ; advance x position to the next character
-@1056:100765                       ca ds_argx
-@1057:111601                       ad char_xspacing
-@1060:040765                       ts ds_argx
-@1061:075106                       sp d16c_ret              ; bail out when count exhausted
+@1054:100763                       ca ds_argx
+@1055:111577                       ad char_xspacing
+@1056:040763                       ts ds_argx
+@1057:075104                       sp d16c_ret              ; bail out when count exhausted
 
                                    ; on entry to this code block, the three entries in the segment table should give relative positions:
                                    ;   _tab1 = X pos'n
@@ -680,52 +679,52 @@
                     d16c_draw_seg:                          ; branch here if we're doing a segment, then return to the loop
                                    ; the SI uses the AC to set Y coord
                d16c_read_seg_taby:
-@1062:100000                       ca 0                     ; overwritten by the table y value @@WrittenBy a1033 a1050 ReadBy a1046 JumpedToBy a1037
-@1063:111112                       ad d16c_lcl_descender    ; if the character has a descender, reduce the y value
-@1064:111110                       ad d16c_argy             ; add the current screen y value
-@1065:001677                       si scope_vector          ; initialize vector gen with the y-coord in ACC ; Auto-Annotate I/O: Display Vectors
+@1060:100000                       ca 0                     ; overwritten by the table y value @@WrittenBy a1031 a1046 ReadBy a1044 JumpedToBy a1035
+@1061:111110                       ad d16c_lcl_descender    ; if the character has a descender, reduce the y value
+@1062:111106                       ad d16c_argy             ; add the current screen y value
+@1063:001677                       si scope_vector          ; initialize vector gen with the y-coord in ACC ; Auto-Annotate I/O: Display Vectors
 
                                    ; the RC uses AC to set X coord and mem address for the vector length
                d16c_read_seg_tabx:
-@1066:100000                       ca 0                     ; @@WrittenBy a1031 a1045 ReadBy a1043
-@1067:111107                       ad d16c_argx
+@1064:100000                       ca 0                     ; @@WrittenBy a1027 a1043 ReadBy a1041
+@1065:111105                       ad d16c_argx
              d16c_read_seg_tabdxy:
-@1070:024000                       rc 0                     ; @@WrittenBy a1035 a1053 ReadBy a1051
-@1071:075040                       sp d16s_loop_continue
+@1066:024000                       rc 0                     ; @@WrittenBy a1033 a1051 ReadBy a1047
+@1067:075036                       sp d16s_loop_continue
 
               ds16_shift_to_upper:
-@1072:101115                       ca SixteenSegmentUpperp  ; @@JumpedToBy a1001
-@1073:041114                       ts SixteenSegmentFlexop  ; shift pointer to Upper Case table & exit
-@1074:075106                       sp d16c_ret
+@1070:101113                       ca SixteenSegmentUpperp  ; @@JumpedToBy a0777
+@1071:041112                       ts SixteenSegmentFlexop  ; shift pointer to Upper Case table & exit
+@1072:075104                       sp d16c_ret
 
               ds16_shift_to_lower:
-@1075:101116                       ca SixteenSegmentLowerp  ; @@JumpedToBy a1006
-@1076:041114                       ts SixteenSegmentFlexop  ; shift pointer to Lower Case table & exit
-@1077:075106                       sp d16c_ret
+@1073:101114                       ca SixteenSegmentLowerp  ; @@JumpedToBy a1004
+@1074:041112                       ts SixteenSegmentFlexop  ; shift pointer to Lower Case table & exit
+@1075:075104                       sp d16c_ret
 
                      ds16_newline:
-@1100:100640                       ca c_msg_x_pos           ; @@JumpedToBy a1013
-@1101:040765                       ts ds_argx
-@1102:100766                       ca ds_argy
-@1103:115602                       su char_yspacing
-@1104:040766                       ts ds_argy
+@1076:100636                       ca c_msg_x_pos           ; @@JumpedToBy a1011
+@1077:040763                       ts ds_argx
+@1100:100764                       ca ds_argy
+@1101:115600                       su char_yspacing
+@1102:040764                       ts ds_argy
 
-@1105:075106                       sp d16c_ret
+@1103:075104                       sp d16c_ret
 
 
                          d16c_ret:                          ;; Return from draw_16seg_char
-@1106:074000                       sp 0                     ; @@WrittenBy a0774 JumpedToBy a1061 a1074 a1077 a1105
+@1104:074000                       sp 0                     ; @@WrittenBy a0772 JumpedToBy a1057 a1072 a1075 a1103
 
                         d16c_argx:
-@1107:000000                       .word 0                  ; @@WrittenBy a0743 ReadBy a1067
+@1105:000000                       .word 0                  ; @@WrittenBy a0741 ReadBy a1065
                         d16c_argy:
-@1110:000000                       .word 0                  ; @@WrittenBy a0745 ReadBy a1064
+@1106:000000                       .word 0                  ; @@WrittenBy a0743 ReadBy a1062
                  d16c_lcl_seg_map:
-@1111:000000                       .word 0                  ; @@WrittenBy a1023 a1042 ReadBy a1036 a1040
+@1107:000000                       .word 0                  ; @@WrittenBy a1021 a1040 ReadBy a1034 a1036
                d16c_lcl_descender:
-@1112:000000                       .word 0                  ; @@WrittenBy a1025 ReadBy a1063
+@1110:000000                       .word 0                  ; @@WrittenBy a1023 ReadBy a1061
                 d16c_lcl_loop_cnt:
-@1113:000000                       .word 0                  ; @@WrittenBy a1027 a1054 ReadBy a1054
+@1111:000000                       .word 0                  ; @@WrittenBy a1025 a1052 ReadBy a1052
                                    ;
 
 
@@ -736,280 +735,280 @@
                                    ; Apr 19, 2026 - I modified the table to add a second word per character to give an extra y-offset to
                                    ; each character, to accommodate lower case descenders.
              SixteenSegmentFlexop:
-@1114:001317                       .word flexo_lcase        ; flexowriter defaults to lower case @@WrittenBy a1073 a1076 ReadBy a1016
+@1112:001315                       .word flexo_lcase        ; flexowriter defaults to lower case @@WrittenBy a1071 a1074 ReadBy a1014
                                    ;DescenderFlexop:
                                    ;            .word descender_lcase       ; flexowriter defaults to lower case
              SixteenSegmentUpperp:
-@1115:001117                       .word flexo_ucase        ; @@ReadBy a1072
+@1113:001115                       .word flexo_ucase        ; @@ReadBy a1070
                                    ;DescenderUpperp:
                                    ;            .word descender_ucase
              SixteenSegmentLowerp:
-@1116:001317                       .word flexo_lcase        ; @@ReadBy a1075
+@1114:001315                       .word flexo_lcase        ; @@ReadBy a1073
                                    ;DescenderLowerp:
                                    ;            .word descender_lcase
 
                       flexo_ucase:
+@1115:125074                       .word 0o125074           ; /* # */
+@1116:000000                       .word 0
 @1117:125074                       .word 0o125074           ; /* # */
 @1120:000000                       .word 0
-@1121:125074                       .word 0o125074           ; /* # */
+@1121:100363                       .word 0o100363           ; /* E */
 @1122:000000                       .word 0
-@1123:100363                       .word 0o100363           ; /* E */
+@1123:104377                       .word 0o104377           ; /* 8 */
 @1124:000000                       .word 0
-@1125:104377                       .word 0o104377           ; /* 8 */
+@1125:125074                       .word 0o125074           ; /* # */
 @1126:000000                       .word 0
-@1127:125074                       .word 0o125074           ; /* # */
+@1127:000060                       .word 0o000060           ; /* _ */
 @1130:000000                       .word 0
-@1131:000060                       .word 0o000060           ; /* _ */
+@1131:104317                       .word 0o104317           ; /* A */
 @1132:000000                       .word 0
-@1133:104317                       .word 0o104317           ; /* A */
+@1133:004077                       .word 0o004077           ; /* 3 */
 @1134:000000                       .word 0
-@1135:004077                       .word 0o004077           ; /* 3 */
+@1135:000000                       .word 0o000000           ; /* (space) */
 @1136:000000                       .word 0
-@1137:000000                       .word 0o000000           ; /* (space) */
+@1137:021000                       .word 0o021000           ; /* : */
 @1140:000000                       .word 0
-@1141:021000                       .word 0o021000           ; /* : */
+@1141:104273                       .word 0o104273           ; /* S */
 @1142:000000                       .word 0
-@1143:104273                       .word 0o104273           ; /* S */
+@1143:104214                       .word 0o104214           ; /* 4 */
 @1144:000000                       .word 0
-@1145:104214                       .word 0o104214           ; /* 4 */
+@1145:021063                       .word 0o021063           ; /* I */
 @1146:000000                       .word 0
-@1147:021063                       .word 0o021063           ; /* I */
+@1147:042000                       .word 0o042000           ; /* / */
 @1150:000000                       .word 0
-@1151:042000                       .word 0o042000           ; /* / */
+@1151:000374                       .word 0o000374           ; /* U */
 @1152:000000                       .word 0
-@1153:000374                       .word 0o000374           ; /* U */
+@1153:104167                       .word 0o104167           ; /* 2 */
 @1154:000000                       .word 0
-@1155:104167                       .word 0o104167           ; /* 2 */
+@1155:177777                       .word 0o177777           ; /* (del) */
 @1156:000000                       .word 0
-@1157:177777                       .word 0o177777           ; /* (del) */
+@1157:040400                       .word 0o040400           ; /* ) */
 @1160:000000                       .word 0
-@1161:040400                       .word 0o040400           ; /* ) */
+@1161:021077                       .word 0o021077           ; /* D */
 @1162:000000                       .word 0
-@1163:021077                       .word 0o021077           ; /* D */
+@1163:110263                       .word 0o110263           ; /* 5 */
 @1164:000000                       .word 0
-@1165:110263                       .word 0o110263           ; /* 5 */
+@1165:114307                       .word 0o114307           ; /* R */
 @1166:000000                       .word 0
-@1167:114307                       .word 0o114307           ; /* R */
+@1167:002014                       .word 0o002014           ; /* 1 */
 @1170:000000                       .word 0
-@1171:002014                       .word 0o002014           ; /* 1 */
+@1171:000174                       .word 0o000174           ; /* J */
 @1172:000000                       .word 0
-@1173:000174                       .word 0o000174           ; /* J */
+@1173:000017                       .word 0o000017           ; /* 7 */
 @1174:000000                       .word 0
-@1175:000017                       .word 0o000017           ; /* 7 */
+@1175:010714                       .word 0o010714           ; /* N */
 @1176:000000                       .word 0
-@1177:010714                       .word 0o010714           ; /* N */
+@1177:012000                       .word 0o012000           ; /* ( */
 @1200:000000                       .word 0
-@1201:012000                       .word 0o012000           ; /* ( */
+@1201:100303                       .word 0o100303           ; /* F */
 @1202:000000                       .word 0
-@1203:100303                       .word 0o100303           ; /* F */
+@1203:104373                       .word 0o104373           ; /* 6 */
 @1204:000000                       .word 0
-@1205:104373                       .word 0o104373           ; /* 6 */
+@1205:000363                       .word 0o000363           ; /* C */
 @1206:000000                       .word 0
-@1207:000363                       .word 0o000363           ; /* C */
+@1207:104000                       .word 0o104000           ; /* - */
 @1210:000000                       .word 0
-@1211:104000                       .word 0o104000           ; /* - */
+@1211:112300                       .word 0o112300           ; /* K */
 @1212:000000                       .word 0
-@1213:112300                       .word 0o112300           ; /* K */
+@1213:125074                       .word 0o125074           ; /* # */
 @1214:000000                       .word 0
-@1215:125074                       .word 0o125074           ; /* # */
+@1215:021003                       .word 0o021003           ; /* T */
 @1216:000000                       .word 0
-@1217:021003                       .word 0o021003           ; /* T */
+@1217:125074                       .word 0o125074           ; /* # */
 @1220:000000                       .word 0
-@1221:125074                       .word 0o125074           ; /* # */
+@1221:042063                       .word 0o042063           ; /* Z */
 @1222:000000                       .word 0
-@1223:042063                       .word 0o042063           ; /* Z */
+@1223:177777                       .word 0o177777           ; /* (del) */
 @1224:000000                       .word 0
-@1225:177777                       .word 0o177777           ; /* (del) */
+@1225:000360                       .word 0o000360           ; /* L */
 @1226:000000                       .word 0
-@1227:000360                       .word 0o000360           ; /* L */
+@1227:000000                       .word 0o000000           ; /* (space) */
 @1230:000000                       .word 0
-@1231:000000                       .word 0o000000           ; /* (space) */
+@1231:050314                       .word 0o050314           ; /* W */
 @1232:000000                       .word 0
-@1233:050314                       .word 0o050314           ; /* W */
+@1233:125074                       .word 0o125074           ; /* # */
 @1234:000000                       .word 0
-@1235:125074                       .word 0o125074           ; /* # */
+@1235:104314                       .word 0o104314           ; /* H */
 @1236:000000                       .word 0
-@1237:104314                       .word 0o104314           ; /* H */
+@1237:000000                       .word 0o000000           ; /* (space) */
 @1240:000000                       .word 0
-@1241:000000                       .word 0o000000           ; /* (space) */
+@1241:104274                       .word 0o104274           ; /* Y */
 @1242:000000                       .word 0
-@1243:104274                       .word 0o104274           ; /* Y */
+@1243:125074                       .word 0o125074           ; /* # */
 @1244:000000                       .word 0
-@1245:125074                       .word 0o125074           ; /* # */
+@1245:104307                       .word 0o104307           ; /* P */
 @1246:000000                       .word 0
-@1247:104307                       .word 0o104307           ; /* P */
+@1247:125074                       .word 0o125074           ; /* # */
 @1250:000000                       .word 0
-@1251:125074                       .word 0o125074           ; /* # */
+@1251:010377                       .word 0o010377           ; /* Q */
 @1252:000000                       .word 0
-@1253:010377                       .word 0o010377           ; /* Q */
+@1253:125074                       .word 0o125074           ; /* # */
 @1254:000000                       .word 0
-@1255:125074                       .word 0o125074           ; /* # */
+@1255:000377                       .word 0o000377           ; /* O */
 @1256:000000                       .word 0
-@1257:000377                       .word 0o000377           ; /* O */
+@1257:177777                       .word 0o177777           ; /* (del) */
 @1260:000000                       .word 0
-@1261:177777                       .word 0o177777           ; /* (del) */
+@1261:025077                       .word 0o025077           ; /* B */
 @1262:000000                       .word 0
-@1263:025077                       .word 0o025077           ; /* B */
+@1263:125074                       .word 0o125074           ; /* # */
 @1264:000000                       .word 0
-@1265:125074                       .word 0o125074           ; /* # */
+@1265:004373                       .word 0o004373           ; /* G */
 @1266:000000                       .word 0
-@1267:004373                       .word 0o004373           ; /* G */
+@1267:125074                       .word 0o125074           ; /* # */
 @1270:000000                       .word 0
-@1271:125074                       .word 0o125074           ; /* # */
+@1271:104277                       .word 0o104277           ; /* 9 */
 @1272:000000                       .word 0
-@1273:104277                       .word 0o104277           ; /* 9 */
+@1273:125074                       .word 0o125074           ; /* # */
 @1274:000000                       .word 0
-@1275:125074                       .word 0o125074           ; /* # */
+@1275:002714                       .word 0o002714           ; /* M */
 @1276:000000                       .word 0
-@1277:002714                       .word 0o002714           ; /* M */
+@1277:177777                       .word 0o177777           ; /* (del) */
 @1300:000000                       .word 0
-@1301:177777                       .word 0o177777           ; /* (del) */
+@1301:052400                       .word 0o052400           ; /* X */
 @1302:000000                       .word 0
-@1303:052400                       .word 0o052400           ; /* X */
+@1303:125074                       .word 0o125074           ; /* # */
 @1304:000000                       .word 0
-@1305:125074                       .word 0o125074           ; /* # */
+@1305:042300                       .word 0o042300           ; /* V */
 @1306:000000                       .word 0
-@1307:042300                       .word 0o042300           ; /* V */
+@1307:177777                       .word 0o177777           ; /* (del) */
 @1310:000000                       .word 0
-@1311:177777                       .word 0o177777           ; /* (del) */
+@1311:042377                       .word 0o042377           ; /* 0 */
 @1312:000000                       .word 0
-@1313:042377                       .word 0o042377           ; /* 0 */
+@1313:177777                       .word 0o177777           ; /* (del) */
 @1314:000000                       .word 0
-@1315:177777                       .word 0o177777           ; /* (del) */
-@1316:000000                       .word 0
 
 
 
                                    ;SixteenSegmentLower:
                       flexo_lcase:
+@1315:125074                       .word 0o125074           ; /* # */
+@1316:000000                       .word 0
 @1317:125074                       .word 0o125074           ; /* # */
 @1320:000000                       .word 0
-@1321:125074                       .word 0o125074           ; /* # */
+@1321:140140                       .word 0o140140           ; /* e */
 @1322:000000                       .word 0
-@1323:140140                       .word 0o140140           ; /* e */
+@1323:104377                       .word 0o104377           ; /* 8 */
 @1324:000000                       .word 0
-@1325:104377                       .word 0o104377           ; /* 8 */
+@1325:125074                       .word 0o125074           ; /* # */
 @1326:000000                       .word 0
-@1327:125074                       .word 0o125074           ; /* # */
+@1327:021000                       .word 0o021000           ; /* | */
 @1330:000000                       .word 0
-@1331:021000                       .word 0o021000           ; /* | */
+@1331:120160                       .word 0o120160           ; /* a */
 @1332:000000                       .word 0
-@1333:120160                       .word 0o120160           ; /* a */
+@1333:004077                       .word 0o004077           ; /* 3 */
 @1334:000000                       .word 0
-@1335:004077                       .word 0o004077           ; /* 3 */
+@1335:000000                       .word 0o000000           ; /* (space) */
 @1336:000000                       .word 0
-@1337:000000                       .word 0o000000           ; /* (space) */
+@1337:104060                       .word 0o104060           ; /* = */
 @1340:000000                       .word 0
-@1341:104060                       .word 0o104060           ; /* = */
+@1341:120241                       .word 0o120241           ; /* s */
 @1342:000000                       .word 0
-@1343:120241                       .word 0o120241           ; /* s */
+@1343:104214                       .word 0o104214           ; /* 4 */
 @1344:000000                       .word 0
-@1345:104214                       .word 0o104214           ; /* 4 */
+@1345:020000                       .word 0o020000           ; /* i */
 @1346:000000                       .word 0
-@1347:020000                       .word 0o020000           ; /* i */
+@1347:125000                       .word 0o125000           ; /* + */
 @1350:000000                       .word 0
-@1351:125000                       .word 0o125000           ; /* + */
+@1351:020140                       .word 0o020140           ; /* u */
 @1352:000000                       .word 0
-@1353:020140                       .word 0o020140           ; /* u */
+@1353:104167                       .word 0o104167           ; /* 2 */
 @1354:000000                       .word 0
-@1355:104167                       .word 0o104167           ; /* 2 */
+@1355:177777                       .word 0o177777           ; /* (del) */
 @1356:000000                       .word 0
-@1357:177777                       .word 0o177777           ; /* (del) */
+@1357:010000                       .word 0o010000           ; /* . */
 @1360:000000                       .word 0
-@1361:010000                       .word 0o010000           ; /* . */
+@1361:024034                       .word 0o024034           ; /* d */
 @1362:000000                       .word 0
-@1363:024034                       .word 0o024034           ; /* d */
+@1363:110263                       .word 0o110263           ; /* 5 */
 @1364:000000                       .word 0
-@1365:110263                       .word 0o110263           ; /* 5 */
+@1365:100100                       .word 0o100100           ; /* r */
 @1366:000000                       .word 0
-@1367:100100                       .word 0o100100           ; /* r */
+@1367:002014                       .word 0o002014           ; /* 1 */
 @1370:000000                       .word 0
-@1371:002014                       .word 0o002014           ; /* 1 */
-@1372:000000                       .word 0
-@1373:021140                       .word 0o021140           ; /* j */
-@1374:173377                       .word -HEIGHT_16SEG / 2 * 64; descender
-@1375:000017                       .word 0o000017           ; /* 7 */
+@1371:021140                       .word 0o021140           ; /* j */
+@1372:173377                       .word -HEIGHT_16SEG / 2 * 64; descender
+@1373:000017                       .word 0o000017           ; /* 7 */
+@1374:000000                       .word 0
+@1375:120100                       .word 0o120100           ; /* n */
 @1376:000000                       .word 0
-@1377:120100                       .word 0o120100           ; /* n */
+@1377:040000                       .word 0o040000           ; /* , */
 @1400:000000                       .word 0
-@1401:040000                       .word 0o040000           ; /* , */
+@1401:125002                       .word 0o125002           ; /* f */
 @1402:000000                       .word 0
-@1403:125002                       .word 0o125002           ; /* f */
+@1403:104373                       .word 0o104373           ; /* 6 */
 @1404:000000                       .word 0
-@1405:104373                       .word 0o104373           ; /* 6 */
+@1405:100140                       .word 0o100140           ; /* c */
 @1406:000000                       .word 0
-@1407:100140                       .word 0o100140           ; /* c */
+@1407:104000                       .word 0o104000           ; /* - */
 @1410:000000                       .word 0
-@1411:104000                       .word 0o104000           ; /* - */
+@1411:033000                       .word 0o033000           ; /* k */
 @1412:000000                       .word 0
-@1413:033000                       .word 0o033000           ; /* k */
+@1413:125074                       .word 0o125074           ; /* # */
 @1414:000000                       .word 0
-@1415:125074                       .word 0o125074           ; /* # */
+@1415:100340                       .word 0o100340           ; /* t */
 @1416:000000                       .word 0
-@1417:100340                       .word 0o100340           ; /* t */
+@1417:125074                       .word 0o125074           ; /* # */
 @1420:000000                       .word 0
-@1421:125074                       .word 0o125074           ; /* # */
+@1421:140040                       .word 0o140040           ; /* z */
 @1422:000000                       .word 0
-@1423:140040                       .word 0o140040           ; /* z */
+@1423:177777                       .word 0o177777           ; /* (del) */
 @1424:000000                       .word 0
-@1425:177777                       .word 0o177777           ; /* (del) */
+@1425:000300                       .word 0o000300           ; /* l */
 @1426:000000                       .word 0
-@1427:000300                       .word 0o000300           ; /* l */
+@1427:000000                       .word 0o000000           ; /* (space) */
 @1430:000000                       .word 0
-@1431:000000                       .word 0o000000           ; /* (space) */
+@1431:050110                       .word 0o050110           ; /* w */
 @1432:000000                       .word 0
-@1433:050110                       .word 0o050110           ; /* w */
+@1433:125074                       .word 0o125074           ; /* # */
 @1434:000000                       .word 0
-@1435:125074                       .word 0o125074           ; /* # */
+@1435:120300                       .word 0o120300           ; /* h */
 @1436:000000                       .word 0
-@1437:120300                       .word 0o120300           ; /* h */
+@1437:000000                       .word 0o000000           ; /* (space) */
 @1440:000000                       .word 0
-@1441:000000                       .word 0o000000           ; /* (space) */
-@1442:000000                       .word 0
-@1443:005034                       .word 0o005034           ; /* y */
-@1444:173377                       .word -HEIGHT_16SEG / 2 * 64; descender
-@1445:125074                       .word 0o125074           ; /* # */
-@1446:000000                       .word 0
-@1447:101301                       .word 0o101301           ; /* p */
-@1450:173377                       .word -HEIGHT_16SEG / 2 * 64; descender
-@1451:125074                       .word 0o125074           ; /* # */
-@1452:000000                       .word 0
-@1453:121201                       .word 0o121201           ; /* q */
-@1454:173377                       .word -HEIGHT_16SEG / 2 * 64; descender
-@1455:125074                       .word 0o125074           ; /* # */
+@1441:005034                       .word 0o005034           ; /* y */
+@1442:173377                       .word -HEIGHT_16SEG / 2 * 64; descender
+@1443:125074                       .word 0o125074           ; /* # */
+@1444:000000                       .word 0
+@1445:101301                       .word 0o101301           ; /* p */
+@1446:173377                       .word -HEIGHT_16SEG / 2 * 64; descender
+@1447:125074                       .word 0o125074           ; /* # */
+@1450:000000                       .word 0
+@1451:121201                       .word 0o121201           ; /* q */
+@1452:173377                       .word -HEIGHT_16SEG / 2 * 64; descender
+@1453:125074                       .word 0o125074           ; /* # */
+@1454:000000                       .word 0
+@1455:120140                       .word 0o120140           ; /* o */
 @1456:000000                       .word 0
-@1457:120140                       .word 0o120140           ; /* o */
+@1457:177777                       .word 0o177777           ; /* (del) */
 @1460:000000                       .word 0
-@1461:177777                       .word 0o177777           ; /* (del) */
+@1461:120340                       .word 0o120340           ; /* b */
 @1462:000000                       .word 0
-@1463:120340                       .word 0o120340           ; /* b */
+@1463:125074                       .word 0o125074           ; /* # */
 @1464:000000                       .word 0
-@1465:125074                       .word 0o125074           ; /* # */
-@1466:000000                       .word 0
-@1467:121241                       .word 0o121241           ; /* g */
-@1470:173377                       .word -HEIGHT_16SEG / 2 * 64; descender
-@1471:125074                       .word 0o125074           ; /* # */
+@1465:121241                       .word 0o121241           ; /* g */
+@1466:173377                       .word -HEIGHT_16SEG / 2 * 64; descender
+@1467:125074                       .word 0o125074           ; /* # */
+@1470:000000                       .word 0
+@1471:104277                       .word 0o104277           ; /* 9 */
 @1472:000000                       .word 0
-@1473:104277                       .word 0o104277           ; /* 9 */
+@1473:125074                       .word 0o125074           ; /* # */
 @1474:000000                       .word 0
-@1475:125074                       .word 0o125074           ; /* # */
+@1475:124110                       .word 0o124110           ; /* m */
 @1476:000000                       .word 0
-@1477:124110                       .word 0o124110           ; /* m */
+@1477:177777                       .word 0o177777           ; /* (del) */
 @1500:000000                       .word 0
-@1501:177777                       .word 0o177777           ; /* (del) */
+@1501:052400                       .word 0o052400           ; /* x */
 @1502:000000                       .word 0
-@1503:052400                       .word 0o052400           ; /* x */
+@1503:125074                       .word 0o125074           ; /* # */
 @1504:000000                       .word 0
-@1505:125074                       .word 0o125074           ; /* # */
+@1505:040100                       .word 0o040100           ; /* v */
 @1506:000000                       .word 0
-@1507:040100                       .word 0o040100           ; /* v */
+@1507:177777                       .word 0o177777           ; /* (del) */
 @1510:000000                       .word 0
-@1511:177777                       .word 0o177777           ; /* (del) */
+@1511:042377                       .word 0o042377           ; /* 0 */
 @1512:000000                       .word 0
-@1513:042377                       .word 0o042377           ; /* 0 */
+@1513:177777                       .word 0o177777           ; /* (del) */
 @1514:000000                       .word 0
-@1515:177777                       .word 0o177777           ; /* (del) */
-@1516:000000                       .word 0
 
 
                                    ; // size of 16-segment characters
@@ -1066,78 +1065,78 @@
                                    ; // segment in the 16-segment display character.
 
                    seg_tab_startp:
-@1517:001520                       .word seg00x
+@1515:001516                       .word seg00x
 
-@1520:001000               seg00x: .word P0x                ;   {P0, P1}
-@1521:011000               seg00y: .word P0y
-@1522:030000               seg00d: .word HORIZ_RIGHT
+@1516:001000               seg00x: .word P0x                ;   {P0, P1}
+@1517:011000               seg00y: .word P0y
+@1520:030000               seg00d: .word HORIZ_RIGHT
 
-@1523:004000               seg01x: .word P1x                ;   {P1, P2},
-@1524:011000               seg01y: .word P1y
-@1525:030000               seg01d: .word HORIZ_RIGHT
+@1521:004000               seg01x: .word P1x                ;   {P1, P2},
+@1522:011000               seg01y: .word P1y
+@1523:030000               seg01d: .word HORIZ_RIGHT
 
-@1526:007000               seg02x: .word P2x                ;   {P2, P3},
-@1527:011000               seg02y: .word P2y
-@1530:172267               seg02d: .word DOWN_LEFT
+@1524:007000               seg02x: .word P2x                ;   {P2, P3},
+@1525:011000               seg02y: .word P2y
+@1526:172267               seg02d: .word DOWN_LEFT
 
-@1531:006400               seg03x: .word P3x                ;   {P3, P4},
-@1532:004400               seg03y: .word P3y
-@1533:172267               seg03d: .word DOWN_LEFT
+@1527:006400               seg03x: .word P3x                ;   {P3, P4},
+@1530:004400               seg03y: .word P3y
+@1531:172267               seg03d: .word DOWN_LEFT
 
-@1534:003000               seg04x: .word P5x                ;   {P4, P5},
-@1535:000000               seg04y: .word P5y
-@1536:030000               seg04d: .word HORIZ_RIGHT
+@1532:003000               seg04x: .word P5x                ;   {P4, P5},
+@1533:000000               seg04y: .word P5y
+@1534:030000               seg04d: .word HORIZ_RIGHT
 
-@1537:000000               seg05x: .word P6x                ;   {P5, P6},
-@1540:000000               seg05y: .word P6y
-@1541:030000               seg05d: .word HORIZ_RIGHT
+@1535:000000               seg05x: .word P6x                ;   {P5, P6},
+@1536:000000               seg05y: .word P6y
+@1537:030000               seg05d: .word HORIZ_RIGHT
 
-@1542:000000               seg06x: .word P6x                ;   {P6, P7},
-@1543:000000               seg06y: .word P6y
-@1544:005110               seg06d: .word UP_RIGHT
+@1540:000000               seg06x: .word P6x                ;   {P6, P7},
+@1541:000000               seg06y: .word P6y
+@1542:005110               seg06d: .word UP_RIGHT
 
-@1545:000400               seg07x: .word P7x                ;   {P7, P0},
-@1546:004400               seg07y: .word P7y
-@1547:005110               seg07d: .word UP_RIGHT
+@1543:000400               seg07x: .word P7x                ;   {P7, P0},
+@1544:004400               seg07y: .word P7y
+@1545:005110               seg07d: .word UP_RIGHT
 
-@1550:001000               seg08x: .word P0x                ;   {P0, P8},
-@1551:011000               seg08y: .word P0y
-@1552:024267               seg08d: .word DOWN_RIGHT_DIAG
+@1546:001000               seg08x: .word P0x                ;   {P0, P8},
+@1547:011000               seg08y: .word P0y
+@1550:024267               seg08d: .word DOWN_RIGHT_DIAG
 
-@1553:004000               seg09x: .word P1x                ;   {P1, P8},
-@1554:011000               seg09y: .word P1y
-@1555:172267               seg09d: .word DOWN_LEFT
+@1551:004000               seg09x: .word P1x                ;   {P1, P8},
+@1552:011000               seg09y: .word P1y
+@1553:172267               seg09d: .word DOWN_LEFT
                                    ;
-@1556:003400               seg10x: .word P8x                ;   {P2, P8},
-@1557:004400               seg10y: .word P8y
-@1560:034110               seg10d: .word UP_RIGHT_DIAG
+@1554:003400               seg10x: .word P8x                ;   {P2, P8},
+@1555:004400               seg10y: .word P8y
+@1556:034110               seg10d: .word UP_RIGHT_DIAG
 
-@1561:003400               seg11x: .word P8x                ;   {P3, P8},
-@1562:004400               seg11y: .word P8y
-@1563:030000               seg11d: .word HORIZ_RIGHT
+@1557:003400               seg11x: .word P8x                ;   {P3, P8},
+@1560:004400               seg11y: .word P8y
+@1561:030000               seg11d: .word HORIZ_RIGHT
 
-@1564:003400               seg12x: .word P8x                ;   {P4, P8},
-@1565:004400               seg12y: .word P8y
-@1566:024267               seg12d: .word DOWN_RIGHT_DIAG
+@1562:003400               seg12x: .word P8x                ;   {P4, P8},
+@1563:004400               seg12y: .word P8y
+@1564:024267               seg12d: .word DOWN_RIGHT_DIAG
 
-@1567:003400               seg13x: .word P8x                ;   {P5, P8},
-@1570:004400               seg13y: .word P8y
-@1571:172267               seg13d: .word DOWN_LEFT
+@1565:003400               seg13x: .word P8x                ;   {P5, P8},
+@1566:004400               seg13y: .word P8y
+@1567:172267               seg13d: .word DOWN_LEFT
 
-@1572:000000               seg14x: .word P6x                ;   {P6, P8},
-@1573:000000               seg14y: .word P6y
-@1574:034110               seg14d: .word UP_RIGHT_DIAG
+@1570:000000               seg14x: .word P6x                ;   {P6, P8},
+@1571:000000               seg14y: .word P6y
+@1572:034110               seg14d: .word UP_RIGHT_DIAG
 
-@1575:000400               seg15x: .word P7x                ;   {P7, P8},
-@1576:004400               seg15y: .word P7y
-@1577:030000               seg15d: .word HORIZ_RIGHT
+@1573:000400               seg15x: .word P7x                ;   {P7, P8},
+@1574:004400               seg15y: .word P7y
+@1575:030000               seg15d: .word HORIZ_RIGHT
 
                      seg_tab_endp:
-@1600:001575                       .word seg15x             ; @@ReadBy a1030
+@1576:001573                       .word seg15x             ; @@ReadBy a1026
                     char_xspacing:
-@1601:007400                       .word SPACING_16SEGX     ; @@ReadBy a1057
+@1577:007400                       .word SPACING_16SEGX     ; @@ReadBy a1055
                     char_yspacing:
-@1602:013200                       .word SPACING_16SEGY     ; @@ReadBy a0072 a1103
+@1600:013200                       .word SPACING_16SEGY     ; @@ReadBy a0072 a1101
 
 
                                    ;

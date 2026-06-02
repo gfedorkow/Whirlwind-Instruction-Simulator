@@ -4,7 +4,7 @@
 ; pdf page 62
 ; translated into assembler with labels for variables and addresses
 
-      .isa 1950      ;  "Sherman, Set the Instruction-Set Wayback Machine to 1950"
+      .isa "isa1950"      ;  "Sherman, Set the Instruction-Set Wayback Machine to 1950"
 ;
 ; Modified Mar 25, 2024 to move the code segment to the "normal" start address of 0o40, and
 ; to put two vars into FF Registers

@@ -1,0 +1,9 @@
+
+; *** Core Image ***
+%File: exit-sim.ww
+%TapeID: 
+%JumpTo 0o40
+@C0040: 0100000 0040000 0100000 0000000  None    None    None    None   
+@E0042: exec: exit(-1)
+@N0040:  Guy Fedorkow, May 10, 2026
+@N0043:  simulation halt; this won't stop the sim in HNF mode

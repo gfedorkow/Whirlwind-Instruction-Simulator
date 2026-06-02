@@ -1,6 +1,6 @@
 
 
-# Copyright 2024 Guy C. Fedorkow
+# Copyright 2026 Guy C. Fedorkow
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 # associated documentation files (the "Software"), to deal in the Software without restriction,
 # including without limitation the rights to use, copy, modify, merge, publish, distribute,
@@ -18,6 +18,8 @@
 # based on Whirlwind Instruction Set Manual 2M-0277
 # g fedorkow, Dec 30, 2017
 
+# used by Claude code
+from __future__ import annotations
 
 import re
 import hashlib
@@ -32,6 +34,12 @@ import traceback
 import graphics as gfx
 import time
 from wwflex import FlexToFlexoWin, FlexToFlascii, FlexToCsyntaxFlascii
+import copy
+
+# used by Claude code
+from dataclasses import dataclass
+from typing import Optional
+
 
 theConstWWbitClass = None       # everything should use the same instance of the cb. Set in wwsim.
 
@@ -359,6 +367,13 @@ class ArgsTokenizer (Tokenizer):
         super().__init__ (str)
         self.delimiter = ' '
 
+## class SimParam (Tokenizer):
+##     def __init__(self, cb):
+##         self.simparams = {}
+##         self.simparams["Radar"] = False
+##         self.cb = cb
+
+
 class SimParamTokenizer (Tokenizer):
     def __init__ (self, str):
         super().__init__ (str)
@@ -414,9 +429,36 @@ class SimParamTokenizer (Tokenizer):
                 exit (-1)
         return self.endOfString
 
+##    def set_sim_param(self, name, value):
+##        self.simparams[name] = value
+##
+##    def get_sim_param(self, name):
+##        if name not in self.simparams:
+##            self.cb.log.fatal("unknown get_sim_parameter %s" % name)
+##        return self.simparams[name]
+
+
 class SimParam:
     def __init__ (self):
-        pass
+        self.cmd_line_args = {}
+        self.sim_param_dict = {}
+
+    def reset_simparams(self):
+        self.sim_param_dict = {}
+
+    def set_simparam(self, tag, val):
+        self.sim_param_dict[tag] = val
+
+    def set_simparam_override(self, tag, val):
+        self.cmd_line_args[tag] = val
+
+    def get_simparam(self, tag):
+        if tag in self.cmd_line_args:
+            return self.cmd_line_args[tag]
+        if tag in self.sim_param_dict:
+            return self.sim_param_dict[tag]
+        return None
+
     # private
     def strToInt (self, s: str) -> int:
         r = None
@@ -428,7 +470,6 @@ class SimParam:
         return r
     # public
     def strToDict (self, line: str) -> dict:
-        keyToValue = {}
         t = SimParamTokenizer (line)
         t.getToken()    # Remove core file tag
         while True:
@@ -440,8 +481,8 @@ class SimParam:
                 break       # Prob should be error
             valueNum = self.strToInt (valueStr)
             value = valueNum if valueNum is not None else valueStr
-            keyToValue[key] = value
-        return keyToValue
+            self.sim_param_dict[key] = value
+        return self.sim_param_dict
     # public
     def dictToStr (self, keyToValue: dict) -> str:
         s = ""
@@ -569,13 +610,12 @@ class ConstWWbitClass:
         self.analog_display = False   # set this flag to display on an analog oscilloscope instead of an x-window
         self.flexo_win = False;       # Window to display flexo output
         self.use_x_win = True         # clear this flag to completely turn off the xwin display, widgets and all
-        self.xWin_size_arg = None   # if this is set to a number by the cmd-line arg, use it as the size of the xWinCRT
         self.ana_scope = None   # this is a handle to the methods for operating the analog scope
         self.which_scope = 3    # default to showing both D and F scopes on the xwin display
         self.RasPi = False      # this will be set in microWhirlwind if it's running on a RasPi
 
         # These two will be set by prog that needs them. Looks like only wwsim at this point. LAS 5/17/24
-        self.argAutoClick = False   # used in air defense and Nim (I think)
+        # self.argAutoClick = False   # used in air defense and Nim (I think); mAY 2026: seems to be unused...
         self.panel = None
 
         # use these vars to control how much Helpful Stuff emerges from the sim
@@ -584,6 +624,8 @@ class ConstWWbitClass:
         self.slow_execution_demo_mode = False  # When True, this flag makes the graphics a bit more visible
         if get_screen_size:
             (self.screen_x, self.screen_y, self.gfx_scale_factor) = self.get_display_size()
+        # self.xWin_size_arg = None   # if this is set to a number by the cmd-line arg, use it as the size of the xWinCRT
+        self.xWin_geometry = None  # this may be set by a cmd line arg
         self.TracePC = 0        # print a line for each instruction if this number is non-zero; decrement it if pos.
         self.LongTraceFormat = True  # prints more CPU registers for each trace line
         self.TraceALU = False   # print a line for add, multiply, negate, etc
@@ -614,12 +656,15 @@ class ConstWWbitClass:
         else:
             self.logDirSpecified = False
             self.logDir = "./"
+        self.sim_params = SimParam()
+
         self.cpu = None
 
         self.dbwgt = None  # This list gives all the currently active Debug Widgets
         self.DebugWidgetPyVars = None   # this class links up the Python-based debug widget methods, it any
 
         self.host_os = os.getenv("OS")
+        self.project_exec = None  # this is used as a global for an imported Project_exec.py file, should there be one
         self.crt_fade_delay_param = 0
         self.radar = None   # set this if we're doing a radar-style display
         self.no_toggle_switch_warn = False  # Apologies for the double-negative, but the warning should normally
@@ -834,6 +879,10 @@ class AdjustSwitchWidgetClass:
 class WWSwitchClass:
     def __init__(self, cb):
         self.cb = cb
+        self.SwitchNameDict = {}
+        self.clear_switch_tab()
+
+    def clear_switch_tab(self):
         # I modified this routine to accept any Flip Flop Preset Switch as a directive
         #  FF Presets are numbered by the address at which they appear
         # I actually don't know what they configured to tell which of the five FF Reg's showed up at which address...
@@ -1148,10 +1197,11 @@ class CorememClass:
         # 3l reads 0.00000        should read 0.l0036
 
         # the first 32 memory locations are "Toggle Switch Storage", a manually-programmed "ROM" with five RAM locations
+        # "True" means ReadOnly
         self._toggle_switch_mask = 0o37
         self._toggle_switch_mem_default =\
             [[0o000000,  True], [0o000001,  True], [0o000000, False], [0o000000, False],  # 0d
-             [0o100065,  True], [0o000000, False], [0o014174,  True], [0o000000, False],  # 4d
+             [0o100065,  True], [0o000000, False], [0o014174, False], [0o000000, False],  # 4d
              [0o130007,  True], [0o130003,  True], [0o150006,  True], [0o040024,  True],  # 8d
              [0o050002,  True], [0o130024,  True], [0o000337,  True], [0o014000,  True],  # 12d
              [0o134003,  True], [0o070001,  True], [0o074002,  True], [0o040024,  True],  # 16d
@@ -1159,6 +1209,7 @@ class CorememClass:
              [0o074036,  True], [0o050003,  True], [0o100032,  True], [0o000707,  True],  # 24d
              [0o020032,  True], [0o110026,  True], [0o000703,  True], [0o010036,  True],  # 28d
              ]
+        self._toggle_switch_mem =[[0, False]]*32
 
         self.cb = cb
         self.NBANKS = 6  # six 1K banks
@@ -1174,7 +1225,7 @@ class CorememClass:
         #     self._coremem[0][0] = 0
         #     self._coremem[0][1] = 1
         self.SymTab = None
-        self.tsr_callback = [None] * 32
+        self.restore_toggle_default()
         self.metadata = {}  # a dictionary for holding assorted metadata related to the core image
 #        self.metadata_hash = []
 #        self.metadata_stats = []
@@ -1186,7 +1237,12 @@ class CorememClass:
         self.mem_addr_reg = 0       # store the most recent memory access address and data for blinkenlights
         self.mem_data_reg = 0
         self.corememinfo = None
-        
+
+    def restore_toggle_default(self):
+        self._toggle_switch_mem = copy.deepcopy(self._toggle_switch_mem_default)
+        self.tsr_callback = [None] * 32
+
+
     # the WR method has two optional args
     # 'force' arg overwrites the "read only" toggle switches
     # 'track' is used only in the case of initializing the drum storage
@@ -1202,17 +1258,17 @@ class CorememClass:
             # put exactly what's there already right back again, we'll just skip the whole deal and
             # take a victory lap
             else:
-                if self._toggle_switch_mem_default[addr][0] != val:
-                    if not force and self._toggle_switch_mem_default[addr][1]:
+                if self._toggle_switch_mem[addr][0] != val:
+                    if not force and self._toggle_switch_mem[addr][1]:
                         # warning if some program writes to a read-only toggle switch
                         # The catch is that programs do often write to address zero, knowing that
                         # there's no side effect
                         if not self.cb.no_toggle_switch_warn and addr != 0:
                             self.cb.log.warn("Can't write a read-only toggle switch at addr=0o%o" % addr)
                         return
-                    if force and self._toggle_switch_mem_default[addr][1]:  # issue a warning if it's Read Only
+                    if force and self._toggle_switch_mem[addr][1]:  # issue a warning if it's Read Only
                         self.cb.log.info("Overwriting a read-only toggle switch at addr=0o%o, was 0o%o, is 0o%o" %
-                                         (addr, self._toggle_switch_mem_default[addr][0], val))
+                                         (addr, self._toggle_switch_mem[addr][0], val))
 
                     self.write_ff_reg(addr, val)
         if addr & self.cb.WWBIT5:  # High half of the address space, Group B
@@ -1223,7 +1279,8 @@ class CorememClass:
             self.corememinfo.registerWr (addr)
         pass
 
-    # memory is filled with None at the start, so read-before-write will cause a trap in my sim.
+
+            # memory is filled with None at the start, so read-before-write will cause a trap in my sim.
     #   Some programs don't seem to be too careful about that, so I fixed so most cases just get
     #   a warning, a zero and move on.  But returning a zero to an instruction fetch is not a good idea...
     # I don't know how to tell if the first 32 words of the address space are always test-storage, or if
@@ -1233,7 +1290,7 @@ class CorememClass:
             if self.tsr_callback[addr] is not None:
                 ret = self.tsr_callback[addr](addr, None)
             else:
-                ret = self._toggle_switch_mem_default[addr][0]
+                ret = self._toggle_switch_mem[addr][0]
             bank = 0
         elif addr & self.cb.WWBIT5:  # High half of the address space, Group B
             ret = self._coremem[self.MemGroupB][addr & self.cb.WWBIT6_15]
@@ -1285,14 +1342,14 @@ class CorememClass:
     # a One says Writable.  In the tsr array, a True means Read-only.
     def set_ff_reg_mask(self, write_protect_list):
         for addr in range(0, 32):
-            self._toggle_switch_mem_default[addr][1] = write_protect_list[addr]
+            self._toggle_switch_mem[addr][1] = write_protect_list[addr]
 
 
     # store a new value in a flip-flop reg
     # This is simply updating a table entry unless the Panel Display is enabled, in which
     # case it needs to be updated in two places...
     def write_ff_reg(self, addr, val):
-        self._toggle_switch_mem_default[addr][0] = val
+        self._toggle_switch_mem[addr][0] = val
         # if self.cb.panel:  #Mar 28, 2024 - I used to "push" ff changes to the panel, but I think it's better
         #    self.cb.panel.write_register(addr, val)    # to "pull" them when updating other registers
 
@@ -1308,10 +1365,10 @@ class CorememClass:
             val = cpu.cpu_switches.read_switch("FlipFlopPreset%02o" % addr)
             if val is not None:
                 # [addr][1] is True for Read-only addrs, False for FF Reg
-                if self._toggle_switch_mem_default[addr][1] is True and \
-                    self._toggle_switch_mem_default[addr][0] != val:
+                if self._toggle_switch_mem[addr][1] is True and \
+                    self._toggle_switch_mem[addr][0] != val:
                     self.cb.log.warn("Resetting 'read-only' toggle-switch register %02o from %o to %o" %
-                                        (addr, self._toggle_switch_mem_default[addr][0], val))
+                                     (addr, self._toggle_switch_mem[addr][0], val))
                 self.write_ff_reg(addr, val)  # None for switches not found in the .acore file
                 val_str = "0o%o" % val
                 self.cb.log.info(reset_info_string % (addr, addr, val_str))
@@ -1336,6 +1393,10 @@ class CorememClass:
 # @C00210: 0040000 0000100 0000001 0000100 0000000  None    None    None  ; memory load
 # @S00202: Yi                                                             ; symbol for location 202
 # %Switch: chkalarm 0o5
+#
+# [May 2026] This routine primarily returns a core-file, an array of memory contents.  But it's grown
+# an increasing list of metadata elements, which are not returned in a uniform way; This needs
+# some refactoring to make it clearer what's being returned!
 def read_core_file(cm, filename, cpu, cb, file_contents=None):
     line_number = 1
     jumpto_addr = None
@@ -1347,17 +1408,25 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
     blocknum = 0
     core_word_count = 0
     screen_debug_widgets = []
-    isa = "1958"   # assume it's the 1958 instruction set unless there's a directive saying otherwise
     file_type = '?'  # default, assume it's a "core" file, not a tape stream (which would be 'T')
-    sim_param_dict = {}
+    isa = "isa1958"   # assume it's the 1958 instruction set unless there's a directive saying otherwise
+    sim_params = cb.sim_params
 
     symtab = {}
     sym_to_addr_tab = {}
     switch_class = cpu.cpu_switches
-    commenttab = cpu.CommentTab
-    exectab = cpu.ExecTab
+    commenttab = cpu.CommentTab  # This is a BUG...  the cpu.CommentTab is not cleared with each read_core invocation...
+    exectab = {}
     filedesc = None
     address = 0   # for 'tape' / .ocore files, we don't have addresses, so just start at zero
+    cm.restore_toggle_default()
+    cpu.cpu_switches.clear_switch_tab()
+    sim_params.reset_simparams()
+
+#    self.SymTab = {}
+#    self.SymToAddr = {}
+#    self.ExecTab = {}  # this table is for holding Python Exec statements interleaved with the WW code.
+#    self.CommentTab = [None] * 2048
 
     # note hack for a specialized use when the WW image to be punched is passed in as an array of
     # strings, one string per line, formatted as a core file, not as the name of a file which
@@ -1428,7 +1497,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             address = int(tokens[0][2:], 8)
             commenttab[address] = tokens[1]  # save the string
 
-        elif re.match("^@E", input_minus_comment):
+        elif re.match("^@E", input_minus_comment):   # Python exec pseudo-op
             tokens = re.split("[: \t][: \t]*", line, maxsplit = 1)
             address = int(tokens[0][2:], 8)
             exec = tokens[1]
@@ -1480,9 +1549,10 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
             tokens = input_minus_comment.split()
             blocknum = int(tokens[1], 8)
             cb.log.info("starting corefile blocknum 0%oo" % blocknum)
-        elif re.match("^%ISA:", input_minus_comment):
+        elif re.match("^%ISA:", input_minus_comment):  # "isa" is a special case that needs to be recorded for the asm
             tokens = input_minus_comment.split()
             isa = tokens[1]
+            sim_params.set_simparam("isa", isa)
             cb.log.info("Setting instruction set architecture to '%s'" % isa)
         elif re.match("^%DbWgt:", input_minus_comment):  # On-screen Debug Widget
             # This directive says to put a real-time debug widget on the screen if the CRT is opened
@@ -1493,7 +1563,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
                 cb.log.warn("read_core: %%DbWgt takes from one to five args, got %d" % len(args))
             screen_debug_widgets.append(args)
         elif re.match("^%SimParam:", input_minus_comment):
-            sim_param_dict = SimParam().strToDict (input_minus_comment)
+            sim_params.strToDict (input_minus_comment)  # add terms to the sim_param_dict
             pass
         else:
             cb.log.warn("read_core: unexpected line '%s' in %s, Line %d" % (line, filename, line_number))
@@ -1505,10 +1575,10 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
     cm.metadata['filename_from_core'] = ww_file
     cm.metadata['ww_tapeid'] = ww_tapeid
     cm.metadata['core_word_count'] = core_word_count
-    cm.metadata['isa'] = isa   # return a string with the instruction set to be used
     cm.metadata['file_type'] = file_type
+    cm.metadata['isa'] = isa   # return a string with the instruction set to be used
 
-    return symtab, sym_to_addr_tab, jumpto_addr, ww_file, ww_tapeid, screen_debug_widgets, sim_param_dict
+    return symtab, sym_to_addr_tab, exectab, jumpto_addr, ww_file, ww_tapeid, screen_debug_widgets
 
 
 # used only in write_core to output a hash of the core image as metadata
@@ -1997,6 +2067,140 @@ def wwint2py(ww_num):
     ret = ww_num * sign
     return ret
 
+# -------------------
+# This lengthy section parses an x-windows window geometry argument.  Code written by Claude AI, May 2026
+
+"""
+x11_geometry.py
+---------------
+Parser for X11 / ImageMagick (Magick++) geometry strings of the form:
+
+    <width>x<height>{+-}<xoffset>{+-}<yoffset>
+
+Any of the four components may be omitted.  When a component is missing the
+parser returns ``None`` for that field, giving the caller predictable, easy
+to test results.
+
+Reference (format description):
+    https://imagemagick.org/Magick++/Geometry.html
+
+Notable rules from the spec that this parser enforces:
+
+* ``width`` and ``height`` are non-negative integers (pixels).
+* The size portion uses a literal ``x`` (or ``X``) as separator, e.g. ``640x480``.
+* Either side of the ``x`` may be omitted: ``640x``, ``x480``, or just ``x``
+  are all accepted.
+* The offset portion is a pair: ``{+|-}xoffset{+|-}yoffset``.  Per the spec,
+  offsets must be given as a pair -- you cannot supply only an xoffset or
+  only a yoffset.  A leading sign (``+`` or ``-``) is required for each.
+* The size portion and the offset portion are each optional, but at least
+  one of them must be present.
+
+Usage:
+    >>> from x11_geometry import parse_geometry, Geometry
+    >>> parse_geometry("640x480+10-20")
+    Geometry(width=640, height=480, xoffset=10, yoffset=-20)
+    >>> parse_geometry("+5+5")
+    Geometry(width=None, height=None, xoffset=5, yoffset=5)
+"""
+
+
+
+# ---------------------------------------------------------------------------
+# Public data type
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class Geometry:
+    """Parsed X11 geometry.  Missing components are ``None``."""
+    width:   Optional[int] = None
+    height:  Optional[int] = None
+    xoffset: Optional[int] = None
+    yoffset: Optional[int] = None
+
+    def __str__(self) -> str:
+        """Reconstruct a canonical geometry string from the parsed parts."""
+        size = ""
+        if self.width is not None or self.height is not None:
+            w = "" if self.width  is None else str(self.width)
+            h = "" if self.height is None else str(self.height)
+            size = f"{w}x{h}"
+
+        offs = ""
+        if self.xoffset is not None and self.yoffset is not None:
+            offs = f"{self.xoffset:+d}{self.yoffset:+d}"
+
+        return size + offs
+
+
+# ---------------------------------------------------------------------------
+# Regex
+# ---------------------------------------------------------------------------
+#
+# Layout:
+#   ^                                start
+#   (?: (\d+)? [xX] (\d+)? )?        optional size:  W?  x  H?
+#   (?: ([+-]\d+) ([+-]\d+) )?       optional offset pair (must come together)
+#   $                                end
+#
+# Both groups are optional individually, but the parser separately requires
+# that at least one of them be present (an empty string is not valid).
+
+_GEOMETRY_RE = re.compile(
+    r"""
+    ^
+    (?: (?P<w>\d+)? [xX] (?P<h>\d+)? )?
+    (?: (?P<xo>[+-]\d+) (?P<yo>[+-]\d+) )?
+    $
+    """,
+    re.VERBOSE,
+)
+
+# ---------------------------------------------------------------------------
+# Parser
+# ---------------------------------------------------------------------------
+def parse_xwin_geometry(cb, spec: str) -> Geometry:
+    """
+    Parse an X11 geometry string and return a :class:`Geometry`.
+
+    Components that are absent in the input come back as ``None``.
+
+    Raises :class:`GeometryParseError` if the input does not match the
+    grammar.
+    """
+    if spec is None:
+        cb.log.fatal("geometry string is None")
+
+    s = spec.strip()
+    if not s:
+        cb.log.fatal("geometry string is empty")
+
+    m = _GEOMETRY_RE.match(s)
+    if not m:
+        cb.log.fatal(f"cannot parse wxh+x+y geometry: {spec!r}")
+
+    w_text  = m.group("w")
+    h_text  = m.group("h")
+    xo_text = m.group("xo")
+    yo_text = m.group("yo")
+
+    # The regex permits a match in which *nothing* was actually captured
+    # (e.g. the input was something it accepted but had no real content).
+    # Make sure at least one component was supplied.
+    has_size   = ("x" in s) or ("X" in s)
+    has_offset = xo_text is not None and yo_text is not None
+    if not has_size and not has_offset:
+        cb.log.fatal(f"cannot parse wxh+x+y geometry: {spec!r}")
+
+    return Geometry(
+        width   = int(w_text)  if w_text  is not None else None,
+        height  = int(h_text)  if h_text  is not None else None,
+        xoffset = int(xo_text) if xo_text is not None else None,
+        yoffset = int(yo_text) if yo_text is not None else None,
+    )
+
+# ----------------------
+
 
 class XwinCrtObject:
     def __init__(self, x0, y0, x1, y1, graphical_type, char_mask, expand = 1.0):
@@ -2039,8 +2243,13 @@ class XwinCrt:
             #   If it's a large display, just use a fixed constant.
             #   If it's a small screen, shrink the size to fit the screen.
             # The xWin is square, so use the smallest dimension of x or y
-            if cb.xWin_size_arg:
-                screen_size = cb.xWin_size_arg
+            if cb.xWin_geometry:
+                cb.screen_y = cb.xWin_geometry.width
+                cb.screen_x = cb.xWin_geometry.height
+                screen_size = cb.screen_x
+                if cb.screen_y < screen_size:
+                    screen_size = cb.screen_y
+                screen_size -= 45   # reduce the available screen space to allow for a menu bar
             else:
                 screen_size = cb.screen_x
                 if cb.screen_y < screen_size:
@@ -2061,7 +2270,9 @@ class XwinCrt:
             root = self.win.master
             # Position the window (e.g., at x=100, y=100)
             # Format is "width x height + Xoffset + Yoffset"
-            if cb.panel and cb.panel.panel_mWW:
+            if cb.xWin_geometry:
+                root.geometry('+%d+%d' % (cb.xWin_geometry.xoffset, cb.xWin_geometry.yoffset))
+            elif cb.panel and cb.panel.panel_mWW:
                 root.geometry('+20+50')
             else:
                 root.geometry('+600+100')
@@ -2247,12 +2458,33 @@ class XwinCrt:
                     button = 3  # return 'button 3' to emulate the PC Mouse right-click
                 pt = True       # if it were the CRT, we'd have to return an actual point, but here, it's just "hit"
                 print("Light Gun Hit: button=%d" % button)
+                if cb.panel.hnf_program_dispatcher:
+                    cb.panel.hnf_program_dispatcher.reset_inactivity_timer()
             self.last_pen_point = None  # we don't need this var, but I don't want to break the xwin version
 
         else:
+            # check the mouse first to be sure to clear the queue of clicks whether we act on any
+            # of them or not; that ensures that the activity timer can be reset, and that the HNF
+            # trigger-pull test will work properly
             pt, button = self.win.checkMouse()
+            # if we're using the hnf "light gun", results are reported as a mouse click coupled with a trigger pull.
+            # If the trigger is not pulled, ignore the mouse click.
+            if cb.panel and cb.panel.panel_mWW:
+                trigger_pull= cb.panel.panel_mWW.is_light_gun_trigger_pulled()
+            else:
+                trigger_pull = 1     # for anything but HNF hardware, this should be assumed True
+
             if pt is None:
                 return self.cb.NO_ALARM, None, 0
+
+            # this call resets the HNF Activity Timeout; I'm interpreting this as meaning that any mouse/screen
+            # activity should count, regardless of whether the user actually hits a hot-spot or not.
+            if cb.panel and cb.panel.hnf_program_dispatcher:
+                cb.panel.hnf_program_dispatcher.reset_inactivity_timer()
+
+            if trigger_pull == 0:
+                return self.cb.NO_ALARM, None, 0
+
             if self.last_pen_point is None:
                 cb.log.warn("Light Gun checked, but no dot displayed")
                 return self.cb.QUIT_ALARM, None, 0
@@ -2281,10 +2513,11 @@ class XwinCrt:
             else:
                 print(("OMG its a bug! WW_CHAR_SEQ[%d]=%s " % (i, self.WW_CHAR_SEQ[i])))
 
+            # I should optimmize out drawing the "black" segments
             if mask & 1 << (6 - i):
                 seg_color = color
             else:
-                seg_color = "Blue"
+                seg_color = "Black"
 
             char_segment = self.gfx.Line(self.gfx.Point(last_x, last_y), self.gfx.Point(x, y))
             char_segment.setOutline(seg_color)

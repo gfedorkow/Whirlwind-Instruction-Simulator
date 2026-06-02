@@ -15,6 +15,9 @@ one:    .word 1
 ; constants for SI graphics instruction
         .pp scope_vector, 0o1677   ; draw a vector on all scopes
         .pp scope_point, 0o0677   ; draw a point on all scopes
+        
+        .pp FF2, 02    ; display remaining fuel
+        .pp FF3, 03    ; display rocket velocity
 
         .org 0o40
 
@@ -124,15 +127,8 @@ loop:
         ad tmp1
         sp SQRT
         ts speed
+        ts FF3      ; display speed/velocity in lights
                 
-        ; the following stands in for lack of sqrt (so far); "speed = abs(xspeed) + abs(yspeed)"        
-;        ca xspeed
-;        dm zero
-;        ts tmp1
-;        ca yspeed
-;        dm zero
-;        ad tmp1
-;        ts speed
         
 ;         # accelerate if still fuel
 ;         if fuel > 0.0 :
@@ -146,7 +142,7 @@ loop:
 ;             fuel -= burn
         ca xspeed 
         dv speed
-        slh 15      ; this should probably be 15
+        slh 15      ; after Divide, you always need to get the result out of BReg
         mh accel
         ad xspeed
         ts xspeed
@@ -162,8 +158,14 @@ loop:
         ca fuel
         su burn
         ts fuel
+        ts FF2    ; display the fuel load in FF2
+        sp do_gravity
 ;
 no_fuel:
+        ca 0
+        ts FF2    ; zero out the fuel load in FF2
+
+do_gravity:
         ; continue here whether there's fuel or not
 ;         # gavitation is always in y direction
 ;         yspeed -= grav

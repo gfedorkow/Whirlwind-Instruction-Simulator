@@ -24,8 +24,9 @@ from micro_whirlwind import PanelMicroWWClass
 import hnf_dispatcher
 import re
 
-
+#
 # ###########################################
+
 
 class DefaultColors:
     on_color = "dodger blue"
@@ -835,9 +836,16 @@ def compensate_justification(txt, font=9):
 #  The arg hnf-Program_dispatcher turns on a mode for use with control panels to allow the bottom three
 # bits of the LMIR to be used to dispatch the simulator to run a different Demo program.  This has the
 # side effect of disconnecting the control panel MIR buttons from the LMIR/MIR presets in .acore files
+#
+# Modified May 22 2026 to add a config-switch for Jurgen's HNF demonstrator.   In this pass, the switch only
+# changes the way the mouse works, so that a mouse-click is only recognized if the trigger on the touch-
+# sensitive "ligh gun" is pulled.
+#  Other "hardware" changes are configured by HNF Dispatch, but those only change the behavior of some
+# of the LEDs (although I should probably convert them to use this config-switch as well).
 class PanelClass:
     def __init__(self, cb, panel_xwin=False, panel_blinken=False, panel_microWW=False,
-                 left_init=0, right_init=0, hnf_program_dispatcher_mode=0, tty_name=None):
+                 left_init=0, right_init=0, hnf_program_dispatcher_mode=0,
+                 hnf_hardware_present = 0, hnf_idle_timeout = 0, tty_name=None):
         self.cb = cb
         self.ff_preset_list = []
         self.switch_list = []
@@ -845,17 +853,23 @@ class PanelClass:
         self.panel_blinken = panel_blinken
         self.panel_mWW = panel_microWW
         self.hnf_program_dispatcher_mode = hnf_program_dispatcher_mode
+        # we blink an LED for single-step and when the WW program is seeking light gun input; this sets the time constant
+        self.BLINK_TIMEOUT = 5
         if hnf_program_dispatcher_mode:
-            self.hnf_program_dispatcher = hnf_dispatcher.HnfDispatcherClass(cb, tty_name)
+            self.hnf_program_dispatcher = hnf_dispatcher.HnfDispatcherClass(cb, tty_name,
+                                                hnf_idle_timeout = hnf_idle_timeout)
         else:
             self.hnf_program_dispatcher = None
-
+ 
         if panel_xwin:
             self.panel_xwin = PanelXwinClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
             # self.ff_preset_list = self.panel_xwin.get_ff_preset_list()  # obtain a list of all the FF presets on this panel
             self.switch_list = self.panel_xwin.get_switch_list(omit_MIR=hnf_program_dispatcher_mode != 0)  # obtain a list of all the switches on this panel
         if panel_microWW:
-            self.panel_mWW = PanelMicroWWClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
+            self.panel_mWW = PanelMicroWWClass(cb, sim_state_machine_arg=self.sim_state_machine,
+                                left_init=0, right_init=0,
+                                hnf_mode=hnf_program_dispatcher_mode, hnf_hardware_present = hnf_hardware_present,
+                                blink_timeout = self.BLINK_TIMEOUT)
             # self.ff_preset_list = self.panel_mWW.get_ff_preset_list()  # obtain a list of all the FF presets on this panel
             self.switch_list = self.panel_mWW.get_switch_list()  # obtain a list of all the switches on this panel
             # normally we default to RMIR, but for hnf mode, we need to switch the defuault to LMIR
@@ -863,6 +877,9 @@ class PanelClass:
                 self.panel_mWW.sw.set_which_mir("LMIR")
         if panel_blinken:
             self.panel_blinken = BlinkenLightsClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
+
+        self.tmp_val = 0  # temporary value to debug a switch LED
+
 
     # Check the mouse, and update any buttons.  The only return from this call should be True or False to say
     # whether the Exit box was clicked or not.
@@ -964,6 +981,11 @@ class PanelClass:
         if sw == "Order-by-Order":  # don't mess with the PC, just pick up from the last address
             cb.sim_state = cb.SIM_STATE_SINGLE_STEP
             cb.first_instruction_after_start = True
+            if self.panel_mWW:
+                # Blink an LED light under the single_step switch
+                # The LED is actuall blinked on when it sees the timer set to this specific timeout value
+                #  i.e., don't change self.BLINK_TIMOUT; go look for the original definition!
+                self.panel_mWW.blink_single_step = self.BLINK_TIMEOUT
             return
 
         if sw == "Examine":  # don't mess with the PC, just pick up from the last address
