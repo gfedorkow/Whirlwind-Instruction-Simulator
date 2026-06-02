@@ -84,7 +84,7 @@ class HnfDispatcherClass:
         self.dispatch_table.append(HnfDispatchProgramClass(
             "NewCode/Rocket", "rocket.acore", self.default_app_timeout, 8))                             # 3
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Vibrating-String", "knob-v97-closed-end.acore", self.default_app_timeout, 8))          # 4
+            "Vibrating-String/HNF", "knob-v97-closed-end-hnf.acore", self.default_app_timeout, 8))          # 4
         self.dispatch_table.append(HnfDispatchProgramClass(
             "Tic-Tac-Toe", "tic-tac-toe.acore", self.default_app_timeout, 8))                           # 5
         self.dispatch_table.append(HnfDispatchProgramClass(
