@@ -170,6 +170,8 @@ class PanelMicroWWClass:
     # def set_cpu_state_lamps(self, cb, sim_state, alarm_state):
 
     def update_panel(self, cb, bank, alarm_state=0, standalone=False, init_PC=None):
+        quit = False
+        alarm_clear = False
         cpu = cb.cpu
         mdr = cpu.cm.mem_data_reg
         if mdr is None:   # Python "core memory" can read as None; translate that to zero
@@ -193,7 +195,7 @@ class PanelMicroWWClass:
                  "Stop on CK": self.md.check_alarm_special_state,
                  "Stop on SI-1": self.md.stop_on_s1_state
                  }
-            self.sim_state_machine(bn, cb, cpu_control_switches, set_scope_selector_leds=self.md.set_scope_selector_leds) # the third arg should be the PC Preset switch register
+            alarm_clear = self.sim_state_machine(bn, cb, cpu_control_switches, set_scope_selector_leds=self.md.set_scope_selector_leds) # the third arg should be the PC Preset switch register
 
         if init_PC:
             self.write_register("PC", init_PC)
@@ -218,8 +220,8 @@ class PanelMicroWWClass:
                 self.md.update_hnf_gun_switch_led(0)
 
         if gpio.input(pin_gpio_isKey) == 0:   #
-            return False
-        return True
+            quit = True
+        return (quit, alarm_clear)
 
 
     # The Panels contain a subset of the Flip Flop Register Preset switches; this method returns

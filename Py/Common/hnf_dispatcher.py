@@ -62,7 +62,7 @@ class HnfDispatchProgramClass:
 class HnfDispatcherClass:
     def __init__(self, cb, tty_name, hnf_idle_timeout = 0):
         if hnf_idle_timeout == 0 or hnf_idle_timeout is None:
-            self.default_app_timeout = 12  # user inactivity timeout, measured in seconds
+            self.default_app_timeout = 120  # user inactivity timeout, measured in seconds
             cb.log.warn("HNF inactivity timer set to default, t=%d seconds" % self.default_app_timeout)
         else:
             self.default_app_timeout = hnf_idle_timeout  # user inactivity timeout, measured in seconds
@@ -177,13 +177,17 @@ class HnfDispatcherClass:
             self.tty = None
 
 
-    #
+    # call this method to extend the timeout for the current application
     def reset_inactivity_timer(self):
         if self.stop_at_time:
             self.stop_at_time = time.time() + self.running_time  # use this to extend the Inactivity timer
 
 
-    # this routine is called periodically to see if we should change state.
+    # call this method to force the dispatcher to start another program
+    def zero_remaining_time(self):
+        self.stop_at_time = time.time()
+
+        # this routine is called periodically to see if we should change state.
     # It has several functions --
     #   - we test the serial port to see if there's activity reported by an attached HNF media display
     #      If so, we just extend the inactivity timer
