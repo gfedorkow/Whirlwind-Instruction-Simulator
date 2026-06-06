@@ -121,7 +121,7 @@ class HnfDispatcherClass:
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 15,
                     switch_args=[["FlipFlopPreset02", "0"]], MIR_switch_number = 4))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 15
-            "Vibrating-String", "knob-v97-closed-end.acore", self.default_attract_timeout, 16,
+            "Vibrating-String/HNF", "knob-v97-closed-end-hnf.acore", self.default_attract_timeout, 16,
                     MIR_switch_number = 4))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 16
