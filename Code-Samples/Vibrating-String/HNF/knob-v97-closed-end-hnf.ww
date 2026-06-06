@@ -40,8 +40,8 @@
 
                         .ww_file "102663451_fc131-97-56-t2.7ch"  ;  
 
-                        .dbwgt  "%FlipFlopPreset02", incr = 1, min = -1, max = 32, fmt = "%o"
-                        .dbwgt  "%FlipFlopPreset03", incr = 400, min = 0, max = 0o77777, fmt = "%o"
+                        ;.dbwgt  "%FlipFlopPreset02", incr = 1, min = -1, max = 32, fmt = "%o"
+                        .dbwgt  "%FlipFlopPreset03", incr = 400, min = 0o500, max = 0o77777, fmt = "%o"
                         ; initial conditions from DCL-090
                         ; Jun 1 2026 ; I wired in the presets for this HNF version to avoid colliding with the two MIRs; see line 160
                         ;.switch LeftInterventionReg, 0.00100  ; number of points; i/o address 0o336, 0d222 ; was 0o0400
