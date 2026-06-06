@@ -687,7 +687,7 @@ class MappedSwitchClass:
             self.fn_no_sw,   # 9
         )
         self.md = mapped_display
-        self.fn_buttons_def = (("Examine", "Read In", "Order-by-Order", "Start at 40", "Start Over", "Restart", "Stop", "Clear"),
+        self.fn_buttons_def = (("Examine", "Read In", "Order-by-Order", "Start at 40", "Start Over", "Restart", "Stop", "Clear Alarm"),
                                ("Stop on Addr", "Stop on CK", "Stop on S1", "F-Scope", "D-Scope", "unused", "unused", "Rotary Push"))
         self.encoder_state = [0,0]
 

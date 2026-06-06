@@ -62,7 +62,7 @@ class HnfDispatchProgramClass:
 class HnfDispatcherClass:
     def __init__(self, cb, tty_name, hnf_idle_timeout = 0):
         if hnf_idle_timeout == 0 or hnf_idle_timeout is None:
-            self.default_app_timeout = 120  # user inactivity timeout, measured in seconds
+            self.default_app_timeout = 180  # user inactivity timeout, measured in seconds
             cb.log.warn("HNF inactivity timer set to default, t=%d seconds" % self.default_app_timeout)
         else:
             self.default_app_timeout = hnf_idle_timeout  # user inactivity timeout, measured in seconds
