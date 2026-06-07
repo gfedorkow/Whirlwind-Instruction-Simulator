@@ -1839,8 +1839,13 @@ class FlexoControlClass:
             code = wrd >> 10   # code in top six bits contain the character
         return self.cb.NO_ALARM
 
+    # called once at sim termination to print the collected Flexo output
     def get_saved_output(self) -> str:
         return self.flexoOut.getFlascii()
+
+    # called at sim termination to clear the queue of collected Flexo output
+    def clear_saved_output(self) -> str:
+        return self.flexoOut.clearAsciiOut()
 
 
 # The following class prints debug text on the CRT to display and adjust memory values

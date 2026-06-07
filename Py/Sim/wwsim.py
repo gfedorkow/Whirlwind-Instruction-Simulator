@@ -626,6 +626,7 @@ def main_run_sim(args, cb, cpu):
                 cb.log.info ("Begin Flexout:\n" + logstr)
                 cb.log.info ("End Flexout")
                 """
+                d.clear_saved_output()
 
         if d.name == "Teletype":
             s = d.get_saved_output()
