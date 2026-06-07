@@ -717,6 +717,8 @@ def main():
                         help="Set the Idle/Inactivity timer in HNF mode, measured in seconds", type=int)
     parser.add_argument("--HnfHardwarePresent",
                         help="Activate the special-purpose Demo Program hardware for use at HNF", action="store_true")
+    parser.add_argument("--HnfRestartTime",
+                        help="Cause the simulator to exit to allow a restart after a timeout, specified in minutes, for use at HNF", type=int)
     parser.add_argument("-d", "--Debugger",
                         help="Start simulation under the debugger", action="store_true")
     parser.add_argument("--ZeroizeCore",
@@ -760,6 +762,7 @@ def main():
         cb.panel = control_panel.PanelClass(cb, args.Panel, args.BlinkenLights, args.MicroWhirlwind,
                                             hnf_program_dispatcher_mode=args.HnfProgramDispatcher,
                                             hnf_hardware_present=args.HnfHardwarePresent,
+                                            hnf_restart_timer=args.HnfRestartTime,
                                             hnf_idle_timeout = args.HnfIdleTimeout, tty_name=args.TTYname)
         if args.HnfProgramDispatcher and not args.QuickStart:
             cb.log.fatal("HNF Mode ought to work without --Quickstart, but it doesn't (yet)")

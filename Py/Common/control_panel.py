@@ -858,7 +858,7 @@ def compensate_justification(txt, font=9):
 class PanelClass:
     def __init__(self, cb, panel_xwin=False, panel_blinken=False, panel_microWW=False,
                  left_init=0, right_init=0, hnf_program_dispatcher_mode=0,
-                 hnf_hardware_present = 0, hnf_idle_timeout = 0, tty_name=None):
+                 hnf_hardware_present = 0, hnf_idle_timeout = 0, hnf_restart_timer=0, tty_name=None):
         self.cb = cb
         self.ff_preset_list = []
         self.switch_list = []
@@ -870,10 +870,10 @@ class PanelClass:
         self.BLINK_TIMEOUT = 5
         if hnf_program_dispatcher_mode:
             self.hnf_program_dispatcher = hnf_dispatcher.HnfDispatcherClass(cb, tty_name,
-                                                hnf_idle_timeout = hnf_idle_timeout)
+                                                hnf_idle_timeout=hnf_idle_timeout, hnf_restart_timer=hnf_restart_timer)
         else:
             self.hnf_program_dispatcher = None
- 
+
         if panel_xwin:
             self.panel_xwin = PanelXwinClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
             # self.ff_preset_list = self.panel_xwin.get_ff_preset_list()  # obtain a list of all the FF presets on this panel
