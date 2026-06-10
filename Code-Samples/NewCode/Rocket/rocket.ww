@@ -109,9 +109,9 @@ loop:
         ca ypos     ; test all the loop exit conditions
         su c_miny
         cp loop_exit
-        ca c_maxy
-        su ypos
-        cp loop_exit
+;        ca c_maxy      ; comment these out so if the rocket flies to high, you get a trap
+;        su ypos
+;        cp loop_exit
 ;        ca c_maxx      ; comment these out so if the rocket flies to far to the right, you get a trap
 ;        su xpos
 ;        cp loop_exit

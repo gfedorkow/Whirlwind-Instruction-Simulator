@@ -9,7 +9,7 @@
                                 .dbwgt c_fuel, 0o400
 
                                 .org 0
-@0000:000000              zero: .word 0                  ; @@ReadBy a0144 a0233 JumpedToBy a0306 a0344 SQRET
+@0000:000000              zero: .word 0                  ; @@ReadBy a0141 a0230 JumpedToBy a0303 a0341 SQRET
 @0001:000001               one: .word 1
 
                                 ; constants for SI graphics instruction
@@ -19,7 +19,7 @@
                                 .pp FF2, 02              ; display remaining fuel
                                 .pp FF3, 03              ; display rocket velocity
 
-                                .org 0o40                ; @@WrittenBy a0142 a0145
+                                .org 0o40                ; @@WrittenBy a0137 a0142
 
 @0040:074066             start: sp main
 
@@ -48,34 +48,34 @@
 @0041:000127         launchdir: .word 87                 ; degrees; not used directly
 @0042:006315     cos_launchdir: .word +0.1               ;+0.075     ;+0.05233 @@ReadBy a0067
 @0043:077270     sin_launchdir: .word +0.99              ; @@ReadBy a0072
-@0044:000061              grav: .word +0.0015            ;+0.003 @@ReadBy a0147
+@0044:000061              grav: .word +0.0015            ;+0.003 @@ReadBy a0144
 @0045:000510      launch_speed: .word +0.01              ; initial velocity at launch @@ReadBy main a0071
-@0046:000142             accel: .word +0.003             ; +0.002 @@ReadBy a0126 a0134
-@0047:002437              burn: .word +0.04              ; +0.03 @@ReadBy a0140
+@0046:000142             accel: .word +0.003             ; +0.002 @@ReadBy a0123 a0131
+@0047:002437              burn: .word +0.04              ; +0.03 @@ReadBy a0135
 
                                 ; constants
                                 ;                 scaled number     unscaled number
 @0050:143145            c_miny: .word -0.45              ;      -0.1    ; slightly below ground level, i.e. y_baseline @@ReadBy a0103
 @0051:143145            c_minx: .word -0.45              ; @@ReadBy a0076
 @0052:034632            c_maxx: .word +0.45              ;      +0.9
-@0053:034632            c_maxy: .word +0.45              ;      +0.9 @@ReadBy a0105
+@0053:034632            c_maxy: .word +0.45              ;      +0.9
 @0054:054632            c_fuel: .word +0.7               ; initial fuel load @@ReadBy a0100
-@0055:146314        y_baseline: .word -0.4               ; y-axis position of the 'zero point' @@ReadBy a0074 a0163 a0176 a0205 a0215 a0225
+@0055:146314        y_baseline: .word -0.4               ; y-axis position of the 'zero point' @@ReadBy a0074 a0160 a0173 a0202 a0212 a0222
 
                                 ; dynamic variables
                                 ; these two numbers are scaled down by a factor of two to avoid overflow
                                 ;                 scaled number     unscaled number
-@0056:000000            xspeed: .word 0                  ; @@WrittenBy a0070 a0130 ReadBy a0110 a0111 a0123 a0127 a0152
-@0057:000000            yspeed: .word 0                  ; @@WrittenBy a0073 a0136 a0150 ReadBy a0113 a0114 a0131 a0135 a0146 a0155
-@0060:143145              xpos: .word -0.45              ;      -0.9 @@WrittenBy a0077 a0153 ReadBy a0151 a0161 a0227
-@0061:000000              ypos: .word 0                  ; @@WrittenBy a0075 a0156 ReadBy a0102 a0106 a0154 a0157
+@0056:000000            xspeed: .word 0                  ; @@WrittenBy a0070 a0125 ReadBy a0105 a0106 a0120 a0124 a0147
+@0057:000000            yspeed: .word 0                  ; @@WrittenBy a0073 a0133 a0145 ReadBy a0110 a0111 a0126 a0132 a0143 a0152
+@0060:143145              xpos: .word -0.45              ;      -0.9 @@WrittenBy a0077 a0150 ReadBy a0146 a0156 a0224
+@0061:000000              ypos: .word 0                  ; @@WrittenBy a0075 a0153 ReadBy a0102 a0151 a0154
 
                                 ; fuel simply declines from +1 to 0 by an increment each cycle
-@0062:000000              fuel: .word 0                  ; @@WrittenBy a0101 a0141 ReadBy a0121 a0137 a0172 a0200 a0204
+@0062:000000              fuel: .word 0                  ; @@WrittenBy a0101 a0136 ReadBy a0116 a0134 a0167 a0175 a0201
 
                                 ; Ephemeral variables
-@0063:000000              tmp1: .word 0                  ; @@WrittenBy a0112 ReadBy a0115
-@0064:000000             speed: .word 0                  ; @@WrittenBy a0117 ReadBy a0124 a0132 a0217 a0223
+@0063:000000              tmp1: .word 0                  ; @@WrittenBy a0107 ReadBy a0112
+@0064:000000             speed: .word 0                  ; @@WrittenBy a0114 ReadBy a0121 a0127 a0214 a0220
                     loop_count:                          ; used only in top-level routines for drawing the game board
 @0065:000000                    .word 0
 
@@ -85,7 +85,7 @@
                                 ;     xspeed = 0.01 * math.cos(math.radians(launchdir))
                                 ;     yspeed = 0.01 * math.sin(math.radians(launchdir))
 
-@0066:100045              main: ca launch_speed          ; @@JumpedToBy start a0235
+@0066:100045              main: ca launch_speed          ; @@JumpedToBy start a0232
 @0067:144042                    mh cos_launchdir
 @0070:040056                    ts xspeed
 @0071:100045                    ca launch_speed
@@ -106,12 +106,12 @@
                                 ;     # main loop: accelerate while fuel, show fuel and speed
                                 ;     while ypos >= -0.1 and ypos < 1.0 and xpos < 1.0 :
                           loop:
-@0102:100061                    ca ypos                  ; test all the loop exit conditions @@JumpedToBy a0234
+@0102:100061                    ca ypos                  ; test all the loop exit conditions @@JumpedToBy a0231
 @0103:114050                    su c_miny
-@0104:070235                    cp loop_exit
-@0105:100053                    ca c_maxy
-@0106:114061                    su ypos
-@0107:070235                    cp loop_exit
+@0104:070232                    cp loop_exit
+                                ;        ca c_maxy      ; comment these out so if the rocket flies to high, you get a trap
+                                ;        su ypos
+                                ;        cp loop_exit
                                 ;        ca c_maxx      ; comment these out so if the rocket flies to far to the right, you get a trap
                                 ;        su xpos
                                 ;        cp loop_exit
@@ -119,115 +119,115 @@
                                 ;         speed = math.sqrt(xspeed*xspeed + yspeed*yspeed)
                                 ; the sqrt isn't working quite yet...  for cases where the angle is close to 0 or 90 degrees
                                 ;   in which case, the sqrt error may make a result smaller than the larger of the two speed vars
-@0110:100056                    ca xspeed
-@0111:144056                    mh xspeed
-@0112:040063                    ts tmp1
-@0113:100057                    ca yspeed
-@0114:144057                    mh yspeed
-@0115:110063                    ad tmp1
-@0116:074345                    sp SQRT
-@0117:040064                    ts speed
-@0120:040003                    ts FF3                   ; display speed/velocity in lights
+@0105:100056                    ca xspeed
+@0106:144056                    mh xspeed
+@0107:040063                    ts tmp1
+@0110:100057                    ca yspeed
+@0111:144057                    mh yspeed
+@0112:110063                    ad tmp1
+@0113:074342                    sp SQRT
+@0114:040064                    ts speed
+@0115:040003                    ts FF3                   ; display speed/velocity in lights
 
 
                                 ;         # accelerate if still fuel
                                 ;         if fuel > 0.0 :
-@0121:100062                    ca fuel
-@0122:070144                    cp no_fuel
+@0116:100062                    ca fuel
+@0117:070141                    cp no_fuel
 
                                 ;; continue here if there's still fuel
                                 ;             # no need to calculate flight angle, just the speed
                                 ;             xspeed += (xspeed / speed) * accel
                                 ;             yspeed += (yspeed / speed) * accel
                                 ;             fuel -= burn
-@0123:100056                    ca xspeed
-@0124:150064                    dv speed
-@0125:155017                    slh 15                   ; after Divide, you always need to get the result out of BReg
-@0126:144046                    mh accel
-@0127:110056                    ad xspeed
-@0130:040056                    ts xspeed
+@0120:100056                    ca xspeed
+@0121:150064                    dv speed
+@0122:155017                    slh 15                   ; after Divide, you always need to get the result out of BReg
+@0123:144046                    mh accel
+@0124:110056                    ad xspeed
+@0125:040056                    ts xspeed
 
                                 ; and do this again for yspeed
-@0131:100057                    ca yspeed
-@0132:150064                    dv speed
-@0133:155017                    slh 15
-@0134:144046                    mh accel
-@0135:110057                    ad yspeed
-@0136:040057                    ts yspeed
+@0126:100057                    ca yspeed
+@0127:150064                    dv speed
+@0130:155017                    slh 15
+@0131:144046                    mh accel
+@0132:110057                    ad yspeed
+@0133:040057                    ts yspeed
 
-@0137:100062                    ca fuel
-@0140:114047                    su burn
-@0141:040062                    ts fuel
-@0142:040002                    ts FF2                   ; display the fuel load in FF2
-@0143:074146                    sp do_gravity
+@0134:100062                    ca fuel
+@0135:114047                    su burn
+@0136:040062                    ts fuel
+@0137:040002                    ts FF2                   ; display the fuel load in FF2
+@0140:074143                    sp do_gravity
                                 ;
                        no_fuel:
-@0144:100000                    ca 0                     ; @@JumpedToBy a0122
-@0145:040002                    ts FF2                   ; zero out the fuel load in FF2
+@0141:100000                    ca 0                     ; @@JumpedToBy a0117
+@0142:040002                    ts FF2                   ; zero out the fuel load in FF2
 
                     do_gravity:
                                 ; continue here whether there's fuel or not
                                 ;         # gavitation is always in y direction
                                 ;         yspeed -= grav
-@0146:100057                    ca yspeed                ; @@JumpedToBy a0143
-@0147:114044                    su grav
-@0150:040057                    ts yspeed
+@0143:100057                    ca yspeed                ; @@JumpedToBy a0140
+@0144:114044                    su grav
+@0145:040057                    ts yspeed
 
                                 ;         # integrate to positions
                                 ;         xpos += xspeed
                                 ;         ypos += yspeed
-@0151:100060                    ca xpos
-@0152:110056                    ad xspeed
-@0153:040060                    ts xpos
-@0154:100061                    ca ypos
-@0155:110057                    ad yspeed
-@0156:040061                    ts ypos
+@0146:100060                    ca xpos
+@0147:110056                    ad xspeed
+@0150:040060                    ts xpos
+@0151:100061                    ca ypos
+@0152:110057                    ad yspeed
+@0153:040061                    ts ypos
 
                                 ;         # always draw actual point and base line
                                 ;         drawPoint(xpos, ypos)
                                 ;         drawVector(-1.0, 0.0, 1.0, 0.0)
                                 ;         drawCharacter(0.0, -0.8, digits[mode])
 
-@0157:100061                    ca ypos                  ; draw the rocket's position as a point
-@0160:000677                    si scope_point           ; initialize point gen with the y-coord in ACC ; Auto-Annotate I/O: Display Points
-@0161:100060                    ca xpos
-@0162:024000                    rc 0                     ; Draw a pont with ACC = x
+@0154:100061                    ca ypos                  ; draw the rocket's position as a point
+@0155:000677                    si scope_point           ; initialize point gen with the y-coord in ACC ; Auto-Annotate I/O: Display Points
+@0156:100060                    ca xpos
+@0157:024000                    rc 0                     ; Draw a pont with ACC = x
 
                  draw_baseline:
-@0163:100055                    ca y_baseline
-@0164:040267                    ts y_arg
-@0165:100236                    ca const_2
-@0166:040266                    ts x_arg
-@0167:104246                    cs const_11
-@0170:040270                    ts n_segments            ; segment count should be negative, ie, we will incr the value until positive
-@0171:074272                    sp draw_x_line
+@0160:100055                    ca y_baseline
+@0161:040264                    ts y_arg
+@0162:100233                    ca const_2
+@0163:040263                    ts x_arg
+@0164:104243                    cs const_11
+@0165:040265                    ts n_segments            ; segment count should be negative, ie, we will incr the value until positive
+@0166:074267                    sp draw_x_line
 
                                 ;
                                 ;         # show fuel as bar at the left side
                                 ;         if fuel > 0.0:
                                 ;             drawVector(-0.99, 0.0, -0.99, fuel)
                draw_fuel_guage:
-@0172:100062                    ca fuel
-@0173:070213                    cp draw_speed_guage
+@0167:100062                    ca fuel
+@0170:070210                    cp draw_speed_guage
 
-@0174:100236                    ca const_2
-@0175:040266                    ts x_arg
-@0176:100055                    ca y_baseline
-@0177:040267                    ts y_arg
-@0200:100062                    ca fuel
-@0201:161006                    srh 6
-@0202:040271                    ts y_len                 ; total length of line in pixels
-@0203:074307                    sp draw_y_line
+@0171:100233                    ca const_2
+@0172:040263                    ts x_arg
+@0173:100055                    ca y_baseline
+@0174:040264                    ts y_arg
+@0175:100062                    ca fuel
+@0176:161006                    srh 6
+@0177:040266                    ts y_len                 ; total length of line in pixels
+@0200:074304                    sp draw_y_line
 
 
-@0204:100062                    ca fuel                  ; draw a point at the end of the line
+@0201:100062                    ca fuel                  ; draw a point at the end of the line
                                 ;srh 1
-@0205:110055                    ad y_baseline
-@0206:000677                    si scope_point           ; initialize point gen with the y-coord in ACC ; Auto-Annotate I/O: Display Points
-@0207:100236                    ca const_2
-@0210:114243                    su const_8
-@0211:154014                    slr 12
-@0212:024000                    rc 0                     ; Draw a point with ACC = x
+@0202:110055                    ad y_baseline
+@0203:000677                    si scope_point           ; initialize point gen with the y-coord in ACC ; Auto-Annotate I/O: Display Points
+@0204:100233                    ca const_2
+@0205:114240                    su const_8
+@0206:154014                    slr 12
+@0207:024000                    rc 0                     ; Draw a point with ACC = x
 
                                 ;         # drawPoint(-0.99, fuel)   # show end point
                                 ;
@@ -236,26 +236,26 @@
                                 ;             drawVector(0.99, 0.0, 0.99, speed*10.0)
 
               draw_speed_guage:
-@0213:100250                    ca const_14              ; @@JumpedToBy a0173
-@0214:040266                    ts x_arg
-@0215:100055                    ca y_baseline
-@0216:040267                    ts y_arg
-@0217:100064                    ca speed
-@0220:161003                    srh 3
-@0221:040271                    ts y_len                 ; total length of line in pixels
-@0222:074307                    sp draw_y_line
+@0210:100245                    ca const_14              ; @@JumpedToBy a0170
+@0211:040263                    ts x_arg
+@0212:100055                    ca y_baseline
+@0213:040264                    ts y_arg
+@0214:100064                    ca speed
+@0215:161003                    srh 3
+@0216:040266                    ts y_len                 ; total length of line in pixels
+@0217:074304                    sp draw_y_line
 
-@0223:100064                    ca speed                 ; draw a point at the end of the line
-@0224:155003                    slh 3
-@0225:110055                    ad y_baseline
-@0226:000677                    si scope_point           ; initialize point gen with the y-coord in ACC ; Auto-Annotate I/O: Display Points
-@0227:100060                    ca xpos
-@0230:100250                    ca const_14
-@0231:154014                    slr 12
-@0232:024000                    rc 0                     ; Draw a point with ACC = x
+@0220:100064                    ca speed                 ; draw a point at the end of the line
+@0221:155003                    slh 3
+@0222:110055                    ad y_baseline
+@0223:000677                    si scope_point           ; initialize point gen with the y-coord in ACC ; Auto-Annotate I/O: Display Points
+@0224:100060                    ca xpos
+@0225:100245                    ca const_14
+@0226:154014                    slr 12
+@0227:024000                    rc 0                     ; Draw a point with ACC = x
 
                    draw_digits:
-@0233:100000                    ca 0                     ; placeholder
+@0230:100000                    ca 0                     ; placeholder
                                 ;
                                 ;         # mode 1 and 2:
                                 ;         if mode == 1 or mode == 2 :
@@ -270,67 +270,67 @@
                                 ;             drawVector(xpos, ypos, xpos + 8*xspeed, ypos + 8*yspeed)
                                 ;
 
-@0234:074102                    sp loop
+@0231:074102                    sp loop
 
                      loop_exit:
-@0235:074066                    sp main                  ; @@JumpedToBy a0104 a0107
+@0232:074066                    sp main                  ; @@JumpedToBy a0104
 
 
                                 ; ************ Graphics Support **************
                                 ; constants
 
-@0236:000002           const_2: .word 2                  ; @@ReadBy a0165 a0174 a0207
-@0237:000003           const_3: .word 3
-@0240:000004           const_4: .word 4
-@0241:000006           const_6: .word 6
-@0242:000007           const_7: .word 7
-@0243:000010           const_8: .word 8                  ; @@ReadBy a0210 a0276 a0316 a0341
-@0244:000011           const_9: .word 9
-@0245:000012          const_10: .word 10
-@0246:000013          const_11: .word 11                 ; loop counter for 12 iterations @@ReadBy a0167
-@0247:000014          const_12: .word 12
-@0250:000016          const_14: .word 14                 ; @@ReadBy a0213 a0230
-@0251:000017          const_15: .word 15                 ; @@ReadBy a0431
-@0252:000037          const_31: .word 31                 ; @@ReadBy a0311 a0330
-@0253:000040          const_32: .word 32                 ; @@ReadBy a0321 a0326
-@0254:000100          const_64: .word 64
-@0255:000200         const_128: .word 128
-@0256:017646          const_8K: .word 8102
-@0257:040000         const_16K: .word 16384
+@0233:000002           const_2: .word 2                  ; @@ReadBy a0162 a0171 a0204
+@0234:000003           const_3: .word 3
+@0235:000004           const_4: .word 4
+@0236:000006           const_6: .word 6
+@0237:000007           const_7: .word 7
+@0240:000010           const_8: .word 8                  ; @@ReadBy a0205 a0273 a0313 a0336
+@0241:000011           const_9: .word 9
+@0242:000012          const_10: .word 10
+@0243:000013          const_11: .word 11                 ; loop counter for 12 iterations @@ReadBy a0164
+@0244:000014          const_12: .word 12
+@0245:000016          const_14: .word 14                 ; @@ReadBy a0210 a0225
+@0246:000017          const_15: .word 15                 ; @@ReadBy a0426
+@0247:000037          const_31: .word 31                 ; @@ReadBy a0306 a0325
+@0250:000040          const_32: .word 32                 ; @@ReadBy a0316 a0323
+@0251:000100          const_64: .word 64
+@0252:000200         const_128: .word 128
+@0253:017646          const_8K: .word 8102
+@0254:040000         const_16K: .word 16384
 
                                 ; these two constants give the delta values to draw a "maximum short vector"
-@0260:076000    horiz_line_seg: .word 0o174 * 0o400      ; +32 in the top half of the word
-@0261:000174     vert_line_seg: .word 0o174              ; +32 in the bottom half of the word
-@0262:076174 diag_up_right_seg: .word 0o174 * 0o400 + 0o174
-@0263:100200  diag_dn_left_seg: .word 0o200 * 0o400 + 0o200
-@0264:076200 diag_dn_right_seg: .word 0o174 * 0o400 + 0o200
-@0265:100174  diag_up_left_seg: .word 0o200 * 0o400 + 0o174
+@0255:076000    horiz_line_seg: .word 0o174 * 0o400      ; +32 in the top half of the word
+@0256:000174     vert_line_seg: .word 0o174              ; +32 in the bottom half of the word
+@0257:076174 diag_up_right_seg: .word 0o174 * 0o400 + 0o174
+@0260:100200  diag_dn_left_seg: .word 0o200 * 0o400 + 0o200
+@0261:076200 diag_dn_right_seg: .word 0o174 * 0o400 + 0o200
+@0262:100174  diag_up_left_seg: .word 0o200 * 0o400 + 0o174
 
                                 ; ephemeral args used for passing parameters
-@0266:000000             x_arg: .word 0                  ; @@WrittenBy a0166 a0175 a0214 a0277 a0303 ReadBy a0275 a0300 a0303 a0315 a0340
-@0267:000000             y_arg: .word 0                  ; @@WrittenBy a0164 a0177 a0216 a0324 ReadBy a0273 a0313 a0323 a0336
-@0270:000000        n_segments: .word 0                  ; loop counter @@WrittenBy a0170 a0304 ReadBy a0304
-@0271:000000             y_len: .word 0                  ; @@WrittenBy a0202 a0221 a0327 a0335 ReadBy a0310 a0325 a0333
+@0263:000000             x_arg: .word 0                  ; @@WrittenBy a0163 a0172 a0211 a0274 a0300 ReadBy a0272 a0275 a0300 a0312 a0335
+@0264:000000             y_arg: .word 0                  ; @@WrittenBy a0161 a0174 a0213 a0321 ReadBy a0270 a0310 a0320 a0333
+@0265:000000        n_segments: .word 0                  ; loop counter @@WrittenBy a0165 a0301 ReadBy a0301
+@0266:000000             y_len: .word 0                  ; @@WrittenBy a0177 a0216 a0324 a0332 ReadBy a0305 a0322 a0330
 
                                 ; subroutine to draw a horizontal line
                    draw_x_line:
-@0272:050306                    ta draw_x_line_ret       ; save the return address @@JumpedToBy a0171
-@0273:100267                    ca y_arg
+@0267:050303                    ta draw_x_line_ret       ; save the return address @@JumpedToBy a0166
+@0270:100264                    ca y_arg
                                 ;slr 11        ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
-@0274:001677                    si scope_vector          ; initialize vector gen; Y offset in ACC ; Auto-Annotate I/O: Display Vectors
-@0275:100266                    ca x_arg
-@0276:114243                    su const_8               ; shift from 0-15 axis to -8 to +7
-@0277:040266                    ts x_arg
+@0271:001677                    si scope_vector          ; initialize vector gen; Y offset in ACC ; Auto-Annotate I/O: Display Vectors
+@0272:100263                    ca x_arg
+@0273:114240                    su const_8               ; shift from 0-15 axis to -8 to +7
+@0274:040263                    ts x_arg
                     next_x_seg:
-@0300:100266                    ca x_arg                 ; re-fetch the next x_arg @@JumpedToBy a0305
-@0301:154014                    slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0275:100263                    ca x_arg                 ; re-fetch the next x_arg @@JumpedToBy a0302
+@0276:154014                    slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
 
-@0302:024260                    rc horiz_line_seg        ; Draw a segment with x=ACC
-@0303:130266                    ao x_arg
-@0304:130270                    ao n_segments            ; increment the segment counter
-@0305:070300                    cp next_x_seg
+@0277:024255                    rc horiz_line_seg        ; Draw a segment with x=ACC
+@0300:130263                    ao x_arg
+@0301:130265                    ao n_segments            ; increment the segment counter
+@0302:070275                    cp next_x_seg
                draw_x_line_ret:
-@0306:074000                    sp 0                     ; @@WrittenBy a0272
+@0303:074000                    sp 0                     ; @@WrittenBy a0267
 
 
                                 ; subroutine to draw a vertical line
@@ -339,47 +339,47 @@
                                 ; The line is drawn as a series of max-len segments, followed by a partial segment
                                 ; to get the exct length.
                    draw_y_line:
-@0307:050344                    ta draw_y_line_ret       ; save the return address @@JumpedToBy a0203 a0222
+@0304:050341                    ta draw_y_line_ret       ; save the return address @@JumpedToBy a0200 a0217
                                 ;.print "draw_y_line y_len=%d, y_arg=%d", y_len, y_arg
-@0310:100271                    ca y_len
-@0311:114252                    su const_31
-@0312:070333                    cp draw_last_segment
+@0305:100266                    ca y_len
+@0306:114247                    su const_31
+@0307:070330                    cp draw_last_segment
 
                     next_y_seg:
-@0313:100267                    ca y_arg                 ; @@JumpedToBy a0332
+@0310:100264                    ca y_arg                 ; @@JumpedToBy a0327
                                 ;.print "draw next segment y_len=%d, y_arg=%d", y_len, y_arg
-@0314:001677                    si scope_vector          ; initialize vector gen with the y-coord in ACC ; Auto-Annotate I/O: Display Vectors
-@0315:100266                    ca x_arg
-@0316:114243                    su const_8               ; shift from 0-15 axis to -8 to +7
-@0317:154014                    slr 12                   ;  +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0311:001677                    si scope_vector          ; initialize vector gen with the y-coord in ACC ; Auto-Annotate I/O: Display Vectors
+@0312:100263                    ca x_arg
+@0313:114240                    su const_8               ; shift from 0-15 axis to -8 to +7
+@0314:154014                    slr 12                   ;  +/- 1024 screen coords, multiply by 64 to get to bit 0
 
-@0320:024261                    rc vert_line_seg         ; Draw a segment with x=ACC, length=32 in vert_line_seg
-@0321:100253                    ca const_32
-@0322:154006                    slr 6
-@0323:110267                    ad y_arg                 ; move up one segment
-@0324:040267                    ts y_arg
-@0325:100271                    ca y_len
-@0326:114253                    su const_32              ; shorten the remaining length by 32
-@0327:040271                    ts y_len
-@0330:114252                    su const_31              ; test to see if y_len remaining is less than 32
-@0331:070333                    cp draw_last_segment
-@0332:074313                    sp next_y_seg            ; otherwise, go round again for the next segment
+@0315:024256                    rc vert_line_seg         ; Draw a segment with x=ACC, length=32 in vert_line_seg
+@0316:100250                    ca const_32
+@0317:154006                    slr 6
+@0320:110264                    ad y_arg                 ; move up one segment
+@0321:040264                    ts y_arg
+@0322:100266                    ca y_len
+@0323:114250                    su const_32              ; shorten the remaining length by 32
+@0324:040266                    ts y_len
+@0325:114247                    su const_31              ; test to see if y_len remaining is less than 32
+@0326:070330                    cp draw_last_segment
+@0327:074310                    sp next_y_seg            ; otherwise, go round again for the next segment
 
              draw_last_segment:
-@0333:100271                    ca y_len                 ; pick up remaining length in pixels @@JumpedToBy a0312 a0331
+@0330:100266                    ca y_len                 ; pick up remaining length in pixels @@JumpedToBy a0307 a0326
                                 ;.print "last seg y_len=%d, y_arg=%d", y_len, y_arg
-@0334:155002                    slh 2                    ; shift into to bits 8-13
-@0335:040271                    ts y_len
-@0336:100267                    ca y_arg
+@0331:155002                    slh 2                    ; shift into to bits 8-13
+@0332:040266                    ts y_len
+@0333:100264                    ca y_arg
                                 ;slr 11        ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
-@0337:001677                    si scope_vector          ; initialize vector gen with the y-coord in ACC ; Auto-Annotate I/O: Display Vectors
-@0340:100266                    ca x_arg
-@0341:114243                    su const_8               ; shift from 0-15 axis to -8 to +7
-@0342:154014                    slr 12                   ;  +/- 1024 screen coords, multiply by 64 to get to bit 0
-@0343:024271          draw_seg: rc y_len                 ; Draw a segment with x=ACC
+@0334:001677                    si scope_vector          ; initialize vector gen with the y-coord in ACC ; Auto-Annotate I/O: Display Vectors
+@0335:100263                    ca x_arg
+@0336:114240                    su const_8               ; shift from 0-15 axis to -8 to +7
+@0337:154014                    slr 12                   ;  +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0340:024266          draw_seg: rc y_len                 ; Draw a segment with x=ACC
 
                draw_y_line_ret:
-@0344:074000                    sp 0                     ; @@WrittenBy a0307
+@0341:074000                    sp 0                     ; @@WrittenBy a0304
 
 
                                 ; =============================================================
@@ -407,82 +407,82 @@
                                 ;             ...              ; AC = sqrt(S) on return
                                 ; =============================================================
                           SQRT:
-@0345:050432                    ta SQRET                 ; @@JumpedToBy a0116
+@0342:050427                    ta SQRET                 ; @@JumpedToBy a0113
 
-@0346:040433                    ts SQARG                 ; save S; AC still = S
+@0343:040430                    ts SQARG                 ; save S; AC still = S
 
                                 ; --- Initial guess: x0 = S/2 + 0.5 ---
-@0347:161001                    srh 1                    ; AC = S/2
-@0350:110435                    ad SQHALF                ; AC = S/2 + 0.5
-@0351:040434                    ts SQEST                 ; x0
+@0344:161001                    srh 1                    ; AC = S/2
+@0345:110432                    ad SQHALF                ; AC = S/2 + 0.5
+@0346:040431                    ts SQEST                 ; x0
 
                                 ; --- Iteration 1 ---
-@0352:100433                    ca SQARG
-@0353:150434                    dv SQEST                 ; BR = S / x  (AC = remainder, ignore)
-@0354:155016                    slh 14                   ; AC = quotient from BR
-@0355:040436                    ts sqtmp
-@0356:100434                    ca SQEST                 ; AC = S/x + x
-@0357:161001                    srh 1                    ; AC = (S/x + x) / 2
-@0360:110436                    ad sqtmp
-@0361:040434                    ts SQEST                 ; x1
+@0347:100430                    ca SQARG
+@0350:150431                    dv SQEST                 ; BR = S / x  (AC = remainder, ignore)
+@0351:155016                    slh 14                   ; AC = quotient from BR
+@0352:040433                    ts sqtmp
+@0353:100431                    ca SQEST                 ; AC = S/x + x
+@0354:161001                    srh 1                    ; AC = (S/x + x) / 2
+@0355:110433                    ad sqtmp
+@0356:040431                    ts SQEST                 ; x1
 
                                 ; --- Iteration 2 ---
-@0362:100433                    ca SQARG
-@0363:150434                    dv SQEST
-@0364:155016                    slh 14
-@0365:040436                    ts sqtmp
-@0366:100434                    ca SQEST
-@0367:161001                    srh 1
-@0370:110436                    ad sqtmp
-@0371:040434                    ts SQEST                 ; x2
+@0357:100430                    ca SQARG
+@0360:150431                    dv SQEST
+@0361:155016                    slh 14
+@0362:040433                    ts sqtmp
+@0363:100431                    ca SQEST
+@0364:161001                    srh 1
+@0365:110433                    ad sqtmp
+@0366:040431                    ts SQEST                 ; x2
 
                                 ; --- Iteration 3 ---
-@0372:100433                    ca SQARG
-@0373:150434                    dv SQEST
-@0374:155016                    slh 14
-@0375:040436                    ts sqtmp
-@0376:100434                    ca SQEST
-@0377:161001                    srh 1
-@0400:110436                    ad sqtmp
-@0401:040434                    ts SQEST                 ; x3
+@0367:100430                    ca SQARG
+@0370:150431                    dv SQEST
+@0371:155016                    slh 14
+@0372:040433                    ts sqtmp
+@0373:100431                    ca SQEST
+@0374:161001                    srh 1
+@0375:110433                    ad sqtmp
+@0376:040431                    ts SQEST                 ; x3
 
                                 ; --- Iteration 4 ---
-@0402:100433                    ca SQARG
-@0403:150434                    dv SQEST
-@0404:155016                    slh 14
-@0405:040436                    ts sqtmp
-@0406:100434                    ca SQEST
-@0407:161001                    srh 1
-@0410:110436                    ad sqtmp
-@0411:040434                    ts SQEST                 ; x4
+@0377:100430                    ca SQARG
+@0400:150431                    dv SQEST
+@0401:155016                    slh 14
+@0402:040433                    ts sqtmp
+@0403:100431                    ca SQEST
+@0404:161001                    srh 1
+@0405:110433                    ad sqtmp
+@0406:040431                    ts SQEST                 ; x4
 
                                 ; --- Iteration 5 ---
-@0412:100433                    ca SQARG
-@0413:150434                    dv SQEST
-@0414:155016                    slh 14
-@0415:040436                    ts sqtmp
-@0416:100434                    ca SQEST
-@0417:161001                    srh 1
-@0420:110436                    ad sqtmp
-@0421:040434                    ts SQEST                 ; x5
+@0407:100430                    ca SQARG
+@0410:150431                    dv SQEST
+@0411:155016                    slh 14
+@0412:040433                    ts sqtmp
+@0413:100431                    ca SQEST
+@0414:161001                    srh 1
+@0415:110433                    ad sqtmp
+@0416:040431                    ts SQEST                 ; x5
 
                                 ; --- Iteration 6: result stays in AC, no ts needed ---
-@0422:100433                    ca SQARG
-@0423:150434                    dv SQEST
-@0424:155016                    slh 14
-@0425:040436                    ts sqtmp
-@0426:100434                    ca SQEST
-@0427:161001                    srh 1
-@0430:110436                    ad sqtmp
-@0431:110251                    ad const_15              ; ensure the result is greater or equal to the actual sqrt
+@0417:100430                    ca SQARG
+@0420:150431                    dv SQEST
+@0421:155016                    slh 14
+@0422:040433                    ts sqtmp
+@0423:100431                    ca SQEST
+@0424:161001                    srh 1
+@0425:110433                    ad sqtmp
+@0426:110246                    ad const_15              ; ensure the result is greater or equal to the actual sqrt
 
-@0432:074000             SQRET: sp 0                     ; @@WrittenBy a0345
+@0427:074000             SQRET: sp 0                     ; @@WrittenBy a0342
 
                                 ; =============================================================
                                 ; DATA
                                 ; =============================================================
-@0433:000000             SQARG: .word 0o0                ; saved input S @@WrittenBy a0346 ReadBy a0352 a0362 a0372 a0402 a0412 a0422
-@0434:000000             SQEST: .word 0o0                ; current Newton estimate @@WrittenBy a0351 a0361 a0371 a0401 a0411 a0421 ReadBy a0353 a0356 a0363 a0366 a0373 a0376 a0403 a0406 a0413 a0416 a0423 a0426
-@0435:040000            SQHALF: .word 0o040000           ; 0.5 in fixed-point @@ReadBy a0350
-@0436:000000             sqtmp: .word 0                  ; @@WrittenBy a0355 a0365 a0375 a0405 a0415 a0425 ReadBy a0360 a0370 a0400 a0410 a0420 a0430
+@0430:000000             SQARG: .word 0o0                ; saved input S @@WrittenBy a0343 ReadBy a0347 a0357 a0367 a0377 a0407 a0417
+@0431:000000             SQEST: .word 0o0                ; current Newton estimate @@WrittenBy a0346 a0356 a0366 a0376 a0406 a0416 ReadBy a0350 a0353 a0360 a0363 a0370 a0373 a0400 a0403 a0410 a0413 a0420 a0423
+@0432:040000            SQHALF: .word 0o040000           ; 0.5 in fixed-point @@ReadBy a0345
+@0433:000000             sqtmp: .word 0                  ; @@WrittenBy a0352 a0362 a0372 a0402 a0412 a0422 ReadBy a0355 a0365 a0375 a0405 a0415 a0425
 
