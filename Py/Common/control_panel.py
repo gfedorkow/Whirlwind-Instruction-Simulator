@@ -546,7 +546,7 @@ class CPUControlClass:
             self.dispatch[buttons_def[i]] = pb
             xi += x_step
 
-    def test_for_hit(self, x, y, cb):
+    def test_for_hit(self, x, y, cb, alarm_state=0):
         alarm_clear = False
         for cbl in self.control:
             hit = cbl.test_for_hit(x, y)
@@ -556,7 +556,8 @@ class CPUControlClass:
                 cpu_control_switches = {"PC Preset": self.panel.pc_toggle_sw.read_button_vector()}
                 for sw in ("Stop on CK", "Stop on SI-1", "Stop on Addr"):
                     cpu_control_switches[sw] = self.dispatch[sw].button_object.read_toggle()
-                alarm_clear |= self.sim_state_machine(cbl.switch_name, cb, cpu_control_switches)
+                alarm_clear |= self.sim_state_machine(cbl.switch_name, cb,
+                                                      cpu_control_switches, alarm_state=alarm_state)
         return alarm_clear
 
     # this small routine manages local interactions in the buttons and lights
@@ -721,7 +722,7 @@ class PanelXwinClass:
             for ff in self.ffreg:
                 ff.test_for_ff_hit(pt[0].x, pt[0].y)
 
-            alarm_clear = self.cpu_control.test_for_hit(pt[0].x, pt[0].y, cb)
+            alarm_clear = self.cpu_control.test_for_hit(pt[0].x, pt[0].y, cb, alarm_state=alarm_state)
 
             bn = self.pc_toggle_sw.test_button_vector_hit(pt[0].x, pt[0].y)
             if bn is not None:
@@ -974,12 +975,16 @@ class PanelClass:
             self.panel_mWW.reset_ff_registers(function, log=None, info_str='')
 
     # This state machine is used to control the flow of execution for the simulator
-    def sim_state_machine(self, switch_name, cb, cpu_control_switches=None, set_scope_selector_leds=None):
+    def sim_state_machine(self, switch_name, cb, cpu_control_switches=None,
+                          set_scope_selector_leds=None, alarm_state=0):
         alarm_clear_flag_false = False
         alarm_clear_flag_true = True
         sw = switch_name
         if sw == "Stop":
             cb.sim_state = cb.SIM_STATE_STOP
+            if (alarm_state == cb.OVERFLOW_ALARM or alarm_state == cb.DIVIDE_ALARM) \
+                and cb.panel and self.hnf_program_dispatcher_mode:
+                    cb.panel.hnf_program_dispatcher.zero_remaining_time()
             # self.dispatch["Stop"].lamp_object.set_lamp(True)
             # self.dispatch["Start at 40"].lamp_object.set_lamp(False)
             return alarm_clear_flag_false
@@ -1054,10 +1059,8 @@ class PanelClass:
             return alarm_clear_flag_false
 
         if sw == "Clear Alarm":   # clear the Alarm LED
-            print(" Alarm Clear button press")
             if cb.panel and self.hnf_program_dispatcher_mode:
                 cb.panel.hnf_program_dispatcher.zero_remaining_time()
-                print("Cleared Alarm LED")
             return alarm_clear_flag_true
 
         if sw == "Rotary Up":   # turning the Rotary Encoder knob right triggers this action

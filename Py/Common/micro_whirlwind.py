@@ -195,7 +195,9 @@ class PanelMicroWWClass:
                  "Stop on CK": self.md.check_alarm_special_state,
                  "Stop on SI-1": self.md.stop_on_s1_state
                  }
-            alarm_clear = self.sim_state_machine(bn, cb, cpu_control_switches, set_scope_selector_leds=self.md.set_scope_selector_leds) # the third arg should be the PC Preset switch register
+            alarm_clear = self.sim_state_machine(bn, cb, cpu_control_switches,
+                                                 set_scope_selector_leds=self.md.set_scope_selector_leds, # the third arg should be the PC Preset switch register
+                                                 alarm_state = alarm_state)
 
         if init_PC:
             self.write_register("PC", init_PC)
