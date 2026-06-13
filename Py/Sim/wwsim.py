@@ -826,13 +826,14 @@ def main():
     # Close the display, but only just before we exit.  Unless... the NoClose arg keeps the
     # CRT screen visible in case of a backtrace, so there's some hope of see what was going
     # on the screen at the time of the error.
-    for d in cb.cpu.IODeviceList:
-        if d.name == "DisplayScope":
-            if d.crt is not None:
-                if args.NoCloseOnStop:
-                    d.crt.get_mouse_blocking()  # wait to see what was on the display in case of a trap
-                d.crt.win.items.clear()
-                d.crt.close_display()
+    if not cb.remote_scope_only:
+        for d in cb.cpu.IODeviceList:
+            if d.name == "DisplayScope":
+                if d.crt is not None:
+                    if args.NoCloseOnStop:
+                        d.crt.get_mouse_blocking()  # wait to see what was on the display in case of a trap
+                    d.crt.win.items.clear()
+                    d.crt.close_display()
 
     # sys.exit(alarm_state != cb.NO_ALARM)
     sys.exit(0)         # return zero for an ordinary exit
