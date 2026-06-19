@@ -638,9 +638,11 @@ class MappedRegisterDisplayClass:
         self.u2_led[6] = self.u2_led[6] & 0o175777 | (val & 1) << 10
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # just need to write one word
 
-    # adjust the LED hidden under the restart button to indicate that the Light Gun is active
+    # adjust the LED to indicate that the Light Gun is active
+    #  Formerly hidden under the restart button, moved to its own LED on Jun 14, 2026 
     def update_hnf_gun_switch_led(self, val):
-        self.u2_led[6] = self.u2_led[6] & 0o157777 | (val & 1) << 13
+#        self.u2_led[6] = self.u2_led[6] & 0o157777 | (val & 1) << 13
+        self.u2_led[7] = self.u2_led[7] & 0o157777 | (val & 1) << 13
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # just need to write one word
 
     # write two bits to the LED array to indicate which 'scope (D and/or F) is enabled
