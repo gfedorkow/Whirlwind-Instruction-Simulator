@@ -367,12 +367,6 @@ class ArgsTokenizer (Tokenizer):
         super().__init__ (str)
         self.delimiter = ' '
 
-## class SimParam (Tokenizer):
-##     def __init__(self, cb):
-##         self.simparams = {}
-##         self.simparams["Radar"] = False
-##         self.cb = cb
-
 
 class SimParamTokenizer (Tokenizer):
     def __init__ (self, str):
@@ -518,7 +512,7 @@ class StdArgs:
         return parser
 
 class ConstWWbitClass:
-    def __init__(self, get_screen_size=False, corefile=None, args=None):
+    def __init__(self, get_screen_size=False, corefile=None, args=None, hnf_hardware_present=False):
         # This state variable controls whether the simulator simply moves ahead to execute
         # each instruction, or if it pauses to wait for a person to click a button (or run single-step).
         self.SIM_STATE_STOP = 0
@@ -608,11 +602,14 @@ class ConstWWbitClass:
 
         # configure the displays
         self.analog_display = False   # set this flag to display on an analog oscilloscope instead of an x-window
-        self.flexo_win = False;       # Window to display flexo output
+        self.flexo_win = False        # Window to display flexo output
         self.use_x_win = True         # clear this flag to completely turn off the xwin display, widgets and all
         self.ana_scope = None   # this is a handle to the methods for operating the analog scope
         self.which_scope = 3    # default to showing both D and F scopes on the xwin display
         self.RasPi = False      # this will be set in microWhirlwind if it's running on a RasPi
+        self.hnf_hardware_present = False
+        if args:
+            self.hnf_hardware_present = args.HnfHardwarePresent
 
         # These two will be set by prog that needs them. Looks like only wwsim at this point. LAS 5/17/24
         # self.argAutoClick = False   # used in air defense and Nim (I think); mAY 2026: seems to be unused...
@@ -2273,6 +2270,13 @@ class XwinCrt:
             win_name = "Whirlwind CoreFile: %s" % cb.CoreFileName
             self.win = self.gfx.GraphWin(win_name, self.WIN_MAX_COORD, win_y_size, autoflush=False)
             root = self.win.master
+            # Two lines were suggested by Juergen, to minimize the border around the "CRT" window
+            # This is only used on the HNF hardware; as a side effect of minimizing the border,
+            # it's no longer possible to move the window with a mouse.
+            if cb.hnf_hardware_present:
+                root.config(bg='gray10')
+                root.overrideredirect(True)
+
             # Position the window (e.g., at x=100, y=100)
             # Format is "width x height + Xoffset + Yoffset"
             if cb.xWin_geometry:
