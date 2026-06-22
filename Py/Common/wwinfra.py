@@ -2467,7 +2467,7 @@ class XwinCrt:
                     button = 3  # return 'button 3' to emulate the PC Mouse right-click
                 pt = True       # if it were the CRT, we'd have to return an actual point, but here, it's just "hit"
                 print("Light Gun Hit: button=%d" % button)
-                if cb.panel.hnf_program_dispatcher:
+                if cb.panel and cb.panel.hnf_program_dispatcher:
                     cb.panel.hnf_program_dispatcher.reset_inactivity_timer()
             self.last_pen_point = None  # we don't need this var, but I don't want to break the xwin version
 
