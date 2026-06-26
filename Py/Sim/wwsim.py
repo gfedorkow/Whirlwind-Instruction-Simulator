@@ -457,6 +457,7 @@ def main_run_sim(args, cb, cpu):
                 if args.HnfProgramDispatcher:
                     if cb.panel.hnf_program_dispatcher.test_for_mir_change(cb):
                         alarm_state = cb.DISPATCHER_ALARM
+                        cb.panel.hnf_program_dispatcher.dispatch_to_core(cb)
                         break  # bail out if there was a timeouot
                 time.sleep(0.1)
                 continue
@@ -540,8 +541,10 @@ def main_run_sim(args, cb, cpu):
                 if (alarm_state == cb.DISPATCHER_ALARM):
                     cb.panel.hnf_program_dispatcher.dispatch_to_core(cb)
                     break
-                elif cb.panel and (alarm_state == cb.OVERFLOW_ALARM or alarm_state == cb.DIVIDE_ALARM or \
+                elif cb.panel and (alarm_state == cb.OVERFLOW_ALARM or alarm_state == cb.DIVIDE_ALARM or
                                    alarm_state == cb.IO_ERROR_ALARM or alarm_state == cb.UNIMPLEMENTED_ALARM):
+                    if cb.panel and cb.panel.hnf_program_dispatcher:  # send a code to the Info Screen if HNF
+                        cb.panel.hnf_program_dispatcher.switch_to_alarm_state()
                     continue  # switch to the Stop State spin loop
                 else:
                     # the normal case with cmd-line wwsim is to stop on an alarm; if the command line flag says not to, we'll try to keep going
@@ -741,7 +744,8 @@ def main():
     quiet = not args.Verbose 
     
     # instantiate the class full of constants
-    cb = wwinfra.ConstWWbitClass (corefile=args.corefile, get_screen_size = True, args = args)
+    cb = wwinfra.ConstWWbitClass (corefile=args.corefile, get_screen_size = True, args = args,
+                                  hnf_hardware_present=args.HnfHardwarePresent)
     wwinfra.theConstWWbitClass = cb
     cb.log = wwinfra.LogFactory().getLog (quiet=quiet, no_warn=args.NoWarnings)
 

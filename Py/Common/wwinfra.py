@@ -607,9 +607,7 @@ class ConstWWbitClass:
         self.ana_scope = None   # this is a handle to the methods for operating the analog scope
         self.which_scope = 3    # default to showing both D and F scopes on the xwin display
         self.RasPi = False      # this will be set in microWhirlwind if it's running on a RasPi
-        self.hnf_hardware_present = False
-        if args:
-            self.hnf_hardware_present = args.HnfHardwarePresent
+        self.hnf_hardware_present = hnf_hardware_present
 
         # These two will be set by prog that needs them. Looks like only wwsim at this point. LAS 5/17/24
         # self.argAutoClick = False   # used in air defense and Nim (I think); mAY 2026: seems to be unused...
@@ -2274,7 +2272,7 @@ class XwinCrt:
             # This is only used on the HNF hardware; as a side effect of minimizing the border,
             # it's no longer possible to move the window with a mouse.
             if cb.hnf_hardware_present:
-                root.config(bg='gray10')
+                root.config(bg='Black')
                 root.overrideredirect(True)
 
             # Position the window (e.g., at x=100, y=100)
@@ -2286,7 +2284,12 @@ class XwinCrt:
             else:
                 root.geometry('+600+100')
 
-            self.win.setBackground("Gray10")
+            # HNF prefers to have a completely black background; for guy's use, "almost black" seems to work
+            if cb.hnf_hardware_present:
+                self.win.setBackground("Black")
+            else:
+                self.win.setBackground("Gray10")
+
             if cb.museum_mode:
                 cb.museum_mode.museum_gfx_window_size(cb, self.win)
 

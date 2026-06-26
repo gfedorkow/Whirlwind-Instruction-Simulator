@@ -453,6 +453,7 @@ class MappedRegisterDisplayClass:
 
     def set_cpu_reg_display(self, cpu=None, mdr=0, mar=0, mar_bank=0, ff2=0, ff3=0, run_state=0, alarm_state=None):
         state_leds = 0
+        pc_r_mask = 0o177777
         if cpu:
             acc_r = bit_reverse_16(cpu._AC)
             pc_r = bit_reverse_16(cpu.PC & 0o3777)
@@ -478,6 +479,8 @@ class MappedRegisterDisplayClass:
                 self.u1_led[3] = mdr_par_r
                 self.u1_led[6] = ~b_reg_r
                 self.u1_led[7] = b_reg_r
+            else:
+                pc_r_mask = 0o177740  # turn off the PCR Zero LEDs in HNF Mode
 
                 # Carry-Out / SAM register
                 # Bit 8 -  0x0100 -> red -1 carry
@@ -493,8 +496,8 @@ class MappedRegisterDisplayClass:
 
             self.u1_led[4] = ~acc_r
             self.u1_led[5] = acc_r
-            self.u5_led[0] = pc_r
-            self.u5_led[1] = ~pc_r
+            self.u5_led[0] = pc_r       # top five bits are already zero (i.e., Red LEDs are off)
+            self.u5_led[1] = ~pc_r & pc_r_mask # turn off top five White LEDs in HNF mode
             self.u5_led[2] = ff3r
             self.u5_led[3] = ~ff3r
             self.u5_led[4] = ff2r

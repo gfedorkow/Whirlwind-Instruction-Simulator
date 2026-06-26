@@ -272,6 +272,12 @@ class HnfDispatcherClass:
         text = "%s\r\n" % selection
         self.tty.write(text.encode('ascii'))
 
+
+    # Jurgen asked for a command code to the info screen if the sim enters "Alarm" state
+    def switch_to_alarm_state(self):
+        text = "E\r\n"
+        self.tty.write(text.encode('ascii'))
+
     def test_tty_rx_activity(self):
         ret = None
         if self.tty.in_waiting > 0:

@@ -69,7 +69,9 @@ main:       sp init_game_board      ; call the init subroutine
 c_15:       .word 15
 c_32:       .word 32
 c_scope_edge: .word 950 * 32        ; close to the edge of the scope screen
-c_msg_x_pos:  .word 800 * 32
+c_msg_x_pos:  .word 450 * 32
+c_reset_x_pos: .word 530 *32
+c_reset_y_pos: .word 850 *32
 
 refresh_loop:
             sp PRMPRMT   ; CALL - print "your move"
@@ -506,10 +508,12 @@ draw_tie_ret:
 
 draw_reset_symbol:
             ta draw_reset_symbol_ret
-            cs const_7; put the point at game-board coord (1, 1)
-            slr 12
+;            cs const_7; put the point at game-board coord (1, 1)
+;            slr 12
+            cs c_reset_y_pos
             ; ACC contains the coord; use the same number for x and y
             si scope_point    ; initialize point gen with the y-coord in ACC
+            cs c_reset_x_pos
             rc 0          ; Draw a pont with x=ACC
             rd 0          ; read the light gun
             cp init_game_board    ; call a subroutine to handle the light gun. 
