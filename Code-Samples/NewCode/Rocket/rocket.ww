@@ -14,7 +14,9 @@
 ;  Pacing can be adjusted by changing the small negative number in "delay_init"
 ; 
 
-        .dbwgt c_fuel, 0o400
+;        .dbwgt c_fuel, 0o400
+        .dbwgt  c_fuel, incr = 0o600, min = 0o5000, max = 0o77200, fmt = "%o"
+
 
         .org 0
 zero:   .word 0
