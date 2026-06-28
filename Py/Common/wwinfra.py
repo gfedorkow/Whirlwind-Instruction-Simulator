@@ -2268,12 +2268,6 @@ class XwinCrt:
             win_name = "Whirlwind CoreFile: %s" % cb.CoreFileName
             self.win = self.gfx.GraphWin(win_name, self.WIN_MAX_COORD, win_y_size, autoflush=False)
             root = self.win.master
-            # Two lines were suggested by Juergen, to minimize the border around the "CRT" window
-            # This is only used on the HNF hardware; as a side effect of minimizing the border,
-            # it's no longer possible to move the window with a mouse.
-            if cb.hnf_hardware_present:
-                root.config(bg='Black')
-                root.overrideredirect(True)
 
             # Position the window (e.g., at x=100, y=100)
             # Format is "width x height + Xoffset + Yoffset"
