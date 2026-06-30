@@ -472,16 +472,17 @@ class MappedRegisterDisplayClass:
                 ff3r = ff3
 
             # leave unused banks of LEDs unlit to avoid Chalieplex Ghosts
+            # All the LEDs default to zero, so simply not setting them will leave
+            # them as zero
             if self.hnf_hardware_present == False:
+                # This seems a bit counter-intuitive, but only turn these bits on
+                # when we _don't_ have HNF hardware
                 self.u1_led[0] = ~mar_r
                 self.u1_led[1] = mar_r
                 self.u1_led[2] = ~mdr_par_r
                 self.u1_led[3] = mdr_par_r
                 self.u1_led[6] = ~b_reg_r
                 self.u1_led[7] = b_reg_r
-            else:
-                pc_r_mask = 0o177740  # turn off the PCR Zero LEDs in HNF Mode
-
                 # Carry-Out / SAM register
                 # Bit 8 -  0x0100 -> red -1 carry
                 # Bit 9 -  0x0200 -> white -1 carry
@@ -493,6 +494,9 @@ class MappedRegisterDisplayClass:
                     state_leds = 0x900
                 else:
                     state_leds = 0xa00
+            else:
+                pc_r_mask = 0o177740  # turn off the unused PC Reversed LEDs in HNF Mode
+
 
             self.u1_led[4] = ~acc_r
             self.u1_led[5] = acc_r
