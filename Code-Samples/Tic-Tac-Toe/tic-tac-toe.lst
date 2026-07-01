@@ -734,8 +734,8 @@
 @0656:000014                const_12: .word 12
 @0657:020000            const_2_cell: .word 8192               ; decimal value of screen coord corresponding to two cells in width @@ReadBy a0446
 
-@0660:100002             const_x_win: .word 0o100002           ; two plus sign bit
-@0661:100003             const_o_win: .word 0o100003           ; two plus sign bit @@ReadBy a1060 a1065
+@0660:100002             const_x_win: .word 0o100002           ; two plus sign bit @@ReadBy a1060
+@0661:100003             const_o_win: .word 0o100003           ; two plus sign bit @@ReadBy a1065
 @0662:100004              const_draw: .word 0o100004           ; three plus sign bit @@ReadBy a1072
 
 
@@ -1091,7 +1091,7 @@
                            HUMAN_WIN:
 @1056:075335                          sp PRMBOARD              ; CALL - returns @@JumpedToBy a1020
 @1057:075524                          sp PRMHWIN               ; CALL - returns
-@1060:100661                          ca const_o_win
+@1060:100660                          ca const_x_win
 @1061:040214                          ts which_player
 @1062:074050                          sp refresh_loop          ; JUMP - no return
 

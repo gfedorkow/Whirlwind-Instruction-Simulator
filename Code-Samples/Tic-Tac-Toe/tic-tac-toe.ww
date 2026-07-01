@@ -734,8 +734,8 @@ const_11: .word 11    ; loop counter for 12 iterations
 const_12: .word 12
 const_2_cell: .word 8192   ; decimal value of screen coord corresponding to two cells in width
 
-const_x_win: .word 0o100002      ; two plus sign bit
-const_o_win: .word 0o100003      ; two plus sign bit
+const_o_win: .word 0o100002      ; two plus sign bit
+const_x_win: .word 0o100003      ; two plus sign bit
 const_draw:  .word 0o100004     ; three plus sign bit
 
 
@@ -1098,7 +1098,7 @@ HUMAN_WIN:
 COMP_WIN:
         sp   PRMBOARD          ; CALL - returns
         sp   PRMCWIN           ; CALL - returns
-        ca const_o_win
+        ca const_x_win
         ts which_player
         sp   refresh_loop      ; JUMP - no return
 
