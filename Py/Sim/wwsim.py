@@ -379,11 +379,8 @@ def main_run_sim(args, cb, cpu):
 
     alarm_state = cb.NO_ALARM
     if cb.panel:
-        cb.panel.update_panel(cb, 0, init_PC=cpu.PC, alarm_state=alarm_state)  # I don't think we can miss a mouse clicks on this call
-
-    # this was here to debug a panel/no-panel inconsistency
-    # print("Dump Switch Values:")
-    # cpu.cpu_switches.dump_switches()
+        # initialize the panel, ignore any button clicks
+        cb.panel.update_panel(cb, 0, init_PC=cpu.PC, alarm_state=alarm_state)
 
     if cb.record_core_info:
         CoreMem.corememinfo = wwinfra.CoreMemInfo (CoreMem)
@@ -447,12 +444,20 @@ def main_run_sim(args, cb, cpu):
             # When the simulation is not stopped, we do this check below ever n-hundred cycles to keep the
             #  panel overhead in check.
             if cb.sim_state == cb.SIM_STATE_STOP and cb.panel:
-                if cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # just idle here, watching for mouse clicks on the panel
+                # update panel returns True if there's a Quit event, or True if Alarm Clear was activated
+                # Update_panel also may change the sim_state
+                (quit, alarm_clear) = cb.panel.update_panel(cb, 0, alarm_state=alarm_state)  # just idle here, watching for mouse clicks on the panel
+                if quit:
                     alarm_state = cb.QUIT_ALARM
                     break  # bail out of the While True loop if display update says to stop due to Red-X hit
+                if alarm_clear:
+                    alarm_state = cb.NO_ALARM
+                if cb.sim_state != cb.SIM_STATE_STOP:
+                    alarm_state = cb.NO_ALARM
                 if args.HnfProgramDispatcher:
                     if cb.panel.hnf_program_dispatcher.test_for_mir_change(cb):
                         alarm_state = cb.DISPATCHER_ALARM
+                        cb.panel.hnf_program_dispatcher.dispatch_to_core(cb)
                         break  # bail out if there was a timeouot
                 time.sleep(0.1)
                 continue
@@ -479,8 +484,12 @@ def main_run_sim(args, cb, cpu):
             if (sim_cycle % update_rate == 0) or args.SynchronousVideo or CycleDelayTime:
                 exit_alarm = cb.NO_ALARM
                 if cb.panel:
-                    if cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # watch for mouse clicks on the panel
+                    (quit, alarm_clear) = cb.panel.update_panel(cb, 0, alarm_state=alarm_state)  # watch for mouse clicks on the panel
+                    if quit:  # watch for mouse clicks on the panel
                         exit_alarm = cb.QUIT_ALARM
+                    if alarm_clear:
+                        alarm_state = cb.NO_ALARM
+
                     if args.HnfProgramDispatcher:
                         if cb.panel.hnf_program_dispatcher.test_for_mir_change(cb):
                             alarm_state = cb.DISPATCHER_ALARM
@@ -529,11 +538,14 @@ def main_run_sim(args, cb, cpu):
                         break
                     if not no_alarm_stop:  # here's the state where we hit an alarm, but it's not QUIT
                         cb.sim_state = cb.SIM_STATE_STOP
-#                if cb.panel and cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # watch for mouse clicks on the panel
-#                    break
                 if (alarm_state == cb.DISPATCHER_ALARM):
                     cb.panel.hnf_program_dispatcher.dispatch_to_core(cb)
                     break
+                elif cb.panel and (alarm_state == cb.OVERFLOW_ALARM or alarm_state == cb.DIVIDE_ALARM or
+                                   alarm_state == cb.IO_ERROR_ALARM or alarm_state == cb.UNIMPLEMENTED_ALARM):
+                    if cb.panel and cb.panel.hnf_program_dispatcher:  # send a code to the Info Screen if HNF
+                        cb.panel.hnf_program_dispatcher.switch_to_alarm_state()
+                    continue  # switch to the Stop State spin loop
                 else:
                     # the normal case with cmd-line wwsim is to stop on an alarm; if the command line flag says not to, we'll try to keep going
                     # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
@@ -617,6 +629,7 @@ def main_run_sim(args, cb, cpu):
                 cb.log.info ("Begin Flexout:\n" + logstr)
                 cb.log.info ("End Flexout")
                 """
+                d.clear_saved_output()
 
         if d.name == "Teletype":
             s = d.get_saved_output()
@@ -708,6 +721,8 @@ def main():
                         help="Set the Idle/Inactivity timer in HNF mode, measured in seconds", type=int)
     parser.add_argument("--HnfHardwarePresent",
                         help="Activate the special-purpose Demo Program hardware for use at HNF", action="store_true")
+    parser.add_argument("--HnfRestartTime",
+                        help="Cause the simulator to exit to allow a restart after a timeout, specified in minutes, for use at HNF", type=int)
     parser.add_argument("-d", "--Debugger",
                         help="Start simulation under the debugger", action="store_true")
     parser.add_argument("--ZeroizeCore",
@@ -729,7 +744,8 @@ def main():
     quiet = not args.Verbose 
     
     # instantiate the class full of constants
-    cb = wwinfra.ConstWWbitClass (corefile=args.corefile, get_screen_size = True, args = args)
+    cb = wwinfra.ConstWWbitClass (corefile=args.corefile, get_screen_size = True, args = args,
+                                  hnf_hardware_present=args.HnfHardwarePresent)
     wwinfra.theConstWWbitClass = cb
     cb.log = wwinfra.LogFactory().getLog (quiet=quiet, no_warn=args.NoWarnings)
 
@@ -751,6 +767,7 @@ def main():
         cb.panel = control_panel.PanelClass(cb, args.Panel, args.BlinkenLights, args.MicroWhirlwind,
                                             hnf_program_dispatcher_mode=args.HnfProgramDispatcher,
                                             hnf_hardware_present=args.HnfHardwarePresent,
+                                            hnf_restart_timer=args.HnfRestartTime,
                                             hnf_idle_timeout = args.HnfIdleTimeout, tty_name=args.TTYname)
         if args.HnfProgramDispatcher and not args.QuickStart:
             cb.log.fatal("HNF Mode ought to work without --Quickstart, but it doesn't (yet)")

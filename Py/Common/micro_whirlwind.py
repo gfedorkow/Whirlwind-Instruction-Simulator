@@ -170,6 +170,8 @@ class PanelMicroWWClass:
     # def set_cpu_state_lamps(self, cb, sim_state, alarm_state):
 
     def update_panel(self, cb, bank, alarm_state=0, standalone=False, init_PC=None):
+        quit = False
+        alarm_clear = False
         cpu = cb.cpu
         mdr = cpu.cm.mem_data_reg
         if mdr is None:   # Python "core memory" can read as None; translate that to zero
@@ -193,7 +195,9 @@ class PanelMicroWWClass:
                  "Stop on CK": self.md.check_alarm_special_state,
                  "Stop on SI-1": self.md.stop_on_s1_state
                  }
-            self.sim_state_machine(bn, cb, cpu_control_switches, set_scope_selector_leds=self.md.set_scope_selector_leds) # the third arg should be the PC Preset switch register
+            alarm_clear = self.sim_state_machine(bn, cb, cpu_control_switches,
+                                                 set_scope_selector_leds=self.md.set_scope_selector_leds, # the third arg should be the PC Preset switch register
+                                                 alarm_state = alarm_state)
 
         if init_PC:
             self.write_register("PC", init_PC)
@@ -218,8 +222,8 @@ class PanelMicroWWClass:
                 self.md.update_hnf_gun_switch_led(0)
 
         if gpio.input(pin_gpio_isKey) == 0:   #
-            return False
-        return True
+            quit = True
+        return (quit, alarm_clear)
 
 
     # The Panels contain a subset of the Flip Flop Register Preset switches; this method returns
@@ -449,6 +453,7 @@ class MappedRegisterDisplayClass:
 
     def set_cpu_reg_display(self, cpu=None, mdr=0, mar=0, mar_bank=0, ff2=0, ff3=0, run_state=0, alarm_state=None):
         state_leds = 0
+        pc_r_mask = 0o177777
         if cpu:
             acc_r = bit_reverse_16(cpu._AC)
             pc_r = bit_reverse_16(cpu.PC & 0o3777)
@@ -467,14 +472,17 @@ class MappedRegisterDisplayClass:
                 ff3r = ff3
 
             # leave unused banks of LEDs unlit to avoid Chalieplex Ghosts
+            # All the LEDs default to zero, so simply not setting them will leave
+            # them as zero
             if self.hnf_hardware_present == False:
+                # This seems a bit counter-intuitive, but only turn these bits on
+                # when we _don't_ have HNF hardware
                 self.u1_led[0] = ~mar_r
                 self.u1_led[1] = mar_r
                 self.u1_led[2] = ~mdr_par_r
                 self.u1_led[3] = mdr_par_r
                 self.u1_led[6] = ~b_reg_r
                 self.u1_led[7] = b_reg_r
-
                 # Carry-Out / SAM register
                 # Bit 8 -  0x0100 -> red -1 carry
                 # Bit 9 -  0x0200 -> white -1 carry
@@ -486,11 +494,14 @@ class MappedRegisterDisplayClass:
                     state_leds = 0x900
                 else:
                     state_leds = 0xa00
+            else:
+                pc_r_mask = 0o177740  # turn off the unused PC Reversed LEDs in HNF Mode
+
 
             self.u1_led[4] = ~acc_r
             self.u1_led[5] = acc_r
-            self.u5_led[0] = pc_r
-            self.u5_led[1] = ~pc_r
+            self.u5_led[0] = pc_r       # top five bits are already zero (i.e., Red LEDs are off)
+            self.u5_led[1] = ~pc_r & pc_r_mask # turn off top five White LEDs in HNF mode
             self.u5_led[2] = ff3r
             self.u5_led[3] = ~ff3r
             self.u5_led[4] = ff2r
@@ -634,9 +645,11 @@ class MappedRegisterDisplayClass:
         self.u2_led[6] = self.u2_led[6] & 0o175777 | (val & 1) << 10
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # just need to write one word
 
-    # adjust the LED hidden under the restart button to indicate that the Light Gun is active
+    # adjust the LED to indicate that the Light Gun is active
+    #  Formerly hidden under the restart button, moved to its own LED on Jun 14, 2026 
     def update_hnf_gun_switch_led(self, val):
-        self.u2_led[6] = self.u2_led[6] & 0o157777 | (val & 1) << 13
+#        self.u2_led[6] = self.u2_led[6] & 0o157777 | (val & 1) << 13
+        self.u2_led[7] = self.u2_led[7] & 0o157777 | (val & 1) << 13
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # just need to write one word
 
     # write two bits to the LED array to indicate which 'scope (D and/or F) is enabled
@@ -685,7 +698,7 @@ class MappedSwitchClass:
             self.fn_no_sw,   # 9
         )
         self.md = mapped_display
-        self.fn_buttons_def = (("Examine", "Read In", "Order-by-Order", "Start at 40", "Start Over", "Restart", "Stop", "Clear"),
+        self.fn_buttons_def = (("Examine", "Read In", "Order-by-Order", "Start at 40", "Start Over", "Restart", "Stop", "Clear Alarm"),
                                ("Stop on Addr", "Stop on CK", "Stop on S1", "F-Scope", "D-Scope", "unused", "unused", "Rotary Push"))
         self.encoder_state = [0,0]
 

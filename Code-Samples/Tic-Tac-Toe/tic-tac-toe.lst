@@ -36,9 +36,9 @@
 
                                       .org 0
                                 zero:
-@0000:000000                 const_0: .word 0                  ; @@WrittenBy apc_table_ts igb_table_ts gl_ca_addr ReadBy a0054 ca_addr a0173 dd_y_arg dd_x_arg dc_y_arg dc_x_arg dn_y_arg dn_x1_arg dw_y_arg dw_x_arg dt_y_arg dt_x_arg lgh_x1_arg lgh_y1_arg apc_ca0 a0610 a0631 a0667 a0720 a0725 a0743 a0761 a0766 char_conv2 a1014 a1021 a1040 a1100 CWLD a1124 a1132 a1146 a1155 a1167 a1177 a1204 a1211 a1216 a1223 a1230 a1235 a1242 a1262 a1300 a1306 a1323 a1343 a1350 a1371 a1375 a1401 PRaddr PRLOOP a1503 char_conv1 a2453 a2457 a2660 a2672 a2715 a2720 JumpedToBy gb_state_sp a0176 a0345 a0362 a0404 a0425 a0447 a0466 a0505 a0515 light_gun_cell_hit_ret a0566 a0574 a0600 a0601 a0603 a0637 rgs_ret GMRET MHRET CWRET CMRET TMRET TFRET PBRET PSRET PBNRET PPRET PRRET PCMRET PHWRET PCWRET PDRET PBMRET PSTRET a2465 a2724
+@0000:000000                 const_0: .word 0                  ; @@WrittenBy apc_table_ts igb_table_ts gl_ca_addr ReadBy a0056 ca_addr a0175 dd_y_arg dd_x_arg dc_y_arg dc_x_arg dn_y_arg dn_x1_arg dw_y_arg dw_x_arg dt_y_arg dt_x_arg lgh_x1_arg lgh_y1_arg apc_ca0 a0612 a0633 a0671 a0722 a0727 a0745 a0763 a0770 char_conv2 a1016 a1023 a1042 a1102 CWLD a1126 a1134 a1150 a1157 a1171 a1201 a1206 a1213 a1220 a1225 a1232 a1237 a1244 a1264 a1302 a1310 a1325 a1345 a1352 a1373 a1377 a1403 PRaddr PRLOOP a1505 char_conv1 a2453 a2457 a2660 a2672 a2715 a2720 JumpedToBy gb_state_sp a0200 a0347 a0364 a0406 a0427 a0451 a0470 a0507 a0517 light_gun_cell_hit_ret a0570 a0576 a0602 a0603 a0605 a0641 rgs_ret GMRET MHRET CWRET CMRET TMRET TFRET PBRET PSRET PBNRET PPRET PRRET PCMRET PHWRET PCWRET PDRET PBMRET PSTRET a2465 a2724
                                  one:
-@0001:000001                 const_1: .word 1                  ; @@ReadBy a0060 a0063 set_game_over a0131 a0133 a0135 a0524 a0564 a0634 a0704 a0705 a2666 a2670
+@0001:000001                 const_1: .word 1                  ; @@ReadBy a0062 a0065 set_game_over a0133 a0135 a0137 a0526 a0566 a0636 a0706 a0707 a2666 a2670
 
                                       .pp FF2_USER_MOVE, 02    ; display cell number of last User move
                                       .pp FF3_WW_MOVE, 03      ; display cell number of last WW move
@@ -59,45 +59,47 @@
 
 
 
-                                      .org 0o40                ; @@WrittenBy a0541 a0636
+                                      .org 0o40                ; @@WrittenBy a0543 a0640
                                       ;
 
-@0040:074607                    main: sp init_game_board       ; call the init subroutine
-@0041:074046                          sp refresh_loop          ; branch to main display refresh loop
+@0040:074611                    main: sp init_game_board       ; call the init subroutine
+@0041:074050                          sp refresh_loop          ; branch to main display refresh loop
 
                                       ; constants
 @0042:000017                    c_15: .word 15                 ; @@ReadBy a2662
 @0043:000040                    c_32: .word 32
-@0044:073300            c_scope_edge: .word 950 * 32           ; close to the edge of the scope screen @@ReadBy a0167 a2400
-@0045:062000             c_msg_x_pos: .word 800 * 32           ; @@ReadBy a0171
+@0044:073300            c_scope_edge: .word 950 * 32           ; close to the edge of the scope screen @@ReadBy a0171 a2400
+@0045:034100             c_msg_x_pos: .word 450 * 32           ; @@ReadBy a0173
+@0046:041100           c_reset_x_pos: .word 530 * 32           ; @@ReadBy a0513
+@0047:065100           c_reset_y_pos: .word 850 * 32           ; @@ReadBy a0511
 
                         refresh_loop:
-@0046:075450                          sp PRMPRMT               ; CALL - print "your move" @@JumpedToBy a0041 a0070 a1060 a1065 a1072
+@0050:075452                          sp PRMPRMT               ; CALL - print "your move" @@JumpedToBy a0041 a0072 a1062 a1067 a1074
                              refloop:
-@0047:074071                          sp draw_game_board       ; @@JumpedToBy a0051 a0061 a0065
-@0050:100641                          ca g_game_over           ; negative value means "game over"
-@0051:070047                          cp refloop
-@0052:074602                          sp is_there_winner       ; check to see if this user move ended the game
-@0053:100212                          ca which_player          ; if which_player is not zero, then the game has ended
-@0054:134000                          dm zero
-@0055:070057                          cp rl_continue_game
-@0056:074066                          sp set_game_over         ; negative means no more moves
+@0051:074073                          sp draw_game_board       ; @@JumpedToBy a0053 a0063 a0067
+@0052:100643                          ca g_game_over           ; negative value means "game over"
+@0053:070051                          cp refloop
+@0054:074604                          sp is_there_winner       ; check to see if this user move ended the game
+@0055:100214                          ca which_player          ; if which_player is not zero, then the game has ended
+@0056:134000                          dm zero
+@0057:070061                          cp rl_continue_game
+@0060:074070                          sp set_game_over         ; negative means no more moves
 
                     rl_continue_game:
-@0057:100202                          ca light_gun_mailbox     ; @@JumpedToBy a0055
-@0060:110001                          ad one                   ; convert -0 (cell zero) into +1 before the next CP test, then discard the result
-@0061:070047                          cp refloop
+@0061:100204                          ca light_gun_mailbox     ; @@JumpedToBy a0057
+@0062:110001                          ad one                   ; convert -0 (cell zero) into +1 before the next CP test, then discard the result
+@0063:070051                          cp refloop
                                       .print "light gun hit at cell %d", light_gun_mailbox
                                       ; user_play_cell goes straight to the mailbox to find the current cell number.
-@0062:074570                          sp user_play_cell        ; do something with the light gun hit!  ; this call is for person-vs-computer play
-@0063:104001                          cs one                   ; put -1 in the mailbox to indicate Empty
-@0064:040202                          ts light_gun_mailbox     ; mark the mailbox as empty
+@0064:074572                          sp user_play_cell        ; do something with the light gun hit!  ; this call is for person-vs-computer play
+@0065:104001                          cs one                   ; put -1 in the mailbox to indicate Empty
+@0066:040204                          ts light_gun_mailbox     ; mark the mailbox as empty
 
-@0065:074047                          sp refloop
+@0067:074051                          sp refloop
 
-@0066:104001           set_game_over: cs one                   ; the game_over flag starts set to zero by init_game_board @@JumpedToBy a0056
-@0067:040641                          ts g_game_over           ; But when the game is over, we set it to -1
-@0070:074046                          sp refresh_loop
+@0070:104001           set_game_over: cs one                   ; the game_over flag starts set to zero by init_game_board @@JumpedToBy a0060
+@0071:040643                          ts g_game_over           ; But when the game is over, we set it to -1
+@0072:074050                          sp refresh_loop
 
 
 
@@ -105,197 +107,197 @@
                                       ; draw the tic-tac-toe grid
                                       ; two horizontal lines first
                      draw_game_board:
-@0071:050176                          ta draw_game_board_ret   ; @@JumpedToBy a0047
+@0073:050200                          ta draw_game_board_ret   ; @@JumpedToBy a0051
 
-@0072:074702                          sp refresh_game_state    ; subroutine to collect the current board from the oxo algorithm
+@0074:074704                          sp refresh_game_state    ; subroutine to collect the current board from the oxo algorithm
 
-@0073:104643                          cs const_2
-@0074:040203                          ts loop_count
-@0075:100646                          ca const_6
-@0076:040205                          ts y_arg
+@0075:104645                          cs const_2
+@0076:040205                          ts loop_count
+@0077:100650                          ca const_6
+@0100:040207                          ts y_arg
                          x_grid_loop:
-@0077:100643                          ca const_2               ; @@JumpedToBy a0107
-@0100:040204                          ts x_arg
-@0101:104653                          cs const_11
-@0102:040210                          ts n_segments            ; segment count should be negative, ie, we will incr the value until positive
-@0103:074327                          sp draw_x_line
+@0101:100645                          ca const_2               ; @@JumpedToBy a0111
+@0102:040206                          ts x_arg
+@0103:104655                          cs const_11
+@0104:040212                          ts n_segments            ; segment count should be negative, ie, we will incr the value until positive
+@0105:074331                          sp draw_x_line
 
-@0104:100652                          ca const_10
-@0105:040205                          ts y_arg
-@0106:130203                          ao loop_count
-@0107:070077                          cp x_grid_loop
+@0106:100654                          ca const_10
+@0107:040207                          ts y_arg
+@0110:130205                          ao loop_count
+@0111:070101                          cp x_grid_loop
 
                                       ; two vertical lines next
-@0110:104643                          cs const_2
-@0111:040203                          ts loop_count
-@0112:100646                          ca const_6
-@0113:040204                          ts x_arg
+@0112:104645                          cs const_2
+@0113:040205                          ts loop_count
+@0114:100650                          ca const_6
+@0115:040206                          ts x_arg
                          y_grid_loop:
-@0114:100643                          ca const_2               ; @@JumpedToBy a0124
-@0115:040205                          ts y_arg
-@0116:104653                          cs const_11
-@0117:040210                          ts n_segments            ; segment count should be negative, ie, we will incr the value until positive
-@0120:074346                          sp draw_y_line
+@0116:100645                          ca const_2               ; @@JumpedToBy a0126
+@0117:040207                          ts y_arg
+@0120:104655                          cs const_11
+@0121:040212                          ts n_segments            ; segment count should be negative, ie, we will incr the value until positive
+@0122:074350                          sp draw_y_line
 
-@0121:100652                          ca const_10
-@0122:040204                          ts x_arg
-@0123:130203                          ao loop_count
-@0124:070114                          cp y_grid_loop
+@0123:100654                          ca const_10
+@0124:040206                          ts x_arg
+@0125:130205                          ao loop_count
+@0126:070116                          cp y_grid_loop
 
                                       ; Draw the game_state, ie, dots, naughts, or crosses
                      draw_game_state:
-@0125:104650                          cs const_8               ; nine passes; var should be 8; loop count is negative
-@0126:040203                          ts loop_count
-@0127:100273                          ca gb_table_start
-@0130:040177                          ts next_x_addr
-@0131:110001                          ad const_1
-@0132:040200                          ts next_y_addr
+@0127:104652                          cs const_8               ; nine passes; var should be 8; loop count is negative
+@0130:040205                          ts loop_count
+@0131:100275                          ca gb_table_start
+@0132:040201                          ts next_x_addr
 @0133:110001                          ad const_1
-@0134:040201                          ts next_gb_state_addr
-@0135:104001                          cs one
-@0136:040202                          ts light_gun_mailbox
+@0134:040202                          ts next_y_addr
+@0135:110001                          ad const_1
+@0136:040203                          ts next_gb_state_addr
+@0137:104001                          cs one
+@0140:040204                          ts light_gun_mailbox
                              gb_loop:
-@0137:100177               gb_x_inst: ca next_x_addr           ; @@JumpedToBy a0162
-@0140:040206                          ts x_addr_arg
-@0141:100200               gb_y_inst: ca next_y_addr
-@0142:040207                          ts y_addr_arg
-@0143:100201              gb_gs_inst: ca next_gb_state_addr
-@0144:044145                          td ca_addr
-@0145:100000                 ca_addr: ca 0                     ; @@WrittenBy a0144
-@0146:044147                          td gb_state_sp
-@0147:074000             gb_state_sp: sp 0                     ; draw the X, O or dot; this call may have a side-effect of seeing a light-gun hit @@WrittenBy a0146
+@0141:100201               gb_x_inst: ca next_x_addr           ; @@JumpedToBy a0164
+@0142:040210                          ts x_addr_arg
+@0143:100202               gb_y_inst: ca next_y_addr
+@0144:040211                          ts y_addr_arg
+@0145:100203              gb_gs_inst: ca next_gb_state_addr
+@0146:044147                          td ca_addr
+@0147:100000                 ca_addr: ca 0                     ; @@WrittenBy a0146
+@0150:044151                          td gb_state_sp
+@0151:074000             gb_state_sp: sp 0                     ; draw the X, O or dot; this call may have a side-effect of seeing a light-gun hit @@WrittenBy a0150
 
                                       ; increment pointers and loop count for the next pass
-@0150:100177                          ca next_x_addr
-@0151:110644                          ad const_3
-@0152:040177                          ts next_x_addr
-@0153:100200                          ca next_y_addr
-@0154:110644                          ad const_3
-@0155:040200                          ts next_y_addr
-@0156:100201                          ca next_gb_state_addr
-@0157:110644                          ad const_3
-@0160:040201                          ts next_gb_state_addr
-@0161:130203                          ao loop_count
-@0162:070137                          cp gb_loop
+@0152:100201                          ca next_x_addr
+@0153:110646                          ad const_3
+@0154:040201                          ts next_x_addr
+@0155:100202                          ca next_y_addr
+@0156:110646                          ad const_3
+@0157:040202                          ts next_y_addr
+@0160:100203                          ca next_gb_state_addr
+@0161:110646                          ad const_3
+@0162:040203                          ts next_gb_state_addr
+@0163:130205                          ao loop_count
+@0164:070141                          cp gb_loop
 
                  draw_current_player:                          ; draw an alpha string at the bottom of the screen to show the state of the game
 
-@0163:100212                          ca which_player          ; see definition for this number
-@0164:174647                          md const_7               ; clear the sign bit in case of "Game Over"
-@0165:110222                          ad state_msg_tablep
-@0166:044173                          td dcp_ca_addr
+@0165:100214                          ca which_player          ; see definition for this number
+@0166:174651                          md const_7               ; clear the sign bit in case of "Game Over"
+@0167:110224                          ad state_msg_tablep
+@0170:044175                          td dcp_ca_addr
 
-@0167:104044                          cs c_scope_edge          ; set the location to draw a string
-@0170:042470                          ts ds_argy
-@0171:104045                          cs c_msg_x_pos
-@0172:042467                          ts ds_argx
+@0171:104044                          cs c_scope_edge          ; set the location to draw a string
+@0172:042470                          ts ds_argy
+@0173:104045                          cs c_msg_x_pos
+@0174:042467                          ts ds_argx
                          dcp_ca_addr:
-@0173:100000                          ca 0                     ; get the pointer to the string into ACC @@WrittenBy a0166
-@0174:076443                          sp draw_str              ; "print" the string on the screen
+@0175:100000                          ca 0                     ; get the pointer to the string into ACC @@WrittenBy a0170
+@0176:076443                          sp draw_str              ; "print" the string on the screen
 
-@0175:074506                          sp draw_reset_symbol     ; draw the symbol to call for a game reset
+@0177:074510                          sp draw_reset_symbol     ; draw the symbol to call for a game reset
 
                  draw_game_board_ret:                          ; return from the 'board display' subroutine
-@0176:074000                          sp 0                     ; @@WrittenBy a0071
+@0200:074000                          sp 0                     ; @@WrittenBy a0073
 
 
 
 
                                       ; ephemeral loop state variables
-@0177:000000             next_x_addr: .word 0                  ; @@WrittenBy a0130 a0152 ReadBy gb_x_inst a0150
-@0200:000000             next_y_addr: .word 0                  ; @@WrittenBy a0132 a0155 ReadBy gb_y_inst a0153
-@0201:000000      next_gb_state_addr: .word 0                  ; @@WrittenBy a0134 a0160 a0706 a0740 ReadBy gb_gs_inst a0156 a0711 a0736
-@0202:177776       light_gun_mailbox: .word -1                 ; used to pass light-gun hits back from the drawing routine.  Negative means "no hit" @@WrittenBy a0064 a0136 a0540 a0635 ReadBy a0057 a0571
+@0201:000000             next_x_addr: .word 0                  ; @@WrittenBy a0132 a0154 ReadBy gb_x_inst a0152
+@0202:000000             next_y_addr: .word 0                  ; @@WrittenBy a0134 a0157 ReadBy gb_y_inst a0155
+@0203:000000      next_gb_state_addr: .word 0                  ; @@WrittenBy a0136 a0162 a0710 a0742 ReadBy gb_gs_inst a0160 a0713 a0740
+@0204:177776       light_gun_mailbox: .word -1                 ; used to pass light-gun hits back from the drawing routine.  Negative means "no hit" @@WrittenBy a0066 a0140 a0542 a0637 ReadBy a0061 a0573
 
                           loop_count:                          ; used only in top-level routines for drawing the game board
-@0203:000000                          .word 0                  ; @@WrittenBy a0074 a0106 a0111 a0123 a0126 a0161 a0621 a0627 ReadBy a0106 a0123 a0161 a0627
+@0205:000000                          .word 0                  ; @@WrittenBy a0076 a0110 a0113 a0125 a0130 a0163 a0623 a0631 ReadBy a0110 a0125 a0163 a0631
 
 
                                       ; Arguments to pass into routines
-@0204:000000                   x_arg: .word 0                  ; @@WrittenBy a0100 a0113 a0122 a0336 a0342 ReadBy a0334 a0337 a0342 a0353
-@0205:000000                   y_arg: .word 0                  ; @@WrittenBy a0076 a0105 a0115 a0357 ReadBy a0330 a0347 a0357
-@0206:000000              x_addr_arg: .word 0                  ; pointer to x_addr @@WrittenBy a0140 ReadBy a0374 a0414 a0435 a0457 a0476 a0520
-@0207:000000              y_addr_arg: .word 0                  ; @@WrittenBy a0142 ReadBy a0366 a0406 a0427 a0451 a0470 a0526
-@0210:000000              n_segments: .word 0                  ; @@WrittenBy a0102 a0117 a0343 a0360 ReadBy a0343 a0360
-@0211:000000            gb_state_arg: .word 0
+@0206:000000                   x_arg: .word 0                  ; @@WrittenBy a0102 a0115 a0124 a0340 a0344 ReadBy a0336 a0341 a0344 a0355
+@0207:000000                   y_arg: .word 0                  ; @@WrittenBy a0100 a0107 a0117 a0361 ReadBy a0332 a0351 a0361
+@0210:000000              x_addr_arg: .word 0                  ; pointer to x_addr @@WrittenBy a0142 ReadBy a0376 a0416 a0437 a0461 a0500 a0522
+@0211:000000              y_addr_arg: .word 0                  ; @@WrittenBy a0144 ReadBy a0370 a0410 a0431 a0453 a0472 a0530
+@0212:000000              n_segments: .word 0                  ; @@WrittenBy a0104 a0121 a0345 a0362 ReadBy a0345 a0362
+@0213:000000            gb_state_arg: .word 0
 
                                       ;  Game Play State
                                       ; this var is zero or one to show which player is on-deck for the next move
                                       ; But it can also be set to negative to say "Game Over", or 2 to say Win, three to say Draw/Tie
                                       ; The var, less the sign bit, is used to index player_icon_table below
-@0212:000000            which_player: .word 0                  ; @@WrittenBy a0565 a0614 a0632 a1057 a1064 a1071 ReadBy a0053 a0163 a0364 a0557 a0563
+@0214:000000            which_player: .word 0                  ; @@WrittenBy a0567 a0616 a0634 a1061 a1066 a1073 ReadBy a0055 a0165 a0366 a0561 a0565
 
-@0213:000007     player_state_x_addr: .word 7                  ; These two constants control where the X or O indicator lands on the screen
-@0214:000001     player_state_y_addr: .word 1
-@0215:000213      player_state_x_ptr: .word player_state_x_addr
-@0216:000214      player_state_y_ptr: .word player_state_y_addr
+@0215:000007     player_state_x_addr: .word 7                  ; These two constants control where the X or O indicator lands on the screen
+@0216:000001     player_state_y_addr: .word 1
+@0217:000215      player_state_x_ptr: .word player_state_x_addr
+@0220:000216      player_state_y_ptr: .word player_state_y_addr
 
                                       ; Static lookup table to find how to draw the current player state
                                       ; The table is a pointer to subroutine entry points
-@0217:000220       player_icon_table: .word dct0               ; @@ReadBy a0556
-@0220:000405                    dct0: .word draw_cross
-@0221:000426                    dct1: .word draw_naught
+@0221:000222       player_icon_table: .word dct0               ; @@ReadBy a0560
+@0222:000407                    dct0: .word draw_cross
+@0223:000430                    dct1: .word draw_naught
                                       ;dct2:       .word draw_win
                                       ;dct3:       .word draw_tie
 
-@0222:000223        state_msg_tablep: .word state_msg_table    ; @@ReadBy a0165
+@0224:000225        state_msg_tablep: .word state_msg_table    ; @@ReadBy a0167
                      state_msg_table:
-@0223:000241                          .word msg_naught_play
-@0224:000230                          .word msg_cross_play
-@0225:000260                          .word msg_o_win
-@0226:000252                          .word msg_x_win
-@0227:000266                          .word msg_draw
+@0225:000243                          .word msg_naught_play
+@0226:000232                          .word msg_cross_play
+@0227:000262                          .word msg_o_win
+@0230:000254                          .word msg_x_win
+@0231:000270                          .word msg_draw
 
 
                       msg_cross_play:
                                       ;            .flexl "PLAYER X"
-@0230:000054                          .word 0o000054
-@0231:000044                          .word 0o000044
-@0232:000006                          .word 0o000006
-@0233:000052                          .word 0o000052
-@0234:000002                          .word 0o000002
-@0235:000024                          .word 0o000024
-@0236:000010                          .word 0o000010
-@0237:000072                          .word 0o000072
-@0240:177776                          .word -1
+@0232:000054                          .word 0o000054
+@0233:000044                          .word 0o000044
+@0234:000006                          .word 0o000006
+@0235:000052                          .word 0o000052
+@0236:000002                          .word 0o000002
+@0237:000024                          .word 0o000024
+@0240:000010                          .word 0o000010
+@0241:000072                          .word 0o000072
+@0242:177776                          .word -1
 
                      msg_naught_play:
                                       ;            .flexl "PLAYER O"
-@0241:000054                          .word 0o054
-@0242:000044                          .word 0o044
-@0243:000006                          .word 0o006
-@0244:000052                          .word 0o052
-@0245:000002                          .word 0o002
-@0246:000024                          .word 0o024
-@0247:000010                          .word 0o010
-@0250:000060                          .word 0o060
-@0251:177776                          .word -1
+@0243:000054                          .word 0o054
+@0244:000044                          .word 0o044
+@0245:000006                          .word 0o006
+@0246:000052                          .word 0o052
+@0247:000002                          .word 0o002
+@0250:000024                          .word 0o024
+@0251:000010                          .word 0o010
+@0252:000060                          .word 0o060
+@0253:177776                          .word -1
 
                            msg_x_win:
                                       ;            .flexl "X WIN"
-@0252:000072                          .word 0o072
-@0253:000010                          .word 0o010
-@0254:000046                          .word 0o046
-@0255:000014                          .word 0o014
-@0256:000030                          .word 0o030
-@0257:177776                          .word -1
+@0254:000072                          .word 0o072
+@0255:000010                          .word 0o010
+@0256:000046                          .word 0o046
+@0257:000014                          .word 0o014
+@0260:000030                          .word 0o030
+@0261:177776                          .word -1
 
                            msg_o_win:
                                       ;            .flexl "O WIN"
-@0260:000060                          .word 0o060
-@0261:000010                          .word 0o010
-@0262:000046                          .word 0o046
-@0263:000014                          .word 0o014
-@0264:000030                          .word 0o030
-@0265:177776                          .word -1
+@0262:000060                          .word 0o060
+@0263:000010                          .word 0o010
+@0264:000046                          .word 0o046
+@0265:000014                          .word 0o014
+@0266:000030                          .word 0o030
+@0267:177776                          .word -1
 
                             msg_draw:
                                       ;            .flexl "DRAW"
-@0266:000022                          .word 0o022
-@0267:000024                          .word 0o024
-@0270:000006                          .word 0o006
-@0271:000046                          .word 0o046
-@0272:177776                          .word -1
+@0270:000022                          .word 0o022
+@0271:000024                          .word 0o024
+@0272:000006                          .word 0o006
+@0273:000046                          .word 0o046
+@0274:177776                          .word -1
 
 
 
@@ -303,77 +305,77 @@
                                       ; The Game Table is a nine-entry array that has one entry for each cell of the game board.
                                       ; The position of each cell on the game board is static, but the "state" var shows
                                       ; whether the cell contains a dot, a naught or a cross
-@0273:000274          gb_table_start: .word gb0_x              ; @@ReadBy a0127 a0553 a0615 a0703
+@0275:000276          gb_table_start: .word gb0_x              ; @@ReadBy a0131 a0555 a0617 a0705
                                       ; Game Board State
-@0274:000004                   gb0_x: .word 4
-@0275:000014                   gb0_y: .word 12
-@0276:000363               gb0_state: .word draw_dot
-@0277:000010                   gb1_x: .word 8
-@0300:000014                   gb1_y: .word 12
-@0301:000363               gb1_state: .word draw_dot
-@0302:000014                   gb2_x: .word 12
-@0303:000014                   gb2_y: .word 12
-@0304:000363               gb2_state: .word draw_dot
-@0305:000004                   gb3_x: .word 4
-@0306:000010                   gb3_y: .word 8
-@0307:000363               gb3_state: .word draw_dot
-@0310:000010                   gb4_x: .word 8
-@0311:000010                   gb4_y: .word 8
-@0312:000363               gb4_state: .word draw_dot
-@0313:000014                   gb5_x: .word 12
-@0314:000010                   gb5_y: .word 8
-@0315:000363               gb5_state: .word draw_dot
-@0316:000004                   gb6_x: .word 4
-@0317:000004                   gb6_y: .word 4
-@0320:000363               gb6_state: .word draw_dot
-@0321:000010                   gb7_x: .word 8
-@0322:000004                   gb7_y: .word 4
-@0323:000363               gb7_state: .word draw_dot
-@0324:000014                   gb8_x: .word 12
-@0325:000004                   gb8_y: .word 4
-@0326:000363               gb8_state: .word draw_dot
+@0276:000004                   gb0_x: .word 4
+@0277:000014                   gb0_y: .word 12
+@0300:000365               gb0_state: .word draw_dot
+@0301:000010                   gb1_x: .word 8
+@0302:000014                   gb1_y: .word 12
+@0303:000365               gb1_state: .word draw_dot
+@0304:000014                   gb2_x: .word 12
+@0305:000014                   gb2_y: .word 12
+@0306:000365               gb2_state: .word draw_dot
+@0307:000004                   gb3_x: .word 4
+@0310:000010                   gb3_y: .word 8
+@0311:000365               gb3_state: .word draw_dot
+@0312:000010                   gb4_x: .word 8
+@0313:000010                   gb4_y: .word 8
+@0314:000365               gb4_state: .word draw_dot
+@0315:000014                   gb5_x: .word 12
+@0316:000010                   gb5_y: .word 8
+@0317:000365               gb5_state: .word draw_dot
+@0320:000004                   gb6_x: .word 4
+@0321:000004                   gb6_y: .word 4
+@0322:000365               gb6_state: .word draw_dot
+@0323:000010                   gb7_x: .word 8
+@0324:000004                   gb7_y: .word 4
+@0325:000365               gb7_state: .word draw_dot
+@0326:000014                   gb8_x: .word 12
+@0327:000004                   gb8_y: .word 4
+@0330:000365               gb8_state: .word draw_dot
 
 
 
                                       ; subroutine to draw a horizontal line
                          draw_x_line:
-@0327:050345                          ta draw_x_line_ret       ; save the return address @@JumpedToBy a0103
-@0330:100205                          ca y_arg
-@0331:114650                          su const_8               ; shift from 0-15 axis to -8 to +7
-@0332:154014                          slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
-@0333:001677                          si scope_vector          ; initialize vector gen ; Auto-Annotate I/O: Display Vectors
-@0334:100204                          ca x_arg
-@0335:114650                          su const_8               ; shift from 0-15 axis to -8 to +7
-@0336:040204                          ts x_arg
+@0331:050347                          ta draw_x_line_ret       ; save the return address @@JumpedToBy a0105
+@0332:100207                          ca y_arg
+@0333:114652                          su const_8               ; shift from 0-15 axis to -8 to +7
+@0334:154014                          slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0335:001677                          si scope_vector          ; initialize vector gen ; Auto-Annotate I/O: Display Vectors
+@0336:100206                          ca x_arg
+@0337:114652                          su const_8               ; shift from 0-15 axis to -8 to +7
+@0340:040206                          ts x_arg
                           next_x_seg:
-@0337:100204                          ca x_arg                 ; re-fetch the next x_arg @@JumpedToBy a0344
-@0340:154014                          slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0341:100206                          ca x_arg                 ; re-fetch the next x_arg @@JumpedToBy a0346
+@0342:154014                          slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
 
-@0341:024661                          rc horiz_line_seg        ; Draw a segment with x=ACC
-@0342:130204                          ao x_arg
-@0343:130210                          ao n_segments            ; increment the segment counter
-@0344:070337                          cp next_x_seg
+@0343:024663                          rc horiz_line_seg        ; Draw a segment with x=ACC
+@0344:130206                          ao x_arg
+@0345:130212                          ao n_segments            ; increment the segment counter
+@0346:070341                          cp next_x_seg
                      draw_x_line_ret:
-@0345:074000                          sp 0                     ; @@WrittenBy a0327
+@0347:074000                          sp 0                     ; @@WrittenBy a0331
 
                                       ; subroutine to draw a vertical line
                          draw_y_line:
-@0346:050362                          ta draw_y_line_ret       ; save the return address @@JumpedToBy a0120
+@0350:050364                          ta draw_y_line_ret       ; save the return address @@JumpedToBy a0122
                           next_y_seg:
-@0347:100205                          ca y_arg                 ; @@JumpedToBy a0361
-@0350:114650                          su const_8               ; shift from 0-15 axis to -8 to +7
-@0351:154014                          slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
-@0352:001677                          si scope_vector          ; initialize vector gen with the y-coord in ACC ; Auto-Annotate I/O: Display Vectors
-@0353:100204                          ca x_arg
-@0354:114650                          su const_8               ; shift from 0-15 axis to -8 to +7
-@0355:154014                          slr 12                   ; gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0351:100207                          ca y_arg                 ; @@JumpedToBy a0363
+@0352:114652                          su const_8               ; shift from 0-15 axis to -8 to +7
+@0353:154014                          slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0354:001677                          si scope_vector          ; initialize vector gen with the y-coord in ACC ; Auto-Annotate I/O: Display Vectors
+@0355:100206                          ca x_arg
+@0356:114652                          su const_8               ; shift from 0-15 axis to -8 to +7
+@0357:154014                          slr 12                   ; gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
 
-@0356:024662                          rc vert_line_seg         ; Draw a segment with x=ACC
-@0357:130205                          ao y_arg
-@0360:130210                          ao n_segments            ; increment the segment counter
-@0361:070347                          cp next_y_seg
+@0360:024664                          rc vert_line_seg         ; Draw a segment with x=ACC
+@0361:130207                          ao y_arg
+@0362:130212                          ao n_segments            ; increment the segment counter
+@0363:070351                          cp next_y_seg
                      draw_y_line_ret:
-@0362:074000                          sp 0                     ; @@WrittenBy a0346
+@0364:074000                          sp 0                     ; @@WrittenBy a0350
 
 
 
@@ -382,140 +384,142 @@
                                       ; the args into this routine are addresses of x and y locations, not
                                       ; the locations themselves
                             draw_dot:
-@0363:050404                          ta draw_dot_ret          ; save return address
-@0364:100212                          ca which_player          ; test to see if there's another move allowed
-@0365:070404                          cp draw_dot_ret          ; if the var is negative, we're done playing
+@0365:050406                          ta draw_dot_ret          ; save return address
+@0366:100214                          ca which_player          ; test to see if there's another move allowed
+@0367:070406                          cp draw_dot_ret          ; if the var is negative, we're done playing
 
-@0366:100207                          ca y_addr_arg            ; assuming the game's not over, we continue to draw
-@0367:044370                          td dd_y_arg
-@0370:100000                dd_y_arg: ca 0                     ; @@WrittenBy a0367
-@0371:114650                          su const_8
-@0372:154014                          slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
-@0373:000677                          si scope_point           ; initialize point gen with the y-coord in ACC ; Auto-Annotate I/O: Display Points
-@0374:100206                          ca x_addr_arg
-@0375:044376                          td dd_x_arg
-@0376:100000                dd_x_arg: ca 0                     ; @@WrittenBy a0375
-@0377:114650                          su const_8               ; shift from 0-15 axis to -8 to +7
-@0400:154014                          slr 12                   ; gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
-@0401:024000                          rc 0                     ; Draw a pont with x=ACC
-@0402:014000                          rd 0                     ; read the light gun
-@0403:070516                          cp light_gun_cell_hit    ; call a subroutine to handle the light gun.  The gun number is in ACC
+@0370:100211                          ca y_addr_arg            ; assuming the game's not over, we continue to draw
+@0371:044372                          td dd_y_arg
+@0372:100000                dd_y_arg: ca 0                     ; @@WrittenBy a0371
+@0373:114652                          su const_8
+@0374:154014                          slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0375:000677                          si scope_point           ; initialize point gen with the y-coord in ACC ; Auto-Annotate I/O: Display Points
+@0376:100210                          ca x_addr_arg
+@0377:044400                          td dd_x_arg
+@0400:100000                dd_x_arg: ca 0                     ; @@WrittenBy a0377
+@0401:114652                          su const_8               ; shift from 0-15 axis to -8 to +7
+@0402:154014                          slr 12                   ; gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0403:024000                          rc 0                     ; Draw a pont with x=ACC
+@0404:014000                          rd 0                     ; read the light gun
+@0405:070520                          cp light_gun_cell_hit    ; call a subroutine to handle the light gun.  The gun number is in ACC
                         draw_dot_ret:
-@0404:074000                          sp 0                     ; @@WrittenBy a0363 JumpedToBy a0365
+@0406:074000                          sp 0                     ; @@WrittenBy a0365 JumpedToBy a0367
 
 
                                       ; draw an "X" centered on the screen at the position of the x and y args
                                       ; args are passed as addresses
                           draw_cross:
-@0405:050425                          ta draw_cross_ret
+@0407:050427                          ta draw_cross_ret
 
-@0406:100207                          ca y_addr_arg
-@0407:044410                          td dc_y_arg
-@0410:100000                dc_y_arg: ca 0                     ; @@WrittenBy a0407
-@0411:114650                          su const_8               ; shift from 0-15 axis to -8 to +7
-@0412:154014                          slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
-@0413:001677                          si scope_vector          ; initialize vector gen with the y-coord in ACC ; Auto-Annotate I/O: Display Vectors
-@0414:100206                          ca x_addr_arg
-@0415:044416                          td dc_x_arg
-@0416:100000                dc_x_arg: ca 0                     ; @@WrittenBy a0415
-@0417:114650                          su const_8               ; shift from 0-15 axis to -8 to +7
-@0420:154014                          slr 12                   ; gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0410:100211                          ca y_addr_arg
+@0411:044412                          td dc_y_arg
+@0412:100000                dc_y_arg: ca 0                     ; @@WrittenBy a0411
+@0413:114652                          su const_8               ; shift from 0-15 axis to -8 to +7
+@0414:154014                          slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0415:001677                          si scope_vector          ; initialize vector gen with the y-coord in ACC ; Auto-Annotate I/O: Display Vectors
+@0416:100210                          ca x_addr_arg
+@0417:044420                          td dc_x_arg
+@0420:100000                dc_x_arg: ca 0                     ; @@WrittenBy a0417
+@0421:114652                          su const_8               ; shift from 0-15 axis to -8 to +7
+@0422:154014                          slr 12                   ; gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
 
-@0421:024663                          rc diag_up_right_seg     ; Draw a segment with x=ACC
-@0422:024664                          rc diag_dn_left_seg      ; Draw a segment with x=ACC
-@0423:024666                          rc diag_up_left_seg      ; Draw a segment with x=ACC
-@0424:024665                          rc diag_dn_right_seg     ; Draw a segment with x=ACC
+@0423:024665                          rc diag_up_right_seg     ; Draw a segment with x=ACC
+@0424:024666                          rc diag_dn_left_seg      ; Draw a segment with x=ACC
+@0425:024670                          rc diag_up_left_seg      ; Draw a segment with x=ACC
+@0426:024667                          rc diag_dn_right_seg     ; Draw a segment with x=ACC
                       draw_cross_ret:
-@0425:074000                          sp 0                     ; @@WrittenBy a0405
+@0427:074000                          sp 0                     ; @@WrittenBy a0407
 
                                       ; draw an "naught" (i.e. a diamond) centered on the screen at the position of the x and y args
                                       ; args are passed as addresses
                          draw_naught:
-@0426:050447                          ta draw_naught_ret
+@0430:050451                          ta draw_naught_ret
 
-@0427:100207                          ca y_addr_arg
-@0430:044431                          td dn_y_arg
-@0431:100000                dn_y_arg: ca 0                     ; @@WrittenBy a0430
-@0432:114650                          su const_8               ; shift from 0-15 axis to -8 to +7
-@0433:154014                          slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
-@0434:001677                          si scope_vector          ; initialize vector gen with the y-coord in ACC ; Auto-Annotate I/O: Display Vectors
-@0435:100206                          ca x_addr_arg
-@0436:044437                          td dn_x1_arg
-@0437:100000               dn_x1_arg: ca 0                     ; @@WrittenBy a0436
-@0440:114651                          su const_9               ; shift from 0-15 axis to -8 to +7; plus an offset
-@0441:154014                          slr 12                   ; gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0431:100211                          ca y_addr_arg
+@0432:044433                          td dn_y_arg
+@0433:100000                dn_y_arg: ca 0                     ; @@WrittenBy a0432
+@0434:114652                          su const_8               ; shift from 0-15 axis to -8 to +7
+@0435:154014                          slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0436:001677                          si scope_vector          ; initialize vector gen with the y-coord in ACC ; Auto-Annotate I/O: Display Vectors
+@0437:100210                          ca x_addr_arg
+@0440:044441                          td dn_x1_arg
+@0441:100000               dn_x1_arg: ca 0                     ; @@WrittenBy a0440
+@0442:114653                          su const_9               ; shift from 0-15 axis to -8 to +7; plus an offset
+@0443:154014                          slr 12                   ; gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
 
-@0442:024663                          rc diag_up_right_seg     ; Draw a segment with x=ACC
-@0443:024665                          rc diag_dn_right_seg     ; Draw a segment with x=ACC
+@0444:024665                          rc diag_up_right_seg     ; Draw a segment with x=ACC
+@0445:024667                          rc diag_dn_right_seg     ; Draw a segment with x=ACC
 
-@0444:110655                          ad const_2_cell          ; shift the x-pos two cells right
-@0445:024666                          rc diag_up_left_seg      ; Draw a segment with x=ACC
-@0446:024664                          rc diag_dn_left_seg      ; Draw a segment with x=ACC
+@0446:110657                          ad const_2_cell          ; shift the x-pos two cells right
+@0447:024670                          rc diag_up_left_seg      ; Draw a segment with x=ACC
+@0450:024666                          rc diag_dn_left_seg      ; Draw a segment with x=ACC
 
                      draw_naught_ret:
-@0447:074000                          sp 0                     ; @@WrittenBy a0426
+@0451:074000                          sp 0                     ; @@WrittenBy a0430
 
                                       ; placeholder to draw a Win symbol centered on the screen at the position of the x and y args
                                       ; args are passed as addresses
                             draw_win:
-@0450:050466                          ta draw_win_ret
+@0452:050470                          ta draw_win_ret
 
-@0451:100207                          ca y_addr_arg
-@0452:044453                          td dw_y_arg
-@0453:100000                dw_y_arg: ca 0                     ; @@WrittenBy a0452
-@0454:114650                          su const_8               ; shift from 0-15 axis to -8 to +7
-@0455:154014                          slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
-@0456:001677                          si scope_vector          ; initialize vector gen with the y-coord in ACC ; Auto-Annotate I/O: Display Vectors
-@0457:100206                          ca x_addr_arg
-@0460:044461                          td dw_x_arg
-@0461:100000                dw_x_arg: ca 0                     ; @@WrittenBy a0460
-@0462:114650                          su const_8               ; shift from 0-15 axis to -8 to +7
-@0463:154014                          slr 12                   ; gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0453:100211                          ca y_addr_arg
+@0454:044455                          td dw_y_arg
+@0455:100000                dw_y_arg: ca 0                     ; @@WrittenBy a0454
+@0456:114652                          su const_8               ; shift from 0-15 axis to -8 to +7
+@0457:154014                          slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0460:001677                          si scope_vector          ; initialize vector gen with the y-coord in ACC ; Auto-Annotate I/O: Display Vectors
+@0461:100210                          ca x_addr_arg
+@0462:044463                          td dw_x_arg
+@0463:100000                dw_x_arg: ca 0                     ; @@WrittenBy a0462
+@0464:114652                          su const_8               ; shift from 0-15 axis to -8 to +7
+@0465:154014                          slr 12                   ; gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
 
-@0464:024663                          rc diag_up_right_seg     ; Draw a segment with x=ACC
+@0466:024665                          rc diag_up_right_seg     ; Draw a segment with x=ACC
                                       ;          rc diag_dn_left_seg   ; Draw a segment with x=ACC
-@0465:024666                          rc diag_up_left_seg      ; Draw a segment with x=ACC
+@0467:024670                          rc diag_up_left_seg      ; Draw a segment with x=ACC
                                       ;          rc diag_dn_right_seg  ; Draw a segment with x=ACC
                         draw_win_ret:
-@0466:074000                          sp 0                     ; @@WrittenBy a0450
+@0470:074000                          sp 0                     ; @@WrittenBy a0452
 
                                       ; placeholder to draw a Tie symbol centered on the screen at the position of the x and y args
                                       ; args are passed as addresses
                             draw_tie:
-@0467:050505                          ta draw_tie_ret
+@0471:050507                          ta draw_tie_ret
 
-@0470:100207                          ca y_addr_arg
-@0471:044472                          td dt_y_arg
-@0472:100000                dt_y_arg: ca 0                     ; @@WrittenBy a0471
-@0473:114650                          su const_8               ; shift from 0-15 axis to -8 to +7
-@0474:154014                          slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
-@0475:001677                          si scope_vector          ; initialize vector gen with the y-coord in ACC ; Auto-Annotate I/O: Display Vectors
-@0476:100206                          ca x_addr_arg
-@0477:044500                          td dt_x_arg
-@0500:100000                dt_x_arg: ca 0                     ; @@WrittenBy a0477
-@0501:114650                          su const_8               ; shift from 0-15 axis to -8 to +7
-@0502:154014                          slr 12                   ; gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0472:100211                          ca y_addr_arg
+@0473:044474                          td dt_y_arg
+@0474:100000                dt_y_arg: ca 0                     ; @@WrittenBy a0473
+@0475:114652                          su const_8               ; shift from 0-15 axis to -8 to +7
+@0476:154014                          slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0477:001677                          si scope_vector          ; initialize vector gen with the y-coord in ACC ; Auto-Annotate I/O: Display Vectors
+@0500:100210                          ca x_addr_arg
+@0501:044502                          td dt_x_arg
+@0502:100000                dt_x_arg: ca 0                     ; @@WrittenBy a0501
+@0503:114652                          su const_8               ; shift from 0-15 axis to -8 to +7
+@0504:154014                          slr 12                   ; gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
 
                                       ;          rc diag_up_right_seg  ; Draw a segment with x=ACC
-@0503:024664                          rc diag_dn_left_seg      ; Draw a segment with x=ACC
+@0505:024666                          rc diag_dn_left_seg      ; Draw a segment with x=ACC
                                       ;          rc diag_up_left_seg   ; Draw a segment with x=ACC
-@0504:024665                          rc diag_dn_right_seg     ; Draw a segment with x=ACC
+@0506:024667                          rc diag_dn_right_seg     ; Draw a segment with x=ACC
                         draw_tie_ret:
-@0505:074000                          sp 0                     ; @@WrittenBy a0467
+@0507:074000                          sp 0                     ; @@WrittenBy a0471
 
 
                    draw_reset_symbol:
-@0506:050515                          ta draw_reset_symbol_ret ; @@JumpedToBy a0175
-@0507:104647                          cs const_7               ; put the point at game-board coord (1, 1)
-@0510:154014                          slr 12
+@0510:050517                          ta draw_reset_symbol_ret ; @@JumpedToBy a0177
+                                      ;            cs const_7; put the point at game-board coord (1, 1)
+                                      ;            slr 12
+@0511:104047                          cs c_reset_y_pos
                                       ; ACC contains the coord; use the same number for x and y
-@0511:000677                          si scope_point           ; initialize point gen with the y-coord in ACC ; Auto-Annotate I/O: Display Points
-@0512:024000                          rc 0                     ; Draw a pont with x=ACC
-@0513:014000                          rd 0                     ; read the light gun
-@0514:070607                          cp init_game_board       ; call a subroutine to handle the light gun.
+@0512:000677                          si scope_point           ; initialize point gen with the y-coord in ACC ; Auto-Annotate I/O: Display Points
+@0513:104046                          cs c_reset_x_pos
+@0514:024000                          rc 0                     ; Draw a pont with x=ACC
+@0515:014000                          rd 0                     ; read the light gun
+@0516:070611                          cp init_game_board       ; call a subroutine to handle the light gun.
 
                draw_reset_symbol_ret:
-@0515:074000                          sp 0                     ; @@WrittenBy a0506
+@0517:074000                          sp 0                     ; @@WrittenBy a0510
 
 
 
@@ -529,41 +533,41 @@
                                       ; light gun coord from three.
                                       ; The light gun number is passed to this routine in ACC
                   light_gun_cell_hit:
-@0516:050543                          ta light_gun_cell_hit_ret; @@JumpedToBy a0403
+@0520:050545                          ta light_gun_cell_hit_ret; @@JumpedToBy a0405
 
-@0517:040546                          ts lcl_gun_num
-@0520:100206                          ca x_addr_arg
-@0521:044522                          td lgh_x1_arg
-@0522:100000              lgh_x1_arg: ca 0                     ; load the x value of the cell's address in the grid @@WrittenBy a0521
-@0523:160002                          srr 2                    ; divide the cell x address by four to get 1, 2, or 3
-@0524:114001                          su const_1               ; change from one-base to zero-base
-@0525:040544                          ts lcl_cell_x
+@0521:040550                          ts lcl_gun_num
+@0522:100210                          ca x_addr_arg
+@0523:044524                          td lgh_x1_arg
+@0524:100000              lgh_x1_arg: ca 0                     ; load the x value of the cell's address in the grid @@WrittenBy a0523
+@0525:160002                          srr 2                    ; divide the cell x address by four to get 1, 2, or 3
+@0526:114001                          su const_1               ; change from one-base to zero-base
+@0527:040546                          ts lcl_cell_x
 
-@0526:100207                          ca y_addr_arg            ; repeat the process for the y coordinate
-@0527:044530                          td lgh_y1_arg
-@0530:100000              lgh_y1_arg: ca 0                     ; load the y value of the cell's address in the grid @@WrittenBy a0527
-@0531:160002                          srr 2                    ; divide the cell y address by four to get 1, 2, or 3
-@0532:030642                          sd const_0n              ; invert to get negative number
-@0533:110644                          ad const_3               ; change from one-base to zero-base and invert order
-@0534:040545                          ts lcl_cell_y
-@0535:155001                          slh 1                    ; multiply y by three, i.e., double then add address
-@0536:110545                          ad lcl_cell_y
-@0537:110544                          ad lcl_cell_x            ; add x to get the cell number in the range 0-8
+@0530:100211                          ca y_addr_arg            ; repeat the process for the y coordinate
+@0531:044532                          td lgh_y1_arg
+@0532:100000              lgh_y1_arg: ca 0                     ; load the y value of the cell's address in the grid @@WrittenBy a0531
+@0533:160002                          srr 2                    ; divide the cell y address by four to get 1, 2, or 3
+@0534:030644                          sd const_0n              ; invert to get negative number
+@0535:110646                          ad const_3               ; change from one-base to zero-base and invert order
+@0536:040547                          ts lcl_cell_y
+@0537:155001                          slh 1                    ; multiply y by three, i.e., double then add address
+@0540:110547                          ad lcl_cell_y
+@0541:110546                          ad lcl_cell_x            ; add x to get the cell number in the range 0-8
 
                                       .print "light gun %o hit x=%o, y=%o, cell=%ao", lcl_gun_num, lcl_cell_x, lcl_cell_y
 
                                       ; the cell number of the hit is passed below in ACC
-@0540:040202                          ts light_gun_mailbox
-@0541:040002                          ts FF2_USER_MOVE         ; display the move
+@0542:040204                          ts light_gun_mailbox
+@0543:040002                          ts FF2_USER_MOVE         ; display the move
 
-@0542:074602                          sp is_there_winner       ; test to see if it's Game Over
+@0544:074604                          sp is_there_winner       ; test to see if it's Game Over
 
-@0543:074000  light_gun_cell_hit_ret: sp 0                     ; @@WrittenBy a0516
+@0545:074000  light_gun_cell_hit_ret: sp 0                     ; @@WrittenBy a0520
 
                                       ; temp vars for figuring the cell number in light_gun_cell_hit
-@0544:000000              lcl_cell_x: .word 0                  ; @@WrittenBy a0525 ReadBy a0537
-@0545:000000              lcl_cell_y: .word 0                  ; @@WrittenBy a0534 ReadBy a0536
-@0546:000000             lcl_gun_num: .word 0                  ; @@WrittenBy a0517
+@0546:000000              lcl_cell_x: .word 0                  ; @@WrittenBy a0527 ReadBy a0541
+@0547:000000              lcl_cell_y: .word 0                  ; @@WrittenBy a0536 ReadBy a0540
+@0550:000000             lcl_gun_num: .word 0                  ; @@WrittenBy a0521
 
 
                                       ; "Play" a cell
@@ -573,29 +577,29 @@
                                       ; Note that this routine can only be called on a previously-unplayed cell, 'cause those
                                       ; are the only ones with dots in them, and that's all the light gun can see
                  alternate_play_cell:
-@0547:050566                          ta alternate_play_cell_ret
+@0551:050570                          ta alternate_play_cell_ret
 
-@0550:040567                          ts lcl_aplay_cell_num    ; figure the pointer to the first cell draw function in game table
-@0551:155001                          slh 1                    ;  thats table_start + 3*cwll_num + 2
-@0552:110567                          ad lcl_aplay_cell_num    ; multiply cell number by three for a table offset
-@0553:110273                          ad gb_table_start
-@0554:110643                          ad const_2
-@0555:044562                          td apc_table_ts
+@0552:040571                          ts lcl_aplay_cell_num    ; figure the pointer to the first cell draw function in game table
+@0553:155001                          slh 1                    ;  thats table_start + 3*cwll_num + 2
+@0554:110571                          ad lcl_aplay_cell_num    ; multiply cell number by three for a table offset
+@0555:110275                          ad gb_table_start
+@0556:110645                          ad const_2
+@0557:044564                          td apc_table_ts
 
-@0556:100217                          ca player_icon_table     ; figure out what the new cell should be
-@0557:110212                          ad which_player
-@0560:044561                          td apc_ca0
-@0561:100000                 apc_ca0: ca 0                     ; ACC should now contain the address of the X or O display routine @@WrittenBy a0560
-@0562:040000            apc_table_ts: ts 0                     ; store the display routine to the game state table @@WrittenBy a0555
+@0560:100221                          ca player_icon_table     ; figure out what the new cell should be
+@0561:110214                          ad which_player
+@0562:044563                          td apc_ca0
+@0563:100000                 apc_ca0: ca 0                     ; ACC should now contain the address of the X or O display routine @@WrittenBy a0562
+@0564:040000            apc_table_ts: ts 0                     ; store the display routine to the game state table @@WrittenBy a0557
 
                                       ; now switch to the other player for the next move
-@0563:100212                          ca which_player
-@0564:030001                          sd const_1               ; xor a 1 into the LSB; i.e. 0->1 or 1->0
-@0565:040212                          ts which_player
+@0565:100214                          ca which_player
+@0566:030001                          sd const_1               ; xor a 1 into the LSB; i.e. 0->1 or 1->0
+@0567:040214                          ts which_player
 
              alternate_play_cell_ret:
-@0566:074000                          sp 0                     ; @@WrittenBy a0547
-@0567:000000      lcl_aplay_cell_num: .word 0                  ; @@WrittenBy a0550 ReadBy a0552
+@0570:074000                          sp 0                     ; @@WrittenBy a0551
+@0571:000000      lcl_aplay_cell_num: .word 0                  ; @@WrittenBy a0552 ReadBy a0554
 
 
 
@@ -607,10 +611,10 @@
                                       ; Modified Aug 2, 2025 to pick up the cell number of the last light gun hit directly
                                       ; from the mailbox
                       user_play_cell:
-@0570:050574                          ta user_play_cell_ret    ; @@JumpedToBy a0062
+@0572:050576                          ta user_play_cell_ret    ; @@JumpedToBy a0064
 
-@0571:100202                          ca light_gun_mailbox     ; fetch the cell number
-@0572:040575                          ts lcl_uplay_cell_num    ; figure the pointer to the first cell draw function in game table
+@0573:100204                          ca light_gun_mailbox     ; fetch the cell number
+@0574:040577                          ts lcl_uplay_cell_num    ; figure the pointer to the first cell draw function in game table
                                       ;                  slh 1                   ;  thats table_start + 3*cell_num + 2
                                       ;                  ad lcl_uplay_cell_num    ; multiply cell number by three for a table offset
                                       ;                  ad gb_table_start
@@ -630,11 +634,11 @@
                                       ; auto_play_move calls claude oxo to figure the best move, then makes the move
                                       ; by updating the icon on the game board.
                                       ; ACC contains the user-cell
-@0573:074576                          sp auto_play_move
+@0575:074600                          sp auto_play_move
 
                   user_play_cell_ret:
-@0574:074000                          sp 0                     ; @@WrittenBy a0570
-@0575:000000      lcl_uplay_cell_num: .word 0                  ; @@WrittenBy a0572
+@0576:074000                          sp 0                     ; @@WrittenBy a0572
+@0577:000000      lcl_uplay_cell_num: .word 0                  ; @@WrittenBy a0574
 
 
 
@@ -643,31 +647,31 @@
                                       ; set up to call findBestMove
                                       ; Upon entry, ACC should be the cell the user wants to play
                       auto_play_move:
-@0576:050600                          ta apm_ret               ; @@JumpedToBy a0573
-@0577:074747                          sp GETMOV                ; CALL to post the user's move and respond
+@0600:050602                          ta apm_ret               ; @@JumpedToBy a0575
+@0601:074751                          sp GETMOV                ; CALL to post the user's move and respond
                              apm_ret:
-@0600:074000                          sp 0                     ; @@WrittenBy a0576
+@0602:074000                          sp 0                     ; @@WrittenBy a0600
 
                            apm_panic:
                                       .print "APM_Panic Halt: not dot, cross or naught in auto_play_move"
-@0601:074000                          sp 0
+@0603:074000                          sp 0
 
 
                                       ;;;;;;;;;;;;;;;;;
 
                      is_there_winner:
-@0602:050603                          ta is_there_winner_ret   ; @@JumpedToBy a0052 a0542
+@0604:050605                          ta is_there_winner_ret   ; @@JumpedToBy a0054 a0544
 
                  is_there_winner_ret:
-@0603:074000                          sp 0                     ; @@WrittenBy a0602
+@0605:074000                          sp 0                     ; @@WrittenBy a0604
 
 
 
 
                                       ; static addresses
-@0604:000363             dot_fn_addr: .word draw_dot           ; @@ReadBy a0730
-@0605:000405           cross_fn_addr: .word draw_cross         ; @@ReadBy a0732
-@0606:000426          naught_fn_addr: .word draw_naught        ; @@ReadBy a0734
+@0606:000365             dot_fn_addr: .word draw_dot           ; @@ReadBy a0732
+@0607:000407           cross_fn_addr: .word draw_cross         ; @@ReadBy a0734
+@0610:000430          naught_fn_addr: .word draw_naught        ; @@ReadBy a0736
 
 
 
@@ -675,81 +679,81 @@
                                       ; Set all the game board cells to "unplayed"
                                       ; Initialize the game state
                      init_game_board:
-@0607:050637                          ta init_game_board_ret   ; @@JumpedToBy main a0514
+@0611:050641                          ta init_game_board_ret   ; @@JumpedToBy main a0516
 
-@0610:100000                          ca zero                  ; Reset the Move Counter to Zero
-@0611:042000                          ts BRDX                  ; reset the Claude game state vars
-@0612:042001                          ts BRDO
-@0613:042002                          ts TURN
-@0614:040212                          ts which_player
+@0612:100000                          ca zero                  ; Reset the Move Counter to Zero
+@0613:042000                          ts BRDX                  ; reset the Claude game state vars
+@0614:042001                          ts BRDO
+@0615:042002                          ts TURN
+@0616:040214                          ts which_player
 
-@0615:100273                          ca gb_table_start        ; calculate the offset into the game state table for this cell
-@0616:110643                          ad const_2               ; offset to third table entry
-@0617:044623                          td igb_table_ts          ; store the pointer to the first entry
+@0617:100275                          ca gb_table_start        ; calculate the offset into the game state table for this cell
+@0620:110645                          ad const_2               ; offset to third table entry
+@0621:044625                          td igb_table_ts          ; store the pointer to the first entry
 
-@0620:104650                          cs const_8               ; nine passes; var should be 8; loop count is negative
-@0621:040203                          ts loop_count
-@0622:100640                igb_loop: ca lcl_init_val          ; fetch the address to use for the initial function pointer for each cell @@JumpedToBy a0630
-@0623:040000            igb_table_ts: ts 0                     ; set a table entry to the default pointer @@WrittenBy a0617 a0626 ReadBy a0624
-@0624:100623                          ca igb_table_ts          ; advance the pointer to the next entry
-@0625:110644                          ad const_3
-@0626:040623                          ts igb_table_ts
-@0627:130203                          ao loop_count
-@0630:070622                          cp igb_loop              ; around the loop until we've hit all nine entries
+@0622:104652                          cs const_8               ; nine passes; var should be 8; loop count is negative
+@0623:040205                          ts loop_count
+@0624:100642                igb_loop: ca lcl_init_val          ; fetch the address to use for the initial function pointer for each cell @@JumpedToBy a0632
+@0625:040000            igb_table_ts: ts 0                     ; set a table entry to the default pointer @@WrittenBy a0621 a0630 ReadBy a0626
+@0626:100625                          ca igb_table_ts          ; advance the pointer to the next entry
+@0627:110646                          ad const_3
+@0630:040625                          ts igb_table_ts
+@0631:130205                          ao loop_count
+@0632:070624                          cp igb_loop              ; around the loop until we've hit all nine entries
 
-@0631:100000                          ca zero
-@0632:040212                          ts which_player
-@0633:040641                          ts g_game_over           ; clear the "game over" flag
+@0633:100000                          ca zero
+@0634:040214                          ts which_player
+@0635:040643                          ts g_game_over           ; clear the "game over" flag
 
-@0634:104001                          cs one
-@0635:040202                          ts light_gun_mailbox
-@0636:040002                          ts FF2_USER_MOVE
+@0636:104001                          cs one
+@0637:040204                          ts light_gun_mailbox
+@0640:040002                          ts FF2_USER_MOVE
 
 
 
                                       ;;;;;;
                  init_game_board_ret:
-@0637:074000                          sp 0                     ; @@WrittenBy a0607
-@0640:000363            lcl_init_val: .word draw_dot           ; @@ReadBy igb_loop
-@0641:000000             g_game_over: .word 0                  ; @@WrittenBy a0067 a0633 ReadBy a0050
+@0641:074000                          sp 0                     ; @@WrittenBy a0611
+@0642:000365            lcl_init_val: .word draw_dot           ; @@ReadBy igb_loop
+@0643:000000             g_game_over: .word 0                  ; @@WrittenBy a0071 a0635 ReadBy a0052
 
                                       ; ****************************************
 
 
                                       ; Constants
-@0642:177777                const_0n: .word 0o177777           ; @@ReadBy a0532
-@0643:000002                 const_2: .word 2                  ; @@ReadBy a0073 a0077 a0110 a0114 a0554 a0616
-@0644:000003                 const_3: .word 3                  ; @@ReadBy a0151 a0154 a0157 a0533 a0625 a0737
-@0645:000004                 const_4: .word 4
-@0646:000006                 const_6: .word 6                  ; @@ReadBy a0075 a0112
-@0647:000007                 const_7: .word 7                  ; @@ReadBy a0164 a0507
-@0650:000010                 const_8: .word 8                  ; @@ReadBy a0125 a0331 a0335 a0350 a0354 a0371 a0377 a0411 a0417 a0432 a0454 a0462 a0473 a0501 a0620
-@0651:000011                 const_9: .word 9                  ; @@ReadBy a0440
-@0652:000012                const_10: .word 10                 ; @@ReadBy a0104 a0121
-@0653:000013                const_11: .word 11                 ; loop counter for 12 iterations @@ReadBy a0101 a0116
-@0654:000014                const_12: .word 12
-@0655:020000            const_2_cell: .word 8192               ; decimal value of screen coord corresponding to two cells in width @@ReadBy a0444
+@0644:177777                const_0n: .word 0o177777           ; @@ReadBy a0534
+@0645:000002                 const_2: .word 2                  ; @@ReadBy a0075 a0101 a0112 a0116 a0556 a0620
+@0646:000003                 const_3: .word 3                  ; @@ReadBy a0153 a0156 a0161 a0535 a0627 a0741
+@0647:000004                 const_4: .word 4
+@0650:000006                 const_6: .word 6                  ; @@ReadBy a0077 a0114
+@0651:000007                 const_7: .word 7                  ; @@ReadBy a0166
+@0652:000010                 const_8: .word 8                  ; @@ReadBy a0127 a0333 a0337 a0352 a0356 a0373 a0401 a0413 a0421 a0434 a0456 a0464 a0475 a0503 a0622
+@0653:000011                 const_9: .word 9                  ; @@ReadBy a0442
+@0654:000012                const_10: .word 10                 ; @@ReadBy a0106 a0123
+@0655:000013                const_11: .word 11                 ; loop counter for 12 iterations @@ReadBy a0103 a0120
+@0656:000014                const_12: .word 12
+@0657:020000            const_2_cell: .word 8192               ; decimal value of screen coord corresponding to two cells in width @@ReadBy a0446
 
-@0656:100002             const_x_win: .word 0o100002           ; two plus sign bit
-@0657:100003             const_o_win: .word 0o100003           ; two plus sign bit @@ReadBy a1056 a1063
-@0660:100004              const_draw: .word 0o100004           ; three plus sign bit @@ReadBy a1070
+@0660:100002             const_x_win: .word 0o100002           ; two plus sign bit @@ReadBy a1060
+@0661:100003             const_o_win: .word 0o100003           ; two plus sign bit @@ReadBy a1065
+@0662:100004              const_draw: .word 0o100004           ; three plus sign bit @@ReadBy a1072
 
 
                                       ; these two constants give the delta values to draw a "maximum short vector"
-@0661:076000          horiz_line_seg: .word 0o174 * 0o400      ; +32 in the top half of the word
-@0662:000174           vert_line_seg: .word 0o174              ; +32 in the bottom half of the word
-@0663:076174       diag_up_right_seg: .word 0o174 * 0o400 + 0o174
-@0664:100200        diag_dn_left_seg: .word 0o200 * 0o400 + 0o200
-@0665:076200       diag_dn_right_seg: .word 0o174 * 0o400 + 0o200
-@0666:100174        diag_up_left_seg: .word 0o200 * 0o400 + 0o174
+@0663:076000          horiz_line_seg: .word 0o174 * 0o400      ; +32 in the top half of the word
+@0664:000174           vert_line_seg: .word 0o174              ; +32 in the bottom half of the word
+@0665:076174       diag_up_right_seg: .word 0o174 * 0o400 + 0o174
+@0666:100200        diag_dn_left_seg: .word 0o200 * 0o400 + 0o200
+@0667:076200       diag_dn_right_seg: .word 0o174 * 0o400 + 0o200
+@0670:100174        diag_up_left_seg: .word 0o200 * 0o400 + 0o174
 
 
                                       ; ---------------------------------------
 
                           panic_stop:
-@0667:100000                          ca 0
+@0671:100000                          ca 0
                                       .print "panic stop"
-@0670:000000                          si 0
+@0672:000000                          si 0
 
 
                                       ; ;these are the values to be placed in a cell on the board to show
@@ -759,15 +763,15 @@
                                       .pp None, -1
 
                                       ; Constants
-@0671:000002                     c_2: .word 2
-@0672:177775                    c_2n: .word -2                 ; for a loop of three
-@0673:000003                     c_3: .word 3                  ; @@ReadBy a2702 a2705 a2710
-@0674:000004                     c_4: .word 4
-@0675:177767                    c_8n: .word -8                 ; for a loop of nine passes
-@0676:000012                    c_10: .word 10
-@0677:001750                  c_1000: .word 1000               ; BigNum
-@0700:000001                    c_XX: .word XX
-@0701:000002                    c_oh: .word Oh
+@0673:000002                     c_2: .word 2
+@0674:177775                    c_2n: .word -2                 ; for a loop of three
+@0675:000003                     c_3: .word 3                  ; @@ReadBy a2702 a2705 a2710
+@0676:000004                     c_4: .word 4
+@0677:177767                    c_8n: .word -8                 ; for a loop of nine passes
+@0700:000012                    c_10: .word 10
+@0701:001750                  c_1000: .word 1000               ; BigNum
+@0702:000001                    c_XX: .word XX
+@0703:000002                    c_oh: .word Oh
 
 
 
@@ -777,64 +781,64 @@
                                       ;=====================================================================================
 
                   refresh_game_state:
-@0702:050746                          ta rgs_ret               ; @@JumpedToBy a0072
-@0703:100273                          ca gb_table_start
-@0704:110001                          ad const_1
-@0705:110001                          ad const_1
-@0706:040201                          ts next_gb_state_addr
+@0704:050750                          ta rgs_ret               ; @@JumpedToBy a0074
+@0705:100275                          ca gb_table_start
+@0706:110001                          ad const_1
+@0707:110001                          ad const_1
+@0710:040203                          ts next_gb_state_addr
 
-@0707:102025                          ca ZERO
-@0710:042005                          ts SQIDX
+@0711:102025                          ca ZERO
+@0712:042005                          ts SQIDX
 
                                       ; we shall proceed through this loop starting from cell 0
                             glueLOOP:
 
-@0711:100201                          ca next_gb_state_addr    ; this location contains a function pointer to say how to display the cell @@JumpedToBy a0745
-@0712:044735                          td gl_ca_addr
+@0713:100203                          ca next_gb_state_addr    ; this location contains a function pointer to say how to display the cell @@JumpedToBy a0747
+@0714:044737                          td gl_ca_addr
 
-@0713:102005                          ca SQIDX
-@0714:075073                          sp MAKHOT                ; CALL - returns
-@0715:042020                          ts TBIT
+@0715:102005                          ca SQIDX
+@0716:075075                          sp MAKHOT                ; CALL - returns
+@0717:042020                          ts TBIT
 
-@0716:102020                          ca TBIT
-@0717:176000                          md BRDX
-@0720:134000                          dm 0
-@0721:070723                          cp glTRYO                ; zero -> not X
-@0722:074732                          sp glPBPX                ; JUMP
+@0720:102020                          ca TBIT
+@0721:176000                          md BRDX
+@0722:134000                          dm 0
+@0723:070725                          cp glTRYO                ; zero -> not X
+@0724:074734                          sp glPBPX                ; JUMP
                               glTRYO:
-@0723:102020                          ca TBIT                  ; @@JumpedToBy a0721
-@0724:176001                          md BRDO
-@0725:134000                          dm 0
-@0726:070730                          cp glTRYEMPTY            ; zero -> not O
-@0727:074734                          sp glPBPO                ; JUMP
+@0725:102020                          ca TBIT                  ; @@JumpedToBy a0723
+@0726:176001                          md BRDO
+@0727:134000                          dm 0
+@0730:070732                          cp glTRYEMPTY            ; zero -> not O
+@0731:074736                          sp glPBPO                ; JUMP
                           glTRYEMPTY:
-@0730:100604                          ca dot_fn_addr           ; @@JumpedToBy a0726
-@0731:074735                          sp glue_cont             ; JUMP
+@0732:100606                          ca dot_fn_addr           ; @@JumpedToBy a0730
+@0733:074737                          sp glue_cont             ; JUMP
 
                               glPBPX:
-@0732:100605                          ca cross_fn_addr         ; @@JumpedToBy a0722
-@0733:074735                          sp glue_cont             ; JUMP
+@0734:100607                          ca cross_fn_addr         ; @@JumpedToBy a0724
+@0735:074737                          sp glue_cont             ; JUMP
 
                               glPBPO:
-@0734:100606                          ca naught_fn_addr        ; @@JumpedToBy a0727
+@0736:100610                          ca naught_fn_addr        ; @@JumpedToBy a0731
 
                                       ; at this point, ACC contains the address of the function to fill in the cell, i.e., dot, x or o
                            glue_cont:
-@0735:040000              gl_ca_addr: ts 0                     ; @@WrittenBy a0712 JumpedToBy a0731 a0733
+@0737:040000              gl_ca_addr: ts 0                     ; @@WrittenBy a0714 JumpedToBy a0733 a0735
 
                                       ; increment pointers and loop count for the next pass
-@0736:100201                          ca next_gb_state_addr
-@0737:110644                          ad const_3
-@0740:040201                          ts next_gb_state_addr
+@0740:100203                          ca next_gb_state_addr
+@0741:110646                          ad const_3
+@0742:040203                          ts next_gb_state_addr
 
                                       ; test for loop end
-@0741:132005                          ao SQIDX
-@0742:116032                          su NINE_VAL
-@0743:134000                          dm 0
-@0744:070746                          cp rgs_ret               ; zero -> done
-@0745:074711                          sp glueLOOP
+@0743:132005                          ao SQIDX
+@0744:116032                          su NINE_VAL
+@0745:134000                          dm 0
+@0746:070750                          cp rgs_ret               ; zero -> done
+@0747:074713                          sp glueLOOP
 
-@0746:074000                 rgs_ret: sp 0                     ; @@WrittenBy a0702 JumpedToBy a0744
+@0750:074000                 rgs_ret: sp 0                     ; @@WrittenBy a0704 JumpedToBy a0746
 
 
                                       ;
@@ -976,134 +980,134 @@
                                       ; User cell number is in the ACC
                                       ; =============================================================
                               GETMOV:
-@0747:051045                          ta GMRET                 ; @@JumpedToBy a0577 a1050 a1053
+@0751:051047                          ta GMRET                 ; @@JumpedToBy a0601 a1052 a1055
                                       ;        ts   input   ; save the input cell number
 
 
                                       ; Validate <= 8:
-@0750:042005                          ts SQIDX                 ; save the input cell number
-@0751:116032                          su NINE_VAL              ; negative if index < 9
-@0752:070754                          cp GOODRANGE
-@0753:075046                          sp BADMOV                ; JUMP - no return
+@0752:042005                          ts SQIDX                 ; save the input cell number
+@0753:116032                          su NINE_VAL              ; negative if index < 9
+@0754:070756                          cp GOODRANGE
+@0755:075050                          sp BADMOV                ; JUMP - no return
 
                            GOODRANGE:
-@0754:102005                          ca SQIDX                 ; @@JumpedToBy a0752
-@0755:075073                          sp MAKHOT                ; CALL - returns
-@0756:042004                          ts BMOVE
+@0756:102005                          ca SQIDX                 ; @@JumpedToBy a0754
+@0757:075075                          sp MAKHOT                ; CALL - returns
+@0760:042004                          ts BMOVE
 
                                       ; Check square not taken by X:
-@0757:102004                          ca BMOVE
-@0760:176000                          md BRDX
-@0761:134000                          dm 0
-@0762:070764                          cp CHKOFREE              ; zero -> not taken by X
-@0763:075051                          sp SQTKN                 ; JUMP - no return
+@0761:102004                          ca BMOVE
+@0762:176000                          md BRDX
+@0763:134000                          dm 0
+@0764:070766                          cp CHKOFREE              ; zero -> not taken by X
+@0765:075053                          sp SQTKN                 ; JUMP - no return
                             CHKOFREE:
                                       ; Check square not taken by O:
-@0764:102004                          ca BMOVE                 ; @@JumpedToBy a0762
-@0765:176001                          md BRDO
-@0766:134000                          dm 0
-@0767:070771                          cp PLACEO                ; zero -> not taken by O
-@0770:075051                          sp SQTKN                 ; JUMP - no return
+@0766:102004                          ca BMOVE                 ; @@JumpedToBy a0764
+@0767:176001                          md BRDO
+@0770:134000                          dm 0
+@0771:070773                          cp PLACEO                ; zero -> not taken by O
+@0772:075053                          sp SQTKN                 ; JUMP - no return
                               PLACEO:
                                       ; Place human's O:
-@0771:102001                          ca BRDO                  ; @@JumpedToBy a0767
-@0772:032004                          sd BMOVE
-@0773:042001                          ts BRDO
+@0773:102001                          ca BRDO                  ; @@JumpedToBy a0771
+@0774:032004                          sd BMOVE
+@0775:042001                          ts BRDO
 
                                       ; print the users move on the Flexo
-@0774:102005                          ca SQIDX
-@0775:112365                          ad flexo_num_tbl_ptr
-@0776:044777                          td char_conv2
-@0777:100000              char_conv2: ca 0                     ; @@WrittenBy a0776
+@0776:102005                          ca SQIDX
+@0777:112365                          ad flexo_num_tbl_ptr
+@1000:045001                          td char_conv2
+@1001:100000              char_conv2: ca 0                     ; @@WrittenBy a1000
 
-@1000:170012                          clc 0o12
-@1001:000225                          si 0o225
-@1002:024000                          rc 0
+@1002:170012                          clc 0o12
+@1003:000225                          si 0o225
+@1004:024000                          rc 0
 
-@1003:132002                          ao TURN
+@1005:132002                          ao TURN
 
                                       ; Check if human won:
-@1004:102025                          ca ZERO
-@1005:042003                          ts WINFLG
-@1006:102001                          ca BRDO
-@1007:042007                          ts CWBD
-@1010:102033                          ca EIGHT_VAL
-@1011:042011                          ts CWLCNT
-@1012:075114                          sp CWLOOP                ; CALL - returns
+@1006:102025                          ca ZERO
+@1007:042003                          ts WINFLG
+@1010:102001                          ca BRDO
+@1011:042007                          ts CWBD
+@1012:102033                          ca EIGHT_VAL
+@1013:042011                          ts CWLCNT
+@1014:075116                          sp CWLOOP                ; CALL - returns
 
-@1013:102003                          ca WINFLG
-@1014:134000                          dm 0
-@1015:071017                          cp AFTER_HWIN            ; zero -> human did not win
-@1016:075054                          sp HUMAN_WIN             ; JUMP - no return
-                          AFTER_HWIN:
+@1015:102003                          ca WINFLG
+@1016:134000                          dm 0
+@1017:071021                          cp H_NON_WIN             ; zero -> human did not win
+@1020:075056                          sp HUMAN_WIN             ; JUMP - no return
+                           H_NON_WIN:
 
                                       ; Check draw:
-@1017:102002                          ca TURN                  ; @@JumpedToBy a1015
-@1020:116032                          su NINE_VAL
-@1021:134000                          dm 0
-@1022:071066                          cp DRAW                  ; JUMP - no return (zero -> draw)
+@1021:102002                          ca TURN                  ; @@JumpedToBy a1017
+@1022:116032                          su NINE_VAL
+@1023:134000                          dm 0
+@1024:071070                          cp DRAW                  ; JUMP - no return (zero -> draw)
 
                                       ; Computer's turn:
-@1023:075141                          sp COMPMOV               ; CALL - returns
+@1025:075143                          sp COMPMOV               ; CALL - returns
 
                                       ; Place computer's X:
-@1024:102000                          ca BRDX
-@1025:032004                          sd BMOVE
-@1026:042000                          ts BRDX
+@1026:102000                          ca BRDX
+@1027:032004                          sd BMOVE
+@1030:042000                          ts BRDX
 
-@1027:132002                          ao TURN
+@1031:132002                          ao TURN
 
                                       ; Check if computer won:
-@1030:102025                          ca ZERO
-@1031:042003                          ts WINFLG
-@1032:102000                          ca BRDX
-@1033:042007                          ts CWBD
-@1034:102033                          ca EIGHT_VAL
-@1035:042011                          ts CWLCNT
-@1036:075114                          sp CWLOOP                ; CALL - returns
+@1032:102025                          ca ZERO
+@1033:042003                          ts WINFLG
+@1034:102000                          ca BRDX
+@1035:042007                          ts CWBD
+@1036:102033                          ca EIGHT_VAL
+@1037:042011                          ts CWLCNT
+@1040:075116                          sp CWLOOP                ; CALL - returns
 
-@1037:102003                          ca WINFLG
-@1040:134000                          dm 0
-@1041:071043                          cp AFTER_CWIN            ; zero -> computer did not win
-@1042:075061                          sp COMP_WIN              ; JUMP - no return
+@1041:102003                          ca WINFLG
+@1042:134000                          dm 0
+@1043:071045                          cp AFTER_CWIN            ; zero -> computer did not win
+@1044:075063                          sp COMP_WIN              ; JUMP - no return
                           AFTER_CWIN:
 
-@1043:075473                          sp PRMCOMPMOV            ; CALL - returns @@JumpedToBy a1041
-@1044:075333                          sp PRMBOARD              ; CALL - returns
+@1045:075475                          sp PRMCOMPMOV            ; CALL - returns @@JumpedToBy a1043
+@1046:075335                          sp PRMBOARD              ; CALL - returns
 
-@1045:074000                   GMRET: sp 0                     ; @@WrittenBy a0747
+@1047:074000                   GMRET: sp 0                     ; @@WrittenBy a0751
 
 
                               BADMOV:
-@1046:075536                          sp PRMBADMOV             ; CALL - returns @@JumpedToBy a0753
-@1047:000000                          .word 0o0                ; HALT
-@1050:074747                          sp GETMOV                ; JUMP - no return (dead after HALT)
+@1050:075540                          sp PRMBADMOV             ; CALL - returns @@JumpedToBy a0755
+@1051:000000                          .word 0o0                ; HALT
+@1052:074751                          sp GETMOV                ; JUMP - no return (dead after HALT)
 
                                SQTKN:
-@1051:075542                          sp PRMSQTKN              ; CALL - returns @@JumpedToBy a0763 a0770
-@1052:000000                          .word 0o0                ; HALT
-@1053:074747                          sp GETMOV                ; JUMP - no return (dead after HALT)
+@1053:075544                          sp PRMSQTKN              ; CALL - returns @@JumpedToBy a0765 a0772
+@1054:000000                          .word 0o0                ; HALT
+@1055:074751                          sp GETMOV                ; JUMP - no return (dead after HALT)
 
                            HUMAN_WIN:
-@1054:075333                          sp PRMBOARD              ; CALL - returns @@JumpedToBy a1016
-@1055:075522                          sp PRMHWIN               ; CALL - returns
-@1056:100657                          ca const_o_win
-@1057:040212                          ts which_player
-@1060:074046                          sp refresh_loop          ; JUMP - no return
+@1056:075335                          sp PRMBOARD              ; CALL - returns @@JumpedToBy a1020
+@1057:075524                          sp PRMHWIN               ; CALL - returns
+@1060:100660                          ca const_x_win
+@1061:040214                          ts which_player
+@1062:074050                          sp refresh_loop          ; JUMP - no return
 
                             COMP_WIN:
-@1061:075333                          sp PRMBOARD              ; CALL - returns @@JumpedToBy a1042
-@1062:075526                          sp PRMCWIN               ; CALL - returns
-@1063:100657                          ca const_o_win
-@1064:040212                          ts which_player
-@1065:074046                          sp refresh_loop          ; JUMP - no return
+@1063:075335                          sp PRMBOARD              ; CALL - returns @@JumpedToBy a1044
+@1064:075530                          sp PRMCWIN               ; CALL - returns
+@1065:100661                          ca const_o_win
+@1066:040214                          ts which_player
+@1067:074050                          sp refresh_loop          ; JUMP - no return
 
                                 DRAW:
-@1066:075333                          sp PRMBOARD              ; CALL - returns @@JumpedToBy a1022
-@1067:075532                          sp PRMDRAW               ; CALL - returns
-@1070:100660                          ca const_draw
-@1071:040212                          ts which_player
-@1072:074046                          sp refresh_loop          ; JUMP - no return
+@1070:075335                          sp PRMBOARD              ; CALL - returns @@JumpedToBy a1024
+@1071:075534                          sp PRMDRAW               ; CALL - returns
+@1072:100662                          ca const_draw
+@1073:040214                          ts which_player
+@1074:074050                          sp refresh_loop          ; JUMP - no return
 
                                       ;input:  .word 0
 
@@ -1115,26 +1119,26 @@
                                       ; Uses:   CURMSK, CNTR
                                       ; =============================================================
                               MAKHOT:
-@1073:051113                          ta MHRET                 ; @@JumpedToBy a0714 a0755 a1253 a1337 a1501
-@1074:042006                          ts CNTR                  ; CNTR = shift count = square index
-@1075:102036                          ca SQ0MASK
-@1076:042017                          ts CURMSK
+@1075:051115                          ta MHRET                 ; @@JumpedToBy a0716 a0757 a1255 a1341 a1503
+@1076:042006                          ts CNTR                  ; CNTR = shift count = square index
+@1077:102036                          ca SQ0MASK
+@1100:042017                          ts CURMSK
                               MHLOOP:
-@1077:102006                          ca CNTR                  ; @@JumpedToBy a1111
-@1100:134000                          dm 0
-@1101:071112                          cp MHDONE                ; zero -> done
-@1102:075103                          sp MHSHIFT               ; JUMP - no return
+@1101:102006                          ca CNTR                  ; @@JumpedToBy a1113
+@1102:134000                          dm 0
+@1103:071114                          cp MHDONE                ; zero -> done
+@1104:075105                          sp MHSHIFT               ; JUMP - no return
                              MHSHIFT:
-@1103:102017                          ca CURMSK                ; @@JumpedToBy a1102
-@1104:161001                          srh 1                    ; shift right 1, hold
-@1105:042017                          ts CURMSK
-@1106:102006                          ca CNTR
-@1107:116030                          su UNIT
-@1110:042006                          ts CNTR
-@1111:075077                          sp MHLOOP                ; JUMP - no return
+@1105:102017                          ca CURMSK                ; @@JumpedToBy a1104
+@1106:161001                          srh 1                    ; shift right 1, hold
+@1107:042017                          ts CURMSK
+@1110:102006                          ca CNTR
+@1111:116030                          su UNIT
+@1112:042006                          ts CNTR
+@1113:075101                          sp MHLOOP                ; JUMP - no return
                               MHDONE:
-@1112:102017                          ca CURMSK                ; @@JumpedToBy a1101
-@1113:074000                   MHRET: sp 0                     ; @@WrittenBy a1073
+@1114:102017                          ca CURMSK                ; @@JumpedToBy a1103
+@1115:074000                   MHRET: sp 0                     ; @@WrittenBy a1075
 
                                       ; =============================================================
                                       ; SUBROUTINE: CWLOOP
@@ -1144,35 +1148,35 @@
                                       ; Output:  WINFLG  = UNIT if win found, ZERO otherwise
                                       ; =============================================================
                               CWLOOP:
-@1114:051140                          ta CWRET                 ; @@JumpedToBy a1012 a1036 a1276
-@1115:102066                          ca WINTBLADDR
-@1116:045117                          td CWLD                  ; reload CWLD to point at WINTBL[0]
+@1116:051142                          ta CWRET                 ; @@JumpedToBy a1014 a1040 a1300
+@1117:102066                          ca WINTBLADDR
+@1120:045121                          td CWLD                  ; reload CWLD to point at WINTBL[0]
 
-@1117:100000                    CWLD: ca 0                     ; address field = WINTBL+i @@WrittenBy a1116 a1126 ReadBy a1126 JumpedToBy a1134
-@1120:042010                          ts CWMSK
+@1121:100000                    CWLD: ca 0                     ; address field = WINTBL+i @@WrittenBy a1120 a1130 ReadBy a1130 JumpedToBy a1136
+@1122:042010                          ts CWMSK
 
-@1121:102007                          ca CWBD
-@1122:176010                          md CWMSK
-@1123:116010                          su CWMSK                 ; zero iff CWBD contains all bits of CWMSK
-@1124:134000                          dm 0
-@1125:071135                          cp CWWON                 ; zero -> win!
+@1123:102007                          ca CWBD
+@1124:176010                          md CWMSK
+@1125:116010                          su CWMSK                 ; zero iff CWBD contains all bits of CWMSK
+@1126:134000                          dm 0
+@1127:071137                          cp CWWON                 ; zero -> win!
 
-@1126:131117                          ao CWLD                  ; advance to next win mask
+@1130:131121                          ao CWLD                  ; advance to next win mask
 
-@1127:102011                          ca CWLCNT
-@1130:116030                          su UNIT
-@1131:042011                          ts CWLCNT
-@1132:134000                          dm 0
-@1133:071137                          cp CWDONE                ; zero -> all lines checked, no win
-@1134:075117                          sp CWLD                  ; JUMP - no return (skip td reload)
+@1131:102011                          ca CWLCNT
+@1132:116030                          su UNIT
+@1133:042011                          ts CWLCNT
+@1134:134000                          dm 0
+@1135:071141                          cp CWDONE                ; zero -> all lines checked, no win
+@1136:075121                          sp CWLD                  ; JUMP - no return (skip td reload)
 
                                CWWON:
-@1135:102030                          ca UNIT                  ; @@JumpedToBy a1125
-@1136:042003                          ts WINFLG
+@1137:102030                          ca UNIT                  ; @@JumpedToBy a1127
+@1140:042003                          ts WINFLG
 
                               CWDONE:
-@1137:075140                          sp CWRET                 ; JUMP - no return @@JumpedToBy a1133
-@1140:074000                   CWRET: sp 0                     ; @@WrittenBy a1114 JumpedToBy a1137
+@1141:075142                          sp CWRET                 ; JUMP - no return @@JumpedToBy a1135
+@1142:074000                   CWRET: sp 0                     ; @@WrittenBy a1116 JumpedToBy a1141
 
                                       ; =============================================================
                                       ; SUBROUTINE: COMPMOV
@@ -1180,97 +1184,97 @@
                                       ; Priority: 1) Win  2) Block  3) Center  4) Corner  5) Edge
                                       ; =============================================================
                              COMPMOV:
-@1141:051245                          ta CMRET                 ; @@JumpedToBy a1023
+@1143:051247                          ta CMRET                 ; @@JumpedToBy a1025
 
                                       ; --- 1. Try to win ---
-@1142:102000                          ca BRDX
-@1143:042013                          ts TRYBRD
-@1144:075246                          sp TRYMOVES              ; CALL - returns
-@1145:102012                          ca WINMOV
-@1146:134000                          dm 0
-@1147:071151                          cp CMTRYBLOCK            ; zero -> no win found
-@1150:075245                          sp CMRET                 ; JUMP - no return
+@1144:102000                          ca BRDX
+@1145:042013                          ts TRYBRD
+@1146:075250                          sp TRYMOVES              ; CALL - returns
+@1147:102012                          ca WINMOV
+@1150:134000                          dm 0
+@1151:071153                          cp CMTRYBLOCK            ; zero -> no win found
+@1152:075247                          sp CMRET                 ; JUMP - no return
                           CMTRYBLOCK:
 
                                       ; --- 2. Try to block ---
-@1151:102001                          ca BRDO                  ; @@JumpedToBy a1147
-@1152:042013                          ts TRYBRD
-@1153:075246                          sp TRYMOVES              ; CALL - returns
-@1154:102012                          ca WINMOV
-@1155:134000                          dm 0
-@1156:071160                          cp CMTRYCTR              ; zero -> no block found
-@1157:075245                          sp CMRET                 ; JUMP - no return
+@1153:102001                          ca BRDO                  ; @@JumpedToBy a1151
+@1154:042013                          ts TRYBRD
+@1155:075250                          sp TRYMOVES              ; CALL - returns
+@1156:102012                          ca WINMOV
+@1157:134000                          dm 0
+@1160:071162                          cp CMTRYCTR              ; zero -> no block found
+@1161:075247                          sp CMRET                 ; JUMP - no return
                             CMTRYCTR:
 
                                       ; --- 3. Center ---
-@1160:102037                          ca CTR4MSK               ; @@JumpedToBy a1156
-@1161:042021                          ts T1
-@1162:102000                          ca BRDX
-@1163:032001                          sd BRDO
-@1164:042015                          ts OCCP
-@1165:102021                          ca T1
-@1166:176015                          md OCCP
-@1167:134000                          dm 0
-@1170:071172                          cp CTRFREE               ; zero -> center is free
-@1171:075175                          sp TRYNEXT1              ; JUMP - no return
+@1162:102037                          ca CTR4MSK               ; @@JumpedToBy a1160
+@1163:042021                          ts T1
+@1164:102000                          ca BRDX
+@1165:032001                          sd BRDO
+@1166:042015                          ts OCCP
+@1167:102021                          ca T1
+@1170:176015                          md OCCP
+@1171:134000                          dm 0
+@1172:071174                          cp CTRFREE               ; zero -> center is free
+@1173:075177                          sp TRYNEXT1              ; JUMP - no return
                              CTRFREE:
-@1172:102037                          ca CTR4MSK               ; @@JumpedToBy a1170
-@1173:042004                          ts BMOVE
-@1174:075245                          sp CMRET                 ; JUMP - no return
+@1174:102037                          ca CTR4MSK               ; @@JumpedToBy a1172
+@1175:042004                          ts BMOVE
+@1176:075247                          sp CMRET                 ; JUMP - no return
 
                                       ; --- 4. Corners ---
                             TRYNEXT1:
-@1175:102040                          ca CORNR0                ; @@JumpedToBy a1171
-@1176:075314                          sp TRYFREE               ; CALL - returns
-@1177:134000                          dm 0
-@1200:071202                          cp TRYNC2                ; zero -> corner 0 free
-@1201:075245                          sp CMRET                 ; JUMP - no return
+@1177:102040                          ca CORNR0                ; @@JumpedToBy a1173
+@1200:075316                          sp TRYFREE               ; CALL - returns
+@1201:134000                          dm 0
+@1202:071204                          cp TRYNC2                ; zero -> corner 0 free
+@1203:075247                          sp CMRET                 ; JUMP - no return
                               TRYNC2:
-@1202:102041                          ca CORNR2                ; @@JumpedToBy a1200
-@1203:075314                          sp TRYFREE               ; CALL - returns
-@1204:134000                          dm 0
-@1205:071207                          cp TRYNC6
-@1206:075245                          sp CMRET                 ; JUMP - no return
+@1204:102041                          ca CORNR2                ; @@JumpedToBy a1202
+@1205:075316                          sp TRYFREE               ; CALL - returns
+@1206:134000                          dm 0
+@1207:071211                          cp TRYNC6
+@1210:075247                          sp CMRET                 ; JUMP - no return
                               TRYNC6:
-@1207:102042                          ca CORNR6                ; @@JumpedToBy a1205
-@1210:075314                          sp TRYFREE               ; CALL - returns
-@1211:134000                          dm 0
-@1212:071214                          cp TRYNC8
-@1213:075245                          sp CMRET                 ; JUMP - no return
+@1211:102042                          ca CORNR6                ; @@JumpedToBy a1207
+@1212:075316                          sp TRYFREE               ; CALL - returns
+@1213:134000                          dm 0
+@1214:071216                          cp TRYNC8
+@1215:075247                          sp CMRET                 ; JUMP - no return
                               TRYNC8:
-@1214:102043                          ca CORNR8                ; @@JumpedToBy a1212
-@1215:075314                          sp TRYFREE               ; CALL - returns
-@1216:134000                          dm 0
-@1217:071221                          cp TRYNE1                ; zero -> all corners taken
-@1220:075245                          sp CMRET                 ; JUMP - no return
+@1216:102043                          ca CORNR8                ; @@JumpedToBy a1214
+@1217:075316                          sp TRYFREE               ; CALL - returns
+@1220:134000                          dm 0
+@1221:071223                          cp TRYNE1                ; zero -> all corners taken
+@1222:075247                          sp CMRET                 ; JUMP - no return
 
                                       ; --- 5. Edges ---
                               TRYNE1:
-@1221:102044                          ca EDGE1                 ; @@JumpedToBy a1217
-@1222:075314                          sp TRYFREE               ; CALL - returns
-@1223:134000                          dm 0
-@1224:071226                          cp TRYNE3
-@1225:075245                          sp CMRET                 ; JUMP - no return
+@1223:102044                          ca EDGE1                 ; @@JumpedToBy a1221
+@1224:075316                          sp TRYFREE               ; CALL - returns
+@1225:134000                          dm 0
+@1226:071230                          cp TRYNE3
+@1227:075247                          sp CMRET                 ; JUMP - no return
                               TRYNE3:
-@1226:102045                          ca EDGE3                 ; @@JumpedToBy a1224
-@1227:075314                          sp TRYFREE               ; CALL - returns
-@1230:134000                          dm 0
-@1231:071233                          cp TRYNE5
-@1232:075245                          sp CMRET                 ; JUMP - no return
+@1230:102045                          ca EDGE3                 ; @@JumpedToBy a1226
+@1231:075316                          sp TRYFREE               ; CALL - returns
+@1232:134000                          dm 0
+@1233:071235                          cp TRYNE5
+@1234:075247                          sp CMRET                 ; JUMP - no return
                               TRYNE5:
-@1233:102046                          ca EDGE5                 ; @@JumpedToBy a1231
-@1234:075314                          sp TRYFREE               ; CALL - returns
-@1235:134000                          dm 0
-@1236:071240                          cp TRYNE7
-@1237:075245                          sp CMRET                 ; JUMP - no return
+@1235:102046                          ca EDGE5                 ; @@JumpedToBy a1233
+@1236:075316                          sp TRYFREE               ; CALL - returns
+@1237:134000                          dm 0
+@1240:071242                          cp TRYNE7
+@1241:075247                          sp CMRET                 ; JUMP - no return
                               TRYNE7:
-@1240:102047                          ca EDGE7                 ; @@JumpedToBy a1236
-@1241:075314                          sp TRYFREE               ; CALL - returns
-@1242:134000                          dm 0
-@1243:071245                          cp CMRET                 ; zero -> all edges taken (shouldn't happen)
-@1244:075245                          sp CMRET                 ; JUMP - no return
+@1242:102047                          ca EDGE7                 ; @@JumpedToBy a1240
+@1243:075316                          sp TRYFREE               ; CALL - returns
+@1244:134000                          dm 0
+@1245:071247                          cp CMRET                 ; zero -> all edges taken (shouldn't happen)
+@1246:075247                          sp CMRET                 ; JUMP - no return
 
-@1245:074000                   CMRET: sp 0                     ; @@WrittenBy a1141 JumpedToBy a1150 a1157 a1174 a1201 a1206 a1213 a1220 a1225 a1232 a1237 a1243 a1244
+@1247:074000                   CMRET: sp 0                     ; @@WrittenBy a1143 JumpedToBy a1152 a1161 a1176 a1203 a1210 a1215 a1222 a1227 a1234 a1241 a1245 a1246
 
                                       ; =============================================================
                                       ; SUBROUTINE: TRYMOVES
@@ -1280,56 +1284,56 @@
                                       ;         BMOVE  = same as WINMOV if found
                                       ; =============================================================
                             TRYMOVES:
-@1246:051313                          ta TMRET                 ; @@JumpedToBy a1144 a1153
-@1247:102025                          ca ZERO
-@1250:042012                          ts WINMOV
-@1251:042005                          ts SQIDX
+@1250:051315                          ta TMRET                 ; @@JumpedToBy a1146 a1155
+@1251:102025                          ca ZERO
+@1252:042012                          ts WINMOV
+@1253:042005                          ts SQIDX
 
                               TMSQLP:
-@1252:102005                          ca SQIDX                 ; @@JumpedToBy a1310
-@1253:075073                          sp MAKHOT                ; CALL - returns
-@1254:042004                          ts BMOVE
+@1254:102005                          ca SQIDX                 ; @@JumpedToBy a1312
+@1255:075075                          sp MAKHOT                ; CALL - returns
+@1256:042004                          ts BMOVE
 
                                       ; Check if square free:
-@1255:102000                          ca BRDX
-@1256:032001                          sd BRDO
-@1257:042015                          ts OCCP
-@1260:102004                          ca BMOVE
-@1261:176015                          md OCCP
-@1262:134000                          dm 0
-@1263:071265                          cp TMSQFREE              ; zero -> free
-@1264:075303                          sp TMNEXT                ; JUMP - no return
+@1257:102000                          ca BRDX
+@1260:032001                          sd BRDO
+@1261:042015                          ts OCCP
+@1262:102004                          ca BMOVE
+@1263:176015                          md OCCP
+@1264:134000                          dm 0
+@1265:071267                          cp TMSQFREE              ; zero -> free
+@1266:075305                          sp TMNEXT                ; JUMP - no return
 
                             TMSQFREE:
-@1265:102013                          ca TRYBRD                ; @@JumpedToBy a1263
-@1266:032004                          sd BMOVE
-@1267:042014                          ts TRYTMP
+@1267:102013                          ca TRYBRD                ; @@JumpedToBy a1265
+@1270:032004                          sd BMOVE
+@1271:042014                          ts TRYTMP
 
-@1270:102025                          ca ZERO
-@1271:042003                          ts WINFLG
-@1272:102014                          ca TRYTMP
-@1273:042007                          ts CWBD
-@1274:102033                          ca EIGHT_VAL
-@1275:042011                          ts CWLCNT
-@1276:075114                          sp CWLOOP                ; CALL - returns
+@1272:102025                          ca ZERO
+@1273:042003                          ts WINFLG
+@1274:102014                          ca TRYTMP
+@1275:042007                          ts CWBD
+@1276:102033                          ca EIGHT_VAL
+@1277:042011                          ts CWLCNT
+@1300:075116                          sp CWLOOP                ; CALL - returns
 
-@1277:102003                          ca WINFLG
-@1300:134000                          dm 0
-@1301:071303                          cp TMNEXT                ; zero -> no win
-@1302:075311                          sp TMWIN                 ; JUMP - no return
+@1301:102003                          ca WINFLG
+@1302:134000                          dm 0
+@1303:071305                          cp TMNEXT                ; zero -> no win
+@1304:075313                          sp TMWIN                 ; JUMP - no return
 
                               TMNEXT:
-@1303:132005                          ao SQIDX                 ; @@JumpedToBy a1264 a1301
-@1304:102005                          ca SQIDX
-@1305:116032                          su NINE_VAL
-@1306:134000                          dm 0
-@1307:071313                          cp TMRET                 ; zero -> all squares tried
-@1310:075252                          sp TMSQLP                ; JUMP - no return
+@1305:132005                          ao SQIDX                 ; @@JumpedToBy a1266 a1303
+@1306:102005                          ca SQIDX
+@1307:116032                          su NINE_VAL
+@1310:134000                          dm 0
+@1311:071315                          cp TMRET                 ; zero -> all squares tried
+@1312:075254                          sp TMSQLP                ; JUMP - no return
 
                                TMWIN:
-@1311:102004                          ca BMOVE                 ; @@JumpedToBy a1302
-@1312:042012                          ts WINMOV
-@1313:074000                   TMRET: sp 0                     ; @@WrittenBy a1246 JumpedToBy a1307
+@1313:102004                          ca BMOVE                 ; @@JumpedToBy a1304
+@1314:042012                          ts WINMOV
+@1315:074000                   TMRET: sp 0                     ; @@WrittenBy a1250 JumpedToBy a1311
 
                                       ; =============================================================
                                       ; SUBROUTINE: TRYFREE
@@ -1339,144 +1343,144 @@
                                       ;         AC = -0 (negative) if occupied
                                       ; =============================================================
                              TRYFREE:
-@1314:051332                          ta TFRET                 ; @@JumpedToBy a1176 a1203 a1210 a1215 a1222 a1227 a1234 a1241
-@1315:042016                          ts TFMSK
-@1316:102000                          ca BRDX
-@1317:032001                          sd BRDO
-@1320:042015                          ts OCCP
-@1321:102016                          ca TFMSK
-@1322:176015                          md OCCP
-@1323:134000                          dm 0
-@1324:071327                          cp TFFREE                ; zero -> free
-@1325:102027                          ca NEGZ                  ; occupied: return -0
-@1326:075332                          sp TFRET                 ; JUMP - no return
+@1316:051334                          ta TFRET                 ; @@JumpedToBy a1200 a1205 a1212 a1217 a1224 a1231 a1236 a1243
+@1317:042016                          ts TFMSK
+@1320:102000                          ca BRDX
+@1321:032001                          sd BRDO
+@1322:042015                          ts OCCP
+@1323:102016                          ca TFMSK
+@1324:176015                          md OCCP
+@1325:134000                          dm 0
+@1326:071331                          cp TFFREE                ; zero -> free
+@1327:102027                          ca NEGZ                  ; occupied: return -0
+@1330:075334                          sp TFRET                 ; JUMP - no return
                               TFFREE:
-@1327:102016                          ca TFMSK                 ; @@JumpedToBy a1324
-@1330:042004                          ts BMOVE
-@1331:102030                          ca UNIT
-@1332:074000                   TFRET: sp 0                     ; @@WrittenBy a1314 JumpedToBy a1326
+@1331:102016                          ca TFMSK                 ; @@JumpedToBy a1326
+@1332:042004                          ts BMOVE
+@1333:102030                          ca UNIT
+@1334:074000                   TFRET: sp 0                     ; @@WrittenBy a1316 JumpedToBy a1330
 
                                       ; =============================================================
                                       ; SUBROUTINE: PRMBOARD
                                       ; Print current board state on Flexowriter.
                                       ; =============================================================
                             PRMBOARD:
-@1333:051417                          ta PBRET                 ; @@JumpedToBy a1044 a1054 a1061 a1066
-@1334:102025                          ca ZERO
-@1335:042005                          ts SQIDX
+@1335:051421                          ta PBRET                 ; @@JumpedToBy a1046 a1056 a1063 a1070
+@1336:102025                          ca ZERO
+@1337:042005                          ts SQIDX
 
                               PBLOOP:
-@1336:102005                          ca SQIDX                 ; @@JumpedToBy a1406 a1413
-@1337:075073                          sp MAKHOT                ; CALL - returns
-@1340:042020                          ts TBIT
+@1340:102005                          ca SQIDX                 ; @@JumpedToBy a1410 a1415
+@1341:075075                          sp MAKHOT                ; CALL - returns
+@1342:042020                          ts TBIT
 
-@1341:102020                          ca TBIT
-@1342:176000                          md BRDX
-@1343:134000                          dm 0
-@1344:071346                          cp TRYO                  ; zero -> not X
-@1345:075357                          sp PBPX                  ; JUMP - no return
+@1343:102020                          ca TBIT
+@1344:176000                          md BRDX
+@1345:134000                          dm 0
+@1346:071350                          cp TRYO                  ; zero -> not X
+@1347:075361                          sp PBPX                  ; JUMP - no return
                                 TRYO:
-@1346:102020                          ca TBIT                  ; @@JumpedToBy a1344
-@1347:176001                          md BRDO
-@1350:134000                          dm 0
-@1351:071353                          cp TRYEMPTY              ; zero -> not O
-@1352:075363                          sp PBPO                  ; JUMP - no return
+@1350:102020                          ca TBIT                  ; @@JumpedToBy a1346
+@1351:176001                          md BRDO
+@1352:134000                          dm 0
+@1353:071355                          cp TRYEMPTY              ; zero -> not O
+@1354:075365                          sp PBPO                  ; JUMP - no return
                             TRYEMPTY:
-@1353:000225                          si 0o225                 ; @@JumpedToBy a1351
-@1354:102050                          ca CHRDOT
-@1355:024000                          rc 0
-@1356:075366                          sp PBSEP                 ; JUMP - no return
+@1355:000225                          si 0o225                 ; @@JumpedToBy a1353
+@1356:102050                          ca CHRDOT
+@1357:024000                          rc 0
+@1360:075370                          sp PBSEP                 ; JUMP - no return
 
                                 PBPX:
-@1357:000225                          si 0o225                 ; @@JumpedToBy a1345
-@1360:102051                          ca CHRX
-@1361:024000                          rc 0
-@1362:075366                          sp PBSEP                 ; JUMP - no return
+@1361:000225                          si 0o225                 ; @@JumpedToBy a1347
+@1362:102051                          ca CHRX
+@1363:024000                          rc 0
+@1364:075370                          sp PBSEP                 ; JUMP - no return
 
                                 PBPO:
-@1363:000225                          si 0o225                 ; @@JumpedToBy a1352
-@1364:102052                          ca CHRO
-@1365:024000                          rc 0
+@1365:000225                          si 0o225                 ; @@JumpedToBy a1354
+@1366:102052                          ca CHRO
+@1367:024000                          rc 0
 
                                PBSEP:
-@1366:132005                          ao SQIDX                 ; @@JumpedToBy a1356 a1362
+@1370:132005                          ao SQIDX                 ; @@JumpedToBy a1360 a1364
 
-@1367:102005                          ca SQIDX
-@1370:116034                          su THREE_VAL
-@1371:134000                          dm 0
-@1372:071407                          cp PBROWSEP              ; zero -> row separator after row 0
+@1371:102005                          ca SQIDX
+@1372:116034                          su THREE_VAL
+@1373:134000                          dm 0
+@1374:071411                          cp PBROWSEP              ; zero -> row separator after row 0
 
-@1373:102005                          ca SQIDX
-@1374:116035                          su SIX_VAL
-@1375:134000                          dm 0
-@1376:071407                          cp PBROWSEP              ; zero -> row separator after row 1
+@1375:102005                          ca SQIDX
+@1376:116035                          su SIX_VAL
+@1377:134000                          dm 0
+@1400:071411                          cp PBROWSEP              ; zero -> row separator after row 1
 
-@1377:102005                          ca SQIDX
-@1400:116032                          su NINE_VAL
-@1401:134000                          dm 0
-@1402:071414                          cp PBEND                 ; zero -> done
+@1401:102005                          ca SQIDX
+@1402:116032                          su NINE_VAL
+@1403:134000                          dm 0
+@1404:071416                          cp PBEND                 ; zero -> done
 
-@1403:000225                          si 0o225
-@1404:102053                          ca CHRBAR
-@1405:024000                          rc 0
-@1406:075336                          sp PBLOOP                ; JUMP - no return
+@1405:000225                          si 0o225
+@1406:102053                          ca CHRBAR
+@1407:024000                          rc 0
+@1410:075340                          sp PBLOOP                ; JUMP - no return
 
                             PBROWSEP:
-@1407:000225                          si 0o225                 ; @@JumpedToBy a1372 a1376
-@1410:102054                          ca CHRNL
-@1411:024000                          rc 0
-@1412:075420                          sp PRSEP                 ; CALL - returns
-@1413:075336                          sp PBLOOP                ; JUMP - no return
+@1411:000225                          si 0o225                 ; @@JumpedToBy a1374 a1400
+@1412:102054                          ca CHRNL
+@1413:024000                          rc 0
+@1414:075422                          sp PRSEP                 ; CALL - returns
+@1415:075340                          sp PBLOOP                ; JUMP - no return
 
                                PBEND:
-@1414:000225                          si 0o225                 ; @@JumpedToBy a1402
-@1415:102054                          ca CHRNL
-@1416:024000                          rc 0
-@1417:074000                   PBRET: sp 0                     ; @@WrittenBy a1333
+@1416:000225                          si 0o225                 ; @@JumpedToBy a1404
+@1417:102054                          ca CHRNL
+@1420:024000                          rc 0
+@1421:074000                   PBRET: sp 0                     ; @@WrittenBy a1335
 
                                       ; =============================================================
                                       ; SUBROUTINE: PRSEP
                                       ; Print "-----\n" row separator.
                                       ; =============================================================
                                PRSEP:
-@1420:051443                          ta PSRET                 ; @@JumpedToBy a1412
-@1421:000225                          si 0o225
-@1422:102055                          ca CHRDSH
-@1423:024000                          rc 0
-@1424:000225                          si 0o225
-@1425:102055                          ca CHRDSH
-@1426:024000                          rc 0
-@1427:000225                          si 0o225
-@1430:102055                          ca CHRDSH
-@1431:024000                          rc 0
-@1432:000225                          si 0o225
-@1433:102055                          ca CHRDSH
-@1434:024000                          rc 0
-@1435:000225                          si 0o225
-@1436:102055                          ca CHRDSH
-@1437:024000                          rc 0
-@1440:000225                          si 0o225
-@1441:102054                          ca CHRNL
-@1442:024000                          rc 0
-@1443:074000                   PSRET: sp 0                     ; @@WrittenBy a1420
+@1422:051445                          ta PSRET                 ; @@JumpedToBy a1414
+@1423:000225                          si 0o225
+@1424:102055                          ca CHRDSH
+@1425:024000                          rc 0
+@1426:000225                          si 0o225
+@1427:102055                          ca CHRDSH
+@1430:024000                          rc 0
+@1431:000225                          si 0o225
+@1432:102055                          ca CHRDSH
+@1433:024000                          rc 0
+@1434:000225                          si 0o225
+@1435:102055                          ca CHRDSH
+@1436:024000                          rc 0
+@1437:000225                          si 0o225
+@1440:102055                          ca CHRDSH
+@1441:024000                          rc 0
+@1442:000225                          si 0o225
+@1443:102054                          ca CHRNL
+@1444:024000                          rc 0
+@1445:074000                   PSRET: sp 0                     ; @@WrittenBy a1422
 
                                       ; =============================================================
                                       ; SUBROUTINE: PRBANNER
                                       ; =============================================================
                             PRBANNER:
-@1444:051447                          ta PBNRET
-@1445:075454                          sp PRSTR                 ; CALL - returns
-@1446:002067                          .word BNNSTR
-@1447:074000                  PBNRET: sp 0                     ; @@WrittenBy a1444
+@1446:051451                          ta PBNRET
+@1447:075456                          sp PRSTR                 ; CALL - returns
+@1450:002067                          .word BNNSTR
+@1451:074000                  PBNRET: sp 0                     ; @@WrittenBy a1446
 
                                       ; =============================================================
                                       ; SUBROUTINE: PRMPRMT
                                       ; =============================================================
                              PRMPRMT:
-@1450:051453                          ta PPRET                 ; @@JumpedToBy a0046
-@1451:075454                          sp PRSTR                 ; CALL - returns
-@1452:002112                          .word PRMSTR
-@1453:074000                   PPRET: sp 0                     ; @@WrittenBy a1450
+@1452:051455                          ta PPRET                 ; @@JumpedToBy a0050
+@1453:075456                          sp PRSTR                 ; CALL - returns
+@1454:002112                          .word PRMSTR
+@1455:074000                   PPRET: sp 0                     ; @@WrittenBy a1452
 
                                       ; =============================================================
                                       ; SUBROUTINE: PRSTR
@@ -1485,91 +1489,91 @@
                                       ; Characters in lower 6 bits; clc shifts them to top 6.
                                       ; =============================================================
                                PRSTR:
-@1454:051472                          ta PRRET                 ; @@JumpedToBy a1445 a1451 a1474 a1523 a1527 a1533 a1537 a1543
-@1455:101472                          ca PRRET
-@1456:045457                          td PRaddr
-@1457:100000                  PRaddr: ca 0                     ; @@WrittenBy a1456
-@1460:045462                          td PRLOOP
-@1461:131472                          ao PRRET
+@1456:051474                          ta PRRET                 ; @@JumpedToBy a1447 a1453 a1476 a1525 a1531 a1535 a1541 a1545
+@1457:101474                          ca PRRET
+@1460:045461                          td PRaddr
+@1461:100000                  PRaddr: ca 0                     ; @@WrittenBy a1460
+@1462:045464                          td PRLOOP
+@1463:131474                          ao PRRET
 
-@1462:100000                  PRLOOP: ca 0                     ; @@WrittenBy a1460 a1467 ReadBy a1467 JumpedToBy a1470
-@1463:071471                          cp PREND                 ; negative (-1) -> done
-@1464:170012                          clc 0o12
-@1465:000225                          si 0o225
-@1466:024000                          rc 0
-@1467:131462                          ao PRLOOP
-@1470:075462                          sp PRLOOP                ; JUMP - no return
+@1464:100000                  PRLOOP: ca 0                     ; @@WrittenBy a1462 a1471 ReadBy a1471 JumpedToBy a1472
+@1465:071473                          cp PREND                 ; negative (-1) -> done
+@1466:170012                          clc 0o12
+@1467:000225                          si 0o225
+@1470:024000                          rc 0
+@1471:131464                          ao PRLOOP
+@1472:075464                          sp PRLOOP                ; JUMP - no return
                                PREND:
-@1471:075472                          sp PRRET                 ; JUMP - no return @@JumpedToBy a1463
-@1472:074000                   PRRET: sp 0                     ; @@WrittenBy a1454 a1461 ReadBy a1455 a1461 JumpedToBy a1471
+@1473:075474                          sp PRRET                 ; JUMP - no return @@JumpedToBy a1465
+@1474:074000                   PRRET: sp 0                     ; @@WrittenBy a1456 a1463 ReadBy a1457 a1463 JumpedToBy a1473
 
                                       ; =============================================================
                                       ; SUBROUTINE: PRMCOMPMOV
                                       ; Print "COMPUTER PLAYS SQUARE N\n"
                                       ; =============================================================
                           PRMCOMPMOV:
-@1473:051521                          ta PCMRET                ; @@JumpedToBy a1043
-@1474:075454                          sp PRSTR                 ; CALL - returns
-@1475:002313                          .word CMVSTR
+@1475:051523                          ta PCMRET                ; @@JumpedToBy a1045
+@1476:075456                          sp PRSTR                 ; CALL - returns
+@1477:002313                          .word CMVSTR
 
-@1476:102025                          ca ZERO
-@1477:042005                          ts SQIDX
+@1500:102025                          ca ZERO
+@1501:042005                          ts SQIDX
                                PCMLP:
-@1500:102005                          ca SQIDX                 ; @@JumpedToBy a1506
-@1501:075073                          sp MAKHOT                ; CALL - returns
-@1502:116004                          su BMOVE
-@1503:134000                          dm 0
-@1504:071507                          cp PCMFND                ; zero -> found matching square
-@1505:132005                          ao SQIDX
-@1506:075500                          sp PCMLP                 ; JUMP - no return
+@1502:102005                          ca SQIDX                 ; @@JumpedToBy a1510
+@1503:075075                          sp MAKHOT                ; CALL - returns
+@1504:116004                          su BMOVE
+@1505:134000                          dm 0
+@1506:071511                          cp PCMFND                ; zero -> found matching square
+@1507:132005                          ao SQIDX
+@1510:075502                          sp PCMLP                 ; JUMP - no return
 
                               PCMFND:
-@1507:102005                          ca SQIDX                 ; @@JumpedToBy a1504
-@1510:112365                          ad flexo_num_tbl_ptr
-@1511:045512                          td char_conv1
-@1512:100000              char_conv1: ca 0                     ; @@WrittenBy a1511
+@1511:102005                          ca SQIDX                 ; @@JumpedToBy a1506
+@1512:112365                          ad flexo_num_tbl_ptr
+@1513:045514                          td char_conv1
+@1514:100000              char_conv1: ca 0                     ; @@WrittenBy a1513
 
                                       ;               ad   FCHAR1
-@1513:170012                          clc 0o12
-@1514:000225                          si 0o225
-@1515:024000                          rc 0
+@1515:170012                          clc 0o12
 @1516:000225                          si 0o225
-@1517:102054                          ca CHRNL
-@1520:024000                          rc 0
-@1521:074000                  PCMRET: sp 0                     ; @@WrittenBy a1473
+@1517:024000                          rc 0
+@1520:000225                          si 0o225
+@1521:102054                          ca CHRNL
+@1522:024000                          rc 0
+@1523:074000                  PCMRET: sp 0                     ; @@WrittenBy a1475
 
                                       ; =============================================================
                                       ; MESSAGE SUBROUTINES
                                       ; =============================================================
                              PRMHWIN:
-@1522:051525                          ta PHWRET                ; @@JumpedToBy a1055
-@1523:075454                          sp PRSTR                 ; CALL - returns
-@1524:002145                          .word HWSTR
-@1525:074000                  PHWRET: sp 0                     ; @@WrittenBy a1522
+@1524:051527                          ta PHWRET                ; @@JumpedToBy a1057
+@1525:075456                          sp PRSTR                 ; CALL - returns
+@1526:002145                          .word HWSTR
+@1527:074000                  PHWRET: sp 0                     ; @@WrittenBy a1524
 
                              PRMCWIN:
-@1526:051531                          ta PCWRET                ; @@JumpedToBy a1062
-@1527:075454                          sp PRSTR                 ; CALL - returns
-@1530:002162                          .word CWSTR
-@1531:074000                  PCWRET: sp 0                     ; @@WrittenBy a1526
+@1530:051533                          ta PCWRET                ; @@JumpedToBy a1064
+@1531:075456                          sp PRSTR                 ; CALL - returns
+@1532:002162                          .word CWSTR
+@1533:074000                  PCWRET: sp 0                     ; @@WrittenBy a1530
 
                              PRMDRAW:
-@1532:051535                          ta PDRET                 ; @@JumpedToBy a1067
-@1533:075454                          sp PRSTR                 ; CALL - returns
-@1534:002205                          .word DWSTR
-@1535:074000                   PDRET: sp 0                     ; @@WrittenBy a1532
+@1534:051537                          ta PDRET                 ; @@JumpedToBy a1071
+@1535:075456                          sp PRSTR                 ; CALL - returns
+@1536:002205                          .word DWSTR
+@1537:074000                   PDRET: sp 0                     ; @@WrittenBy a1534
 
                            PRMBADMOV:
-@1536:051541                          ta PBMRET                ; @@JumpedToBy a1046
-@1537:075454                          sp PRSTR                 ; CALL - returns
-@1540:002216                          .word BDSTR
-@1541:074000                  PBMRET: sp 0                     ; @@WrittenBy a1536
+@1540:051543                          ta PBMRET                ; @@JumpedToBy a1050
+@1541:075456                          sp PRSTR                 ; CALL - returns
+@1542:002216                          .word BDSTR
+@1543:074000                  PBMRET: sp 0                     ; @@WrittenBy a1540
 
                             PRMSQTKN:
-@1542:051545                          ta PSTRET                ; @@JumpedToBy a1051
-@1543:075454                          sp PRSTR                 ; CALL - returns
-@1544:002251                          .word STSTR
-@1545:074000                  PSTRET: sp 0                     ; @@WrittenBy a1542
+@1544:051547                          ta PSTRET                ; @@JumpedToBy a1053
+@1545:075456                          sp PRSTR                 ; CALL - returns
+@1546:002251                          .word STSTR
+@1547:074000                  PSTRET: sp 0                     ; @@WrittenBy a1544
 
 
 
@@ -1578,24 +1582,24 @@
                                       ; =============================================================
                                       .org 0o2000
 
-@2000:000000                    BRDX: .word 0o0                ; @@WrittenBy a0611 a1026 ReadBy a0717 a0760 a1024 a1032 a1142 a1162 a1255 a1316 a1342
-@2001:000000                    BRDO: .word 0o0                ; @@WrittenBy a0612 a0773 ReadBy a0724 a0765 a0771 a1006 a1151 a1163 a1256 a1317 a1347
-@2002:000000                    TURN: .word 0o0                ; @@WrittenBy a0613 a1003 a1027 ReadBy a1003 a1017 a1027
-@2003:000000                  WINFLG: .word 0o0                ; @@WrittenBy a1005 a1031 a1136 a1271 ReadBy a1013 a1037 a1277
-@2004:000000                   BMOVE: .word 0o0                ; @@WrittenBy a0756 a1173 a1254 a1330 ReadBy a0757 a0764 a0772 a1025 a1260 a1266 a1311 a1502
-@2005:000000                   SQIDX: .word 0o0                ; @@WrittenBy a0710 a0741 a0750 a1251 a1303 a1335 a1366 a1477 a1505 ReadBy a0713 a0741 a0754 a0774 a1252 a1303 a1304 a1336 a1366 a1367 a1373 a1377 a1500 a1505 a1507
-@2006:000000                    CNTR: .word 0o0                ; MAKHOT loop counter @@WrittenBy a1074 a1110 ReadBy a1077 a1106
-@2007:000000                    CWBD: .word 0o0                ; @@WrittenBy a1007 a1033 a1273 ReadBy a1121
-@2010:000000                   CWMSK: .word 0o0                ; @@WrittenBy a1120 ReadBy a1122 a1123
-@2011:000000                  CWLCNT: .word 0o0                ; @@WrittenBy a1011 a1035 a1131 a1275 ReadBy a1127
-@2012:000000                  WINMOV: .word 0o0                ; @@WrittenBy a1250 a1312 ReadBy a1145 a1154
-@2013:000000                  TRYBRD: .word 0o0                ; @@WrittenBy a1143 a1152 ReadBy a1265
-@2014:000000                  TRYTMP: .word 0o0                ; @@WrittenBy a1267 ReadBy a1272
-@2015:000000                    OCCP: .word 0o0                ; @@WrittenBy a1164 a1257 a1320 ReadBy a1166 a1261 a1322
-@2016:000000                   TFMSK: .word 0o0                ; @@WrittenBy a1315 ReadBy a1321 a1327
-@2017:000000                  CURMSK: .word 0o0                ; MAKHOT shifted mask @@WrittenBy a1076 a1105 ReadBy a1103 a1112
-@2020:000000                    TBIT: .word 0o0                ; @@WrittenBy a0715 a1340 ReadBy a0716 a0723 a1341 a1346
-@2021:000000                      T1: .word 0o0                ; @@WrittenBy a1161 ReadBy a1165
+@2000:000000                    BRDX: .word 0o0                ; @@WrittenBy a0613 a1030 ReadBy a0721 a0762 a1026 a1034 a1144 a1164 a1257 a1320 a1344
+@2001:000000                    BRDO: .word 0o0                ; @@WrittenBy a0614 a0775 ReadBy a0726 a0767 a0773 a1010 a1153 a1165 a1260 a1321 a1351
+@2002:000000                    TURN: .word 0o0                ; @@WrittenBy a0615 a1005 a1031 ReadBy a1005 a1021 a1031
+@2003:000000                  WINFLG: .word 0o0                ; @@WrittenBy a1007 a1033 a1140 a1273 ReadBy a1015 a1041 a1301
+@2004:000000                   BMOVE: .word 0o0                ; @@WrittenBy a0760 a1175 a1256 a1332 ReadBy a0761 a0766 a0774 a1027 a1262 a1270 a1313 a1504
+@2005:000000                   SQIDX: .word 0o0                ; @@WrittenBy a0712 a0743 a0752 a1253 a1305 a1337 a1370 a1501 a1507 ReadBy a0715 a0743 a0756 a0776 a1254 a1305 a1306 a1340 a1370 a1371 a1375 a1401 a1502 a1507 a1511
+@2006:000000                    CNTR: .word 0o0                ; MAKHOT loop counter @@WrittenBy a1076 a1112 ReadBy a1101 a1110
+@2007:000000                    CWBD: .word 0o0                ; @@WrittenBy a1011 a1035 a1275 ReadBy a1123
+@2010:000000                   CWMSK: .word 0o0                ; @@WrittenBy a1122 ReadBy a1124 a1125
+@2011:000000                  CWLCNT: .word 0o0                ; @@WrittenBy a1013 a1037 a1133 a1277 ReadBy a1131
+@2012:000000                  WINMOV: .word 0o0                ; @@WrittenBy a1252 a1314 ReadBy a1147 a1156
+@2013:000000                  TRYBRD: .word 0o0                ; @@WrittenBy a1145 a1154 ReadBy a1267
+@2014:000000                  TRYTMP: .word 0o0                ; @@WrittenBy a1271 ReadBy a1274
+@2015:000000                    OCCP: .word 0o0                ; @@WrittenBy a1166 a1261 a1322 ReadBy a1170 a1263 a1324
+@2016:000000                   TFMSK: .word 0o0                ; @@WrittenBy a1317 ReadBy a1323 a1331
+@2017:000000                  CURMSK: .word 0o0                ; MAKHOT shifted mask @@WrittenBy a1100 a1107 ReadBy a1105 a1114
+@2020:000000                    TBIT: .word 0o0                ; @@WrittenBy a0717 a1342 ReadBy a0720 a0725 a1343 a1350
+@2021:000000                      T1: .word 0o0                ; @@WrittenBy a1163 ReadBy a1167
 @2022:000000                      T2: .word 0o0
 @2023:000000                      T3: .word 0o0
 @2024:000000                   PRPTR: .word 0o0
@@ -1603,33 +1607,33 @@
                                       ; =============================================================
                                       ; CONSTANTS
                                       ; =============================================================
-@2025:000000                    ZERO: .word 0o0                ; @@ReadBy a0707 a1004 a1030 a1247 a1270 a1334 a1476
+@2025:000000                    ZERO: .word 0o0                ; @@ReadBy a0711 a1006 a1032 a1251 a1272 a1336 a1500
 @2026:000001                     ONE: .word 0o1
-@2027:177777                    NEGZ: .word 0o177777           ; @@ReadBy a1325
-@2030:000001                    UNIT: .word 0o00001            ; @@ReadBy a1107 a1130 a1135 a1331
+@2027:177777                    NEGZ: .word 0o177777           ; @@ReadBy a1327
+@2030:000001                    UNIT: .word 0o00001            ; @@ReadBy a1111 a1132 a1137 a1333
 @2031:000100                  FCHAR1: .word 0o000100           ; Flexo code for '1' (check Table 1)
-@2032:000011                NINE_VAL: .word 0o000011           ; @@ReadBy a0742 a0751 a1020 a1305 a1400
-@2033:000010               EIGHT_VAL: .word 0o000010           ; @@ReadBy a1010 a1034 a1274
-@2034:000003               THREE_VAL: .word 0o000003           ; @@ReadBy a1370
-@2035:000006                 SIX_VAL: .word 0o000006           ; @@ReadBy a1374
+@2032:000011                NINE_VAL: .word 0o000011           ; @@ReadBy a0744 a0753 a1022 a1307 a1402
+@2033:000010               EIGHT_VAL: .word 0o000010           ; @@ReadBy a1012 a1036 a1276
+@2034:000003               THREE_VAL: .word 0o000003           ; @@ReadBy a1372
+@2035:000006                 SIX_VAL: .word 0o000006           ; @@ReadBy a1376
 
-@2036:001000                 SQ0MASK: .word 0o001000           ; @@ReadBy a1075
-@2037:000040                 CTR4MSK: .word 0o000040           ; @@ReadBy a1160 a1172
-@2040:001000                  CORNR0: .word 0o001000           ; @@ReadBy a1175
-@2041:000200                  CORNR2: .word 0o000200           ; @@ReadBy a1202
-@2042:000010                  CORNR6: .word 0o000010           ; @@ReadBy a1207
-@2043:000002                  CORNR8: .word 0o000002           ; @@ReadBy a1214
-@2044:000400                   EDGE1: .word 0o000400           ; @@ReadBy a1221
-@2045:000100                   EDGE3: .word 0o000100           ; @@ReadBy a1226
-@2046:000020                   EDGE5: .word 0o000020           ; @@ReadBy a1233
-@2047:000004                   EDGE7: .word 0o000004           ; @@ReadBy a1240
+@2036:001000                 SQ0MASK: .word 0o001000           ; @@ReadBy a1077
+@2037:000040                 CTR4MSK: .word 0o000040           ; @@ReadBy a1162 a1174
+@2040:001000                  CORNR0: .word 0o001000           ; @@ReadBy a1177
+@2041:000200                  CORNR2: .word 0o000200           ; @@ReadBy a1204
+@2042:000010                  CORNR6: .word 0o000010           ; @@ReadBy a1211
+@2043:000002                  CORNR8: .word 0o000002           ; @@ReadBy a1216
+@2044:000400                   EDGE1: .word 0o000400           ; @@ReadBy a1223
+@2045:000100                   EDGE3: .word 0o000100           ; @@ReadBy a1230
+@2046:000020                   EDGE5: .word 0o000020           ; @@ReadBy a1235
+@2047:000004                   EDGE7: .word 0o000004           ; @@ReadBy a1242
 
-@2050:042000                  CHRDOT: .flexh "."               ; @@ReadBy a1354
-@2051:164000                    CHRX: .flexh "x"               ; @@ReadBy a1360
-@2052:140000                    CHRO: .flexh "o"               ; @@ReadBy a1364
-@2053:012000                  CHRBAR: .flexh "|"               ; @@ReadBy a1404
-@2054:122000                   CHRNL: .flexh "\n"              ; @@ReadBy a1410 a1415 a1441 a1517
-@2055:072000                  CHRDSH: .flexh "-"               ; @@ReadBy a1422 a1425 a1430 a1433 a1436
+@2050:042000                  CHRDOT: .flexh "."               ; @@ReadBy a1356
+@2051:164000                    CHRX: .flexh "x"               ; @@ReadBy a1362
+@2052:140000                    CHRO: .flexh "o"               ; @@ReadBy a1366
+@2053:012000                  CHRBAR: .flexh "|"               ; @@ReadBy a1406
+@2054:122000                   CHRNL: .flexh "\n"              ; @@ReadBy a1412 a1417 a1443 a1521
+@2055:072000                  CHRDSH: .flexh "-"               ; @@ReadBy a1424 a1427 a1432 a1435 a1440
 
                                       ; =============================================================
                                       ; WIN-LINE TABLE
@@ -1644,7 +1648,7 @@
 @2064:001042                          .word 0o001042           ; diag0: sq0|sq4|sq8
 @2065:000250                          .word 0o000250           ; diag1: sq2|sq4|sq6
 
-@2066:002056              WINTBLADDR: .word WINTBL             ; @@ReadBy a1115
+@2066:002056              WINTBLADDR: .word WINTBL             ; @@ReadBy a1117
 
                                       ; =============================================================
                                       ; STRING DATA
@@ -1848,7 +1852,7 @@
                                       ;=====================================================================================
 
                                       ; table to convert a cell number into a flexo code
-@2365:002366       flexo_num_tbl_ptr: .word flexo_num_tbl      ; @@ReadBy a0775 a1510
+@2365:002366       flexo_num_tbl_ptr: .word flexo_num_tbl      ; @@ReadBy a0777 a1512
 @2366:000076           flexo_num_tbl: .flexl "0123456789"
 @2367:000025
 @2370:000017
@@ -1924,7 +1928,7 @@
                                       ; AC contains a pointer to the string, terminated by the first negative 'character'
                                       ; ds_argx and ds_argy give the initial (x, y) location
                             draw_str:
-@2443:052465                          ta ds_ret                ; @@JumpedToBy a0174 a2404
+@2443:052465                          ta ds_ret                ; @@JumpedToBy a0176 a2404
 @2444:046466                          td ds_lcl_charp          ; save the character pointer passed in the ACC
                              ds_loop:
 @2445:102467                          ca ds_argx               ; @@JumpedToBy a2464
@@ -1952,8 +1956,8 @@
 @2465:074000                          sp 0                     ; @@WrittenBy a2443 JumpedToBy a2460
 
 @2466:000000            ds_lcl_charp: .word 0                  ; pointer to the next character to display @@WrittenBy a2444 a2455 ReadBy a2451 a2455
-@2467:000000                 ds_argx: .word 0                  ; @@WrittenBy a0172 a2401 a2463 ReadBy a2445 a2461
-@2470:000000                 ds_argy: .word 0                  ; @@WrittenBy a0170 a2402 ReadBy a2447
+@2467:000000                 ds_argx: .word 0                  ; @@WrittenBy a0174 a2401 a2463 ReadBy a2445 a2461
+@2470:000000                 ds_argy: .word 0                  ; @@WrittenBy a0172 a2402 ReadBy a2447
 
                                       ; ---------------------------
 
@@ -2268,15 +2272,15 @@
 @2677:170001                          clc 1                    ; shift AC left by one bit
 @2700:042727                          ts d16c_lcl_seg_map
 @2701:102720                          ca d16c_read_seg_tabx
-@2702:114673                          su c_3
+@2702:114675                          su c_3
 @2703:046720                          td d16c_read_seg_tabx
                                       ;        td tmp_tabx
 @2704:102715                          ca d16c_read_seg_taby
-@2705:114673                          su c_3
+@2705:114675                          su c_3
 @2706:046715                          td d16c_read_seg_taby
                                       ;        td tmp_taby
 @2707:102722                          ca d16c_read_seg_tabdxy
-@2710:114673                          su c_3
+@2710:114675                          su c_3
 @2711:046722                          td d16c_read_seg_tabdxy
 @2712:132730                          ao d16c_lcl_loop_cnt
 @2713:072672                          cp d16s_loop

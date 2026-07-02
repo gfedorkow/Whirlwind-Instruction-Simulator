@@ -367,12 +367,6 @@ class ArgsTokenizer (Tokenizer):
         super().__init__ (str)
         self.delimiter = ' '
 
-## class SimParam (Tokenizer):
-##     def __init__(self, cb):
-##         self.simparams = {}
-##         self.simparams["Radar"] = False
-##         self.cb = cb
-
 
 class SimParamTokenizer (Tokenizer):
     def __init__ (self, str):
@@ -518,7 +512,7 @@ class StdArgs:
         return parser
 
 class ConstWWbitClass:
-    def __init__(self, get_screen_size=False, corefile=None, args=None):
+    def __init__(self, get_screen_size=False, corefile=None, args=None, hnf_hardware_present=False):
         # This state variable controls whether the simulator simply moves ahead to execute
         # each instruction, or if it pauses to wait for a person to click a button (or run single-step).
         self.SIM_STATE_STOP = 0
@@ -608,11 +602,12 @@ class ConstWWbitClass:
 
         # configure the displays
         self.analog_display = False   # set this flag to display on an analog oscilloscope instead of an x-window
-        self.flexo_win = False;       # Window to display flexo output
+        self.flexo_win = False        # Window to display flexo output
         self.use_x_win = True         # clear this flag to completely turn off the xwin display, widgets and all
         self.ana_scope = None   # this is a handle to the methods for operating the analog scope
         self.which_scope = 3    # default to showing both D and F scopes on the xwin display
         self.RasPi = False      # this will be set in microWhirlwind if it's running on a RasPi
+        self.hnf_hardware_present = hnf_hardware_present
 
         # These two will be set by prog that needs them. Looks like only wwsim at this point. LAS 5/17/24
         # self.argAutoClick = False   # used in air defense and Nim (I think); mAY 2026: seems to be unused...
@@ -1839,8 +1834,13 @@ class FlexoControlClass:
             code = wrd >> 10   # code in top six bits contain the character
         return self.cb.NO_ALARM
 
+    # called once at sim termination to print the collected Flexo output
     def get_saved_output(self) -> str:
         return self.flexoOut.getFlascii()
+
+    # called at sim termination to clear the queue of collected Flexo output
+    def clear_saved_output(self) -> str:
+        return self.flexoOut.clearAsciiOut()
 
 
 # The following class prints debug text on the CRT to display and adjust memory values
@@ -2268,6 +2268,7 @@ class XwinCrt:
             win_name = "Whirlwind CoreFile: %s" % cb.CoreFileName
             self.win = self.gfx.GraphWin(win_name, self.WIN_MAX_COORD, win_y_size, autoflush=False)
             root = self.win.master
+
             # Position the window (e.g., at x=100, y=100)
             # Format is "width x height + Xoffset + Yoffset"
             if cb.xWin_geometry:
@@ -2277,7 +2278,12 @@ class XwinCrt:
             else:
                 root.geometry('+600+100')
 
-            self.win.setBackground("Gray10")
+            # HNF prefers to have a completely black background; for guy's use, "almost black" seems to work
+            if cb.hnf_hardware_present:
+                self.win.setBackground("Black")
+            else:
+                self.win.setBackground("Gray10")
+
             if cb.museum_mode:
                 cb.museum_mode.museum_gfx_window_size(cb, self.win)
 
@@ -2458,7 +2464,7 @@ class XwinCrt:
                     button = 3  # return 'button 3' to emulate the PC Mouse right-click
                 pt = True       # if it were the CRT, we'd have to return an actual point, but here, it's just "hit"
                 print("Light Gun Hit: button=%d" % button)
-                if cb.panel.hnf_program_dispatcher:
+                if cb.panel and cb.panel.hnf_program_dispatcher:
                     cb.panel.hnf_program_dispatcher.reset_inactivity_timer()
             self.last_pen_point = None  # we don't need this var, but I don't want to break the xwin version
 

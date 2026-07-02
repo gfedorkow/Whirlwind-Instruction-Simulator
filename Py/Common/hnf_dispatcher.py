@@ -60,12 +60,18 @@ class HnfDispatchProgramClass:
 # Set the timeouts and other params when the class is created.
 # A timeout of Zero says "revert to wired-in defaults
 class HnfDispatcherClass:
-    def __init__(self, cb, tty_name, hnf_idle_timeout = 0):
+    def __init__(self, cb, tty_name, hnf_idle_timeout = 0, hnf_restart_timer=0):
         if hnf_idle_timeout == 0 or hnf_idle_timeout is None:
-            self.default_app_timeout = 12  # user inactivity timeout, measured in seconds
+            self.default_app_timeout = 180  # user inactivity timeout, measured in seconds
             cb.log.warn("HNF inactivity timer set to default, t=%d seconds" % self.default_app_timeout)
         else:
             self.default_app_timeout = hnf_idle_timeout  # user inactivity timeout, measured in seconds
+
+        if hnf_restart_timer is not None and hnf_restart_timer != 0:
+            self.hnf_restart_time = time.time() + (hnf_restart_timer * 60)  # user restart timeout, measured in seconds
+            cb.log.warn("HNF Restart timer set to %d minutes" % hnf_restart_timer)
+        else:
+            self.hnf_restart_time = 0
 
         self.default_attract_timeout = 7  # Attract Screen cycle timer, measured in seconds
         # This dispatch table defines which programs should run on the exhibit.
@@ -121,7 +127,7 @@ class HnfDispatcherClass:
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 15,
                     switch_args=[["FlipFlopPreset02", "0"]], MIR_switch_number = 4))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 15
-            "Vibrating-String", "knob-v97-closed-end.acore", self.default_attract_timeout, 16,
+            "Vibrating-String/HNF", "knob-v97-closed-end-hnf.acore", self.default_attract_timeout, 16,
                     MIR_switch_number = 4))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 16
@@ -177,13 +183,17 @@ class HnfDispatcherClass:
             self.tty = None
 
 
-    #
+    # call this method to extend the timeout for the current application
     def reset_inactivity_timer(self):
         if self.stop_at_time:
             self.stop_at_time = time.time() + self.running_time  # use this to extend the Inactivity timer
 
 
-    # this routine is called periodically to see if we should change state.
+    # call this method to force the dispatcher to start another program
+    def zero_remaining_time(self):
+        self.stop_at_time = time.time()
+
+        # this routine is called periodically to see if we should change state.
     # It has several functions --
     #   - we test the serial port to see if there's activity reported by an attached HNF media display
     #      If so, we just extend the inactivity timer
@@ -207,6 +217,9 @@ class HnfDispatcherClass:
                     cb.panel.write_register("LMIR",
                             self.dispatch_table[self.next_app_to_run].MIR_switch_number, set_from_dispatcher=True)
                 self.last_dispatcher_press = self.next_app_to_run
+
+                if (self.hnf_restart_time) and now > self.hnf_restart_time:
+                    cb.log.fatal(" Simulator Restart Timeout"  )
 
         if (change == False):
             # if current_switch_setting != self.last_dispatcher_press:
@@ -258,6 +271,13 @@ class HnfDispatcherClass:
     def send_selection_to_tty(self, selection):
         text = "%s\r\n" % selection
         self.tty.write(text.encode('ascii'))
+
+
+    # Jurgen asked for a command code to the info screen if the sim enters "Alarm" state
+    def switch_to_alarm_state(self):
+        if self.tty:
+            text = "E\r\n"
+            self.tty.write(text.encode('ascii'))
 
     def test_tty_rx_activity(self):
         ret = None

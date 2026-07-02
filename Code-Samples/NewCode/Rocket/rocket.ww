@@ -5,8 +5,18 @@
 ;   Simple ballistic Rocket launch
 ;   without air resistance
 ; """
+; Modified Jun 26 2026 to do several graphics refresh cycles in between each velocity
+; calculation; net result is that the length of wall-clock time to complete the flight
+; can be adjusted to taste.
+;  The Murrow film takes over 20 seconds to complete the flight; with no artificial delay,
+; this program completes a cycle in less than two seconds, making it hard to see what's happening
+; with the gauges.
+;  Pacing can be adjusted by changing the small negative number in "delay_init"
+; 
 
-        .dbwgt c_fuel, 0o400
+;        .dbwgt c_fuel, 0o400
+        .dbwgt  c_fuel, incr = 0o600, min = 0o5000, max = 0o77200, fmt = "%o"
+
 
         .org 0
 zero:   .word 0
@@ -45,13 +55,16 @@ start:  sp main
 ;     burn = 0.08    ; 0.05
 ;               
 ;  definitions of initial condidtions
+; working params as of Jun 25, 2026
 launchdir:      .word 87   ; degrees; not used directly
 cos_launchdir:  .word +0.1   ;+0.075     ;+0.05233
 sin_launchdir:  .word +0.99
-grav:           .word +0.0015    ;+0.003
+grav:           .word +0.0015   ;
 launch_speed:   .word +0.01     ; initial velocity at launch
-accel:          .word +0.003    ; +0.002
-burn:           .word +0.04     ; +0.03
+accel:          .word +0.003    ;
+burn:           .word +0.04     ;
+delay_init:     .word -0o04    ; delay counter (in octal!)
+
 
 ; constants
 ;                 scaled number     unscaled number
@@ -76,8 +89,7 @@ fuel:           .word 0
 ; Ephemeral variables
 tmp1:   .word 0
 speed:  .word 0
-loop_count:  ; used only in top-level routines for drawing the game board
-          .word 0
+delay_counter: .word 0
 
 ; ************ Rocket Code *************
 ;     
@@ -101,17 +113,26 @@ main:   ca launch_speed
         ca c_fuel
         ts fuel
 
+        ca delay_init    ; set the delay counter to pace the display
+        ts delay_counter
+
 ; 
 ;     
 ;     # main loop: accelerate while fuel, show fuel and speed
 ;     while ypos >= -0.1 and ypos < 1.0 and xpos < 1.0 :
 loop:
+        ao delay_counter
+        cp refresh_display
+
+        ca delay_init    ; Reset the delay counter to pace the display
+        ts delay_counter        
+        
         ca ypos     ; test all the loop exit conditions
         su c_miny
         cp loop_exit
-        ca c_maxy
-        su ypos
-        cp loop_exit
+;        ca c_maxy      ; comment these out so if the rocket flies to high, you get a trap
+;        su ypos
+;        cp loop_exit
 ;        ca c_maxx      ; comment these out so if the rocket flies to far to the right, you get a trap
 ;        su xpos
 ;        cp loop_exit
@@ -183,15 +204,15 @@ do_gravity:
         ad yspeed
         ts ypos
 
+refresh_display:
 ;         # always draw actual point and base line
 ;         drawPoint(xpos, ypos)
 ;         drawVector(-1.0, 0.0, 1.0, 0.0)
 ;         drawCharacter(0.0, -0.8, digits[mode])
-
         ca ypos           ; draw the rocket's position as a point
         si scope_point    ; initialize point gen with the y-coord in ACC
         ca xpos
-        rc 0          ; Draw a pont with ACC = x
+        rc 0          ; Draw a point with ACC = x
 
 draw_baseline:
         ca y_baseline
