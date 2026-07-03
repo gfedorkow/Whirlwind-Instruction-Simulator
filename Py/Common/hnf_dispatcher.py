@@ -120,7 +120,7 @@ class HnfDispatcherClass:
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 13,
                     switch_args=[["FlipFlopPreset02", "4"]], MIR_switch_number = 5))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 13
-            "Tic-Tac-Toe", "tic-tac-toe.acore", self.default_attract_timeout, 14,
+            "Tic-Tac-Toe", "auto-tic-tac-toe.acore", self.default_attract_timeout, 14,
                     MIR_switch_number = 5))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 14
