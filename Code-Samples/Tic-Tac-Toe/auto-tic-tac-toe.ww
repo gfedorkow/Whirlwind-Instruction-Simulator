@@ -79,7 +79,7 @@ main:       sp init_game_board      ; call the init subroutine
             ca autoclick_tab_lastp
             su autoclick_tabp       ; initialize autoclick to make a move
 turn_on_autoclick:
-;;;;            ts autoclick_move_counter  ; Uncomment this line for AutoClick
+            ts autoclick_move_counter
             sp refresh_loop         ; branch to main display refresh loop
 
 ; constants
