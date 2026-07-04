@@ -572,13 +572,21 @@ def main_run_sim(args, cb, cpu):
 
     end_time = time.time()
     wall_clock_time = end_time - start_time  # time in units of floating point seconds
+
+    # LAS 6/25/26 This did also check whether the run was short, as in the next
+    # if, but since quiet is now the default we'll always show this if
+    # asked. Note I kept the check on radar since I wasn't sure of the use case
+    # there.
+    if not cb.TraceQuiet:
+        stats_fmt = "Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec, ww_time = %.1f usec\n"
+        cb.log.raw (stats_fmt % (sim_cycle, cpu.PC, wall_clock_time,
+                                 1000000.0 * float(wall_clock_time) / float(sim_cycle) if sim_cycle != 0 else 0,
+                                 cpu.accum_ww_inst_time_usec))
     if wall_clock_time > 2.0 and sim_cycle > 10:  # don't do the timing calculation if the run was really short
-        if not cb.TraceQuiet:
-            cb.log.raw("Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec\n" %
-                       (sim_cycle, cpu.PC, wall_clock_time, 1000000.0 * float(wall_clock_time) / float(sim_cycle)))
         if args.Radar:
             print("    elapsed radar time = %4.1f minutes (%4.1f revolutions)" %
                   (radar.elapsed_time / 60.0, radar.antenna_revolutions))
+
     if cb.tracelog:
         title = "%s\\nWWfile: %s" % (cb.CoreFileName, CoreMem.metadata['filename_from_core'])
         flowgraph.finish_flow_graph_from_sim (cb, CoreMem, cpu, title)

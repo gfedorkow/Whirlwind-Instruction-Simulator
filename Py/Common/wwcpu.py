@@ -61,7 +61,7 @@ class CpuClass:
         self.cb = cb
         self.cm = core_mem
         self.ww_exec_log = wwinfra.LogFactory().getLog()
-
+        
         # we need to keep track of the scope object since it needs background processing
         self.scope = ww_io_sim.DisplayScopeClass(cb)
         self.drum = ww_io_sim.DrumClass(cb)
@@ -86,40 +86,40 @@ class CpuClass:
         #  And the microsecond count to estimate performance
         #  And changed from [] mutable list to () immutable set
         self.op_decode_1958 = [
-            #  function    op-name  description       r/w, usec
-            (self.si_inst, "SI", "Select Input",      '',  30, cb.COLOR_IO),
-            (self.unused1_inst, "unused", "unused",   '',  0),
-            (self.bi_inst, "BI", "Block Transfer In", 'w', 8000, cb.COLOR_IO),
-            (self.rd_inst, "RD", "Read",              '',  15, cb.COLOR_IO),
-            (self.bo_inst, "BO", "Block Transfer Out", 'r', 8000, cb.COLOR_IO),  # 04
-            (self.rc_inst, "RC", "Record",            '',  22, cb.COLOR_IO),    # 05
-            (self.sd_inst, "SD", "Sum Digits",        'r', 22),    # 06
-            (self.cf_inst, "CF", "Change Fields",      '', 15, cb.COLOR_CF), # 07
-            (self.ts_inst, "TS", "Transfer to Storage"),  # 010,
-            (self.td_inst, "TD", "Transfer Digits"),      # 011
-            (self.ta_inst, "TA", "Transfer Address"),
-            (self.ck_inst, "CK", "Check"),
-            (self.ab_inst, "AB", "Add B Reg"),             # 014
-            (self.ex_inst, "EX", "Exchange"),              # 015
-            (self.cp_inst, "CP", "Conditional program", '', 14, cb.COLOR_BR),   # 016
-            (self.sp_inst, "SP", "Subprogram",          '', 15, cb.COLOR_BR),            # 017
-            (self.ca_inst, "CA", "Clear and add"),         # 020
-            (self.cs_inst, "CS", "Clear and subtract"),    # 021
-            (self.ad_inst, "AD", "Add to AC"),             # 022
-            (self.su_inst, "SU", "Subtract"),              # 23o, 19d
-            (self.cm_inst, "CM", "Clear and add Magnitude"),  # 24o, 20d
-            (self.sa_inst, "SA", "Special Add"),
-            (self.ao_inst, "AO", "Add One"),               # 26o, 22d
-            (self.dm_inst, "DM", "Difference of Magnitudes"),  # 027o
-            (self.mr_inst, "MR", "Multiply & Round"),      # 030
-            (self.mh_inst, "MH", "Multiply & Hold"),       # 031
-            (self.dv_inst, "DV", "Divide"),                # 032
-            (self.sl_inst, "SL", "Shift Left Hold/Roundoff"),
-            (self.sr_inst, "SR", "Shift Right Hold/Roundoff"),  # 034
-            (self.sf_inst, "SF", "Scale Factor"),          # 035o
-            (self.cy_inst, "CL", "Cycle Left"),   # 036
-            (self.md_inst, "MD", "Multiply Digits (AND)"),  # 037
-        ]
+            #  function          op-name  description                  r/w  usec  color
+            (self.si_inst,      "SI",     "Select Input",              '',  30,   cb.COLOR_IO), 
+            (self.unused1_inst, "unused", "unused",                    '',  0,    0),           
+            (self.bi_inst,      "BI",     "Block Transfer In",         'w', 8000, cb.COLOR_IO), 
+            (self.rd_inst,      "RD",     "Read",                      '',  15,   cb.COLOR_IO), 
+            (self.bo_inst,      "BO",     "Block Transfer Out",        'r', 8000, cb.COLOR_IO), #04
+            (self.rc_inst,      "RC",     "Record",                    '',  22,   cb.COLOR_IO), #05
+            (self.sd_inst,      "SD",     "Sum Digits",                'r', 22,   0),           #06
+            (self.cf_inst,      "CF",     "Change Fields",             '',  15,   cb.COLOR_CF), #07
+            (self.ts_inst,      "TS",     "Transfer to Storage",       '',  22,   0),           #010, 
+            (self.td_inst,      "TD",     "Transfer Digits",           '',  29,   0),           #011
+            (self.ta_inst,      "TA",     "Transfer Address",          '',  29,   0),           
+            (self.ck_inst,      "CK",     "Check",                     '',  22,   0),           
+            (self.ab_inst,      "AB",     "Add B Reg",                 '',  29,   0),           #014
+            (self.ex_inst,      "EX",     "Exchange",                  '',  29,   0),           #015
+            (self.cp_inst,      "CP",     "Conditional program",       '',  15,   cb.COLOR_BR), #016
+            (self.sp_inst,      "SP",     "Subprogram",                '',  15,   cb.COLOR_BR), #017
+            (self.ca_inst,      "CA",     "Clear and add",             '',  22,   0),           #020
+            (self.cs_inst,      "CS",     "Clear and subtract",        '',  22,   0),           #021
+            (self.ad_inst,      "AD",     "Add to AC",                 '',  22,   0),           #022
+            (self.su_inst,      "SU",     "Subtract",                  '',  22,   0),           #23o, 19d
+            (self.cm_inst,      "CM",     "Clear and add Magnitude",   '',  22,   0),           #24o, 20d
+            (self.sa_inst,      "SA",     "Special Add",               '',  26,   0),           
+            (self.ao_inst,      "AO",     "Add One",                   '',  29,   0),           #26o, 22d
+            (self.dm_inst,      "DM",     "Difference of Magnitudes",  '',  22,   0),           #027o
+            (self.mr_inst,      "MR",     "Multiply & Round",          '',  38,   0),           #030    # Avg; range 34-41
+            (self.mh_inst,      "MH",     "Multiply & Hold",           '',  38,   0),           #031    # Avg; range 34-41
+            (self.dv_inst,      "DV",     "Divide",                    '',  71,   0),           #032
+            (self.sl_inst,      "SL",     "Shift Left Hold/Roundoff",  '',  28,   0),           #       # Avg (n = 16); 15 + 0.8*n
+            (self.sr_inst,      "SR",     "Shift Right Hold/Roundoff", '',  28,   0),           #034    # Avg (n = 16); 15 + 0.8*n
+            (self.sf_inst,      "SF",     "Scale Factor",              '',  30,   0),           #035o
+            (self.cy_inst,      "CL",     "Cycle Left",                '',  28,   0),           #036    # Avg (n = 16); 15 + 0.8*n
+            (self.md_inst,      "MD",     "Multiply Digits (AND)",     '',  22,   0),           #037
+            ]
 
         self.ext_op_code = {
             "SR": [["srr", "srh"], ["shift right and roundoff", "shift right and hold"]],
@@ -172,6 +172,13 @@ class CpuClass:
         self.CommentTab = [None] * 2048
 
         self.kbd_int = 0    # Count of keyboard interrupts
+
+        self.reset()        # LAS Call this between runs. Likely more of what's in __init__ should go here
+
+    def reset (self):
+        # Accumulated time based on the table in 2M-077. Using float since some
+        # timing calcs can produce fractional usec.
+        self.accum_ww_inst_time_usec: float = 0
 
     def set_isa(self, isa_name):
         if isa_name == "1950":
@@ -597,6 +604,9 @@ class CpuClass:
 
         if self.cb.panel and self.cb.panel.panel_mWW:
             self.cb.panel.panel_mWW.set_audio_click(self._AC)
+
+        ww_time_usec = oplist[4]
+        self.accum_ww_inst_time_usec += ww_time_usec
 
         return ret
 

@@ -570,34 +570,35 @@ class ConstWWbitClass:
         # Instruction execution would screech to a halt if any of the various alarms went off
         # The first few are defined by the instruction set
 
-        self.NO_ALARM = 0
-        self.OVERFLOW_ALARM = 1
+        self.NO_ALARM =                0
+        self.OVERFLOW_ALARM =          1
         # Then there are some synthetic alarms I've added as part of the sim
-        self.UNIMPLEMENTED_ALARM = 2       # hit an unimplemented instruction
+        self.UNIMPLEMENTED_ALARM =     2   # hit an unimplemented instruction
         self.READ_BEFORE_WRITE_ALARM = 3   # tried to operate on a "none" operand, i.e., uninitualized memory
         self.UNKNOWN_IO_DEVICE_ALARM = 4   # hit an unimplemented I/O Device
-        self.HALT_ALARM = 5                # hit a "halt" instruction, aka "si 0" or "si 1"
-        self.CHECK_ALARM = 6               # alarm if the machine fails a Check instruction
-        self.QUIT_ALARM = 7                # synthetic alarm to stop the sim
-        self.IO_ERROR_ALARM = 8  # guy's alarm for an instruction that tries to read beyond the end of tape media
-        self.DIVIDE_ALARM = 9    # a real alarm for an overflow in Divide
-        self.READIN_ALARM = 10   # synthetic alarm to return to ReadIn state due to control panel button
-        self.KBD_INT_ALARM = 11  # Keyboard interrupt alarm
-        self.DISPATCHER_ALARM = 12   # synthetic alarm to return to dispatch to a new demo program in HNF mode
+        self.HALT_ALARM =              5   # hit a "halt" instruction, aka "si 0" or "si 1"
+        self.CHECK_ALARM =             6   # alarm if the machine fails a Check instruction
+        self.QUIT_ALARM =              7   # synthetic alarm to stop the sim
+        self.IO_ERROR_ALARM =          8   # guy's alarm for an instruction that tries to read beyond the end of tape media
+        self.DIVIDE_ALARM =            9   # a real alarm for an overflow in Divide
+        self.READIN_ALARM =            10  # synthetic alarm to return to ReadIn state due to control panel button
+        self.KBD_INT_ALARM =           11  # Keyboard interrupt alarm
+        self.DISPATCHER_ALARM =        12  # synthetic alarm to return to dispatch to a new demo program in HNF mode
 
-        self.AlarmMessage = {self.NO_ALARM: "No Alarm",
-                             self.OVERFLOW_ALARM: "Overflow Alarm",
-                             self.UNIMPLEMENTED_ALARM: "Unimplemented Instruction",
-                             self.READ_BEFORE_WRITE_ALARM: "Operation on Uninitialized Variable",
-                             self.UNKNOWN_IO_DEVICE_ALARM: "Unknown I/O Device",
-                             self.HALT_ALARM: "Program Halt",
-                             self.CHECK_ALARM: "Check Instruction Alarm",
-                             self.QUIT_ALARM: "Quit Simulation",
-                             self.IO_ERROR_ALARM: "I/O Error Alarm",
-                             self.DIVIDE_ALARM: "Divide Error Alarm",
-                             self.READIN_ALARM: "Return-to-Readin Alarm",
-                             self.KBD_INT_ALARM: "Keyboard Interrupt",
-                             self.DISPATCHER_ALARM: "Return-to-HNF-Dispatcher Alarm",
+        self.AlarmMessage = {
+            self.NO_ALARM:                "No Alarm",
+            self.OVERFLOW_ALARM:          "Overflow Alarm",
+            self.UNIMPLEMENTED_ALARM:     "Unimplemented Instruction",
+            self.READ_BEFORE_WRITE_ALARM: "Operation on Uninitialized Variable",
+            self.UNKNOWN_IO_DEVICE_ALARM: "Unknown I/O Device",
+            self.HALT_ALARM:              "Program Halt",
+            self.CHECK_ALARM:             "Check Instruction Alarm",
+            self.QUIT_ALARM:              "Quit Simulation",
+            self.IO_ERROR_ALARM:          "I/O Error Alarm",
+            self.DIVIDE_ALARM:            "Divide Error Alarm",
+            self.READIN_ALARM:            "Return-to-Readin Alarm",
+            self.KBD_INT_ALARM:           "Keyboard Interrupt",
+            self.DISPATCHER_ALARM:        "Return-to-HNF-Dispatcher Alarm",
                              }
 
         self.COLOR_BR = "\033[93m"  # Yellow color code for Branch Instructions in console trace if color_trace is True
