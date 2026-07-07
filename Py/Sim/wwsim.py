@@ -515,7 +515,7 @@ def main_run_sim(args, cb, cpu):
                     # that might be collecting in between regular panel updates (as above)
                     cb.panel.panel_mWW.sw.prefetch_u4_button_events()
 
-                if cb.sim_params.get_simparam("Radar"):     # the radar should return something every 20 msec, about every thousand instructions.
+                if radar:     # the radar should return something every 20 msec, about every thousand instructions.
                     # This is **like totally forever**, and I'm not taking it any more!
                     # So I'll snoop the radar mailbox.  When the code picks up a new value, it sets the mailbox
                     # to -1.  So I'll check *much* more often, but not put something into the mailbox until
@@ -609,7 +609,7 @@ def main_run_sim(args, cb, cpu):
         if not cb.TraceQuiet:
             cb.log.raw("Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec\n" %
                        (sim_cycle, cpu.PC, wall_clock_time, 1000000.0 * float(wall_clock_time) / float(sim_cycle)))
-        if cb.sim_params.get_simparam("Radar"):
+        if radar:
             print("    elapsed radar time = %4.1f minutes (%4.1f revolutions)" %
                   (radar.elapsed_time / 60.0, radar.antenna_revolutions))
     if cb.tracelog:

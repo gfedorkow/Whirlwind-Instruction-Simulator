@@ -433,20 +433,32 @@ class SimParamTokenizer (Tokenizer):
 
 
 class SimParam:
-    def __init__ (self):
-        self.cmd_line_args = {}
+    def __init__ (self, cb=None):
+        self.cb = cb
+        self.cmd_line_args = {}  # this is here to override sim params with settings from the cmd line
         self.sim_param_dict = {}
+        # The assembler can pass anything as a sim param; this list is "informative", i.e. it doesn't
+        # enforce the acceptable tags, it just issues a warning for ones that aren't "known".
+        self.expected_param_tags = ("isa", "Radar", "CrtFadeDelay", "NoAlarmStop", "AutoClick",
+                                    "CrtOffsetX", "CrtOffsetY", "CrtGain")
+
+    def is_simparam_tag_valid(self, tag):
+        return (tag in self.expected_param_tags)
 
     def reset_simparams(self):
         self.sim_param_dict = {}
 
     def set_simparam(self, tag, val):
         self.sim_param_dict[tag] = val
+        if not self.is_simparam_tag_valid(tag):
+            self.cb.log.warn("unknown tag '%s' added to sim_param_dict" % tag)
 
     def set_simparam_override(self, tag, val):
         self.cmd_line_args[tag] = val
 
     def get_simparam(self, tag):
+        if not self.is_simparam_tag_valid(tag):
+            self.cb.log.warn("getting unknown tag '%s' from sim_param_dict" % tag)
         if tag in self.cmd_line_args:
             return self.cmd_line_args[tag]
         if tag in self.sim_param_dict:
@@ -475,6 +487,8 @@ class SimParam:
                 break       # Prob should be error
             valueNum = self.strToInt (valueStr)
             value = valueNum if valueNum is not None else valueStr
+            if not self.is_simparam_tag_valid(key):
+                self.cb.log.warn("unknown tag '%s' added to sim_param_dict" % key)
             self.sim_param_dict[key] = value
         return self.sim_param_dict
     # public
@@ -651,7 +665,7 @@ class ConstWWbitClass:
         else:
             self.logDirSpecified = False
             self.logDir = "./"
-        self.sim_params = SimParam()
+        self.sim_params = SimParam(self)
 
         self.cpu = None
 

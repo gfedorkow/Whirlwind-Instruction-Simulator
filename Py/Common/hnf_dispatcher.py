@@ -271,20 +271,20 @@ class HnfDispatcherClass:
 
     # call this when tranistioning from Stop to Run states
     def reset_info_screen_to_current(self, cb):
-        print("tell the tty to switch to program %d", self.last_dispatcher_press)
         if self.tty:        # signal to an external media display that we're running a new program
             self.send_selection_to_tty("%d" % self.last_dispatcher_press)
-
-    def send_selection_to_tty(self, selection):
-        text = "%s\r\n" % selection
-        self.tty.write(text.encode('ascii'))
 
 
     # Jurgen asked for a command code to the info screen if the sim enters "Alarm" state
     def switch_to_alarm_state(self):
         if self.tty:
-            text = "E\r\n"
-            self.tty.write(text.encode('ascii'))
+            self.send_selection_to_tty("E")
+
+    def send_selection_to_tty(self, selection):
+        print("sending to Info Screen: '%s'" % selection)
+        text = "%s\r\n" % selection
+        self.tty.write(text.encode('ascii'))
+
 
     def test_tty_rx_activity(self):
         ret = None
