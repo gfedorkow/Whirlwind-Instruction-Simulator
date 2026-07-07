@@ -1193,14 +1193,6 @@ class AsmDotIsaInst (AsmPseudoOpInst):
                 d = {"isa1950": self.prog.opCodeTables.op_code_1950, "isa1958": self.prog.opCodeTables.op_code_1958}
                 if val.value in d:
                     self.prog.curOpcodeTab = d[val.value]
-#                elif val.value < 1950 and val.value > 1940:
-#                    self.error ("What do you think this is, ENIAC?")
-#                elif val.value < 1900 and val.value > 1800:
-#                    self.error ("Sorry, Babbage is no longer with us")
-#                elif val.value <= 1500:
-#                    self.error ("Setting instruction set to the Antikythera Mechanism")
-#                elif val.value > 2024:
-#                    self.error ("Setting instruction set to MIT WhirlWave Quantum Computer")
                 else:
                     errmsg = """unimplemented isa option: %s; pending options:
                     isa2035: Setting instruction set to MIT WhirlWave Quantum Computer

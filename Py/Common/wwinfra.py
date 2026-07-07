@@ -27,6 +27,7 @@ import sys
 import analog_scope
 import control_panel
 import os
+import socket
 from screeninfo import get_monitors
 from enum import Enum
 import argparse
@@ -511,6 +512,51 @@ class StdArgs:
         parser.add_argument ("--ArchaeoLog", help="Write data to the archaeolog dir.", action="store_true")
         return parser
 
+class RemoteUtility:
+    def __init__ (self):
+        self.bufferLim: int = 512
+        # The example on the net used port 65432. Avoid using that port and
+        # instead use the next highest prime number. This is both arbitrary and
+        # capricious.
+        self.port = 65437
+        pass
+    
+class RemoteScope (RemoteUtility):
+    def __init__ (self, host: str):
+        super().__init__()
+        self.buffer: str = "R E "
+        if host is None:
+            host = socket.gethostname()
+        s = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            s.connect ((host, self.port))
+        except OSError as e:
+            print ("Error connecting to remote scope server: %s" % e)
+            sys.exit (-1)
+        self.remote_scope_socket = s
+        self.sendBuffer()
+        pass
+    # public
+    def send (self, msg: str):
+        if len (self.buffer) + len (msg) > self.bufferLim:
+            self.sendBuffer()
+        self.buffer += msg
+        pass
+    # public
+    def update (self):
+        self.send ("U E ")
+        self.sendBuffer()
+        pass
+    # private
+    def sendBuffer (self):
+        try:
+            self.remote_scope_socket.sendall (bytes (self.buffer, "utf-8"))
+            self.buffer = ""
+        except OSError as e:
+            print ("Error sending data to remote scope server: %s" % e)
+            sys.exit (-1)
+        pass
+
 class ConstWWbitClass:
     def __init__(self, get_screen_size=False, corefile=None, args=None, hnf_hardware_present=False):
         # This state variable controls whether the simulator simply moves ahead to execute
@@ -559,34 +605,35 @@ class ConstWWbitClass:
         # Instruction execution would screech to a halt if any of the various alarms went off
         # The first few are defined by the instruction set
 
-        self.NO_ALARM = 0
-        self.OVERFLOW_ALARM = 1
+        self.NO_ALARM =                0
+        self.OVERFLOW_ALARM =          1
         # Then there are some synthetic alarms I've added as part of the sim
-        self.UNIMPLEMENTED_ALARM = 2       # hit an unimplemented instruction
+        self.UNIMPLEMENTED_ALARM =     2   # hit an unimplemented instruction
         self.READ_BEFORE_WRITE_ALARM = 3   # tried to operate on a "none" operand, i.e., uninitualized memory
         self.UNKNOWN_IO_DEVICE_ALARM = 4   # hit an unimplemented I/O Device
-        self.HALT_ALARM = 5                # hit a "halt" instruction, aka "si 0" or "si 1"
-        self.CHECK_ALARM = 6               # alarm if the machine fails a Check instruction
-        self.QUIT_ALARM = 7                # synthetic alarm to stop the sim
-        self.IO_ERROR_ALARM = 8  # guy's alarm for an instruction that tries to read beyond the end of tape media
-        self.DIVIDE_ALARM = 9    # a real alarm for an overflow in Divide
-        self.READIN_ALARM = 10   # synthetic alarm to return to ReadIn state due to control panel button
-        self.KBD_INT_ALARM = 11  # Keyboard interrupt alarm
-        self.DISPATCHER_ALARM = 12   # synthetic alarm to return to dispatch to a new demo program in HNF mode
+        self.HALT_ALARM =              5   # hit a "halt" instruction, aka "si 0" or "si 1"
+        self.CHECK_ALARM =             6   # alarm if the machine fails a Check instruction
+        self.QUIT_ALARM =              7   # synthetic alarm to stop the sim
+        self.IO_ERROR_ALARM =          8   # guy's alarm for an instruction that tries to read beyond the end of tape media
+        self.DIVIDE_ALARM =            9   # a real alarm for an overflow in Divide
+        self.READIN_ALARM =            10  # synthetic alarm to return to ReadIn state due to control panel button
+        self.KBD_INT_ALARM =           11  # Keyboard interrupt alarm
+        self.DISPATCHER_ALARM =        12  # synthetic alarm to return to dispatch to a new demo program in HNF mode
 
-        self.AlarmMessage = {self.NO_ALARM: "No Alarm",
-                             self.OVERFLOW_ALARM: "Overflow Alarm",
-                             self.UNIMPLEMENTED_ALARM: "Unimplemented Instruction",
-                             self.READ_BEFORE_WRITE_ALARM: "Operation on Uninitialized Variable",
-                             self.UNKNOWN_IO_DEVICE_ALARM: "Unknown I/O Device",
-                             self.HALT_ALARM: "Program Halt",
-                             self.CHECK_ALARM: "Check Instruction Alarm",
-                             self.QUIT_ALARM: "Quit Simulation",
-                             self.IO_ERROR_ALARM: "I/O Error Alarm",
-                             self.DIVIDE_ALARM: "Divide Error Alarm",
-                             self.READIN_ALARM: "Return-to-Readin Alarm",
-                             self.KBD_INT_ALARM: "Keyboard Interrupt",
-                             self.DISPATCHER_ALARM: "Return-to-HNF-Dispatcher Alarm",
+        self.AlarmMessage = {
+            self.NO_ALARM:                "No Alarm",
+            self.OVERFLOW_ALARM:          "Overflow Alarm",
+            self.UNIMPLEMENTED_ALARM:     "Unimplemented Instruction",
+            self.READ_BEFORE_WRITE_ALARM: "Operation on Uninitialized Variable",
+            self.UNKNOWN_IO_DEVICE_ALARM: "Unknown I/O Device",
+            self.HALT_ALARM:              "Program Halt",
+            self.CHECK_ALARM:             "Check Instruction Alarm",
+            self.QUIT_ALARM:              "Quit Simulation",
+            self.IO_ERROR_ALARM:          "I/O Error Alarm",
+            self.DIVIDE_ALARM:            "Divide Error Alarm",
+            self.READIN_ALARM:            "Return-to-Readin Alarm",
+            self.KBD_INT_ALARM:           "Keyboard Interrupt",
+            self.DISPATCHER_ALARM:        "Return-to-HNF-Dispatcher Alarm",
                              }
 
         self.COLOR_BR = "\033[93m"  # Yellow color code for Branch Instructions in console trace if color_trace is True
@@ -601,12 +648,16 @@ class ConstWWbitClass:
         self.SCOPE_AUX  = 2  # aka "F Scope"
 
         # configure the displays
-        self.analog_display = False   # set this flag to display on an analog oscilloscope instead of an x-window
-        self.flexo_win = False        # Window to display flexo output
-        self.use_x_win = True         # clear this flag to completely turn off the xwin display, widgets and all
-        self.ana_scope = None   # this is a handle to the methods for operating the analog scope
-        self.which_scope = 3    # default to showing both D and F scopes on the xwin display
-        self.RasPi = False      # this will be set in microWhirlwind if it's running on a RasPi
+        self.analog_display = False         # set this flag to display on an analog oscilloscope instead of an x-window
+        self.flexo_win = False;             # Window to display flexo output
+        self.use_x_win = True               # clear this flag to completely turn off the xwin display, widgets and all
+        self.xWin_size_arg = None           # if this is set to a number by the cmd-line arg, use it as the size of the xWinCRT
+        self.ana_scope = None               # this is a handle to the methods for operating the analog scope
+        self.remote_scope = None            # Holds RemoteScope instance when spec'd in args
+        self.remote_scope_only = False      # True if the scope should be remote only, i.e., don't bring up scope on local machine
+        self.this_is_remote_scope = False   # True if this process is the remote scope server
+        self.which_scope = 3                # default to showing both D and F scopes on the xwin display
+        self.RasPi = False                  # this will be set in microWhirlwind if it's running on a RasPi
         self.hnf_hardware_present = hnf_hardware_present
 
         # These two will be set by prog that needs them. Looks like only wwsim at this point. LAS 5/17/24
@@ -625,7 +676,7 @@ class ConstWWbitClass:
         self.LongTraceFormat = True  # prints more CPU registers for each trace line
         self.TraceALU = False   # print a line for add, multiply, negate, etc
         # LAS 10/12/25 Set this to False as it doesn't seem needed and
-        # generates a lot of stuff. Easily reactvated here is desired.
+        # generates a lot of stuff. Easily reactivated here is desired.
         self.TraceBranch = False  # print a line for each branch
         self.TraceQuiet = False
         self.TraceVerbose = False
@@ -782,7 +833,6 @@ class ConstWWbitClass:
             ((self.IN_OUT_CHECK_BASE_ADDRESS, self.IN_OUT_CHECK_ADDR_MASK), "In-Out Check Registers"),
             ((self.CAMERA_INDEX_BASE_ADDRESS, ~0), "Camera Index"),
         ]
-
 
     def Decode_IO(self, io_address):
         devname = ''
@@ -2233,7 +2283,9 @@ class XwinCrt:
         # The graphics package won't work if you don't have DISPLAY=<something> in the environment
         # So don't bother even trying if there isn't a DISPLAY var already set
         display = os.getenv("DISPLAY")
-        if display and cb.use_x_win and (cb.analog_display == False or widgets_only_on_xwin): # display on the laptop CRT using xwindows
+        if (not cb.remote_scope_only and display and
+            cb.use_x_win and
+            (not cb.analog_display or widgets_only_on_xwin)): # display on the laptop CRT using xwindows
             self.gfx = __import__("graphics")
 
             cb.log.info("opening XwinCrt")
@@ -2267,6 +2319,7 @@ class XwinCrt:
 
             win_name = "Whirlwind CoreFile: %s" % cb.CoreFileName
             self.win = self.gfx.GraphWin(win_name, self.WIN_MAX_COORD, win_y_size, autoflush=False)
+
             root = self.win.master
 
             # Position the window (e.g., at x=100, y=100)
@@ -2286,7 +2339,7 @@ class XwinCrt:
 
             if cb.museum_mode:
                 cb.museum_mode.museum_gfx_window_size(cb, self.win)
-
+                
             # coordinate definitions for Whirlwind CRT display
             self.WW_MAX_COORD = 1024.0
             self.WW_MIN_COORD = -self.WW_MAX_COORD
@@ -2324,24 +2377,29 @@ class XwinCrt:
         # on the simulated crt -- if not, we'll poll it separately when painting the display
         self.polling_mouse = False
 
-        if cb.use_x_win and not cb.analog_display:
+        if cb.remote_scope_only:
+            return
+            
+        if (cb.use_x_win and
+            not cb.analog_display and
+            not cb.remote_scope_only):
             self.draw_red_x_and_axis(cb)
 
 
-
     def draw_red_x_and_axis(self, cb):
-        # I've put a mouse zone in the top right corner to Exit the program, i.e., to synthesize a Whirlwind
-        # alarm that causes the interpreter to exit.  Mark the spot with a red X
-        xline = self.gfx.Line(self.gfx.Point(self.WIN_MAX_COORD - self.WIN_MOUSE_BOX, self.WIN_MOUSE_BOX),
-                              self.gfx.Point(self.WIN_MAX_COORD, 0))
-        xline.setOutline("Red")
-        xline.setWidth(1)   # changed from 3 to 1, Apr 11, 2020
-        xline.draw(self.win)
-        xline = self.gfx.Line(self.gfx.Point(self.WIN_MAX_COORD - self.WIN_MOUSE_BOX, 0),
-                              self.gfx.Point(self.WIN_MAX_COORD, self.WIN_MOUSE_BOX))
-        xline.setOutline("Red")
-        xline.setWidth(3)
-        xline.draw(self.win)
+        if not cb.this_is_remote_scope:
+            # I've put a mouse zone in the top right corner to Exit the program, i.e., to synthesize a Whirlwind
+            # alarm that causes the interpreter to exit.  Mark the spot with a red X
+            xline = self.gfx.Line(self.gfx.Point(self.WIN_MAX_COORD - self.WIN_MOUSE_BOX, self.WIN_MOUSE_BOX),
+                                  self.gfx.Point(self.WIN_MAX_COORD, 0))
+            xline.setOutline("Red")
+            xline.setWidth(1)   # changed from 3 to 1, Apr 11, 2020
+            xline.draw(self.win)
+            xline = self.gfx.Line(self.gfx.Point(self.WIN_MAX_COORD - self.WIN_MOUSE_BOX, 0),
+                                  self.gfx.Point(self.WIN_MAX_COORD, self.WIN_MOUSE_BOX))
+            xline.setOutline("Red")
+            xline.setWidth(3)
+            xline.draw(self.win)
 
         if cb.radar is not None:
             cb.radar.draw_axis(self)
@@ -2375,11 +2433,14 @@ class XwinCrt:
         if self.cb.ana_scope:
             self.cb.ana_scope.drawChar(ww_x, ww_y, mask, expand, self, scope=scope)
         else:
-            x0, y0 = self.ww_to_xwin_coords(ww_x, ww_y)
-            obj = XwinCrtObject(x0, y0, 0, 0, 'C', mask, expand = expand)
-            # obj = (x0, y0, 0, 0, 'C', mask)
-            self.screen_brightness[obj] = self.BRIGHT
-
+            if self.cb.remote_scope is not None:
+                cmd = "C %d %d %d %d E " % (ww_x, ww_y, mask, expand)
+                self.cb.remote_scope.send (cmd)
+            if not self.cb.remote_scope_only:
+                x0, y0 = self.ww_to_xwin_coords(ww_x, ww_y)
+                obj = XwinCrtObject(x0, y0, 0, 0, 'C', mask, expand = expand)
+                self.screen_brightness[obj] = self.BRIGHT
+        pass
 
     # Display Scope Vector Generator
     # From 2m-0277
@@ -2406,13 +2467,17 @@ class XwinCrt:
         if self.cb.ana_scope:
                 self.cb.ana_scope.drawVector(ww_x0, ww_y0, ww_xd>>2, ww_yd>>2, scope=scope)
         else:
-            x0, y0 = self.ww_to_xwin_coords(ww_x0, ww_y0)
-            x1, y1 = self.ww_to_xwin_coords(ww_x0 + ww_xd, ww_y0 + ww_yd)
-
-            # obj = (x0, y0, x1, y1, 'L', 0)
-            obj = XwinCrtObject(x0, y0, x1, y1, 'L', 0)
-            self.screen_brightness[obj] = self.BRIGHT
-
+            if self.cb.remote_scope is not None:
+                cmd = "L %d %d %d %d E " % (ww_x0, ww_y0, ww_xd, ww_yd)
+                self.cb.remote_scope.send (cmd)
+            if not self.cb.remote_scope_only:
+                ww_x1 = ww_x0 + ww_xd
+                ww_y1 = ww_y0 + ww_yd
+                x0, y0 = self.ww_to_xwin_coords(ww_x0, ww_y0)
+                x1, y1 = self.ww_to_xwin_coords(ww_x1, ww_y1)
+                obj = XwinCrtObject(x0, y0, x1, y1, 'L', 0)
+                self.screen_brightness[obj] = self.BRIGHT
+        pass
 
     def ww_draw_point(self, ww_x, ww_y, color=(0.0, 1.0, 0.0), scope=None, light_gun=False):  # default color is green
         if scope is None:
@@ -2423,25 +2488,36 @@ class XwinCrt:
             if light_gun:
                 self.last_pen_point = True  # remember the point was seen; not sure this really matters...
         else:
-            x0, y0 = self.ww_to_xwin_coords(ww_x, ww_y)
-            # obj = (x0, y0, 0, 0, 'D', 0)
-            obj = XwinCrtObject(x0, y0, 0, 0, 'D', 0)
-            obj.red = color[0]
-            obj.green = color[1]
-            obj.blue = color[2]
-            self.screen_brightness[obj] = self.BRIGHT
-            if light_gun:
-                self.last_pen_point = obj  # remember the point so it can be undrawn later
-
+            red = color[0]
+            green = color[1]
+            blue = color[2]
+            if self.cb.remote_scope is not None:
+                cmd = "D %d %d %f %f %f E " % (ww_x, ww_y, red, green, blue)
+                self.cb.remote_scope.send (cmd)
+            if not self.cb.remote_scope_only:
+                x0, y0 = self.ww_to_xwin_coords(ww_x, ww_y)
+                obj = XwinCrtObject(x0, y0, 0, 0, 'D', 0)
+                obj.red = red
+                obj.green = green
+                obj.blue = blue
+                self.screen_brightness[obj] = self.BRIGHT
+                if light_gun:
+                    self.last_pen_point = obj  # remember the point so it can be undrawn later
+        pass
+    
     def ww_highlight_point(self):
         if self.last_pen_point is not None:
-            x0 = self.last_pen_point.x0
-            y0 = self.last_pen_point.y0
-            c = self.gfx.Circle(self.gfx.Point(x0, y0), 5)  # the last arg is the circle dimension
-            c.setFill("Red")
-            c.draw(self.win)
-            self.last_pen_point = None
-
+            if not self.cb.remote_scope_only:
+                x0 = self.last_pen_point.x0
+                y0 = self.last_pen_point.y0
+                c = self.gfx.Circle(self.gfx.Point(x0, y0), 5)  # the last arg is the circle dimension
+                c.setFill("Red")
+                c.draw(self.win)
+                self.last_pen_point = None
+            if self.cb.remote_scope is not None:
+                cmd = "H E "
+                self.cb.remote_scope.send (cmd)
+        pass
 
     # check the light gun for a hit
     # Note that management of the Mouse 'light gun' is quite different from the optical gun on an analog scope.
@@ -2453,7 +2529,9 @@ class XwinCrt:
     # Both functions return a None for 'no hit', but the mouse version returns a co-ord object, and the optical
     # gun simply returns a "true'.  It's up to the caller to know which response is for what...
     def ww_check_light_gun(self, cb):
-        self.cb.log.info("ww_check_light_gun") 
+        self.cb.log.info("ww_check_light_gun")
+        if self.cb.remote_scope_only:
+            return self.cb.NO_ALARM, None, 0
         self.polling_mouse = True
         if self.cb.ana_scope:
             pt = None
@@ -2541,6 +2619,12 @@ class XwinCrt:
     # Then go on to refresh the screen
 
     def ww_scope_update(self, cm, cb):
+        if self.cb.remote_scope is not None:
+            self.cb.remote_scope.update()
+
+        if self.cb.remote_scope_only:
+            return self.cb.NO_ALARM
+
         if self.win is None:   # all this stuff only works on a laptop display, not a CRT display
             return self.cb.NO_ALARM
 
@@ -2644,3 +2728,9 @@ class XwinCrt:
             self.screen_brightness = {}
 
         return self.cb.NO_ALARM
+
+    def ww_scope_reset (self):
+        self.win.undrawAll()
+        self.screen_brightness = {}
+        pass
+    

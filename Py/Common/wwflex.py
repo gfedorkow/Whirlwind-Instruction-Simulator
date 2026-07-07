@@ -533,9 +533,8 @@ class FlexoWin (AsciiFlexBase):
         self.crTime = 50e-3         # Set these based on the times above for "authentic" timing
         self.charTime = 10e-3
         (self.screen_h, self.screen_v, self.gfx_scale_factor) = self.cb.get_display_size()
-        # The factors used to size the window are based on LAS's desktop monitor.
-        self.h = math.floor ((1000/3840) * self.screen_h)
-        self.v = math.floor ((1500/2160) * self.screen_v)
+        self.h = 1000
+        self.v = 1500
         self.win = gfx.GraphWin ("Flexowriter", self.h, self.v)
         self.win.setBackground ("cornsilk")     # A color that really looks old-fashioned
         imageName = os.path.normpath (os.environ["PYTHONPATH"] + "/" + "flexowriter-scaled-cropped.gif")

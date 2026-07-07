@@ -9,8 +9,10 @@ import os
 import sys
 import argparse
 import re
-import wwinfra
+# import wwinfra
+from wwinfra import StdArgs, ConstWWbitClass, theConstWWbitClass, CorememClass, LogFactory
 from typing import List, Dict, Tuple, Sequence, Union, Any
+from wwcpu import CpuCLass
 
 
 # sigh, I'll put this stub here so I can call Read Core without more special cases.
@@ -490,7 +492,7 @@ CoreWrittenBy = [[] for _ in range(CORE_SIZE)]  # type: List[List[Any]]
 
 def main():
     global cb
-    parser = wwinfra.StdArgs().getParser ("Disassemble a Whirlwind Core File.")
+    parser = StdArgs().getParser ("Disassemble a Whirlwind Core File.")
     parser.add_argument("inputfile", help="file name of ww input core file")
     parser.add_argument('--outputfile', '-o', type=str, help="output file name ('-'=stdout)")
     parser.add_argument('--use_default_tsr', '-u',
@@ -509,9 +511,10 @@ def main():
         wwdisasm_output_filename = args.outputfile
 
     # instantiate the class full of constants
-    cb = wwinfra.ConstWWbitClass (corefile=os.path.basename(base_filename), args = args)
-    wwinfra.theConstWWbitClass = cb
-    cpu = WWCpuClass(cb)
+    cb = ConstWWbitClass (corefile=os.path.basename(base_filename), args = args)
+    theConstWWbitClass = cb
+    # cpu = WWCpuClass(cb)
+    cpu = CpuClass(cb)
 
     # Invent a new cb attribute on-the-fly
     cb.disasmNoComment: bool = args.NoComment
@@ -526,8 +529,8 @@ def main():
     if args.use_default_tsr is not None:
         use_default_tsr = args.use_default_tsr
     print("use_default_tsr=%d" % args.use_default_tsr)
-    coremem = wwinfra.CorememClass(cb, use_default_tsr=use_default_tsr)
-    cb.log = wwinfra.LogFactory().getLog (debug=args.Debug)
+    coremem = CorememClass(cb, use_default_tsr=use_default_tsr)
+    cb.log = LogFactory().getLog (debug=args.Debug)
 
     AutoSymTab = [None] * CORE_SIZE  # automatically-generated labels for instructions that need them
 

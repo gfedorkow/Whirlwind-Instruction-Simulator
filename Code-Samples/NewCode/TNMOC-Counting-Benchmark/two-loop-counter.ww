@@ -1,0 +1,35 @@
+              ;
+              ;					    Whirlwind
+              ;					Simulator by G.Fedorkow
+              ;		  github.com/gfedorkow/Whirlwind-Instruction-Simulator
+              ;
+              ;        *** TNMoC's Count to 1,000,000 benchmark ***
+              ;
+              ; L. Stabile
+              ; June 28, 2026
+              ;
+              ;              Doubly-nested loop
+              ;
+              ; Use the factorization 31250 * 32 = 1000000. This maximizes
+              ; the time spent in the most efficient 2-instruction loop, as
+              ; it uses the highest possible range of a signed word, wrt the
+              ; possible factors.
+              ;
+              ; Note that for the loop limits we use the negation of
+              ; one less than the given factor. This is due to
+              ; Whirlwind's use of one's complement artihmetic ; in
+              ; particular, negative zero tests as negative.
+              ;
+              ; Clocks at 37 sec (37,002,142 usec), 2,000,096 instruction cycles.
+
+       loop1:
+              ca loop2_limit           ; Load acc with limit
+       loop2:
+              ad one                   ; Add one to acc
+              cp loop2                 ; Branch if negative
+              ao loop1_limit           ; Add one to loop1_limit
+              cp loop1                 ; Branch if negative
+              si 0                     ; Done -- halt machine
+ loop1_limit: .word -31
+ loop2_limit: .word -31249
+         one: .word 1
