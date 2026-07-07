@@ -513,7 +513,7 @@ def main_run_sim(args, cb, cpu):
                 if cb.panel and cb.panel.panel_mWW:
                     # This check calls into the switch scanner to soak up any Rotary Encoder pulses
                     # that might be collecting in between regular panel updates (as above)
-                    cb.panel.panel_mWW.sw.pending_u4_queue.prefetch_u4_button_events()
+                    cb.panel.panel_mWW.sw.prefetch_u4_button_events()
 
                 if cb.sim_params.get_simparam("Radar"):     # the radar should return something every 20 msec, about every thousand instructions.
                     # This is **like totally forever**, and I'm not taking it any more!
