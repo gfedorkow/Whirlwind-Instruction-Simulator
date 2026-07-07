@@ -509,23 +509,28 @@ def main_run_sim(args, cb, cpu):
             if CycleDelayTime:
                 time.sleep(CycleDelayTime/1000)  # Sleep() takes time in fractional seconds
 
-            if cb.sim_params.get_simparam("Radar") and (sim_cycle % 30 == 0):
-                # the radar should return something every 20 msec, about every thousand instructions.
-                # This is **like totally forever**, and I'm not taking it any more!
-                # So I'll snoop the radar mailbox.  When the code picks up a new value, it sets the mailbox
-                # to -1.  So I'll check *much* more often, but not put something into the mailbox until
-                # the last code has been consumed.
-                last_code = CoreMem.rd(0o34)
-                if last_code == 0o177777:
-                    (rcode, reading_name, new_rotation) = radar.get_next_radar()
-                    CoreMem.wr(0o34, rcode)
-                    if new_rotation:
-                        print("\n")
-                    if rcode != 0 and (rcode & 0o40000 == 0):
-                        if not cb.TraceQuiet and not (" Geo_" in reading_name):
-                            print("%s: radar-code=0o%o" % (reading_name, rcode))
-                    if radar.exit_alarm != cb.NO_ALARM:
-                        alarm_state = radar.exit_alarm
+            if (sim_cycle % 30 == 0):
+                if cb.panel and cb.panel.panel_mWW:
+                    # This check calls into the switch scanner to soak up any Rotary Encoder pulses
+                    # that might be collecting in between regular panel updates (as above)
+                    cb.panel.panel_mWW.sw.pending_u4_queue.prefetch_u4_button_events()
+
+                if cb.sim_params.get_simparam("Radar"):     # the radar should return something every 20 msec, about every thousand instructions.
+                    # This is **like totally forever**, and I'm not taking it any more!
+                    # So I'll snoop the radar mailbox.  When the code picks up a new value, it sets the mailbox
+                    # to -1.  So I'll check *much* more often, but not put something into the mailbox until
+                    # the last code has been consumed.
+                    last_code = CoreMem.rd(0o34)
+                    if last_code == 0o177777:
+                        (rcode, reading_name, new_rotation) = radar.get_next_radar()
+                        CoreMem.wr(0o34, rcode)
+                        if new_rotation:
+                            print("\n")
+                        if rcode != 0 and (rcode & 0o40000 == 0):
+                            if not cb.TraceQuiet and not (" Geo_" in reading_name):
+                                print("%s: radar-code=0o%o" % (reading_name, rcode))
+                        if radar.exit_alarm != cb.NO_ALARM:
+                            alarm_state = radar.exit_alarm
 
             # if we're doing "single step", then after each instruction, set the state back to Stop
             if cb.sim_state == cb.SIM_STATE_SINGLE_STEP:

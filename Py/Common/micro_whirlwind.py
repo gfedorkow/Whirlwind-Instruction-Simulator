@@ -713,6 +713,7 @@ class MappedSwitchClass:
         if self.tca84_u4.available() > 0:
             key = self.tca84_u4.getEvent()
             self.pending_u4_queue.put(key)
+            print("prefetch U4 button press %d" % key)
 
 
     def process_u4_button_event(self, key):
@@ -755,6 +756,7 @@ class MappedSwitchClass:
         elif self.tca84_u4.available() > 0 or not self.pending_u4_queue.empty():
             while not self.pending_u4_queue.empty():
                 key = self.pending_u4_queue.get()
+                print("catch up on U4 button press %d" % key)
                 self.process_u4_button_event(key)
             key = self.tca84_u4.getEvent()
             self.process_u4_button_event(key)
