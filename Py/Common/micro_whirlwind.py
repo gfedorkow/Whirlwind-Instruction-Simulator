@@ -148,7 +148,7 @@ class PanelMicroWWClass:
 #                    }
 
     def check_buttons(self):
-        button_press = self.sw.check_buttons()
+        (button_press, more) = self.sw.check_buttons()
         return button_press
 
     # Jurgen's "light gun" produces a One on isGun1 when the trigger is pulled
@@ -717,6 +717,7 @@ class MappedSwitchClass:
 
 
     def process_u4_button_event(self, key):
+        button_press = None
         pressed = key & 0x80
         key &= 0x7F
         if (key == 111 or key == 112):  # siphon off rotary encoder actions from U4 first,
@@ -729,7 +730,7 @@ class MappedSwitchClass:
             col = key % 10
             button_press = self.u4_switch_map[col](row, col)
             if MwwPanelDebug: self.log.info("Pressed U4 %s: row=%d, col=%d" % (button_press, row, col))
-
+        return button_press
 
     # Why the special handling for the U4 switch scanner...
     # For Ordinary button pushes, the key scanner saves up button press events in a small internal
@@ -740,8 +741,10 @@ class MappedSwitchClass:
     # faster than the normal scanning rate, and play them out later during the regular update cycle.
     def check_buttons(self):
         button_press = None
+        more = False
         if self.tca84_u3.available() > 0:
             key = self.tca84_u3.getEvent()
+            more = self.tca84_u3.available()
             pressed = key & 0x80
             if pressed:     # I'm ignoring "released" events
                 key &= 0x7F
@@ -752,16 +755,20 @@ class MappedSwitchClass:
                 self.button_pressed = True
                 if MwwPanelDebug: self.log.info("Pressed U3 %s: row=%d, col=%d" % (button_press, row, col))
                 if button_press:
-                    return button_press
+                    return (button_press, more)
         elif self.tca84_u4.available() > 0 or not self.pending_u4_queue.empty():
             while not self.pending_u4_queue.empty():
                 key = self.pending_u4_queue.get()
+                more = not self.pending_u4_queue.empty()
                 print("catch up on U4 button press %d" % key)
-                self.process_u4_button_event(key)
+                button_press = self.process_u4_button_event(key)
+                if button_press:
+                    return (button_press, more)
             key = self.tca84_u4.getEvent()
-            self.process_u4_button_event(key)
+            more = self.tca84_u4.available()
+            button_press = self.process_u4_button_event(key)
 
-        return button_press
+        return (button_press, more)
 
 
     def fn_no_sw(self, row, col):
