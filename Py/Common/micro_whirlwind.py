@@ -25,6 +25,11 @@ import control_panel
 import time
 import wwinfra
 import analog_scope   # import this just to see if UseGun2 is set or not
+import queue
+  # example usage of queue() object
+  #  queue.put(1)
+  #  while not queue.empty():
+  #    print(queue.get())
 
 MwwPanelDebug = False    # turn on to see what's going on with the control panel code
 
@@ -667,6 +672,7 @@ class MappedSwitchClass:
         # self.i2c_bus = smbus2.SMBus(1)
         if MwwPanelDebug: self.log.info("  tca init done")
         self.mir_button_pressed = False  # This is a mailbox to signal six levels up that a button has been pressed
+        self.pending_u4_queue = queue.SimpleQueue()
 
 
         self.tca84_u4.init_gp_out()
@@ -703,6 +709,34 @@ class MappedSwitchClass:
         self.encoder_state = [0,0]
 
 
+    def prefetch_u4_button_events(self):
+        if self.tca84_u4.available() > 0:
+            key = self.tca84_u4.getEvent()
+            self.pending_u4_queue.put(key)
+
+
+    def process_u4_button_event(self, key):
+        pressed = key & 0x80
+        key &= 0x7F
+        if (key == 111 or key == 112):  # siphon off rotary encoder actions from U4 first,
+            # then get the rest of the buttons
+            button_press = self.fn_rotary_decode(pressed, key - 111)  # the two codes come in as 111 and 112
+
+        elif pressed:  # I'm ignoring "released" events
+            key -= 1
+            row = key // 10
+            col = key % 10
+            button_press = self.u4_switch_map[col](row, col)
+            if MwwPanelDebug: self.log.info("Pressed U4 %s: row=%d, col=%d" % (button_press, row, col))
+
+
+    # Why the special handling for the U4 switch scanner...
+    # For Ordinary button pushes, the key scanner saves up button press events in a small internal
+    # fifo, and we handle them one at a time.  The scanner is accessed "many" times per second, (not
+    # super-fast) but button pushes normally happen one a time, and if someone leans on the panel,
+    # there's no harm in dropping excess presses.
+    # But the rotary encoder can generate transitions pretty quickly, so I'll collect up key events
+    # faster than the normal scanning rate, and play them out later during the regular update cycle.
     def check_buttons(self):
         button_press = None
         if self.tca84_u3.available() > 0:
@@ -718,26 +752,12 @@ class MappedSwitchClass:
                 if MwwPanelDebug: self.log.info("Pressed U3 %s: row=%d, col=%d" % (button_press, row, col))
                 if button_press:
                     return button_press
-        elif self.tca84_u4.available() > 0:
+        elif self.tca84_u4.available() > 0 or not self.pending_u4_queue.empty():
+            while not self.pending_u4_queue.empty():
+                key = self.pending_u4_queue.get()
+                self.process_u4_button_event(key)
             key = self.tca84_u4.getEvent()
-            pressed = key & 0x80
-            key &= 0x7F
-            if (key == 111 or key == 112):   # siphon off rotary encoder actions from U4 first,
-                                            # then get the rest of the buttons
-                button_press = self.fn_rotary_decode(pressed, key - 111)  # the two codes come in as 111 and 112
-
-            elif pressed:     # I'm ignoring "released" events
-                key -= 1
-                row = key // 10
-                col = key % 10
-                button_press = self.u4_switch_map[col](row, col)
-                if MwwPanelDebug: self.log.info("Pressed U4 %s: row=%d, col=%d" % (button_press, row, col))
-#        else:
-#            if RasPi == False:
-#                if msvcrt.kbhit():
-#                    print("you pressed ", msvcrt.getch(), " so now i will sleep")
-#                    time.sleep(3)
-#                    button_press = input("type function button name: ")
+            self.process_u4_button_event(key)
 
         return button_press
 

@@ -268,6 +268,13 @@ class HnfDispatcherClass:
                 print("HNF-Dispatch: Override switch %s to val 0o%s" % (sw_name, sw_val))
                 cpu.cpu_switches.parse_switch_directive([sw_name, sw_val])
 
+
+    # call this when tranistioning from Stop to Run states
+    def reset_info_screen_to_current(self, cb):
+        print("tell the tty to switch to program %d", self.last_dispatcher_press)
+        if self.tty:        # signal to an external media display that we're running a new program
+            self.send_selection_to_tty("%d" % self.last_dispatcher_press)
+
     def send_selection_to_tty(self, selection):
         text = "%s\r\n" % selection
         self.tty.write(text.encode('ascii'))

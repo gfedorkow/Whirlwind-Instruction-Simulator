@@ -308,7 +308,7 @@ def main_run_sim(args, cb, cpu):
         cb.crt_fade_delay_param = f
         cb.log.warn("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
 
-    no_alarm_stop = cb.sim_params.get_simparam("NoAlarmStop") # cache this parameter
+    stop_on_alarm = not cb.sim_params.get_simparam("NoAlarmStop") # cache this parameter
 
     if cb.panel and cb.panel.hnf_program_dispatcher:
         cb.panel.hnf_program_dispatcher.apply_switch_presets(cpu)
@@ -452,6 +452,10 @@ def main_run_sim(args, cb, cpu):
                     break  # bail out of the While True loop if display update says to stop due to Red-X hit
                 if alarm_clear:
                     alarm_state = cb.NO_ALARM
+                    # when transitioning to Run state, we may need to reset the HNF Info screen from the
+                    # Error screen to whatever program was running, or to Idle
+                    if cb.panel and cb.panel.hnf_program_dispatcher:
+                        cb.panel.hnf_program_dispatcher.reset_info_screen_to_current(cb)
                 if cb.sim_state != cb.SIM_STATE_STOP:
                     alarm_state = cb.NO_ALARM
                 if args.HnfProgramDispatcher:
@@ -536,20 +540,24 @@ def main_run_sim(args, cb, cpu):
                 if cb.panel:
                     if alarm_state == cb.QUIT_ALARM:   # they said Quit, we'll quit.
                         break
-                    if not no_alarm_stop:  # here's the state where we hit an alarm, but it's not QUIT
+                    if stop_on_alarm:  # here's the state where we hit an alarm, but it's not QUIT
                         cb.sim_state = cb.SIM_STATE_STOP
                 if (alarm_state == cb.DISPATCHER_ALARM):
                     cb.panel.hnf_program_dispatcher.dispatch_to_core(cb)
                     break
-                elif cb.panel and (alarm_state == cb.OVERFLOW_ALARM or alarm_state == cb.DIVIDE_ALARM or
+                elif cb.panel and \
+                    ((stop_on_alarm and (alarm_state == cb.OVERFLOW_ALARM or alarm_state == cb.DIVIDE_ALARM)) or
                                    alarm_state == cb.IO_ERROR_ALARM or alarm_state == cb.UNIMPLEMENTED_ALARM):
+                    # the complicated IF above is to avoid sending an alarm-state to HNF Info if we're not
+                    # going to stop; i.e., send the alarm state message to the Info Screen only if the sim is
+                    # switching to Stop state.
                     if cb.panel and cb.panel.hnf_program_dispatcher:  # send a code to the Info Screen if HNF
                         cb.panel.hnf_program_dispatcher.switch_to_alarm_state()
                     continue  # switch to the Stop State spin loop
                 else:
                     # the normal case with cmd-line wwsim is to stop on an alarm; if the command line flag says not to, we'll try to keep going
                     # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
-                    if not no_alarm_stop or \
+                    if stop_on_alarm or \
                             alarm_state == cb.QUIT_ALARM  or alarm_state == cb.HALT_ALARM or \
                             alarm_state == cb.READIN_ALARM or alarm_state == cb.DISPATCHER_ALARM:
                         break
