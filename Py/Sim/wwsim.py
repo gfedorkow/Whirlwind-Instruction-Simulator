@@ -296,7 +296,7 @@ def main_run_sim(args, cb, cpu):
         cb.log.fatal("Radar device can only be used with 1950 ISA")
 
     cb.crt_fade_delay_param = cb.sim_params.get_simparam("CrtFadeDelay")
-    cb.log.warn("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
+    # cb.log.warn("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
 
     stop_on_alarm = not cb.sim_params.get_simparam("NoAlarmStop") # cache this parameter
 
@@ -514,6 +514,13 @@ def main_run_sim(args, cb, cpu):
                     if last_code == 0o177777:
                         (rcode, reading_name, new_rotation) = radar.get_next_radar()
                         CoreMem.wr(0o34, rcode)
+                        # Copy the last heading into the FF2 address
+                        # Israel's code is trying to display this number in an FF register mapped to address 0o10
+                        # But I failed to account for the FF Register Mapping in the Panel models; FF2 is always
+                        # at Address Two
+                        heading = CoreMem.rd(0o10)
+                        CoreMem.wr(0o2, heading, force=True)
+
                         if new_rotation:
                             print("\n")
                         if rcode != 0 and (rcode & 0o40000 == 0):
