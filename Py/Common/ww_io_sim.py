@@ -767,6 +767,9 @@ class DisplayScopeClass:
         # If this is the first reference to the CRT Display,
         # open one of the two possible graphical displays, either the XWin laptop display, or the hardware
         # interface to an analog scope display using Rainer Glaschik's RasPi I/O module
+        self.CrtOffsetY = 0
+        self.CrtOffsetX = 0
+        self.CrtGain = 1.0
         if val := self.cb.sim_params.get_simparam("CrtOffsetY"):
             self.CrtOffsetY = val
         if val := self.cb.sim_params.get_simparam("CrtOffsetX"):
