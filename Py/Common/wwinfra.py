@@ -439,14 +439,23 @@ class SimParam:
         self.sim_param_dict = {}
         # The assembler can pass anything as a sim param; this list is "informative", i.e. it doesn't
         # enforce the acceptable tags, it just issues a warning for ones that aren't "known".
-        self.expected_param_tags = ("isa", "Radar", "CrtFadeDelay", "NoAlarmStop", "AutoClick",
-                                    "CrtOffsetX", "CrtOffsetY", "CrtGain")
+        self.default_params = {"isa": "isa1958",
+                               "Radar": False,
+                               "CrtFadeDelay": 0,
+                               "NoAlarmStop": False,
+                               "AutoClick": False,
+                               "CrtOffsetX": 0,
+                               "CrtOffsetY": 0,
+                               "CrtGain": 1.0
+                               }
+
+        self.sim_param_dict = self.default_params.copy()
 
     def is_simparam_tag_valid(self, tag):
-        return (tag in self.expected_param_tags)
+        return (tag in self.default_params)
 
     def reset_simparams(self):
-        self.sim_param_dict = {}
+        self.sim_param_dict = self.default_params.copy()
 
     def set_simparam(self, tag, val):
         self.sim_param_dict[tag] = val

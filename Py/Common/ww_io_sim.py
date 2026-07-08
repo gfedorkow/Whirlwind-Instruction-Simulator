@@ -764,19 +764,15 @@ class DisplayScopeClass:
             return None
 
     def si(self, io_address, acc, _cm):
+        # These params "should be" cached and read only once _after each read_core_...  But since this
+        # routine doesn't know when that is, I'm reading from the params dict on every graphics Select
+        self.CrtOffsetY = self.cb.sim_params.get_simparam("CrtOffsetY")
+        self.CrtOffsetX = self.cb.sim_params.get_simparam("CrtOffsetX")
+        self.CrtGain = self.cb.sim_params.get_simparam("CrtGain")
+
         # If this is the first reference to the CRT Display,
         # open one of the two possible graphical displays, either the XWin laptop display, or the hardware
         # interface to an analog scope display using Rainer Glaschik's RasPi I/O module
-        self.CrtOffsetY = 0
-        self.CrtOffsetX = 0
-        self.CrtGain = 1.0
-        if val := self.cb.sim_params.get_simparam("CrtOffsetY"):
-            self.CrtOffsetY = val
-        if val := self.cb.sim_params.get_simparam("CrtOffsetX"):
-            self.CrtOffsetX = val
-        if val := self.cb.sim_params.get_simparam("CrtGain"):
-            self.CrtGain = val
-
         if self.crt is None:  # first time there's a CRT SI instruction, we'll init the display modules
             self.crt = wwinfra.XwinCrt(self.cb)
             if not self.cb.analog_display:  # can't show Widgets on an analog scope

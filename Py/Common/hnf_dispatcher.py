@@ -73,7 +73,7 @@ class HnfDispatcherClass:
         else:
             self.hnf_restart_time = 0
 
-        self.default_attract_timeout = 7  # Attract Screen cycle timer, measured in seconds
+        self.default_attract_timeout = 9  # Attract Screen cycle timer, measured in seconds
         # This dispatch table defines which programs should run on the exhibit.
         # Entries 0-7 are bound to the eight least-significant MIR buttons on the HNF display
         # Entries 8 and beyond are automatically selected by stepping through the default displays

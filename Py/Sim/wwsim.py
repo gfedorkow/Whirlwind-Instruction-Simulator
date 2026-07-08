@@ -257,15 +257,6 @@ def main_run_sim(args, cb, cpu):
     global UseDebugger, Debugger
 
     # LAS dup of main
-    """
-    if args.CrtFadeDelay:
-        cb.crt_fade_delay_param = args.CrtFadeDelay
-        cb.log.info("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
-    """
-#    CoreMem = wwinfra.CorememClass(cb)
-#    cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
-#    cb.cpu = cpu
-#    cpu.cpu_switches = wwinfra.WWSwitchClass(cb)
     cb.dbwgt = wwinfra.ScreenDebugWidgetClass(cb, CoreMem, args.AnalogScope)
 
     cycle_limit = 0  # default limit for number of sim cycles to run; 'zero' means 'forever'
@@ -304,9 +295,8 @@ def main_run_sim(args, cb, cpu):
     if cpu.isa_1950 == False and cb.sim_params.get_simparam("Radar"):
         cb.log.fatal("Radar device can only be used with 1950 ISA")
 
-    if f := cb.sim_params.get_simparam("CrtFadeDelay"):
-        cb.crt_fade_delay_param = f
-        cb.log.warn("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
+    cb.crt_fade_delay_param = cb.sim_params.get_simparam("CrtFadeDelay")
+    cb.log.warn("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
 
     stop_on_alarm = not cb.sim_params.get_simparam("NoAlarmStop") # cache this parameter
 
