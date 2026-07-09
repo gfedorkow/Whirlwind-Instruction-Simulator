@@ -21,6 +21,7 @@
 ;         to be used in "attract" mode at HNF.  Uncomment the TS at turn-on-autoclick to make this take effect
 ;     - changed so that the User's move shows as X and the computer's as O
 
+           .PP VERBOSE, 0        ; make this non-zero for a ton of debug analysis
 
 ; Geometry
 ; the basic game board is laid out on a 16x16 grid as follows:
@@ -125,7 +126,7 @@ test_gun_input:
             ca light_gun_mailbox    ; test if there was light gun input
             ad c_one                  ; convert -0 (cell zero) into +1 before the next CP test, then discard the result
             cp refloop
-            .print "test_gub_input: light gun hit at cell %d", light_gun_mailbox
+            .if VERBOSE .print "test_gun_input: light gun hit at cell %d", light_gun_mailbox
             sd 0                  ; no-op to isolate the .print statement from play_a_user_move
             ; user_play_cell goes straight to the mailbox to find the current cell number.
 play_a_user_move:
@@ -1113,9 +1114,10 @@ char_conv2: ca 0
         ao   TURN
 
         ; Check if human won:
+        .if VERBOSE .print "Check for Human Win"
         ca   ZERO
         ts   WINFLG
-        ca   BRDO
+        ca   BRDX
         ts   CWBD
         ca   EIGHT_VAL
         ts   CWLCNT
@@ -1144,9 +1146,10 @@ H_NON_WIN:
         ao   TURN
 
         ; Check if computer won:
+        .if VERBOSE .print "Check for Computer Win"
         ca   ZERO
         ts   WINFLG
-        ca   BRDX
+        ca   BRDO
         ts   CWBD
         ca   EIGHT_VAL
         ts   CWLCNT
@@ -1179,14 +1182,14 @@ SQTKN:
 HUMAN_WIN:
         sp   PRMBOARD          ; CALL - returns
         sp   PRMHWIN           ; CALL - returns
-        ca const_o_win
+        ca const_x_win
         ts which_player
         sp   refresh_loop      ; JUMP - no return
 
 COMP_WIN:
         sp   PRMBOARD          ; CALL - returns
         sp   PRMCWIN           ; CALL - returns
-        ca const_x_win
+        ca const_o_win
         ts which_player
         sp   refresh_loop      ; JUMP - no return
 
@@ -1247,6 +1250,8 @@ CWLD:   ca   0                 ; address field = WINTBL+i
         md   CWMSK
         su   CWMSK             ; zero iff CWBD contains all bits of CWMSK
         dm   0
+       .if VERBOSE .print "cwloop CWBD=%o, CWLCNT=%o, CWMSK=%o, acc=%ao", CWBD, CWLCNT, CWMSK
+
         cp   CWWON             ; zero -> win!
 
         ao   CWLD              ; advance to next win mask
@@ -1263,6 +1268,7 @@ CWWON:
         ts   WINFLG
 
 CWDONE:
+        .if VERBOSE .print "CWLOOP returns %ao"
         sp   CWRET             ; JUMP - no return
 CWRET:  sp   0
 
@@ -1403,6 +1409,7 @@ TMSQFREE:
         ts   CWBD
         ca   EIGHT_VAL
         ts   CWLCNT
+        .if VERBOSE .print "Check in TryMoves"
         sp   CWLOOP            ; CALL - returns
 
         ca   WINFLG

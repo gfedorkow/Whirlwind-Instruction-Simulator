@@ -21,6 +21,7 @@
                                       ;         to be used in "attract" mode at HNF.  Uncomment the TS at turn-on-autoclick to make this take effect
                                       ;     - changed so that the User's move shows as X and the computer's as O
 
+                                      .PP VERBOSE, 0           ; make this non-zero for a ton of debug analysis
 
                                       ; Geometry
                                       ; the basic game board is laid out on a 16x16 grid as follows:
@@ -125,7 +126,7 @@
 @0076:100275                          ca light_gun_mailbox     ; test if there was light gun input @@JumpedToBy a0072
 @0077:110001                          ad c_one                 ; convert -0 (cell zero) into +1 before the next CP test, then discard the result
 @0100:070053                          cp refloop
-                                      .print "test_gub_input: light gun hit at cell %d", light_gun_mailbox
+;                        .if VERBOSE .print "test_gun_input: light gun hit at cell %d", light_gun_mailbox
 @0101:030000                          sd 0                     ; no-op to isolate the .print statement from play_a_user_move
                                       ; user_play_cell goes straight to the mailbox to find the current cell number.
                     play_a_user_move:
@@ -817,8 +818,8 @@
 @0741:000014                const_12: .word 12
 @0742:020000            const_2_cell: .word 8192               ; decimal value of screen coord corresponding to two cells in width @@ReadBy a0537
 
-@0743:100002             const_o_win: .word 0o100002           ; two plus sign bit @@ReadBy a1144
-@0744:100003             const_x_win: .word 0o100003           ; two plus sign bit @@ReadBy a1151
+@0743:100002             const_o_win: .word 0o100002           ; two plus sign bit @@ReadBy a1151
+@0744:100003             const_x_win: .word 0o100003           ; two plus sign bit @@ReadBy a1144
 @0745:100004              const_draw: .word 0o100004           ; three plus sign bit @@ReadBy a1156
 
 
@@ -1113,9 +1114,10 @@
 @1073:132002                          ao TURN
 
                                       ; Check if human won:
+;                    .if VERBOSE .print "Check for Human Win"
 @1074:102025                          ca ZERO
 @1075:042003                          ts WINFLG
-@1076:102001                          ca BRDO
+@1076:102000                          ca BRDX
 @1077:042007                          ts CWBD
 @1100:102033                          ca EIGHT_VAL
 @1101:042011                          ts CWLCNT
@@ -1144,9 +1146,10 @@
 @1117:132002                          ao TURN
 
                                       ; Check if computer won:
+;                    .if VERBOSE .print "Check for Computer Win"
 @1120:102025                          ca ZERO
 @1121:042003                          ts WINFLG
-@1122:102000                          ca BRDX
+@1122:102001                          ca BRDO
 @1123:042007                          ts CWBD
 @1124:102033                          ca EIGHT_VAL
 @1125:042011                          ts CWLCNT
@@ -1179,14 +1182,14 @@
                            HUMAN_WIN:
 @1142:075421                          sp PRMBOARD              ; CALL - returns @@JumpedToBy a1106
 @1143:075610                          sp PRMHWIN               ; CALL - returns
-@1144:100743                          ca const_o_win
+@1144:100744                          ca const_x_win
 @1145:040305                          ts which_player
 @1146:074052                          sp refresh_loop          ; JUMP - no return
 
                             COMP_WIN:
 @1147:075421                          sp PRMBOARD              ; CALL - returns @@JumpedToBy a1132
 @1150:075614                          sp PRMCWIN               ; CALL - returns
-@1151:100744                          ca const_x_win
+@1151:100743                          ca const_o_win
 @1152:040305                          ts which_player
 @1153:074052                          sp refresh_loop          ; JUMP - no return
 
@@ -1247,6 +1250,8 @@
 @1210:176010                          md CWMSK
 @1211:116010                          su CWMSK                 ; zero iff CWBD contains all bits of CWMSK
 @1212:134000                          dm 0
+;                   .if VERBOSE .print "cwloop CWBD=%o, CWLCNT=%o, CWMSK=%o, acc=%ao", CWBD, CWLCNT, CWMSK
+
 @1213:071223                          cp CWWON                 ; zero -> win!
 
 @1214:131205                          ao CWLD                  ; advance to next win mask
@@ -1263,6 +1268,7 @@
 @1224:042003                          ts WINFLG
 
                               CWDONE:
+;                    .if VERBOSE .print "CWLOOP returns %ao"
 @1225:075226                          sp CWRET                 ; JUMP - no return @@JumpedToBy a1221
 @1226:074000                   CWRET: sp 0                     ; @@WrittenBy a1202 JumpedToBy a1225
 
@@ -1403,6 +1409,7 @@
 @1361:042007                          ts CWBD
 @1362:102033                          ca EIGHT_VAL
 @1363:042011                          ts CWLCNT
+;                    .if VERBOSE .print "Check in TryMoves"
 @1364:075202                          sp CWLOOP                ; CALL - returns
 
 @1365:102003                          ca WINFLG
@@ -1670,8 +1677,8 @@
                                       ; =============================================================
                                       .org 0o2000
 
-@2000:000000                    BRDX: .word 0o0                ; @@WrittenBy a0676 a1063 ReadBy a1004 a1055 a1061 a1122 a1230 a1250 a1343 a1404 a1430
-@2001:000000                    BRDO: .word 0o0                ; @@WrittenBy a0677 a1116 ReadBy a1011 a1050 a1076 a1114 a1237 a1251 a1344 a1405 a1435
+@2000:000000                    BRDX: .word 0o0                ; @@WrittenBy a0676 a1063 ReadBy a1004 a1055 a1061 a1076 a1230 a1250 a1343 a1404 a1430
+@2001:000000                    BRDO: .word 0o0                ; @@WrittenBy a0677 a1116 ReadBy a1011 a1050 a1114 a1122 a1237 a1251 a1344 a1405 a1435
 @2002:000000                    TURN: .word 0o0                ; @@WrittenBy a0700 a1073 a1117 ReadBy a1073 a1107 a1117
 @2003:000000                  WINFLG: .word 0o0                ; @@WrittenBy a1075 a1121 a1224 a1357 ReadBy a1103 a1127 a1365
 @2004:000000                   BMOVE: .word 0o0                ; @@WrittenBy a1046 a1261 a1342 a1416 ReadBy a1047 a1054 a1062 a1115 a1346 a1354 a1377 a1570
