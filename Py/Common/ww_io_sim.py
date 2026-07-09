@@ -916,6 +916,8 @@ class DisplayScopeClass:
         if self.crt is None:  # first time there's a CRT instruction, we'll init the display modules
             self.init_qhqd_scope()
 
+        self.CrtOffsetX = self.cb.sim_params.get_simparam("CrtOffsetX")
+#        self.CrtGain = self.cb.sim_params.get_simparam("CrtGain")
         self.scope_horizontal = self.convert_scope_coord(acc) + self.CrtOffsetX
 
         if self.cb.TraceQuiet is False:
@@ -930,6 +932,8 @@ class DisplayScopeClass:
     # guy says: I'm assuming that QF is like QD except that it shows on a different scope
     #  (note M-1083 Interim Display Equipment and Temporary Operation qf: F - Scope Display)
     def qd_qf(self, _operand, acc, scope):
+        self.CrtOffsetY = self.cb.sim_params.get_simparam("CrtOffsetY")
+#        self.CrtGain = self.cb.sim_params.get_simparam("CrtGain")
         if scope == self.cb.SCOPE_AUX:
             color=(1.0, 1.0, 0.0)  # Scope F / aux scope should be yellow on the PC screen
         else:
