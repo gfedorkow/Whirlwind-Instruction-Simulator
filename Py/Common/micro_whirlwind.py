@@ -716,7 +716,7 @@ class MappedSwitchClass:
             self.pending_u4_queue.put(key)
             swstr = ["released", "pressed"]
             s = swstr[key >> 7]  # look at bit Seven
-            k = (key & 0o177) - 139         # convert key number to 0 or 1
+            k = (key & 0o177) - 111         # convert key number to 0 or 1
             print("prefetch U4 button %d is %s (key=%d)" % (k, s, key))
 
 
@@ -767,7 +767,7 @@ class MappedSwitchClass:
                 more = not self.pending_u4_queue.empty()
                 swstr = ["released", "pressed"]
                 s = swstr[key >> 7]  # look at bit Seven
-                k = (key & 0o177) - 139  # convert key number to 0 or 1
+                k = (key & 0o177) - 111  # convert key number to 0 or 1
                 print("catch up on U4 button %d is %s (key=%d)" % (k, s, key))
                 button_press = self.process_u4_button_event(key)
                 if button_press:
