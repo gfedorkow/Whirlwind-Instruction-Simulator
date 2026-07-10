@@ -1,0 +1,69 @@
+; Test code for MicroWhirlwind Rotary Encoder
+; g fedorkow, Jul 9, 2026 at HNF
+
+; move a single bit back and forth across FF2 and FF3 light registers
+; as the rotary knob is turned up and down.  The motion should be smooth,
+; and simply stop once the upper and lower ends of the range is hit.
+
+        
+        .dbwgt  Encoder, incr = 1, min = 1, max = 31, fmt = "%d"
+        .pp c_zero, 0
+        .pp c_one,  1  
+        
+         .pp scope_point, 0o0677   ; draw a point on all scopes
+
+        .org 2
+FF2:    .word 0
+FF3:    .word 0
+
+        .org 0o40
+main:        
+        si scope_point
+        ca c_15
+        ts Encoder
+
+loop:
+        ca Encoder
+        dm lastval
+        dm 0
+        cp loop
+        
+        ca Encoder
+        ad c_one
+        su c_16
+        cp lower_ff
+        
+upper_ff:
+        ca Encoder
+        md c_15
+        td hi_shft
+        ca c_one
+hi_shft: clc 0        
+        ts FF3
+        ca c_zero
+        ts FF2
+
+        sp loop
+
+lower_ff:
+        ca Encoder
+        md c_15
+        td lo_shft
+        ca c_one
+lo_shft: clc 0        
+        ts FF2
+        ca c_zero
+        ts FF3
+        sp loop
+
+c_15:     .word 0o17
+c_16:    .word 16
+
+Encoder: .word 0
+lastval: .word 0
+     
+        .jumpto 0o40
+
+
+
+  

@@ -1229,6 +1229,8 @@ class TCA8414:
     def available(self):
         eventCount = self.readRegister(self.TCA8418_REG_KEY_LCK_EC)
         eventCount &= 0x0F  # //  lower 4 bits only
+        if eventCount >= 9:
+            print(" Switch queue full; count=%d" % eventCount)
         return eventCount
 
 

@@ -1,0 +1,69 @@
+                       ; Test code for MicroWhirlwind Rotary Encoder
+                       ; g fedorkow, Jul 9, 2026 at HNF
+
+                       ; move a single bit back and forth across FF2 and FF3 light registers
+                       ; as the rotary knob is turned up and down.  The motion should be smooth,
+                       ; and simply stop once the upper and lower ends of the range is hit.
+
+
+                       .dbwgt Encoder, incr = 1, min = 1, max = 31, fmt = "%d"
+                       .pp c_zero, 0
+                       .pp c_one, 1
+
+                       .pp scope_point, 0o0677  ; draw a point on all scopes
+
+                       .org 2
+@0002:000000      FF2: .word 0                  ; @@WrittenBy a0062 a0071
+@0003:000000      FF3: .word 0                  ; @@WrittenBy a0060 a0073
+
+                       .org 0o40
+                 main:
+@0040:000677           si scope_point
+@0041:100075           ca c_15
+@0042:040077           ts Encoder
+
+                 loop:
+@0043:100077           ca Encoder               ; @@JumpedToBy a0046 a0063 a0074
+@0044:134100           dm lastval
+@0045:134000           dm 0
+@0046:070043           cp loop
+
+@0047:100077           ca Encoder
+@0050:110001           ad c_one
+@0051:114076           su c_16
+@0052:070064           cp lower_ff
+
+             upper_ff:
+@0053:100077           ca Encoder
+@0054:174075           md c_15
+@0055:044057           td hi_shft
+@0056:100001           ca c_one
+@0057:170000  hi_shft: clc 0                    ; @@WrittenBy a0055
+@0060:040003           ts FF3
+@0061:100000           ca c_zero
+@0062:040002           ts FF2
+
+@0063:074043           sp loop
+
+             lower_ff:
+@0064:100077           ca Encoder               ; @@JumpedToBy a0052
+@0065:174075           md c_15
+@0066:044070           td lo_shft
+@0067:100001           ca c_one
+@0070:170000  lo_shft: clc 0                    ; @@WrittenBy a0066
+@0071:040002           ts FF2
+@0072:100000           ca c_zero
+@0073:040003           ts FF3
+@0074:074043           sp loop
+
+@0075:000017     c_15: .word 0o17               ; @@ReadBy a0041 a0054 a0065
+@0076:000020     c_16: .word 16                 ; @@ReadBy a0051
+
+@0077:000000  Encoder: .word 0                  ; @@WrittenBy a0042 ReadBy a0043 a0047 a0053 a0064
+@0100:000000  lastval: .word 0                  ; @@ReadBy a0044
+
+                       .jumpto 0o40
+
+
+
+
