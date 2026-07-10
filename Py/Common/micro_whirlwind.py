@@ -707,6 +707,7 @@ class MappedSwitchClass:
         self.fn_buttons_def = (("Examine", "Read In", "Order-by-Order", "Start at 40", "Start Over", "Restart", "Stop", "Clear Alarm"),
                                ("Stop on Addr", "Stop on CK", "Stop on S1", "F-Scope", "D-Scope", "unused", "unused", "Rotary Push"))
         self.encoder_state = [0,0]
+        self.last_encoder_state = [0,0]
 
 
     def prefetch_u4_button_events(self):
@@ -740,6 +741,7 @@ class MappedSwitchClass:
     # But the rotary encoder can generate transitions pretty quickly, so I'll collect up key events
     # faster than the normal scanning rate, and play them out later during the regular update cycle.
     def check_buttons(self):
+        self.tca84_u4.test_overflow()
         button_press = None
         more = False
         if self.tca84_u3.available() > 0:
@@ -878,6 +880,12 @@ class MappedSwitchClass:
     # We're relying completely on the scanner to debounce the signals!
     # 'which_key' is which one of the two Rotary phases changed.
     def fn_rotary_decode(self, pressed, which_key):
+        
+        # debug framework
+        if pressed == self.last_encoder_state[which_key]:
+            self.log.warn("Duplicate rotary encoder state; encoder pin %d, state %d" % (which_key, pressed))
+        self.last_encoder_state[which_key] = pressed
+        # end
 
         self.encoder_state[which_key] = (pressed != 0)
 
@@ -886,10 +894,10 @@ class MappedSwitchClass:
             if which_key == 0:
                 direction = self.encoder_state[1]
             if which_key == 1:
-                direction = self.encoder_state[0] == 0
+                direction = (self.encoder_state[0] == 0)
         else:
             if which_key == 0:
-                direction = self.encoder_state[1] == 0
+                direction = (self.encoder_state[1] == 0)
             if which_key == 1:
                 direction = self.encoder_state[0]
 
@@ -1230,9 +1238,16 @@ class TCA8414:
         eventCount = self.readRegister(self.TCA8418_REG_KEY_LCK_EC)
         eventCount &= 0x0F  # //  lower 4 bits only
         if eventCount >= 9:
-            print(" Switch queue full; count=%d" % eventCount)
+            self.log.warn(" Switch queue full; count=%d" % eventCount)
         return eventCount
 
+    # check to see if the key scanner queue has overflowed; if so, print a message
+    # and clear the error.
+    def test_overflow(self):
+        stat = self.readRegister(self.TCA8418_REG_INT_STAT)
+        if stat & self.TCA8418_REG_STAT_OVR_FLOW_INT:  # < Overflow interrupt status
+            self.log.warn(" Switch queue overflow")
+            self.writeRegister(self.TCA8418_REG_INT_STAT, self.TCA8418_REG_STAT_OVR_FLOW_INT)
 
 # =============== Rotary Encoder Test ==================================
 # The following routine decodes the two signals from a Rotary Encoder to
