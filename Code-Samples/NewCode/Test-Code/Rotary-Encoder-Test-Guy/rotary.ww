@@ -65,7 +65,7 @@ const_16:    .word 16
 const_8: .word 8
 
 
-
+; pilfered from tic tac toe
 draw_lines:
             ta dl_ret
             ca c_zero
