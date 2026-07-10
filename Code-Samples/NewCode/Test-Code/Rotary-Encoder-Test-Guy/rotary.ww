@@ -11,6 +11,7 @@
         .pp c_one,  1  
         
          .pp scope_point, 0o0677   ; draw a point on all scopes
+         .pp scope_vector, 0o1677   ; draw a vector on all scopes
 
         .org 2
 FF2:    .word 0
@@ -23,6 +24,7 @@ main:
         ts Encoder
 
 loop:
+        sp draw_lines
         ca Encoder
         dm lastval
         dm 0
@@ -30,7 +32,7 @@ loop:
         
         ca Encoder
         ad c_one
-        su c_16
+        su const_16
         cp lower_ff
         
 upper_ff:
@@ -56,8 +58,74 @@ lo_shft: clc 0
         ts FF3
         sp loop
 
+const_2: .word 2
+const_11: .word 11
 c_15:     .word 0o17
-c_16:    .word 16
+const_16:    .word 16
+const_8: .word 8
+
+
+
+draw_lines:
+            ta dl_ret
+            ca c_zero
+            ts y_arg
+            ca const_2
+            ts x_arg
+            cs const_11
+            ts n_segments  ; segment count should be negative, ie, we will incr the value until positive
+            sp draw_x_line
+            
+            ca Encoder
+            ts x_arg
+            sp draw_y_seg
+dl_ret:     sp 0
+
+
+draw_y_seg:
+          ta draw_y_seg_ret  ; save the return address
+          ca 0
+          su const_8    ; shift from 0-15 axis to -8 to +7
+          slr 1
+          su c_one
+          slr 11        ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+          si scope_vector    ; initialize vector gen
+          ca x_arg
+          su const_16    ; shift from 0-31 axis to -16 to +15
+          ts x_arg
+          slr 10        ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+          
+          rc vert_line_seg  ; Draw a segment with x=ACC
+draw_y_seg_ret:
+          sp 0
+
+
+draw_x_line:
+          ta draw_x_line_ret  ; save the return address
+          ca y_arg
+          su const_8    ; shift from 0-15 axis to -8 to +7
+          slr 12        ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+          si scope_vector    ; initialize vector gen
+          ca x_arg
+          su const_8    ; shift from 0-15 axis to -8 to +7
+          ts x_arg
+next_x_seg:
+          ca x_arg      ; re-fetch the next x_arg
+          slr 12        ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+          
+          rc horiz_line_seg  ; Draw a segment with x=ACC
+          ao x_arg
+          ao n_segments  ; increment the segment counter
+          cp next_x_seg
+draw_x_line_ret:
+          sp 0
+
+y_arg:    .word 0
+x_arg:    .word 0
+n_segments: .word 0
+
+horiz_line_seg:    .word 0o174 * 0o400   ; +32 in the top half of the word
+vert_line_seg:     .word 0o174            ; +32 in the bottom half of the word
 
 Encoder: .word 0
 lastval: .word 0

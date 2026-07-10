@@ -1,68 +1,136 @@
-                       ; Test code for MicroWhirlwind Rotary Encoder
-                       ; g fedorkow, Jul 9, 2026 at HNF
+                              ; Test code for MicroWhirlwind Rotary Encoder
+                              ; g fedorkow, Jul 9, 2026 at HNF
 
-                       ; move a single bit back and forth across FF2 and FF3 light registers
-                       ; as the rotary knob is turned up and down.  The motion should be smooth,
-                       ; and simply stop once the upper and lower ends of the range is hit.
+                              ; move a single bit back and forth across FF2 and FF3 light registers
+                              ; as the rotary knob is turned up and down.  The motion should be smooth,
+                              ; and simply stop once the upper and lower ends of the range is hit.
 
 
-                       .dbwgt Encoder, incr = 1, min = 1, max = 31, fmt = "%d"
-                       .pp c_zero, 0
-                       .pp c_one, 1
+                              .dbwgt Encoder, incr = 1, min = 1, max = 31, fmt = "%d"
+                              .pp c_zero, 0
+                              .pp c_one, 1
 
-                       .pp scope_point, 0o0677  ; draw a point on all scopes
+                              .pp scope_point, 0o0677  ; draw a point on all scopes
+                              .pp scope_vector, 0o1677 ; draw a vector on all scopes
 
-                       .org 2
-@0002:000000      FF2: .word 0                  ; @@WrittenBy a0062 a0071
-@0003:000000      FF3: .word 0                  ; @@WrittenBy a0060 a0073
+                              .org 2
+@0002:000000             FF2: .word 0                  ; @@WrittenBy a0063 a0072
+@0003:000000             FF3: .word 0                  ; @@WrittenBy a0061 a0074
 
-                       .org 0o40
-                 main:
-@0040:000677           si scope_point
-@0041:100075           ca c_15
-@0042:040077           ts Encoder
+                              .org 0o40
+                        main:
+@0040:000677                  si scope_point
+@0041:100100                  ca c_15
+@0042:040160                  ts Encoder
 
-                 loop:
-@0043:100077           ca Encoder               ; @@JumpedToBy a0046 a0063 a0074
-@0044:134100           dm lastval
-@0045:134000           dm 0
-@0046:070043           cp loop
+                        loop:
+@0043:074103                  sp draw_lines            ; @@JumpedToBy a0047 a0064 a0075
+@0044:100160                  ca Encoder
+@0045:134161                  dm lastval
+@0046:134000                  dm 0
+@0047:070043                  cp loop
 
-@0047:100077           ca Encoder
-@0050:110001           ad c_one
-@0051:114076           su c_16
-@0052:070064           cp lower_ff
+@0050:100160                  ca Encoder
+@0051:110001                  ad c_one
+@0052:114101                  su const_16
+@0053:070065                  cp lower_ff
 
-             upper_ff:
-@0053:100077           ca Encoder
-@0054:174075           md c_15
-@0055:044057           td hi_shft
-@0056:100001           ca c_one
-@0057:170000  hi_shft: clc 0                    ; @@WrittenBy a0055
-@0060:040003           ts FF3
-@0061:100000           ca c_zero
-@0062:040002           ts FF2
+                    upper_ff:
+@0054:100160                  ca Encoder
+@0055:174100                  md c_15
+@0056:044060                  td hi_shft
+@0057:100001                  ca c_one
+@0060:170000         hi_shft: clc 0                    ; @@WrittenBy a0056
+@0061:040003                  ts FF3
+@0062:100000                  ca c_zero
+@0063:040002                  ts FF2
 
-@0063:074043           sp loop
+@0064:074043                  sp loop
 
-             lower_ff:
-@0064:100077           ca Encoder               ; @@JumpedToBy a0052
-@0065:174075           md c_15
-@0066:044070           td lo_shft
-@0067:100001           ca c_one
-@0070:170000  lo_shft: clc 0                    ; @@WrittenBy a0066
-@0071:040002           ts FF2
-@0072:100000           ca c_zero
-@0073:040003           ts FF3
-@0074:074043           sp loop
+                    lower_ff:
+@0065:100160                  ca Encoder               ; @@JumpedToBy a0053
+@0066:174100                  md c_15
+@0067:044071                  td lo_shft
+@0070:100001                  ca c_one
+@0071:170000         lo_shft: clc 0                    ; @@WrittenBy a0067
+@0072:040002                  ts FF2
+@0073:100000                  ca c_zero
+@0074:040003                  ts FF3
+@0075:074043                  sp loop
 
-@0075:000017     c_15: .word 0o17               ; @@ReadBy a0041 a0054 a0065
-@0076:000020     c_16: .word 16                 ; @@ReadBy a0051
+@0076:000002         const_2: .word 2                  ; @@ReadBy a0106
+@0077:000013        const_11: .word 11                 ; @@ReadBy a0110
+@0100:000017            c_15: .word 0o17               ; @@ReadBy a0041 a0055 a0066
+@0101:000020        const_16: .word 16                 ; @@ReadBy a0052 a0127
+@0102:000010         const_8: .word 8                  ; @@ReadBy a0121 a0136 a0142
 
-@0077:000000  Encoder: .word 0                  ; @@WrittenBy a0042 ReadBy a0043 a0047 a0053 a0064
-@0100:000000  lastval: .word 0                  ; @@ReadBy a0044
 
-                       .jumpto 0o40
+
+                  draw_lines:
+@0103:050116                  ta dl_ret                ; @@JumpedToBy a0043
+@0104:100000                  ca c_zero
+@0105:040153                  ts y_arg
+@0106:100076                  ca const_2
+@0107:040154                  ts x_arg
+@0110:104077                  cs const_11
+@0111:040155                  ts n_segments            ; segment count should be negative, ie, we will incr the value until positive
+@0112:074134                  sp draw_x_line
+
+@0113:100160                  ca Encoder
+@0114:040154                  ts x_arg
+@0115:074117                  sp draw_y_seg
+@0116:074000          dl_ret: sp 0                     ; @@WrittenBy a0103
+
+
+                  draw_y_seg:
+@0117:050133                  ta draw_y_seg_ret        ; save the return address @@JumpedToBy a0115
+@0120:100000                  ca 0
+@0121:114102                  su const_8               ; shift from 0-15 axis to -8 to +7
+@0122:154001                  slr 1
+@0123:114001                  su c_one
+@0124:154013                  slr 11                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0125:001677                  si scope_vector          ; initialize vector gen ; Auto-Annotate I/O: Display Vectors
+@0126:100154                  ca x_arg
+@0127:114101                  su const_16              ; shift from 0-31 axis to -16 to +15
+@0130:040154                  ts x_arg
+@0131:154012                  slr 10                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+
+@0132:024157                  rc vert_line_seg         ; Draw a segment with x=ACC
+              draw_y_seg_ret:
+@0133:074000                  sp 0                     ; @@WrittenBy a0117
+
+
+                 draw_x_line:
+@0134:050152                  ta draw_x_line_ret       ; save the return address @@JumpedToBy a0112
+@0135:100153                  ca y_arg
+@0136:114102                  su const_8               ; shift from 0-15 axis to -8 to +7
+@0137:154014                  slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@0140:001677                  si scope_vector          ; initialize vector gen ; Auto-Annotate I/O: Display Vectors
+@0141:100154                  ca x_arg
+@0142:114102                  su const_8               ; shift from 0-15 axis to -8 to +7
+@0143:040154                  ts x_arg
+                  next_x_seg:
+@0144:100154                  ca x_arg                 ; re-fetch the next x_arg @@JumpedToBy a0151
+@0145:154014                  slr 12                   ; multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+
+@0146:024156                  rc horiz_line_seg        ; Draw a segment with x=ACC
+@0147:130154                  ao x_arg
+@0150:130155                  ao n_segments            ; increment the segment counter
+@0151:070144                  cp next_x_seg
+             draw_x_line_ret:
+@0152:074000                  sp 0                     ; @@WrittenBy a0134
+
+@0153:000000           y_arg: .word 0                  ; @@WrittenBy a0105 ReadBy a0135
+@0154:000000           x_arg: .word 0                  ; @@WrittenBy a0107 a0114 a0130 a0143 a0147 ReadBy a0126 a0141 a0144 a0147
+@0155:000000      n_segments: .word 0                  ; @@WrittenBy a0111 a0150 ReadBy a0150
+
+@0156:076000  horiz_line_seg: .word 0o174 * 0o400      ; +32 in the top half of the word
+@0157:000174   vert_line_seg: .word 0o174              ; +32 in the bottom half of the word
+
+@0160:000000         Encoder: .word 0                  ; @@WrittenBy a0042 ReadBy a0044 a0050 a0054 a0065 a0113
+@0161:000000         lastval: .word 0                  ; @@ReadBy a0045
+
+                              .jumpto 0o40
 
 
 

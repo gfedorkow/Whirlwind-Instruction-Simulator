@@ -3,26 +3,67 @@
 %File: rotary.ww
 %TapeID: 
 %JumpTo 0o40
-%DbWgt:  0o077  0o01 %d 0o01 0o37
+%DbWgt:  0o160  0o01 %d 0o01 0o37
 @C0000:  None    None   0000000 0000000  None    None    None    None   
-@C0040: 0000677 0100075 0040077 0100077 0134100 0134000 0070043 0100077 
-@C0050: 0110001 0114076 0070064 0100077 0174075 0044057 0100001 0170000 
-@C0060: 0040003 0100000 0040002 0074043 0100077 0174075 0044070 0100001 
-@C0070: 0170000 0040002 0100000 0040003 0074043 0000017 0000020 0000000 
-@C0100: 0000000  None    None    None    None    None    None    None   
+@C0040: 0000677 0100100 0040160 0074103 0100160 0134161 0134000 0070043 
+@C0050: 0100160 0110001 0114101 0070065 0100160 0174100 0044060 0100001 
+@C0060: 0170000 0040003 0100000 0040002 0074043 0100160 0174100 0044071 
+@C0070: 0100001 0170000 0040002 0100000 0040003 0074043 0000002 0000013 
+@C0100: 0000017 0000020 0000010 0050116 0100000 0040153 0100076 0040154 
+@C0110: 0104077 0040155 0074134 0100160 0040154 0074117 0074000 0050133 
+@C0120: 0100000 0114102 0154001 0114001 0154013 0001677 0100154 0114101 
+@C0130: 0040154 0154012 0024157 0074000 0050152 0100153 0114102 0154014 
+@C0140: 0001677 0100154 0114102 0040154 0100154 0154014 0024156 0130154 
+@C0150: 0130155 0070144 0074000 0000000 0000000 0000000 0076000 0000174 
+@C0160: 0000000 0000000  None    None    None    None    None    None   
 @S0002: FF2
 @S0003: FF3
 @S0040: main
 @S0043: loop
-@S0053: upper_ff
-@S0057: hi_shft
-@S0064: lower_ff
-@S0070: lo_shft
-@S0075: c_15
-@S0076: c_16
-@S0077: Encoder
-@S0100: lastval
+@S0054: upper_ff
+@S0060: hi_shft
+@S0065: lower_ff
+@S0071: lo_shft
+@S0076: const_2
+@S0077: const_11
+@S0100: c_15
+@S0101: const_16
+@S0102: const_8
+@S0103: draw_lines
+@S0116: dl_ret
+@S0117: draw_y_seg
+@S0133: draw_y_seg_ret
+@S0134: draw_x_line
+@S0144: next_x_seg
+@S0152: draw_x_line_ret
+@S0153: y_arg
+@S0154: x_arg
+@S0155: n_segments
+@S0156: horiz_line_seg
+@S0157: vert_line_seg
+@S0160: Encoder
+@S0161: lastval
 @S0000: c_zero
 @S0001: c_one
 @S0677: scope_point
-@N0040:  draw a point on all scopes
+@S1677: scope_vector
+@N0040:  draw a vector on all scopes
+@N0111:  segment count should be negative, ie, we will incr the value until positive
+@N0117:  save the return address
+@N0121:  shift from 0-15 axis to -8 to +7
+@N0124:  multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0125:  initialize vector gen
+@N0127:  shift from 0-31 axis to -16 to +15
+@N0131:  multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0132:  Draw a segment with x=ACC
+@N0134:  save the return address
+@N0136:  shift from 0-15 axis to -8 to +7
+@N0137:  multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0140:  initialize vector gen
+@N0142:  shift from 0-15 axis to -8 to +7
+@N0144:  re-fetch the next x_arg
+@N0145:  multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0146:  Draw a segment with x=ACC
+@N0150:  increment the segment counter
+@N0156:  +32 in the top half of the word
+@N0157:  +32 in the bottom half of the word

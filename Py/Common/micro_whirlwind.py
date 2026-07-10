@@ -880,7 +880,7 @@ class MappedSwitchClass:
     # We're relying completely on the scanner to debounce the signals!
     # 'which_key' is which one of the two Rotary phases changed.
     def fn_rotary_decode(self, pressed, which_key):
-        
+
         # debug framework
         if pressed == self.last_encoder_state[which_key]:
             self.log.warn("Duplicate rotary encoder state; encoder pin %d, state %d" % (which_key, pressed))
@@ -905,7 +905,7 @@ class MappedSwitchClass:
             push_str = "Rotary Up"
         else:
             push_str = "Rotary Down"
-        if MwwPanelDebug: print("%s: key=%d dir=%d" % (push_str, which_key, direction))
+        print("%s: key=%d dir=%d" % (push_str, which_key, direction))
         return push_str
 
 
