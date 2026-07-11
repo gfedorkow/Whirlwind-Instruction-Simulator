@@ -1,5 +1,93 @@
 
+
+
 ** Jul 11, 2026
+Guy $ !wwsim
+wwsim rotary.acore -m --QuickS
+ i2c done
+start at 0o40
+prefetch U4 button 1 is pressed (key=240)
+catch up on U4 button 1 is pressed (key=240)
+Rotary Up: key=1 dir=1
+prefetch U4 button 1 is released (key=112)
+Warning: unexpected second change from encoder pin 1 on enqueu, state released
+catch up on U4 button 1 is released (key=112)
+Warning: unexpected second change from encoder pin 1, state 0
+Rotary Down: key=1 dir=0
+prefetch U4 button 0 is pressed (key=239)
+prefetch U4 button 1 is pressed (key=240)
+catch up on U4 button 0 is pressed (key=239)
+Rotary Down: key=0 dir=0
+prefetch U4 button 0 is released (key=111)
+prefetch U4 button 1 is released (key=112)
+catch up on U4 button 1 is pressed (key=240)
+Rotary Down: key=1 dir=0
+prefetch U4 button 1 is pressed (key=240)
+Warning: unexpected second change from encoder pin 1 on enqueu, state pressed
+catch up on U4 button 0 is released (key=111)
+Rotary Down: key=0 dir=0
+catch up on U4 button 1 is released (key=112)
+Rotary Down: key=1 dir=0
+prefetch U4 button 0 is pressed (key=239)
+prefetch U4 button 1 is released (key=112)
+catch up on U4 button 1 is pressed (key=240)
+Warning: unexpected second change from encoder pin 1, state 128
+Rotary Up: key=1 dir=1
+prefetch U4 button 0 is released (key=111)
+catch up on U4 button 0 is pressed (key=239)
+Rotary Up: key=0 dir=1
+prefetch U4 button 1 is pressed (key=240)
+catch up on U4 button 1 is released (key=112)
+Rotary Up: key=1 dir=1
+prefetch U4 button 0 is pressed (key=239)
+catch up on U4 button 0 is released (key=111)
+Rotary Up: key=0 dir=1
+catch up on U4 button 1 is pressed (key=240)
+Rotary Up: key=1 dir=1
+catch up on U4 button 0 is pressed (key=239)
+Rotary Up: key=0 dir=1
+prefetch U4 button 1 is released (key=112)
+catch up on U4 button 1 is released (key=112)
+Rotary Up: key=1 dir=1
+prefetch U4 button 0 is released (key=111)
+catch up on U4 button 0 is released (key=111)
+Rotary Up: key=0 dir=1
+prefetch U4 button 1 is pressed (key=240)
+catch up on U4 button 1 is pressed (key=240)
+Rotary Up: key=1 dir=1
+prefetch U4 button 1 is released (key=112)
+Warning: unexpected second change from encoder pin 1 on enqueu, state released
+catch up on U4 button 1 is released (key=112)
+Warning: unexpected second change from encoder pin 1, state 0
+Rotary Down: key=1 dir=0
+prefetch U4 button 0 is pressed (key=239)
+catch up on U4 button 0 is pressed (key=239)
+Rotary Down: key=0 dir=0
+prefetch U4 button 0 is released (key=111)
+Warning: unexpected second change from encoder pin 0 on enqueu, state released
+prefetch U4 button 1 is pressed (key=240)
+catch up on U4 button 0 is released (key=111)
+Warning: unexpected second change from encoder pin 0, state 0
+Rotary Up: key=0 dir=1
+prefetch U4 button 1 is released (key=112)
+Warning: unexpected second change from encoder pin 1 on enqueu, state released
+catch up on U4 button 1 is pressed (key=240)
+Rotary Up: key=1 dir=1
+catch up on U4 button 1 is released (key=112)
+Warning: unexpected second change from encoder pin 1, state 0
+Rotary Down: key=1 dir=0
+Alarm 'Quit Simulation' (7) at PC=0o113 (0d75)
+close display...
+
+
+
+
+
+
+
+
+
+
 
 Guy $ wwsim rotary.acore -m --QuickS
  i2c done
