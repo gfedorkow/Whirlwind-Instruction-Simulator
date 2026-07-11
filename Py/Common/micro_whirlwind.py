@@ -761,20 +761,29 @@ class MappedSwitchClass:
                 if MwwPanelDebug: self.log.info("Pressed U3 %s: row=%d, col=%d" % (button_press, row, col))
                 if button_press:
                     return (button_press, more)
-        elif self.tca84_u4.available() > 0 or not self.pending_u4_queue.empty():
-            while not self.pending_u4_queue.empty():
-                key = self.pending_u4_queue.get()
-                more = not self.pending_u4_queue.empty()
-                swstr = ["released", "pressed"]
-                s = swstr[key >> 7]  # look at bit Seven
-                k = (key & 0o177) - 111  # convert key number to 0 or 1
-                print("catch up on U4 button %d is %s (key=%d)" % (k, s, key))
-                button_press = self.process_u4_button_event(key)
-                if button_press:
-                    return (button_press, more)
-            key = self.tca84_u4.getEvent()
-            more = self.tca84_u4.available()
+
+        while not self.pending_u4_queue.empty():
+            key = self.pending_u4_queue.get()
+            more = not self.pending_u4_queue.empty()
+            #debug framework
+            swstr = ["released", "pressed"]
+            s = swstr[key >> 7]  # look at bit Seven
+            k = (key & 0o177) - 111  # convert key number to 0 or 1
+            print("catch up on U4 button %d is %s (key=%d)" % (k, s, key))
+            #end debug framework
             button_press = self.process_u4_button_event(key)
+            if button_press:
+                return (button_press, more)
+        if self.tca84_u4.available() > 0:
+            key = self.tca84_u4.getEvent()
+            #debug framework
+            swstr = ["released", "pressed"]
+            s = swstr[key >> 7]  # look at bit Seven
+            k = (key & 0o177) - 111  # convert key number to 0 or 1
+            print("non-queued event on U4 button %d is %s (key=%d)" % (k, s, key))
+            #end debug framework
+            button_press = self.process_u4_button_event(key)
+            more = self.tca84_u4.available()
 
         return (button_press, more)
 

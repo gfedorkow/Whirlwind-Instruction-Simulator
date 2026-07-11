@@ -65,7 +65,7 @@
 @0102:000010         const_8: .word 8                  ; @@ReadBy a0121 a0136 a0142
 
 
-
+                              ; pilfered from tic tac toe
                   draw_lines:
 @0103:050116                  ta dl_ret                ; @@JumpedToBy a0043
 @0104:100000                  ca c_zero
