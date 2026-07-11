@@ -707,17 +707,24 @@ class MappedSwitchClass:
         self.fn_buttons_def = (("Examine", "Read In", "Order-by-Order", "Start at 40", "Start Over", "Restart", "Stop", "Clear Alarm"),
                                ("Stop on Addr", "Stop on CK", "Stop on S1", "F-Scope", "D-Scope", "unused", "unused", "Rotary Push"))
         self.encoder_state = [0,0]
-        self.last_encoder_state = [0,0]
-
+        #debug framework
+        self.last_encoder_state = [1, 1]
+        self.last_encoder_dq_button = 0
+        self.last_encoder_enq_button = 0
+        #end debug framework
 
     def prefetch_u4_button_events(self):
         if self.tca84_u4.available() > 0:
             key = self.tca84_u4.getEvent()
             self.pending_u4_queue.put(key)
+            # debug framework
             swstr = ["released", "pressed"]
             s = swstr[key >> 7]  # look at bit Seven
             k = (key & 0o177) - 111         # convert key number to 0 or 1
             print("prefetch U4 button %d is %s (key=%d)" % (k, s, key))
+            if k == self.last_encoder_enq_button:
+                self.log.warn("unexpected second change from encoder pin %d on enqueu, state %s" % (k, s))
+            self.last_encoder_enq_button = k
 
 
     def process_u4_button_event(self, key):
@@ -900,6 +907,9 @@ class MappedSwitchClass:
         if pressed == self.last_encoder_state[which_key]:
             self.log.warn("Duplicate rotary encoder state; encoder pin %d, state %d" % (which_key, pressed))
         self.last_encoder_state[which_key] = pressed
+        if which_key == self.last_encoder_dq_button:
+            self.log.warn("unexpected second change from encoder pin %d, state %d" % (which_key, pressed))
+        self.last_encoder_dq_button = which_key
         # end
 
         self.encoder_state[which_key] = (pressed != 0)

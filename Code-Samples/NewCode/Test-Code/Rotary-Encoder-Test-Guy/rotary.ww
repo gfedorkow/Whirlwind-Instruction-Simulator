@@ -18,9 +18,16 @@ FF2:    .word 0
 FF3:    .word 0
 
         .org 0o40
-main:        
+main:   
+        ; experiment
+        ca c_zero
+        dm 0
+        sd c_nzero
+        td hi_shft
+        ; back to work
+        
         si scope_point
-        ca c_15
+        ca const_15
         ts Encoder
 
 loop:
@@ -37,7 +44,7 @@ loop:
         
 upper_ff:
         ca Encoder
-        md c_15
+        md const_15   ; keep the lower four bits
         td hi_shft
         ca c_one
 hi_shft: clc 0        
@@ -49,7 +56,7 @@ hi_shft: clc 0
 
 lower_ff:
         ca Encoder
-        md c_15
+        md const_15
         td lo_shft
         ca c_one
 lo_shft: clc 0        
@@ -59,11 +66,12 @@ lo_shft: clc 0
         sp loop
 
 const_2: .word 2
-const_11: .word 11
-c_15:     .word 0o17
-const_16:    .word 16
 const_8: .word 8
-
+const_11: .word 11
+const_15: .word 0o17
+const_16: .word 16
+const_msb: .word 0o100000
+c_nzero:   .word 0o177777
 
 ; pilfered from tic tac toe
 draw_lines:
@@ -82,6 +90,7 @@ draw_lines:
 dl_ret:     sp 0
 
 
+; draw the short vertical segment that indicates the number from the rotary encoder
 draw_y_seg:
           ta draw_y_seg_ret  ; save the return address
           ca 0
