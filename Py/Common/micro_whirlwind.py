@@ -1009,7 +1009,9 @@ class gpio_switches:
 
     def flipKey(self, n):
         current_state = self.getKeys()
-        new_bit = 1 ^ (current_state >> (n - 1))
+        new_bit = 1 ^ (current_state >> (n))
+        print("flipKey current=%d, n=%d, newbit=%d" % \
+                    (current_state, n, new_bit))
         self.setKey(n, new_bit)
 
 
