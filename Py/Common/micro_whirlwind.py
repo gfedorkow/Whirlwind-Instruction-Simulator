@@ -720,12 +720,12 @@ class MappedSwitchClass:
             # debug framework
             py_qlen = self.pending_u4_queue.qsize()
             swstr = ["released", "pressed"]
-            self.gp_sw.flipKey(4)
             s = swstr[key >> 7]  # look at bit Seven
             k = (key & 0o177) - 111         # convert key number to 0 or 1
-            print("prefetch U4 button %d is %s (key=%d), tca-qlen=%d, py-qlen=%d" % (k, s, key, tca_qlen, py_qlen))
             if k == self.last_encoder_enq_button:
+                self.gp_sw.flipKey(4)
                 self.log.warn("unexpected second change from encoder pin/key %d on enqueue, transition %s" % (k, s))
+            print("prefetch U4 button %d is %s (key=%d), tca-qlen=%d, py-qlen=%d" % (k, s, key, tca_qlen, py_qlen))
             self.last_encoder_enq_button = k
 
 
