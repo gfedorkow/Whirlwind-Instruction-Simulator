@@ -6,7 +6,7 @@
                               ; and simply stop once the upper and lower ends of the range is hit.
 
 
-                              .dbwgt Encoder, incr = 1, min = 1, max = 31, fmt = "%d"
+                              .dbwgt Encoder, incr = 1, min = 0, max = 31, fmt = "%d"
                               .pp c_zero, 0
                               .pp c_one, 1
 

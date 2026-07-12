@@ -97,7 +97,7 @@ class PanelMicroWWClass:
         try:
             i2c_bus = I2C(1)
             bus = i2c_bus.bus
-            gp_sw = gpio_switches(self.log, hnf_mode=hnf_mode)  # these are the switches and LEDs on Rainer's "Tap Board"
+            self.gp_sw = gpio_switches(self.log, hnf_mode=hnf_mode)  # these are the switches and LEDs on Rainer's "Tap Board"
         except IOError:
             self.micro_ww_module_present = False
             self.log.warn("No MicroWhirlwind Panel I2C/gpio Found")
@@ -113,7 +113,7 @@ class PanelMicroWWClass:
                 gpio.setup(self.pin_audio_click, gpio.OUT)
 
             self.md = MappedRegisterDisplayClass(self.log, i2c_bus, hnf_hardware_present=hnf_hardware_present)  # pass in cb.log for printing log messages
-            self.sw = MappedSwitchClass(self.log, i2c_bus, self.md)
+            self.sw = MappedSwitchClass(self.log, i2c_bus, self.md, self.gp_sw)
             # I think there's only one set of lights that need to be initialized from CB
             # The rest come from the ReadIn operation
             if MwwPanelDebug: self.log.info("Preset D/F Scope Selector switches to %d" % cb.which_scope)
@@ -665,15 +665,15 @@ class MappedRegisterDisplayClass:
 
 
 class MappedSwitchClass:
-    def __init__(self, log, i2c_bus, mapped_display):
+    def __init__(self, log, i2c_bus, mapped_display, gpio_switches):
         self.log = log
         self.tca84_u3 = tc_init_u3(log, i2c_bus.bus, TCA8414_0_ADDR)
         self.tca84_u4 = tc_init_u4(log, i2c_bus.bus, TCA8414_1_ADDR)
+        self.gp_sw = gpio_switches
         # self.i2c_bus = smbus2.SMBus(1)
         if MwwPanelDebug: self.log.info("  tca init done")
         self.mir_button_pressed = False  # This is a mailbox to signal six levels up that a button has been pressed
         self.pending_u4_queue = queue.SimpleQueue()
-
 
         self.tca84_u4.init_gp_out()
         if MwwPanelDebug: self.log.info("  TCA8414 init done")
@@ -714,16 +714,18 @@ class MappedSwitchClass:
         #end debug framework
 
     def prefetch_u4_button_events(self):
-        if self.tca84_u4.available() > 0:
+        if tca_qlen := self.tca84_u4.available() > 0:
             key = self.tca84_u4.getEvent()
             self.pending_u4_queue.put(key)
             # debug framework
+            py_qlen = self.pending_u4_queue.qsize()
             swstr = ["released", "pressed"]
+            self.gp_sw.flipKey(4)
             s = swstr[key >> 7]  # look at bit Seven
             k = (key & 0o177) - 111         # convert key number to 0 or 1
-            print("prefetch U4 button %d is %s (key=%d)" % (k, s, key))
+            print("prefetch U4 button %d is %s (key=%d), tca-qlen=%d, py-qlen=%d" % (k, s, key, tca_qlen, py_qlen))
             if k == self.last_encoder_enq_button:
-                self.log.warn("unexpected second change from encoder pin %d on enqueu, state %s" % (k, s))
+                self.log.warn("unexpected second change from encoder pin/key %d on enqueue, transition %s" % (k, s))
             self.last_encoder_enq_button = k
 
 
@@ -781,16 +783,18 @@ class MappedSwitchClass:
             button_press = self.process_u4_button_event(key)
             if button_press:
                 return (button_press, more)
-        if self.tca84_u4.available() > 0:
-            key = self.tca84_u4.getEvent()
-            #debug framework
-            swstr = ["released", "pressed"]
-            s = swstr[key >> 7]  # look at bit Seven
-            k = (key & 0o177) - 111  # convert key number to 0 or 1
-            print("non-queued event on U4 button %d is %s (key=%d)" % (k, s, key))
-            #end debug framework
-            button_press = self.process_u4_button_event(key)
-            more = self.tca84_u4.available()
+        # we _should_ be able to process any clicks in the TCA queue now, having caught up
+        # with the prefetches, but I'm trying to reduce variables to debug the missing transition states
+#        if self.tca84_u4.available() > 0:
+#            key = self.tca84_u4.getEvent()
+#            #debug framework
+#            swstr = ["released", "pressed"]
+#            s = swstr[key >> 7]  # look at bit Seven
+#            k = (key & 0o177) - 111  # convert key number to 0 or 1
+#            print("non-queued event on U4 button %d is %s (key=%d)" % (k, s, key))
+#            #end debug framework
+#            button_press = self.process_u4_button_event(key)
+#            more = self.tca84_u4.available()
 
         return (button_press, more)
 
@@ -908,7 +912,7 @@ class MappedSwitchClass:
             self.log.warn("Duplicate rotary encoder state; encoder pin %d, state %d" % (which_key, pressed))
         self.last_encoder_state[which_key] = pressed
         if which_key == self.last_encoder_dq_button:
-            self.log.warn("unexpected second change from encoder pin %d, state %d" % (which_key, pressed))
+            self.log.warn("unexpected second change from encoder pin/key %d on dequeue, state %d" % (which_key, pressed))
         self.last_encoder_dq_button = which_key
         # end
 
@@ -986,12 +990,12 @@ class gpio_switches:
             n indicates which LED we're setting; ignore zero, use 1-4.
             b says whether it should be set to zero or one
 
-            In HNF Demonstrator mode, we keep hands-off LED1 and LED2
+            In HNF Demonstrator mode, we keep hands-off LED1 and LED2 and LED3
         """
         if n == 0:
             return  # ignore key 0
         if self.hnf_mode and (n == 1 or n == 2 or n == 3):
-            return  # ignore LED 1 and 2 if it's the HNF Demonstrator
+            return  # ignore LED 1 and 2 and 3 if it's the HNF Demonstrator
         LEDs = [pin_gpio_LED1, pin_gpio_LED2, pin_gpio_LED3, pin_gpio_LED4]
         led = LEDs[n - 1]
         if b == 0:
@@ -1002,6 +1006,12 @@ class gpio_switches:
             gpio.output(led, 0)
             self.last_sw_state |= 1 << (n - 1)
         if MwwPanelDebug: self.log.info("set last_sw_state to 0x%x" % self.last_sw_state)
+
+    def flipKey(self, n):
+        current_state = self.getKeys()
+        new_bit = 1 ^ (current_state >> (n - 1))
+        self.setKey(n, new_bit)
+
 
     def step(self, delay):
         # Note that Rainer numbered the LEDs 1-4, not 0-3

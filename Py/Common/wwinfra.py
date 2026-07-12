@@ -2056,20 +2056,22 @@ class ScreenDebugWidgetClass:
             # LAS 4/8/26 Added min and max here as a placeholder -- no checking is performed yet
             min = self.mins[wgt]
             max = self.maxes[wgt]
+            # I originally thought this should be a signed number, i.e. -32K to +32K, but that's just too
+            # confusing when stirring in ones complement and -0.  So it's just a 16-bit unsigned int
             if direction_up:
                 wr = rd + incr
-                if rd <= 0o77777 and wr >= 0o77777:  # don't roll over from Max-Plus to Max-Minus
-                    wr = 0o77777
-                if wr >= 0o177777:
-                    wr = (wr + 1) & 0o77777  # this corrects for ones-complement going from -1 to +0
+#                if rd <= 0o77777 and wr >= 0o77777:  # don't roll over from Max-Plus to Max-Minus
+#                    wr = 0o77777
+#                if wr >= 0o177777:
+#                    wr = (wr + 1) & 0o77777  # this corrects for ones-complement going from -1 to +0
                 if wr > max:
                     wr = max
             else:
                 wr = rd - incr
-                if rd >= 0o100000 and wr <= 0o77777:  # don't roll over from Max-Minus to Max-Plus
-                    wr = 0o100000
-                if wr < 0:   # if it turns to a Pythonic negative, subtract one for 1's comp, and mask to 16 bits
-                    wr = (wr - 1) & 0o177777  # this corrects for ones-complement going from +0 to -1
+#                if rd >= 0o100000 and wr <= 0o77777:  # don't roll over from Max-Minus to Max-Plus
+#                    wr = 0o100000
+#                if wr < 0:   # if it turns to a Pythonic negative, subtract one for 1's comp, and mask to 16 bits
+#                    wr = (wr - 1) & 0o177777  # this corrects for ones-complement going from +0 to -1
                 if wr < min:
                     wr = min
 
