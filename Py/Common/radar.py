@@ -146,7 +146,10 @@ class RadarClass:
         self.antenna_revolutions = 0
         self.azimuth_next = True   # We (roughly) alternate sending Range and Azimuth
 
-        self.autoclick_enable = autoclick_enable
+        if autoclick_enable:
+            self.autoclick_enable = True
+        else:
+            self.autoclick_enable = False
         self.mouse_clicked_once_for_autostart = False
 
         # This program is the only one that uses the older Light Gun interface linked in through
@@ -167,7 +170,30 @@ class RadarClass:
 
         self.adjust_target_heading = RadarAdjustHeadingWidgetClass()
 
-        project_register_radar(self)
+        # these variables hold the objects used to draw the scope graticule; I need to remember them
+        # so they can be deleted / undrawn when the sim is done
+        self.axis_rings = 5
+        self.radial_axis = [None] * self.axis_rings
+        self.xaxis = None
+        self.yaxis = None
+
+        print("Current Working Directory: "+ os.getcwd())  # debug, May 14, 2026
+
+        if cb.project_exec:
+            cb.project_exec.project_register_radar(self)
+        else:
+            cb.log.fatal("File not found: Radar operation depends on project_exec.py")
+
+        #project_exec.project_register_radar(self)
+
+
+    # The radar class should be deleted at the end of the sim run to undraw the graticule
+    def __del__(self):
+        self.xaxis.undraw()
+        self.yaxis.undraw()
+        for i in range(0, self.axis_rings):
+            self.radial_axis[i].undraw()
+        self.cb.log.info("Deleting Radar Object")
 
 
     # the radar antenna rotates a full turn in 15 seconds.  There are 750 20-msec opportunities to send
@@ -338,27 +364,25 @@ class RadarClass:
     def draw_axis(self, crt):
         self.crt = crt  # keep this around to draw debug markings on the 'radar' screen
         axis_color = crt.gfx.color_rgb(80, 0, 80)
-        xaxis = crt.gfx.Line(crt.gfx.Point(0, crt.WIN_MAX_COORD / 2),
+        self.xaxis = crt.gfx.Line(crt.gfx.Point(0, crt.WIN_MAX_COORD / 2),
                               crt.gfx.Point(crt.WIN_MAX_COORD, crt.WIN_MAX_COORD / 2))
-        xaxis.setOutline(axis_color)
-        xaxis.setWidth(1)
-        xaxis.draw(crt.win)
+        self.xaxis.setOutline(axis_color)
+        self.xaxis.setWidth(1)
+        self.xaxis.draw(crt.win)
 
-        yaxis = crt.gfx.Line(crt.gfx.Point(crt.WIN_MAX_COORD / 2, 0),
+        self.yaxis = crt.gfx.Line(crt.gfx.Point(crt.WIN_MAX_COORD / 2, 0),
                               crt.gfx.Point(crt.WIN_MAX_COORD / 2, crt.WIN_MAX_COORD))
-        yaxis.setOutline(axis_color)
-        yaxis.setWidth(1)
-        yaxis.draw(crt.win)
+        self.yaxis.setOutline(axis_color)
+        self.yaxis.setWidth(1)
+        self.yaxis.draw(crt.win)
 
-        rings = 5
-        radial_axis = [None] * rings
-        for i in range(0, rings):
+        for i in range(0, self.axis_rings):
             # draw concentric circles every 25 miles
             diameter = 25 / 128 * i * ((crt.WIN_MAX_COORD / 2))
-            radial_axis[i] = crt.gfx.Circle(crt.gfx.Point(crt.WIN_MAX_COORD / 2, crt.WIN_MAX_COORD / 2), diameter)
-            radial_axis[i].setOutline(axis_color)
-            radial_axis[i].setWidth(1)
-            radial_axis[i].draw(crt.win)
+            self.radial_axis[i] = crt.gfx.Circle(crt.gfx.Point(crt.WIN_MAX_COORD / 2, crt.WIN_MAX_COORD / 2), diameter)
+            self.radial_axis[i].setOutline(axis_color)
+            self.radial_axis[i].setWidth(1)
+            self.radial_axis[i].draw(crt.win)
 
 
     # This routine shows debug information around the (circular) edge of the radar screen, e.g., where the

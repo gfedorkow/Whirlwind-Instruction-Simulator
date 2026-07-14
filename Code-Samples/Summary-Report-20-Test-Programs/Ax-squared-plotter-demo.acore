@@ -1,8 +1,9 @@
 
 ; *** Core Image ***
-%ISA: 1950
+%ISA: isa1950
 %File: Ax-squared-plotter-demo.ww
-%TapeID: None
+%TapeID: 
+%SimParam: NoAlarmStop 1 
 %JumpTo 0o40
 @C0000:  None    None   0100000  None    None   0000400 0100047 0000000 
 @C0040: 0100002 0030000 0100061 0144002 0144002 0034007 0104007 0034007 
@@ -19,25 +20,26 @@
 @S0063: c3
 @S0064: c4
 @S0065: c5
-@N0002: contains 'x'
-@N0041: use X to set Horizontal; note side effect of copying AC to 0
-@N0042: 1
-@N0043: 2
-@N0044: 3
-@N0045: 4
-@N0046: 5
-@N0047: 6
-@N0050: 7
-@N0051: 8
-@N0052: 9
-@N0053: 10
-@N0054: 11
-@N0055: 12
-@N0056: 13
-@N0057: 14
-@N0060: 15
-@N0061: 16   1 - 2**-15
-@N0062: 17   1/2
-@N0063: 18   1/4
-@N0064: 19   zero
-@N0065: 20   value to reinitialize location Start
+@N0002:  contains 'x'
+@N0040:  20  ca 16
+@N0041:  use X to set Horizontal; note side effect of copying AC to 0
+@N0042:  1
+@N0043:  2
+@N0044:  3
+@N0045:  4
+@N0046:  5
+@N0047:  6
+@N0050:  7
+@N0051:  8
+@N0052:  9
+@N0053:  10
+@N0054:  11
+@N0055:  12
+@N0056:  13
+@N0057:  14
+@N0060:  15
+@N0061:  16   1 - 2**-15
+@N0062:  17   1/2
+@N0063:  18   1/4
+@N0064:  19   zero
+@N0065:  20   value to reinitialize location Start

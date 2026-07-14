@@ -42,6 +42,7 @@ pin_gpio_LED2 = 6
 pin_gpio_LED3 = 20
 pin_gpio_LED4 = 21
 pin_gpio_isKey = 27
+pin_gpio_isGun1 = 25
 
 
 Verbose = False
@@ -53,6 +54,8 @@ I2CBusTimeout = 0
 def breakp():
     pass
 
+
+# the following class is only used when this script is run standalone...
 class localCpuClass:
     def __init__(self):
         self._BReg = 0
@@ -68,19 +71,28 @@ class localCpuClass:
 
 
 class PanelMicroWWClass:
-    def __init__(self, cb, sim_state_machine_arg=None, left_init=0, right_init=0):
+    def __init__(self, cb, sim_state_machine_arg=None, left_init=0, right_init=0,
+                 hnf_mode=False, hnf_hardware_present = False, blink_timeout = 1):
 
         cb.RasPi = RasPi
 
         self.log = cb.log
         self.sim_state_machine = sim_state_machine_arg
         self.micro_ww_module_present = True
+        self.hnf_hardware_present = hnf_hardware_present
         self.i2c_bus = None
+        self.pin_isGun1 = 25  # ugh... keep this aligned with analog-scope.py
+
+        # two timers that time out one-shot blink LEDs
+        self.blink_single_step = 0
+        self.blink_hnf_gun = 0
+        self.BLINK_TIMEOUT = blink_timeout
+
         if MwwPanelDebug: self.log.info("I2C init: ")
         try:
             i2c_bus = I2C(1)
             bus = i2c_bus.bus
-            gp_sw = gpio_switches(self.log)  # these are the switches and LEDs on Rainer's "Tap Board"
+            gp_sw = gpio_switches(self.log, hnf_mode=hnf_mode)  # these are the switches and LEDs on Rainer's "Tap Board"
         except IOError:
             self.micro_ww_module_present = False
             self.log.warn("No MicroWhirlwind Panel I2C/gpio Found")
@@ -95,7 +107,7 @@ class PanelMicroWWClass:
                 self.pin_audio_click = 12  # audio pin
                 gpio.setup(self.pin_audio_click, gpio.OUT)
 
-            self.md = MappedRegisterDisplayClass(self.log, i2c_bus)  # pass in cb.log for printing log messages
+            self.md = MappedRegisterDisplayClass(self.log, i2c_bus, hnf_hardware_present=hnf_hardware_present)  # pass in cb.log for printing log messages
             self.sw = MappedSwitchClass(self.log, i2c_bus, self.md)
             # I think there's only one set of lights that need to be initialized from CB
             # The rest come from the ReadIn operation
@@ -108,6 +120,16 @@ class PanelMicroWWClass:
             return
 
         self.local_state_change_buttons = ("Stop on Addr", "Stop on CK", "Stop on S1")
+
+        # When used with Jurgen's HNF demonstrator, the "light gun" is a capacitive touch device
+        # gated by a switch linked to the gun's trigger.
+        # In the case where that hardware is present, we need to initialize that one GPIO so the
+        # pin can be read.
+        # The use of this pin is not exactly in conflict with the optical light gun --  the
+        # optical light gun can only work in --AnaScope mode, and in that case, HNF Hardware is not present...
+        if hnf_hardware_present:
+            gpio.setup(self.pin_isGun1, gpio.IN, pull_up_down=gpio.PUD_UP)
+
 
 
 #        # the first element in the dict is the switch Read entry point, the second is the one to set the switches
@@ -124,6 +146,19 @@ class PanelMicroWWClass:
         button_press = self.sw.check_buttons()
         return button_press
 
+    # Jurgen's "light gun" produces a One on isGun1 when the trigger is pulled
+    def is_light_gun_trigger_pulled(self):
+        self.blink_hnf_gun = self.BLINK_TIMEOUT
+        if self.hnf_hardware_present == False:
+            return True  # if this is not HNF Hardware, we should assume a mouse click is always valid
+        trigger_pull = gpio.input(pin_gpio_isGun1)
+        return trigger_pull
+
+    # call this if the WW program is expecting light gun input, to blink an LED
+    # The LED is updated during the general control panel update; we just set the timer here
+    def blink_hnf_gun_led(self):
+        self.blink_hnf_gun = self.BLINK_TIMEOUT
+
 
     # return a flag that says if any button has been pressed since the last check
     def test_for_MIR_button_press(self):
@@ -135,6 +170,8 @@ class PanelMicroWWClass:
     # def set_cpu_state_lamps(self, cb, sim_state, alarm_state):
 
     def update_panel(self, cb, bank, alarm_state=0, standalone=False, init_PC=None):
+        quit = False
+        alarm_clear = False
         cpu = cb.cpu
         mdr = cpu.cm.mem_data_reg
         if mdr is None:   # Python "core memory" can read as None; translate that to zero
@@ -158,7 +195,9 @@ class PanelMicroWWClass:
                  "Stop on CK": self.md.check_alarm_special_state,
                  "Stop on SI-1": self.md.stop_on_s1_state
                  }
-            self.sim_state_machine(bn, cb, cpu_control_switches, set_scope_selector_leds=self.md.set_scope_selector_leds) # the third arg should be the PC Preset switch register
+            alarm_clear = self.sim_state_machine(bn, cb, cpu_control_switches,
+                                                 set_scope_selector_leds=self.md.set_scope_selector_leds, # the third arg should be the PC Preset switch register
+                                                 alarm_state = alarm_state)
 
         if init_PC:
             self.write_register("PC", init_PC)
@@ -169,9 +208,22 @@ class PanelMicroWWClass:
         else:
             cpu.stop_on_address = None  # otherwise, deactivate the Stop on PC function
 
+        if self.blink_single_step != 0:
+            if self.blink_single_step == self.BLINK_TIMEOUT:
+                self.md.update_single_step_switch_led(1)
+            self.blink_single_step -= 1
+            if self.blink_single_step == 0:
+                self.md.update_single_step_switch_led(0)
+        if self.blink_hnf_gun != 0:
+            if self.blink_hnf_gun == self.BLINK_TIMEOUT:
+                self.md.update_hnf_gun_switch_led(1)
+            self.blink_hnf_gun -= 1
+            if self.blink_hnf_gun == 0:
+                self.md.update_hnf_gun_switch_led(0)
+
         if gpio.input(pin_gpio_isKey) == 0:   #
-            return False
-        return True
+            quit = True
+        return (quit, alarm_clear)
 
 
     # The Panels contain a subset of the Flip Flop Register Preset switches; this method returns
@@ -328,23 +380,38 @@ def bit_reverse_16(x):
     x = ((x & 0x00FF) << 8) | ((x & 0xFF00) >> 8)
     return x
 
+# There's a command line arg to adjust the brightness of the LEDs if the default values don't
+# look right.  The arg is simply three ints, 0-255 for Red/White/Blue, expressed as r,w,b
+def parse_and_set_led_bright_arg(cb,arg_str):
+    global RdB, WhB, BlB
+    vals = arg_str.split(',')
+    if len(vals) != 3:
+        default_setting = "\n  default settings: r=%d, w=%d, b=%d" % (RdB, WhB, BlB)
+        cb.log.fatal("led brightness takes three args: r,w,b" + default_setting)
+    try:
+        r = int(vals[0])
+        w = int(vals[1])
+        b = int(vals[2])
+    except ValueError:
+        cb.log.fatal("led brightness must be three ints: r,w,b")
+    if r < 0 or r > 255 or w < 0 or w > 255 or b < 0 or b > 255:
+        cb.log.fatal("r, w, b must be ints in the range 0 to 255")
+    RdB = r
+    WhB = w
+    BlB = b
+    print(" set LEDs to %d, %d, %d" % (RdB, WhB, BlB))
+    return
 
-# This array of LED brightness is global so it can be called by the diagnostic as well as operational code
+
+# default LED brightness settings.  These can be overridden by --LEDbrightness on the cmd line
 RdB = 20
 WhB = 2
 BlB = 30
-                #  MAR                     MDR                 ACC                  BR
-u1_brightness = [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + \
-                [WhB]*8  + [RdB] + [WhB] + [RdB] + [WhB] + [RdB]*4   # IND + SAM + run/stop
-u2_brightness = [BlB]*192
-                #  PC                     FF3                 FF3                  unused
-u5_brightness = [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + \
-                [WhB]*16   # unused
 
 
 class MappedRegisterDisplayClass:
-    def __init__(self, log, i2c_bus):
-        global RdB, WhB, BlB, u1_brightness, u2_brightness, u5_brightness
+    def __init__(self, log, i2c_bus, hnf_hardware_present=0):
+        global RdB, WhB, BlB
         self.log = log
         self.run_state = 0
         self.alarm_state = 0
@@ -353,6 +420,16 @@ class MappedRegisterDisplayClass:
         self.check_alarm_special_state = 0
         self.stop_on_s1_state = 0
         self.stop_on_addr_state = 0
+        self.hnf_hardware_present = hnf_hardware_present
+
+        # This array of LED brightness [was] global so it can be called by the diagnostic as well as operational code
+                         #  MAR                     MDR                 ACC                  BR
+        u1_brightness = [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + \
+                        [WhB]*8  + [RdB] + [WhB] + [RdB] + [WhB] + [RdB]*4   # IND + SAM + run/stop
+        u2_brightness = [BlB]*192
+                        #  PC                     FF3                 FF3                  unused
+        u5_brightness = [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + \
+                        [WhB]*16   # unused
 
         self.u1_is31 = Is31(log, i2c_bus, IS31_1_ADDR_U1, brightness=u1_brightness)
         self.u2_is31 = Is31(log, i2c_bus, IS31_1_ADDR_U2, brightness=u2_brightness)
@@ -366,11 +443,17 @@ class MappedRegisterDisplayClass:
         self.mir_state = [0]*2  # two element array to remember the MIR settings, Left=0, Right=1
         self.which_mir = 1      # this element remembers which MIR value to display
 
+    # Register Displays per Version
+    # Both versions include:  acc, pc, ff2, ff3, Alarm
+    # HNF excludes:  mdr, mar, b_reg, SAM
+
     def set_IndReg_leds(self, ind_register):
         self.ind_register = bit_reverse_16(ind_register) & 0xff
         self.set_cpu_reg_display()
 
     def set_cpu_reg_display(self, cpu=None, mdr=0, mar=0, mar_bank=0, ff2=0, ff3=0, run_state=0, alarm_state=None):
+        state_leds = 0
+        pc_r_mask = 0o177777
         if cpu:
             acc_r = bit_reverse_16(cpu._AC)
             pc_r = bit_reverse_16(cpu.PC & 0o3777)
@@ -388,35 +471,42 @@ class MappedRegisterDisplayClass:
             else:
                 ff3r = ff3
 
-            self.u1_led[0] = ~mar_r
-            self.u1_led[1] = mar_r
-            self.u1_led[2] = ~mdr_par_r
-            self.u1_led[3] = mdr_par_r
+            # leave unused banks of LEDs unlit to avoid Chalieplex Ghosts
+            # All the LEDs default to zero, so simply not setting them will leave
+            # them as zero
+            if self.hnf_hardware_present == False:
+                # This seems a bit counter-intuitive, but only turn these bits on
+                # when we _don't_ have HNF hardware
+                self.u1_led[0] = ~mar_r
+                self.u1_led[1] = mar_r
+                self.u1_led[2] = ~mdr_par_r
+                self.u1_led[3] = mdr_par_r
+                self.u1_led[6] = ~b_reg_r
+                self.u1_led[7] = b_reg_r
+                # Carry-Out / SAM register
+                # Bit 8 -  0x0100 -> red -1 carry
+                # Bit 9 -  0x0200 -> white -1 carry
+                # Bit 10 - 0x0400 -> red +1 carry
+                # Bit 11 - 0x0800 -> white +1 carry
+                if cpu._SAM > 0:
+                    state_leds = 0x600
+                elif cpu._SAM < 0:
+                    state_leds = 0x900
+                else:
+                    state_leds = 0xa00
+            else:
+                pc_r_mask = 0o177740  # turn off the unused PC Reversed LEDs in HNF Mode
+
+
             self.u1_led[4] = ~acc_r
             self.u1_led[5] = acc_r
-            self.u1_led[6] = ~b_reg_r
-            self.u1_led[7] = b_reg_r
-
-            self.u5_led[0] = pc_r
-            self.u5_led[1] = ~pc_r
+            self.u5_led[0] = pc_r       # top five bits are already zero (i.e., Red LEDs are off)
+            self.u5_led[1] = ~pc_r & pc_r_mask # turn off top five White LEDs in HNF mode
             self.u5_led[2] = ff3r
             self.u5_led[3] = ~ff3r
             self.u5_led[4] = ff2r
             self.u5_led[5] = ~ff2r
 
-            # Carry-Out / SAM register
-            # Bit 8 -  0x0100 -> red -1 carry
-            # Bit 9 -  0x0200 -> white -1 carry
-            # Bit 10 - 0x0400 -> red +1 carry
-            # Bit 11 - 0x0800 -> white +1 carry
-            if cpu._SAM > 0:
-                state_leds = 0x600
-            elif cpu._SAM < 0:
-                state_leds = 0x900
-            else:
-                state_leds = 0xa00
-        else:
-            state_leds = 0
         # Bit 13 - 0x2000 -> red Alarm
         # Bit 14 - 0x4000 -> red Stop
         # Bit 15 - 0x8000 -> red Run
@@ -443,6 +533,7 @@ class MappedRegisterDisplayClass:
     #  PC bank    R0-[12-14]
     #  FF2        R2-[8-15]         R3-[8-15]
     #  FF3        R4-[8-15]         R5-[8-15]
+    # None of these LEDs are used in the HNF demonstrator, so they should not be set
     def set_preset_switch_leds(self, pc=None, pc_bank=None, ff2=None, ff3=None, bank_test=False):
         bank = 0
         if pc is not None:
@@ -460,6 +551,8 @@ class MappedRegisterDisplayClass:
             self.u2_led[5] = ((ff3 & 0o377) << 8) | self.u2_led[5] & 0o377
             # print("set_preset_switch_leds: preset LEDs FF3 set to 0o%o" % ff3)
 
+        if self.hnf_hardware_present:
+            return
         # send new settings to all u2 LEDs at once
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=6)
 
@@ -517,12 +610,13 @@ class MappedRegisterDisplayClass:
         self.u2_led[4] = 1 << ((mir >>  3) & 0o7) | (self.u2_led[4] & 0o0177400)   #
         self.u2_led[5] = 1 << ((mir      ) & 0o7) | (self.u2_led[5] & 0o0177400)   #
 
-        msg = ''
-        for i in range(0, 6):
-            msg += "%d:0o%06o, " % (i, self.u2_led[i])
-
-        if MwwPanelDebug: self.log.info("Setting U2 LEDs to %s; mir[0]=0o%o, mir[1]=0o%o, mir=0o%o, which=%d, activate=%d" %
+        if MwwPanelDebug:
+            msg = ''
+            for i in range(0, 6):
+                msg += "%d:0o%06o, " % (i, self.u2_led[i])
+            self.log.info("Setting U2 LEDs to %s; mir[0]=0o%o, mir[1]=0o%o, mir=0o%o, which=%d, activate=%d" %
             (msg, self.mir_state[0], self.mir_state[1], mir, self.which_mir, self.activate))
+
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # ought to be six, no?
 
 
@@ -543,6 +637,19 @@ class MappedRegisterDisplayClass:
     def update_exec_switch_leds(self):
         self.u2_led[7] = self.u2_led[7] & 0o174377 | \
                          self.stop_on_s1_state << 10 | self.check_alarm_special_state << 9 | self.stop_on_addr_state << 8
+        self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # just need to write one word
+
+
+    # adjust the LED hidden under the single-step button
+    def update_single_step_switch_led(self, val):
+        self.u2_led[6] = self.u2_led[6] & 0o175777 | (val & 1) << 10
+        self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # just need to write one word
+
+    # adjust the LED to indicate that the Light Gun is active
+    #  Formerly hidden under the restart button, moved to its own LED on Jun 14, 2026 
+    def update_hnf_gun_switch_led(self, val):
+#        self.u2_led[6] = self.u2_led[6] & 0o157777 | (val & 1) << 13
+        self.u2_led[7] = self.u2_led[7] & 0o157777 | (val & 1) << 13
         self.u2_is31.is31.write_16bit_led_rows(0, self.u2_led, len=9)  # just need to write one word
 
     # write two bits to the LED array to indicate which 'scope (D and/or F) is enabled
@@ -591,7 +698,7 @@ class MappedSwitchClass:
             self.fn_no_sw,   # 9
         )
         self.md = mapped_display
-        self.fn_buttons_def = (("Examine", "Read In", "Order-by-Order", "Start at 40", "Start Over", "Restart", "Stop", "Clear"),
+        self.fn_buttons_def = (("Examine", "Read In", "Order-by-Order", "Start at 40", "Start Over", "Restart", "Stop", "Clear Alarm"),
                                ("Stop on Addr", "Stop on CK", "Stop on S1", "F-Scope", "D-Scope", "unused", "unused", "Rotary Push"))
         self.encoder_state = [0,0]
 
@@ -770,13 +877,19 @@ class MappedSwitchClass:
 # Guy Fedorkow, Jun 2024
 
 class gpio_switches:
-    def __init__(self, log):
+    def __init__(self, log, hnf_mode=False):
         self.log = log
+        self.hnf_mode = hnf_mode
+
         gpio.setmode(gpio.BCM)
 
-        gpio.setup(pin_gpio_LED1, gpio.IN, pull_up_down=gpio.PUD_UP)
-        gpio.setup(pin_gpio_LED2, gpio.IN, pull_up_down=gpio.PUD_UP)
-        gpio.setup(pin_gpio_LED3, gpio.IN, pull_up_down=gpio.PUD_UP)
+        # we use two LEDs for heartbeat and Ethernet Link indicators when in HNF mode,
+        # so this test avoids claiming them for sim use.
+        if hnf_mode == False:
+            gpio.setup(pin_gpio_LED1, gpio.IN, pull_up_down=gpio.PUD_UP)
+            gpio.setup(pin_gpio_LED2, gpio.IN, pull_up_down=gpio.PUD_UP)
+            gpio.setup(pin_gpio_LED3, gpio.IN, pull_up_down=gpio.PUD_UP)
+
         gpio.setup(pin_gpio_LED4, gpio.IN, pull_up_down=gpio.PUD_UP)
         gpio.setup(pin_gpio_isKey, gpio.IN, pull_up_down=gpio.PUD_UP)
         self.count = 0
@@ -788,16 +901,19 @@ class gpio_switches:
         Result in a bit pattern with LSB for the push button
         and the other four keys, left to right, with 2, 4, 8, and 16.
         Note that setKeys() can virtually set a key
+
+        Hands off LED1, LED2 and LED3 in HNF Demonstrator mode
         """
         res = 0
         if gpio.input(pin_gpio_isKey) == 0:
             res = 1
-        if gpio.input(pin_gpio_LED1) == 0:
-            res += 2
-        if gpio.input(pin_gpio_LED2) == 0:
-            res += 4
-        if gpio.input(pin_gpio_LED3) == 0:
-            res += 8
+        if self.hnf_mode == False:
+            if gpio.input(pin_gpio_LED1) == 0:
+                res += 2
+            if gpio.input(pin_gpio_LED2) == 0:
+                res += 4
+            if gpio.input(pin_gpio_LED3) == 0:
+                res += 8
         if gpio.input(pin_gpio_LED4) == 0:
             res += 16
         return res
@@ -805,9 +921,15 @@ class gpio_switches:
     def setKey(self, n, b):
         """
             [from Rainer] Set virtual key (i.e. the LED) on (1) or off (0)
+            n indicates which LED we're setting; ignore zero, use 1-4.
+            b says whether it should be set to zero or one
+
+            In HNF Demonstrator mode, we keep hands-off LED1 and LED2
         """
         if n == 0:
             return  # ignore key 0
+        if self.hnf_mode and (n == 1 or n == 2 or n == 3):
+            return  # ignore LED 1 and 2 if it's the HNF Demonstrator
         LEDs = [pin_gpio_LED1, pin_gpio_LED2, pin_gpio_LED3, pin_gpio_LED4]
         led = LEDs[n - 1]
         if b == 0:
@@ -1312,6 +1434,7 @@ class Is31:
         self.is31.init_IS31()
         if MwwPanelDebug: self.log.info("set brightness")
         self.is31.set_brightness(brightness)
+        #  self.hnf_hardware_present = hnf_hardware_present
 
         self.is31.selectFrame(0)   # do this once, so it doesn't have to be done with each write of the LEDs
         self.is31.write_16bit_led_rows(0, [0, 0, 0, 0, 0, 0, 0, 0, 0])  # clear all the LEDs
@@ -1649,7 +1772,7 @@ PassCount = 0
 
 def main():
     global PassCount, Verbose
-    global RdB, WhB, BlB, u1_brightness, u2_brightness, u5_brightness
+    global RdB, WhB, BlB
 
     parser = argparse.ArgumentParser(description='Diagnostic for MicroWhirlwind PCB')
     parser.add_argument("-v", "--Verbose", help="Print lots of chatter", action="store_true")
@@ -1672,6 +1795,15 @@ def main():
     parser.add_argument("-m", "--MicroWhirlwind", help="Test microWW drivers", action="store_true")
 
     args = parser.parse_args()
+
+    # This array of LED brightness [was] global so it can be called by the diagnostic as well as operational code
+                     #  MAR                     MDR                 ACC                  BR
+    u1_brightness = [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + \
+                    [WhB]*8  + [RdB] + [WhB] + [RdB] + [WhB] + [RdB]*4   # IND + SAM + run/stop
+    u2_brightness = [BlB]*192
+                    #  PC                     FF3                 FF3                  unused
+    u5_brightness = [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + [RdB]*16 + [WhB]*16 + \
+                    [WhB]*16   # unused
 
     tests = 0
     stop = False

@@ -1,0 +1,7 @@
+#!/bin/sh
+# run wwsim in HNF mode on micro-whirlwind
+
+while true ; do
+  wwsim --HnfP --Quick -m ${WWROOT}/Code-Samples/NewCode/Rocket/rocket.acore --CRTgeo 500x500+1000+20 --HnfRestart 60
+  echo restart at `date`
+done

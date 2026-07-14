@@ -24,8 +24,9 @@ from micro_whirlwind import PanelMicroWWClass
 import hnf_dispatcher
 import re
 
-
+#
 # ###########################################
+
 
 class DefaultColors:
     on_color = "dodger blue"
@@ -545,7 +546,8 @@ class CPUControlClass:
             self.dispatch[buttons_def[i]] = pb
             xi += x_step
 
-    def test_for_hit(self, x, y, cb):
+    def test_for_hit(self, x, y, cb, alarm_state=0):
+        alarm_clear = False
         for cbl in self.control:
             hit = cbl.test_for_hit(x, y)
             if hit:
@@ -554,7 +556,9 @@ class CPUControlClass:
                 cpu_control_switches = {"PC Preset": self.panel.pc_toggle_sw.read_button_vector()}
                 for sw in ("Stop on CK", "Stop on SI-1", "Stop on Addr"):
                     cpu_control_switches[sw] = self.dispatch[sw].button_object.read_toggle()
-                self.sim_state_machine(cbl.switch_name, cb, cpu_control_switches)
+                alarm_clear |= self.sim_state_machine(cbl.switch_name, cb,
+                                                      cpu_control_switches, alarm_state=alarm_state)
+        return alarm_clear
 
     # this small routine manages local interactions in the buttons and lights
     def local_state_machine(self, cbl):
@@ -567,8 +571,7 @@ class CPUControlClass:
 
     def set_cpu_state_lamps(self, cb, sim_state, alarm_state):
         run = sim_state != cb.SIM_STATE_STOP
-        if alarm_state:     # Zero is No Alarm
-            self.dispatch["Clear Alarm"].lamp_object.set_lamp(True)
+        self.dispatch["Clear Alarm"].lamp_object.set_lamp(alarm_state)
         self.dispatch["Restart"].lamp_object.set_lamp(run)
         self.dispatch["Stop"].lamp_object.set_lamp(~run)
 
@@ -685,6 +688,8 @@ class PanelXwinClass:
     # whether the Exit box was clicked or not.
     # As a side effect, the simulator run state in cb is updated
     def update_panel(self, cb, bank, alarm_state=0, standalone=False, init_PC=None):
+        quit = False
+        alarm_clear = False
         if not standalone:
             cpu = self.cb.cpu
             self.cpu_reg_acc.write_cpu_register(cpu._AC)
@@ -717,7 +722,7 @@ class PanelXwinClass:
             for ff in self.ffreg:
                 ff.test_for_ff_hit(pt[0].x, pt[0].y)
 
-            self.cpu_control.test_for_hit(pt[0].x, pt[0].y, cb)
+            alarm_clear = self.cpu_control.test_for_hit(pt[0].x, pt[0].y, cb, alarm_state=alarm_state)
 
             bn = self.pc_toggle_sw.test_button_vector_hit(pt[0].x, pt[0].y)
             if bn is not None:
@@ -727,7 +732,7 @@ class PanelXwinClass:
                 self.bank_toggle_sw.flip_a_button(bn)
             # This test checks for hit of the Red X in the top right corner
             if pt[0].x > self.PANEL_X_SIZE - self.XBOX and pt[0].y < self.XBOX:
-                return False
+                return (True, alarm_clear)
         if self.cpu_control.dispatch["Stop on Addr"].button_object.read_toggle():
 #        if self.cpu_control.dispatch["StopOnAddr"][0]():
             cb.cpu.stop_on_address = self.pc_toggle_sw.read_button_vector()  # if activated, set the address for the cpu to watch
@@ -735,7 +740,7 @@ class PanelXwinClass:
         # update all the blinkenlights
         if not standalone:
             self.cpu_control.set_cpu_state_lamps(cb, cb.sim_state, alarm_state)
-        return True
+        return (quit, alarm_clear)
 
     # read a register from the switches and lights panel.
     # It would normally be called with a string giving the name.  Inside the simulator
@@ -795,6 +800,16 @@ class PanelXwinClass:
                 fn[i](1)        # "push" the activate button
                 lamp[i](True)   # turn on the light associated with the button
 
+
+    # this entry point is for accessing/reading/writing the Alarm LED
+    # It will set the value if write_val is not None, and always returns the final value,
+    def cpu_status_leds(self, which_indicator, write_val=None):
+        if which_indicator == "Alarm":
+            if write_val is not None:
+                self.cpu_control.dispatch["Clear Alarm"].lamp_object.set_lamp(write_val)
+
+
+
     def reset_ff_registers(self, function, log=None, info_str=''):
         for ff in self.ffreg:
             ff.reset_register(function, log, info_str)
@@ -835,9 +850,16 @@ def compensate_justification(txt, font=9):
 #  The arg hnf-Program_dispatcher turns on a mode for use with control panels to allow the bottom three
 # bits of the LMIR to be used to dispatch the simulator to run a different Demo program.  This has the
 # side effect of disconnecting the control panel MIR buttons from the LMIR/MIR presets in .acore files
+#
+# Modified May 22 2026 to add a config-switch for Jurgen's HNF demonstrator.   In this pass, the switch only
+# changes the way the mouse works, so that a mouse-click is only recognized if the trigger on the touch-
+# sensitive "ligh gun" is pulled.
+#  Other "hardware" changes are configured by HNF Dispatch, but those only change the behavior of some
+# of the LEDs (although I should probably convert them to use this config-switch as well).
 class PanelClass:
     def __init__(self, cb, panel_xwin=False, panel_blinken=False, panel_microWW=False,
-                 left_init=0, right_init=0, hnf_program_dispatcher_mode=0, tty_name=None):
+                 left_init=0, right_init=0, hnf_program_dispatcher_mode=0,
+                 hnf_hardware_present = 0, hnf_idle_timeout = 0, hnf_restart_timer=0, tty_name=None):
         self.cb = cb
         self.ff_preset_list = []
         self.switch_list = []
@@ -845,8 +867,11 @@ class PanelClass:
         self.panel_blinken = panel_blinken
         self.panel_mWW = panel_microWW
         self.hnf_program_dispatcher_mode = hnf_program_dispatcher_mode
+        # we blink an LED for single-step and when the WW program is seeking light gun input; this sets the time constant
+        self.BLINK_TIMEOUT = 5
         if hnf_program_dispatcher_mode:
-            self.hnf_program_dispatcher = hnf_dispatcher.HnfDispatcherClass(cb, tty_name)
+            self.hnf_program_dispatcher = hnf_dispatcher.HnfDispatcherClass(cb, tty_name,
+                                                hnf_idle_timeout=hnf_idle_timeout, hnf_restart_timer=hnf_restart_timer)
         else:
             self.hnf_program_dispatcher = None
 
@@ -855,7 +880,10 @@ class PanelClass:
             # self.ff_preset_list = self.panel_xwin.get_ff_preset_list()  # obtain a list of all the FF presets on this panel
             self.switch_list = self.panel_xwin.get_switch_list(omit_MIR=hnf_program_dispatcher_mode != 0)  # obtain a list of all the switches on this panel
         if panel_microWW:
-            self.panel_mWW = PanelMicroWWClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
+            self.panel_mWW = PanelMicroWWClass(cb, sim_state_machine_arg=self.sim_state_machine,
+                                left_init=0, right_init=0,
+                                hnf_mode=hnf_program_dispatcher_mode, hnf_hardware_present = hnf_hardware_present,
+                                blink_timeout = self.BLINK_TIMEOUT)
             # self.ff_preset_list = self.panel_mWW.get_ff_preset_list()  # obtain a list of all the FF presets on this panel
             self.switch_list = self.panel_mWW.get_switch_list()  # obtain a list of all the switches on this panel
             # normally we default to RMIR, but for hnf mode, we need to switch the defuault to LMIR
@@ -864,23 +892,25 @@ class PanelClass:
         if panel_blinken:
             self.panel_blinken = BlinkenLightsClass(cb, sim_state_machine_arg=self.sim_state_machine, left_init=0, right_init=0)
 
+        self.tmp_val = 0  # temporary value to debug a switch LED
+
+
     # Check the mouse, and update any buttons.  The only return from this call should be True or False to say
     # whether the Exit box was clicked or not.
     # As a side effect, the simulator run state in cb is updated
     # Return True for normal operation, False if the user indicates that the sim should be halted
     def update_panel(self, cb, bank, alarm_state=0, standalone=False, init_PC=None):
-        ret_xwin = True
-        ret_blinken = True
-        ret_mWW = True
+        quit = False
+        alarm_clear = False
         if self.panel_xwin:
-            ret_xwin = self.panel_xwin.update_panel(cb, bank, alarm_state=alarm_state, standalone=False, init_PC=init_PC)
-        if self.panel_blinken:
-            ret_blinken = self.panel_blinken.update_panel(cb, bank, alarm_state=0, standalone=False, init_PC=init_PC)
+            (quit, alarm_clear) = self.panel_xwin.update_panel(cb, bank, alarm_state=alarm_state, standalone=False, init_PC=init_PC)
+            if quit:
+                return (quit,  alarm_clear)
         if self.panel_mWW:
-            ret_mWW = self.panel_mWW.update_panel(cb, bank, alarm_state=alarm_state, standalone=False, init_PC=init_PC)
-        if ret_xwin == False or ret_blinken == False or ret_mWW == False:
-            return False
-        return True
+            (quit, alarm_clear) = self.panel_mWW.update_panel(cb, bank, alarm_state=alarm_state, standalone=False, init_PC=init_PC)
+            if quit:
+                return (quit,  alarm_clear)
+        return (quit, alarm_clear)
 
 #    def hnf_program_dispatch(self, cb):
 #        print(" LeftInterventionReg = %d" %
@@ -926,6 +956,16 @@ class PanelClass:
             return self.panel_mWW.test_for_MIR_button_press()
 
 
+    # this entry point is for accessing/reading/writing the Alarm LED
+    # It will set the value if write_val is not None, and always returns the final value,
+    def cpu_status_leds(self, which_indicator, write_val=None):
+        if self.panel_xwin:
+            return self.panel_xwin.cpu_status_leds(which_indicator, write_val=write_val)
+        else:
+            return self.panel_mWW.cpu_status_leds(which_indicator, write_val=write_val)
+
+
+
     def reset_ff_registers(self, function, log=None, info_str=''):
         if self.panel_blinken:
             self.panel_blinken.reset_ff_registers(function, log=None, info_str='')
@@ -935,43 +975,54 @@ class PanelClass:
             self.panel_mWW.reset_ff_registers(function, log=None, info_str='')
 
     # This state machine is used to control the flow of execution for the simulator
-    def sim_state_machine(self, switch_name, cb, cpu_control_switches=None, set_scope_selector_leds=None):
+    def sim_state_machine(self, switch_name, cb, cpu_control_switches=None,
+                          set_scope_selector_leds=None, alarm_state=0):
+        alarm_clear_flag_false = False
+        alarm_clear_flag_true = True
         sw = switch_name
         if sw == "Stop":
             cb.sim_state = cb.SIM_STATE_STOP
+            if (alarm_state == cb.OVERFLOW_ALARM or alarm_state == cb.DIVIDE_ALARM) \
+                and cb.panel and self.hnf_program_dispatcher_mode:
+                    cb.panel.hnf_program_dispatcher.zero_remaining_time()
             # self.dispatch["Stop"].lamp_object.set_lamp(True)
             # self.dispatch["Start at 40"].lamp_object.set_lamp(False)
-            return
+            return alarm_clear_flag_false
 
         if sw == "Restart":   # don't mess with the PC, just pick up from the last address
             cb.sim_state = cb.SIM_STATE_RUN
             cb.first_instruction_after_start = True
-            return
+            return alarm_clear_flag_true
 
         if sw == "Start at 40":
             cb.sim_state = cb.SIM_STATE_RUN
             cb.first_instruction_after_start = True
             cb.cpu.PC = 0o40
-            return
+            return alarm_clear_flag_true
 
         if sw == "Start Over":  # start executing at the address in the PC switch register
             cb.sim_state = cb.SIM_STATE_RUN
             cb.first_instruction_after_start = True
             # cb.cpu.PC = self.panel.pc_toggle_sw.read_button_vector()
             cb.cpu.PC = cpu_control_switches["PC Preset"]
-            return
+            return alarm_clear_flag_true
 
         if sw == "Order-by-Order":  # don't mess with the PC, just pick up from the last address
             cb.sim_state = cb.SIM_STATE_SINGLE_STEP
             cb.first_instruction_after_start = True
-            return
+            if self.panel_mWW:
+                # Blink an LED light under the single_step switch
+                # The LED is actuall blinked on when it sees the timer set to this specific timeout value
+                #  i.e., don't change self.BLINK_TIMOUT; go look for the original definition!
+                self.panel_mWW.blink_single_step = self.BLINK_TIMEOUT
+            return alarm_clear_flag_false
 
         if sw == "Examine":  # don't mess with the PC, just pick up from the last address
             if cb.sim_state == cb.SIM_STATE_RUN:
                 cb.log.warn("Examine button may only be used when the machine is stopped")
             addr = cpu_control_switches["PC Preset"]
             cb.cpu.cm.rd(addr)   # simply reading the register has the side effect of updating MAR and PAR/MDR
-            return
+            return  alarm_clear_flag_false
 
         if sw == "Read In":  # Start all over again from reading in the "tape"
             # this block pops up a dialog, initialized with the current file name
@@ -980,52 +1031,55 @@ class PanelClass:
             filename = popup.get_text_entry("Filename: ", cb.CoreFileName)
             cb.log.info("ReadIn Filename:%s" % filename)
             cb.CoreFileName = filename
-            return
+            return  alarm_clear_flag_true
 
         if sw == "Stop on Addr":  # Flip the selector for the D-Scope
             if cpu_control_switches[sw]:
                 cb.cpu.stop_on_address = cpu_control_switches["PC Preset"]  # if activated, set the address for the cpu to watch
             else:
                 cb.cpu.stop_on_address = None  # if inactivated, turn it off
-            return
+            return alarm_clear_flag_false
 
-        if sw == "Stop on SI-1":  # Flip the selector for the D-Scope
-            return
+        if sw == "Stop on SI-1":  # Flip the selector for the Stop on SI-1
+            # handled in the local state machine
+            return alarm_clear_flag_false
 
         if sw == "Stop on CK":  # Flip the selector for the D-Scope
-            return
+            # handled in the local state machine
+            return alarm_clear_flag_false
 
         if sw == "D-Scope":  # Flip the selector for the D-Scope
             cb.which_scope ^= 2   # D-Scope bit
             set_scope_selector_leds(cb.which_scope)
-            return
+            return alarm_clear_flag_false
 
         if sw == "F-Scope":  # Flip the selector for the D-Scope
             cb.which_scope ^= 1   # F-Scope bit
             set_scope_selector_leds(cb.which_scope)
-            return
+            return alarm_clear_flag_false
 
-        if sw == "Clear":   # clear the Alarm LED
-            print("Unimplemented Alarm Clear")
-            return
+        if sw == "Clear Alarm":   # clear the Alarm LED
+            if cb.panel and self.hnf_program_dispatcher_mode:
+                cb.panel.hnf_program_dispatcher.zero_remaining_time()
+            return alarm_clear_flag_true
 
         if sw == "Rotary Up":   # turning the Rotary Encoder knob right triggers this action
             if cb.dbwgt:
                 cb.dbwgt.increment_addr_location(direction_up=True)
-            return
+            return alarm_clear_flag_false
 
         if sw == "Rotary Down":   # turning the Rotary Encoder knob left triggers this action
             if cb.dbwgt:
                 cb.dbwgt.increment_addr_location(direction_up=False)
-            return
+            return alarm_clear_flag_false
 
         if sw == "Rotary Push":   # pressing the Rotary Encoder knob triggers this action
             if cb.dbwgt:
                 cb.dbwgt.select_next_widget(direction_up=True)
-            return
+            return alarm_clear_flag_false
 
         print("Unhandled Button in control_panel:PanelClass %s" % sw)
-        return
+        return alarm_clear_flag_false
 
 # ########################## Dialog Popup ########################
 # This small class makes a popup window to collect a filename for the ReadIn button

@@ -54,10 +54,14 @@ Programs = [
     WwAppClass("Nim", dir="Code-Samples/Nim", exec="nim-fb.acore", is_WW=True, args=["--CrtFade", "3"]),
     WwAppClass("Number Display", dir="Code-Samples/Number-Display", exec="number-display-annotated.acore", is_WW=True),
     WwAppClass("Air Defense", dir="Code-Samples/Track-While-Scan-D-Israel", exec="annotated-track-while-scan.acore", 
-               is_WW=True, args=["-D", "-r", "--CrtF", "15", "--NoToggl", "--NoAlarmStop"]),
+               is_WW=True, args=["-D", "--NoToggl"]),
     WwAppClass("Vector Clock", dir="Code-Samples/Vector-Clock", exec="vector-clock.acore", is_WW=True),
     WwAppClass("Lorenz Attractor", dir="Code-Samples/NewCode/Lorenz", exec="lorenz.acore", is_WW=True),
     WwAppClass("Rocket", dir="Py/Shell", exec="vecIF.py", is_WW=False),
+
+    WwAppClass("Ax-Squared", dir="Code-Samples/Summary-Report-20-Test-Programs", exec="Ax-squared-plotter-demo.acore", is_WW=True),
+    WwAppClass("x-Squared-Cubed", dir="Code-Samples/Summary-Report-20-Test-Programs", exec="x-squared-cubed-grapher.acore", is_WW=True),
+
     WwAppClass("77 to Exit", exec=None ),  # Exit Hack
 ]
 

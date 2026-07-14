@@ -43,6 +43,7 @@ import math
 import traceback
 import signal
 from wwcpu import CpuClass
+import micro_whirlwind
 from graphics import GraphicsError
 
 from typing import List, Dict, Tuple, Sequence, Union, Any
@@ -266,7 +267,6 @@ def main_run_sim(args, cb, cpu):
         cb.crt_fade_delay_param = args.CrtFadeDelay
         cb.log.info("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
     """
-
 #    CoreMem = wwinfra.CorememClass(cb)
 #    cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
 #    cb.cpu = cpu
@@ -290,7 +290,7 @@ def main_run_sim(args, cb, cpu):
         core_dump_file_name = args.DumpCoreToFile
 
     if args.RestoreCoreFromFile:
-        (a, b, c, d, e, dbwgt, sim_param_dict) = CoreMem.read_core(args.RestoreCoreFromFile, cpu, cb)
+        (a, b, c, d, e, f, dbwgt) = CoreMem.read_core(args.RestoreCoreFromFile, cpu, cb)
     if args.DrumStateFile:
         cpu.drum.restore_drum_state(args.DrumStateFile)
 
@@ -301,13 +301,19 @@ def main_run_sim(args, cb, cpu):
         CycleDelayTime = ns.instruction_cycle_delay
         cb.crt_fade_delay_param = ns.crt_fade_delay
 
-    (cpu.SymTab, cpu.SymToAddrTab, JumpTo, WWfile, WWtapeID, dbwgt_list, sim_param_dict) = \
+    (cpu.SymTab, cpu.SymToAddrTab, cpu.ExecTab, JumpTo, WWfile, WWtapeID, dbwgt_list) = \
         CoreMem.read_core(cb.CoreFileName, cpu, cb)
     # LAS Test print for sim params
     # print ("LAS", sim_param_dict)
-    cpu.set_isa(CoreMem.metadata["isa"])
-    if cpu.isa_1950 == False and args.Radar:
+    cpu.set_isa(cb.sim_params.get_simparam("isa"))
+    if cpu.isa_1950 == False and cb.sim_params.get_simparam("Radar"):
         cb.log.fatal("Radar device can only be used with 1950 ISA")
+
+    if f := cb.sim_params.get_simparam("CrtFadeDelay"):
+        cb.crt_fade_delay_param = f
+        cb.log.warn("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
+
+    no_alarm_stop = cb.sim_params.get_simparam("NoAlarmStop") # cache this parameter
 
     if cb.panel and cb.panel.hnf_program_dispatcher:
         cb.panel.hnf_program_dispatcher.apply_switch_presets(cpu)
@@ -315,7 +321,17 @@ def main_run_sim(args, cb, cpu):
     if args.FlowGraph:
         flowgraph = ww_flow_graph.FlowGraph (args.FlowGraph, args.FlowGraphOutFile, args.FlowGraphOutDir, cb)
 
-    if args.Radar:
+    # There can be a source file that contains subroutines that might be called by exec statements specific
+    #   to the particular project under simulation.  If the file exists in the current working dir, import it.
+    if os.path.exists("project_exec.py"):
+        sys.path.append('.')
+        import project_exec
+        print("imported project_exec.py")
+        cb.project_exec = project_exec
+        cpu.re_fetch_project_exec()
+
+
+    if cb.sim_params.get_simparam("Radar"):
                                         # heading is given as degrees from North, counting up clockwise
                                         # name   start x/y   heading  mph  auto-click-time Target-or-Interceptor
 
@@ -328,12 +344,12 @@ def main_run_sim(args, cb, cpu):
         #                ]
         # Jan 23, 2026 - scale the distances down so none are larger than 64 miles to avoid an overflow problem
                                         # T1 was 24, -60, T2 was -42, -60
-        target_list = [radar_class.AircraftClass('T1',  50.0,  -20.0, 350.0, 200.0, 0, 'T'),  # wait x revolutions
-                       radar_class.AircraftClass('I1',  60.0,  -12.0, 350.0, 250.0, 2, 'I'), # wait x revolutions
+        target_list = [radar_class.AircraftClass('T1',  50.0,  -40.0, 350.0, 200.0, 0, 'T'),  # wait x revolutions
+                       radar_class.AircraftClass('I1',  60.0,  -12.0, 30.0, 250.0, 2, 'I'), # wait x revolutions
                        radar_class.AircraftClass('T2',  -42.0, -60.0,  17.7, 200.0, 0,''),  # add in a stray aircraft
                        radar_class.AircraftClass('T3', -60.0,  -12.0,  33.0, 200.0, 0, ''),  # add in a stray aircraft
                        ]
-        radar = radar_class.RadarClass(target_list, cb, cpu, args.AutoClick)
+        radar = radar_class.RadarClass(target_list, cb, cpu, cb.sim_params.get_simparam("AutoClick"))
         # register a callback for anything that accesses Register 0o27 (that's the Light Gun)
         CoreMem.add_tsr_callback(cb, 0o27, radar.mouse_check_callback)
         cb.radar = radar   # put a link to the radar class in cb, so we can use it to decide what kind of axis to draw
@@ -355,9 +371,6 @@ def main_run_sim(args, cb, cpu):
         cpu.PC = int(args.JumpTo, 8)
     print("start at 0o%o" % cpu.PC)
 
-    #if project_exec_init is not None:
-    #    project_exec_init(args.AutoClick)
-
     start_time = time.time()        # use this to compute the total run time for the sim
     checkpoint_time = start_time    # use this to calculate instructions-per-second every X-zillion instructions
     #  Here (soon!) Commences The Main Loop (ok, maybe not quite here, but soon...)
@@ -371,11 +384,8 @@ def main_run_sim(args, cb, cpu):
 
     alarm_state = cb.NO_ALARM
     if cb.panel:
-        cb.panel.update_panel(cb, 0, init_PC=cpu.PC, alarm_state=alarm_state)  # I don't think we can miss a mouse clicks on this call
-
-    # this was here to debug a panel/no-panel inconsistency
-    # print("Dump Switch Values:")
-    # cpu.cpu_switches.dump_switches()
+        # initialize the panel, ignore any button clicks
+        cb.panel.update_panel(cb, 0, init_PC=cpu.PC, alarm_state=alarm_state)
 
     if cb.record_core_info:
         CoreMem.corememinfo = wwinfra.CoreMemInfo (CoreMem)
@@ -439,12 +449,20 @@ def main_run_sim(args, cb, cpu):
             # When the simulation is not stopped, we do this check below ever n-hundred cycles to keep the
             #  panel overhead in check.
             if cb.sim_state == cb.SIM_STATE_STOP and cb.panel:
-                if cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # just idle here, watching for mouse clicks on the panel
+                # update panel returns True if there's a Quit event, or True if Alarm Clear was activated
+                # Update_panel also may change the sim_state
+                (quit, alarm_clear) = cb.panel.update_panel(cb, 0, alarm_state=alarm_state)  # just idle here, watching for mouse clicks on the panel
+                if quit:
                     alarm_state = cb.QUIT_ALARM
                     break  # bail out of the While True loop if display update says to stop due to Red-X hit
+                if alarm_clear:
+                    alarm_state = cb.NO_ALARM
+                if cb.sim_state != cb.SIM_STATE_STOP:
+                    alarm_state = cb.NO_ALARM
                 if args.HnfProgramDispatcher:
                     if cb.panel.hnf_program_dispatcher.test_for_mir_change(cb):
                         alarm_state = cb.DISPATCHER_ALARM
+                        cb.panel.hnf_program_dispatcher.dispatch_to_core(cb)
                         break  # bail out if there was a timeouot
                 time.sleep(0.1)
                 continue
@@ -471,8 +489,12 @@ def main_run_sim(args, cb, cpu):
             if (sim_cycle % update_rate == 0) or args.SynchronousVideo or CycleDelayTime:
                 exit_alarm = cb.NO_ALARM
                 if cb.panel:
-                    if cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # watch for mouse clicks on the panel
+                    (quit, alarm_clear) = cb.panel.update_panel(cb, 0, alarm_state=alarm_state)  # watch for mouse clicks on the panel
+                    if quit:  # watch for mouse clicks on the panel
                         exit_alarm = cb.QUIT_ALARM
+                    if alarm_clear:
+                        alarm_state = cb.NO_ALARM
+
                     if args.HnfProgramDispatcher:
                         if cb.panel.hnf_program_dispatcher.test_for_mir_change(cb):
                             alarm_state = cb.DISPATCHER_ALARM
@@ -488,7 +510,7 @@ def main_run_sim(args, cb, cpu):
             if CycleDelayTime:
                 time.sleep(CycleDelayTime/1000)  # Sleep() takes time in fractional seconds
 
-            if args.Radar and (sim_cycle % 30 == 0):
+            if cb.sim_params.get_simparam("Radar") and (sim_cycle % 30 == 0):
                 # the radar should return something every 20 msec, about every thousand instructions.
                 # This is **like totally forever**, and I'm not taking it any more!
                 # So I'll snoop the radar mailbox.  When the code picks up a new value, it sets the mailbox
@@ -519,17 +541,20 @@ def main_run_sim(args, cb, cpu):
                 if cb.panel:
                     if alarm_state == cb.QUIT_ALARM:   # they said Quit, we'll quit.
                         break
-                    if not args.NoAlarmStop:  # here's the state where we hit an alarm, but it's not QUIT
+                    if not no_alarm_stop:  # here's the state where we hit an alarm, but it's not QUIT
                         cb.sim_state = cb.SIM_STATE_STOP
-#                if cb.panel and cb.panel.update_panel(cb, 0, alarm_state=alarm_state) == False:  # watch for mouse clicks on the panel
-#                    break
                 if (alarm_state == cb.DISPATCHER_ALARM):
                     cb.panel.hnf_program_dispatcher.dispatch_to_core(cb)
                     break
+                elif cb.panel and (alarm_state == cb.OVERFLOW_ALARM or alarm_state == cb.DIVIDE_ALARM or
+                                   alarm_state == cb.IO_ERROR_ALARM or alarm_state == cb.UNIMPLEMENTED_ALARM):
+                    if cb.panel and cb.panel.hnf_program_dispatcher:  # send a code to the Info Screen if HNF
+                        cb.panel.hnf_program_dispatcher.switch_to_alarm_state()
+                    continue  # switch to the Stop State spin loop
                 else:
                     # the normal case with cmd-line wwsim is to stop on an alarm; if the command line flag says not to, we'll try to keep going
                     # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
-                    if not args.NoAlarmStop or \
+                    if not no_alarm_stop or \
                             alarm_state == cb.QUIT_ALARM  or alarm_state == cb.HALT_ALARM or \
                             alarm_state == cb.READIN_ALARM or alarm_state == cb.DISPATCHER_ALARM:
                         break
@@ -583,7 +608,7 @@ def main_run_sim(args, cb, cpu):
                                  1000000.0 * float(wall_clock_time) / float(sim_cycle) if sim_cycle != 0 else 0,
                                  cpu.accum_ww_inst_time_usec))
     if wall_clock_time > 2.0 and sim_cycle > 10:  # don't do the timing calculation if the run was really short
-        if args.Radar:
+        if cb.sim_params.get_simparam("Radar"):
             print("    elapsed radar time = %4.1f minutes (%4.1f revolutions)" %
                   (radar.elapsed_time / 60.0, radar.antenna_revolutions))
 
@@ -597,6 +622,10 @@ def main_run_sim(args, cb, cpu):
     # del CoreMem     # Not sure if this is needed, but I seem to have explicitly
                     # remove this instance to make it completely go away in HNF Mode
     # LAS 10/5/25 Removed log output from these
+
+    if radar:       # delete the Radar class to erase the screen graticule and free some space
+        cb.radar = None
+        del(radar)
 
     for d in cpu.IODeviceList:
         if d.name == "Flexowriter":
@@ -613,6 +642,7 @@ def main_run_sim(args, cb, cpu):
                 cb.log.info ("Begin Flexout:\n" + logstr)
                 cb.log.info ("End Flexout")
                 """
+                d.clear_saved_output()
 
         if d.name == "Teletype":
             s = d.get_saved_output()
@@ -658,7 +688,7 @@ def main():
                         action="store_true")
     parser.add_argument("-c", "--CycleLimit", help="Specify how many instructions to run (zero->'forever')", type=int)
     parser.add_argument("--CycleDelayTime", help="Specify how many msec delay to insert after each instruction", type=int)
-    parser.add_argument("-r", "--Radar", help="Incorporate Radar Data Source", action="store_true")
+    # parser.add_argument("-r", "--Radar", help="Incorporate Radar Data Source", action="store_true")
     parser.add_argument("--AutoClick", help="Execute pre-programmed mouse clicks during simulation", action="store_true")
     parser.add_argument("--AnalogScope", help="Display graphical output on an analog CRT", action="store_true")
     parser.add_argument("--RemoteScope", help="Display graphical output on the remote scope server (default localhost)", action="store_true")
@@ -702,6 +732,12 @@ def main():
                         help="Cycle through states endlessly for museum display", action="store_true")
     parser.add_argument("--HnfProgramDispatcher",
                         help="Activate the special-purpose Demo Program Dispatcher for use at HNF", action="store_true")
+    parser.add_argument("--HnfIdleTimeout",
+                        help="Set the Idle/Inactivity timer in HNF mode, measured in seconds", type=int)
+    parser.add_argument("--HnfHardwarePresent",
+                        help="Activate the special-purpose Demo Program hardware for use at HNF", action="store_true")
+    parser.add_argument("--HnfRestartTime",
+                        help="Cause the simulator to exit to allow a restart after a timeout, specified in minutes, for use at HNF", type=int)
     parser.add_argument("-d", "--Debugger",
                         help="Start simulation under the debugger", action="store_true")
     parser.add_argument("--ZeroizeCore",
@@ -710,6 +746,11 @@ def main():
                         help="Produce a memory map (.map) file of the access types during this run", action="store_true")
     parser.add_argument("--TTYname",
                         help="Configure TTY name to access external media controller", type=str)
+    parser.add_argument("--LEDbrightness",
+                        help="Configure MicroWhirlwind LED intensity as three ints; r,w,b", type=str)
+    parser.add_argument("--CRTgeometry",
+                        help="Configure x-window screen geometry as <width>x<height>{+-}<xoffset>{+-}<yoffset>", type=str)
+
 
     args = parser.parse_args()
 
@@ -718,26 +759,37 @@ def main():
     quiet = not args.Verbose 
     
     # instantiate the class full of constants
-    cb = wwinfra.ConstWWbitClass (corefile=args.corefile, get_screen_size = True, args = args)
+    cb = wwinfra.ConstWWbitClass (corefile=args.corefile, get_screen_size = True, args = args,
+                                  hnf_hardware_present=args.HnfHardwarePresent)
     wwinfra.theConstWWbitClass = cb
     cb.log = wwinfra.LogFactory().getLog (quiet=quiet, no_warn=args.NoWarnings)
 
     # Many args are just slightly transformed and stored in the Universal Bit Bucket 'cb'
 
     if args.AutoClick:
-        cb.argAutoClick = True
-
+        #cb.argAutoClick = True # deprecated May 2026
+        cb.sim_params.set_simparam_override("AutoClick", True)
     if args.ZeroizeCore:
         cb.ZeroizeCore = True
+
+    if args.LEDbrightness:
+        micro_whirlwind.parse_and_set_led_bright_arg(cb, args.LEDbrightness)
 
     if args.BlinkenLights and BlinkenLightsModule == False:
         cb.log.warn("No BlinkenLights Hardware available")
 
     if args.Panel or args.BlinkenLights or args.MicroWhirlwind:
         cb.panel = control_panel.PanelClass(cb, args.Panel, args.BlinkenLights, args.MicroWhirlwind,
-                                            hnf_program_dispatcher_mode=args.HnfProgramDispatcher, tty_name=args.TTYname)
+                                            hnf_program_dispatcher_mode=args.HnfProgramDispatcher,
+                                            hnf_hardware_present=args.HnfHardwarePresent,
+                                            hnf_restart_timer=args.HnfRestartTime,
+                                            hnf_idle_timeout = args.HnfIdleTimeout, tty_name=args.TTYname)
         if args.HnfProgramDispatcher and not args.QuickStart:
             cb.log.fatal("HNF Mode ought to work without --Quickstart, but it doesn't (yet)")
+
+    if args.CRTgeometry:
+        cb.xWin_geometry = wwinfra.parse_xwin_geometry(cb, args.CRTgeometry)
+        print(str(cb.xWin_geometry))
 
     # WW programs may read paper tape.  If the simulator is invoked specifically with a
     # name for the file containing paper tape bytes, use it.  If not, try taking the name
@@ -768,12 +820,16 @@ def main():
         
     if args.NoXWin:
         cb.use_x_win = False
-    if args.xWinSize:
-        cb.xWin_size_arg = args.xWinSize
+#    if args.xWinSize:
+#        cb.xWin_size_arg = args.xWinSize
 
     if args.CrtFadeDelay:
-        cb.crt_fade_delay_param = args.CrtFadeDelay
-        cb.log.info("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
+        cb.sim_params.set_simparam_override("CrtFadeDelay", args.CrtFadeDelay)
+        # cb.crt_fade_delay_param = args.CrtFadeDelay
+        cb.log.info("CRT Fade Delay set to %d" % args.CrtFadeDelay)
+
+    if args.NoAlarmStop:
+        cb.sim_params.set_simparam_override("NoAlarmStop", True)
 
     cb.TraceQuiet = quiet
 

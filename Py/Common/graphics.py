@@ -212,6 +212,12 @@ class GraphWin(tk.Canvas):
         assert type(title) == type(""), "Title must be a string"
         master = tk.Toplevel(_root)
         master.protocol("WM_DELETE_WINDOW", self.close)
+
+        # One line added for Jurgen to make the HNF initial canvas black, instead of getting
+        # a flash of white before the caller changes to black.
+        # Added Jun 28, 2026 
+        master.config(bg="black")
+
         tk.Canvas.__init__(self, master, width=width, height=height,
                            highlightthickness=0, bd=0)
         self.master.title(title)

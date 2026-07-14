@@ -9,7 +9,7 @@ cd ~
 cp .basrc .vimrc  .viminfo  .nanorc .bash_profile .gitconfig  $GPATH/pi-kit
 
 cd ~/bin
-cp auto-ping  no-blank  pinger.sh  run-ww  wwasm  ww-shell  wwsim  $GPATH/pi-kit/bin
+cp auto-ping  no-blank  pinger.sh  run-ww  run-ww-hnf wwasm  ww-shell  wwsim  $GPATH/pi-kit/bin
 
 cd
 cp -r  ~/config-ww $GPATH/pi-kit/

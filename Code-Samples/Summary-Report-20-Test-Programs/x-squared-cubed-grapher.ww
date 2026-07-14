@@ -12,6 +12,8 @@
         ;(FF register) 10
         ; (FF register) 11
 
+	.isa "isa1950"
+	.simparam NoAlarmStop = 1
 
         .org 2
 ff9:    .word 0  

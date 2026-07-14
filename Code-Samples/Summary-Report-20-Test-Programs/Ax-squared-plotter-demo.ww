@@ -57,7 +57,10 @@
         ; 19  0.000000000000000
         ; 20  ca 16
 
-        .ISA 1950
+        .isa "isa1950"
+        .simparam NoAlarmStop = 1
+
+	
         .org 2
 ff21:   .word 1.00000  ; contains 'x'
         .org 5
