@@ -1460,12 +1460,13 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
     symtab = {}
     sym_to_addr_tab = {}
     switch_class = cpu.cpu_switches
+    if cpu.cpu_switches is not None:
+        cpu.cpu_switches.clear_switch_tab() 
     commenttab = cpu.CommentTab  # This is a BUG...  the cpu.CommentTab is not cleared with each read_core invocation...
     exectab = {}
     filedesc = None
     address = 0   # for 'tape' / .ocore files, we don't have addresses, so just start at zero
     cm.restore_toggle_default()
-    cpu.cpu_switches.clear_switch_tab()
     sim_params.reset_simparams()
 
 #    self.SymTab = {}
@@ -1622,7 +1623,7 @@ def read_core_file(cm, filename, cpu, cb, file_contents=None):
     cm.metadata['core_word_count'] = core_word_count
     cm.metadata['file_type'] = file_type
     cm.metadata['isa'] = isa   # return a string with the instruction set to be used
-
+    
     return symtab, sym_to_addr_tab, exectab, jumpto_addr, ww_file, ww_tapeid, screen_debug_widgets
 
 
