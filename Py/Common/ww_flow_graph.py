@@ -18,7 +18,12 @@ import sys
 import os
 import statistics as stat
 from wwinfra import CorememClass
-from wwcpu import CpuClass
+
+# LAS 7/18/26 Commented this out -- can't import wwcpu or we get a circular
+# import, since wwcpu imports ww_flow_graph to get the TraceLogClass. The
+# flowgraph code doesn't need cpu at this time so it's ok. Should we need to
+# import cpu we should hoist the tracelog class out.
+# from wwcpu import CpuClass
 
 CORESIZE: int = 2048
 NBANKS: int = 6
