@@ -980,7 +980,14 @@ literal-digit-seq												Decimal inreger
 	- .simparam to pass parameters to the sim via asm. See Guy's list
       below under .simparam heading.
 
-
+	- TNMOC counting benchmark
+	- Doc update
+	- Doc refine .simparam
+	- Doc the debugger
+	- Doc check for highilghted notes
+	- HNF jolly good!
+	- Cleaned up .isa
+	- Time-reporting issue, esp. with panel
 
 	- C-ish
 	- Get "everything" into git: tape images, images on code, etc.

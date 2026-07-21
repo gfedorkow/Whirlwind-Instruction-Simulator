@@ -1183,29 +1183,19 @@ class AsmDotIsaInst (AsmPseudoOpInst):
     def __init__ (self, *args):
         super().__init__ (*args)
     def passOneOp (self):
-        # Needs to be evaluated in pass one. Literal digits [were] only are allowed
+        # Needs to be evaluated in pass one. 
         # Guy changed the isa operand into a string to avoid ambiguity as to whether 1950 is an int or string
         #   - May 10, 2026
-        digitsExpr: AsmExpr = self.parsedLine.operand
-        if digitsExpr.exprType == AsmExprType.LiteralString:
-            val: AsmExprValue = digitsExpr.evalMain (self.prog.env, self.parsedLine)
-            if val.type == AsmExprValueType.String:
-                d = {"isa1950": self.prog.opCodeTables.op_code_1950, "isa1958": self.prog.opCodeTables.op_code_1958}
-                if val.value in d:
-                    self.prog.curOpcodeTab = d[val.value]
-                else:
-                    errmsg = """unimplemented isa option: %s; pending options:
-                    isa2035: Setting instruction set to MIT WhirlWave Quantum Computer
-                    isa1943: What do you think this is, ENIAC?
-                    isa1871: Sorry, Babbage is no longer with us
-                    isa100bce: Setting instruction set to the Antikythera Mechanism
-                    Hope you and your time machine find your way home
-                    Only "isa1950" or "isa1958" allowed in .isa""" % val.value
-                    self.error (errmsg)
+        val: AsmExprValue = self.parsedLine.operand.evalMain (self.prog.env, self.parsedLine)
+        if val.type == AsmExprValueType.String:
+            d = {"isa1950": self.prog.opCodeTables.op_code_1950, "isa1958": self.prog.opCodeTables.op_code_1958}
+            if val.value in d:
+                self.prog.curOpcodeTab = d[val.value]
             else:
-                self.operandTypeError (val)
+                errmsg = "unimplemented isa option: %s; only \"isa1950\" or \"isa1958\" allowed in .isa" % val.value
+                self.error (errmsg)
         else:
-            self.error ('Only "isa1950" or "isa1958" allowed in .isa')
+            self.operandTypeError (val)
     def passTwoOp (self):
         pass
 
