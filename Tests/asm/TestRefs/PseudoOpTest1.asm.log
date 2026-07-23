@@ -1,9 +1,9 @@
-Error: Line 9: Invalid keyword parameter xxx. Legal names are ['incr', 'min', 'max', 'fmt']:
+Error: Line 11: Invalid keyword parameter xxx. Legal names are ['incr', 'min', 'max', 'fmt']:
 .if test_error .dbwgt 0o42, incr = 57, min = 42, max = 99, fmt = "%o", xxx = 570
-Error: Line 10: By-position parameters must all precede keyword parameters:
+Error: Line 12: By-position parameters must all precede keyword parameters:
 .if test_error .dbwgt 0o42, 57, min = 42, 99, fmt = "%o"
-Error: Line 18: Only keyword parameters are permitted:
+Error: Line 20: Only keyword parameters are permitted:
 .if test_error	.simparam 1234, Blah = "blah", Flexo = 0
-Error: Line 17: Incorrect operand type AsmExprValueType.Fraction 0.1234:
+Error: Line 19: Incorrect operand type AsmExprValueType.Fraction 0.1234:
 .if test_error	.simparam Radar = +0.1234, Blah = "blah", Flexo = 0
 Error Count = 4; output files suppressed

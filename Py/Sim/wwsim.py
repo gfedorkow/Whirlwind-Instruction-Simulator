@@ -44,6 +44,7 @@ import traceback
 import signal
 from wwcpu import CpuClass
 import micro_whirlwind
+from graphics import GraphicsError
 
 from typing import List, Dict, Tuple, Sequence, Union, Any
 
@@ -224,32 +225,36 @@ def poll_sim_io(cpu, cb):
     if cb.ana_scope:
         if cb.ana_scope.getSimStopButton():
             return cb.QUIT_ALARM
-
-    if cpu.scope.crt is not None:
-        exit_alarm = cpu.scope.crt.ww_scope_update(CoreMem, cb)
-        if exit_alarm != cb.NO_ALARM:
-            return exit_alarm
-
-        wgt = cb.dbwgt
-        # check the keyboard in the CRT window for a key press
-        # But only if the laptop display is in use!  i.e., don't bother with this if the analog display is active
-        key = ''
-        if cpu.scope.crt.win:
-            key = cpu.scope.crt.win.checkKey()
-        if key != '':
-            print("key: %s, 0x%x" % (key, ord(key[0])))
-            if cb.panel and cb.panel.hnf_program_dispatcher:
-                cb.panel.hnf_program_dispatcher.reset_inactivity_timer()
-        if key == 'q' or key == 'Q':
-            ret = cb.QUIT_ALARM
-        if wgt and key == "Up":
-            wgt.select_next_widget(direction_up = True)
-        if wgt and key == "Down":
-            wgt.select_next_widget(direction_up = False)
-        if wgt and key == "Right":
-            wgt.increment_addr_location(direction_up = True)
-        if wgt and key == "Left":
-            wgt.increment_addr_location(direction_up = False)
+    try:
+        if cpu.scope.crt is not None:
+            exit_alarm = cpu.scope.crt.ww_scope_update(CoreMem, cb)
+            if exit_alarm != cb.NO_ALARM:
+                return exit_alarm
+    
+            wgt = cb.dbwgt
+            # check the keyboard in the CRT window for a key press
+            # But only if the laptop display is in use!  i.e., don't bother with this if the analog display is active
+            key = ''
+            if cpu.scope.crt.win:
+                key = cpu.scope.crt.win.checkKey()
+            if key != '':
+                print("key: %s, 0x%x" % (key, ord(key[0])))
+                if cb.panel and cb.panel.hnf_program_dispatcher:
+                    cb.panel.hnf_program_dispatcher.reset_inactivity_timer()
+            if key == 'q' or key == 'Q':
+                ret = cb.QUIT_ALARM
+            if wgt and key == "Up":
+                wgt.select_next_widget(direction_up = True)
+            if wgt and key == "Down":
+                wgt.select_next_widget(direction_up = False)
+            if wgt and key == "Right":
+                wgt.increment_addr_location(direction_up = True)
+            if wgt and key == "Left":
+                wgt.increment_addr_location(direction_up = False)
+    except GraphicsError:
+        # This picks up using the GUI's "X" to close the window
+        ret = cb.QUIT_ALARM
+        pass
     return ret
 
 def main_run_sim(args, cb, cpu):
@@ -602,13 +607,25 @@ def main_run_sim(args, cb, cpu):
 
     end_time = time.time()
     wall_clock_time = end_time - start_time  # time in units of floating point seconds
+
+    # LAS 6/25/26 This did also check whether the run was short, as in the next
+    # if, but since quiet is now the default we'll always show this if
+    # asked. Note I kept the check on radar since I wasn't sure of the use case
+    # there.
+    if not cb.TraceQuiet:
+        stats_fmt = "Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec, ww_time = %.1f usec\n"
+        cb.log.raw (stats_fmt % (sim_cycle, cpu.PC, wall_clock_time,
+                                 1000000.0 * float(wall_clock_time) / float(sim_cycle) if sim_cycle != 0 else 0,
+                                 cpu.accum_ww_inst_time_usec))
     if wall_clock_time > 2.0 and sim_cycle > 10:  # don't do the timing calculation if the run was really short
+
         if not cb.TraceQuiet:
             cb.log.raw("Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec\n" %
                        (sim_cycle, cpu.PC, wall_clock_time, 1000000.0 * float(wall_clock_time) / float(sim_cycle)))
-        if radar:
+        if cb.sim_params.get_simparam("Radar"):
             print("    elapsed radar time = %4.1f minutes (%4.1f revolutions)" %
                   (radar.elapsed_time / 60.0, radar.antenna_revolutions))
+
     if cb.tracelog:
         title = "%s\\nWWfile: %s" % (cb.CoreFileName, CoreMem.metadata['filename_from_core'])
         flowgraph.finish_flow_graph_from_sim (cb, CoreMem, cpu, title)
@@ -654,7 +671,6 @@ def main_run_sim(args, cb, cpu):
                 cb.log.info ("Begin Ttyout:\n" + logstr)
                 cb.log.info ("End Ttyout")
                 """
-
 #        if d.name == "DisplayScope":
         # Don't close the display here...  in HNF Mode, that causes a flash when we switch
         # from one demo code to another, and the window closes then immediately re-opens
@@ -689,6 +705,9 @@ def main():
     # parser.add_argument("-r", "--Radar", help="Incorporate Radar Data Source", action="store_true")
     parser.add_argument("--AutoClick", help="Execute pre-programmed mouse clicks during simulation", action="store_true")
     parser.add_argument("--AnalogScope", help="Display graphical output on an analog CRT", action="store_true")
+    parser.add_argument("--RemoteScope", help="Display graphical output on the remote scope server (default localhost)", action="store_true")
+    parser.add_argument("--RemoteScopeOnly", help="Don't bring up scope on local machine too", action="store_true")
+    parser.add_argument("--RemoteScopeServer", help="Remote scope server machine name or IP addr (default localhost)", type=str)
     # the following arg should be revised to take the full geometry as "width x height + Xoffset + Yoffset"
     parser.add_argument("--xWinSize", help="specify the size of an xWinCrt pseudo-scope display in pixels", type=int)
     parser.add_argument("--FlexoWin", help="Display Flexowriter output in its own window", action="store_true")
@@ -802,6 +821,14 @@ def main():
     if args.AnalogScope:
         cb.analog_display = True
 
+    if (args.RemoteScope or
+        args.RemoteScopeServer is not None or
+        args.RemoteScopeOnly):
+        cb.remote_scope = wwinfra.RemoteScope (args.RemoteScopeServer)
+
+    if args.RemoteScopeOnly:
+        cb.remote_scope_only = True
+
     if args.FlexoWin:
         cb.flexo_win = True
         
@@ -877,13 +904,14 @@ def main():
     # Close the display, but only just before we exit.  Unless... the NoClose arg keeps the
     # CRT screen visible in case of a backtrace, so there's some hope of see what was going
     # on the screen at the time of the error.
-    for d in cb.cpu.IODeviceList:
-        if d.name == "DisplayScope":
-            if d.crt is not None:
-                if args.NoCloseOnStop:
-                    d.crt.get_mouse_blocking()  # wait to see what was on the display in case of a trap
-                d.crt.win.items.clear()
-                d.crt.close_display()
+    if not cb.remote_scope_only:
+        for d in cb.cpu.IODeviceList:
+            if d.name == "DisplayScope":
+                if d.crt is not None:
+                    if args.NoCloseOnStop:
+                        d.crt.get_mouse_blocking()  # wait to see what was on the display in case of a trap
+                    d.crt.win.items.clear()
+                    d.crt.close_display()
 
     # sys.exit(alarm_state != cb.NO_ALARM)
     sys.exit(0)         # return zero for an ordinary exit

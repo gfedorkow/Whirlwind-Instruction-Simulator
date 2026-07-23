@@ -9,24 +9,13 @@ import os
 import sys
 import argparse
 import re
-import wwinfra
+from wwinfra import StdArgs, ConstWWbitClass, theConstWWbitClass, CorememClass, LogFactory
 from typing import List, Dict, Tuple, Sequence, Union, Any
-
-
-# sigh, I'll put this stub here so I can call Read Core without more special cases.
-class WWCpuClass:
-    def __init__(self, _cb):
-        self.cb = _cb
-        # putting this stuff here seems pretty darn hacky
-        self.cpu_switches = None
-        self.SymTab = {}
-        self.CommentTab = [None] * 2048
-        self.ExecTab = {}   # this table is for holding Python Exec statements interleaved with the WW code.
+from wwcpu import CpuClass  # LAS Note: I fixed the import problems and removed the stub cpu class which was in this file.
 
 # defines
 
 ErrorCount = 0
-
 
 def breakp():
     print("breakpoint")
@@ -490,7 +479,7 @@ CoreWrittenBy = [[] for _ in range(CORE_SIZE)]  # type: List[List[Any]]
 
 def main():
     global cb
-    parser = wwinfra.StdArgs().getParser ("Disassemble a Whirlwind Core File.")
+    parser = StdArgs().getParser ("Disassemble a Whirlwind Core File.")
     parser.add_argument("inputfile", help="file name of ww input core file")
     parser.add_argument('--outputfile', '-o', type=str, help="output file name ('-'=stdout)")
     parser.add_argument('--use_default_tsr', '-u',
@@ -509,9 +498,9 @@ def main():
         wwdisasm_output_filename = args.outputfile
 
     # instantiate the class full of constants
-    cb = wwinfra.ConstWWbitClass (corefile=os.path.basename(base_filename), args = args)
-    wwinfra.theConstWWbitClass = cb
-    cpu = WWCpuClass(cb)
+    cb = ConstWWbitClass (corefile=os.path.basename(base_filename), args = args)
+    theConstWWbitClass = cb
+    cpu = CpuClass(cb, None)
 
     # Invent a new cb attribute on-the-fly
     cb.disasmNoComment: bool = args.NoComment
@@ -526,15 +515,15 @@ def main():
     if args.use_default_tsr is not None:
         use_default_tsr = args.use_default_tsr
     print("use_default_tsr=%d" % args.use_default_tsr)
-    coremem = wwinfra.CorememClass(cb, use_default_tsr=use_default_tsr)
-    cb.log = wwinfra.LogFactory().getLog (debug=args.Debug)
+    coremem = CorememClass(cb, use_default_tsr=use_default_tsr)
+    cb.log = LogFactory().getLog (debug=args.Debug)
 
     AutoSymTab = [None] * CORE_SIZE  # automatically-generated labels for instructions that need them
 
     # read the core file from the tape-decoder
 #    (CoreMem, jump_to, WW_file, WW_TapeID) = read_core(args.basename + ".tcore")
     ret = coremem.read_core(input_file_name, cpu, cb)
-    (core_symtab, sym_to_addr_tab, jump_to, WW_file, WW_TapeID, screen_debug_widgets, sim_param_dict) = ret
+    (core_symtab, sym_to_addr_tab, exectab, jump_to, WW_file, WW_TapeID, screen_debug_widgets) = ret
 
     ManualSymTab, SwitchTab = read_sym(base_filename + ".sym")
     ManualSymTab.update(core_symtab)  # combine the sym tabs

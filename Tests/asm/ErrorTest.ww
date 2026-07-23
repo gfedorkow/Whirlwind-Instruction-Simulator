@@ -10,11 +10,7 @@
     .flexl 42
     .dbwgt x, "blah"
 x:  .word 42
-    .isa 1950
     .isa 1945
-    .isa 1832
-    .isa 1066
-    .isa 4000
     .word 4242
     .word 70000
     .word -40000

@@ -977,6 +977,18 @@ literal-digit-seq												Decimal inreger
 
 		   Let me know of omissions or other issues.
 
+	- .simparam to pass parameters to the sim via asm. See Guy's list
+      below under .simparam heading.
+
+	- TNMOC counting benchmark
+	- Doc update
+	- Doc refine .simparam
+	- Doc the debugger
+	- Doc check for highilghted notes
+	- HNF jolly good!
+	- Cleaned up .isa
+	- Time-reporting issue, esp. with panel
+
 	- C-ish
 	- Get "everything" into git: tape images, images on code, etc.
 		Did sizing run see below marked 1/1/25
@@ -994,6 +1006,100 @@ literal-digit-seq												Decimal inreger
 		i/o devices, e.g., a window for the flex printer, perhaps
 		another for paper tape, etc.  These would be similar to the
 		scope window.
+
+
+5/6/26 -- .simparam
+Guy's list of params which need or don't need to be absorbed by .simparam:
+
+Here's my param list:
+
+These seem like they should only appear in the core file.
+
+  -r, --Radar           Incorporate Radar Data Source
+
+  --AutoClick           Execute pre-programmed mouse clicks during simulation
+
+  --NoToggleSwitchWarning
+
+                        Suppress warning if WW code writes a read-only toggle switch
+
+  --NoZeroOneTSR        Don't automatically return 0 and 1 for locations 0 and 1
+
+
+These are ones that I tinker with while debugging tapes, are not normally needed, but once in a while a program requires, or at least, always uses the arg.  So I’d keep the cmd line but also add a simparam
+
+  --FlexoWin            Display Flexowriter output in its own window
+
+  --PETRAfile PETRAFILE
+
+                        File name for photoelectric paper tape reader A input file
+
+  --PETRBfile PETRBFILE
+
+                        File name for photoelectric paper tape reader B input file
+
+  --NoAlarmStop         Don't stop on alarms
+
+  --ZeroizeCore         Return zero for uninitialized core memory
+
+  --CrtFadeDelay CRTFADEDELAY
+
+                        Configure Phosphor fade delay (default=0)
+						
+Here's the rest:
+
+
+  -h, --help            show this help message and exit
+  --LogDir LOGDIR       Directory into which to store logs. Default is current wd.
+  --ArchaeoLog          Write data to the archaeolog dir.
+  -t, --TracePC         Trace PC for each instruction
+  -a, --TraceALU        Trace ALU for each instruction
+  -f, --FlowGraph       Collect data to make a flow graph. Default output file <corefile-base-name>.flow.gv
+  -fo FLOWGRAPHOUTFILE, --FlowGraphOutFile FLOWGRAPHOUTFILE
+                        Specify flow graph output file. Implies -f
+  -fd FLOWGRAPHOUTDIR, --FlowGraphOutDir FLOWGRAPHOUTDIR
+                        Specify flow graph output directory. Implies -f
+  -j JUMPTO, --JumpTo JUMPTO
+                        Sim Start Address in octal
+  -q, --Quiet           Suppress run-time messages (nop -- here just for compat)
+  -v, --Verbose         Produce run-time messages
+  --NoWarnings          Suppress Warning messages
+  -D, --DecimalAddresses
+                        Display trace information in decimal (default is octal)
+  -c CYCLELIMIT, --CycleLimit CYCLELIMIT
+                        Specify how many instructions to run (zero->'forever')
+  --CycleDelayTime CYCLEDELAYTIME
+                        Specify how many msec delay to insert after each instruction
+  --AnalogScope         Display graphical output on an analog CRT
+  --xWinSize XWINSIZE   specify the size of an xWinCrt pseudo-scope display in pixels
+  --NoXWin              Don't open any x-windows
+  --LongTraceFormat     print all the cpu registers in TracePC
+  --TraceCoreLocation TRACECORELOCATION
+                        Trace references to Core Memory Location <n> octal
+  --QuickStart          Don't wait for the Restart button on the control panel; just go!
+  -n, --NoCloseOnStop   Don't close the display on halt
+  -p, --Panel           Pop up a Whirlwind Manual Intervention Panel window
+  -b, --BlinkenLights   Activate a physical Whirlwind Manual Intervention Panel
+  -m, --MicroWhirlwind  Activate the MicroWhirlwind Model
+  --SynchronousVideo    Display pixels immediately; Disable video caching buffer
+  --DumpCoreToFile DUMPCORETOFILE
+                        Dump the contents of core into the named file at end of run
+  --RestoreCoreFromFile RESTORECOREFROMFILE
+                        Restore contents of memory from a core dump file
+  --DrumStateFile DRUMSTATEFILE
+                        File to store Persistent state for WW Drum
+  --MuseumMode          Cycle through states endlessly for museum display
+  --HnfProgramDispatcher
+                        Activate the special-purpose Demo Program Dispatcher for use at HNF
+  -d, --Debugger        Start simulation under the debugger
+  -map, --MemoryMap     Produce a memory map (.map) file of the access types during this run
+  --TTYname TTYNAME     Configure TTY name to access external media controller
+ 
+
+
+
+
+
 
 
 1/12/25
