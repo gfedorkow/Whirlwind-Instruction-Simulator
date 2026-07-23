@@ -262,15 +262,6 @@ def main_run_sim(args, cb, cpu):
     global UseDebugger, Debugger
 
     # LAS dup of main
-    """
-    if args.CrtFadeDelay:
-        cb.crt_fade_delay_param = args.CrtFadeDelay
-        cb.log.info("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
-    """
-#    CoreMem = wwinfra.CorememClass(cb)
-#    cpu = CpuClass(cb, CoreMem)  # instantiating this class instantiates all the I/O device classes as well
-#    cb.cpu = cpu
-#    cpu.cpu_switches = wwinfra.WWSwitchClass(cb)
     cb.dbwgt = wwinfra.ScreenDebugWidgetClass(cb, CoreMem, args.AnalogScope)
 
     cycle_limit = 0  # default limit for number of sim cycles to run; 'zero' means 'forever'
@@ -309,11 +300,10 @@ def main_run_sim(args, cb, cpu):
     if cpu.isa_1950 == False and cb.sim_params.get_simparam("Radar"):
         cb.log.fatal("Radar device can only be used with 1950 ISA")
 
-    if f := cb.sim_params.get_simparam("CrtFadeDelay"):
-        cb.crt_fade_delay_param = f
-        cb.log.warn("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
+    cb.crt_fade_delay_param = cb.sim_params.get_simparam("CrtFadeDelay")
+    # cb.log.warn("CRT Fade Delay set to %d" % cb.crt_fade_delay_param)
 
-    no_alarm_stop = cb.sim_params.get_simparam("NoAlarmStop") # cache this parameter
+    stop_on_alarm = not cb.sim_params.get_simparam("NoAlarmStop") # cache this parameter
 
     if cb.panel and cb.panel.hnf_program_dispatcher:
         cb.panel.hnf_program_dispatcher.apply_switch_presets(cpu)
@@ -457,6 +447,10 @@ def main_run_sim(args, cb, cpu):
                     break  # bail out of the While True loop if display update says to stop due to Red-X hit
                 if alarm_clear:
                     alarm_state = cb.NO_ALARM
+                    # when transitioning to Run state, we may need to reset the HNF Info screen from the
+                    # Error screen to whatever program was running, or to Idle
+                    if cb.panel and cb.panel.hnf_program_dispatcher:
+                        cb.panel.hnf_program_dispatcher.reset_info_screen_to_current(cb)
                 if cb.sim_state != cb.SIM_STATE_STOP:
                     alarm_state = cb.NO_ALARM
                 if args.HnfProgramDispatcher:
@@ -510,23 +504,35 @@ def main_run_sim(args, cb, cpu):
             if CycleDelayTime:
                 time.sleep(CycleDelayTime/1000)  # Sleep() takes time in fractional seconds
 
-            if cb.sim_params.get_simparam("Radar") and (sim_cycle % 30 == 0):
-                # the radar should return something every 20 msec, about every thousand instructions.
-                # This is **like totally forever**, and I'm not taking it any more!
-                # So I'll snoop the radar mailbox.  When the code picks up a new value, it sets the mailbox
-                # to -1.  So I'll check *much* more often, but not put something into the mailbox until
-                # the last code has been consumed.
-                last_code = CoreMem.rd(0o34)
-                if last_code == 0o177777:
-                    (rcode, reading_name, new_rotation) = radar.get_next_radar()
-                    CoreMem.wr(0o34, rcode)
-                    if new_rotation:
-                        print("\n")
-                    if rcode != 0 and (rcode & 0o40000 == 0):
-                        if not cb.TraceQuiet and not (" Geo_" in reading_name):
-                            print("%s: radar-code=0o%o" % (reading_name, rcode))
-                    if radar.exit_alarm != cb.NO_ALARM:
-                        alarm_state = radar.exit_alarm
+            if (sim_cycle % 30 == 0):
+                if cb.panel and cb.panel.panel_mWW:
+                    # This check calls into the switch scanner to soak up any Rotary Encoder pulses
+                    # that might be collecting in between regular panel updates (as above)
+                    cb.panel.panel_mWW.sw.prefetch_u4_button_events()
+
+                if radar:     # the radar should return something every 20 msec, about every thousand instructions.
+                    # This is **like totally forever**, and I'm not taking it any more!
+                    # So I'll snoop the radar mailbox.  When the code picks up a new value, it sets the mailbox
+                    # to -1.  So I'll check *much* more often, but not put something into the mailbox until
+                    # the last code has been consumed.
+                    last_code = CoreMem.rd(0o34)
+                    if last_code == 0o177777:
+                        (rcode, reading_name, new_rotation) = radar.get_next_radar()
+                        CoreMem.wr(0o34, rcode)
+                        # Copy the last heading into the FF2 address
+                        # Israel's code is trying to display this number in an FF register mapped to address 0o10
+                        # But I failed to account for the FF Register Mapping in the Panel models; FF2 is always
+                        # at Address Two
+                        heading = CoreMem.rd(0o10)
+                        CoreMem.wr(0o2, heading, force=True)
+
+                        if new_rotation:
+                            print("\n")
+                        if rcode != 0 and (rcode & 0o40000 == 0):
+                            if not cb.TraceQuiet and not (" Geo_" in reading_name):
+                                print("%s: radar-code=0o%o" % (reading_name, rcode))
+                        if radar.exit_alarm != cb.NO_ALARM:
+                            alarm_state = radar.exit_alarm
 
             # if we're doing "single step", then after each instruction, set the state back to Stop
             if cb.sim_state == cb.SIM_STATE_SINGLE_STEP:
@@ -541,20 +547,24 @@ def main_run_sim(args, cb, cpu):
                 if cb.panel:
                     if alarm_state == cb.QUIT_ALARM:   # they said Quit, we'll quit.
                         break
-                    if not no_alarm_stop:  # here's the state where we hit an alarm, but it's not QUIT
+                    if stop_on_alarm:  # here's the state where we hit an alarm, but it's not QUIT
                         cb.sim_state = cb.SIM_STATE_STOP
                 if (alarm_state == cb.DISPATCHER_ALARM):
                     cb.panel.hnf_program_dispatcher.dispatch_to_core(cb)
                     break
-                elif cb.panel and (alarm_state == cb.OVERFLOW_ALARM or alarm_state == cb.DIVIDE_ALARM or
+                elif cb.panel and \
+                    ((stop_on_alarm and (alarm_state == cb.OVERFLOW_ALARM or alarm_state == cb.DIVIDE_ALARM)) or
                                    alarm_state == cb.IO_ERROR_ALARM or alarm_state == cb.UNIMPLEMENTED_ALARM):
+                    # the complicated IF above is to avoid sending an alarm-state to HNF Info if we're not
+                    # going to stop; i.e., send the alarm state message to the Info Screen only if the sim is
+                    # switching to Stop state.
                     if cb.panel and cb.panel.hnf_program_dispatcher:  # send a code to the Info Screen if HNF
                         cb.panel.hnf_program_dispatcher.switch_to_alarm_state()
                     continue  # switch to the Stop State spin loop
                 else:
                     # the normal case with cmd-line wwsim is to stop on an alarm; if the command line flag says not to, we'll try to keep going
                     # Yeah, ok, but don't try to keep going if the alarm is the one where the user clicks the Red X. Sheesh...
-                    if not no_alarm_stop or \
+                    if stop_on_alarm or \
                             alarm_state == cb.QUIT_ALARM  or alarm_state == cb.HALT_ALARM or \
                             alarm_state == cb.READIN_ALARM or alarm_state == cb.DISPATCHER_ALARM:
                         break
@@ -608,6 +618,10 @@ def main_run_sim(args, cb, cpu):
                                  1000000.0 * float(wall_clock_time) / float(sim_cycle) if sim_cycle != 0 else 0,
                                  cpu.accum_ww_inst_time_usec))
     if wall_clock_time > 2.0 and sim_cycle > 10:  # don't do the timing calculation if the run was really short
+
+        if not cb.TraceQuiet:
+            cb.log.raw("Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec\n" %
+                       (sim_cycle, cpu.PC, wall_clock_time, 1000000.0 * float(wall_clock_time) / float(sim_cycle)))
         if cb.sim_params.get_simparam("Radar"):
             print("    elapsed radar time = %4.1f minutes (%4.1f revolutions)" %
                   (radar.elapsed_time / 60.0, radar.antenna_revolutions))

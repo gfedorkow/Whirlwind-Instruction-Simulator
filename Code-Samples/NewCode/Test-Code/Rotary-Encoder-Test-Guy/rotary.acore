@@ -1,0 +1,74 @@
+
+; *** Core Image ***
+%File: rotary.ww
+%TapeID: 
+%JumpTo 0o40
+%DbWgt:  0o166  0o01 %d 0o00 0o37
+@C0000:  None    None   0000000 0000000  None    None    None    None   
+@C0040: 0100000 0134000 0030110 0044064 0000677 0100105 0040166 0074111 
+@C0050: 0100166 0134167 0134000 0070047 0100166 0110001 0114106 0070071 
+@C0060: 0100166 0174105 0044064 0100001 0170000 0040003 0100000 0040002 
+@C0070: 0074047 0100166 0174105 0044075 0100001 0170000 0040002 0100000 
+@C0100: 0040003 0074047 0000002 0000010 0000013 0000017 0000020 0100000 
+@C0110: 0177777 0050124 0100000 0040161 0100102 0040162 0104104 0040163 
+@C0120: 0074142 0100166 0040162 0074125 0074000 0050141 0100000 0114103 
+@C0130: 0154001 0114001 0154013 0001677 0100162 0114106 0040162 0154012 
+@C0140: 0024165 0074000 0050160 0100161 0114103 0154014 0001677 0100162 
+@C0150: 0114103 0040162 0100162 0154014 0024164 0130162 0130163 0070152 
+@C0160: 0074000 0000000 0000000 0000000 0076000 0000174 0000000 0000000 
+@S0002: FF2
+@S0003: FF3
+@S0040: main
+@S0047: loop
+@S0060: upper_ff
+@S0064: hi_shft
+@S0071: lower_ff
+@S0075: lo_shft
+@S0102: const_2
+@S0103: const_8
+@S0104: const_11
+@S0105: const_15
+@S0106: const_16
+@S0107: const_msb
+@S0110: c_nzero
+@S0111: draw_lines
+@S0124: dl_ret
+@S0125: draw_y_seg
+@S0141: draw_y_seg_ret
+@S0142: draw_x_line
+@S0152: next_x_seg
+@S0160: draw_x_line_ret
+@S0161: y_arg
+@S0162: x_arg
+@S0163: n_segments
+@S0164: horiz_line_seg
+@S0165: vert_line_seg
+@S0166: Encoder
+@S0167: lastval
+@S0000: c_zero
+@S0001: c_one
+@S0677: scope_point
+@S1677: scope_vector
+@N0040:  experiment
+@N0044:  back to work
+@N0061:  keep the lower four bits
+@N0111:  pilfered from tic tac toe
+@N0117:  segment count should be negative, ie, we will incr the value until positive
+@N0125:  save the return address
+@N0127:  shift from 0-15 axis to -8 to +7
+@N0132:  multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0133:  initialize vector gen
+@N0135:  shift from 0-31 axis to -16 to +15
+@N0137:  multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0140:  Draw a segment with x=ACC
+@N0142:  save the return address
+@N0144:  shift from 0-15 axis to -8 to +7
+@N0145:  multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0146:  initialize vector gen
+@N0150:  shift from 0-15 axis to -8 to +7
+@N0152:  re-fetch the next x_arg
+@N0153:  multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0154:  Draw a segment with x=ACC
+@N0156:  increment the segment counter
+@N0164:  +32 in the top half of the word
+@N0165:  +32 in the bottom half of the word
