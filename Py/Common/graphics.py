@@ -222,7 +222,7 @@ class GraphWin(tk.Canvas):
                            highlightthickness=0, bd=0)
         self.master.title(title)
         self.pack()
-        master.resizable(0,0)
+        master.resizable (True, True)   # LAS 5/28/26 Was (0, 0), i.e., not resizable
         self.foreground = "black"
         self.items = []
         self.mouseX = None
@@ -413,6 +413,13 @@ class GraphWin(tk.Canvas):
             item.undraw()
             item.draw(self)
         self.update()
+
+    def undrawAll (self):
+        for item in self.items[:]:
+            item.undraw()
+        self.update()
+        self.items = []
+        pass
 
     # ************  GUY EXPERIMENT BEGIN ***********
     # Did work. i.e., the python to TK interface seems to work
