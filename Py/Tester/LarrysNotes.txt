@@ -979,15 +979,27 @@ literal-digit-seq												Decimal inreger
 
 	- .simparam to pass parameters to the sim via asm. See Guy's list
       below under .simparam heading.
+		- Doc refined .simparam
+
+	- Remote scope: tie off
+
+	- Time-reporting issue, esp. with panel
 
 	- TNMOC counting benchmark
-	- Doc update
-	- Doc refine .simparam
+
 	- Doc the debugger
-	- Doc check for highilghted notes
-	- HNF jolly good!
-	- Cleaned up .isa
-	- Time-reporting issue, esp. with panel
+	
+	* Doc check for highilghted notes
+
+	- Doc: Guy's addition:
+	
+		"[OffsetCrt[x|y] only appear as sim params and instruct the
+		graphic module to shift the image on the screen…  e.g.,
+		Blackjack is squeezed right up against the top"
+	
+
+	* Cleaned up .isa
+	
 
 	- C-ish
 	- Get "everything" into git: tape images, images on code, etc.

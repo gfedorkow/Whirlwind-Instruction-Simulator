@@ -492,8 +492,8 @@ class AsmExpr:
                 self.leftSubExpr.leftSubExpr.exprData,
                 self.rightSubExpr.exprData)
             v = float (s)
-            if v >= 1.0:
-                self.evalError ("Too many digits specified in fraction")
+            if abs (v) >= 1.0:
+                self.evalError ("Fraction out of range: %f" % v)
             return AsmExprValue (AsmExprValueType.Fraction, v)
         elif self.exprType == AsmExprType.BinaryDot:
             # It's a literal octal number, of the form (0|1).xxxxx

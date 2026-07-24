@@ -265,7 +265,7 @@ class AsmInst:
     # level, and not relying on bit-twiddling.
     #
     def intToSignedWwInt (self, x: int) -> int:
-        if x >= -self.prog.maxSignedWordMag and x <= self.prog.maxSignedWordMag:
+        if self.checkIntToSignedWwInt (x):
             if x < 0:
                 r = self.prog.maxUnsignedWord + x  # One's-complement representation
             else:
@@ -273,6 +273,9 @@ class AsmInst:
             return r
         else:
             self.error ("Signed integer conversion of %d is out of 16-bit one's-complement range" % x)
+            
+    def checkIntToSignedWwInt (self, x: int) -> bool:
+        return x >= -self.prog.maxSignedWordMag and x <= self.prog.maxSignedWordMag
     #
     # Given an int check for positive 16-bit unsigned range and generate an
     # unsigned 16-bit value (identity function)
@@ -573,8 +576,20 @@ class AsmPseudoOpInst (AsmInst):
             # Negative zero is its own type
             inst = self.prog.maxUnsignedWord
         elif val.type == AsmExprValueType.Fraction:
-            # Fractions need to stay in signed 16-bit one's complement range
-            inst = self.intToSignedWwInt (int (round (val.value * 2**(self.prog.wordWidth - 1))))
+            #
+            # Here we do a little hocus-pocus. Fractions need to stay in signed
+            # 16-bit one's complement range. The user has already entered a
+            # valid fractional value.  However if we round, we might overflow,
+            # which the user almost certainly didn't desire. So if rounding
+            # would overflow, we truncate instead, i.e., emit the largest
+            # possible fraction.  So whatever the number of digits entered, if
+            # it's fracitonal we'll always emit a fraction.
+            #
+            v = int (round (val.value * 2**(self.prog.wordWidth - 1)))
+            inRange: bool = self.checkIntToSignedWwInt (v)
+            if not inRange:
+                v -= 1
+            inst = self.intToSignedWwInt (v)                
         else:
             self.operandTypeError (val)
         return inst
