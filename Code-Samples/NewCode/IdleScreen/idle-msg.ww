@@ -9,6 +9,8 @@
 ; Modified Apr 19, 2026 to position the message in the center of the screen
 ; Modified Apr 19, 2026 to make descenders on g, j, p, y, q
 
+
+            .simparam CrtFadeDelay = 2
 ; constants for SI graphics instruction
             .pp scope_vector, 0o1677   ; draw a vector on all scopes
             .pp scope_point, 0o0677   ; draw a point on all scopes

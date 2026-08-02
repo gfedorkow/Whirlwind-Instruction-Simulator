@@ -1,0 +1,1119 @@
+
+; *** Core Image ***
+%File: auto-tic-tac-toe.ww
+%TapeID: 
+@C0000: 0000000 0000001  None    None    None    None    None    None   
+@C0040: 0074675 0100120 0114117 0040114 0074053 0000017 0000040 0073300 
+@C0050: 0034100 0041100 0065100 0075537 0074165 0100727 0070054 0100306 
+@C0060: 0070062 0074064 0074111 0074054 0100000 0040306 0074126 0070072 
+@C0070: 0040276 0074103 0074152 0070077 0114001 0040276 0074103 0100276 
+@C0100: 0110001 0070054 0030000 0100001 0040306 0074663 0104001 0040276 
+@C0110: 0074054 0104001 0040727 0074053 0177776 0000004 0000004 0000121 
+@C0120: 0000125 0000000 0000010 0000003 0000001 0000004 0050151 0100114 
+@C0130: 0070150 0100116 0070136 0114001 0040116 0074150 0100115 0040116 
+@C0140: 0100114 0110117 0044146 0100114 0114001 0040114 0100000 0074151 
+@C0150: 0104001 0074000 0050164 0000300 0014000 0070160 0104001 0074164 
+@C0160: 0100000 0000336 0014000 0174045 0074000 0050272 0074770 0104731 
+@C0170: 0040277 0100734 0040301 0100731 0040300 0104741 0040304 0074423 
+@C0200: 0100740 0040301 0130277 0070173 0104731 0040277 0100734 0040300 
+@C0210: 0100731 0040301 0104741 0040304 0074442 0100740 0040300 0130277 
+@C0220: 0070210 0104736 0040277 0100367 0040273 0110001 0040274 0110001 
+@C0230: 0040275 0104001 0040276 0100273 0040302 0100274 0040303 0100275 
+@C0240: 0044241 0100000 0044243 0074000 0100273 0110732 0040273 0100274 
+@C0250: 0110732 0040274 0100275 0110732 0040275 0130277 0070233 0100306 
+@C0260: 0174735 0110316 0044267 0104047 0042470 0104050 0042467 0100000 
+@C0270: 0076443 0074602 0074000 0000000 0000000 0000000 0177776 0000000 
+@C0300: 0000000 0000000 0000000 0000000 0000000 0000000 0000000 0000007 
+@C0310: 0000001 0000307 0000310 0000314 0000501 0000522 0000317 0000324 
+@C0320: 0000335 0000354 0000346 0000362 0000054 0000044 0000006 0000052 
+@C0330: 0000002 0000024 0000010 0000072 0177776 0000054 0000044 0000006 
+@C0340: 0000052 0000002 0000024 0000010 0000060 0177776 0000072 0000010 
+@C0350: 0000046 0000014 0000030 0177776 0000060 0000010 0000046 0000014 
+@C0360: 0000030 0177776 0000022 0000024 0000006 0000046 0177776 0000370 
+@C0370: 0000004 0000014 0000457 0000010 0000014 0000457 0000014 0000014 
+@C0400: 0000457 0000004 0000010 0000457 0000010 0000010 0000457 0000014 
+@C0410: 0000010 0000457 0000004 0000004 0000457 0000010 0000004 0000457 
+@C0420: 0000014 0000004 0000457 0050441 0100301 0114736 0154014 0001677 
+@C0430: 0100300 0114736 0040300 0100300 0154014 0024747 0130300 0130304 
+@C0440: 0070433 0074000 0050456 0100301 0114736 0154014 0001677 0100300 
+@C0450: 0114736 0154014 0024750 0130301 0130304 0070443 0074000 0050500 
+@C0460: 0100306 0070500 0100303 0044464 0100000 0114736 0154014 0000677 
+@C0470: 0100302 0044472 0100000 0114736 0154014 0024000 0014000 0070612 
+@C0500: 0074000 0050521 0100303 0044504 0100000 0114736 0154014 0001677 
+@C0510: 0100302 0044512 0100000 0114736 0154014 0024751 0024752 0024754 
+@C0520: 0024753 0074000 0050543 0100303 0044525 0100000 0114736 0154014 
+@C0530: 0001677 0100302 0044533 0100000 0114737 0154014 0024751 0024753 
+@C0540: 0110743 0024754 0024752 0074000 0050562 0100303 0044547 0100000 
+@C0550: 0114736 0154014 0001677 0100302 0044555 0100000 0114736 0154014 
+@C0560: 0024751 0024754 0074000 0050601 0100303 0044566 0100000 0114736 
+@C0570: 0154014 0001677 0100302 0044574 0100000 0114736 0154014 0024752 
+@C0600: 0024753 0074000 0050611 0104052 0000677 0104051 0024000 0014000 
+@C0610: 0070675 0074000 0050636 0040641 0100302 0044616 0100000 0160002 
+@C0620: 0114001 0040637 0100303 0044624 0100000 0160002 0030730 0110732 
+@C0630: 0040640 0155001 0110640 0110637 0040276 0040002 0074000 0000000 
+@C0640: 0000000 0000000 0050661 0040662 0155001 0110662 0110367 0110731 
+@C0650: 0044655 0100313 0110306 0044654 0100000 0040000 0100306 0030001 
+@C0660: 0040306 0074000 0000000 0050667 0100276 0040670 0075035 0074000 
+@C0670: 0000000 0074000 0000457 0000501 0000522 0050725 0100000 0042000 
+@C0700: 0042001 0042002 0040306 0100367 0110731 0044711 0104736 0040277 
+@C0710: 0100726 0040000 0100711 0110732 0040711 0130277 0070710 0100000 
+@C0720: 0040306 0040727 0104001 0040276 0040002 0074000 0000457 0000000 
+@C0730: 0177777 0000002 0000003 0000004 0000006 0000007 0000010 0000011 
+@C0740: 0000012 0000013 0000014 0020000 0100002 0100003 0100004 0076000 
+@C0750: 0000174 0076174 0100200 0076200 0100174 0100000 0000000 0000002 
+@C0760: 0177775 0000003 0000004 0177767 0000012 0001750 0000001 0000002 
+@C0770: 0051034 0100367 0110001 0110001 0040275 0102025 0042005 0100275 
+@C1000: 0045023 0102005 0075162 0042020 0102020 0176000 0134000 0071011 
+@C1010: 0075020 0102020 0176001 0134000 0071016 0075022 0100672 0075023 
+@C1020: 0100673 0075023 0100674 0040000 0100275 0110732 0040275 0132005 
+@C1030: 0116032 0134000 0071034 0074777 0074000 0051136 0042005 0116032 
+@C1040: 0071042 0075137 0102005 0110001 0071137 0102005 0075162 0042004 
+@C1050: 0102004 0176001 0134000 0071055 0075141 0102004 0176000 0134000 
+@C1060: 0071062 0075141 0102000 0032004 0042000 0102005 0112365 0045070 
+@C1070: 0100000 0170012 0000225 0024000 0132002 0102025 0042003 0102001 
+@C1100: 0042007 0102033 0042011 0075203 0102003 0134000 0071110 0075143 
+@C1110: 0102002 0116032 0134000 0071155 0075230 0102001 0032004 0042001 
+@C1120: 0132002 0102025 0042003 0102000 0042007 0102033 0042011 0075203 
+@C1130: 0102003 0134000 0071134 0075150 0075562 0075422 0074000 0075625 
+@C1140: 0074053 0075631 0074053 0075422 0075611 0100744 0040306 0074053 
+@C1150: 0075422 0075615 0100745 0040306 0074053 0075422 0075621 0100746 
+@C1160: 0040306 0074053 0051202 0042006 0102036 0042017 0102006 0134000 
+@C1170: 0071201 0075172 0102017 0161001 0042017 0102006 0116030 0042006 
+@C1200: 0075166 0102017 0074000 0051227 0102066 0045206 0100000 0042010 
+@C1210: 0102007 0176010 0116010 0134000 0071224 0131206 0102011 0116030 
+@C1220: 0042011 0134000 0071226 0075206 0102030 0042003 0075227 0074000 
+@C1230: 0051334 0102000 0042013 0075335 0102012 0134000 0071240 0075334 
+@C1240: 0102001 0042013 0075335 0102012 0134000 0071247 0075334 0102037 
+@C1250: 0042021 0102000 0032001 0042015 0102021 0176015 0134000 0071261 
+@C1260: 0075264 0102037 0042004 0075334 0102040 0075403 0134000 0071271 
+@C1270: 0075334 0102041 0075403 0134000 0071276 0075334 0102042 0075403 
+@C1300: 0134000 0071303 0075334 0102043 0075403 0134000 0071310 0075334 
+@C1310: 0102044 0075403 0134000 0071315 0075334 0102045 0075403 0134000 
+@C1320: 0071322 0075334 0102046 0075403 0134000 0071327 0075334 0102047 
+@C1330: 0075403 0134000 0071334 0075334 0074000 0051402 0102025 0042012 
+@C1340: 0042005 0102005 0075162 0042004 0102000 0032001 0042015 0102004 
+@C1350: 0176015 0134000 0071354 0075372 0102013 0032004 0042014 0102025 
+@C1360: 0042003 0102014 0042007 0102033 0042011 0075203 0102003 0134000 
+@C1370: 0071372 0075400 0132005 0102005 0116032 0134000 0071402 0075341 
+@C1400: 0102004 0042012 0074000 0051421 0042016 0102000 0032001 0042015 
+@C1410: 0102016 0176015 0134000 0071416 0102027 0075421 0102016 0042004 
+@C1420: 0102030 0074000 0051506 0102025 0042005 0102005 0075162 0042020 
+@C1430: 0102020 0176000 0134000 0071435 0075446 0102020 0176001 0134000 
+@C1440: 0071442 0075452 0000225 0102050 0024000 0075455 0000225 0102051 
+@C1450: 0024000 0075455 0000225 0102052 0024000 0132005 0102005 0116034 
+@C1460: 0134000 0071476 0102005 0116035 0134000 0071476 0102005 0116032 
+@C1470: 0134000 0071503 0000225 0102053 0024000 0075425 0000225 0102054 
+@C1500: 0024000 0075507 0075425 0000225 0102054 0024000 0074000 0051532 
+@C1510: 0000225 0102055 0024000 0000225 0102055 0024000 0000225 0102055 
+@C1520: 0024000 0000225 0102055 0024000 0000225 0102055 0024000 0000225 
+@C1530: 0102054 0024000 0074000 0051536 0075543 0002067 0074000 0051542 
+@C1540: 0075543 0002112 0074000 0051561 0101561 0045546 0100000 0045551 
+@C1550: 0131561 0100000 0071560 0170012 0000225 0024000 0131551 0075551 
+@C1560: 0075561 0074000 0051610 0075543 0002313 0102025 0042005 0102005 
+@C1570: 0075162 0116004 0134000 0071576 0132005 0075567 0102005 0112365 
+@C1600: 0045601 0100000 0170012 0000225 0024000 0000225 0102054 0024000 
+@C1610: 0074000 0051614 0075543 0002145 0074000 0051620 0075543 0002162 
+@C1620: 0074000 0051624 0075543 0002205 0074000 0051630 0075543 0002216 
+@C1630: 0074000 0051634 0075543 0002251 0074000  None    None    None   
+@C2000: 0000000 0000000 0000000 0000000 0000000 0000000 0000000 0000000 
+@C2010: 0000000 0000000 0000000 0000000 0000000 0000000 0000000 0000000 
+@C2020: 0000000 0000000 0000000 0000000 0000000 0000000 0000001 0177777 
+@C2030: 0000001 0000100 0000011 0000010 0000003 0000006 0001000 0000040 
+@C2040: 0001000 0000200 0000010 0000002 0000400 0000100 0000020 0000004 
+@C2050: 0042000 0164000 0140000 0012000 0122000 0072000 0001600 0000160 
+@C2060: 0000016 0001110 0000444 0000222 0001042 0000250 0002056 0000071 
+@C2070: 0000040 0000014 0000034 0000075 0000010 0000071 0000040 0000006 
+@C2100: 0000034 0000075 0000010 0000071 0000040 0000060 0000002 0000075 
+@C2110: 0000051 0177776 0000071 0000052 0000060 0000016 0000024 0000075 
+@C2120: 0000010 0000071 0000070 0000060 0000074 0000002 0000075 0000010 
+@C2130: 0000071 0000031 0000075 0000025 0000035 0000066 0000071 0000021 
+@C2140: 0000011 0000075 0000010 0000051 0177776 0000071 0000052 0000060 
+@C2150: 0000016 0000075 0000010 0000071 0000046 0000014 0000030 0000075 
+@C2160: 0000051 0177776 0000071 0000034 0000060 0000070 0000054 0000016 
+@C2170: 0000040 0000002 0000024 0000075 0000010 0000071 0000046 0000014 
+@C2200: 0000030 0000012 0000075 0000051 0177776 0000071 0000022 0000024 
+@C2210: 0000006 0000046 0000075 0000021 0000051 0177776 0000071 0000014 
+@C2220: 0000030 0000074 0000006 0000044 0000014 0000022 0000075 0000010 
+@C2230: 0000035 0000010 0000071 0000040 0000024 0000052 0000075 0000010 
+@C2240: 0000071 0000006 0000064 0000006 0000014 0000030 0000075 0000051 
+@C2250: 0177776 0000071 0000012 0000056 0000016 0000006 0000024 0000002 
+@C2260: 0000075 0000010 0000071 0000040 0000006 0000036 0000002 0000030 
+@C2270: 0000075 0000010 0000035 0000010 0000071 0000040 0000024 0000052 
+@C2300: 0000075 0000010 0000071 0000006 0000064 0000006 0000014 0000030 
+@C2310: 0000075 0000051 0177776 0000010 0000010 0000071 0000034 0000060 
+@C2320: 0000070 0000054 0000016 0000040 0000002 0000024 0000075 0000010 
+@C2330: 0000071 0000054 0000044 0000006 0000052 0000012 0000075 0000010 
+@C2340: 0000071 0000012 0000056 0000016 0000006 0000024 0000002 0000075 
+@C2350: 0000010 0177776 0000071 0000054 0000075 0000044 0000006 0000052 
+@C2360: 0000002 0000024 0000010 0000071 0000060 0002366 0000076 0000025 
+@C2370: 0000017 0000007 0000013 0000023 0000033 0000027 0000003 0000066 
+@C2400: 0104047 0042467 0042470 0102406 0076443 0076400 0002407 0000071 
+@C2410: 0000030 0000071 0000060 0000071 0000046 0000010 0000071 0000014 
+@C2420: 0000071 0000012 0000010 0000071 0000040 0000071 0000050 0000071 
+@C2430: 0000002 0000010 0000071 0000040 0000071 0000014 0000071 0000070 
+@C2440: 0000071 0000002 0177776 0052465 0046466 0102467 0042725 0102470 
+@C2450: 0042726 0102466 0046453 0100000 0076655 0132466 0046457 0100000 
+@C2460: 0072465 0102467 0112654 0042467 0076445 0074000 0000000 0000000 
+@C2470: 0000000 0002472 0125074 0125074 0100363 0104377 0125074 0000060 
+@C2500: 0104317 0004077 0000000 0021000 0104273 0104214 0021063 0042000 
+@C2510: 0000374 0104167 0177777 0040400 0021077 0110263 0114307 0002014 
+@C2520: 0000174 0000017 0010714 0012000 0100303 0104373 0000363 0104000 
+@C2530: 0112300 0125074 0021003 0125074 0042063 0177777 0000360 0000000 
+@C2540: 0050314 0125074 0104314 0000000 0104274 0125074 0104307 0125074 
+@C2550: 0010377 0125074 0000377 0177777 0025077 0125074 0004373 0125074 
+@C2560: 0104277 0125074 0002714 0177777 0052400 0125074 0042300 0177777 
+@C2570: 0042377 0177777 0002573 0001000 0011000 0030000 0004000 0011000 
+@C2600: 0030000 0007000 0011000 0172267 0006400 0004400 0172267 0003000 
+@C2610: 0000000 0030000 0000000 0000000 0030000 0000000 0000000 0005110 
+@C2620: 0000400 0004400 0005110 0001000 0011000 0024267 0004000 0011000 
+@C2630: 0172267 0003400 0004400 0034110 0003400 0004400 0030000 0003400 
+@C2640: 0004400 0024267 0003400 0004400 0172267 0000000 0000000 0034110 
+@C2650: 0000400 0004400 0030000 0002650 0007400 0052724 0112471 0046660 
+@C2660: 0100000 0042727 0104045 0042730 0102653 0046720 0110001 0046715 
+@C2670: 0110001 0046722 0100000 0000677 0102727 0072715 0102727 0170001 
+@C2700: 0042727 0102720 0114761 0046720 0102715 0114761 0046715 0102722 
+@C2710: 0114761 0046722 0132730 0072672 0076724 0100000 0112726 0001677 
+@C2720: 0100000 0112725 0024000 0076676 0074000 0000000 0000000 0000000 
+@C2730: 0000000  None    None    None    None    None    None    None   
+@S0000: zero
+@S0000: const_0
+@S0001: c_one
+@S0001: const_1
+@S0040: main
+@S0043: turn_on_autoclick
+@S0045: c_15
+@S0046: c_32
+@S0047: c_scope_edge
+@S0050: c_msg_x_pos
+@S0051: c_reset_x_pos
+@S0052: c_reset_y_pos
+@S0053: refresh_loop
+@S0054: refloop
+@S0062: sgo
+@S0064: rl_continue_game
+@S0066: test_autoclick
+@S0072: test_mir_input
+@S0077: test_gun_input
+@S0103: play_a_user_move
+@S0111: set_game_over
+@S0114: autoclick_move_counter
+@S0115: autoclick_delay_init
+@S0116: autoclick_delay_timer
+@S0117: autoclick_tabp
+@S0120: autoclick_tab_lastp
+@S0121: autoclick_tab
+@S0125: autoclick_tab_last
+@S0126: read_autoclick_move
+@S0136: do_autoclick_move
+@S0146: dacm_read
+@S0150: no_auto_move
+@S0151: read_autoclick_move_ret
+@S0152: read_mir_input
+@S0160: get_mir_val
+@S0164: read_mir_input_ret
+@S0165: draw_game_board
+@S0173: x_grid_loop
+@S0210: y_grid_loop
+@S0221: draw_game_state
+@S0233: gb_loop
+@S0233: gb_x_inst
+@S0235: gb_y_inst
+@S0237: gb_gs_inst
+@S0241: ca_addr
+@S0243: gb_state_sp
+@S0257: draw_current_player
+@S0267: dcp_ca_addr
+@S0272: draw_game_board_ret
+@S0273: next_x_addr
+@S0274: next_y_addr
+@S0275: next_gb_state_addr
+@S0276: light_gun_mailbox
+@S0277: loop_count
+@S0300: x_arg
+@S0301: y_arg
+@S0302: x_addr_arg
+@S0303: y_addr_arg
+@S0304: n_segments
+@S0305: gb_state_arg
+@S0306: which_player
+@S0307: player_state_x_addr
+@S0310: player_state_y_addr
+@S0311: player_state_x_ptr
+@S0312: player_state_y_ptr
+@S0313: player_icon_table
+@S0314: dct0
+@S0315: dct1
+@S0316: state_msg_tablep
+@S0317: state_msg_table
+@S0324: msg_cross_play
+@S0335: msg_naught_play
+@S0346: msg_x_win
+@S0354: msg_o_win
+@S0362: msg_draw
+@S0367: gb_table_start
+@S0370: gb0_x
+@S0371: gb0_y
+@S0372: gb0_state
+@S0373: gb1_x
+@S0374: gb1_y
+@S0375: gb1_state
+@S0376: gb2_x
+@S0377: gb2_y
+@S0400: gb2_state
+@S0401: gb3_x
+@S0402: gb3_y
+@S0403: gb3_state
+@S0404: gb4_x
+@S0405: gb4_y
+@S0406: gb4_state
+@S0407: gb5_x
+@S0410: gb5_y
+@S0411: gb5_state
+@S0412: gb6_x
+@S0413: gb6_y
+@S0414: gb6_state
+@S0415: gb7_x
+@S0416: gb7_y
+@S0417: gb7_state
+@S0420: gb8_x
+@S0421: gb8_y
+@S0422: gb8_state
+@S0423: draw_x_line
+@S0433: next_x_seg
+@S0441: draw_x_line_ret
+@S0442: draw_y_line
+@S0443: next_y_seg
+@S0456: draw_y_line_ret
+@S0457: draw_dot
+@S0464: dd_y_arg
+@S0472: dd_x_arg
+@S0500: draw_dot_ret
+@S0501: draw_cross
+@S0504: dc_y_arg
+@S0512: dc_x_arg
+@S0521: draw_cross_ret
+@S0522: draw_naught
+@S0525: dn_y_arg
+@S0533: dn_x1_arg
+@S0543: draw_naught_ret
+@S0544: draw_win
+@S0547: dw_y_arg
+@S0555: dw_x_arg
+@S0562: draw_win_ret
+@S0563: draw_tie
+@S0566: dt_y_arg
+@S0574: dt_x_arg
+@S0601: draw_tie_ret
+@S0602: draw_reset_symbol
+@S0611: draw_reset_symbol_ret
+@S0612: light_gun_cell_hit
+@S0616: lgh_x1_arg
+@S0624: lgh_y1_arg
+@S0636: light_gun_cell_hit_ret
+@S0637: lcl_cell_x
+@S0640: lcl_cell_y
+@S0641: lcl_gun_num
+@S0642: alternate_play_cell
+@S0654: apc_ca0
+@S0655: apc_table_ts
+@S0661: alternate_play_cell_ret
+@S0662: lcl_aplay_cell_num
+@S0663: user_play_cell
+@S0667: user_play_cell_ret
+@S0670: lcl_uplay_cell_num
+@S0671: apm_panic
+@S0672: dot_fn_addr
+@S0673: cross_fn_addr
+@S0674: naught_fn_addr
+@S0675: init_game_board
+@S0710: igb_loop
+@S0711: igb_table_ts
+@S0725: init_game_board_ret
+@S0726: lcl_init_val
+@S0727: g_game_over
+@S0730: const_0n
+@S0731: const_2
+@S0732: const_3
+@S0733: const_4
+@S0734: const_6
+@S0735: const_7
+@S0736: const_8
+@S0737: const_9
+@S0740: const_10
+@S0741: const_11
+@S0742: const_12
+@S0743: const_2_cell
+@S0744: const_o_win
+@S0745: const_x_win
+@S0746: const_draw
+@S0747: horiz_line_seg
+@S0750: vert_line_seg
+@S0751: diag_up_right_seg
+@S0752: diag_dn_left_seg
+@S0753: diag_dn_right_seg
+@S0754: diag_up_left_seg
+@S0755: panic_stop
+@S0757: c_2
+@S0760: c_2n
+@S0761: c_3
+@S0762: c_4
+@S0763: c_8n
+@S0764: c_10
+@S0765: c_1000
+@S0766: c_XX
+@S0767: c_oh
+@S0770: refresh_game_state
+@S0777: glueLOOP
+@S1011: glTRYO
+@S1016: glTRYEMPTY
+@S1020: glPBPX
+@S1022: glPBPO
+@S1023: glue_cont
+@S1023: gl_ca_addr
+@S1034: rgs_ret
+@S1035: GETMOV
+@S1042: not_too_large
+@S1045: GOODRANGE
+@S1055: CHKOFREE
+@S1062: PLACEX
+@S1070: char_conv2
+@S1110: H_NON_WIN
+@S1134: AFTER_CWIN
+@S1136: GMRET
+@S1137: BADMOV
+@S1141: SQTKN
+@S1143: HUMAN_WIN
+@S1150: COMP_WIN
+@S1155: DRAW
+@S1162: MAKHOT
+@S1166: MHLOOP
+@S1172: MHSHIFT
+@S1201: MHDONE
+@S1202: MHRET
+@S1203: CWLOOP
+@S1206: CWLD
+@S1224: CWWON
+@S1226: CWDONE
+@S1227: CWRET
+@S1230: COMPMOV
+@S1240: CMTRYBLOCK
+@S1247: CMTRYCTR
+@S1261: CTRFREE
+@S1264: TRYNEXT1
+@S1271: TRYNC2
+@S1276: TRYNC6
+@S1303: TRYNC8
+@S1310: TRYNE1
+@S1315: TRYNE3
+@S1322: TRYNE5
+@S1327: TRYNE7
+@S1334: CMRET
+@S1335: TRYMOVES
+@S1341: TMSQLP
+@S1354: TMSQFREE
+@S1372: TMNEXT
+@S1400: TMWIN
+@S1402: TMRET
+@S1403: TRYFREE
+@S1416: TFFREE
+@S1421: TFRET
+@S1422: PRMBOARD
+@S1425: PBLOOP
+@S1435: TRYO
+@S1442: TRYEMPTY
+@S1446: PBPX
+@S1452: PBPO
+@S1455: PBSEP
+@S1476: PBROWSEP
+@S1503: PBEND
+@S1506: PBRET
+@S1507: PRSEP
+@S1532: PSRET
+@S1533: PRBANNER
+@S1536: PBNRET
+@S1537: PRMPRMT
+@S1542: PPRET
+@S1543: PRSTR
+@S1546: PRaddr
+@S1551: PRLOOP
+@S1560: PREND
+@S1561: PRRET
+@S1562: PRMCOMPMOV
+@S1567: PCMLP
+@S1576: PCMFND
+@S1601: char_conv1
+@S1610: PCMRET
+@S1611: PRMHWIN
+@S1614: PHWRET
+@S1615: PRMCWIN
+@S1620: PCWRET
+@S1621: PRMDRAW
+@S1624: PDRET
+@S1625: PRMBADMOV
+@S1630: PBMRET
+@S1631: PRMSQTKN
+@S1634: PSTRET
+@S2000: BRDX
+@S2001: BRDO
+@S2002: TURN
+@S2003: WINFLG
+@S2004: BMOVE
+@S2005: SQIDX
+@S2006: CNTR
+@S2007: CWBD
+@S2010: CWMSK
+@S2011: CWLCNT
+@S2012: WINMOV
+@S2013: TRYBRD
+@S2014: TRYTMP
+@S2015: OCCP
+@S2016: TFMSK
+@S2017: CURMSK
+@S2020: TBIT
+@S2021: T1
+@S2022: T2
+@S2023: T3
+@S2024: PRPTR
+@S2025: ZERO
+@S2026: ONE
+@S2027: NEGZ
+@S2030: UNIT
+@S2031: FCHAR1
+@S2032: NINE_VAL
+@S2033: EIGHT_VAL
+@S2034: THREE_VAL
+@S2035: SIX_VAL
+@S2036: SQ0MASK
+@S2037: CTR4MSK
+@S2040: CORNR0
+@S2041: CORNR2
+@S2042: CORNR6
+@S2043: CORNR8
+@S2044: EDGE1
+@S2045: EDGE3
+@S2046: EDGE5
+@S2047: EDGE7
+@S2050: CHRDOT
+@S2051: CHRX
+@S2052: CHRO
+@S2053: CHRBAR
+@S2054: CHRNL
+@S2055: CHRDSH
+@S2056: WINTBL
+@S2066: WINTBLADDR
+@S2067: BNNSTR
+@S2112: PRMSTR
+@S2145: HWSTR
+@S2162: CWSTR
+@S2205: DWSTR
+@S2216: BDSTR
+@S2251: STSTR
+@S2313: CMVSTR
+@S2352: PLOSTR
+@S2365: flexo_num_tbl_ptr
+@S2366: flexo_num_tbl
+@S2400: unit_test_main
+@S2406: msgp
+@S2407: msg
+@S2443: draw_str
+@S2445: ds_loop
+@S2453: ds_get_char
+@S2457: ds_test_str_end
+@S2465: ds_ret
+@S2466: ds_lcl_charp
+@S2467: ds_argx
+@S2470: ds_argy
+@S2471: SixteenSegmentFlexop
+@S2472: SixteenSegmentFlexo
+@S2472: flexo_ucase
+@S2572: seg_tab_startp
+@S2573: seg00x
+@S2574: seg00y
+@S2575: seg00d
+@S2576: seg01x
+@S2577: seg01y
+@S2600: seg01d
+@S2601: seg02x
+@S2602: seg02y
+@S2603: seg02d
+@S2604: seg03x
+@S2605: seg03y
+@S2606: seg03d
+@S2607: seg04x
+@S2610: seg04y
+@S2611: seg04d
+@S2612: seg05x
+@S2613: seg05y
+@S2614: seg05d
+@S2615: seg06x
+@S2616: seg06y
+@S2617: seg06d
+@S2620: seg07x
+@S2621: seg07y
+@S2622: seg07d
+@S2623: seg08x
+@S2624: seg08y
+@S2625: seg08d
+@S2626: seg09x
+@S2627: seg09y
+@S2630: seg09d
+@S2631: seg10x
+@S2632: seg10y
+@S2633: seg10d
+@S2634: seg11x
+@S2635: seg11y
+@S2636: seg11d
+@S2637: seg12x
+@S2640: seg12y
+@S2641: seg12d
+@S2642: seg13x
+@S2643: seg13y
+@S2644: seg13d
+@S2645: seg14x
+@S2646: seg14y
+@S2647: seg14d
+@S2650: seg15x
+@S2651: seg15y
+@S2652: seg15d
+@S2653: seg_tab_endp
+@S2654: char_spacing
+@S2655: draw_16seg_char
+@S2660: d16c_rd
+@S2672: d16s_loop
+@S2676: d16s_loop_continue
+@S2715: d16c_draw_seg
+@S2715: d16c_read_seg_taby
+@S2720: d16c_read_seg_tabx
+@S2722: d16c_read_seg_tabdxy
+@S2724: d16c_ret
+@S2725: d16c_argx
+@S2726: d16c_argy
+@S2727: d16c_lcl_seg_map
+@S2730: d16c_lcl_loop_cnt
+@S0002: FF2_USER_MOVE
+@S0003: FF3_WW_MOVE
+@S0336: LMIR
+@S0337: RMIR
+@S1677: scope_vector
+@S0677: scope_point
+@S0001: XX
+@S0002: Oh
+@S-001: None
+@S0060: WIDTH_16SEG
+@S0110: HEIGHT_16SEG
+@S0010: OFFSET_16SEG
+@S7400: SPACING_16SEG
+@S172267: DOWN_LEFT
+@S5110: UP_RIGHT
+@S30000: HORIZ_RIGHT
+@S34110: UP_RIGHT_DIAG
+@S24267: DOWN_RIGHT_DIAG
+@S1000: P0x
+@S11000: P0y
+@S4000: P1x
+@S11000: P1y
+@S7000: P2x
+@S11000: P2y
+@S6400: P3x
+@S4400: P3y
+@S6000: P4x
+@S0000: P4y
+@S3000: P5x
+@S0000: P5y
+@S0000: P6x
+@S0000: P6y
+@S0400: P7x
+@S4400: P7y
+@S3400: P8x
+@S4400: P8y
+@E0102: print: "test_gub_input: light gun hit at cell %d", 0o000276
+@E0634: print: "light gun %o hit x=%o, y=%o, cell=%ao", 0o000641, 0o000637, 0o000640
+@E0671: print: "APM_Panic Halt: not dot, cross or naught in auto_play_move"
+@E0756: print: "panic stop"
+@N0002:  draw a point on all scopes
+@N0040:  call the init subroutine
+@N0042:  initialize autoclick to make a move
+@N0044:  branch to main display refresh loop
+@N0045:  constants
+@N0047:  close to the edge of the scope screen
+@N0053:  CALL - print "your move"
+@N0055:  negative value means "game over"
+@N0057:  if which_player is negative, then the game has ended
+@N0062:  set the game-over flag and go back to refresh
+@N0064:  indicate that we're waiting for a user move
+@N0067:  if negative, test the next input method
+@N0070:  save the user move as an arg for play_user_Move
+@N0072:  Subroutine call; Read the MIR for a button-press; -1 means "nothing to see here"
+@N0073:  branch if no MIR input
+@N0074:  this is confusing; You'd think the first cell would be Zero, but they numbered them from One on the UI
+@N0075:  save the user move as an arg for play_user_Move
+@N0076:  branch if the MIR result is not -1, play the user's move.
+@N0077:  test if there was light gun input
+@N0100:  convert -0 (cell zero) into +1 before the next CP test, then discard the result
+@N0102:  no-op to isolate the .print statement from play_a_user_move
+@N0103:  user_play_cell goes straight to the mailbox to find the current cell number.
+@N0104:  indicate that we're computing a computer move; this will only blink on for one refresh cycle
+@N0105:  do something with the light gun hit!  ; this call is for person-vs-computer play
+@N0106:  put -1 in the mailbox to indicate Empty
+@N0107:  mark the mailbox as empty
+@N0111:  the game_over flag starts set to zero by init_game_board
+@N0112:  But when the game is over, we set it to -1
+@N0114:  negative (including -0) means "no more automatic moves"
+@N0115:  initial value for the number of refresh cycles to wait for the next move
+@N0121:  unused cell at offset -0
+@N0122:  fourth move
+@N0123:  third move
+@N0124:  second move; play cell 1
+@N0125:  first move; play cell 4 (center)  (top left is cell zero)
+@N0126:   Call this routine to test for autoclick move
+@N0132:  if the timer decremented negative, reset the timer and go find an autoclick to return
+@N0133:  otherwise, decrement the timer and return "No auto move this time"
+@N0136:  reset the timer
+@N0144:  decrement the pointer; Note +1 - -1 = -0, i.e., we stop at table entry One
+@N0146:  read the cell number
+@N0150:  return -1 for No Move
+@N0152:  the Official Game is played using MIR switches for input, not the light gun (says DCL-105)
+@N0153:  read Activate Register Zero
+@N0154:  one of them ("upper", I think) is WW Bit Zero
+@N0156:  nothing to see here; return "no switch press"
+@N0161:  read the LMIR
+@N0163:  keep the lowest four bits; return the rest
+@N0165:  two horizontal lines first
+@N0166:  subroutine to collect the current board from the oxo algorithm
+@N0176:  segment count should be negative, ie, we will incr the value until positive
+@N0204:  two vertical lines next
+@N0213:  segment count should be negative, ie, we will incr the value until positive
+@N0221:  nine passes; var should be 8; loop count is negative
+@N0232:  clear the light gun mailbox, i.e., set it to "no hit"
+@N0243:  draw the X, O or dot; this call may have a side-effect of seeing a light-gun hit
+@N0244:  increment pointers and loop count for the next pass
+@N0257:  see definition for this number
+@N0260:  clear the sign bit in case of "Game Over"
+@N0263:  set the location to draw a string
+@N0267:  get the pointer to the string into ACC
+@N0270:  "print" the string on the screen
+@N0271:  draw the symbol to call for a game reset
+@N0272:  return from the 'board display' subroutine
+@N0273:  ephemeral loop state variables
+@N0276:  used to pass light-gun hits back from the drawing routine.  Negative means "no hit"
+@N0277:  used only in top-level routines for drawing the game board
+@N0300:  Arguments to pass into routines
+@N0302:  pointer to x_addr
+@N0306:  The var, less the sign bit, is used to index player_icon_table below
+@N0307:  These two constants control where the X or O indicator lands on the screen
+@N0313:  The table is a pointer to subroutine entry points
+@N0316: dct3:       .word draw_tie
+@N0324:             .flexl "PLAYER X"
+@N0335:             .flexl "PLAYER O"
+@N0346:             .flexl "X WIN"
+@N0354:             .flexl "O WIN"
+@N0362:             .flexl "DRAW"
+@N0367:  whether the cell contains a dot, a naught or a cross
+@N0370:  Game Board State
+@N0423:  save the return address
+@N0425:  shift from 0-15 axis to -8 to +7
+@N0426:  multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0427:  initialize vector gen
+@N0431:  shift from 0-15 axis to -8 to +7
+@N0433:  re-fetch the next x_arg
+@N0434:  multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0435:  Draw a segment with x=ACC
+@N0437:  increment the segment counter
+@N0442:  save the return address
+@N0444:  shift from 0-15 axis to -8 to +7
+@N0445:  multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0446:  initialize vector gen with the y-coord in ACC
+@N0450:  shift from 0-15 axis to -8 to +7
+@N0451:  gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0452:  Draw a segment with x=ACC
+@N0454:  increment the segment counter
+@N0457:  save return address
+@N0460:  test to see if there's another move allowed
+@N0461:  if the var is negative, we're done playing
+@N0462:  assuming the game's not over, we continue to draw
+@N0466:  multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0467:  initialize point gen with the y-coord in ACC
+@N0473:  shift from 0-15 axis to -8 to +7
+@N0474:  gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0475:  Draw a pont with x=ACC
+@N0476:  read the light gun
+@N0477:  call a subroutine to handle the light gun.  The gun number is in ACC
+@N0501:  args are passed as addresses
+@N0505:  shift from 0-15 axis to -8 to +7
+@N0506:  multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0507:  initialize vector gen with the y-coord in ACC
+@N0513:  shift from 0-15 axis to -8 to +7
+@N0514:  gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0515:  Draw a segment with x=ACC
+@N0516:  Draw a segment with x=ACC
+@N0517:  Draw a segment with x=ACC
+@N0520:  Draw a segment with x=ACC
+@N0522:  args are passed as addresses
+@N0526:  shift from 0-15 axis to -8 to +7
+@N0527:  multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0530:  initialize vector gen with the y-coord in ACC
+@N0534:  shift from 0-15 axis to -8 to +7; plus an offset
+@N0535:  gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0536:  Draw a segment with x=ACC
+@N0537:  Draw a segment with x=ACC
+@N0540:  shift the x-pos two cells right
+@N0541:  Draw a segment with x=ACC
+@N0542:  Draw a segment with x=ACC
+@N0544:  args are passed as addresses
+@N0550:  shift from 0-15 axis to -8 to +7
+@N0551:  multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0552:  initialize vector gen with the y-coord in ACC
+@N0556:  shift from 0-15 axis to -8 to +7
+@N0557:  gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0560:  Draw a segment with x=ACC
+@N0561:  Draw a segment with x=ACC
+@N0562:           rc diag_dn_right_seg  ; Draw a segment with x=ACC
+@N0563:  args are passed as addresses
+@N0567:  shift from 0-15 axis to -8 to +7
+@N0570:  multiply by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0571:  initialize vector gen with the y-coord in ACC
+@N0575:  shift from 0-15 axis to -8 to +7
+@N0576:  gb_state_arg by 128 to get +/- 1024 screen coords, multiply by 64 to get to bit 0
+@N0577:  Draw a segment with x=ACC
+@N0600:  Draw a segment with x=ACC
+@N0603:             slr 12
+@N0604:  initialize point gen with the y-coord in ACC
+@N0606:  Draw a pont with x=ACC
+@N0607:  read the light gun
+@N0610:  call a subroutine to handle the light gun.
+@N0612:  The light gun number is passed to this routine in ACC
+@N0616:  load the x value of the cell's address in the grid
+@N0617:  divide the cell x address by four to get 1, 2, or 3
+@N0620:  change from one-base to zero-base
+@N0622:  repeat the process for the y coordinate
+@N0624:  load the y value of the cell's address in the grid
+@N0625:  divide the cell y address by four to get 1, 2, or 3
+@N0626:  invert to get negative number
+@N0627:  change from one-base to zero-base and invert order
+@N0631:  multiply y by three, i.e., double then add address
+@N0633:  add x to get the cell number in the range 0-8
+@N0634:  the cell number of the hit is passed below in ACC
+@N0635:  display the move
+@N0637:  temp vars for figuring the cell number in light_gun_cell_hit
+@N0642:  are the only ones with dots in them, and that's all the light gun can see
+@N0643:  figure the pointer to the first cell draw function in game table
+@N0644:   thats table_start + 3*cwll_num + 2
+@N0645:  multiply cell number by three for a table offset
+@N0651:  figure out what the new cell should be
+@N0654:  ACC should now contain the address of the X or O display routine
+@N0655:  store the display routine to the game state table
+@N0656:  now switch to the other player for the next move
+@N0657:  xor a 1 into the LSB; i.e. 0->1 or 1->0
+@N0663:  from the mailbox
+@N0664:  fetch the cell number
+@N0665:  figure the pointer to the first cell draw function in game table
+@N0666:  CALL to post the user's move and respond
+@N0672:  static addresses
+@N0675:  Initialize the game state
+@N0676:  Reset the Move Counter to Zero
+@N0677:  reset the Claude game state vars
+@N0703:  calculate the offset into the game state table for this cell
+@N0704:  offset to third table entry
+@N0705:  store the pointer to the first entry
+@N0706:  nine passes; var should be 8; loop count is negative
+@N0710:  fetch the address to use for the initial function pointer for each cell
+@N0711:  set a table entry to the default pointer
+@N0712:  advance the pointer to the next entry
+@N0716:  around the loop until we've hit all nine entries
+@N0721:  clear the "game over" flag
+@N0725: ;;;;;
+@N0730:  Constants
+@N0741:  loop counter for 12 iterations
+@N0743:  decimal value of screen coord corresponding to two cells in width
+@N0744:  two plus sign bit
+@N0745:  two plus sign bit
+@N0746:  three plus sign bit
+@N0747:  +32 in the top half of the word
+@N0750:  +32 in the bottom half of the word
+@N0755:  ---------------------------------------
+@N0757:  Constants
+@N0760:  for a loop of three
+@N0763:  for a loop of nine passes
+@N0765:  BigNum
+@N0770: =====================================================================================
+@N0777:  this location contains a function pointer to say how to display the cell
+@N1002:  CALL - returns
+@N1007:  zero -> not X
+@N1010:  JUMP
+@N1014:  zero -> not O
+@N1015:  JUMP
+@N1017:  JUMP
+@N1021:  JUMP
+@N1024:  increment pointers and loop count for the next pass
+@N1027:  test for loop end
+@N1032:  zero -> done
+@N1035:  =============================================================
+@N1036:  save the input cell number
+@N1037:  negative if index < 9
+@N1041:  JUMP - no return
+@N1042:  test to see if the input is too small
+@N1043:  test for less than or equal to -1 ; Watch out for Negative Zero :-(
+@N1044:  -1 plus +1 should be -0
+@N1046:  CALL - returns
+@N1050:  Check square not taken by O:
+@N1053:  zero -> not taken by O
+@N1054:  JUMP - no return
+@N1055:  Check square not taken by X:
+@N1060:  zero -> not taken by O
+@N1061:  JUMP - no return
+@N1062:  Place human's X:
+@N1065:  print the users move on the Flexo
+@N1075:  Check if human won:
+@N1103:  CALL - returns
+@N1106:  zero -> human did not win
+@N1107:  JUMP - no return
+@N1110:  Check draw:
+@N1113:  JUMP - no return (zero -> draw)
+@N1114:  CALL - returns
+@N1115:  Place computer's O:
+@N1121:  Check if computer won:
+@N1127:  CALL - returns
+@N1132:  zero -> computer did not win
+@N1133:  JUMP - no return
+@N1134:  CALL - returns
+@N1135:  CALL - returns
+@N1137:  CALL - returns
+@N1140:  never mind that call stack ;-( Just go back for new input
+@N1141:  CALL - returns
+@N1142:  never mind that call stack ;-( Just go back for new input
+@N1143:  CALL - returns
+@N1144:  CALL - returns
+@N1147:  JUMP - no return
+@N1150:  CALL - returns
+@N1151:  CALL - returns
+@N1154:  JUMP - no return
+@N1155:  CALL - returns
+@N1156:  CALL - returns
+@N1161:  JUMP - no return
+@N1162:  =============================================================
+@N1163:  CNTR = shift count = square index
+@N1170:  zero -> done
+@N1171:  JUMP - no return
+@N1173:  shift right 1, hold
+@N1200:  JUMP - no return
+@N1203:  =============================================================
+@N1205:  reload CWLD to point at WINTBL[0]
+@N1206:  address field = WINTBL+i
+@N1212:  zero iff CWBD contains all bits of CWMSK
+@N1214:  zero -> win!
+@N1215:  advance to next win mask
+@N1222:  zero -> all lines checked, no win
+@N1223:  JUMP - no return (skip td reload)
+@N1226:  JUMP - no return
+@N1230:  =============================================================
+@N1231:  --- 1. Try to win ---
+@N1233:  CALL - returns
+@N1236:  zero -> no win found
+@N1237:  JUMP - no return
+@N1240:  --- 2. Try to block ---
+@N1242:  CALL - returns
+@N1245:  zero -> no block found
+@N1246:  JUMP - no return
+@N1247:  --- 3. Center ---
+@N1257:  zero -> center is free
+@N1260:  JUMP - no return
+@N1263:  JUMP - no return
+@N1264:  --- 4. Corners ---
+@N1265:  CALL - returns
+@N1267:  zero -> corner 0 free
+@N1270:  JUMP - no return
+@N1272:  CALL - returns
+@N1275:  JUMP - no return
+@N1277:  CALL - returns
+@N1302:  JUMP - no return
+@N1304:  CALL - returns
+@N1306:  zero -> all corners taken
+@N1307:  JUMP - no return
+@N1310:  --- 5. Edges ---
+@N1311:  CALL - returns
+@N1314:  JUMP - no return
+@N1316:  CALL - returns
+@N1321:  JUMP - no return
+@N1323:  CALL - returns
+@N1326:  JUMP - no return
+@N1330:  CALL - returns
+@N1332:  zero -> all edges taken (shouldn't happen)
+@N1333:  JUMP - no return
+@N1335:  =============================================================
+@N1342:  CALL - returns
+@N1344:  Check if square free:
+@N1352:  zero -> free
+@N1353:  JUMP - no return
+@N1365:  CALL - returns
+@N1370:  zero -> no win
+@N1371:  JUMP - no return
+@N1376:  zero -> all squares tried
+@N1377:  JUMP - no return
+@N1403:  =============================================================
+@N1413:  zero -> free
+@N1414:  occupied: return -0
+@N1415:  JUMP - no return
+@N1422:  =============================================================
+@N1426:  CALL - returns
+@N1433:  zero -> not X
+@N1434:  JUMP - no return
+@N1440:  zero -> not O
+@N1441:  JUMP - no return
+@N1445:  JUMP - no return
+@N1451:  JUMP - no return
+@N1461:  zero -> row separator after row 0
+@N1465:  zero -> row separator after row 1
+@N1471:  zero -> done
+@N1475:  JUMP - no return
+@N1501:  CALL - returns
+@N1502:  JUMP - no return
+@N1507:  =============================================================
+@N1533:  =============================================================
+@N1534:  CALL - returns
+@N1537:  =============================================================
+@N1540:  CALL - returns
+@N1543:  =============================================================
+@N1552:  negative (-1) -> done
+@N1557:  JUMP - no return
+@N1560:  JUMP - no return
+@N1562:  =============================================================
+@N1563:  CALL - returns
+@N1570:  CALL - returns
+@N1573:  zero -> found matching square
+@N1575:  JUMP - no return
+@N1602:                ad   FCHAR1
+@N1611:  =============================================================
+@N1612:  CALL - returns
+@N1616:  CALL - returns
+@N1622:  CALL - returns
+@N1626:  CALL - returns
+@N1632:  CALL - returns
+@N1635:  =============================================================
+@N2006:  MAKHOT loop counter
+@N2017:  MAKHOT shifted mask
+@N2025:  =============================================================
+@N2031:  Flexo code for '1' (check Table 1)
+@N2056:  row 0: sq0|sq1|sq2
+@N2057:  row 1: sq3|sq4|sq5
+@N2060:  row 2: sq6|sq7|sq8
+@N2061:  col 0: sq0|sq3|sq6
+@N2062:  col 1: sq1|sq4|sq7
+@N2063:  col 2: sq2|sq5|sq8
+@N2064:  diag0: sq0|sq4|sq8
+@N2065:  diag1: sq2|sq4|sq6
+@N2067:  =============================================================
+@N2365:  table to convert a cell number into a flexo code
+@N2405: si 0
+@N2443:  ds_argx and ds_argy give the initial (x, y) location
+@N2444:  save the character pointer passed in the ACC
+@N2451:  walk the string from start to finish
+@N2453:  fetch the next character in the string
+@N2454:  actually draw the character!
+@N2455:  prepare for next char in loop
+@N2460:  test for a negative number as the marker for the string end; branch out if done
+@N2466:  pointer to the next character to display
+@N2471:  segments should be lit for each symbol.
+@N2472:  /* # */
+@N2473:  /* # */
+@N2474:  /* E */
+@N2475:  /* 8 */
+@N2476:  /* # */
+@N2477:  /* _ */
+@N2500:  /* A */
+@N2501:  /* 3 */
+@N2502:  /* (space) */
+@N2503:  /* : */
+@N2504:  /* S */
+@N2505:  /* 4 */
+@N2506:  /* I */
+@N2507:  /* / */
+@N2510:  /* U */
+@N2511:  /* 2 */
+@N2512:  /* (del) */
+@N2513:  /* ) */
+@N2514:  /* D */
+@N2515:  /* 5 */
+@N2516:  /* R */
+@N2517:  /* 1 */
+@N2520:  /* J */
+@N2521:  /* 7 */
+@N2522:  /* N */
+@N2523:  /* ( */
+@N2524:  /* F */
+@N2525:  /* 6 */
+@N2526:  /* C */
+@N2527:  /* - */
+@N2530:  /* K */
+@N2531:  /* # */
+@N2532:  /* T */
+@N2533:  /* # */
+@N2534:  /* Z */
+@N2535:  /* (del) */
+@N2536:  /* L */
+@N2537:  /* (space) */
+@N2540:  /* W */
+@N2541:  /* # */
+@N2542:  /* H */
+@N2543:  /* (space) */
+@N2544:  /* Y */
+@N2545:  /* # */
+@N2546:  /* P */
+@N2547:  /* # */
+@N2550:  /* Q */
+@N2551:  /* # */
+@N2552:  /* O */
+@N2553:  /* (del) */
+@N2554:  /* B */
+@N2555:  /* # */
+@N2556:  /* G */
+@N2557:  /* # */
+@N2560:  /* 9 */
+@N2561:  /* # */
+@N2562:  /* M */
+@N2563:  /* (del) */
+@N2564:  /* X */
+@N2565:  /* # */
+@N2566:  /* V */
+@N2567:  /* (del) */
+@N2570:  /* 0 */
+@N2571:  /* (del) */
+@N2572:  // segment in the 16-segment display character.
+@N2573:    {P0, P1}
+@N2576:    {P1, P2},
+@N2601:    {P2, P3},
+@N2604:    {P3, P4},
+@N2607:    {P4, P5},
+@N2612:    {P5, P6},
+@N2615:    {P6, P7},
+@N2620:    {P7, P0},
+@N2623:    {P0, P8},
+@N2626:    {P1, P8},
+@N2631:    {P2, P8},
+@N2634:    {P3, P8},
+@N2637:    {P4, P8},
+@N2642:    {P5, P8},
+@N2645:    {P6, P8},
+@N2650:    {P7, P8},
+@N2655:  Character position is given by the args d16c_argx, d16c_argy.
+@N2656:  add the table start addr to the offset in ACC
+@N2660:  fetch the bit map
+@N2662:  prep for 16 times around the loop
+@N2664:  walk the segment table back to front
+@N2665:  first table entry
+@N2666:         td tmp_tabx
+@N2667:  second table entry
+@N2670:         td tmp_taby
+@N2671:  third table entry
+@N2672:  no op
+@N2673:         ca 0
+@N2674:  end of debug hack
+@N2675:  branch if most significant bit is on
+@N2677:  shift AC left by one bit
+@N2704:         td tmp_tabx
+@N2707:         td tmp_taby
+@N2714:  bail out when count exhausted
+@N2715:  the SI uses the AC to set Y coord
+@N2717:  initialize vector gen with the y-coord in ACC
+@N2720:  the RC uses AC to set X coord and mem address for the vector length
+@N2724: ; Return from draw_16seg_char
+@N2731:  *********************************************************************************************************/

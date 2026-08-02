@@ -1015,6 +1015,8 @@ class PanelClass:
                 # The LED is actuall blinked on when it sees the timer set to this specific timeout value
                 #  i.e., don't change self.BLINK_TIMOUT; go look for the original definition!
                 self.panel_mWW.blink_single_step = self.BLINK_TIMEOUT
+                if self.hnf_program_dispatcher:
+                    self.hnf_program_dispatcher.reset_info_screen_to_current(cb)
             return alarm_clear_flag_false
 
         if sw == "Examine":  # don't mess with the PC, just pick up from the last address

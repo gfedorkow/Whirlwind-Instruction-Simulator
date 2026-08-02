@@ -434,20 +434,41 @@ class SimParamTokenizer (Tokenizer):
 
 
 class SimParam:
-    def __init__ (self):
-        self.cmd_line_args = {}
+    def __init__ (self, cb=None):
+        self.cb = cb
+        self.cmd_line_args = {}  # this is here to override sim params with settings from the cmd line
         self.sim_param_dict = {}
+        # The assembler can pass anything as a sim param; this list is "informative", i.e. it doesn't
+        # enforce the acceptable tags, it just issues a warning for ones that aren't "known".
+        self.default_params = {"isa": "isa1958",
+                               "Radar": False,
+                               "CrtFadeDelay": 0,
+                               "NoAlarmStop": False,
+                               "AutoClick": False,
+                               "CrtOffsetX": 0,
+                               "CrtOffsetY": 0,
+                               "CrtGain": 1.0
+                               }
+
+        self.sim_param_dict = self.default_params.copy()
+
+    def is_simparam_tag_valid(self, tag):
+        return (tag in self.default_params)
 
     def reset_simparams(self):
-        self.sim_param_dict = {}
+        self.sim_param_dict = self.default_params.copy()
 
     def set_simparam(self, tag, val):
         self.sim_param_dict[tag] = val
+        if not self.is_simparam_tag_valid(tag):
+            self.cb.log.warn("unknown tag '%s' added to sim_param_dict" % tag)
 
     def set_simparam_override(self, tag, val):
         self.cmd_line_args[tag] = val
 
     def get_simparam(self, tag):
+        if not self.is_simparam_tag_valid(tag):
+            self.cb.log.warn("getting unknown tag '%s' from sim_param_dict" % tag)
         if tag in self.cmd_line_args:
             return self.cmd_line_args[tag]
         if tag in self.sim_param_dict:
@@ -476,6 +497,8 @@ class SimParam:
                 break       # Prob should be error
             valueNum = self.strToInt (valueStr)
             value = valueNum if valueNum is not None else valueStr
+            if not self.is_simparam_tag_valid(key):
+                self.cb.log.warn("unknown tag '%s' added to sim_param_dict" % key)
             self.sim_param_dict[key] = value
         return self.sim_param_dict
     # public
@@ -702,7 +725,7 @@ class ConstWWbitClass:
         else:
             self.logDirSpecified = False
             self.logDir = "./"
-        self.sim_params = SimParam()
+        self.sim_params = SimParam(self)
 
         self.cpu = None
 
@@ -2084,20 +2107,22 @@ class ScreenDebugWidgetClass:
             # LAS 4/8/26 Added min and max here as a placeholder -- no checking is performed yet
             min = self.mins[wgt]
             max = self.maxes[wgt]
+            # I originally thought this should be a signed number, i.e. -32K to +32K, but that's just too
+            # confusing when stirring in ones complement and -0.  So it's just a 16-bit unsigned int
             if direction_up:
                 wr = rd + incr
-                if rd <= 0o77777 and wr >= 0o77777:  # don't roll over from Max-Plus to Max-Minus
-                    wr = 0o77777
-                if wr >= 0o177777:
-                    wr = (wr + 1) & 0o77777  # this corrects for ones-complement going from -1 to +0
+#                if rd <= 0o77777 and wr >= 0o77777:  # don't roll over from Max-Plus to Max-Minus
+#                    wr = 0o77777
+#                if wr >= 0o177777:
+#                    wr = (wr + 1) & 0o77777  # this corrects for ones-complement going from -1 to +0
                 if wr > max:
                     wr = max
             else:
                 wr = rd - incr
-                if rd >= 0o100000 and wr <= 0o77777:  # don't roll over from Max-Minus to Max-Plus
-                    wr = 0o100000
-                if wr < 0:   # if it turns to a Pythonic negative, subtract one for 1's comp, and mask to 16 bits
-                    wr = (wr - 1) & 0o177777  # this corrects for ones-complement going from +0 to -1
+#                if rd >= 0o100000 and wr <= 0o77777:  # don't roll over from Max-Minus to Max-Plus
+#                    wr = 0o100000
+#                if wr < 0:   # if it turns to a Pythonic negative, subtract one for 1's comp, and mask to 16 bits
+#                    wr = (wr - 1) & 0o177777  # this corrects for ones-complement going from +0 to -1
                 if wr < min:
                     wr = min
 

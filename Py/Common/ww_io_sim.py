@@ -708,6 +708,9 @@ class DisplayScopeClass:
 
 #        self.crt = wwinfra.XwinCrt(cb)
         self.crt = None  # don't open the xwin display until the WW application actually tries to select it.
+        self.CrtOffsetY = 0
+        self.CrtOffsetX = 0
+        self.CrtGain = 1.0
 
     def convert_scope_coord(self, ac):
         # the vertical axis for stuff coming up is stored in the left-most 11 bits of the accumulator.
@@ -761,6 +764,12 @@ class DisplayScopeClass:
             return None
 
     def si(self, io_address, acc, _cm):
+        # These params "should be" cached and read only once _after each read_core_...  But since this
+        # routine doesn't know when that is, I'm reading from the params dict on every graphics Select
+        self.CrtOffsetY = self.cb.sim_params.get_simparam("CrtOffsetY")
+        self.CrtOffsetX = self.cb.sim_params.get_simparam("CrtOffsetX")
+        self.CrtGain = self.cb.sim_params.get_simparam("CrtGain")
+
         # If this is the first reference to the CRT Display,
         # open one of the two possible graphical displays, either the XWin laptop display, or the hardware
         # interface to an analog scope display using Rainer Glaschik's RasPi I/O module
@@ -790,7 +799,7 @@ class DisplayScopeClass:
             self.scope_mode = self.DISPLAY_MODE_CHARACTERS
 
         self.scope_select = ~self.cb.DISPLAY_POINTS_ADDR_MASK & io_address
-        self.scope_vertical = self.convert_scope_coord(acc)
+        self.scope_vertical = self.convert_scope_coord(acc) + self.CrtOffsetY
 
         if self.cb.TraceQuiet is False:
             getiolog().info("DisplayScope SI: configured display mode %s, scope 0o%o, vertical=0o%o" %
@@ -804,7 +813,7 @@ class DisplayScopeClass:
         # if it's a character, the operand address part of the instruction gives the address of a
         #   memory location containing the bit mask of the seven-segment character to be rendered,
         #   in bits 1-7.
-        self.scope_horizontal = self.convert_scope_coord(acc)
+        self.scope_horizontal = self.convert_scope_coord(acc) + self.CrtOffsetX
         if self.scope_mode == self.DISPLAY_MODE_CHARACTERS:
             # add each new character to a Pending list; draw them when the program asks for light gun input
             mask = (operand >> 8) & 0o177  # it's a seven-bit quantity to turn on character segments
@@ -907,7 +916,9 @@ class DisplayScopeClass:
         if self.crt is None:  # first time there's a CRT instruction, we'll init the display modules
             self.init_qhqd_scope()
 
-        self.scope_horizontal = self.convert_scope_coord(acc)
+        self.CrtOffsetX = self.cb.sim_params.get_simparam("CrtOffsetX")
+#        self.CrtGain = self.cb.sim_params.get_simparam("CrtGain")
+        self.scope_horizontal = self.convert_scope_coord(acc) + self.CrtOffsetX
 
         if self.cb.TraceQuiet is False:
             getiolog().info("DisplayScope QH: configured display mode %s, scope 0o%o, horizontal=0o%o" %
@@ -921,11 +932,13 @@ class DisplayScopeClass:
     # guy says: I'm assuming that QF is like QD except that it shows on a different scope
     #  (note M-1083 Interim Display Equipment and Temporary Operation qf: F - Scope Display)
     def qd_qf(self, _operand, acc, scope):
+        self.CrtOffsetY = self.cb.sim_params.get_simparam("CrtOffsetY")
+#        self.CrtGain = self.cb.sim_params.get_simparam("CrtGain")
         if scope == self.cb.SCOPE_AUX:
             color=(1.0, 1.0, 0.0)  # Scope F / aux scope should be yellow on the PC screen
         else:
             color=(0.0, 1.0, 0.0)  # default to green
-        self.scope_vertical = self.convert_scope_coord(acc)
+        self.scope_vertical = self.convert_scope_coord(acc) + self.CrtOffsetY
         if not self.cb.TraceQuiet:
             getiolog().info("DisplayScope QD/QF: record to scope, mode=Point, x=0o%o, y=0o%o" %
                   (self.scope_horizontal, self.scope_vertical))

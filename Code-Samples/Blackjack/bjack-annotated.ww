@@ -17,6 +17,9 @@
                         ;                        .WW_TapeID (None)
 
 
+			; shift the whole display down a bit to fit the screen better
+                        .simparam CrtOffsetY = -300
+                        .simparam CrtOffsetX = -50
 
 
 

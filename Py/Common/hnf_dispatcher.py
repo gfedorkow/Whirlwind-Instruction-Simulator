@@ -73,7 +73,7 @@ class HnfDispatcherClass:
         else:
             self.hnf_restart_time = 0
 
-        self.default_attract_timeout = 7  # Attract Screen cycle timer, measured in seconds
+        self.default_attract_timeout = 9  # Attract Screen cycle timer, measured in seconds
         # This dispatch table defines which programs should run on the exhibit.
         # Entries 0-7 are bound to the eight least-significant MIR buttons on the HNF display
         # Entries 8 and beyond are automatically selected by stepping through the default displays
@@ -120,7 +120,7 @@ class HnfDispatcherClass:
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 13,
                     switch_args=[["FlipFlopPreset02", "4"]], MIR_switch_number = 5))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 13
-            "Tic-Tac-Toe", "tic-tac-toe.acore", self.default_attract_timeout, 14,
+            "Tic-Tac-Toe", "auto-tic-tac-toe.acore", self.default_attract_timeout, 14,
                     MIR_switch_number = 5))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 14
@@ -268,16 +268,23 @@ class HnfDispatcherClass:
                 print("HNF-Dispatch: Override switch %s to val 0o%s" % (sw_name, sw_val))
                 cpu.cpu_switches.parse_switch_directive([sw_name, sw_val])
 
-    def send_selection_to_tty(self, selection):
-        text = "%s\r\n" % selection
-        self.tty.write(text.encode('ascii'))
+
+    # call this when tranistioning from Stop to Run states
+    def reset_info_screen_to_current(self, cb):
+        if self.tty:        # signal to an external media display that we're running a new program
+            self.send_selection_to_tty("%d" % self.last_dispatcher_press)
 
 
     # Jurgen asked for a command code to the info screen if the sim enters "Alarm" state
     def switch_to_alarm_state(self):
         if self.tty:
-            text = "E\r\n"
-            self.tty.write(text.encode('ascii'))
+            self.send_selection_to_tty("E")
+
+    def send_selection_to_tty(self, selection):
+        print("sending to Info Screen: '%s'" % selection)
+        text = "%s\r\n" % selection
+        self.tty.write(text.encode('ascii'))
+
 
     def test_tty_rx_activity(self):
         ret = None

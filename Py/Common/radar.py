@@ -297,6 +297,7 @@ class RadarClass:
         if self.slots_into_rotation >= self.readings_per_rotation:
             self.slots_into_rotation = 0
             self.antenna_revolutions += 1
+
         return ret
 
 

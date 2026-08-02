@@ -25,6 +25,11 @@ import control_panel
 import time
 import wwinfra
 import analog_scope   # import this just to see if UseGun2 is set or not
+import queue
+  # example usage of queue() object
+  #  queue.put(1)
+  #  while not queue.empty():
+  #    print(queue.get())
 
 MwwPanelDebug = False    # turn on to see what's going on with the control panel code
 
@@ -92,7 +97,7 @@ class PanelMicroWWClass:
         try:
             i2c_bus = I2C(1)
             bus = i2c_bus.bus
-            gp_sw = gpio_switches(self.log, hnf_mode=hnf_mode)  # these are the switches and LEDs on Rainer's "Tap Board"
+            self.gp_sw = gpio_switches(self.log, hnf_mode=hnf_mode)  # these are the switches and LEDs on Rainer's "Tap Board"
         except IOError:
             self.micro_ww_module_present = False
             self.log.warn("No MicroWhirlwind Panel I2C/gpio Found")
@@ -108,7 +113,7 @@ class PanelMicroWWClass:
                 gpio.setup(self.pin_audio_click, gpio.OUT)
 
             self.md = MappedRegisterDisplayClass(self.log, i2c_bus, hnf_hardware_present=hnf_hardware_present)  # pass in cb.log for printing log messages
-            self.sw = MappedSwitchClass(self.log, i2c_bus, self.md)
+            self.sw = MappedSwitchClass(self.log, i2c_bus, self.md, self.gp_sw)
             # I think there's only one set of lights that need to be initialized from CB
             # The rest come from the ReadIn operation
             if MwwPanelDebug: self.log.info("Preset D/F Scope Selector switches to %d" % cb.which_scope)
@@ -143,7 +148,7 @@ class PanelMicroWWClass:
 #                    }
 
     def check_buttons(self):
-        button_press = self.sw.check_buttons()
+        (button_press, more) = self.sw.check_buttons()
         return button_press
 
     # Jurgen's "light gun" produces a One on isGun1 when the trigger is pulled
@@ -660,14 +665,15 @@ class MappedRegisterDisplayClass:
 
 
 class MappedSwitchClass:
-    def __init__(self, log, i2c_bus, mapped_display):
+    def __init__(self, log, i2c_bus, mapped_display, gpio_switches):
         self.log = log
         self.tca84_u3 = tc_init_u3(log, i2c_bus.bus, TCA8414_0_ADDR)
         self.tca84_u4 = tc_init_u4(log, i2c_bus.bus, TCA8414_1_ADDR)
+        self.gp_sw = gpio_switches
         # self.i2c_bus = smbus2.SMBus(1)
         if MwwPanelDebug: self.log.info("  tca init done")
         self.mir_button_pressed = False  # This is a mailbox to signal six levels up that a button has been pressed
-
+        self.pending_u4_queue = queue.SimpleQueue()
 
         self.tca84_u4.init_gp_out()
         if MwwPanelDebug: self.log.info("  TCA8414 init done")
@@ -701,12 +707,58 @@ class MappedSwitchClass:
         self.fn_buttons_def = (("Examine", "Read In", "Order-by-Order", "Start at 40", "Start Over", "Restart", "Stop", "Clear Alarm"),
                                ("Stop on Addr", "Stop on CK", "Stop on S1", "F-Scope", "D-Scope", "unused", "unused", "Rotary Push"))
         self.encoder_state = [0,0]
+        #debug framework
+        self.last_encoder_state = [1, 1]
+        self.last_encoder_dq_button = 0
+        self.last_encoder_enq_button = 0
+        #end debug framework
+
+    def prefetch_u4_button_events(self):
+        if tca_qlen := self.tca84_u4.available() > 0:
+            key = self.tca84_u4.getEvent()
+            self.pending_u4_queue.put(key)
+            # debug framework
+            py_qlen = self.pending_u4_queue.qsize()
+            swstr = ["released", "pressed"]
+            s = swstr[key >> 7]  # look at bit Seven
+            k = (key & 0o177) - 111         # convert key number to 0 or 1
+            if k == self.last_encoder_enq_button:
+                self.gp_sw.flipKey(4)
+                self.log.warn("unexpected second change from encoder pin/key %d on enqueue, transition %s" % (k, s))
+            print("prefetch U4 button %d is %s (key=%d), tca-qlen=%d, py-qlen=%d" % (k, s, key, tca_qlen, py_qlen))
+            self.last_encoder_enq_button = k
 
 
-    def check_buttons(self):
+    def process_u4_button_event(self, key):
         button_press = None
+        pressed = key & 0x80
+        key &= 0x7F
+        if (key == 111 or key == 112):  # siphon off rotary encoder actions from U4 first,
+            # then get the rest of the buttons
+            button_press = self.fn_rotary_decode(pressed, key - 111)  # the two codes come in as 111 and 112
+
+        elif pressed:  # I'm ignoring "released" events
+            key -= 1
+            row = key // 10
+            col = key % 10
+            button_press = self.u4_switch_map[col](row, col)
+            if MwwPanelDebug: self.log.info("Pressed U4 %s: row=%d, col=%d" % (button_press, row, col))
+        return button_press
+
+    # Why the special handling for the U4 switch scanner...
+    # For Ordinary button pushes, the key scanner saves up button press events in a small internal
+    # fifo, and we handle them one at a time.  The scanner is accessed "many" times per second, (not
+    # super-fast) but button pushes normally happen one a time, and if someone leans on the panel,
+    # there's no harm in dropping excess presses.
+    # But the rotary encoder can generate transitions pretty quickly, so I'll collect up key events
+    # faster than the normal scanning rate, and play them out later during the regular update cycle.
+    def check_buttons(self):
+        self.tca84_u4.test_overflow()
+        button_press = None
+        more = False
         if self.tca84_u3.available() > 0:
             key = self.tca84_u3.getEvent()
+            more = self.tca84_u3.available()
             pressed = key & 0x80
             if pressed:     # I'm ignoring "released" events
                 key &= 0x7F
@@ -717,29 +769,34 @@ class MappedSwitchClass:
                 self.button_pressed = True
                 if MwwPanelDebug: self.log.info("Pressed U3 %s: row=%d, col=%d" % (button_press, row, col))
                 if button_press:
-                    return button_press
-        elif self.tca84_u4.available() > 0:
-            key = self.tca84_u4.getEvent()
-            pressed = key & 0x80
-            key &= 0x7F
-            if (key == 111 or key == 112):   # siphon off rotary encoder actions from U4 first,
-                                            # then get the rest of the buttons
-                button_press = self.fn_rotary_decode(pressed, key - 111)  # the two codes come in as 111 and 112
+                    return (button_press, more)
 
-            elif pressed:     # I'm ignoring "released" events
-                key -= 1
-                row = key // 10
-                col = key % 10
-                button_press = self.u4_switch_map[col](row, col)
-                if MwwPanelDebug: self.log.info("Pressed U4 %s: row=%d, col=%d" % (button_press, row, col))
-#        else:
-#            if RasPi == False:
-#                if msvcrt.kbhit():
-#                    print("you pressed ", msvcrt.getch(), " so now i will sleep")
-#                    time.sleep(3)
-#                    button_press = input("type function button name: ")
+        while not self.pending_u4_queue.empty():
+            key = self.pending_u4_queue.get()
+            more = not self.pending_u4_queue.empty()
+            #debug framework
+            swstr = ["released", "pressed"]
+            s = swstr[key >> 7]  # look at bit Seven
+            k = (key & 0o177) - 111  # convert key number to 0 or 1
+            print("catch up on U4 button %d is %s (key=%d)" % (k, s, key))
+            #end debug framework
+            button_press = self.process_u4_button_event(key)
+            if button_press:
+                return (button_press, more)
+        # we _should_ be able to process any clicks in the TCA queue now, having caught up
+        # with the prefetches, but I'm trying to reduce variables to debug the missing transition states
+#        if self.tca84_u4.available() > 0:
+#            key = self.tca84_u4.getEvent()
+#            #debug framework
+#            swstr = ["released", "pressed"]
+#            s = swstr[key >> 7]  # look at bit Seven
+#            k = (key & 0o177) - 111  # convert key number to 0 or 1
+#            print("non-queued event on U4 button %d is %s (key=%d)" % (k, s, key))
+#            #end debug framework
+#            button_press = self.process_u4_button_event(key)
+#            more = self.tca84_u4.available()
 
-        return button_press
+        return (button_press, more)
 
 
     def fn_no_sw(self, row, col):
@@ -850,6 +907,15 @@ class MappedSwitchClass:
     # 'which_key' is which one of the two Rotary phases changed.
     def fn_rotary_decode(self, pressed, which_key):
 
+        # debug framework
+        if pressed == self.last_encoder_state[which_key]:
+            self.log.warn("Duplicate rotary encoder state; encoder pin %d, state %d" % (which_key, pressed))
+        self.last_encoder_state[which_key] = pressed
+        if which_key == self.last_encoder_dq_button:
+            self.log.warn("unexpected second change from encoder pin/key %d on dequeue, state %d" % (which_key, pressed))
+        self.last_encoder_dq_button = which_key
+        # end
+
         self.encoder_state[which_key] = (pressed != 0)
 
         direction = 33  # this is here because PyCharm figures it _could_ be uninitialized.
@@ -857,10 +923,10 @@ class MappedSwitchClass:
             if which_key == 0:
                 direction = self.encoder_state[1]
             if which_key == 1:
-                direction = self.encoder_state[0] == 0
+                direction = (self.encoder_state[0] == 0)
         else:
             if which_key == 0:
-                direction = self.encoder_state[1] == 0
+                direction = (self.encoder_state[1] == 0)
             if which_key == 1:
                 direction = self.encoder_state[0]
 
@@ -868,7 +934,7 @@ class MappedSwitchClass:
             push_str = "Rotary Up"
         else:
             push_str = "Rotary Down"
-        if MwwPanelDebug: print("%s: key=%d dir=%d" % (push_str, which_key, direction))
+        print("%s: key=%d dir=%d" % (push_str, which_key, direction))
         return push_str
 
 
@@ -924,12 +990,12 @@ class gpio_switches:
             n indicates which LED we're setting; ignore zero, use 1-4.
             b says whether it should be set to zero or one
 
-            In HNF Demonstrator mode, we keep hands-off LED1 and LED2
+            In HNF Demonstrator mode, we keep hands-off LED1 and LED2 and LED3
         """
         if n == 0:
             return  # ignore key 0
         if self.hnf_mode and (n == 1 or n == 2 or n == 3):
-            return  # ignore LED 1 and 2 if it's the HNF Demonstrator
+            return  # ignore LED 1 and 2 and 3 if it's the HNF Demonstrator
         LEDs = [pin_gpio_LED1, pin_gpio_LED2, pin_gpio_LED3, pin_gpio_LED4]
         led = LEDs[n - 1]
         if b == 0:
@@ -940,6 +1006,14 @@ class gpio_switches:
             gpio.output(led, 0)
             self.last_sw_state |= 1 << (n - 1)
         if MwwPanelDebug: self.log.info("set last_sw_state to 0x%x" % self.last_sw_state)
+
+    def flipKey(self, n):
+        current_state = self.getKeys()
+        new_bit = 1 ^ (current_state >> (n))
+        print("flipKey current=%d, n=%d, newbit=%d" % \
+                    (current_state, n, new_bit))
+        self.setKey(n, new_bit)
+
 
     def step(self, delay):
         # Note that Rainer numbered the LEDs 1-4, not 0-3
@@ -1200,8 +1274,17 @@ class TCA8414:
     def available(self):
         eventCount = self.readRegister(self.TCA8418_REG_KEY_LCK_EC)
         eventCount &= 0x0F  # //  lower 4 bits only
+        if eventCount >= 9:
+            self.log.warn(" Switch queue full; count=%d" % eventCount)
         return eventCount
 
+    # check to see if the key scanner queue has overflowed; if so, print a message
+    # and clear the error.
+    def test_overflow(self):
+        stat = self.readRegister(self.TCA8418_REG_INT_STAT)
+        if stat & self.TCA8418_REG_STAT_OVR_FLOW_INT:  # < Overflow interrupt status
+            self.log.warn(" Switch queue overflow")
+            self.writeRegister(self.TCA8418_REG_INT_STAT, self.TCA8418_REG_STAT_OVR_FLOW_INT)
 
 # =============== Rotary Encoder Test ==================================
 # The following routine decodes the two signals from a Rotary Encoder to
