@@ -171,7 +171,7 @@ class OpCodeTables:
        "switch": AsmDotSwitchInst,
        "jumpto": AsmDotJumpToInst,
         "dbwgt": AsmDotDbwgtInst,
-     "simparam": AsmSimParamInst,
+     "simparam": AsmDotSimParamInst,
       "ww_file": AsmDotWwFilenameInst,
     "ww_tapeid": AsmDotWwTapeIdInst,
           "isa": AsmDotIsaInst,         # Directive to switch to the older 1950 instruction set
@@ -943,7 +943,7 @@ class AsmDotDbwgtInst (AsmPseudoOpInst):
         paramName = ""
         self.keywordToValue["incr"] = AsmExprValue (AsmExprValueType.Integer, 1)
         self.keywordToValue["fmt"] = AsmExprValue (AsmExprValueType.String, "%o")
-        self.keywordToValue["min"] = AsmExprValue (AsmExprValueType.Integer, 1)
+        self.keywordToValue["min"] = AsmExprValue (AsmExprValueType.Integer, 0)
         self.keywordToValue["max"] = AsmExprValue (AsmExprValueType.Integer, 2**16 - 1)
         n = self.nByPosArgs
         if n > 3:
@@ -979,7 +979,7 @@ class AsmDotDbwgtInst (AsmPseudoOpInst):
                                                      self.keywordToValue["incr"].value, self.keywordToValue["fmt"].value,
                                                      self.keywordToValue["min"].value, self.keywordToValue["max"].value))
 
-class AsmSimParamInst (AsmPseudoOpInst):
+class AsmDotSimParamInst (AsmPseudoOpInst):
     def __init__ (self, *args):
         super().__init__ (*args)
         self.keywords = []          # Keywords in left-to-right order
@@ -1528,7 +1528,7 @@ class AsmProgram:
         fout.write("%%File: %s\n" % self.wwFilename)
         fout.write("%%TapeID: %s\n" % self.wwTapeId)
         if len (self.simParamKeyToValue) != 0:
-            fout.write("%%SimParam: %s\n" % wwinfra.SimParam().dictToStr (self.simParamKeyToValue))
+            fout.write("%%SimParam: %s\n" % wwinfra.SimParam.dictToStr (self.simParamKeyToValue))
         if self.wwJumpToAddress is not None:
             fout.write('%%JumpTo 0o%o\n' % self.wwJumpToAddress)
         for s in self.switchTab:  # switch tab is indexed by name, contains a validated string for the value

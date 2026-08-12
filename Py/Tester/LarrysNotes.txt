@@ -981,25 +981,20 @@ literal-digit-seq												Decimal inreger
       below under .simparam heading.
 		- Doc refined .simparam
 
-	- Remote scope: tie off
-
+	* Remote scope: tie off
+		[Removed completely. Put code in Tester/ww-remote-scope-server.py for safekeeping.]
 	- Time-reporting issue, esp. with panel
-
 	- TNMOC counting benchmark
-
 	- Doc the debugger
-	
 	* Doc check for highilghted notes
-
 	- Doc: Guy's addition:
 	
 		"[OffsetCrt[x|y] only appear as sim params and instruct the
 		graphic module to shift the image on the screen…  e.g.,
 		Blackjack is squeezed right up against the top"
 	
-
 	* Cleaned up .isa
-	
+	- Asm croaks if ww file not found
 
 	- C-ish
 	- Get "everything" into git: tape images, images on code, etc.

@@ -481,12 +481,14 @@ class AsmExpr:
                         AsmExprType.BinaryBitOr:  lambda x, y: x | y
                         }[self.exprType]
                     return AsmExprValue (AsmExprValueType.Integer, fcn (x.value, y.value))
-        elif self.exprType == AsmExprType.BinaryDot and \
-             self.leftSubExpr.exprType in [AsmExprType.UnaryPlus, AsmExprType.UnaryMinus] and \
-             self.leftSubExpr.leftSubExpr.exprType == AsmExprType.LiteralDigits and \
-             self.leftSubExpr.leftSubExpr.exprData in ["0", "1"] and \
-             self.DecimalDigitStringToInt (self.rightSubExpr.exprData) is not None:
+        elif (self.exprType == AsmExprType.BinaryDot and 
+              self.leftSubExpr.exprType in [AsmExprType.UnaryPlus, AsmExprType.UnaryMinus] and 
+              self.leftSubExpr.leftSubExpr.exprType == AsmExprType.LiteralDigits and 
+              self.leftSubExpr.leftSubExpr.exprData in ["0", "1"] and 
+              self.DecimalDigitStringToInt (self.rightSubExpr.exprData) is not None):
             # It's a literal decimal fraction
+            if self.leftSubExpr.leftSubExpr.exprData == "1":
+                self.evalError ("Absolute value of fraction must be less than 1.0")
             s = "%s%s.%s" % (
                 "+" if self.leftSubExpr.exprType == AsmExprType.UnaryPlus else "-",
                 self.leftSubExpr.leftSubExpr.exprData,

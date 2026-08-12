@@ -1,3 +1,3 @@
 #/bin/sh
 
-find . -name runtest.sh -print -exec {} \;
+/bin/find . -name runtest.sh -print -exec {} \;

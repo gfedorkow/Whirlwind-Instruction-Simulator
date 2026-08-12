@@ -153,7 +153,7 @@ def parse_and_save_screen_debug_widgets(cb, dbwgt_list):
         py_wgt_label = ''
         address = 0
         increment = 1
-        min = -(2**15)+1
+        min = 0
         max = 2**16 - 1
         format_str = "0o%o"   # by default, numbers should be displayed as octal
         if args[0][0] == '.':
@@ -618,10 +618,6 @@ def main_run_sim(args, cb, cpu):
                                  1000000.0 * float(wall_clock_time) / float(sim_cycle) if sim_cycle != 0 else 0,
                                  cpu.accum_ww_inst_time_usec))
     if wall_clock_time > 2.0 and sim_cycle > 10:  # don't do the timing calculation if the run was really short
-
-        if not cb.TraceQuiet:
-            cb.log.raw("Total cycles = %d, last PC=0o%o, wall_clock_time=%d sec, avg time per cycle = %4.1f usec\n" %
-                       (sim_cycle, cpu.PC, wall_clock_time, 1000000.0 * float(wall_clock_time) / float(sim_cycle)))
         if cb.sim_params.get_simparam("Radar"):
             print("    elapsed radar time = %4.1f minutes (%4.1f revolutions)" %
                   (radar.elapsed_time / 60.0, radar.antenna_revolutions))
@@ -705,9 +701,6 @@ def main():
     # parser.add_argument("-r", "--Radar", help="Incorporate Radar Data Source", action="store_true")
     parser.add_argument("--AutoClick", help="Execute pre-programmed mouse clicks during simulation", action="store_true")
     parser.add_argument("--AnalogScope", help="Display graphical output on an analog CRT", action="store_true")
-    parser.add_argument("--RemoteScope", help="Display graphical output on the remote scope server (default localhost)", action="store_true")
-    parser.add_argument("--RemoteScopeOnly", help="Don't bring up scope on local machine too", action="store_true")
-    parser.add_argument("--RemoteScopeServer", help="Remote scope server machine name or IP addr (default localhost)", type=str)
     # the following arg should be revised to take the full geometry as "width x height + Xoffset + Yoffset"
     parser.add_argument("--xWinSize", help="specify the size of an xWinCrt pseudo-scope display in pixels", type=int)
     parser.add_argument("--FlexoWin", help="Display Flexowriter output in its own window", action="store_true")
@@ -821,14 +814,6 @@ def main():
     if args.AnalogScope:
         cb.analog_display = True
 
-    if (args.RemoteScope or
-        args.RemoteScopeServer is not None or
-        args.RemoteScopeOnly):
-        cb.remote_scope = wwinfra.RemoteScope (args.RemoteScopeServer)
-
-    if args.RemoteScopeOnly:
-        cb.remote_scope_only = True
-
     if args.FlexoWin:
         cb.flexo_win = True
         
@@ -904,14 +889,14 @@ def main():
     # Close the display, but only just before we exit.  Unless... the NoClose arg keeps the
     # CRT screen visible in case of a backtrace, so there's some hope of see what was going
     # on the screen at the time of the error.
-    if not cb.remote_scope_only:
-        for d in cb.cpu.IODeviceList:
-            if d.name == "DisplayScope":
-                if d.crt is not None:
-                    if args.NoCloseOnStop:
-                        d.crt.get_mouse_blocking()  # wait to see what was on the display in case of a trap
-                    d.crt.win.items.clear()
-                    d.crt.close_display()
+
+    for d in cb.cpu.IODeviceList:
+        if d.name == "DisplayScope":
+            if d.crt is not None:
+                if args.NoCloseOnStop:
+                    d.crt.get_mouse_blocking()  # wait to see what was on the display in case of a trap
+                d.crt.win.items.clear()
+                d.crt.close_display()
 
     # sys.exit(alarm_state != cb.NO_ALARM)
     sys.exit(0)         # return zero for an ordinary exit
