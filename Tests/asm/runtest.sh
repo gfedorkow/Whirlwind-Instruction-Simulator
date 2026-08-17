@@ -126,7 +126,7 @@ else
 
 	# Pseudo-op test
 	# ErrorFlag.ww is used to switch between a verison with errors and a clean version
-	echo "Test pseudo-opes .dbwgt and .simparam"
+	echo "Test pseudo-ops .dbwgt and .simparam"
 	rm -f ErrorFlag.ww PseudoOpTest.acore PseudoOpTest.lst PseudoOpTest0.asm.log PseudoOpTest1.asm.log PseudoOpTest.acore.log
 	echo ".pp test_error, 0" >ErrorFlag.ww
 	python $asm PseudoOpTest.ww >&PseudoOpTest0.asm.log

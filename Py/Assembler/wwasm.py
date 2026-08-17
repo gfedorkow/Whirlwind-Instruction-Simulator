@@ -404,12 +404,12 @@ class AsmInst:
             plabel = p.label
         sp1 = sp*(maxLabelLen - len (plabel) - len (dotIf))
         label = "%s%s" % (sp1, plabel) + (":" if plabel != "" else sp)
-        inst = self.opnamePrefix() + p.opname + (sp + p.operand.listingString (verbatimStrings = verbatimStrings)) if p.operand is not None else ""
+        inst = self.opnamePrefix() + p.origOpname + (sp + p.operand.listingString (verbatimStrings = verbatimStrings)) if p.operand is not None else ""
         (comment, nSemis) = self.formatComment (p.comment, inst)
         s1 = prefixAddr + sp + dotIf + label + sp 
         s2 = s1 + inst
         commentColumn = len (s1) + self.prog.commentColumn
-        sp2 = sp*(commentColumn - len (s2)) if p.label != "" or p.opname != "" else ""
+        sp2 = sp*(commentColumn - len (s2)) if p.label != "" or p.origOpname != "" else ""
         if autoComment != "" and comment is None:
             comment = ""
         s3 = (sp2 + ";" + comment + " " + autoComment) if comment is not None else ""
@@ -1492,7 +1492,7 @@ class AsmProgram:
                     # A false .if means don't include the instruction, so make a DotIfInst pass-through for the listing
                     inst = AsmDotIfInst (line, self)
                 else:
-                    opname = line.opname.lower()
+                    opname = line.opname
                     if opname in self.metaOpcode:
                         inst = self.metaOpcode[opname] (line, self)
                     elif opname in self.curOpcodeTab:
@@ -1729,7 +1729,12 @@ def main():
     coreOutFilename = outFileBaseName + ".acore"
     listingOutFilename = outFileBaseName + ".lst"
     flowgraphOutFilename =  outFileBaseName + ".flow.static.gv" if args.FlowGraph else None
-    inStream = open (inFilename, "r")
+    try:
+        inStream = open (inFilename, "r")
+    except FileNotFoundError:
+        cb.log.fatal ("File not found: %s" % inFilename)
+    except IOError:
+        cb.log.fatal ("I/O Error opening file: %s" % inFilename)
     prog = AsmProgram (
         inFilename, inStream,
         coreOutFilename, listingOutFilename, flowgraphOutFilename,

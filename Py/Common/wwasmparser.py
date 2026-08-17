@@ -25,9 +25,10 @@ AsmTokenType = Enum ("AsmTokenType", ["Operator", "Comment", "AutoComment",
                                       "String", "EndOfString", "Null"])
 
 class AsmToken:
-    def __init__(self, tokenType: AsmTokenType, tokenStr: str):
+    def __init__(self, tokenType: AsmTokenType, tokenStr: str, restStr: str = ""):
         self.tokenType = tokenType
         self.tokenStr = tokenStr
+        self.restStr = restStr  # Holds exec or print strings
         self.pos = None
     def print (self):
         print ("AsmToken ", self.tokenType, self.tokenStr)
@@ -86,11 +87,12 @@ class AsmTokenizer:
             token1 = self.getRawToken()
             if token1.tokenType == AsmTokenType.Operator and token1.tokenStr == '.':
                 token2 = self.getRawToken()
-                if token2.tokenType == AsmTokenType.Identifier and token2.tokenStr in ["exec"]:  # ["print", "exec]"
-                    tokType = AsmTokenType.DotPrint if token2.tokenStr == "print" else AsmTokenType.DotExec
+                tok2Str = token2.tokenStr.lower()
+                if token2.tokenType == AsmTokenType.Identifier and tok2Str == "exec":
+                    tokType = AsmTokenType.DotPrint if tok2Str == "print" else AsmTokenType.DotExec
                     restOfString = self.str[self.pos:self.slen].rstrip ("\r\n")
                     self.tokenBuf = AsmToken (AsmTokenType.EndOfString, "")
-                    return AsmToken (tokType, restOfString)
+                    return AsmToken (tokType, token2.tokenStr, restStr = restOfString)
                 else:
                     self.tokenBuf = token2
                     return token1
@@ -579,6 +581,7 @@ class AsmParsedLine:
         self.prefixAddr = {}
         self.label = ""
         self.opname = ""
+        self.origOpname = ""    # opname in user's case (for the listing)
         self.operand: AsmExpr = None
         self.comment = None
         self.autoComment = ""
@@ -709,20 +712,24 @@ class AsmParsedLine:
         if tok1.tokenType == AsmTokenType.Identifier:
             e = self.parseExpr()
             self.operand = e
-            self.opname = tok1.tokenStr
+            self.origOpname = tok1.tokenStr
+            self.opname = self.origOpname.lower()
             return True
         elif tok1.tokenType == AsmTokenType.Operator and  tok1.tokenStr == ".":
             tok2 = self.gtok()
             if tok2.tokenType == AsmTokenType.Identifier:
                 e = self.parseExpr()
                 self.operand = e
-                self.opname = tok2.tokenStr
+                self.origOpname = tok2.tokenStr
+                self.opname = self.origOpname.lower()
                 return True
             else:
                 self.error ("Opname expected")
         elif tok1.tokenType == AsmTokenType.DotPrint or tok1.tokenType == AsmTokenType.DotExec:
-            self.opname = "print" if  tok1.tokenType == AsmTokenType.DotPrint else "exec"
-            self.operand = AsmExpr (AsmExprType.LiteralString, tok1.tokenStr)
+            # self.opname = "print" if  tok1.tokenType == AsmTokenType.DotPrint else "exec"   # LAS
+            self.origOpname = tok1.tokenStr
+            self.opname = self.origOpname.lower()
+            self.operand = AsmExpr (AsmExprType.LiteralString, tok1.restStr)
             return True
         else:
             self.ptok (tok1)

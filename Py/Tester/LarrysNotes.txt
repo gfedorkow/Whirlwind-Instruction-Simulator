@@ -994,7 +994,9 @@ literal-digit-seq												Decimal inreger
 		Blackjack is squeezed right up against the top"
 	
 	* Cleaned up .isa
-	- Asm croaks if ww file not found
+	* Asm croaks if ww file not found
+	* opnames are not case-insensitive, and they should be.
+		[Downcased in parser and added origOpname to write to listing]
 
 	- C-ish
 	- Get "everything" into git: tape images, images on code, etc.
