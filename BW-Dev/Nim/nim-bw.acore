@@ -733,6 +733,7 @@
 @E3051: print: "(0o3050) NZBCR %o %o %o %o %o %o %o %o", 0o000245, 0o000246, 0o000247, 0o000250, 0o000251, 0o000252, 0o000253, 0o000254
 @E3055: print: "(0o3054) bit=%d", 0o003063
 @E3062: print: "(0o3061) pieceCount=%d", 0o000347
+@E3145: print: "(0o3145) X_tensDigits A=%o B=%o C=%o D=%o E=%o F=%o G=%o H=%o", 0o000327, 0o000330, 0o000331, 0o000332, 0o000333, 0o000334, 0o000335, 0o000336
 @E3174: print: "(0o3173) X_onesDigits A=%d B=%d C=%d D=%d E=%d F=%d G=%d H=%d", 0o000337, 0o000340, 0o000341, 0o000342, 0o000343, 0o000344, 0o000345, 0o000346
 @E3304: print: "(0o3304) X_temps: A=%d B=%d C=%d D=%d E=%d F=%d G=%d H=%d", 0o000317, 0o000320, 0o000321, 0o000322, 0o000323, 0o000324, 0o000325, 0o000326
 @E3400: print: "(0o3377) found bit set in %o %o %o %o %o %o %o %o", 0o000327, 0o000330, 0o000331, 0o000332, 0o000333, 0o000334, 0o000335, 0o000336
@@ -2167,7 +2168,7 @@
 @N3450:  prepare shift instruction
 @N3451:  start with 1 in LSB to shift
 @N3452:  shift left and hold
-@N3453:  AC = 2^((bit number) - 1)
+@N3453:  AC = 2^(bit number)
 @N3454:  save value - this is the number of tokens to take
 @N3455:  get address of current X_np1_rem
 @N3456:  set up pointers

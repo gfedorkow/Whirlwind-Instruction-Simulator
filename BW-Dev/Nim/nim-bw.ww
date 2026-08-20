@@ -2093,6 +2093,7 @@
 ;			etc.
 ;     * "useful" = a bit that is not zero in the bitXcount_rems
 ; 
+				.print "(0o3145) X_tensDigits A=%o B=%o C=%o D=%o E=%o F=%o G=%o H=%o", 0o0327, 0o0330, 0o0331, 0o0332, 0o0333, 0o0334, 0o0335, 0o0336;
 
 				; process the X_np1_rems using the pointers in X_tensDigits
 				; save results in X_onesDigits
@@ -2135,7 +2136,7 @@
 ; at this point, the machine has - in addition to the things above:
 ; in the X_onesDigits, the actual bit counts (not bit count remainders mod(m+1))
 ;  of the highest-order "useful" (non-zero bit count remainder) bits
-;  in order from highest order to lowest
+;  in order from first in NZBCR list to last
 ;
 
                         ; compare actual bit counts with bit count remainders
@@ -2396,8 +2397,8 @@
             ; this accumulates the machine's move part-by-part
             ;  this takes the # of the bit that's being tested and converts
             ;  that to a binary number with that bit set
-            ;    ex bit3 => 0 000 000 000 000 100 (0o000004)
-            ;    the binary # = 2^(bit number - 1)
+            ;    ex bit2 => 0 000 000 000 000 100 (0o000004)
+            ;    the binary # = 2^(bit number)
             ;  and then adds that to the growing total of tokens to remove
             ;  in the appropriate X_temp
             ;
@@ -2416,7 +2417,7 @@
 @3450:047452                        td   w3452            ; prepare shift instruction  
 @3451:100052                        ca   CONST_1a         ; start with 1 in LSB to shift 
 @3452:155000     w3452:             slh  0o00000          ; shift left and hold @@WrittenBy a3450 
-@3453:160001                        srr  0o00001          ; AC = 2^((bit number) - 1) 
+@3453:160001                        srr  0o00001          ; AC = 2^(bit number) 
 @3454:040254                        ts   nonZeroBCaddr7   ; save value - this is the number of tokens to take
 
                     ; update the X_np1_rem by REMOVING the chosen # of tokens
