@@ -20,14 +20,14 @@ def auto_config_switches(cb):
     switch_settings_by_state = [
         [(None, 0)],
         [("FF02Sw", 4), ("FF03Sw", 5)],  # remove up to 4 pieces from each group per move; can alter up to 5 groups per move
-        [("RMIR", 4)],	# initial A
-        [("RMIR", 4)],	# initial B
-        [("RMIR", 3)],	# initial C	
-        [("RMIR", 4)],	# initial D
-        [("RMIR", 3)],  # initial E
+        [("RMIR", 8)],	# initial A
+        [("RMIR", 9)],	# initial B
+        [("RMIR", 4)],	# initial C	
+        [("RMIR", 9)],	# initial D
+        [("RMIR", 6)],  # initial E
         [("RMIR", 4)],	# initial F
         [("RMIR", 3)],	# initial G
-        [("RMIR", 4)],	# initial H
+        [("RMIR", 6)],	# initial H
         # human moves
         [("LMIR",0), ("RMIR", 1)],	# take 1 piece from group A
         [("LMIR",4), ("RMIR", 0)],  # take 0 pieces from group B

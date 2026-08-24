@@ -2140,6 +2140,7 @@
 
 
                                     ; compare actual bit counts with bit count remainders
+                                    ; THIS IS NOT CORRECT- DIFFERENT THINGS ARE COMPARED - SEE NOTES
                                     ;  loop over X_onesDigits until you hit a 0 (no more remainders to check)
                           cbc_loop:
 @3174:100245           bcr_ptr_ptr: ca nonZeroBCaddr0        ; get pointer to NZBCR @@WrittenBy a3204 a3305 ReadBy a3204 a3206 a3220 a3227 a3255 a3264 JumpedToBy a3213
