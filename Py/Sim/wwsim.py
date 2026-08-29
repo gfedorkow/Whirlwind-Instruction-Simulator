@@ -308,7 +308,7 @@ def main_run_sim(args, cb, cpu):
     if cb.panel and cb.panel.hnf_program_dispatcher:
         cb.panel.hnf_program_dispatcher.apply_switch_presets(cpu)
     flowgraph = None
-    if args.FlowGraph:
+    if args.FlowGraph or args.FlowGraphOutFile or args.FlowGraphOutDir:
         flowgraph = ww_flow_graph.FlowGraph (args.FlowGraph, args.FlowGraphOutFile, args.FlowGraphOutDir, cb)
 
     # There can be a source file that contains subroutines that might be called by exec statements specific

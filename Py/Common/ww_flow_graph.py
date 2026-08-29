@@ -702,25 +702,20 @@ def output_block_list(cb, blocklist, core, title, output_file, block_info_len, c
 
 class FlowGraph:
     def __init__ (self, argFlowGraph, argFlowGraphOutFile, argFlowGraphOutDir, cb):
-        self.outfile = ""
-        self.outfile_basename = ""
+        self.cb = cb
+        suffix = "flow"
+        self.outfile = re.sub ("\\.acore$", "", os.path.basename (self.cb.CoreFileName)) + "." + suffix + ".gv"
         self.do_flowgraph = argFlowGraph
         self.flowgraph_outfile = argFlowGraphOutFile
         self.flowgraph_outdir = argFlowGraphOutDir
-        self.cb = cb
         # If outfile is spec'd, it supersedes the dir if the dir is spec'd. In
         # specifying the dir standard derived naming will be used.
         if self.flowgraph_outfile is not None:
             self.do_flowgraph = True
             self.outfile = self.flowgraph_outfile
-        else:
-            suffix = "flow"
-            self.outfile_basename = re.sub ("\\.acore$", "", os.path.basename (self.cb.CoreFileName)) + "." + suffix + ".gv"
         if self.flowgraph_outdir is not None:
             self.do_flowgraph = True
-            self.outfile = self.flowgraph_outdir + "/" + self.outfile_basename
-        else:
-            self.outfile = self.outfile_basename
+            self.outfile = self.flowgraph_outdir + "/" + self.outfile
         if self.do_flowgraph:
             cb.tracelog = self.init_log()
 

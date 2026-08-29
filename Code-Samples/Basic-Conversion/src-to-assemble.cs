@@ -1,0 +1,5 @@
+||
+fc TAPE GUY
+OCTAL
+ca1	ts50	ao50	ao50	si0
+START AT 40

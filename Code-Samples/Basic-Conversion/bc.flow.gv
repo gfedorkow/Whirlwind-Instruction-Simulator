@@ -1,0 +1,22 @@
+digraph flowchart {
+  size="50, 50";
+ t0 [label="bc.acore\nWWfile: 102782043_3600m0_basic_conversion_5-13-54_copy_gs001.tcore\nNotation: Octal"; shape=folder];
+  b1 [label="b1:_End(4w)\li0722:\l@0o0722    : TA 0o0732(w0732) ;\l@0o0723    : CA 0o1563(r1563) ;\l@0o0724    : TS 0o1347(w1347) ;\l@0o0725    : SI 0o0211     ;select I/O: PhotoElectric Reader\l";color="Green";fontname=courier;shape=box3d]
+  b2 [label="b2:select I/O: FlexoPrinter(4w)\li0764:\l@0o0764    : SI 0o0225     ;\l@0o0765    : CA 0o0763(r0763) ;\l@0o0766    : RC 0o0000(i0000) ;RC: Flexowriter: 0o51 ('
+')\l@0o0767    : SP 0o1367(i1367) ;\l";color="Green";fontname=courier;shape=box3d]
+  b3 [label="b3:(3w)\li0770:\l@0o0770    : TD 0o1154(i1154) ;\l@0o0771    : SI 0o0600     ;select I/O: Display Points\l@0o0772    : SP 0o1410(i1410) ;\l";color="Green";fontname=courier;shape=box3d]
+  b4 [label="b4:(11w)\li1367:\l@0o1367    : CA 0o1454(r1454) ;\l@0o1370    : TS 0o1234(w1234) ;\l@0o1371    : CA 0o1302(i1302) ;\l@0o1372    : TD 0o1313(i1313) ;\l@0o1373    : CA 0o0716(r0716) ;\l@0o1374    : TS 0o1436(w1436) ;\l@0o1375    : AD 0o1526(r1526) ;\l@0o1376    : TD 0o1725(w1725) ;\l@0o1377    : AD 0o2012(r2012) ;\l@0o1400    : TD 0o1746(w1746) ;\l@0o1401    : SP 0o1763(i1763) ;\l";fontname=courier;shape=box3d]
+  b5 [label="b5:(6w)\li1402:\l@0o1402    : CA 0o1651(r1651) ;\l@0o1403    : TD 0o1411(w1411) ;\l@0o1404    : TD 0o1144(w1144) ;\l@0o1405    : TD 0o1075(w1075) ;\l@0o1406    : AD 0o0001(i0001) ;\l@0o1407    : SP 0o0770(i0770) ;\l";fontname=courier;shape=box3d]
+  b6 [label="b6:(3w)\li1410:\l@0o1410    : CA 0o0000(i0000) ;\l@0o1411    : TS 0o0041     ;\l@0o1412    : SP 0o0722(i0722) ;\l";fontname=courier;shape=box3d]
+  b7 [label="b7:(5w)\li1763:\l@0o1763    : CA 0o1613(r1613) ;\l@0o1764    : TS 0o1135(w1135) ;\l@0o1765    : CA 0o1603(r1603) ;\l@0o1766    : TS 0o1612(w1612) ;\l@0o1767    : SP 0o1402(i1402) ;\l";fontname=courier;shape=box3d]
+  b8 [label="b8:i2037_Start(1w)\li2037:\l@0o2037    : SP 0o2112(i2112) ;\l";color="Green";fontname=courier;shape=box3d]
+  b9 [label="b9:(3w)\li2112:\l@0o2112    : CA 0o2115(r2115) ;\l@0o2113    : TS 0o0040     ;\l@0o2114    : SP 0o0764(i0764) ;\l";fontname=courier;shape=box3d]
+  b2:s -> b4:n [label="x1";  color="Red"];
+  b3:s -> b6:n [label="x1";  color="Red"];
+  b4:s -> b7:n [label="x1";  color="Red"];
+  b5:s -> b3:n [label="x1";  color="Red"];
+  b6:s -> b1:n [label="x1";  color="Red"];
+  b7:s -> b5:n [label="x1";  color="Red"];
+  b8:s -> b9:n [label="x1";  color="Red"];
+  b9:s -> b2:n [label="x1";  color="Red"];
+  }

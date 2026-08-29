@@ -541,7 +541,7 @@ class AsmWwSiOpInst (AsmWwOpInst):
         super().passTwoOp()
         val = self.operandVal
         if val.type == AsmExprValueType.Integer:
-            d: str = "; Auto-Annotate I/O: %s" % self.cb.Decode_IO (val.value)
+            d: str = "; Auto-Annotate I/O: %s" % self.cb.decode_IO (val.value)
             if self.parsedLine.comment is not None and d not in self.parsedLine.comment:
                 self.xrefs.annotateIoStr = d
         else:
