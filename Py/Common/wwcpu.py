@@ -340,7 +340,7 @@ class CpuClass:
     # https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
     def color_trace(self, op_code, string):
         ret = string
-        if len(self.op_decode[op_code]) >= 6 and self.cb.color_trace:
+        if len(self.op_decode[op_code]) >= 6 and self.op_decode[op_code][5] and self.cb.color_trace:
             color = self.op_decode[op_code][5]
             ret = color + string + self.cb.COLOR_default
         return ret
@@ -639,8 +639,11 @@ class CpuClass:
         if self.cb.panel and self.cb.panel.panel_mWW:
             self.cb.panel.panel_mWW.set_audio_click(self._AC)
 
-        ww_time_usec = oplist[4]
-        self.accum_ww_inst_time_usec += ww_time_usec
+        if len(oplist) > 3:
+            ww_time_usec = oplist[4]
+            self.accum_ww_inst_time_usec += ww_time_usec
+        #else:
+        #    self.cb.log.warn("missing instruction timing in oplist for %s" % oplist[1])
 
         return ret
 
