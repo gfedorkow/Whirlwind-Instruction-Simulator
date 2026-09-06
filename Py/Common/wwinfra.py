@@ -434,6 +434,10 @@ class SimParamTokenizer (Tokenizer):
 
 
 class SimParam:
+    # This is the standard list of params (keys) and their default
+    # values. If a param not in this list is encountered in the asm or
+    # sim, a warning is issued.
+    # private
     default_params = {
         "isa":          "isa1958",
         "Radar":        False,
@@ -444,29 +448,28 @@ class SimParam:
         "CrtOffsetY":   0,
         "CrtGain":      1.0
         }
+    # public class methods (static in C++ parlance), defined before init
+    def dictToStr (keyToValue: dict) -> str:
+        s = ""
+        for key in keyToValue:
+            s += key + " "
+            value = keyToValue[key]
+            s += str (value) if type (value) == int else "\"" + value + "\""
+            s += " "
+        return s
+    def isKeyValid (key: str) -> bool:
+        return (key in SimParam.default_params)
+    def invalidKeyErrorText () -> str:
+        return "Unknown sim param key %s"
+    
     def __init__ (self, cb=None):
         self.cb = cb
         self.cmd_line_args = {}  # this is here to override sim params with settings from the cmd line
         self.sim_param_dict = {}
-        
-        """
-        # The assembler can pass anything as a sim param; this list is "informative", i.e. it doesn't
-        # enforce the acceptable tags, it just issues a warning for ones that aren't "known".
-        self.default_params = {"isa": "isa1958",
-                               "Radar": False,
-                               "CrtFadeDelay": 0,
-                               "NoAlarmStop": False,
-                               "AutoClick": False,
-                               "CrtOffsetX": 0,
-                               "CrtOffsetY": 0,
-                               "CrtGain": 1.0
-                               }
-        """
-
         self.sim_param_dict = self.default_params.copy()
 
     def is_simparam_tag_valid(self, tag):
-        return (tag in self.default_params)
+        return SimParam.isKeyValid (tag)
 
     def reset_simparams(self):
         self.sim_param_dict = self.default_params.copy()
@@ -498,7 +501,7 @@ class SimParam:
             pass
         return r
     # public
-    def strToDict (self, line: str) -> dict:
+    def strToDict (self, line: str):
         t = SimParamTokenizer (line)
         t.getToken()    # Remove core file tag
         while True:
@@ -513,16 +516,6 @@ class SimParam:
             if not self.is_simparam_tag_valid(key):
                 self.cb.log.warn("unknown tag '%s' added to sim_param_dict" % key)
             self.sim_param_dict[key] = value
-        return self.sim_param_dict
-    # public static
-    def dictToStr (keyToValue: dict) -> str:
-        s = ""
-        for key in keyToValue:
-            s += key + " "
-            value = keyToValue[key]
-            s += str (value) if type (value) == int else "\"" + value + "\""
-            s += " "
-        return s
     
 # simple routine to print an octal number that might be 'None'
 def octal_or_none(number):

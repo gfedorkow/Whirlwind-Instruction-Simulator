@@ -992,6 +992,10 @@ class AsmDotSimParamInst (AsmPseudoOpInst):
                 self.bail = True
             else:
                 keyword = expr.leftSubExpr.exprData
+                if not wwinfra.SimParam.isKeyValid (keyword):
+                    self.prog.cb.log.warn (self.parsedLine.lineNo,
+                                           "%s:\n%s" % ((wwinfra.SimParam.invalidKeyErrorText() % keyword),
+                                                        self.parsedLine.lineStr))
                 self.keywords.append (keyword)
         else:
             self.error ("Only keyword parameters are permitted")

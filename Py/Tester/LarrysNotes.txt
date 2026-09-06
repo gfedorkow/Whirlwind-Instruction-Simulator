@@ -997,6 +997,11 @@ literal-digit-seq												Decimal inreger
 	* Asm croaks if ww file not found
 	* opnames are not case-insensitive, and they should be.
 		[Downcased in parser and added origOpname to write to listing]
+	* Fixed fraction input to always produce a fraction even if
+      rounding would bring it up to 1.0. The rationale is that since
+      fractional inputs which wind up being >= 1 are invalid, the user
+      almost certainluy did not inytend this, so we max out at the
+      largets possible representable fraction.
 
 	- C-ish
 	- Get "everything" into git: tape images, images on code, etc.
