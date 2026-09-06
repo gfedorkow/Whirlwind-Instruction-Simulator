@@ -468,27 +468,27 @@ class SimParam:
         self.sim_param_dict = {}
         self.sim_param_dict = self.default_params.copy()
 
-    def is_simparam_tag_valid(self, tag):
-        return SimParam.isKeyValid (tag)
+    def is_simparam_key_valid(self, key):
+        return SimParam.isKeyValid (key)
 
     def reset_simparams(self):
         self.sim_param_dict = self.default_params.copy()
 
-    def set_simparam(self, tag, val):
-        self.sim_param_dict[tag] = val
-        if not self.is_simparam_tag_valid(tag):
-            self.cb.log.warn("unknown tag '%s' added to sim_param_dict" % tag)
+    def set_simparam(self, key, val):
+        self.sim_param_dict[key] = val
+        if not self.is_simparam_key_valid(key):
+            self.cb.log.warn("unknown key '%s' added to sim_param_dict" % key)
 
-    def set_simparam_override(self, tag, val):
-        self.cmd_line_args[tag] = val
+    def set_simparam_override(self, key, val):
+        self.cmd_line_args[key] = val
 
-    def get_simparam(self, tag):
-        if not self.is_simparam_tag_valid(tag):
-            self.cb.log.warn("getting unknown tag '%s' from sim_param_dict" % tag)
-        if tag in self.cmd_line_args:
-            return self.cmd_line_args[tag]
-        if tag in self.sim_param_dict:
-            return self.sim_param_dict[tag]
+    def get_simparam(self, key):
+        if not self.is_simparam_key_valid(key):
+            self.cb.log.warn("getting unknown key '%s' from sim_param_dict" % key)
+        if key in self.cmd_line_args:
+            return self.cmd_line_args[key]
+        if key in self.sim_param_dict:
+            return self.sim_param_dict[key]
         return None
 
     # private
@@ -513,8 +513,8 @@ class SimParam:
                 break       # Prob should be error
             valueNum = self.strToInt (valueStr)
             value = valueNum if valueNum is not None else valueStr
-            if not self.is_simparam_tag_valid(key):
-                self.cb.log.warn("unknown tag '%s' added to sim_param_dict" % key)
+            if not self.is_simparam_key_valid(key):
+                self.cb.log.warn("unknown key '%s' added to sim_param_dict" % key)
             self.sim_param_dict[key] = value
     
 # simple routine to print an octal number that might be 'None'
