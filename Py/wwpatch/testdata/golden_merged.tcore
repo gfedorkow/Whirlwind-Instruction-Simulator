@@ -1,0 +1,14 @@
+; wwpatch output
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=base
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=patch1 (patched in)
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=patch2 (patched in)
+%File: base_source.tap
+; %File: patch1_source.tap (patched in)
+; %File: patch2_source.tap (patched in)
+%TapeID: BASEID
+; %TapeID: PATCH1ID (patched in)
+; %TapeID: PATCH2ID (patched in)
+%JumpTo 077
+@C00100: 01 02 0100000 0177776 05 06 07 010
+@C00110: 011 077 None None None None None None
+@C00200: 020 021 None None None None None None
