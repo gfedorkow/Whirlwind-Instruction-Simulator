@@ -1,4 +1,4 @@
-PYTHON := ../venv/bin/python3
+PYTHON := python3
 
 .PHONY: test
 
