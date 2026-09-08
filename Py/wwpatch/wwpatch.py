@@ -20,8 +20,8 @@ import sys
 _CORE_SIZE = 2048
 
 _LINE_RE = re.compile(r'^@[CT](\d+):\s*(.*?)\s*(?:;.*)?$')
-_FILE_RE = re.compile(r'^%File: (.*)$')
-_TAPEID_RE = re.compile(r'^%TapeID: (.*)$')
+_FILE_RE = re.compile(r'^%File:\s*(.*)$')
+_TAPEID_RE = re.compile(r'^%TapeID:\s*(.*)$')
 _JUMPTO_RE = re.compile(r'^%JumpTo 0(\d+)$')
 _HEADER_RE = re.compile(r'^; \*\*\* .* \*\*\*$')
 _COMMENT_RE = re.compile(r'^; (.*)$')
@@ -49,6 +49,7 @@ class _ParsedTcore:
         self.tapeid_line = None
         self.jump_to = None
         self.block_msg = None
+        self.comments = []  # every other "; ..." line, in file order
         self.words = {}  # {addr: word}
         self.symbols = {}  # {addr: name}
 
@@ -89,10 +90,13 @@ class _ParsedTcore:
                 if _HEADER_RE.match(line):
                     continue
                 m = _COMMENT_RE.match(line)
-                if m and self.block_msg is None and self.file_line is None:
-                    # first "; ..." comment line, seen before %File, that isn't the
-                    # "*** Core Image ***" header -- this is the block_msg line
-                    self.block_msg = m.group(1)
+                if m:
+                    if self.block_msg is None and self.file_line is None:
+                        # first "; ..." comment line, seen before %File, that isn't the
+                        # "*** Core Image ***" header -- this is the block_msg line
+                        self.block_msg = m.group(1)
+                    else:
+                        self.comments.append(m.group(1))
                     continue
                 print("wwpatch: WARNING: %s:%d: unsupported directive, ignoring: %s" %
                       (self.path, lineno, line), file=sys.stderr)
@@ -135,6 +139,12 @@ def _write_tcore(parsed, merged_words, merged_symbols, jump_to, block_msg):
     for pf in parsed[1:]:
         if pf.block_msg is not None:
             out.append("; %s (patched in)\n" % pf.block_msg)
+
+    for c in base.comments:
+        out.append("; %s\n" % c)
+    for pf in parsed[1:]:
+        for c in pf.comments:
+            out.append("; %s (patched in)\n" % c)
 
     if base.file_line is not None:
         out.append("%%File: %s\n" % base.file_line)
