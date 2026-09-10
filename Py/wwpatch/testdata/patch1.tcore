@@ -1,0 +1,12 @@
+
+; *** Core Image ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=patch1
+%File: patch1_source.tap
+%TapeID: PATCH1ID
+%Stats: Covariance=0.200000, Size=4,
+%Blocknum 0o0
+@C00102: 0177777 0177776  ; ca ca  :         :
+@C00200: 0000020 0000021  ; si si  :         :
+%SimParam: unrecognized_test_directive
+
+%Hash: dummy2-dummy2-4

@@ -979,15 +979,29 @@ literal-digit-seq												Decimal inreger
 
 	- .simparam to pass parameters to the sim via asm. See Guy's list
       below under .simparam heading.
+		- Doc refined .simparam
 
-	- TNMOC counting benchmark
-	- Doc update
-	- Doc refine .simparam
-	- Doc the debugger
-	- Doc check for highilghted notes
-	- HNF jolly good!
-	- Cleaned up .isa
+	* Remote scope: tie off
+		[Removed completely. Put code in Tester/ww-remote-scope-server.py for safekeeping.]
 	- Time-reporting issue, esp. with panel
+	- TNMOC counting benchmark
+	- Doc the debugger
+	* Doc check for highilghted notes
+	- Doc: Guy's addition:
+	
+		"[OffsetCrt[x|y] only appear as sim params and instruct the
+		graphic module to shift the image on the screen…  e.g.,
+		Blackjack is squeezed right up against the top"
+	
+	* Cleaned up .isa
+	* Asm croaks if ww file not found
+	* opnames are not case-insensitive, and they should be.
+		[Downcased in parser and added origOpname to write to listing]
+	* Fixed fraction input to always produce a fraction even if
+      rounding would bring it up to 1.0. The rationale is that since
+      fractional inputs which wind up being >= 1 are invalid, the user
+      almost certainluy did not inytend this, so we max out at the
+      largets possible representable fraction.
 
 	- C-ish
 	- Get "everything" into git: tape images, images on code, etc.

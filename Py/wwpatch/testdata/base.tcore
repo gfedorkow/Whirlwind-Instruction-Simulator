@@ -1,0 +1,13 @@
+
+; *** Core Image ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=base
+%File: base_source.tap
+%TapeID: BASEID
+%JumpTo 040
+%Stats: Covariance=0.100000, Size=10,
+%Blocknum 0o0
+@C00100: 0000001 0000002 0000003 0000004 0000005 0000006 0000007 0000010  ; si si si si si si si si  :                 :
+@C00110: 0000011 0000012  ; si si  :         :
+
+%Hash: dummy1-dummy1-10
+%String: testword
