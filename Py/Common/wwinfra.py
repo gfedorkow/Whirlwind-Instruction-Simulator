@@ -924,7 +924,11 @@ class ConstWWbitClass:
             if mode == 'Char':
                 char = acc & 0x3F  # six bit code
                 code_table = AsciiFlex()
-                io_op_desc = "0o%o ('%s')" % (char, code_table.lowerAsciiTable[char])
+                if char in code_table.lowerAsciiTable:
+                    flexo_char = code_table.lowerAsciiTable[char]
+                else:
+                    flexo_char = 'n/a'
+                io_op_desc = "0o%o ('%s')" % (char, flexo_char)
             else:
                 io_op_desc = "0o%o" % acc
 

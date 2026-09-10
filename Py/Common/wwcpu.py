@@ -28,6 +28,7 @@ import control_panel
 import math
 import traceback
 import types
+import SI_Address_Decode
 
 from typing import List, Dict, Tuple, Sequence, Union, Any
 
@@ -845,7 +846,10 @@ class CpuClass:
                 self.IODevice = address
                 self.IODeviceClass = cl
         if self.IODeviceClass is None:
-            print("SI: unknown IO address 0o%o" % address)
+            # the device is not in the list of implemented devices.  Try the Claude-generated
+            # list of all I/O devices from 2M-0277 to see if it knows what it is...
+            device_name = SI_Address_Decode.describe(address)
+            print("SI: unknown IO address 0o%o: %s" % (address, device_name))
             return self.cb.UNKNOWN_IO_DEVICE_ALARM
         ret = self.IODeviceClass.si(address, self._AC, self.cm)
         return ret
