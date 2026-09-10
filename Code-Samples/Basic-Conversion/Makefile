@@ -1,7 +1,8 @@
 
 
 SRC=src-to-assemble
-TCORE=102782043_3600m0_basic_conversion_5-13-54_copy_gs001.tcore 
+#TCORE=102782043_3600m0_basic_conversion_5-13-54_copy_gs001.tcore 
+TCORE=bc-merged.tcore 
 ASM=bc
 
 ${ASM}.svg: ${ASM}.flow.gv
