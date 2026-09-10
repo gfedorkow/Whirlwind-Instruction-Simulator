@@ -198,7 +198,7 @@ class PhotoElectricTapeReaderClass:
         if self.PETR_mode == "Char":
             offset = self.PETR_read_offset[self.PETR_device]
             if offset >= len(self.PETR_tape_image[self.PETR_device]):
-                getiolog().info('PETR Overrun at Offset %d' % offset)
+                getiolog().warn('PETR Overrun at Offset %d' % offset)
                 return self.cb.IO_ERROR_ALARM, 0
             ret = self.PETR_tape_image[self.PETR_device][offset]
             self.PETR_read_offset[self.PETR_device] += 1
@@ -207,7 +207,7 @@ class PhotoElectricTapeReaderClass:
                             # May be incorrect since we're not using the stateful flex model here
                              FlexToCsyntaxFlascii().decodeSingleChar(ret)))
             return self.cb.NO_ALARM, ret
-        getiolog().info("unimplemented rd: PhotoElectric Read from file %s, mode %s" % (self.PETR_device, self.PETR_mode))
+        getiolog().warn("unimplemented rd: PhotoElectric Read from file %s, mode %s" % (self.PETR_device, self.PETR_mode))
         return self.cb.UNIMPLEMENTED_ALARM, 0
 
     def bi(self, address, acc, cm):  # "block transfer in"

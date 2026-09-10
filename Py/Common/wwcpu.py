@@ -28,6 +28,7 @@ import control_panel
 import math
 import traceback
 import types
+import SI_Address_Decode
 
 from typing import List, Dict, Tuple, Sequence, Union, Any
 
@@ -624,17 +625,29 @@ class CpuClass:
             self.py_exec(current_pc, self.ExecTab[current_pc])
 
         oplist = self.op_decode[opcode]
-        ret = (oplist[0](current_pc, address, oplist[1], oplist[2]))   # this actually runs the instruction...
+        # **** this actually runs the instruction... ****
+        ret = (oplist[0](current_pc, address, oplist[1], oplist[2]))
+        # ***********************************************
 
-        if self.CommentTab[current_pc] is not None and len(self.CommentTab[current_pc]) > 0:
-            description = self.CommentTab[current_pc]
-        else:
-            # LAS 10/6/25 Removed this as I don't see the need to call out the
-            # description of each instruction, and it adds lots of clutter to
-            # listings, traces, and flow graphs.
-            # description = oplist[2]
-            description = ""
-        self.print_cpu_state(current_pc, opcode, oplist[1], description, address)
+        if self.cb.TracePC or self.cb.tracelog:
+            op_name = oplist[1]
+            if self.CommentTab[current_pc] is not None and len(self.CommentTab[current_pc]) > 0:
+                description = self.CommentTab[current_pc]
+            else:
+                # LAS 10/6/25 Removed this as I don't see the need to call out the
+                # description of each instruction, and it adds lots of clutter to
+                # listings, traces, and flow graphs.
+                # description = oplist[2]
+                # Guy Aug 28, 2026 - I changed this again to decode the SI operand
+                if op_name == "SI":
+                    description = "select I/O: " + self.cb.decode_IO(address)
+                elif op_name == "RC" or op_name == "RD":
+                    description = ("%s: " % op_name) + self.cb.decode_IO_op(op_name, self.IODeviceClass, address, self._AC)
+                elif op_name == "CF":
+                    description = "cf: " + self.cb.decode_CF(address)
+                else:
+                    description = ""
+            self.print_cpu_state(current_pc, opcode, op_name, description, address)
 
         if self.cb.panel and self.cb.panel.panel_mWW:
             self.cb.panel.panel_mWW.set_audio_click(self._AC)
@@ -833,7 +846,10 @@ class CpuClass:
                 self.IODevice = address
                 self.IODeviceClass = cl
         if self.IODeviceClass is None:
-            print("SI: unknown IO address 0o%o" % address)
+            # the device is not in the list of implemented devices.  Try the Claude-generated
+            # list of all I/O devices from 2M-0277 to see if it knows what it is...
+            device_name = SI_Address_Decode.describe(address)
+            print("SI: unknown IO address 0o%o: %s" % (address, device_name))
             return self.cb.UNKNOWN_IO_DEVICE_ALARM
         ret = self.IODeviceClass.si(address, self._AC, self.cm)
         return ret

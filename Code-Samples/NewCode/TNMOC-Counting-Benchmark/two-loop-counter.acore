@@ -1,0 +1,17 @@
+
+; *** Core Image ***
+%File: two-loop-counter.ww
+%TapeID: 
+@C0040: 0100047 0110050 0070041 0130046 0070040 0000000 0177740 0102756 
+@C0050: 0000001  None    None    None    None    None    None    None   
+@S0040: loop1
+@S0041: loop2
+@S0046: loop1_limit
+@S0047: loop2_limit
+@S0050: one
+@N0040:  Load acc with limit
+@N0041:  Add one to acc
+@N0042:  Branch if negative
+@N0043:  Add one to loop1_limit
+@N0044:  Branch if negative
+@N0045:  Done -- halt machine

@@ -34,7 +34,7 @@ import argparse
 import traceback
 import graphics as gfx
 import time
-from wwflex import FlexToFlexoWin, FlexToFlascii, FlexToCsyntaxFlascii
+from wwflex import FlexToFlexoWin, FlexToFlascii, FlexToCsyntaxFlascii, AsciiFlex
 import copy
 
 # used by Claude code
@@ -816,21 +816,6 @@ class ConstWWbitClass:
             ((self.CAMERA_INDEX_BASE_ADDRESS, ~0), "Camera Index"),
         ]
 
-    def Decode_IO(self, io_address):
-        devname = ''
-        addr_info = (0, 0)
-        for d in self.DevNameDecoder:
-            addr_info = d[0]
-            addr_base = addr_info[0]
-            addr_mask = addr_info[1]
-            if (io_address & addr_mask) == addr_base:
-                devname = d[1]
-        #            print "device-place-holder base=%o, mask=%o, name=%s" % (addr_info[0], ~addr_info[1], devname)
-        if devname != '':
-            ret = "Device %s base=0o%o, mask=0o%o" % (devname, addr_info[0], ~addr_info[1])
-        else:
-            ret = "Unknown Device"
-        return ret
 
 
     # read the size of the display itself from Windows
@@ -874,7 +859,8 @@ class ConstWWbitClass:
         else:
             return "0o%04o" % n
 
-    def Decode_IO(self, io_address):
+
+    def decode_IO(self, io_address):
         devname = "unknown i/o device"
         for d in self.DevNameDecoder:
             addr_info = d[0]
@@ -884,6 +870,42 @@ class ConstWWbitClass:
                 devname = d[1]
     #            print "device-place-holder base=%o, mask=%o, name=%s" % (addr_info[0], ~addr_info[1], devname)
         return devname
+
+    def decode_IO_op(self, opname, io_device, io_address, acc):
+        dev_name = io_device.name
+        io_op_desc = "unknown i/o operation"
+        if dev_name == "Flexowriter":
+            char = acc >> 10 & 0x3F  # six bit code
+            code_table = AsciiFlex()
+            io_op_desc = "0o%o ('%s')" % (char, code_table.lowerAsciiTable[char])
+        if dev_name == "PhotoElectricTapeReader":
+            mode = io_device.PETR_mode
+            if mode == 'Char':
+                char = acc & 0x3F  # six bit code
+                code_table = AsciiFlex()
+                if char in code_table.lowerAsciiTable:
+                    flexo_char = code_table.lowerAsciiTable[char]
+                else:
+                    flexo_char = 'n/a'
+                io_op_desc = "0o%o ('%s')" % (char, flexo_char)
+            else:
+                io_op_desc = "0o%o" % acc
+
+        io_op_desc = ("%s: " % dev_name) + io_op_desc
+        return io_op_desc
+
+
+    def decode_CF(self, pqr):
+        op = ''
+        if pqr & self.WWBIT9:
+            op += " MemGroupB=%o" % (pqr & 0o07)
+        if pqr & self.WWBIT8:
+            op += " MemGroupA=%o" % ((pqr >> 3) & 0o07)
+        if pqr & self.WWBIT7:  # this seems to swap PC+1 and AC;   I think PC is already incremented at this point...
+            op += " pc-swap"
+        if pqr & self.WWBIT6:  # read back bank selects to AC
+            op += " read-back"
+        return op
 
 
 class AdjustSwitchWidgetClass:
@@ -1117,7 +1139,7 @@ class OpCodeHistogram:
 
     def collect_io_op_histogram(self, word):
         addr = word & self.cb.WW_ADDR_MASK
-        io_op_name = self.cb.Decode_IO(addr)
+        io_op_name = self.cb.decode_IO(addr)
         if io_op_name is not None:
             self.io_opcode_histogram[io_op_name] += 1
 #            op_name += ' ' + io_op_name

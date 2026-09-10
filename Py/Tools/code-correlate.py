@@ -107,7 +107,7 @@ def DecodeOp(w, pc, short=False):
 #        long_op = "%3s  %5s" % (cb.op_code[op][0], operand)
 #        comment = "cf" + cf_decode(addr)
     if op_name == "si":
-        comment = "select I/O: " + cb.Decode_IO(addr)
+        comment = "select I/O: " + cb.decode_IO(addr)
 
     if short:
         return op_name

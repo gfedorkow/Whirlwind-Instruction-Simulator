@@ -95,6 +95,13 @@ def label_code(w, pc):
         CoreWrittenBy[addr].append(pc)
 
 
+
+
+
+"""
+I moved this routine into wwinfra so I could re-use it in the assembler
+It *should* be safe to delete this copy!
+
 def cf_decode(pqr):
     op = ''
     if pqr & cb.WWBIT9:
@@ -107,11 +114,6 @@ def cf_decode(pqr):
         op += " read-back"
     return op
 
-
-
-"""
-I moved this routine into wwinfra so I could re-use it in the assembler
-It *should* be safe to delete this copy!
 def old_Decode_IO(lcb, io_address):
     devname = ''
     addr_info = (0, 0)
@@ -168,9 +170,9 @@ def DecodeOp(w, pc, auto_sym, manual_sym, short=False):
         comment = ext_op_code[op_name][1][ext_op_bit] 
     elif op_name == "cf":
         long_op = "%3s  %5s" % (cb.op_code[op][0], operand)
-        comment = "cf" + cf_decode(addr)
+        comment = "cf" + cb.decode_CF(addr)
     elif op_name == "si":
-        comment = "select I/O: " + cb.Decode_IO(addr)
+        comment = "select I/O: " + cb.decode_IO(addr)
 
     if cb.disasmNoComment:
         comment = ""
