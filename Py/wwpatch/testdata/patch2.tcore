@@ -1,0 +1,11 @@
+
+; *** Core Image ***
+; WW Tape Block Numbers: Flexo-Block-Num= None , 556-Block-Num= None ; xsum=patch2
+%File: patch2_source.tap
+%TapeID: PATCH2ID
+%JumpTo 077
+%Blocknum 0o0
+@C00102: 0100000  ; ca  :   :
+@C00111: 0000077  ; si  :   :
+
+%Hash: dummy3-dummy3-2

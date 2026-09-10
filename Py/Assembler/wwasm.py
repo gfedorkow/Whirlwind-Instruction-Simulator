@@ -171,7 +171,7 @@ class OpCodeTables:
        "switch": AsmDotSwitchInst,
        "jumpto": AsmDotJumpToInst,
         "dbwgt": AsmDotDbwgtInst,
-     "simparam": AsmSimParamInst,
+     "simparam": AsmDotSimParamInst,
       "ww_file": AsmDotWwFilenameInst,
     "ww_tapeid": AsmDotWwTapeIdInst,
           "isa": AsmDotIsaInst,         # Directive to switch to the older 1950 instruction set
@@ -265,7 +265,7 @@ class AsmInst:
     # level, and not relying on bit-twiddling.
     #
     def intToSignedWwInt (self, x: int) -> int:
-        if x >= -self.prog.maxSignedWordMag and x <= self.prog.maxSignedWordMag:
+        if self.checkIntToSignedWwInt (x):
             if x < 0:
                 r = self.prog.maxUnsignedWord + x  # One's-complement representation
             else:
@@ -273,6 +273,9 @@ class AsmInst:
             return r
         else:
             self.error ("Signed integer conversion of %d is out of 16-bit one's-complement range" % x)
+            
+    def checkIntToSignedWwInt (self, x: int) -> bool:
+        return x >= -self.prog.maxSignedWordMag and x <= self.prog.maxSignedWordMag
     #
     # Given an int check for positive 16-bit unsigned range and generate an
     # unsigned 16-bit value (identity function)
@@ -401,12 +404,12 @@ class AsmInst:
             plabel = p.label
         sp1 = sp*(maxLabelLen - len (plabel) - len (dotIf))
         label = "%s%s" % (sp1, plabel) + (":" if plabel != "" else sp)
-        inst = self.opnamePrefix() + p.opname + (sp + p.operand.listingString (verbatimStrings = verbatimStrings)) if p.operand is not None else ""
+        inst = self.opnamePrefix() + p.origOpname + (sp + p.operand.listingString (verbatimStrings = verbatimStrings)) if p.operand is not None else ""
         (comment, nSemis) = self.formatComment (p.comment, inst)
         s1 = prefixAddr + sp + dotIf + label + sp 
         s2 = s1 + inst
         commentColumn = len (s1) + self.prog.commentColumn
-        sp2 = sp*(commentColumn - len (s2)) if p.label != "" or p.opname != "" else ""
+        sp2 = sp*(commentColumn - len (s2)) if p.label != "" or p.origOpname != "" else ""
         if autoComment != "" and comment is None:
             comment = ""
         s3 = (sp2 + ";" + comment + " " + autoComment) if comment is not None else ""
@@ -573,8 +576,20 @@ class AsmPseudoOpInst (AsmInst):
             # Negative zero is its own type
             inst = self.prog.maxUnsignedWord
         elif val.type == AsmExprValueType.Fraction:
-            # Fractions need to stay in signed 16-bit one's complement range
-            inst = self.intToSignedWwInt (int (round (val.value * 2**(self.prog.wordWidth - 1))))
+            #
+            # Here we do a little hocus-pocus. Fractions need to stay in signed
+            # 16-bit one's complement range. The user has already entered a
+            # valid fractional value.  However if we round, we might overflow,
+            # which the user almost certainly didn't desire. So if rounding
+            # would overflow, we truncate instead, i.e., emit the largest
+            # possible fraction.  So whatever the number of digits entered, if
+            # it's fracitonal we'll always emit a fraction.
+            #
+            v = int (round (val.value * 2**(self.prog.wordWidth - 1)))
+            inRange: bool = self.checkIntToSignedWwInt (v)
+            if not inRange:
+                v -= 1
+            inst = self.intToSignedWwInt (v)                
         else:
             self.operandTypeError (val)
         return inst
@@ -928,7 +943,7 @@ class AsmDotDbwgtInst (AsmPseudoOpInst):
         paramName = ""
         self.keywordToValue["incr"] = AsmExprValue (AsmExprValueType.Integer, 1)
         self.keywordToValue["fmt"] = AsmExprValue (AsmExprValueType.String, "%o")
-        self.keywordToValue["min"] = AsmExprValue (AsmExprValueType.Integer, 1)
+        self.keywordToValue["min"] = AsmExprValue (AsmExprValueType.Integer, 0)
         self.keywordToValue["max"] = AsmExprValue (AsmExprValueType.Integer, 2**16 - 1)
         n = self.nByPosArgs
         if n > 3:
@@ -964,7 +979,7 @@ class AsmDotDbwgtInst (AsmPseudoOpInst):
                                                      self.keywordToValue["incr"].value, self.keywordToValue["fmt"].value,
                                                      self.keywordToValue["min"].value, self.keywordToValue["max"].value))
 
-class AsmSimParamInst (AsmPseudoOpInst):
+class AsmDotSimParamInst (AsmPseudoOpInst):
     def __init__ (self, *args):
         super().__init__ (*args)
         self.keywords = []          # Keywords in left-to-right order
@@ -977,6 +992,10 @@ class AsmSimParamInst (AsmPseudoOpInst):
                 self.bail = True
             else:
                 keyword = expr.leftSubExpr.exprData
+                if not wwinfra.SimParam.isKeyValid (keyword):
+                    self.prog.cb.log.warn (self.parsedLine.lineNo,
+                                           "%s:\n%s" % ((wwinfra.SimParam.invalidKeyErrorText() % keyword),
+                                                        self.parsedLine.lineStr))
                 self.keywords.append (keyword)
         else:
             self.error ("Only keyword parameters are permitted")
@@ -1477,7 +1496,7 @@ class AsmProgram:
                     # A false .if means don't include the instruction, so make a DotIfInst pass-through for the listing
                     inst = AsmDotIfInst (line, self)
                 else:
-                    opname = line.opname.lower()
+                    opname = line.opname
                     if opname in self.metaOpcode:
                         inst = self.metaOpcode[opname] (line, self)
                     elif opname in self.curOpcodeTab:
@@ -1513,7 +1532,7 @@ class AsmProgram:
         fout.write("%%File: %s\n" % self.wwFilename)
         fout.write("%%TapeID: %s\n" % self.wwTapeId)
         if len (self.simParamKeyToValue) != 0:
-            fout.write("%%SimParam: %s\n" % wwinfra.SimParam().dictToStr (self.simParamKeyToValue))
+            fout.write("%%SimParam: %s\n" % wwinfra.SimParam.dictToStr (self.simParamKeyToValue))
         if self.wwJumpToAddress is not None:
             fout.write('%%JumpTo 0o%o\n' % self.wwJumpToAddress)
         for s in self.switchTab:  # switch tab is indexed by name, contains a validated string for the value
@@ -1714,7 +1733,12 @@ def main():
     coreOutFilename = outFileBaseName + ".acore"
     listingOutFilename = outFileBaseName + ".lst"
     flowgraphOutFilename =  outFileBaseName + ".flow.static.gv" if args.FlowGraph else None
-    inStream = open (inFilename, "r")
+    try:
+        inStream = open (inFilename, "r")
+    except FileNotFoundError:
+        cb.log.fatal ("File not found: %s" % inFilename)
+    except IOError:
+        cb.log.fatal ("I/O Error opening file: %s" % inFilename)
     prog = AsmProgram (
         inFilename, inStream,
         coreOutFilename, listingOutFilename, flowgraphOutFilename,
