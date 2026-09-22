@@ -20,20 +20,20 @@ def auto_config_switches(cb):
     switch_settings_by_state = [
         [(None, 0)],
         [("FF02Sw", 4), ("FF03Sw", 5)],  # remove up to 4 pieces from each group per move; can alter up to 5 groups per move
-        [("RMIR", 9)],	# initial A
-        [("RMIR", 9)],	# initial B
-        [("RMIR", 8)],	# initial C	
-        [("RMIR", 9)],	# initial D
-        [("RMIR", 8)],  # initial E
-        [("RMIR", 9)],	# initial F
-        [("RMIR", 8)],	# initial G
-        [("RMIR", 9)],	# initial H
+        [("RMIR", 4)],	# initial A
+        [("RMIR", 3)],	# initial B
+        [("RMIR", 3)],	# initial C	
+        [("RMIR", 3)],	# initial D
+        [("RMIR", 3)],  # initial E
+        [("RMIR", 3)],	# initial F
+        [("RMIR", 3)],	# initial G
+        [("RMIR", 4)],	# initial H
         # human moves
         [("LMIR",0), ("RMIR", 1)],	# take 1 piece from group A
-        [("LMIR",4), ("RMIR", 0)],  # take 0 pieces from group B
-        [("LMIR",7), ("RMIR", 0)],  # take 0 pieces from group C
+        [("LMIR",1), ("RMIR", 0)],  # take 0 pieces from group B
+        [("LMIR",2), ("RMIR", 0)],  # take 0 pieces from group C
         [("LMIR",3), ("RMIR", 0)],  # take 0 pieces from group D
-        [("LMIR",5), ("RMIR", 0)],  # take 0 pieces from group E
+        [("LMIR",4), ("RMIR", 0)],  # take 0 pieces from group E
         # press UAB to get machine to move
         [("ActivationReg0", 0o100000)],
         # next human move
