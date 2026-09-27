@@ -15,10 +15,20 @@ class Masher:
         return s.split (self.delim)[1].rstrip ("\n\r")
     # Check that all files to be mashed exist and are readable
     def checkInFiles (self. inFiles: [str]) -> bool:
+        r = True
         for inFile in inFiles:
-            pass
-
-        
+            try:
+                inStream = None
+                inStream = open (inFilename, "r")
+            except FileNotFoundError:
+                print ("File not found: %s" % inFile)
+                r = False
+            except IOError:
+                print ("I/O Error opening file: %s" % inFile)
+                r = False
+            if inFile is not None:
+                inFile.close()
+        return r
     def mashFiles (self, inFiles: [str], outFile: str):
         sout = open (outFile, "wt")
         for file in inFiles:
