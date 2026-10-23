@@ -185,6 +185,11 @@ TABLE = [
     # spot to transcribe reliably -- they are omitted rather than guessed.
     # If you can read them off the original, add entries for them here.
 
+    #added by guy, Oct 23, 2026
+    {"unit": "Display Scopes", "mode": "Expanded Char Display", "octal": 0o014},
+    {"unit": "Display Scopes", "mode": "Release Exp Char Display", "octal": 0o015},
+    
+
     # ---------------- DOC System -------------------------------------------------------
     {"unit": "DOC System", "mode": "DOC send system \"A\"", "octal": 0o412},
     {"unit": "DOC System", "mode": "DOC send system \"B\"", "octal": 0o422},
