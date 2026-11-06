@@ -872,7 +872,10 @@ class ConstWWbitClass:
         return devname
 
     def decode_IO_op(self, opname, io_device, io_address, acc):
-        dev_name = io_device.name
+        if io_device:
+            dev_name = io_device.name
+        else:
+            dev_name = None
         io_op_desc = "unknown i/o operation"
         if dev_name == "Flexowriter":
             char = acc >> 10 & 0x3F  # six bit code

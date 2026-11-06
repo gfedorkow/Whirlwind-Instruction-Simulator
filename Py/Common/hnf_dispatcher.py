@@ -96,7 +96,7 @@ class HnfDispatcherClass:
         self.dispatch_table.append(HnfDispatchProgramClass(
             "Bounce/Bounce-Tape-with-Hole", "bounce-no-velocity.acore", self.default_app_timeout, 8))   # 6
         self.dispatch_table.append(HnfDispatchProgramClass(
-            "Bounce/BlinkenLights-Bounce", "bounce-control-panel.acore", self.default_app_timeout, 8))  # 7
+            "Bounce/Flip-Flop-Reg-Bounce", "bounce-control-panel.acore", self.default_app_timeout, 8))  # 7
 
 
 
@@ -105,7 +105,7 @@ class HnfDispatcherClass:
             "NewCode/IdleScreen", "idle-msg.acore", self.default_attract_timeout, 9,
                     switch_args=[["FlipFlopPreset02", "2"]], MIR_switch_number = 7))
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 9
-            "Bounce/BlinkenLights-Bounce", "bounce-control-panel.acore", self.default_attract_timeout, 10,
+            "Bounce/Flip-Flop-Reg-Bounce", "bounce-control-panel.acore", self.default_attract_timeout, 10,
                     MIR_switch_number = 7))
 
         self.dispatch_table.append(HnfDispatchProgramClass(                                             # 10

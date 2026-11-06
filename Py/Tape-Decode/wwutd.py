@@ -228,8 +228,9 @@ def write_core_wrapper(input_file: str, base_filename: str, ww_file, sequence: i
         packed_string_list = scan_for_packed_strings (core_list, is_octal_block)
         wwinfra.write_core(cb, core_list, 0, is_octal_block, input_file, title, jump_to, core_file_name,
                            string_list + packed_string_list, block_msg, stats_string, fatal_fcn=fatal)
-        alog.log (core_file_name, ArchaeoAttr.fileSize, os.path.getsize (core_file_name))
-        alog.log (core_file_name, ArchaeoAttr.tapeId, title)
+        if core_file_name:
+            alog.log (core_file_name, ArchaeoAttr.fileSize, os.path.getsize (core_file_name))
+            alog.log (core_file_name, ArchaeoAttr.tapeId, title)
     else:
         alog.log (core_file_name, ArchaeoAttr.error, "ignored")
         ignored_files += 1
